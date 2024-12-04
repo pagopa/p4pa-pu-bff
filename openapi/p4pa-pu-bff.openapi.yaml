@@ -4,7 +4,7 @@ info:
   description: OpenAPI documentation
   version: 1.0.0
 servers:
-  - url: "http://localhost:8080"
+  - url: "http://localhost:8080/bff"
     description: Generated server url
 paths:
   /organizations:
@@ -30,7 +30,7 @@ paths:
           description: Forbidden - Access denied
         '500':
           description: Internal Server Error
-  /info/brokerConfig:
+  /brokers/config:
     get:
       tags:
         - ConfigFe
@@ -62,15 +62,16 @@ components:
       type: object
       properties:
         orgId:
-          type: string
+          type: integer
+          format: int64
           description: Organization ID
-        name:
+        orgName:
           type: string
           description: Organization name
-        role:
+        operatorRole:
           type: string
-          description: Organization role
-        logo:
+          description: Operator role
+        orgLogo:
           type: string
           format: base64
           description: Base64 encoded logo of the organization

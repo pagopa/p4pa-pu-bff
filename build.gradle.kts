@@ -99,8 +99,8 @@ openApiGenerate {
   generatorName.set("spring")
   inputSpec.set("$rootDir/openapi/p4pa-pu-bff.openapi.yaml")
   outputDir.set("$projectDir/build/generated")
-  apiPackage.set("it.gov.pagopa.template.controller.generated")
-  modelPackage.set("it.gov.pagopa.template.model.generated")
+  apiPackage.set("it.gov.pagopa.pu.bff.controller.generated")
+  modelPackage.set("it.gov.pagopa.pu.bff.dto.generated")
   configOptions.set(mapOf(
     "dateLibrary" to "java8",
     "requestMappingMode" to "api_interface",

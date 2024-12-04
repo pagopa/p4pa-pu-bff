@@ -33,7 +33,7 @@ paths:
   /brokers/config:
     get:
       tags:
-        - ConfigFe
+        - Brokers
       summary: "Retrieve application information for FE"
       operationId: getBrokerConfig
       security:

@@ -1,0 +1,107 @@
+openapi: 3.0.1
+info:
+  title: API Documentation
+  description: OpenAPI documentation
+  version: 1.0.0
+servers:
+  - url: "http://localhost:8080/bff"
+    description: Generated server url
+paths:
+  /organizations:
+    get:
+      tags:
+        - Organizations
+      summary: "Retrieve the list of organizations"
+      operationId: getOrganizations
+      security:
+        - bearerAuth: [ ]
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/OrganizationDTO'
+        '401':
+          description: Unauthorized - Missing or invalid token
+        '403':
+          description: Forbidden - Access denied
+        '500':
+          description: Internal Server Error
+  /brokers/config:
+    get:
+      tags:
+        - Brokers
+      summary: "Retrieve application information for FE"
+      operationId: getBrokerConfig
+      security:
+        - bearerAuth: [ ]
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConfigFE'
+        '401':
+          description: Unauthorized - Missing or invalid token
+        '403':
+          description: Forbidden - Access denied
+        '500':
+          description: Internal Server Error
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    OrganizationDTO:
+      type: object
+      properties:
+        orgId:
+          type: integer
+          format: int64
+          description: Organization ID
+        orgName:
+          type: string
+          description: Organization name
+        operatorRole:
+          type: string
+          description: Operator role
+        orgLogo:
+          type: string
+          format: base64
+          description: Base64 encoded logo of the organization
+    ConfigFE:
+      type: object
+      properties:
+        headerAssistanceUrl:
+          type: string
+          description: URL for header assistance
+        logoFooterImg:
+          type: string
+          description: URL for footer logo image
+        footerDescText:
+          type: string
+          description: Description text for the footer
+        footerPrivacyInfoUrl:
+          type: string
+          description: URL for privacy information in the footer
+        footerGDPRUrl:
+          type: string
+          description: URL for GDPR information in the footer
+        footerTermsCondUrl:
+          type: string
+          description: URL for terms and conditions in the footer
+        footerAccessibilityUrl:
+          type: string
+          description: URL for accessibility information in the footer
+        brokerId:
+          type: string
+          description: Broker ID
+        canManageUsers:
+          type: boolean
+          description: Indicates if the user can manage other users

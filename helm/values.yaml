@@ -61,6 +61,7 @@ microservice-chart:
     APPLICATIONINSIGHTS_PREVIEW_PROFILER_ENABLED: "false"
     ENABLE_AUDIT_APPENDER: "TRUE"
 
+    AUTH_SERVER_BASE_URL: "http://p4pa-auth-microservice-chart:8080/payhub"
 
   envSecret:
     APPLICATIONINSIGHTS_CONNECTION_STRING: appinsights-connection-string

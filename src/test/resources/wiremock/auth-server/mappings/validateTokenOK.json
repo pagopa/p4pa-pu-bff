@@ -1,0 +1,34 @@
+{
+  "request": {
+    "method": "GET",
+    "urlPath": "/auth/userinfo",
+    "headers": {
+      "Authorization": {
+        "equalTo": "Bearer ACCESSTOKEN"
+      }
+    }
+  },
+  "response": {
+    "status": "200",
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "jsonBody": {
+      "userId": "e1d9c534-86a9-4039-80da-8aa7a33ac9e7",
+      "fiscalCode": "DMEMPY15L21L736U",
+      "familyName": "demo",
+      "name": "demo",
+      "issuer": "https://dev.selfcare.pagopa.it",
+      "organizationAccess": "SELC_99999999990",
+      "organizations": [
+        {
+          "operatorId": "133e9c1b-dfc5-43ea-98a7-f64f30613074",
+          "organizationIpaCode": "SELC_99999999990",
+          "roles": [
+            "ROLE_ADMIN"
+          ]
+        }
+      ]
+    }
+  }
+}

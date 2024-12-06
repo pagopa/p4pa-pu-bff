@@ -1,0 +1,14 @@
+{
+  "request": {
+    "method": "GET",
+    "urlPath": "/auth/userinfo",
+    "headers": {
+      "Authorization": {
+        "equalTo": "Bearer INVALIDACCESSTOKEN"
+      }
+    }
+  },
+  "response": {
+    "status": "401"
+  }
+}

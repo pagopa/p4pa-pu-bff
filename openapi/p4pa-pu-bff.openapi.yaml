@@ -51,29 +51,6 @@ paths:
           description: Forbidden - Access denied
         '500':
           description: Internal Server Error
-  /operator/entities:
-    get:
-      tags:
-        - Operator
-      summary: "Retrieve a list of entities for the operator"
-      operationId: getEntitiesByOperator
-      security:
-        - bearerAuth: [ ]
-      responses:
-        '200':
-          description: OK - Returns the list of entities
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/EntityDTO'
-        '401':
-          description: Unauthorized - Missing or invalid token
-        '403':
-          description: Forbidden - Access denied
-        '500':
-          description: Internal Server Error
 components:
   securitySchemes:
     bearerAuth:
@@ -83,11 +60,19 @@ components:
   schemas:
     OrganizationDTO:
       type: object
+      required:
+        - organizationId
+        - orgIpaCode
+        - orgName
+        - operatorRole
       properties:
-        orgId:
+        organizationId:
           type: integer
           format: int64
           description: Organization ID
+        orgIpaCode:
+          type: string
+          description: IPA code of the organization
         orgName:
           type: string
           description: Organization name
@@ -128,23 +113,3 @@ components:
         canManageUsers:
           type: boolean
           description: Indicates if the user can manage other users
-    EntityDTO:
-      type: object
-      properties:
-        entityId:
-          type: integer
-          format: int64
-          description: Unique identifier for the entity
-        entityIpaCode:
-          type: string
-          description: IPA code of the entity
-        entityName:
-          type: string
-          description: Name of the entity
-        entityLogo:
-          type: string
-          format: base64
-          description: Base64 encoded logo of the entity
-        entityRole:
-          type: string
-          description: Operator role

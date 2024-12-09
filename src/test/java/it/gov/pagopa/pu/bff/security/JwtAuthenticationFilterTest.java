@@ -1,9 +1,9 @@
 package it.gov.pagopa.pu.bff.security;
 
-import it.gov.pagopa.pu.bff.dto.UserInfoDTO;
-import it.gov.pagopa.pu.bff.dto.UserOrganizationRolesDTO;
 import it.gov.pagopa.pu.bff.exception.InvalidAccessTokenException;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
+import it.gov.pagopa.pu.p4paauth.model.generated.UserInfo;
+import it.gov.pagopa.pu.p4paauth.model.generated.UserOrganizationRoles;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import java.io.IOException;
@@ -47,14 +47,14 @@ class JwtAuthenticationFilterTest {
 
     MockHttpServletResponse response = new MockHttpServletResponse();
 
-    UserInfoDTO userInfo = UserInfoDTO.builder()
+    UserInfo userInfo = UserInfo.builder()
       .mappedExternalUserId("MAPPEDEXTERNALUSERID")
       .fiscalCode("FISCALCODE")
       .familyName("FAMILYNAME")
       .name("NAME")
       .issuer("ISSUER")
       .organizationAccess("ORG")
-      .organizations(List.of(UserOrganizationRolesDTO.builder()
+      .organizations(List.of(UserOrganizationRoles.builder()
         .organizationIpaCode("ORG")
         .roles(List.of("ROLE"))
         .build()))

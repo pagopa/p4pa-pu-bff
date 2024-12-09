@@ -99,7 +99,7 @@ configurations {
 }
 
 tasks.compileJava {
-	dependsOn("openApiGenerate")
+  dependsOn("openApiGenerateBFF","openApiGenerateP4PAAUTH")
 }
 
 configure<SourceSetContainer> {
@@ -112,7 +112,10 @@ springBoot {
 	mainClass.value("it.gov.pagopa.pu.bff.PiattaformaUnitariaBffApplication")
 }
 
-openApiGenerate {
+tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>("openApiGenerateBFF") {
+  group = "openapi"
+  description = "description"
+
   generatorName.set("spring")
   inputSpec.set("$rootDir/openapi/p4pa-pu-bff.openapi.yaml")
   outputDir.set("$projectDir/build/generated")
@@ -127,5 +130,26 @@ openApiGenerate {
     "generateConstructorWithAllArgs" to "false",
     "generatedConstructorWithRequiredArgs" to "false",
     "additionalModelTypeAnnotations" to "@lombok.Data @lombok.Builder @lombok.AllArgsConstructor @lombok.RequiredArgsConstructor"
+  ))
+}
+
+tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>("openApiGenerateP4PAAUTH") {
+  group = "openapi"
+  description = "description"
+
+  generatorName.set("spring")
+  remoteInputSpec.set(System.getenv("OPENAPI_P4PA_AUTH"))
+  outputDir.set("$projectDir/build/generated")
+  apiPackage.set("it.gov.pagopa.pu.p4paauth.controller.generated")
+  modelPackage.set("it.gov.pagopa.pu.p4paauth.model.generated")
+  configOptions.set(mapOf(
+    "dateLibrary" to "java8",
+    "requestMappingMode" to "api_interface",
+    "useSpringBoot3" to "true",
+    "interfaceOnly" to "true",
+    "useTags" to "true",
+    "generateConstructorWithAllArgs" to "false",
+    "generatedConstructorWithRequiredArgs" to "false",
+    "additionalModelTypeAnnotations" to "@lombok.Data;@lombok.Builder;@lombok.NoArgsConstructor;@lombok.AllArgsConstructor"
   ))
 }

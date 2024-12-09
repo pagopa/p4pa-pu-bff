@@ -4,9 +4,9 @@ import com.github.tomakehurst.wiremock.WireMockServer;
 import com.maciejwalkowiak.wiremock.spring.ConfigureWireMock;
 import com.maciejwalkowiak.wiremock.spring.EnableWireMock;
 import com.maciejwalkowiak.wiremock.spring.InjectWireMock;
-import it.gov.pagopa.pu.bff.dto.UserInfoDTO;
-import it.gov.pagopa.pu.bff.dto.UserOrganizationRolesDTO;
 import it.gov.pagopa.pu.bff.exception.InvalidAccessTokenException;
+import it.gov.pagopa.pu.p4paauth.model.generated.UserInfo;
+import it.gov.pagopa.pu.p4paauth.model.generated.UserOrganizationRoles;
 import java.util.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -43,18 +43,18 @@ class AuthorizationServiceTest {
   @Test
   void givenValidAccessTokenWhenValidateTokenThenOk() {
     // When
-    UserInfoDTO result = authorizationService.validateToken("ACCESSTOKEN");
+    UserInfo result = authorizationService.validateToken("ACCESSTOKEN");
 
     // Then
     Assertions.assertEquals(
-      UserInfoDTO.builder()
+      UserInfo.builder()
         .userId("e1d9c534-86a9-4039-80da-8aa7a33ac9e7")
         .fiscalCode("DMEMPY15L21L736U")
         .familyName("demo")
         .name("demo")
         .issuer("https://dev.selfcare.pagopa.it")
         .organizationAccess("SELC_99999999990")
-        .organizations(List.of(UserOrganizationRolesDTO.builder()
+        .organizations(List.of(UserOrganizationRoles.builder()
           .operatorId("133e9c1b-dfc5-43ea-98a7-f64f30613074")
           .organizationIpaCode("SELC_99999999990")
           .roles(List.of("ROLE_ADMIN"))

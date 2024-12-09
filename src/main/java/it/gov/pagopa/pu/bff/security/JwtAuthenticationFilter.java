@@ -1,8 +1,8 @@
 package it.gov.pagopa.pu.bff.security;
 
-import it.gov.pagopa.pu.bff.dto.UserInfoDTO;
 import it.gov.pagopa.pu.bff.exception.InvalidAccessTokenException;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
+import it.gov.pagopa.pu.p4paauth.model.generated.UserInfo;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -38,7 +38,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
       String authorization = request.getHeader(HttpHeaders.AUTHORIZATION);
       if (StringUtils.hasText(authorization)) {
         String token = authorization.replace("Bearer ", "");
-        UserInfoDTO userInfo = authorizationService.validateToken(token);
+        UserInfo userInfo = authorizationService.validateToken(token);
         Collection<? extends GrantedAuthority> authorities = null;
         if (userInfo.getOrganizationAccess() != null) {
           authorities = userInfo.getOrganizations().stream()

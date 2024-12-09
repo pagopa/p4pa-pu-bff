@@ -103,6 +103,8 @@ USER ${APP_USER}
 
 RUN gradle openApiGenerate dependencies --no-daemon
 
+RUN gradle openApiGenerateP4PAAUTH dependencies --no-daemon
+
 #
 # 🏗️ Build Stage
 #

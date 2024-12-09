@@ -1,7 +1,7 @@
 package it.gov.pagopa.pu.bff.service;
 
-import it.gov.pagopa.pu.bff.dto.UserInfoDTO;
 import it.gov.pagopa.pu.bff.exception.InvalidAccessTokenException;
+import it.gov.pagopa.pu.p4paauth.model.generated.UserInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -29,12 +29,12 @@ public class AuthorizationService {
       .build();
   }
 
-  public UserInfoDTO validateToken(String accessToken){
+  public UserInfo validateToken(String accessToken){
     log.info("Requesting validate token");
     try{
       HttpHeaders headers = new HttpHeaders();
       headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken);
-      return restTemplate.exchange("/auth/userinfo", HttpMethod.GET, new HttpEntity<>(headers), UserInfoDTO.class).getBody();
+      return restTemplate.exchange("/auth/userinfo", HttpMethod.GET, new HttpEntity<>(headers), UserInfo.class).getBody();
     } catch (HttpStatusCodeException ex){
       String errorMessage;
       if(HttpStatus.UNAUTHORIZED.equals(ex.getStatusCode())){

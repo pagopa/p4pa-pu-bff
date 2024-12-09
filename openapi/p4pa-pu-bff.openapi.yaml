@@ -62,7 +62,7 @@ components:
       type: object
       required:
         - organizationId
-        - orgIpaCode
+        - ipaCode
         - orgName
         - operatorRole
       properties:
@@ -70,7 +70,7 @@ components:
           type: integer
           format: int64
           description: Organization ID
-        orgIpaCode:
+        ipaCode:
           type: string
           description: IPA code of the organization
         orgName:

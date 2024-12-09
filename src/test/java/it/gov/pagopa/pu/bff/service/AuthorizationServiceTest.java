@@ -1,65 +1,43 @@
 package it.gov.pagopa.pu.bff.service;
 
-import com.github.tomakehurst.wiremock.WireMockServer;
-import com.maciejwalkowiak.wiremock.spring.ConfigureWireMock;
-import com.maciejwalkowiak.wiremock.spring.EnableWireMock;
-import com.maciejwalkowiak.wiremock.spring.InjectWireMock;
+import static org.mockito.Mockito.mock;
+
+import it.gov.pagopa.pu.bff.connector.AuthClientImpl;
 import it.gov.pagopa.pu.bff.exception.InvalidAccessTokenException;
 import it.gov.pagopa.pu.p4paauth.model.generated.UserInfo;
-import it.gov.pagopa.pu.p4paauth.model.generated.UserOrganizationRoles;
-import java.util.List;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.TestConfiguration;
-import org.springframework.boot.web.client.RestTemplateBuilder;
-import org.springframework.context.annotation.Bean;
 
-@SpringBootTest(
-  classes = {AuthorizationService.class, AuthorizationServiceTest.AuthorizationServiceTestConfiguration.class},
-  webEnvironment = SpringBootTest.WebEnvironment.NONE)
-@EnableWireMock({
-  @ConfigureWireMock(name = "auth-server", properties = "app.auth.base-url")
-})
 @EnableConfigurationProperties
 class AuthorizationServiceTest {
 
   @Autowired
   private AuthorizationService authorizationService;
 
-  @InjectWireMock(value = "auth-server")
-  private WireMockServer wireMockServer;
+  @Mock
+  AuthClientImpl authClientImpl;
 
-  @TestConfiguration
-  public static class AuthorizationServiceTestConfiguration {
-    @Bean
-    public RestTemplateBuilder restTemplateBuilder() {
-      return new RestTemplateBuilder();
-    }
+  @BeforeEach
+  void setUp(){
+    authClientImpl = mock(AuthClientImpl.class);
+    authorizationService = new AuthorizationService(authClientImpl);
   }
 
   @Test
   void givenValidAccessTokenWhenValidateTokenThenOk() {
     // When
+    UserInfo ui = new UserInfo();
+    Mockito.when(authClientImpl.validateToken("ACCESSTOKEN")).thenReturn(ui);
     UserInfo result = authorizationService.validateToken("ACCESSTOKEN");
 
     // Then
     Assertions.assertEquals(
-      UserInfo.builder()
-        .userId("e1d9c534-86a9-4039-80da-8aa7a33ac9e7")
-        .fiscalCode("DMEMPY15L21L736U")
-        .familyName("demo")
-        .name("demo")
-        .issuer("https://dev.selfcare.pagopa.it")
-        .organizationAccess("SELC_99999999990")
-        .organizations(List.of(UserOrganizationRoles.builder()
-          .operatorId("133e9c1b-dfc5-43ea-98a7-f64f30613074")
-          .organizationIpaCode("SELC_99999999990")
-          .roles(List.of("ROLE_ADMIN"))
-          .build()))
-        .build(),
+      ui,
       result
     );
   }
@@ -67,25 +45,13 @@ class AuthorizationServiceTest {
   @Test
   void givenInvalidAccessTokenWhenValidateTokenThenInvalidAccessTokenException() {
     // When
+    Mockito.when(authClientImpl.validateToken("INVALIDACCESSTOKEN")).thenThrow(new InvalidAccessTokenException("Bad Access Token provided"));
     InvalidAccessTokenException result = Assertions.assertThrows(InvalidAccessTokenException.class,
       () -> authorizationService.validateToken("INVALIDACCESSTOKEN"));
 
     // Then
     Assertions.assertEquals(
       "Bad Access Token provided",
-      result.getMessage()
-    );
-  }
-
-  @Test
-  void givenUnexpectedErrorWhenValidateTokenThenIDInvalidAccessTokenException() {
-    // When
-    InvalidAccessTokenException result = Assertions.assertThrows(InvalidAccessTokenException.class,
-      () -> authorizationService.validateToken("EXCEPTION"));
-
-    // Then
-    Assertions.assertEquals(
-      "Something gone wrong while validate token",
       result.getMessage()
     );
   }

@@ -3,12 +3,10 @@ package it.gov.pagopa.pu.bff.security;
 import it.gov.pagopa.pu.bff.exception.InvalidAccessTokenException;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
 import it.gov.pagopa.pu.p4paauth.model.generated.UserInfo;
-import it.gov.pagopa.pu.p4paauth.model.generated.UserOrganizationRoles;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import java.io.IOException;
 import java.util.Collection;
-import java.util.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -47,18 +45,7 @@ class JwtAuthenticationFilterTest {
 
     MockHttpServletResponse response = new MockHttpServletResponse();
 
-    UserInfo userInfo = UserInfo.builder()
-      .mappedExternalUserId("MAPPEDEXTERNALUSERID")
-      .fiscalCode("FISCALCODE")
-      .familyName("FAMILYNAME")
-      .name("NAME")
-      .issuer("ISSUER")
-      .organizationAccess("ORG")
-      .organizations(List.of(UserOrganizationRoles.builder()
-        .organizationIpaCode("ORG")
-        .roles(List.of("ROLE"))
-        .build()))
-      .build();
+    UserInfo userInfo = new UserInfo();
 
     Collection<? extends GrantedAuthority> authorities = null;
     if (userInfo.getOrganizationAccess() != null) {

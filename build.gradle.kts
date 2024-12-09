@@ -6,6 +6,7 @@ plugins {
 	id("org.sonarqube") version "5.1.0.4882"
 	id("com.github.ben-manes.versions") version "0.51.0"
 	id("org.openapi.generator") version "7.9.0"
+  id("org.ajoberstar.grgit") version "5.3.0"
 }
 
 group = "it.gov.pagopa.payhub"
@@ -128,19 +129,25 @@ tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>("ope
   group = "openapi"
   description = "description"
 
-  generatorName.set("spring")
-  remoteInputSpec.set(System.getenv("OPENAPI_P4PA_AUTH"))
+  generatorName.set("java")
+  remoteInputSpec.set("https://raw.githubusercontent.com/pagopa/p4pa-auth/refs/heads/$targetEnv/openapi/p4pa-auth.openapi.yaml")
   outputDir.set("$projectDir/build/generated")
   apiPackage.set("it.gov.pagopa.pu.p4paauth.controller.generated")
   modelPackage.set("it.gov.pagopa.pu.p4paauth.model.generated")
   configOptions.set(mapOf(
-    "dateLibrary" to "java8",
-    "requestMappingMode" to "api_interface",
+    "swaggerAnnotations" to "false",
+    "openApiNullable" to "false",
+    "dateLibrary" to "java17",
     "useSpringBoot3" to "true",
-    "interfaceOnly" to "true",
-    "useTags" to "true",
-    "generateConstructorWithAllArgs" to "false",
-    "generatedConstructorWithRequiredArgs" to "false",
-    "additionalModelTypeAnnotations" to "@lombok.Data;@lombok.Builder;@lombok.NoArgsConstructor;@lombok.AllArgsConstructor"
+    "useJakartaEe" to "true",
+    "serializationLibrary" to "jackson",
+    "generateSupportingFiles" to "true"
   ))
+  library.set("resttemplate")
+}
+
+var targetEnv = when (grgit.branch.current().name) {
+  "uat" -> "uat"
+  "main" -> "main"
+  else -> "develop"
 }

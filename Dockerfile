@@ -94,13 +94,14 @@ WORKDIR /build
 COPY --chown=${APP_USER}:${APP_GROUP} build.gradle.kts settings.gradle.kts ./
 COPY --chown=${APP_USER}:${APP_GROUP} gradle.lockfile ./
 COPY --chown=${APP_USER}:${APP_GROUP} openapi openapi/
+COPY .git .git
 
 # Generate OpenAPI stubs and download dependencies
 RUN mkdir -p src/main/java && \
     chown -R ${APP_USER}:${APP_GROUP} /build && \
     chmod -R 775 /build
 
-COPY .git .git
+
 
 USER ${APP_USER}
 

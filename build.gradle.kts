@@ -9,6 +9,10 @@ plugins {
   id("org.ajoberstar.grgit") version "5.3.0"
 }
 
+import org.ajoberstar.grgit.Grgit
+
+val grgit = Grgit.open(mapOf("dir" to project.rootDir))
+
 group = "it.gov.pagopa.payhub"
 version = "0.0.1"
 description = "p4pa-pu-bff"
@@ -125,6 +129,14 @@ tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>("ope
   ))
 }
 
+
+
+var targetEnv = when (grgit.branch.current().name) {
+  "uat" -> "uat"
+  "main" -> "main"
+  else -> "develop"
+}
+
 tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>("openApiGenerateP4PAAUTH") {
   group = "openapi"
   description = "description"
@@ -144,10 +156,4 @@ tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>("ope
     "generateSupportingFiles" to "true"
   ))
   library.set("resttemplate")
-}
-
-var targetEnv = when (grgit.branch.current().name) {
-  "uat" -> "uat"
-  "main" -> "main"
-  else -> "develop"
 }

@@ -85,6 +85,16 @@ components:
           description: Base64 encoded logo of the organization
     ConfigFE:
       type: object
+      required:
+        - headerAssistanceUrl
+        - logoFooterImg
+        - footerDescText
+        - footerPrivacyInfoUrl
+        - footerGDPRUrl
+        - footerTermsCondUrl
+        - footerAccessibilityUrl
+        - brokerId
+        - canManageUsers
       properties:
         headerAssistanceUrl:
           type: string

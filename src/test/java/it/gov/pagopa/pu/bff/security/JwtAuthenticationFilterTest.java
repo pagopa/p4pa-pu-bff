@@ -7,6 +7,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import java.io.IOException;
 import java.util.Collection;
+import java.util.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,6 +24,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+import it.gov.pagopa.pu.p4paauth.model.generated.UserOrganizationRoles;
 
 @ExtendWith(MockitoExtension.class)
 class JwtAuthenticationFilterTest {
@@ -45,7 +47,26 @@ class JwtAuthenticationFilterTest {
 
     MockHttpServletResponse response = new MockHttpServletResponse();
 
-    UserInfo userInfo = new UserInfo();
+    List<UserOrganizationRoles> organizations = List.of(
+      new UserOrganizationRoles()
+        .operatorId("operator1")
+        .organizationIpaCode("ORG")
+        .email("email1@example.com")
+        .roles(List.of("ROLE")),
+      new UserOrganizationRoles()
+        .operatorId("operator2")
+        .organizationIpaCode("ORG2")
+        .email("email2@example.com")
+        .roles(List.of("ROLE2"))
+    );
+
+    UserInfo userInfo = new UserInfo().mappedExternalUserId("MAPPEDEXTERNALUSERID")
+      .fiscalCode("FISCALCODE")
+      .familyName("FAMILYNAME")
+      .name("NAME")
+      .issuer("ISSUER")
+      .organizationAccess("ORG")
+      .organizations(organizations);
 
     Collection<? extends GrantedAuthority> authorities = null;
     if (userInfo.getOrganizationAccess() != null) {
@@ -107,4 +128,5 @@ class JwtAuthenticationFilterTest {
     // Then
     Mockito.verify(filterChainMock).doFilter(request, response);
   }
+
 }

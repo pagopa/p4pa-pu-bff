@@ -37,7 +37,8 @@ RUN apk add --no-cache \
     wget \
     unzip \
     bash \
-    shadow
+    shadow \
+    git
 
 # Create Gradle user
 RUN groupadd --system --gid 1000 ${APP_GROUP} && \
@@ -98,6 +99,8 @@ COPY --chown=${APP_USER}:${APP_GROUP} openapi openapi/
 RUN mkdir -p src/main/java && \
     chown -R ${APP_USER}:${APP_GROUP} /build && \
     chmod -R 775 /build
+
+COPY .git .git
 
 USER ${APP_USER}
 

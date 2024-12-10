@@ -60,11 +60,19 @@ components:
   schemas:
     OrganizationDTO:
       type: object
+      required:
+        - organizationId
+        - ipaCode
+        - orgName
+        - operatorRole
       properties:
-        orgId:
+        organizationId:
           type: integer
           format: int64
           description: Organization ID
+        ipaCode:
+          type: string
+          description: IPA code of the organization
         orgName:
           type: string
           description: Organization name
@@ -77,6 +85,16 @@ components:
           description: Base64 encoded logo of the organization
     ConfigFE:
       type: object
+      required:
+        - headerAssistanceUrl
+        - logoFooterImg
+        - footerDescText
+        - footerPrivacyInfoUrl
+        - footerGDPRUrl
+        - footerTermsCondUrl
+        - footerAccessibilityUrl
+        - brokerId
+        - canManageUsers
       properties:
         headerAssistanceUrl:
           type: string

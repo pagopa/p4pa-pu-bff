@@ -37,7 +37,8 @@ RUN apk add --no-cache \
     wget \
     unzip \
     bash \
-    shadow
+    shadow \
+    git
 
 # Create Gradle user
 RUN groupadd --system --gid 1000 ${APP_GROUP} && \
@@ -93,15 +94,20 @@ WORKDIR /build
 COPY --chown=${APP_USER}:${APP_GROUP} build.gradle.kts settings.gradle.kts ./
 COPY --chown=${APP_USER}:${APP_GROUP} gradle.lockfile ./
 COPY --chown=${APP_USER}:${APP_GROUP} openapi openapi/
+COPY .git .git
 
 # Generate OpenAPI stubs and download dependencies
 RUN mkdir -p src/main/java && \
     chown -R ${APP_USER}:${APP_GROUP} /build && \
     chmod -R 775 /build
 
+
+
 USER ${APP_USER}
 
-RUN gradle openApiGenerate dependencies --no-daemon
+RUN gradle openApiGenerateBFF dependencies --no-daemon
+
+RUN gradle openApiGenerateP4PAAUTH dependencies --no-daemon
 
 #
 # 🏗️ Build Stage

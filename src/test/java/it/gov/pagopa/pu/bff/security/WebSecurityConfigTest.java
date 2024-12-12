@@ -26,7 +26,7 @@ class WebSecurityConfigTest {
   private JwtAuthenticationFilter jwtAuthenticationFilter;
 
   @MockBean
-  private BrokerServiceImpl service;
+  private BrokerServiceImpl serviceMock;
 
   @Test
   void givenURLWhenWithoutAccessTokenThenRedirectToLogin() throws Exception {

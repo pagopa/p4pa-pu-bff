@@ -4,9 +4,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import it.gov.pagopa.pu.bff.config.DefaultConfigFe;
 import it.gov.pagopa.pu.bff.connector.OrganizationClientImpl;
-import it.gov.pagopa.pu.p4pa_organization.model.generated.EntityModelBroker;
-import it.gov.pagopa.pu.p4pa_organization.model.generated.EntityModelOrganization;
-import it.gov.pagopa.pu.p4pa_organization.model.generated.PersonalisationFe;
+import it.gov.pagopa.pu.bff.dto.generated.ConfigFE;
+import it.gov.pagopa.pu.bff.mapper.PersonalisationFE2ConfigFEMapper;
+import it.gov.pagopa.pu.p4pa_organization.dto.generated.EntityModelBroker;
+import it.gov.pagopa.pu.p4pa_organization.dto.generated.EntityModelOrganization;
+import it.gov.pagopa.pu.p4pa_organization.dto.generated.PersonalisationFe;
 import it.gov.pagopa.pu.p4paauth.model.generated.UserInfo;
 import it.gov.pagopa.pu.p4paauth.model.generated.UserOrganizationRoles;
 import java.util.Collection;
@@ -26,13 +28,16 @@ import org.springframework.security.core.context.SecurityContextHolder;
 class BrokerServiceImplTest {
 
   @Mock
-  private OrganizationClientImpl organizationClient;
+  private OrganizationClientImpl organizationClientMock;
 
   @Mock
-  private DefaultConfigFe defaultConfigFe;
+  private DefaultConfigFe defaultConfigFeMock;
+
+  @Mock
+  private PersonalisationFE2ConfigFEMapper personalisationFE2ConfigFEMapperMock;
 
   @InjectMocks
-  private BrokerServiceImpl brokerService;
+  private BrokerServiceImpl brokerServiceMock;
 
   private UserInfo userInfo;
   private UserOrganizationRoles userOrganizationRoles;
@@ -63,26 +68,39 @@ class BrokerServiceImplTest {
 
   @Test
   void givenGetBrokerConfigWhenValidDataThenOK() {
-    Mockito.when(organizationClient.getOrganizationByIpaCode("testIpaCode")).thenReturn(entityModelOrganization);
-    Mockito.when(organizationClient.getBrokerById("1")).thenReturn(entityModelBroker);
+    ConfigFE configFE = new ConfigFE();
+    Mockito.when(organizationClientMock.getOrganizationByIpaCode("testIpaCode")).thenReturn(entityModelOrganization);
+    Mockito.when(organizationClientMock.getBrokerById("1")).thenReturn(entityModelBroker);
+    Mockito.when(personalisationFE2ConfigFEMapperMock.mapPersonalisationFE2ConfigFE(personalisationFe)).thenReturn(configFE);
 
-    PersonalisationFe result = brokerService.getBrokerConfig();
-    assertEquals(personalisationFe, result);
+    ConfigFE result = brokerServiceMock.getBrokerConfig();
+
+    assertEquals(personalisationFe.getFooterAccessibilityUrl(), result.getFooterAccessibilityUrl());
+    assertEquals(personalisationFe.getFooterGDPRUrl(),result.getFooterGDPRUrl());
+    assertEquals(personalisationFe.getFooterDescText(),result.getFooterDescText());
+    assertEquals(personalisationFe.getFooterTermsCondUrl(),result.getFooterTermsCondUrl());
+    assertEquals(personalisationFe.getHeaderAssistanceUrl(),result.getHeaderAssistanceUrl());
+    assertEquals(personalisationFe.getLogoFooterImg(),result.getLogoFooterImg());
   }
 
   @Test
   void givenGetBrokerConfigWhenNoOrganizationThenOkDefault() {
-    PersonalisationFe result = brokerService.getBrokerConfig();
-    assertEquals(defaultConfigFe, result);
+    ConfigFE configFE = new ConfigFE();
+    Mockito.when(personalisationFE2ConfigFEMapperMock.mapPersonalisationFE2ConfigFE(defaultConfigFeMock)).thenReturn(configFE);
+
+    ConfigFE result = brokerServiceMock.getBrokerConfig();
+    assertEquals(configFE, result);
   }
 
   @Test
   void givenGetBrokerConfigWhenNoBrokerThenOkDefault() {
-    Mockito.when(organizationClient.getOrganizationByIpaCode("testIpaCode")).thenReturn(entityModelOrganization);
-    Mockito.when(organizationClient.getBrokerById("1")).thenReturn(null);
+    ConfigFE defaultConf = new ConfigFE();
+    Mockito.when(organizationClientMock.getOrganizationByIpaCode("testIpaCode")).thenReturn(entityModelOrganization);
+    Mockito.when(organizationClientMock.getBrokerById("1")).thenReturn(null);
+    Mockito.when(personalisationFE2ConfigFEMapperMock.mapPersonalisationFE2ConfigFE(defaultConfigFeMock)).thenReturn(defaultConf);
 
-    PersonalisationFe result = brokerService.getBrokerConfig();
-    assertEquals(defaultConfigFe, result);
+    ConfigFE result = brokerServiceMock.getBrokerConfig();
+    assertEquals(defaultConf, result);
   }
 
 }

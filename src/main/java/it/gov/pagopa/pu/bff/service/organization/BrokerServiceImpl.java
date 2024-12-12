@@ -2,10 +2,12 @@ package it.gov.pagopa.pu.bff.service.organization;
 
 import it.gov.pagopa.pu.bff.config.DefaultConfigFe;
 import it.gov.pagopa.pu.bff.connector.OrganizationClientImpl;
+import it.gov.pagopa.pu.bff.dto.generated.ConfigFE;
+import it.gov.pagopa.pu.bff.mapper.PersonalisationFE2ConfigFEMapper;
 import it.gov.pagopa.pu.bff.security.SecurityUtils;
-import it.gov.pagopa.pu.p4pa_organization.model.generated.EntityModelBroker;
-import it.gov.pagopa.pu.p4pa_organization.model.generated.EntityModelOrganization;
-import it.gov.pagopa.pu.p4pa_organization.model.generated.PersonalisationFe;
+import it.gov.pagopa.pu.p4pa_organization.dto.generated.EntityModelBroker;
+import it.gov.pagopa.pu.p4pa_organization.dto.generated.EntityModelOrganization;
+import it.gov.pagopa.pu.p4pa_organization.dto.generated.PersonalisationFe;
 import it.gov.pagopa.pu.p4paauth.model.generated.UserInfo;
 import it.gov.pagopa.pu.p4paauth.model.generated.UserOrganizationRoles;
 import java.util.Optional;
@@ -17,16 +19,20 @@ public class BrokerServiceImpl implements BrokerService{
 
   private OrganizationClientImpl organizationClient;
 
+  private final PersonalisationFE2ConfigFEMapper personalisationFE2ConfigFEMapper;
+
   private DefaultConfigFe defaultConfigFe;
 
   public BrokerServiceImpl(OrganizationClientImpl organizationClient,
-      DefaultConfigFe defaultConfigFe){
+      DefaultConfigFe defaultConfigFe,
+      PersonalisationFE2ConfigFEMapper personalisationFE2ConfigFEMapper){
     this.organizationClient = organizationClient;
     this.defaultConfigFe = defaultConfigFe;
+    this.personalisationFE2ConfigFEMapper = personalisationFE2ConfigFEMapper;
   }
 
   @Override
-  public PersonalisationFe getBrokerConfig(){
+  public ConfigFE getBrokerConfig(){
     UserInfo user = SecurityUtils.getLoggedUser();
     UserOrganizationRoles orgRoles = Optional.ofNullable(user.getOrganizations())
       .flatMap(orgs -> orgs.stream().findFirst())
@@ -41,8 +47,8 @@ public class BrokerServiceImpl implements BrokerService{
     if(organization!=null && organization.getBrokerId()!=null ){
       broker = organizationClient.getBrokerById(String.valueOf(organization.getBrokerId()));
     }
-
-    return getFEConfiguration(broker);
+    PersonalisationFe personalisationFe = getFEConfiguration(broker);
+    return personalisationFE2ConfigFEMapper.mapPersonalisationFE2ConfigFE(personalisationFe);
   }
 
   public PersonalisationFe getFEConfiguration(EntityModelBroker broker) {

@@ -1,12 +1,14 @@
 package it.gov.pagopa.pu.bff.controller;
 
+import it.gov.pagopa.pu.bff.controller.generated.BrokersApi;
+import it.gov.pagopa.pu.bff.dto.generated.ConfigFE;
 import it.gov.pagopa.pu.bff.service.organization.BrokerServiceImpl;
-import it.gov.pagopa.pu.p4pa_organization.model.generated.PersonalisationFe;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-public class OrganizationController {
+public class OrganizationController implements BrokersApi {
 
   private BrokerServiceImpl service;
 
@@ -14,9 +16,9 @@ public class OrganizationController {
     this.service = service;
   }
 
-  @GetMapping(path = "getBrokerConfig")
-  public PersonalisationFe getBrokerConf(){
-    return service.getBrokerConfig();
+  @Override
+  public ResponseEntity<ConfigFE> getBrokerConfig () {
+    return new ResponseEntity<>(service.getBrokerConfig(), HttpStatus.OK);
   }
 
 }

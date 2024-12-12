@@ -79,7 +79,7 @@ class JwtAuthenticationFilterTest {
 
     Mockito.when(authorizationService.validateToken(accessToken)).thenReturn(userInfo);
 
-    UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userInfo, null, authorities);
+    UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userInfo, accessToken, authorities);
     authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
     // When

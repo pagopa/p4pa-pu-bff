@@ -4,9 +4,10 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import it.gov.pagopa.pu.bff.controller.generated.BrokersApi;
+import it.gov.pagopa.pu.bff.dto.generated.ConfigFE;
 import it.gov.pagopa.pu.bff.security.JwtAuthenticationFilter;
 import it.gov.pagopa.pu.bff.service.organization.BrokerServiceImpl;
-import it.gov.pagopa.pu.p4pa_organization.model.generated.PersonalisationFe;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,7 +21,7 @@ import org.springframework.context.annotation.FilterType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
-@WebMvcTest(value = OrganizationController.class,excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE,
+@WebMvcTest(value = BrokersApi.class,excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE,
   classes = JwtAuthenticationFilter.class))
 @AutoConfigureMockMvc(addFilters = false)
 class OraganizationControllerTest {
@@ -33,20 +34,20 @@ class OraganizationControllerTest {
   @MockBean
   private BrokerServiceImpl service;
 
-  private PersonalisationFe personalisationFe;
+  private ConfigFE configFE;
 
   @BeforeEach
   void setUp() {
-    personalisationFe = new PersonalisationFe();
+    configFE = new ConfigFE();
     // Set up the personalisationFe object as needed
   }
 
   @Test
   void testGetBrokerConf() throws Exception {
-    Mockito.when(service.getBrokerConfig()).thenReturn(personalisationFe);
-    MvcResult result = mockMvc.perform(get("/getBrokerConfig"))
+    Mockito.when(service.getBrokerConfig()).thenReturn(configFE);
+    MvcResult result = mockMvc.perform(get("/bff/brokers/config"))
       .andExpect(status().isOk())
       .andReturn();
-    Assertions.assertEquals(result.getResponse().getContentAsString(),objectMapper.writeValueAsString(personalisationFe));
+    Assertions.assertEquals(result.getResponse().getContentAsString(),objectMapper.writeValueAsString(configFE));
   }
 }

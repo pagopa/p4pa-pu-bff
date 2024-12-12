@@ -2,6 +2,7 @@ package it.gov.pagopa.pu.bff.security;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import it.gov.pagopa.pu.bff.service.organization.BrokerServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -23,6 +24,9 @@ class WebSecurityConfigTest {
 
   @MockBean
   private JwtAuthenticationFilter jwtAuthenticationFilter;
+
+  @MockBean
+  private BrokerServiceImpl service;
 
   @Test
   void givenURLWhenWithoutAccessTokenThenRedirectToLogin() throws Exception {

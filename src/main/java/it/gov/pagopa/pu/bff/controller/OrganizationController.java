@@ -6,11 +6,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-public class OraganizationController {
+public class OrganizationController {
 
   private BrokerServiceImpl service;
 
-  public OraganizationController(BrokerServiceImpl service){
+  public OrganizationController (BrokerServiceImpl service){
     this.service = service;
   }
 

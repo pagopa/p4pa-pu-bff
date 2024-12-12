@@ -29,22 +29,10 @@ public class OrganizationClientImpl implements OrganizationClient {
   public OrganizationClientImpl (RestTemplateBuilder restTemplateBuilder,
     @Value("${app.organization.base-url}") String baseUrl){
     RestTemplate restTemplate = restTemplateBuilder.build();
-
-    List<HttpMessageConverter<?>> messageConverters = new ArrayList<>();
-    MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
-    converter.setSupportedMediaTypes(Collections.singletonList(MediaType.ALL));
-    messageConverters.add(converter);
-
-    restTemplate.setMessageConverters(messageConverters);
-
     ApiClient apiClient = new ApiClient(restTemplate);
     apiClient.setBasePath(baseUrl);
     brokerEntityControllerApi = new BrokerEntityControllerApi(apiClient);
     organizationSearchControllerApi = new OrganizationSearchControllerApi(apiClient);
-  }
-
-  public PagedModelEntityModelBroker getBrokerConfig(){
-    return brokerEntityControllerApi.getCollectionResourceBrokerGet1(null,null,null);
   }
 
   public EntityModelBroker getBrokerById(String id) {

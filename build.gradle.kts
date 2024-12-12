@@ -91,7 +91,7 @@ configurations {
 }
 
 tasks.compileJava {
-  dependsOn("openApiGenerateBFF","openApiGenerateP4PAAUTH")
+  dependsOn("openApiGenerateBFF","openApiGenerateP4PAAUTH","openApiGenerateOrganization")
 }
 
 configure<SourceSetContainer> {
@@ -140,6 +140,27 @@ tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>("ope
   outputDir.set("$projectDir/build/generated")
   apiPackage.set("it.gov.pagopa.pu.p4paauth.controller.generated")
   modelPackage.set("it.gov.pagopa.pu.p4paauth.model.generated")
+  configOptions.set(mapOf(
+    "swaggerAnnotations" to "false",
+    "openApiNullable" to "false",
+    "dateLibrary" to "java17",
+    "useSpringBoot3" to "true",
+    "useJakartaEe" to "true",
+    "serializationLibrary" to "jackson",
+    "generateSupportingFiles" to "true"
+  ))
+  library.set("resttemplate")
+}
+
+tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>("openApiGenerateOrganization") {
+  group = "openapi"
+  description = "description"
+
+  generatorName.set("java")
+  remoteInputSpec.set("https://raw.githubusercontent.com/pagopa/p4pa-organization/refs/heads/$targetEnv/openapi/generated.openapi.json")
+  outputDir.set("$projectDir/build/generated")
+  apiPackage.set("it.gov.pagopa.pu.p4pa-organization.controller.generated")
+  modelPackage.set("it.gov.pagopa.pu.p4pa-organization.model.generated")
   configOptions.set(mapOf(
     "swaggerAnnotations" to "false",
     "openApiNullable" to "false",

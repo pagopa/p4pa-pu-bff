@@ -31,7 +31,7 @@ class WebSecurityConfigTest {
   private BrokerServiceImpl serviceMock;
 
   @MockBean
-  private AuthorizationService authorizationService;
+  private AuthorizationService authorizationServiceMock;
 
   @Test
   void givenURLWhenWithoutAccessTokenThenReturn403() throws Exception {

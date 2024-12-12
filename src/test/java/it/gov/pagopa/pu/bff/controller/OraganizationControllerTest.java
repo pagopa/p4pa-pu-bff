@@ -32,7 +32,7 @@ class OraganizationControllerTest {
   private ObjectMapper objectMapper;
 
   @MockBean
-  private BrokerServiceImpl service;
+  private BrokerServiceImpl serviceMock;
 
   private ConfigFE configFE;
 
@@ -44,7 +44,7 @@ class OraganizationControllerTest {
 
   @Test
   void testGetBrokerConf() throws Exception {
-    Mockito.when(service.getBrokerConfig()).thenReturn(configFE);
+    Mockito.when(serviceMock.getBrokerConfig()).thenReturn(configFE);
     MvcResult result = mockMvc.perform(get("/bff/brokers/config"))
       .andExpect(status().isOk())
       .andReturn();

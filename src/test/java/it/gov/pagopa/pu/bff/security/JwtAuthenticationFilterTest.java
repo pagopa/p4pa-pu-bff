@@ -33,10 +33,10 @@ class JwtAuthenticationFilterTest {
   private FilterChain filterChainMock;
 
   @Mock
-  private AuthorizationService authorizationService;
+  private AuthorizationService authorizationServiceMock;
 
   @InjectMocks
-  private JwtAuthenticationFilter jwtAuthenticationFilter;
+  private JwtAuthenticationFilter jwtAuthenticationFilterMock;
 
   @Test
   void givenValidTokenWhenDoFilterInternalThenOk() throws ServletException, IOException {
@@ -77,13 +77,13 @@ class JwtAuthenticationFilterTest {
         .toList();
     }
 
-    Mockito.when(authorizationService.validateToken(accessToken)).thenReturn(userInfo);
+    Mockito.when(authorizationServiceMock.validateToken(accessToken)).thenReturn(userInfo);
 
     UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userInfo, accessToken, authorities);
     authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
     // When
-    jwtAuthenticationFilter.doFilterInternal(request, response, filterChainMock);
+    jwtAuthenticationFilterMock.doFilterInternal(request, response, filterChainMock);
 
     // Then
     Mockito.verify(filterChainMock).doFilter(request, response);
@@ -102,10 +102,10 @@ class JwtAuthenticationFilterTest {
 
     MockHttpServletResponse response = new MockHttpServletResponse();
 
-    Mockito.doThrow(new InvalidAccessTokenException("An invalid accessToken has been provided")).when(authorizationService).validateToken(accessToken);
+    Mockito.doThrow(new InvalidAccessTokenException("An invalid accessToken has been provided")).when(authorizationServiceMock).validateToken(accessToken);
 
     // When
-    jwtAuthenticationFilter.doFilterInternal(request, response, filterChainMock);
+    jwtAuthenticationFilterMock.doFilterInternal(request, response, filterChainMock);
 
     // Then
     Mockito.verify(filterChainMock).doFilter(request, response);
@@ -120,10 +120,10 @@ class JwtAuthenticationFilterTest {
 
     MockHttpServletResponse response = new MockHttpServletResponse();
 
-    Mockito.doThrow(new RuntimeException("Something gone wrong while validate accessToken")).when(authorizationService).validateToken(accessToken);
+    Mockito.doThrow(new RuntimeException("Something gone wrong while validate accessToken")).when(authorizationServiceMock).validateToken(accessToken);
 
     // When
-    jwtAuthenticationFilter.doFilterInternal(request, response, filterChainMock);
+    jwtAuthenticationFilterMock.doFilterInternal(request, response, filterChainMock);
 
     // Then
     Mockito.verify(filterChainMock).doFilter(request, response);

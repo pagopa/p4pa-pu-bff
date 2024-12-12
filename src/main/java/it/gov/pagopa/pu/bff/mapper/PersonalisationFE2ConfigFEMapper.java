@@ -14,6 +14,7 @@ public class PersonalisationFE2ConfigFEMapper {
     return ConfigFE.builder()
       .canManageUsers(null)
       .brokerId(null)
+      .logoFooterImg(personalisationFe.getLogoFooterImg())
       .footerDescText(personalisationFe.getFooterDescText())
       .footerGDPRUrl(personalisationFe.getFooterGDPRUrl())
       .footerPrivacyInfoUrl(personalisationFe.getFooterPrivacyInfoUrl())

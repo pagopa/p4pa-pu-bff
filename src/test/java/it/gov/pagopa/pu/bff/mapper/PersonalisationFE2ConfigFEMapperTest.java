@@ -27,9 +27,11 @@ class PersonalisationFE2ConfigFEMapperTest {
     personalisationFe.setFooterTermsCondUrl("Terms and Conditions URL");
     personalisationFe.setHeaderAssistanceUrl("Assistance URL");
     personalisationFe.setFooterAccessibilityUrl("Accessibility URL");
+    personalisationFe.setLogoFooterImg("img");
 
     ConfigFE configFE = mapper.mapPersonalisationFE2ConfigFE(personalisationFe);
 
+    Assertions.assertEquals("img", configFE.getLogoFooterImg());
     Assertions.assertEquals("Footer Description", configFE.getFooterDescText());
     Assertions.assertEquals("GDPR URL", configFE.getFooterGDPRUrl());
     Assertions.assertEquals("Privacy Info URL", configFE.getFooterPrivacyInfoUrl());

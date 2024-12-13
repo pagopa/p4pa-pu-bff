@@ -32,7 +32,7 @@ public class OrganizationClientImpl implements OrganizationClient {
     try {
       return brokerEntityControllerApi.getItemResourceBrokerGet(id);
     } catch (Exception e) {
-      log.info(e.getCause());
+      log.error(e.getCause());
       return null;
     }
   }

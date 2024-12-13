@@ -21,24 +21,24 @@ public class OrganizationServiceImpl implements OrganizationService {
   }
 
   @Override
-  public List<OrganizationDTO> getOrganizations(UserInfo userInfo) {
+  public List<OrganizationDTO> getOrganizations(UserInfo userInfo, String accessToken) {
     List<UserOrganizationRoles> userOrganizations = Optional.of(userInfo.getOrganizations())
       .orElse(Collections.emptyList());
 
     return userOrganizations.stream()
       .map(orgRoles -> {
         EntityModelOrganization organization =
-          organizationClient.getOrganizationByIpaCode(orgRoles.getOrganizationIpaCode());
-        return mapToOrganizationDTO(organization);
+          organizationClient.getOrganizationByIpaCode(orgRoles.getOrganizationIpaCode(), accessToken);
+        return mapToOrganizationDTO(organization, orgRoles.getRoles());
       }).toList();
   }
 
-  private OrganizationDTO mapToOrganizationDTO(EntityModelOrganization organization) {
+  private OrganizationDTO mapToOrganizationDTO(EntityModelOrganization organization, List<String> roles) {
     return OrganizationDTO.builder()
       .organizationId(organization != null ? organization.getOrganizationId() : null)
       .ipaCode(organization != null ? organization.getIpaCode() : null)
       .orgName(organization != null ? organization.getOrgName() : null)
-      .operatorRole("Operator")
+      .operatorRole(roles.get(0))
       .build();
   }
 

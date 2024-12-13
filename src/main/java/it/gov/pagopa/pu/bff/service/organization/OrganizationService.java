@@ -7,6 +7,6 @@ import java.util.List;
 
 public interface OrganizationService {
 
-  List<OrganizationDTO> getOrganizations(UserInfo userInfo);
+  List<OrganizationDTO> getOrganizations(UserInfo userInfo, String accessToken);
 
 }

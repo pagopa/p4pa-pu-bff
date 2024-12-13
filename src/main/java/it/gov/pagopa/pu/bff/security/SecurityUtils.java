@@ -18,8 +18,8 @@ public class SecurityUtils {
     var authentication = SecurityContextHolder.getContext().getAuthentication();
     if (authentication != null) {
       Object principal = authentication.getPrincipal();
-      if (principal instanceof UserInfo) {
-        return (UserInfo) principal;
+      if (principal instanceof UserInfo userInfo) {
+        return userInfo;
       }
     }
     return null;
@@ -39,11 +39,8 @@ public class SecurityUtils {
     return Collections.emptySet();
   }
 
-  /**
-   * It will return true if the user's session has ROLE_ADMIN role on requested organization IPA code retrieving it from ThreadLocal
-   */
-  public static boolean isLoggedUserAdmin(String organizationIpaCode) {
-    return getLoggedUserRoles(organizationIpaCode).contains("ROLE_ADMIN");
+  public static String getAccessToken(){
+    return SecurityContextHolder.getContext().getAuthentication().getCredentials().toString();
   }
 
 }

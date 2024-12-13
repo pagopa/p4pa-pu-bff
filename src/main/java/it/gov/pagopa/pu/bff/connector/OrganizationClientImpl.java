@@ -42,8 +42,8 @@ public class OrganizationClientImpl implements OrganizationClient {
     organizationSearchControllerApi = new OrganizationSearchControllerApi(apiClient);
   }
 
-
-  public EntityModelOrganization getOrganizationByIpaCode(String ipaCode){
+  @Override
+  public EntityModelOrganization getOrganizationByIpaCode(String ipaCode, String accessToken) {
     try {
       return organizationSearchControllerApi.executeSearchOrganizationGet(ipaCode);
     } catch (Exception e) {

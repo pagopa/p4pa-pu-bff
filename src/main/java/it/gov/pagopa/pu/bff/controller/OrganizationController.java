@@ -1,16 +1,18 @@
 package it.gov.pagopa.pu.bff.controller;
 
+import it.gov.pagopa.pu.bff.controller.generated.OrganizationsApi;
 import it.gov.pagopa.pu.bff.dto.generated.OrganizationDTO;
 import it.gov.pagopa.pu.bff.security.SecurityUtils;
 import it.gov.pagopa.pu.bff.service.organization.OrganizationServiceImpl;
-import it.gov.pagopa.pu.p4paauth.model.generated.UserInfo;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Objects;
 
 @RestController
-public class OrganizationController {
+public class OrganizationController implements OrganizationsApi {
 
   private final OrganizationServiceImpl organizationService;
 
@@ -18,13 +20,9 @@ public class OrganizationController {
     this.organizationService = organizationService;
   }
 
-  @GetMapping(path = "getOrganizations")
-  public List<OrganizationDTO> organizations() {
-    UserInfo userInfo = SecurityUtils.getLoggedUser();
-    if (userInfo == null) {
-      return List.of();
-    }
-    return organizationService.getOrganizations(userInfo);
+  @Override
+  public ResponseEntity<List<OrganizationDTO>> getOrganizations() {
+    return new ResponseEntity<>(organizationService.getOrganizations(Objects.requireNonNull(SecurityUtils.getLoggedUser()), SecurityUtils.getAccessToken()), HttpStatus.OK);
   }
 
 }

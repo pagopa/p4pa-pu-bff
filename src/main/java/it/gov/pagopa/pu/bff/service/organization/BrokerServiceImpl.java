@@ -6,7 +6,6 @@ import it.gov.pagopa.pu.bff.dto.generated.ConfigFE;
 import it.gov.pagopa.pu.bff.mapper.PersonalisationFE2ConfigFEMapper;
 import it.gov.pagopa.pu.p4pa_organization.dto.generated.EntityModelBroker;
 import it.gov.pagopa.pu.p4pa_organization.dto.generated.EntityModelOrganization;
-import it.gov.pagopa.pu.p4pa_organization.dto.generated.PersonalisationFe;
 import it.gov.pagopa.pu.p4paauth.model.generated.UserInfo;
 import it.gov.pagopa.pu.p4paauth.model.generated.UserOrganizationRoles;
 import java.util.Optional;
@@ -22,12 +21,15 @@ public class BrokerServiceImpl implements BrokerService{
 
   private DefaultConfigFe defaultConfigFe;
 
+  private final ConfigFE defaultFEConfig;
+
   public BrokerServiceImpl(OrganizationClientImpl organizationClient,
       DefaultConfigFe defaultConfigFe,
       PersonalisationFE2ConfigFEMapper personalisationFE2ConfigFEMapper){
     this.organizationClient = organizationClient;
     this.defaultConfigFe = defaultConfigFe;
     this.personalisationFE2ConfigFEMapper = personalisationFE2ConfigFEMapper;
+    this.defaultFEConfig = getFEConfiguration(null);
   }
 
   @Override
@@ -42,18 +44,17 @@ public class BrokerServiceImpl implements BrokerService{
     if ( StringUtils.isNotBlank(orgIpaCode)) {
       EntityModelOrganization organization = organizationClient.getOrganizationByIpaCode(orgIpaCode,accessToken);
       if(organization!=null && organization.getBrokerId()!=null ){
-        EntityModelBroker broker = organizationClient.getBrokerById(organization.getBrokerId(),accessToken);
-        return personalisationFE2ConfigFEMapper.mapPersonalisationFE2ConfigFE(getFEConfiguration(broker));
+        return getFEConfiguration(organizationClient.getBrokerById(organization.getBrokerId(),accessToken));
       }
     }
-    return personalisationFE2ConfigFEMapper.mapPersonalisationFE2ConfigFE(getFEConfiguration(null));
+    return this.defaultFEConfig;
   }
 
-  public PersonalisationFe getFEConfiguration(EntityModelBroker broker) {
+  public ConfigFE getFEConfiguration(EntityModelBroker broker) {
     if (broker != null ) {
-      return broker.getPersonalisationFe();
+      return personalisationFE2ConfigFEMapper.mapPersonalisationFE2ConfigFE(broker.getPersonalisationFe());
     } else {
-      return this.defaultConfigFe;
+      return personalisationFE2ConfigFEMapper.mapPersonalisationFE2ConfigFE(this.defaultConfigFe);
     }
   }
 

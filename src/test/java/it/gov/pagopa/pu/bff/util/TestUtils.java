@@ -46,6 +46,10 @@ public class TestUtils {
   }
 
   public static UserInfo getSampleUser(){
+    return getSampleUser(true);
+  }
+
+  public static UserInfo getSampleUser(Boolean organizationAccess){
     List<UserOrganizationRoles> organizations = List.of(
       new UserOrganizationRoles()
         .operatorId("operator1")
@@ -63,9 +67,8 @@ public class TestUtils {
       .familyName("FAMILYNAME")
       .name("NAME")
       .issuer("ISSUER")
-      .organizationAccess("ORG")
+      .organizationAccess(organizationAccess?"ORG":null)
       .organizations(organizations);
   }
-
 
 }

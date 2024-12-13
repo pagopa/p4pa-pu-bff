@@ -21,7 +21,7 @@ public class OrganizationController implements BrokersApi {
 
   @Override
   public ResponseEntity<ConfigFE> getBrokerConfig () {
-    log.info("User: {} requested getBrokerConfig()",SecurityUtils.getLoggedUser().getMappedExternalUserId());
+    log.info("User requested getBrokerConfig()");
     return new ResponseEntity<>(service.getBrokerConfig(SecurityUtils.getLoggedUser(),SecurityUtils.getAccessToken()), HttpStatus.OK);
   }
 

@@ -23,6 +23,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.test.util.ReflectionTestUtils;
 
 @ExtendWith(MockitoExtension.class)
 class BrokerServiceImplTest {
@@ -35,7 +36,6 @@ class BrokerServiceImplTest {
 
   @Mock
   private PersonalisationFE2ConfigFEMapper personalisationFE2ConfigFEMapperMock;
-
   private BrokerServiceImpl brokerService;
 
   private UserInfo userInfo;
@@ -45,6 +45,8 @@ class BrokerServiceImplTest {
   private PersonalisationFe personalisationFe;
 
   private final String accessToken = "TOKEN";
+
+  private ConfigFE defaultFEConfig;
 
   @BeforeEach
   void setUp() {
@@ -60,6 +62,8 @@ class BrokerServiceImplTest {
     entityModelBroker = new EntityModelBroker();
     personalisationFe = new PersonalisationFe();
     entityModelBroker.setPersonalisationFe(personalisationFe);
+
+    defaultFEConfig = new ConfigFE();
 
     // Mock SecurityUtils.getLoggedUser() to return userInfo
     Collection<? extends GrantedAuthority> authorities = null;
@@ -89,10 +93,10 @@ class BrokerServiceImplTest {
   @Test
   void givenGetBrokerConfigWhenNoOrganizationThenOkDefault() {
     ConfigFE configFE = new ConfigFE();
-    Mockito.when(personalisationFE2ConfigFEMapperMock.mapPersonalisationFE2ConfigFE(defaultConfigFeMock)).thenReturn(configFE);
+    ReflectionTestUtils.setField(brokerService, "defaultFEConfig", configFE);
 
-    ConfigFE result = brokerService.getBrokerConfig(new UserInfo(),accessToken);
-    assertEquals(configFE, result);
+    ConfigFE result = brokerService.getBrokerConfig(TestUtils.getSampleUser(false),accessToken);
+    assertEquals(defaultFEConfig, result);
   }
 
   @Test

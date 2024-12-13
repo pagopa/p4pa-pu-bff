@@ -34,7 +34,7 @@ class AuthClientImplTest {
   private AuthClientImpl authClientMock;
 
   @Mock
-  RestTemplate restTemplateMock;
+  private RestTemplate restTemplateMock;
 
   private String baseUrl = "http://example.com"; // Set a default value for testing
 

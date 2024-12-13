@@ -1,6 +1,7 @@
 package it.gov.pagopa.pu.bff.mapper;
 
 import it.gov.pagopa.pu.bff.dto.generated.ConfigFE;
+import it.gov.pagopa.pu.bff.util.TestUtils;
 import it.gov.pagopa.pu.p4pa_organization.dto.generated.PersonalisationFe;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -38,8 +39,7 @@ class PersonalisationFE2ConfigFEMapperTest {
     Assertions.assertEquals("Terms and Conditions URL", configFE.getFooterTermsCondUrl());
     Assertions.assertEquals("Assistance URL", configFE.getHeaderAssistanceUrl());
     Assertions.assertEquals("Accessibility URL", configFE.getFooterAccessibilityUrl());
-    Assertions.assertNull(configFE.getCanManageUsers());
-    Assertions.assertNull(configFE.getBrokerId());
+    TestUtils.checkNotNullFields(configFE,"canManageUsers","brokerId");
   }
 
   @Test

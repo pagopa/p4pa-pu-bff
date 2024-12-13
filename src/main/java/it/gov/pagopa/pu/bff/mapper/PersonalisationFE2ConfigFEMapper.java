@@ -12,6 +12,7 @@ public class PersonalisationFE2ConfigFEMapper {
       return null;
     }
     return ConfigFE.builder()
+      // TODO add canManageUsers and BrokerId for UserInfo
       .canManageUsers(null)
       .brokerId(null)
       .logoFooterImg(personalisationFe.getLogoFooterImg())

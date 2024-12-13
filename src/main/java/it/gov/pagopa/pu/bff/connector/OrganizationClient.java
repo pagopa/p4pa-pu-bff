@@ -6,7 +6,7 @@ import it.gov.pagopa.pu.p4pa_organization.dto.generated.EntityModelOrganization;
 
 public interface OrganizationClient {
 
-  EntityModelBroker getBrokerById(String id);
+  EntityModelBroker getBrokerById(Long id);
 
   EntityModelOrganization getOrganizationByIpaCode(String ipaCode);
 

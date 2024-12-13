@@ -60,7 +60,7 @@ class OrganizationClientImplTest {
     ResponseEntity<EntityModelBroker> responseEntity = new ResponseEntity<>(entityModelBroker,HttpStatus.OK);
     Mockito.when(restTemplateMock.exchange(any(RequestEntity.class), any(ParameterizedTypeReference.class))).thenReturn(responseEntity);
 
-    EntityModelBroker entityModelBroker1 = organizationClientMock.getBrokerById("0");
+    EntityModelBroker entityModelBroker1 = organizationClientMock.getBrokerById(0L);
     assertEquals(entityModelBroker, entityModelBroker1);
   }
 
@@ -72,7 +72,7 @@ class OrganizationClientImplTest {
     ResponseEntity<EntityModelBroker> responseEntity = new ResponseEntity<>(entityModelBroker,HttpStatus.NOT_FOUND);
     Mockito.when(restTemplateMock.exchange(any(RequestEntity.class), any(ParameterizedTypeReference.class))).thenReturn(responseEntity);
 
-    EntityModelBroker entityModelBroker1 = organizationClientMock.getBrokerById("0");
+    EntityModelBroker entityModelBroker1 = organizationClientMock.getBrokerById(0L);
     Assertions.assertNull(entityModelBroker1);
   }
   @Test

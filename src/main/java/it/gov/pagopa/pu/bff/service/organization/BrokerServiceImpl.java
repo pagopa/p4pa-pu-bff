@@ -4,7 +4,6 @@ import it.gov.pagopa.pu.bff.config.DefaultConfigFe;
 import it.gov.pagopa.pu.bff.connector.OrganizationClientImpl;
 import it.gov.pagopa.pu.bff.dto.generated.ConfigFE;
 import it.gov.pagopa.pu.bff.mapper.PersonalisationFE2ConfigFEMapper;
-import it.gov.pagopa.pu.bff.security.SecurityUtils;
 import it.gov.pagopa.pu.p4pa_organization.dto.generated.EntityModelBroker;
 import it.gov.pagopa.pu.p4pa_organization.dto.generated.EntityModelOrganization;
 import it.gov.pagopa.pu.p4pa_organization.dto.generated.PersonalisationFe;
@@ -32,8 +31,7 @@ public class BrokerServiceImpl implements BrokerService{
   }
 
   @Override
-  public ConfigFE getBrokerConfig(){
-    UserInfo user = SecurityUtils.getLoggedUser();
+  public ConfigFE getBrokerConfig(UserInfo user){
     UserOrganizationRoles orgRoles = Optional.ofNullable(user.getOrganizations())
       .flatMap(orgs -> orgs.stream().findFirst())
       .orElse(null);
@@ -45,7 +43,7 @@ public class BrokerServiceImpl implements BrokerService{
       organization = organizationClient.getOrganizationByIpaCode(orgRoles.getOrganizationIpaCode());
     }
     if(organization!=null && organization.getBrokerId()!=null ){
-      broker = organizationClient.getBrokerById(String.valueOf(organization.getBrokerId()));
+      broker = organizationClient.getBrokerById(organization.getBrokerId());
     }
     PersonalisationFe personalisationFe = getFEConfiguration(broker);
     return personalisationFE2ConfigFEMapper.mapPersonalisationFE2ConfigFE(personalisationFe);

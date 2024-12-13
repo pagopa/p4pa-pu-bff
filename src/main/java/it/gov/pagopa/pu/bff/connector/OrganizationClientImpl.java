@@ -28,9 +28,9 @@ public class OrganizationClientImpl implements OrganizationClient {
     organizationSearchControllerApi = new OrganizationSearchControllerApi(apiClient);
   }
 
-  public EntityModelBroker getBrokerById(String id) {
+  public EntityModelBroker getBrokerById(Long id) {
     try {
-      return brokerEntityControllerApi.getItemResourceBrokerGet(id);
+      return brokerEntityControllerApi.getItemResourceBrokerGet(String.valueOf(id));
     } catch (Exception e) {
       log.error(e.getCause());
       return null;

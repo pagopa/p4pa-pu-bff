@@ -8,6 +8,7 @@ import it.gov.pagopa.pu.bff.controller.generated.BrokersApi;
 import it.gov.pagopa.pu.bff.dto.generated.ConfigFE;
 import it.gov.pagopa.pu.bff.security.JwtAuthenticationFilter;
 import it.gov.pagopa.pu.bff.service.organization.BrokerServiceImpl;
+import it.gov.pagopa.pu.bff.util.TestUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -44,7 +45,9 @@ class OraganizationControllerTest {
 
   @Test
   void testGetBrokerConf() throws Exception {
-    Mockito.when(serviceMock.getBrokerConfig()).thenReturn(configFE);
+
+    TestUtils.addSampleUserIntoSecurityContext();
+    Mockito.when(serviceMock.getBrokerConfig(TestUtils.getSampleUser())).thenReturn(configFE);
     MvcResult result = mockMvc.perform(get("/bff/brokers/config"))
       .andExpect(status().isOk())
       .andReturn();

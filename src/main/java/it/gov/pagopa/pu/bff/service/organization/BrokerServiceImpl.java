@@ -31,10 +31,12 @@ public class BrokerServiceImpl implements BrokerService{
 
   @Override
   public ConfigFE getBrokerConfig(UserInfo user, String accessToken){
-    UserOrganizationRoles orgRoles = user.getOrganizations().stream()
-      .filter(org -> StringUtils.isNotBlank(org.getOrganizationIpaCode()))
+    String orgIpaCode = Optional.ofNullable(user.getOrganizationAccess())
+    .orElseGet(() -> user.getOrganizations().stream()
       .findFirst()
-      .orElse(null);
+      .map(UserOrganizationRoles::getOrganizationIpaCode)
+      .orElse(null)
+      );
 
     EntityModelOrganization organization = null;
     EntityModelBroker broker = null;

@@ -12,7 +12,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -38,8 +37,7 @@ class OrganizationClientImplTest {
   @Mock
   private OrganizationSearchControllerApi organizationSearchControllerApiMock;
 
-  @InjectMocks
-  private OrganizationClientImpl organizationClientMock;
+  private OrganizationClientImpl organizationClient;
 
   private final String accessToken = "TOKEN";
 
@@ -52,7 +50,7 @@ class OrganizationClientImplTest {
     apiClient.setBasePath(BASE_URL);
     brokerEntityControllerApiMock = new BrokerEntityControllerApi(apiClient);
     organizationSearchControllerApiMock = new OrganizationSearchControllerApi(apiClient);
-    organizationClientMock = new OrganizationClientImpl(restTemplateBuilderMock,BASE_URL);
+    organizationClient = new OrganizationClientImpl(restTemplateBuilderMock,BASE_URL);
   }
   @Test
   void givenGetBrokerByIdWhenValidIdThenOK(){
@@ -62,7 +60,7 @@ class OrganizationClientImplTest {
     ResponseEntity<EntityModelBroker> responseEntity = new ResponseEntity<>(entityModelBroker,HttpStatus.OK);
     Mockito.when(restTemplateMock.exchange(any(RequestEntity.class), any(ParameterizedTypeReference.class))).thenReturn(responseEntity);
 
-    EntityModelBroker entityModelBroker1 = organizationClientMock.getBrokerById(0L,accessToken);
+    EntityModelBroker entityModelBroker1 = organizationClient.getBrokerById(0L,accessToken);
     assertEquals(entityModelBroker, entityModelBroker1);
   }
 
@@ -74,7 +72,7 @@ class OrganizationClientImplTest {
     ResponseEntity<EntityModelBroker> responseEntity = new ResponseEntity<>(entityModelBroker,HttpStatus.NOT_FOUND);
     Mockito.when(restTemplateMock.exchange(any(RequestEntity.class), any(ParameterizedTypeReference.class))).thenReturn(responseEntity);
 
-    EntityModelBroker entityModelBroker1 = organizationClientMock.getBrokerById(0L,accessToken);
+    EntityModelBroker entityModelBroker1 = organizationClient.getBrokerById(0L,accessToken);
     Assertions.assertNull(entityModelBroker1);
   }
   @Test
@@ -85,7 +83,7 @@ class OrganizationClientImplTest {
     ResponseEntity<EntityModelOrganization> responseEntity = new ResponseEntity<>(entityModelOrganization,HttpStatus.OK);
     Mockito.when(restTemplateMock.exchange(any(RequestEntity.class), any(ParameterizedTypeReference.class))).thenReturn(responseEntity);
 
-    EntityModelOrganization entityModelOrganization1 = organizationClientMock.getOrganizationByIpaCode("0",accessToken);
+    EntityModelOrganization entityModelOrganization1 = organizationClient.getOrganizationByIpaCode("0",accessToken);
     assertEquals(entityModelOrganization, entityModelOrganization1);
 
   }
@@ -98,7 +96,7 @@ class OrganizationClientImplTest {
     ResponseEntity<EntityModelOrganization> responseEntity = new ResponseEntity<>(entityModelOrganization,HttpStatus.NOT_FOUND);
     Mockito.when(restTemplateMock.exchange(any(RequestEntity.class), any(ParameterizedTypeReference.class))).thenReturn(responseEntity);
 
-    EntityModelOrganization entityModelOrganization1 = organizationClientMock.getOrganizationByIpaCode("0",accessToken);
+    EntityModelOrganization entityModelOrganization1 = organizationClient.getOrganizationByIpaCode("0",accessToken);
     Assertions.assertNull(entityModelOrganization1);
   }
 

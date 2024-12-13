@@ -17,7 +17,6 @@ import java.util.Collections;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -37,8 +36,7 @@ class BrokerServiceImplTest {
   @Mock
   private PersonalisationFE2ConfigFEMapper personalisationFE2ConfigFEMapperMock;
 
-  @InjectMocks
-  private BrokerServiceImpl brokerServiceMock;
+  private BrokerServiceImpl brokerService;
 
   private UserInfo userInfo;
   private UserOrganizationRoles userOrganizationRoles;
@@ -67,6 +65,7 @@ class BrokerServiceImplTest {
     Collection<? extends GrantedAuthority> authorities = null;
     UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userInfo, null, authorities);
     SecurityContextHolder.getContext().setAuthentication(authToken);
+    brokerService = new BrokerServiceImpl(organizationClientMock,defaultConfigFeMock,personalisationFE2ConfigFEMapperMock);
   }
 
   @Test
@@ -77,7 +76,7 @@ class BrokerServiceImplTest {
     Mockito.when(organizationClientMock.getBrokerById(1L,accessToken)).thenReturn(entityModelBroker);
     Mockito.when(personalisationFE2ConfigFEMapperMock.mapPersonalisationFE2ConfigFE(personalisationFe)).thenReturn(configFE);
 
-    ConfigFE result = brokerServiceMock.getBrokerConfig(TestUtils.getSampleUser(),accessToken);
+    ConfigFE result = brokerService.getBrokerConfig(TestUtils.getSampleUser(),accessToken);
 
     assertEquals(personalisationFe.getFooterAccessibilityUrl(), result.getFooterAccessibilityUrl());
     assertEquals(personalisationFe.getFooterGDPRUrl(),result.getFooterGDPRUrl());
@@ -92,7 +91,7 @@ class BrokerServiceImplTest {
     ConfigFE configFE = new ConfigFE();
     Mockito.when(personalisationFE2ConfigFEMapperMock.mapPersonalisationFE2ConfigFE(defaultConfigFeMock)).thenReturn(configFE);
 
-    ConfigFE result = brokerServiceMock.getBrokerConfig(new UserInfo(),accessToken);
+    ConfigFE result = brokerService.getBrokerConfig(new UserInfo(),accessToken);
     assertEquals(configFE, result);
   }
 
@@ -104,7 +103,7 @@ class BrokerServiceImplTest {
     Mockito.when(organizationClientMock.getBrokerById(1L,accessToken)).thenReturn(null);
     Mockito.when(personalisationFE2ConfigFEMapperMock.mapPersonalisationFE2ConfigFE(defaultConfigFeMock)).thenReturn(defaultConf);
 
-    ConfigFE result = brokerServiceMock.getBrokerConfig(TestUtils.getSampleUser(),accessToken);
+    ConfigFE result = brokerService.getBrokerConfig(TestUtils.getSampleUser(),accessToken);
     assertEquals(defaultConf, result);
   }
 

@@ -12,7 +12,7 @@ public class PersonalisationFE2ConfigFEMapper {
       return null;
     }
     return ConfigFE.builder()
-      // TODO add canManageUsers and BrokerId for UserInfo
+      // TODO add canManageUsers and BrokerId for UserInfo https://pagopa.atlassian.net/browse/P4ADEV-1753
       .canManageUsers(null)
       .brokerId(null)
       .logoFooterImg(personalisationFe.getLogoFooterImg())

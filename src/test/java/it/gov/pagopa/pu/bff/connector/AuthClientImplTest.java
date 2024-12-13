@@ -9,7 +9,6 @@ import it.gov.pagopa.pu.p4paauth.model.generated.UserInfo;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -30,8 +29,7 @@ class AuthClientImplTest {
   @Mock
   private AuthnApi authApiMock;
 
-  @InjectMocks
-  private AuthClientImpl authClientMock;
+  private AuthClientImpl authClient;
 
   @Mock
   private RestTemplate restTemplateMock;
@@ -40,12 +38,11 @@ class AuthClientImplTest {
 
   @BeforeEach
   void setUp() {
-    restTemplateMock = Mockito.mock(RestTemplate.class);
     Mockito.when(restTemplateBuilderMock.build()).thenReturn(restTemplateMock);
     Mockito.when(restTemplateMock.getUriTemplateHandler()).thenReturn(new DefaultUriBuilderFactory());
     ApiClient apiClient = new ApiClient(restTemplateMock);
     apiClient.setBasePath(baseUrl);
-    authClientMock = new AuthClientImpl(restTemplateBuilderMock, baseUrl);
+    authClient = new AuthClientImpl(restTemplateBuilderMock, baseUrl);
   }
 
   @Test
@@ -56,7 +53,7 @@ class AuthClientImplTest {
 
     Mockito.when(restTemplateMock.exchange(any(RequestEntity.class), any(ParameterizedTypeReference.class))).thenReturn(responseEntity);
 
-    UserInfo actualUserInfo = authClientMock.validateToken(accessToken);
+    UserInfo actualUserInfo = authClient.validateToken(accessToken);
 
     assertEquals(expectedUserInfo, actualUserInfo);
   }

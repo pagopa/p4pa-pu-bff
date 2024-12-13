@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.util.Collection;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.MDC;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
@@ -47,9 +48,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             .map(SimpleGrantedAuthority::new)
             .toList();
         }
-        UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userInfo, null, authorities);
+        UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userInfo, token, authorities);
         authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
         SecurityContextHolder.getContext().setAuthentication(authToken);
+        MDC.put("externalUserId", userInfo.getMappedExternalUserId());
       }
     } catch (InvalidAccessTokenException e){
       log.info("An invalid accessToken has been provided: " + e.getMessage());

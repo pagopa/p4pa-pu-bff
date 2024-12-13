@@ -9,7 +9,6 @@ import it.gov.pagopa.pu.p4paauth.model.generated.UserInfo;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -25,27 +24,25 @@ import org.springframework.web.util.DefaultUriBuilderFactory;
 class AuthClientImplTest {
 
   @Mock
-  private RestTemplateBuilder restTemplateBuilder;
+  private RestTemplateBuilder restTemplateBuilderMock;
 
   @Mock
-  private AuthnApi authApi;
+  private AuthnApi authApiMock;
 
-  @InjectMocks
   private AuthClientImpl authClient;
 
   @Mock
-  RestTemplate restTemplate;
+  private RestTemplate restTemplateMock;
 
   private String baseUrl = "http://example.com"; // Set a default value for testing
 
   @BeforeEach
   void setUp() {
-    restTemplate = Mockito.mock(RestTemplate.class);
-    Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate);
-    Mockito.when(restTemplate.getUriTemplateHandler()).thenReturn(new DefaultUriBuilderFactory());
-    ApiClient apiClient = new ApiClient(restTemplate);
+    Mockito.when(restTemplateBuilderMock.build()).thenReturn(restTemplateMock);
+    Mockito.when(restTemplateMock.getUriTemplateHandler()).thenReturn(new DefaultUriBuilderFactory());
+    ApiClient apiClient = new ApiClient(restTemplateMock);
     apiClient.setBasePath(baseUrl);
-    authClient = new AuthClientImpl(restTemplateBuilder, baseUrl);
+    authClient = new AuthClientImpl(restTemplateBuilderMock, baseUrl);
   }
 
   @Test
@@ -54,7 +51,7 @@ class AuthClientImplTest {
     UserInfo expectedUserInfo = new UserInfo();
     ResponseEntity<UserInfo> responseEntity = new ResponseEntity<>(expectedUserInfo,HttpStatus.OK);
 
-    Mockito.when(restTemplate.exchange(any(RequestEntity.class), any(ParameterizedTypeReference.class))).thenReturn(responseEntity);
+    Mockito.when(restTemplateMock.exchange(any(RequestEntity.class), any(ParameterizedTypeReference.class))).thenReturn(responseEntity);
 
     UserInfo actualUserInfo = authClient.validateToken(accessToken);
 

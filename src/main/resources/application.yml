@@ -16,8 +16,18 @@ management:
       web:
         exposure.include: info, health
 app:
-    rest-client:
+  rest-client:
       connect.timeout.millis: "\${CONNECT_TIMEOUT_MILLIS:120000}"
       read.timeout.millis: "\${READ_TIMEOUT_MILLIS:120000}"
-    auth:
-      base-url: "\${AUTH_SERVER_BASE_URL:https://auth-server/api}"
+  auth:
+    base-url: "\${AUTH_SERVER_BASE_URL:}"
+  organization:
+    base-url: "\${ORGANIZATION_BASE_URL:}"
+  default-config-fe:
+    headerAssistanceUrl: "\${BROKER_FE_DEFAULT_CONFIG_HEADER_ASSISTANCE_URL:DEFAULT}"
+    logoFooterImg: "\${BROKER_FE_DEFAULT_CONFIG_LOGO_FOOTER_IMG:DEFAULT}"
+    footerDescText: "\${BROKER_FE_DEFAULT_CONFIG_FOOTER_DESC_TEXT:PagoPA S.p.A - Società per azioni con socio unico - capitale sociale di euro 1,000,000 interamente versato - sede legale in Roma, Piazza Colonna 370, CAP 00187 - N. di iscrizione a Registro Imprese di Roma, CF e P.IVA 15376371009}"
+    footerPrivacyInfoUrl: "\${BROKER_FE_DEFAULT_CONFIG_FOOTER_PRIVACY_INFO_URL:https://www.pagopa.it/it/privacy-policy}"
+    footerGDPRUrl: "\${BROKER_FE_DEFAULT_CONFIG_GDPR_URL:https://www.pagopa.it/it/informativa-sul-trattamento-dei-dati-personali}"
+    footerTermsCondUrl: "\${BROKER_FE_DEFAULT_CONFIG_FOOTER_TERMS_COND_URL:https://www.pagopa.it/it/termini-e-condizioni-di-utilizzo-del-sito}"
+    footerAccessibilityUrl: "\${BROKER_FE_DEFAULT_CONFIG_FOOTER_ACCESSIBILITY_URL:https://form.agid.gov.it/view/c299ac76-6d08-4c34-9957-00519dde4ea9}"

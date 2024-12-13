@@ -9,6 +9,7 @@ import it.gov.pagopa.pu.p4pa_organization.dto.generated.EntityModelOrganization;
 import it.gov.pagopa.pu.p4pa_organization.dto.generated.PersonalisationFe;
 import it.gov.pagopa.pu.p4paauth.model.generated.UserInfo;
 import it.gov.pagopa.pu.p4paauth.model.generated.UserOrganizationRoles;
+import java.util.Optional;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
@@ -38,18 +39,14 @@ public class BrokerServiceImpl implements BrokerService{
       .orElse(null)
       );
 
-    EntityModelOrganization organization = null;
-    EntityModelBroker broker = null;
-
-    if (orgRoles != null && StringUtils.isNotBlank(orgRoles.getOrganizationIpaCode())) {
-      organization = organizationClient.getOrganizationByIpaCode(orgRoles.getOrganizationIpaCode(),accessToken);
+    if ( StringUtils.isNotBlank(orgIpaCode)) {
+      EntityModelOrganization organization = organizationClient.getOrganizationByIpaCode(orgIpaCode,accessToken);
       if(organization!=null && organization.getBrokerId()!=null ){
-        broker = organizationClient.getBrokerById(organization.getBrokerId(),accessToken);
+        EntityModelBroker broker = organizationClient.getBrokerById(organization.getBrokerId(),accessToken);
+        return personalisationFE2ConfigFEMapper.mapPersonalisationFE2ConfigFE(getFEConfiguration(broker));
       }
     }
-
-    PersonalisationFe personalisationFe = getFEConfiguration(broker);
-    return personalisationFE2ConfigFEMapper.mapPersonalisationFE2ConfigFE(personalisationFe);
+    return personalisationFE2ConfigFEMapper.mapPersonalisationFE2ConfigFE(getFEConfiguration(null));
   }
 
   public PersonalisationFe getFEConfiguration(EntityModelBroker broker) {

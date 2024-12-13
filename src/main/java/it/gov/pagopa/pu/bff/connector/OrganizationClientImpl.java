@@ -41,7 +41,7 @@ public class OrganizationClientImpl implements OrganizationClient {
     try {
       return organizationSearchControllerApi.executeSearchOrganizationGet(ipaCode);
     } catch (Exception e) {
-      log.info(e.getCause());
+      log.error(e.getCause());
       return null;
     }
   }

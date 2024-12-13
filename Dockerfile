@@ -109,6 +109,8 @@ RUN gradle openApiGenerateBFF dependencies --no-daemon
 
 RUN gradle openApiGenerateP4PAAUTH dependencies --no-daemon
 
+RUN gradle openApiGenerateOrganization dependencies --no-daemon
+
 #
 # 🏗️ Build Stage
 #

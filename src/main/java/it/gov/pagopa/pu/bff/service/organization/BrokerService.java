@@ -5,6 +5,6 @@ import it.gov.pagopa.pu.p4paauth.model.generated.UserInfo;
 
 public interface BrokerService {
 
-  ConfigFE getBrokerConfig(UserInfo user);
+  ConfigFE getBrokerConfig(UserInfo user, String accessToken);
 
 }

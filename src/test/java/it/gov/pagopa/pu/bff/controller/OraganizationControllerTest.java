@@ -47,7 +47,7 @@ class OraganizationControllerTest {
   void testGetBrokerConf() throws Exception {
 
     TestUtils.addSampleUserIntoSecurityContext();
-    Mockito.when(serviceMock.getBrokerConfig(TestUtils.getSampleUser())).thenReturn(configFE);
+    Mockito.when(serviceMock.getBrokerConfig(TestUtils.getSampleUser(),"token")).thenReturn(configFE);
     MvcResult result = mockMvc.perform(get("/bff/brokers/config"))
       .andExpect(status().isOk())
       .andReturn();

@@ -41,6 +41,8 @@ class OrganizationClientImplTest {
   @InjectMocks
   private OrganizationClientImpl organizationClientMock;
 
+  private final String accessToken = "TOKEN";
+
   private static final String BASE_URL = "http://test-url.com";
   @BeforeEach
   void setUp() {
@@ -60,7 +62,7 @@ class OrganizationClientImplTest {
     ResponseEntity<EntityModelBroker> responseEntity = new ResponseEntity<>(entityModelBroker,HttpStatus.OK);
     Mockito.when(restTemplateMock.exchange(any(RequestEntity.class), any(ParameterizedTypeReference.class))).thenReturn(responseEntity);
 
-    EntityModelBroker entityModelBroker1 = organizationClientMock.getBrokerById(0L);
+    EntityModelBroker entityModelBroker1 = organizationClientMock.getBrokerById(0L,accessToken);
     assertEquals(entityModelBroker, entityModelBroker1);
   }
 
@@ -72,7 +74,7 @@ class OrganizationClientImplTest {
     ResponseEntity<EntityModelBroker> responseEntity = new ResponseEntity<>(entityModelBroker,HttpStatus.NOT_FOUND);
     Mockito.when(restTemplateMock.exchange(any(RequestEntity.class), any(ParameterizedTypeReference.class))).thenReturn(responseEntity);
 
-    EntityModelBroker entityModelBroker1 = organizationClientMock.getBrokerById(0L);
+    EntityModelBroker entityModelBroker1 = organizationClientMock.getBrokerById(0L,accessToken);
     Assertions.assertNull(entityModelBroker1);
   }
   @Test
@@ -83,7 +85,7 @@ class OrganizationClientImplTest {
     ResponseEntity<EntityModelOrganization> responseEntity = new ResponseEntity<>(entityModelOrganization,HttpStatus.OK);
     Mockito.when(restTemplateMock.exchange(any(RequestEntity.class), any(ParameterizedTypeReference.class))).thenReturn(responseEntity);
 
-    EntityModelOrganization entityModelOrganization1 = organizationClientMock.getOrganizationByIpaCode("0");
+    EntityModelOrganization entityModelOrganization1 = organizationClientMock.getOrganizationByIpaCode("0",accessToken);
     assertEquals(entityModelOrganization, entityModelOrganization1);
 
   }
@@ -96,7 +98,7 @@ class OrganizationClientImplTest {
     ResponseEntity<EntityModelOrganization> responseEntity = new ResponseEntity<>(entityModelOrganization,HttpStatus.NOT_FOUND);
     Mockito.when(restTemplateMock.exchange(any(RequestEntity.class), any(ParameterizedTypeReference.class))).thenReturn(responseEntity);
 
-    EntityModelOrganization entityModelOrganization1 = organizationClientMock.getOrganizationByIpaCode("0");
+    EntityModelOrganization entityModelOrganization1 = organizationClientMock.getOrganizationByIpaCode("0",accessToken);
     Assertions.assertNull(entityModelOrganization1);
   }
 

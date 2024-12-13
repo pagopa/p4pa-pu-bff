@@ -31,7 +31,7 @@ public class BrokerServiceImpl implements BrokerService{
   }
 
   @Override
-  public ConfigFE getBrokerConfig(UserInfo user){
+  public ConfigFE getBrokerConfig(UserInfo user, String accessToken){
     UserOrganizationRoles orgRoles = Optional.ofNullable(user.getOrganizations())
       .flatMap(orgs -> orgs.stream().findFirst())
       .orElse(null);
@@ -40,10 +40,10 @@ public class BrokerServiceImpl implements BrokerService{
     EntityModelBroker broker = null;
 
     if (orgRoles != null && StringUtils.isNotBlank(orgRoles.getOrganizationIpaCode())) {
-      organization = organizationClient.getOrganizationByIpaCode(orgRoles.getOrganizationIpaCode());
+      organization = organizationClient.getOrganizationByIpaCode(orgRoles.getOrganizationIpaCode(),accessToken);
     }
     if(organization!=null && organization.getBrokerId()!=null ){
-      broker = organizationClient.getBrokerById(organization.getBrokerId());
+      broker = organizationClient.getBrokerById(organization.getBrokerId(),accessToken);
     }
     PersonalisationFe personalisationFe = getFEConfiguration(broker);
     return personalisationFE2ConfigFEMapper.mapPersonalisationFE2ConfigFE(personalisationFe);

@@ -28,7 +28,7 @@ public class OrganizationClientImpl implements OrganizationClient {
     organizationSearchControllerApi = new OrganizationSearchControllerApi(apiClient);
   }
 
-  public EntityModelBroker getBrokerById(Long id) {
+  public EntityModelBroker getBrokerById(Long id, String accessToken) {
     try {
       return brokerEntityControllerApi.getItemResourceBrokerGet(String.valueOf(id));
     } catch (Exception e) {
@@ -37,7 +37,7 @@ public class OrganizationClientImpl implements OrganizationClient {
     }
   }
 
-  public EntityModelOrganization getOrganizationByIpaCode(String ipaCode){
+  public EntityModelOrganization getOrganizationByIpaCode(String ipaCode, String accessToken){
     try {
       return organizationSearchControllerApi.executeSearchOrganizationGet(ipaCode);
     } catch (Exception e) {

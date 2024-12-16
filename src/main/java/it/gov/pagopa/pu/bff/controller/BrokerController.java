@@ -12,11 +12,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Log4j2
 @RestController
-public class OrganizationController implements BrokersApi {
+public class BrokerController implements BrokersApi {
 
   private BrokerServiceImpl service;
 
-  public OrganizationController (BrokerServiceImpl service){
+  public BrokerController(BrokerServiceImpl service){
     this.service = service;
   }
 

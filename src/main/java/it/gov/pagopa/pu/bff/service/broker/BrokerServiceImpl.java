@@ -1,7 +1,7 @@
 package it.gov.pagopa.pu.bff.service.broker;
 
 import it.gov.pagopa.pu.bff.config.DefaultConfigFe;
-import it.gov.pagopa.pu.bff.connector.OrganizationClientImpl;
+import it.gov.pagopa.pu.bff.connector.OrganizationClient;
 import it.gov.pagopa.pu.bff.dto.generated.ConfigFE;
 import it.gov.pagopa.pu.bff.mapper.PersonalisationFE2ConfigFEMapper;
 import it.gov.pagopa.pu.p4pa_organization.dto.generated.EntityModelBroker;
@@ -16,15 +16,15 @@ import java.util.Optional;
 @Service
 public class BrokerServiceImpl implements BrokerService {
 
-  private OrganizationClientImpl organizationClient;
+  private final OrganizationClient organizationClient;
 
   private final PersonalisationFE2ConfigFEMapper personalisationFE2ConfigFEMapper;
 
-  private DefaultConfigFe defaultConfigFe;
+  private final DefaultConfigFe defaultConfigFe;
 
   private final ConfigFE defaultFEConfig;
 
-  public BrokerServiceImpl(OrganizationClientImpl organizationClient,
+  public BrokerServiceImpl(OrganizationClient organizationClient,
                            DefaultConfigFe defaultConfigFe,
                            PersonalisationFE2ConfigFEMapper personalisationFE2ConfigFEMapper) {
     this.organizationClient = organizationClient;

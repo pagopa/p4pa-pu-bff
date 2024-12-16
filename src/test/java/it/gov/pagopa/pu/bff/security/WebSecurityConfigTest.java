@@ -1,7 +1,10 @@
 package it.gov.pagopa.pu.bff.security;
 
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import it.gov.pagopa.pu.bff.controller.generated.BrokersApi;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
+import it.gov.pagopa.pu.bff.service.organization.BrokerServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -13,10 +16,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-@WebMvcTest(value = {BrokersApi.class}, includeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE,
-  classes = JwtAuthenticationFilter.class))
+@WebMvcTest(value = {BrokersApi.class},includeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE,
+  classes = JwtAuthenticationFilter.class) )
 @Import(WebSecurityConfig.class)
 class WebSecurityConfigTest {
 
@@ -25,6 +26,9 @@ class WebSecurityConfigTest {
 
   @Autowired
   private WebApplicationContext context;
+
+  @MockBean
+  private BrokerServiceImpl serviceMock;
 
   @MockBean
   private AuthorizationService authorizationServiceMock;

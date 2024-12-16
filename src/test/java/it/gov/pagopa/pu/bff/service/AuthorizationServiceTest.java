@@ -20,19 +20,19 @@ class AuthorizationServiceTest {
   private AuthorizationService authorizationService;
 
   @Mock
-  AuthClientImpl authClientImpl;
+  AuthClientImpl authClientImplMock;
 
   @BeforeEach
   void setUp(){
-    authClientImpl = mock(AuthClientImpl.class);
-    authorizationService = new AuthorizationService(authClientImpl);
+    authClientImplMock = mock(AuthClientImpl.class);
+    authorizationService = new AuthorizationService(authClientImplMock);
   }
 
   @Test
   void givenValidAccessTokenWhenValidateTokenThenOk() {
     // When
     UserInfo ui = new UserInfo();
-    Mockito.when(authClientImpl.validateToken("ACCESSTOKEN")).thenReturn(ui);
+    Mockito.when(authClientImplMock.validateToken("ACCESSTOKEN")).thenReturn(ui);
     UserInfo result = authorizationService.validateToken("ACCESSTOKEN");
 
     // Then
@@ -45,7 +45,7 @@ class AuthorizationServiceTest {
   @Test
   void givenInvalidAccessTokenWhenValidateTokenThenInvalidAccessTokenException() {
     // When
-    Mockito.when(authClientImpl.validateToken("INVALIDACCESSTOKEN")).thenThrow(new InvalidAccessTokenException("Bad Access Token provided"));
+    Mockito.when(authClientImplMock.validateToken("INVALIDACCESSTOKEN")).thenThrow(new InvalidAccessTokenException("Bad Access Token provided"));
     InvalidAccessTokenException result = Assertions.assertThrows(InvalidAccessTokenException.class,
       () -> authorizationService.validateToken("INVALIDACCESSTOKEN"));
 

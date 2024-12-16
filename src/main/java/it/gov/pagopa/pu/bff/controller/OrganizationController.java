@@ -12,11 +12,11 @@ import java.util.List;
 import java.util.Objects;
 
 @RestController
-public class OrgController implements OrganizationsApi {
+public class OrganizationController implements OrganizationsApi {
 
   private final OrganizationServiceImpl organizationService;
 
-  public OrgController(OrganizationServiceImpl organizationService) {
+  public OrganizationController(OrganizationServiceImpl organizationService) {
     this.organizationService = organizationService;
   }
 

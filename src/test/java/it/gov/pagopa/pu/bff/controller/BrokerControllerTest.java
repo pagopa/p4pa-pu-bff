@@ -7,7 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import it.gov.pagopa.pu.bff.controller.generated.BrokersApi;
 import it.gov.pagopa.pu.bff.dto.generated.ConfigFE;
 import it.gov.pagopa.pu.bff.security.JwtAuthenticationFilter;
-import it.gov.pagopa.pu.bff.service.organization.BrokerServiceImpl;
+import it.gov.pagopa.pu.bff.service.broker.BrokerServiceImpl;
 import it.gov.pagopa.pu.bff.util.TestUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;

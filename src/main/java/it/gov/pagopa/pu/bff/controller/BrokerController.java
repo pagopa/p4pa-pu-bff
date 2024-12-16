@@ -3,7 +3,7 @@ package it.gov.pagopa.pu.bff.controller;
 import it.gov.pagopa.pu.bff.controller.generated.BrokersApi;
 import it.gov.pagopa.pu.bff.dto.generated.ConfigFE;
 import it.gov.pagopa.pu.bff.security.SecurityUtils;
-import it.gov.pagopa.pu.bff.service.organization.BrokerServiceImpl;
+import it.gov.pagopa.pu.bff.service.broker.BrokerServiceImpl;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

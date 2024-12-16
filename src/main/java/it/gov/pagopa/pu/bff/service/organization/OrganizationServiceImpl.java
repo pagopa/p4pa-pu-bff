@@ -1,6 +1,6 @@
 package it.gov.pagopa.pu.bff.service.organization;
 
-import it.gov.pagopa.pu.bff.connector.OrganizationClient;
+import it.gov.pagopa.pu.bff.connector.OrganizationClientImpl;
 import it.gov.pagopa.pu.bff.dto.generated.OrganizationDTO;
 import it.gov.pagopa.pu.p4pa_organization.dto.generated.EntityModelOrganization;
 import it.gov.pagopa.pu.p4paauth.model.generated.UserInfo;
@@ -14,9 +14,9 @@ import java.util.Optional;
 @Service
 public class OrganizationServiceImpl implements OrganizationService {
 
-  private final OrganizationClient organizationClient;
+  private final OrganizationClientImpl organizationClient;
 
-  public OrganizationServiceImpl(OrganizationClient organizationClient) {
+  public OrganizationServiceImpl(OrganizationClientImpl organizationClient) {
     this.organizationClient = organizationClient;
   }
 
@@ -38,7 +38,7 @@ public class OrganizationServiceImpl implements OrganizationService {
       .organizationId(organization != null ? organization.getOrganizationId() : null)
       .ipaCode(organization != null ? organization.getIpaCode() : null)
       .orgName(organization != null ? organization.getOrgName() : null)
-      .operatorRole(roles.get(0))
+      .operatorRole((roles != null && !roles.isEmpty()) ? roles.get(0) : null)
       .build();
   }
 

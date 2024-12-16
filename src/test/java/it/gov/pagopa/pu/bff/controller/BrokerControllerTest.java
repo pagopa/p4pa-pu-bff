@@ -25,7 +25,7 @@ import org.springframework.test.web.servlet.MvcResult;
 @WebMvcTest(value = BrokersApi.class,excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE,
   classes = JwtAuthenticationFilter.class))
 @AutoConfigureMockMvc(addFilters = false)
-class BrokerControllerTest {
+class OrganizationControllerTest {
   @Autowired
   private MockMvc mockMvc;
 

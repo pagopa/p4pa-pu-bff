@@ -1,28 +1,29 @@
 package it.gov.pagopa.pu.bff.controller;
 
-import it.gov.pagopa.pu.bff.controller.generated.OrganizationsApi;
-import it.gov.pagopa.pu.bff.dto.generated.OrganizationDTO;
+import it.gov.pagopa.pu.bff.controller.generated.BrokersApi;
+import it.gov.pagopa.pu.bff.dto.generated.ConfigFE;
 import it.gov.pagopa.pu.bff.security.SecurityUtils;
-import it.gov.pagopa.pu.bff.service.organization.OrganizationServiceImpl;
+
+import it.gov.pagopa.pu.bff.service.broker.BrokerServiceImpl;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-import java.util.Objects;
-
+@Log4j2
 @RestController
-public class OrganizationController implements OrganizationsApi {
+public class OrganizationController implements BrokersApi {
 
-  private final OrganizationServiceImpl organizationService;
+  private BrokerServiceImpl service;
 
-  public OrganizationController(OrganizationServiceImpl organizationService) {
-    this.organizationService = organizationService;
+  public OrganizationController (BrokerServiceImpl service){
+    this.service = service;
   }
 
   @Override
-  public ResponseEntity<List<OrganizationDTO>> getOrganizations() {
-    return new ResponseEntity<>(organizationService.getOrganizations(Objects.requireNonNull(SecurityUtils.getLoggedUser()), SecurityUtils.getAccessToken()), HttpStatus.OK);
+  public ResponseEntity<ConfigFE> getBrokerConfig () {
+    log.info("User requested getBrokerConfig()");
+    return new ResponseEntity<>(service.getBrokerConfig(SecurityUtils.getLoggedUser(),SecurityUtils.getAccessToken()), HttpStatus.OK);
   }
 
 }

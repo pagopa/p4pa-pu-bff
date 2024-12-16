@@ -29,7 +29,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(value = OrganizationsApi.class, excludeFilters = @ComponentScan.Filter(
   type = FilterType.ASSIGNABLE_TYPE, classes = JwtAuthenticationFilter.class))
 @AutoConfigureMockMvc(addFilters = false)
-class OrganizationControllerTest {
+class OrgControllerTest {
 
   @Autowired
   private MockMvc mockMvc;

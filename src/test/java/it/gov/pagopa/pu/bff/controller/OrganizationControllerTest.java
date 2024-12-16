@@ -1,6 +1,7 @@
 package it.gov.pagopa.pu.bff.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import it.gov.pagopa.pu.bff.controller.generated.OrganizationsApi;
 import it.gov.pagopa.pu.bff.dto.generated.OrganizationDTO;
 import it.gov.pagopa.pu.bff.security.JwtAuthenticationFilter;
 import it.gov.pagopa.pu.bff.service.organization.OrganizationServiceImpl;
@@ -25,7 +26,7 @@ import java.util.List;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(value = OrganizationController.class, excludeFilters = @ComponentScan.Filter(
+@WebMvcTest(value = OrganizationsApi.class, excludeFilters = @ComponentScan.Filter(
   type = FilterType.ASSIGNABLE_TYPE, classes = JwtAuthenticationFilter.class))
 @AutoConfigureMockMvc(addFilters = false)
 class OrganizationControllerTest {

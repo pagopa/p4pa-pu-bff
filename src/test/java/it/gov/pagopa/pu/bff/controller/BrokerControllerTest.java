@@ -25,7 +25,7 @@ import org.springframework.test.web.servlet.MvcResult;
 @WebMvcTest(value = BrokersApi.class,excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE,
   classes = JwtAuthenticationFilter.class))
 @AutoConfigureMockMvc(addFilters = false)
-class OraganizationControllerTest {
+class BrokerControllerTest {
   @Autowired
   private MockMvc mockMvc;
 
@@ -40,7 +40,6 @@ class OraganizationControllerTest {
   @BeforeEach
   void setUp() {
     configFE = new ConfigFE();
-    // Set up the personalisationFe object as needed
   }
 
   @Test

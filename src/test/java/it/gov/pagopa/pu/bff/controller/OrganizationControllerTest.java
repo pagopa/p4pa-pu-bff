@@ -1,65 +1,67 @@
 package it.gov.pagopa.pu.bff.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import it.gov.pagopa.pu.bff.controller.generated.OrganizationsApi;
 import it.gov.pagopa.pu.bff.dto.generated.OrganizationDTO;
-import it.gov.pagopa.pu.bff.security.JwtAuthenticationFilter;
-import it.gov.pagopa.pu.bff.service.organization.OrganizationServiceImpl;
-import it.gov.pagopa.pu.bff.util.TestUtils;
-import org.junit.jupiter.api.Assertions;
+import it.gov.pagopa.pu.bff.service.organization.OrganizationService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.FilterType;
-import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
-@WebMvcTest(value = OrganizationsApi.class, excludeFilters = @ComponentScan.Filter(
-  type = FilterType.ASSIGNABLE_TYPE, classes = JwtAuthenticationFilter.class))
-@AutoConfigureMockMvc(addFilters = false)
+@ExtendWith(MockitoExtension.class)
 class OrganizationControllerTest {
 
-  @Autowired
-  private MockMvc mockMvc;
+  @Mock
+  private OrganizationService organizationService;
 
-  @Autowired
-  private ObjectMapper objectMapper;
-
-  @MockBean
-  private OrganizationServiceImpl organizationServiceMock;
+  @InjectMocks
+  private OrganizationController organizationController;
 
   private List<OrganizationDTO> organizationDTOList;
 
   @BeforeEach
   void setUp() {
+    Authentication authentication = new UsernamePasswordAuthenticationToken("fakeUser", "fakeAccessToken");
+    SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
+    securityContext.setAuthentication(authentication);
+    SecurityContextHolder.setContext(securityContext);
+
     organizationDTOList = new ArrayList<>();
+    OrganizationDTO organizationDTO = OrganizationDTO.builder()
+      .organizationId(123L)
+      .ipaCode("IPA001")
+      .orgName("Test Organization")
+      .operatorRole("Admin")
+      .build();
+
+    organizationDTOList.add(organizationDTO);
   }
 
   @Test
-  void testGetOrganizations() throws Exception {
-    TestUtils.addSampleUserIntoSecurityContext();
+  void testGetOrganizations() {
+    when(organizationService.getOrganizations(any(), any())).thenReturn(organizationDTOList);
 
-    Mockito.when(organizationServiceMock.getOrganizations(TestUtils.getSampleUser(), "fakeAccessToken"))
-      .thenReturn(organizationDTOList);
+    ResponseEntity<List<OrganizationDTO>> response = organizationController.getOrganizations();
 
-    MvcResult result = mockMvc.perform(get("/bff/organizations")
-        .contentType(MediaType.APPLICATION_JSON))
-      .andExpect(status().isOk())
-      .andReturn();
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertEquals(1, response.getBody().size());
+    assertEquals("Test Organization", response.getBody().get(0).getOrgName());
 
-    Assertions.assertEquals(result.getResponse().getContentAsString(), objectMapper.writeValueAsString(organizationDTOList));
+    verify(organizationService, times(1)).getOrganizations(any(), any());
   }
 
 }

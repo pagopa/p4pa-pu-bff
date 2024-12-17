@@ -1,6 +1,7 @@
 package it.gov.pagopa.pu.bff.mapper;
 
 import it.gov.pagopa.pu.bff.dto.generated.OrganizationDTO;
+import it.gov.pagopa.pu.bff.util.TestUtils;
 import it.gov.pagopa.pu.p4pa_organization.dto.generated.EntityModelOrganization;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -28,10 +29,13 @@ class OrganizationDTOMapperTest {
 
     OrganizationDTO result = mapper.mapToOrganizationDTO(organization, roles);
 
+    TestUtils.checkNotNullFields(result, "orgLogo");
+
     assertEquals(123L, result.getOrganizationId());
     assertEquals("testIpaCode", result.getIpaCode());
     assertEquals("Test Organization", result.getOrgName());
     assertEquals("Admin", result.getOperatorRole());
+    assertNull(result.getOrgLogo());
   }
 
   @Test
@@ -53,10 +57,13 @@ class OrganizationDTOMapperTest {
 
     OrganizationDTO result = mapper.mapToOrganizationDTO(organization, Collections.emptyList());
 
+    TestUtils.checkNotNullFields(result, "operatorRole", "orgLogo");
+
     assertEquals(123L, result.getOrganizationId());
     assertEquals("testIpaCode", result.getIpaCode());
     assertEquals("Test Organization", result.getOrgName());
     assertNull(result.getOperatorRole());
+    assertNull(result.getOrgLogo());
   }
 
 }

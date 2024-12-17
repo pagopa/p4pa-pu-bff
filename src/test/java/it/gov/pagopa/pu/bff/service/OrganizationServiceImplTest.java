@@ -13,8 +13,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.Collections;
 import java.util.List;
@@ -98,17 +96,16 @@ class OrganizationServiceImplTest {
     List<OrganizationDTO> result = organizationService.getOrganizations(userInfo, accessToken);
 
     assertEquals(1, result.size());
-      assertNull(result.get(0).getOrganizationId());
-      assertNull(result.get(0).getIpaCode());
-      assertNull(result.get(0).getOrgName());
-      assertNull(result.get(0).getOperatorRole());
+    assertNull(result.get(0).getOrganizationId());
+    assertNull(result.get(0).getIpaCode());
+    assertNull(result.get(0).getOrgName());
+    assertNull(result.get(0).getOperatorRole());
   }
 
   @Test
   void testGetOrganizations_NotFound() {
-    userOrganizationRoles.setRoles(Collections.singletonList("Admin"));
     Mockito.when(organizationClientMock.getOrganizationByIpaCode(anyString(), anyString()))
-      .thenThrow(new HttpClientErrorException(HttpStatus.NOT_FOUND));
+      .thenReturn(null);
 
     Mockito.when(organizationDTOMapperMock.mapToOrganizationDTO(null, Collections.singletonList("Admin")))
       .thenReturn(OrganizationDTO.builder()

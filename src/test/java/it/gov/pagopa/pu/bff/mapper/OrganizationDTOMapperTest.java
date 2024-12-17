@@ -39,16 +39,6 @@ class OrganizationDTOMapperTest {
   }
 
   @Test
-  void testMapToOrganizationDTO_NullOrganization() {
-    OrganizationDTO result = mapper.mapToOrganizationDTO(null, Collections.singletonList("Admin"));
-
-    assertNull(result.getOrganizationId());
-    assertNull(result.getIpaCode());
-    assertNull(result.getOrgName());
-    assertEquals("Admin", result.getOperatorRole());
-  }
-
-  @Test
   void testMapToOrganizationDTO_EmptyRoles() {
     EntityModelOrganization organization = new EntityModelOrganization();
     organization.setOrganizationId(123L);

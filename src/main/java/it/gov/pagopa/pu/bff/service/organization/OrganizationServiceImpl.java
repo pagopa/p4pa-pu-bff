@@ -5,7 +5,9 @@ import it.gov.pagopa.pu.bff.dto.generated.OrganizationDTO;
 import it.gov.pagopa.pu.bff.mapper.OrganizationDTOMapper;
 import it.gov.pagopa.pu.p4pa_organization.dto.generated.EntityModelOrganization;
 import it.gov.pagopa.pu.p4paauth.model.generated.UserInfo;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.List;
 
@@ -25,9 +27,15 @@ public class OrganizationServiceImpl implements OrganizationService {
   public List<OrganizationDTO> getOrganizations(UserInfo userInfo, String accessToken) {
     return userInfo.getOrganizations().stream()
       .map(orgRoles -> {
-        EntityModelOrganization organization =
-          organizationClient.getOrganizationByIpaCode(orgRoles.getOrganizationIpaCode(), accessToken);
-        return organizationDTOMapper.mapToOrganizationDTO(organization, orgRoles.getRoles());
+        try {
+          EntityModelOrganization organization = organizationClient.getOrganizationByIpaCode(orgRoles.getOrganizationIpaCode(), accessToken);
+          return organizationDTOMapper.mapToOrganizationDTO(organization, orgRoles.getRoles());
+        } catch (HttpClientErrorException e) {
+          if (e.getStatusCode() == HttpStatus.NOT_FOUND) {
+            return organizationDTOMapper.mapToOrganizationDTO(null, orgRoles.getRoles());
+          }
+          throw e;
+        }
       }).toList();
   }
 

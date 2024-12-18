@@ -77,7 +77,9 @@ components:
           type: string
           description: Organization name
         operatorRole:
-          type: string
+          type: array
+          items:
+            type: string
           description: Operator role
         orgLogo:
           type: string

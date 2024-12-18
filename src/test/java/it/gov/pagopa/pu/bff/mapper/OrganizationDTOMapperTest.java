@@ -7,11 +7,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
 class OrganizationDTOMapperTest {
@@ -24,18 +24,18 @@ class OrganizationDTOMapperTest {
     organization.setOrganizationId(123L);
     organization.setIpaCode("testIpaCode");
     organization.setOrgName("Test Organization");
-
-    List<String> roles = Collections.singletonList("Admin");
+    organization.setOrgLogoDesc("base64LogoString");
+    List<String> roles = Arrays.asList("Admin", "User");
 
     OrganizationDTO result = mapper.mapToOrganizationDTO(organization, roles);
 
-    TestUtils.checkNotNullFields(result, "orgLogo");
+    TestUtils.checkNotNullFields(result);
 
     assertEquals(123L, result.getOrganizationId());
     assertEquals("testIpaCode", result.getIpaCode());
     assertEquals("Test Organization", result.getOrgName());
-    assertEquals("Admin", result.getOperatorRole());
-    assertNull(result.getOrgLogo());
+    assertEquals(roles, result.getOperatorRole());
+    assertEquals("base64LogoString", result.getOrgLogo());
   }
 
   @Test
@@ -52,7 +52,7 @@ class OrganizationDTOMapperTest {
     assertEquals(123L, result.getOrganizationId());
     assertEquals("testIpaCode", result.getIpaCode());
     assertEquals("Test Organization", result.getOrgName());
-    assertNull(result.getOperatorRole());
+    assertTrue(result.getOperatorRole().isEmpty());
     assertNull(result.getOrgLogo());
   }
 

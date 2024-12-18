@@ -14,7 +14,8 @@ public class OrganizationDTOMapper {
       .organizationId(organization.getOrganizationId())
       .ipaCode(organization.getIpaCode())
       .orgName(organization.getOrgName())
-      .operatorRole((roles != null && !roles.isEmpty()) ? roles.get(0) : null)
+      .operatorRole(roles)
+      .orgLogo(organization.getOrgLogoDesc())
       .build();
   }
 

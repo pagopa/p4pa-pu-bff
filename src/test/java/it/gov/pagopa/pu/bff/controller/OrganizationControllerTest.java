@@ -16,6 +16,7 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -45,7 +46,7 @@ class OrganizationControllerTest {
       .organizationId(123L)
       .ipaCode("IPA001")
       .orgName("Test Organization")
-      .operatorRole("Admin")
+      .operatorRole(Arrays.asList("Admin", "User"))
       .build();
 
     organizationDTOList.add(organizationDTO);

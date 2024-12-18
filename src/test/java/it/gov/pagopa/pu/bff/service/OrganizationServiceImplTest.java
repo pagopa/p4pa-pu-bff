@@ -17,8 +17,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Collections;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 
@@ -54,7 +53,7 @@ class OrganizationServiceImplTest {
       .organizationId(123L)
       .ipaCode("testIpaCode")
       .orgName("Test Organization")
-      .operatorRole("Admin")
+      .operatorRole(Collections.singletonList("Admin"))
       .build();
 
     organizationService = new OrganizationServiceImpl(organizationClientMock, organizationDTOMapperMock);
@@ -73,7 +72,7 @@ class OrganizationServiceImplTest {
     assertEquals(123L, result.get(0).getOrganizationId());
     assertEquals("testIpaCode", result.get(0).getIpaCode());
     assertEquals("Test Organization", result.get(0).getOrgName());
-    assertEquals("Admin", result.get(0).getOperatorRole());
+    assertEquals(Collections.singletonList("Admin"), result.get(0).getOperatorRole());
   }
 
   @Test
@@ -96,10 +95,11 @@ class OrganizationServiceImplTest {
     List<OrganizationDTO> result = organizationService.getOrganizations(userInfo, accessToken);
 
     assertEquals(1, result.size());
-    assertNull(result.get(0).getOrganizationId());
-    assertNull(result.get(0).getIpaCode());
-    assertNull(result.get(0).getOrgName());
-    assertNull(result.get(0).getOperatorRole());
+    OrganizationDTO dto = result.get(0);
+    assertNull(dto.getOrganizationId());
+    assertNull(dto.getIpaCode());
+    assertNull(dto.getOrgName());
+    assertTrue(dto.getOperatorRole().isEmpty());
   }
 
   @Test
@@ -112,7 +112,7 @@ class OrganizationServiceImplTest {
         .organizationId(null)
         .ipaCode(null)
         .orgName(null)
-        .operatorRole("Admin")
+        .operatorRole(Collections.singletonList("Admin"))
         .build());
 
     List<OrganizationDTO> result = organizationService.getOrganizations(userInfo, accessToken);
@@ -121,7 +121,7 @@ class OrganizationServiceImplTest {
     assertNull(result.get(0).getOrganizationId());
     assertNull(result.get(0).getIpaCode());
     assertNull(result.get(0).getOrgName());
-    assertEquals("Admin", result.get(0).getOperatorRole());
+    assertEquals(Collections.singletonList("Admin"), result.get(0).getOperatorRole());
   }
 
 }

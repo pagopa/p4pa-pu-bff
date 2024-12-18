@@ -8,19 +8,21 @@ import it.gov.pagopa.pu.p4pa_organization.dto.generated.EntityModelOrganization;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 @Log4j2
 @Service
 public class OrganizationClientImpl implements OrganizationClient {
 
-  private BrokerEntityControllerApi brokerEntityControllerApi;
+  private final BrokerEntityControllerApi brokerEntityControllerApi;
 
-  private OrganizationSearchControllerApi organizationSearchControllerApi;
+  private final OrganizationSearchControllerApi organizationSearchControllerApi;
 
-  public OrganizationClientImpl (RestTemplateBuilder restTemplateBuilder,
-    @Value("${app.organization.base-url}") String baseUrl){
+  public OrganizationClientImpl(RestTemplateBuilder restTemplateBuilder,
+                                @Value("${app.organization.base-url}") String baseUrl) {
     RestTemplate restTemplate = restTemplateBuilder.build();
     ApiClient apiClient = new ApiClient(restTemplate);
     apiClient.setBasePath(baseUrl);
@@ -37,12 +39,19 @@ public class OrganizationClientImpl implements OrganizationClient {
     }
   }
 
-  public EntityModelOrganization getOrganizationByIpaCode(String ipaCode, String accessToken){
+  public EntityModelOrganization getOrganizationByIpaCode(String ipaCode, String accessToken) {
     try {
       return organizationSearchControllerApi.executeSearchOrganizationGet(ipaCode);
+    } catch (HttpClientErrorException e) {
+      if (e.getStatusCode() == HttpStatus.NOT_FOUND) {
+        log.warn("Organization with IPA code {} not found", ipaCode);
+        return null;
+      }
+      log.error("Error retrieving organization by IPA code: {}", ipaCode, e);
+      throw e;
     } catch (Exception e) {
-      log.error(e.getCause());
-      return null;
+      log.error("Unexpected error while retrieving organization by IPA code: {}", ipaCode, e);
+      throw e;
     }
   }
 

@@ -8,6 +8,7 @@ import it.gov.pagopa.pu.p4paauth.model.generated.UserInfo;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class OrganizationServiceImpl implements OrganizationService {
@@ -26,8 +27,11 @@ public class OrganizationServiceImpl implements OrganizationService {
     return userInfo.getOrganizations().stream()
       .map(orgRoles -> {
         EntityModelOrganization organization = organizationClient.getOrganizationByIpaCode(orgRoles.getOrganizationIpaCode(), accessToken);
-        return organizationDTOMapper.mapToOrganizationDTO(organization, orgRoles.getRoles());
-      }).toList();
+        if (organization != null) {
+          return organizationDTOMapper.mapToOrganizationDTO(organization, orgRoles.getRoles());
+        }
+        return null;
+      }).filter(Objects::nonNull).toList();
   }
 
 }

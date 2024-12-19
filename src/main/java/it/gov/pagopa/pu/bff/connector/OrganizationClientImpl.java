@@ -5,7 +5,7 @@ import it.gov.pagopa.pu.p4pa_organization.controller.generated.BrokerEntityContr
 import it.gov.pagopa.pu.p4pa_organization.controller.generated.OrganizationSearchControllerApi;
 import it.gov.pagopa.pu.p4pa_organization.dto.generated.EntityModelBroker;
 import it.gov.pagopa.pu.p4pa_organization.dto.generated.EntityModelOrganization;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpStatus;
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
-@Log4j2
+@Slf4j
 @Service
 public class OrganizationClientImpl implements OrganizationClient {
 
@@ -34,7 +34,7 @@ public class OrganizationClientImpl implements OrganizationClient {
     try {
       return brokerEntityControllerApi.getItemResourceBrokerGet(String.valueOf(id));
     } catch (Exception e) {
-      log.error(e.getCause());
+      log.error(String.valueOf(e.getCause()));
       return null;
     }
   }

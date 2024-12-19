@@ -17,7 +17,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Collections;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 
@@ -87,41 +88,24 @@ class OrganizationServiceImplTest {
   @Test
   void testGetOrganizations_GivenNullOrganization() {
     userOrganizationRoles.setRoles(Collections.emptyList());
+
     Mockito.when(organizationClientMock.getOrganizationByIpaCode(anyString(), anyString()))
       .thenReturn(null);
-    Mockito.when(organizationDTOMapperMock.mapToOrganizationDTO(null, Collections.emptyList()))
-      .thenReturn(new OrganizationDTO());
 
     List<OrganizationDTO> result = organizationService.getOrganizations(userInfo, accessToken);
 
-    assertEquals(1, result.size());
-    OrganizationDTO dto = result.get(0);
-    assertNull(dto.getOrganizationId());
-    assertNull(dto.getIpaCode());
-    assertNull(dto.getOrgName());
-    assertTrue(dto.getOperatorRole().isEmpty());
+    assertTrue(result.isEmpty());
   }
+
 
   @Test
   void testGetOrganizations_NotFound() {
     Mockito.when(organizationClientMock.getOrganizationByIpaCode(anyString(), anyString()))
       .thenReturn(null);
 
-    Mockito.when(organizationDTOMapperMock.mapToOrganizationDTO(null, Collections.singletonList("Admin")))
-      .thenReturn(OrganizationDTO.builder()
-        .organizationId(null)
-        .ipaCode(null)
-        .orgName(null)
-        .operatorRole(Collections.singletonList("Admin"))
-        .build());
-
     List<OrganizationDTO> result = organizationService.getOrganizations(userInfo, accessToken);
 
-    assertEquals(1, result.size());
-    assertNull(result.get(0).getOrganizationId());
-    assertNull(result.get(0).getIpaCode());
-    assertNull(result.get(0).getOrgName());
-    assertEquals(Collections.singletonList("Admin"), result.get(0).getOperatorRole());
+    assertTrue(result.isEmpty());
   }
 
 }

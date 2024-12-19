@@ -143,7 +143,7 @@ tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>("ope
   configOptions.set(mapOf(
     "swaggerAnnotations" to "false",
     "openApiNullable" to "false",
-    "dateLibrary" to "java17",
+    "dateLibrary" to "java8",
     "useSpringBoot3" to "true",
     "useJakartaEe" to "true",
     "serializationLibrary" to "jackson",
@@ -164,7 +164,7 @@ tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>("ope
   configOptions.set(mapOf(
     "swaggerAnnotations" to "false",
     "openApiNullable" to "false",
-    "dateLibrary" to "java17",
+    "dateLibrary" to "java8",
     "useSpringBoot3" to "true",
     "useJakartaEe" to "true",
     "serializationLibrary" to "jackson",

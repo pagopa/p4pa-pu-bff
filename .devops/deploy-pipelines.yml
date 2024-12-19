@@ -207,7 +207,7 @@ stages:
             displayName: Run newman
             continueOnError: true # Useful to avoid the skipping of result publishing task
             inputs:
-              script: newman run p4pa-pu-bff/postman/PuBff-e2e.postman_collection.json -e $(postman_env.secureFilePath) --reporters cli,junit --reporter-junit-export result/test-result.xml
+              script: newman run postman/PuBff-e2e.postman_collection.json -e $(postman_env.secureFilePath) --reporters cli,junit --reporter-junit-export result/test-result.xml
           - task: PublishTestResults@2
             inputs:
               testResultsFormat: 'JUnit'

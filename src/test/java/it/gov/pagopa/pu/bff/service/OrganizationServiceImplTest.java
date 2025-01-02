@@ -5,8 +5,8 @@ import it.gov.pagopa.pu.bff.dto.generated.OrganizationDTO;
 import it.gov.pagopa.pu.bff.mapper.OrganizationDTOMapper;
 import it.gov.pagopa.pu.bff.service.organization.OrganizationServiceImpl;
 import it.gov.pagopa.pu.p4pa_organization.dto.generated.EntityModelOrganization;
-import it.gov.pagopa.pu.p4paauth.model.generated.UserInfo;
-import it.gov.pagopa.pu.p4paauth.model.generated.UserOrganizationRoles;
+import it.gov.pagopa.pu.p4paauth.dto.generated.UserInfo;
+import it.gov.pagopa.pu.p4paauth.dto.generated.UserOrganizationRoles;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,8 +19,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.*;
 
 @ExtendWith(MockitoExtension.class)
 class OrganizationServiceImplTest {
@@ -64,16 +63,16 @@ class OrganizationServiceImplTest {
   void testGetOrganizations() {
     Mockito.when(organizationClientMock.getOrganizationByIpaCode(anyString(), anyString()))
       .thenReturn(entityModelOrganization);
-    Mockito.when(organizationDTOMapperMock.mapToOrganizationDTO(any(EntityModelOrganization.class), any(List.class)))
+    Mockito.when(organizationDTOMapperMock.mapToOrganizationDTO(any(EntityModelOrganization.class), anyList()))
       .thenReturn(organizationDTO);
 
     List<OrganizationDTO> result = organizationService.getOrganizations(userInfo, accessToken);
 
     assertEquals(1, result.size());
-    assertEquals(123L, result.get(0).getOrganizationId());
-    assertEquals("testIpaCode", result.get(0).getIpaCode());
-    assertEquals("Test Organization", result.get(0).getOrgName());
-    assertEquals(Collections.singletonList("Admin"), result.get(0).getOperatorRole());
+    assertEquals(123L, result.getFirst().getOrganizationId());
+    assertEquals("testIpaCode", result.getFirst().getIpaCode());
+    assertEquals("Test Organization", result.getFirst().getOrgName());
+    assertEquals(Collections.singletonList("Admin"), result.getFirst().getOperatorRole());
   }
 
   @Test

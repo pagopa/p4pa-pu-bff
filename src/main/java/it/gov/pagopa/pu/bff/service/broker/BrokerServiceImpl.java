@@ -6,8 +6,8 @@ import it.gov.pagopa.pu.bff.dto.generated.ConfigFE;
 import it.gov.pagopa.pu.bff.mapper.PersonalisationFE2ConfigFEMapper;
 import it.gov.pagopa.pu.p4pa_organization.dto.generated.EntityModelBroker;
 import it.gov.pagopa.pu.p4pa_organization.dto.generated.EntityModelOrganization;
-import it.gov.pagopa.pu.p4paauth.model.generated.UserInfo;
-import it.gov.pagopa.pu.p4paauth.model.generated.UserOrganizationRoles;
+import it.gov.pagopa.pu.p4paauth.dto.generated.UserInfo;
+import it.gov.pagopa.pu.p4paauth.dto.generated.UserOrganizationRoles;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 

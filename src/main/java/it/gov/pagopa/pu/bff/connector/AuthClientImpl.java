@@ -2,7 +2,7 @@ package it.gov.pagopa.pu.bff.connector;
 
 import it.gov.pagopa.pu.p4paauth.controller.ApiClient;
 import it.gov.pagopa.pu.p4paauth.controller.generated.AuthnApi;
-import it.gov.pagopa.pu.p4paauth.model.generated.UserInfo;
+import it.gov.pagopa.pu.p4paauth.dto.generated.UserInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;

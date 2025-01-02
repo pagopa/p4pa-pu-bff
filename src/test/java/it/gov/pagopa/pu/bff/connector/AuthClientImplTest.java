@@ -1,11 +1,7 @@
 package it.gov.pagopa.pu.bff.connector;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
-
 import it.gov.pagopa.pu.p4paauth.controller.ApiClient;
-import it.gov.pagopa.pu.p4paauth.controller.generated.AuthnApi;
-import it.gov.pagopa.pu.p4paauth.model.generated.UserInfo;
+import it.gov.pagopa.pu.p4paauth.dto.generated.UserInfo;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,27 +16,27 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.DefaultUriBuilderFactory;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+
 @ExtendWith(MockitoExtension.class)
 class AuthClientImplTest {
 
   @Mock
   private RestTemplateBuilder restTemplateBuilderMock;
 
-  @Mock
-  private AuthnApi authApiMock;
-
   private AuthClientImpl authClient;
 
   @Mock
   private RestTemplate restTemplateMock;
-
-  private String baseUrl = "http://example.com"; // Set a default value for testing
 
   @BeforeEach
   void setUp() {
     Mockito.when(restTemplateBuilderMock.build()).thenReturn(restTemplateMock);
     Mockito.when(restTemplateMock.getUriTemplateHandler()).thenReturn(new DefaultUriBuilderFactory());
     ApiClient apiClient = new ApiClient(restTemplateMock);
+    // Set a default value for testing
+    String baseUrl = "http://example.com";
     apiClient.setBasePath(baseUrl);
     authClient = new AuthClientImpl(restTemplateBuilderMock, baseUrl);
   }

@@ -3,7 +3,7 @@ package it.gov.pagopa.pu.bff.service.organization;
 import it.gov.pagopa.pu.bff.connector.OrganizationClient;
 import it.gov.pagopa.pu.bff.dto.generated.OrganizationDTO;
 import it.gov.pagopa.pu.bff.mapper.OrganizationDTOMapper;
-import it.gov.pagopa.pu.p4paauth.model.generated.UserInfo;
+import it.gov.pagopa.pu.p4paauth.dto.generated.UserInfo;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

@@ -1,7 +1,7 @@
 package it.gov.pagopa.pu.bff.util;
 
-import it.gov.pagopa.pu.p4paauth.model.generated.UserInfo;
-import it.gov.pagopa.pu.p4paauth.model.generated.UserOrganizationRoles;
+import it.gov.pagopa.pu.p4paauth.dto.generated.UserInfo;
+import it.gov.pagopa.pu.p4paauth.dto.generated.UserOrganizationRoles;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;

@@ -4,7 +4,7 @@ import static org.mockito.Mockito.mock;
 
 import it.gov.pagopa.pu.bff.connector.AuthClientImpl;
 import it.gov.pagopa.pu.bff.exception.InvalidAccessTokenException;
-import it.gov.pagopa.pu.p4paauth.model.generated.UserInfo;
+import it.gov.pagopa.pu.p4paauth.dto.generated.UserInfo;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

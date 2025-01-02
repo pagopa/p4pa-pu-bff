@@ -1,11 +1,11 @@
 plugins {
 	java
-	id("org.springframework.boot") version "3.3.5"
-	id("io.spring.dependency-management") version "1.1.6"
+	id("org.springframework.boot") version "3.4.1"
+	id("io.spring.dependency-management") version "1.1.7"
 	jacoco
-	id("org.sonarqube") version "5.1.0.4882"
+	id("org.sonarqube") version "6.0.1.5171"
 	id("com.github.ben-manes.versions") version "0.51.0"
-	id("org.openapi.generator") version "7.9.0"
+	id("org.openapi.generator") version "7.10.0"
   id("org.ajoberstar.grgit") version "5.3.0"
 }
 
@@ -29,11 +29,11 @@ repositories {
 	mavenCentral()
 }
 
-val springDocOpenApiVersion = "2.6.0"
+val springDocOpenApiVersion = "2.7.0"
 val openApiToolsVersion = "0.2.6"
-val micrometerVersion = "1.4.0"
+val micrometerVersion = "1.4.1"
 
-val wiremockVersion = "3.9.2"
+val wiremockVersion = "3.10.0"
 val wiremockSpringBootVersion = "2.1.3"
 
 dependencies {
@@ -120,7 +120,7 @@ tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>("ope
     "interfaceOnly" to "true",
     "useTags" to "true",
     "generateConstructorWithAllArgs" to "false",
-    "generatedConstructorWithRequiredArgs" to "false",
+    "generatedConstructorWithRequiredArgs" to "true",
     "additionalModelTypeAnnotations" to "@lombok.Data @lombok.Builder @lombok.AllArgsConstructor"
   ))
 }
@@ -139,7 +139,7 @@ tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>("ope
   remoteInputSpec.set("https://raw.githubusercontent.com/pagopa/p4pa-auth/refs/heads/$targetEnv/openapi/p4pa-auth.openapi.yaml")
   outputDir.set("$projectDir/build/generated")
   apiPackage.set("it.gov.pagopa.pu.p4paauth.controller.generated")
-  modelPackage.set("it.gov.pagopa.pu.p4paauth.model.generated")
+  modelPackage.set("it.gov.pagopa.pu.p4paauth.dto.generated")
   configOptions.set(mapOf(
     "swaggerAnnotations" to "false",
     "openApiNullable" to "false",

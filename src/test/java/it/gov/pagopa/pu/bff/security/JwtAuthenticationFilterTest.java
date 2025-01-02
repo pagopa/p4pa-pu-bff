@@ -2,7 +2,7 @@ package it.gov.pagopa.pu.bff.security;
 
 import it.gov.pagopa.pu.bff.exception.InvalidAccessTokenException;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
-import it.gov.pagopa.pu.p4paauth.model.generated.UserInfo;
+import it.gov.pagopa.pu.p4paauth.dto.generated.UserInfo;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import java.io.IOException;
@@ -24,7 +24,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
-import it.gov.pagopa.pu.p4paauth.model.generated.UserOrganizationRoles;
+import it.gov.pagopa.pu.p4paauth.dto.generated.UserOrganizationRoles;
 
 @ExtendWith(MockitoExtension.class)
 class JwtAuthenticationFilterTest {

@@ -1,6 +1,6 @@
 package it.gov.pagopa.pu.bff.security;
 
-import it.gov.pagopa.pu.p4paauth.model.generated.UserInfo;
+import it.gov.pagopa.pu.p4paauth.dto.generated.UserInfo;
 import java.util.Collections;
 import java.util.Set;
 import java.util.stream.Collectors;

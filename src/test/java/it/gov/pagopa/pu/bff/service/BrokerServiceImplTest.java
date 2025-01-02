@@ -11,8 +11,8 @@ import it.gov.pagopa.pu.bff.util.TestUtils;
 import it.gov.pagopa.pu.p4pa_organization.dto.generated.EntityModelBroker;
 import it.gov.pagopa.pu.p4pa_organization.dto.generated.EntityModelOrganization;
 import it.gov.pagopa.pu.p4pa_organization.dto.generated.PersonalisationFe;
-import it.gov.pagopa.pu.p4paauth.model.generated.UserInfo;
-import it.gov.pagopa.pu.p4paauth.model.generated.UserOrganizationRoles;
+import it.gov.pagopa.pu.p4paauth.dto.generated.UserInfo;
+import it.gov.pagopa.pu.p4paauth.dto.generated.UserOrganizationRoles;
 import java.util.Collection;
 import java.util.Collections;
 import org.junit.jupiter.api.BeforeEach;
@@ -39,8 +39,6 @@ class BrokerServiceImplTest {
   private PersonalisationFE2ConfigFEMapper personalisationFE2ConfigFEMapperMock;
   private BrokerServiceImpl brokerService;
 
-  private UserInfo userInfo;
-  private UserOrganizationRoles userOrganizationRoles;
   private EntityModelOrganization entityModelOrganization;
   private EntityModelBroker entityModelBroker;
   private PersonalisationFe personalisationFe;
@@ -51,10 +49,10 @@ class BrokerServiceImplTest {
 
   @BeforeEach
   void setUp() {
-    userOrganizationRoles = new UserOrganizationRoles();
+    UserOrganizationRoles userOrganizationRoles = new UserOrganizationRoles();
     userOrganizationRoles.setOrganizationIpaCode("testIpaCode");
 
-    userInfo = new UserInfo();
+    UserInfo userInfo = new UserInfo();
     userInfo.setOrganizations(Collections.singletonList(userOrganizationRoles));
 
     entityModelOrganization = new EntityModelOrganization();

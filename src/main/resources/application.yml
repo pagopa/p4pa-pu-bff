@@ -1,3 +1,6 @@
+server:
+  port: "\${SERVER_PORT:8080}"
+
 spring:
     application:
       name: ${artifactId}
@@ -15,14 +18,8 @@ management:
         exposure.include: "*"
       web:
         exposure.include: info, health
+
 app:
-  rest-client:
-      connect.timeout.millis: "\${CONNECT_TIMEOUT_MILLIS:120000}"
-      read.timeout.millis: "\${READ_TIMEOUT_MILLIS:120000}"
-  auth:
-    base-url: "\${AUTH_SERVER_BASE_URL:}"
-  organization:
-    base-url: "\${ORGANIZATION_BASE_URL:}"
   default-config-fe:
     headerAssistanceUrl: "\${BROKER_FE_DEFAULT_CONFIG_HEADER_ASSISTANCE_URL:DEFAULT}"
     logoFooterImg: "\${BROKER_FE_DEFAULT_CONFIG_LOGO_FOOTER_IMG:DEFAULT}"
@@ -31,3 +28,12 @@ app:
     footerGDPRUrl: "\${BROKER_FE_DEFAULT_CONFIG_GDPR_URL:https://www.pagopa.it/it/informativa-sul-trattamento-dei-dati-personali}"
     footerTermsCondUrl: "\${BROKER_FE_DEFAULT_CONFIG_FOOTER_TERMS_COND_URL:https://www.pagopa.it/it/termini-e-condizioni-di-utilizzo-del-sito}"
     footerAccessibilityUrl: "\${BROKER_FE_DEFAULT_CONFIG_FOOTER_ACCESSIBILITY_URL:https://form.agid.gov.it/view/c299ac76-6d08-4c34-9957-00519dde4ea9}"
+
+rest:
+  default-timeout:
+    connect-millis: "\${DEFAULT_REST_CONNECT_TIMEOUT_MILLIS:120000}"
+    read-millis: "\${DEFAULT_REST_READ_TIMEOUT_MILLIS:120000}"
+  auth:
+    base-url: "\${AUTH_SERVER_BASE_URL:}"
+  organization:
+    base-url: "\${ORGANIZATION_BASE_URL:}"

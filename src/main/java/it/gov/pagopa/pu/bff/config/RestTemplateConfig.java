@@ -13,8 +13,8 @@ public class RestTemplateConfig {
   private final int readTimeoutHandlerMillis;
 
   public RestTemplateConfig(
-    @Value("${app.rest-client.connect.timeout.millis}") int connectTimeoutMillis,
-    @Value("${app.rest-client.read.timeout.millis}") int readTimeoutHandlerMillis) {
+    @Value("${rest.default-timeout.connect-millis}") int connectTimeoutMillis,
+    @Value("${rest.default-timeout.read-millis}") int readTimeoutHandlerMillis) {
     this.connectTimeoutMillis = connectTimeoutMillis;
     this.readTimeoutHandlerMillis = readTimeoutHandlerMillis;
   }
@@ -23,7 +23,7 @@ public class RestTemplateConfig {
   public RestTemplateBuilder restTemplateBuilder(
     RestTemplateBuilderConfigurer configurer) {
     return configurer.configure(new RestTemplateBuilder())
-      .setConnectTimeout(Duration.ofMillis(connectTimeoutMillis))
-      .setReadTimeout(Duration.ofMillis(readTimeoutHandlerMillis));
+      .connectTimeout(Duration.ofMillis(connectTimeoutMillis))
+      .readTimeout(Duration.ofMillis(readTimeoutHandlerMillis));
   }
 }

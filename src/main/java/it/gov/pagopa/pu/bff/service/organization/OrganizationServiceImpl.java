@@ -1,6 +1,6 @@
 package it.gov.pagopa.pu.bff.service.organization;
 
-import it.gov.pagopa.pu.bff.connector.OrganizationClient;
+import it.gov.pagopa.pu.bff.connector.organization.client.OrganizationSearchClient;
 import it.gov.pagopa.pu.bff.dto.generated.OrganizationDTO;
 import it.gov.pagopa.pu.bff.mapper.OrganizationDTOMapper;
 import it.gov.pagopa.pu.p4paauth.dto.generated.UserInfo;
@@ -13,12 +13,12 @@ import java.util.Optional;
 @Service
 public class OrganizationServiceImpl implements OrganizationService {
 
-  private final OrganizationClient organizationClient;
+  private final OrganizationSearchClient organizationSearchClient;
 
   private final OrganizationDTOMapper organizationDTOMapper;
 
-  public OrganizationServiceImpl(OrganizationClient organizationClient, OrganizationDTOMapper organizationDTOMapper) {
-    this.organizationClient = organizationClient;
+  public OrganizationServiceImpl(OrganizationSearchClient organizationSearchClient, OrganizationDTOMapper organizationDTOMapper) {
+    this.organizationSearchClient = organizationSearchClient;
     this.organizationDTOMapper = organizationDTOMapper;
   }
 
@@ -26,7 +26,7 @@ public class OrganizationServiceImpl implements OrganizationService {
   public List<OrganizationDTO> getOrganizations(UserInfo userInfo, String accessToken) {
     return userInfo.getOrganizations().stream()
       .map(orgRoles -> Optional.ofNullable(
-          organizationClient.getOrganizationByIpaCode(orgRoles.getOrganizationIpaCode(), accessToken))
+          organizationSearchClient.getOrganizationByIpaCode(orgRoles.getOrganizationIpaCode(), accessToken))
         .map(organization -> organizationDTOMapper.mapToOrganizationDTO(organization, orgRoles.getRoles()))
         .orElse(null)
       ).filter(Objects::nonNull).toList();

@@ -22,7 +22,7 @@ public abstract class BaseApiHolderTest {
   @Mock
   protected RestTemplate restTemplateMock;
 
-  protected <T> void authenticationShouldBeSetInThreadSafeMode(Function<String, T> apiInvoke, Class<T> apiReturnedType, Runnable apiUnloader) throws InterruptedException {
+  protected <T> void assertAuthenticationShouldBeSetInThreadSafeMode(Function<String, T> apiInvoke, Class<T> apiReturnedType, Runnable apiUnloader) throws InterruptedException {
     // Configuring useCases in a single thread
     List<Pair<String, T>> useCases = IntStream.rangeClosed(0, 100)
       .mapToObj(i -> {

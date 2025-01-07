@@ -40,7 +40,7 @@ class AuthApiHolderTest extends BaseApiHolderTest {
 
   @Test
   void whenGetAuthnApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
-    authenticationShouldBeSetInThreadSafeMode(
+    assertAuthenticationShouldBeSetInThreadSafeMode(
       accessToken -> authApisHolder.getAuthnApi(accessToken)
         .postToken("clientId", "grantType", "scope", "subjectToken", "subjectIssuer", "subjectTokenType", "clientSecret"),
       AccessToken.class,

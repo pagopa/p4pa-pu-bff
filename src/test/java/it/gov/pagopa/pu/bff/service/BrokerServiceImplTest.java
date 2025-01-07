@@ -3,7 +3,8 @@ package it.gov.pagopa.pu.bff.service;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import it.gov.pagopa.pu.bff.config.DefaultConfigFe;
-import it.gov.pagopa.pu.bff.connector.OrganizationClientImpl;
+import it.gov.pagopa.pu.bff.connector.organization.client.BrokerEntityClient;
+import it.gov.pagopa.pu.bff.connector.organization.client.OrganizationSearchClient;
 import it.gov.pagopa.pu.bff.dto.generated.ConfigFE;
 import it.gov.pagopa.pu.bff.mapper.PersonalisationFE2ConfigFEMapper;
 import it.gov.pagopa.pu.bff.service.broker.BrokerServiceImpl;
@@ -30,8 +31,9 @@ import org.springframework.test.util.ReflectionTestUtils;
 class BrokerServiceImplTest {
 
   @Mock
-  private OrganizationClientImpl organizationClientMock;
-
+  private OrganizationSearchClient organizationSearchClientMock;
+  @Mock
+  private BrokerEntityClient brokerEntityClientMock;
   @Mock
   private DefaultConfigFe defaultConfigFeMock;
 
@@ -68,15 +70,15 @@ class BrokerServiceImplTest {
     Collection<? extends GrantedAuthority> authorities = null;
     UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userInfo, null, authorities);
     SecurityContextHolder.getContext().setAuthentication(authToken);
-    brokerService = new BrokerServiceImpl(organizationClientMock,defaultConfigFeMock,personalisationFE2ConfigFEMapperMock);
+    brokerService = new BrokerServiceImpl(organizationSearchClientMock,brokerEntityClientMock,defaultConfigFeMock,personalisationFE2ConfigFEMapperMock);
   }
 
   @Test
   void givenGetBrokerConfigWhenValidDataThenOK() {
     TestUtils.addSampleUserIntoSecurityContext();
     ConfigFE configFE = new ConfigFE();
-    Mockito.when(organizationClientMock.getOrganizationByIpaCode("ORG",accessToken)).thenReturn(entityModelOrganization);
-    Mockito.when(organizationClientMock.getBrokerById(1L,accessToken)).thenReturn(entityModelBroker);
+    Mockito.when(organizationSearchClientMock.getOrganizationByIpaCode("ORG",accessToken)).thenReturn(entityModelOrganization);
+    Mockito.when(brokerEntityClientMock.getBrokerById(1L,accessToken)).thenReturn(entityModelBroker);
     Mockito.when(personalisationFE2ConfigFEMapperMock.mapPersonalisationFE2ConfigFE(personalisationFe)).thenReturn(configFE);
 
     ConfigFE result = brokerService.getBrokerConfig(TestUtils.getSampleUser(),accessToken);
@@ -102,8 +104,8 @@ class BrokerServiceImplTest {
   void givenGetBrokerConfigWhenNoBrokerThenOkDefault() {
     TestUtils.addSampleUserIntoSecurityContext();
     ConfigFE defaultConf = new ConfigFE();
-    Mockito.when(organizationClientMock.getOrganizationByIpaCode("ORG",accessToken)).thenReturn(entityModelOrganization);
-    Mockito.when(organizationClientMock.getBrokerById(1L,accessToken)).thenReturn(null);
+    Mockito.when(organizationSearchClientMock.getOrganizationByIpaCode("ORG",accessToken)).thenReturn(entityModelOrganization);
+    Mockito.when(brokerEntityClientMock.getBrokerById(1L,accessToken)).thenReturn(null);
     Mockito.when(personalisationFE2ConfigFEMapperMock.mapPersonalisationFE2ConfigFE(defaultConfigFeMock)).thenReturn(defaultConf);
 
     ConfigFE result = brokerService.getBrokerConfig(TestUtils.getSampleUser(),accessToken);

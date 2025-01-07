@@ -1,8 +1,6 @@
 package it.gov.pagopa.pu.bff.service;
 
-import static org.mockito.Mockito.mock;
-
-import it.gov.pagopa.pu.bff.connector.AuthClientImpl;
+import it.gov.pagopa.pu.bff.connector.auth.client.AuthnClient;
 import it.gov.pagopa.pu.bff.exception.InvalidAccessTokenException;
 import it.gov.pagopa.pu.p4paauth.dto.generated.UserInfo;
 import org.junit.jupiter.api.Assertions;
@@ -13,6 +11,8 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 
+import static org.mockito.Mockito.mock;
+
 @EnableConfigurationProperties
 class AuthorizationServiceTest {
 
@@ -20,11 +20,11 @@ class AuthorizationServiceTest {
   private AuthorizationService authorizationService;
 
   @Mock
-  AuthClientImpl authClientImplMock;
+  private AuthnClient authClientImplMock;
 
   @BeforeEach
   void setUp(){
-    authClientImplMock = mock(AuthClientImpl.class);
+    authClientImplMock = mock(AuthnClient.class);
     authorizationService = new AuthorizationService(authClientImplMock);
   }
 
@@ -32,7 +32,7 @@ class AuthorizationServiceTest {
   void givenValidAccessTokenWhenValidateTokenThenOk() {
     // When
     UserInfo ui = new UserInfo();
-    Mockito.when(authClientImplMock.validateToken("ACCESSTOKEN")).thenReturn(ui);
+    Mockito.when(authClientImplMock.getUserInfo("ACCESSTOKEN")).thenReturn(ui);
     UserInfo result = authorizationService.validateToken("ACCESSTOKEN");
 
     // Then
@@ -45,7 +45,7 @@ class AuthorizationServiceTest {
   @Test
   void givenInvalidAccessTokenWhenValidateTokenThenInvalidAccessTokenException() {
     // When
-    Mockito.when(authClientImplMock.validateToken("INVALIDACCESSTOKEN")).thenThrow(new InvalidAccessTokenException("Bad Access Token provided"));
+    Mockito.when(authClientImplMock.getUserInfo("INVALIDACCESSTOKEN")).thenThrow(new InvalidAccessTokenException("Bad Access Token provided"));
     InvalidAccessTokenException result = Assertions.assertThrows(InvalidAccessTokenException.class,
       () -> authorizationService.validateToken("INVALIDACCESSTOKEN"));
 

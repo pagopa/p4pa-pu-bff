@@ -1,7 +1,8 @@
 package it.gov.pagopa.pu.bff.service.broker;
 
 import it.gov.pagopa.pu.bff.config.DefaultConfigFe;
-import it.gov.pagopa.pu.bff.connector.OrganizationClient;
+import it.gov.pagopa.pu.bff.connector.organization.client.BrokerEntityClient;
+import it.gov.pagopa.pu.bff.connector.organization.client.OrganizationSearchClient;
 import it.gov.pagopa.pu.bff.dto.generated.ConfigFE;
 import it.gov.pagopa.pu.bff.mapper.PersonalisationFE2ConfigFEMapper;
 import it.gov.pagopa.pu.p4pa_organization.dto.generated.EntityModelBroker;
@@ -16,18 +17,17 @@ import java.util.Optional;
 @Service
 public class BrokerServiceImpl implements BrokerService {
 
-  private final OrganizationClient organizationClient;
-
+  private final OrganizationSearchClient organizationSearchClient;
+  private final BrokerEntityClient brokerEntityClient;
   private final PersonalisationFE2ConfigFEMapper personalisationFE2ConfigFEMapper;
-
   private final DefaultConfigFe defaultConfigFe;
-
   private final ConfigFE defaultFEConfig;
 
-  public BrokerServiceImpl(OrganizationClient organizationClient,
+  public BrokerServiceImpl(OrganizationSearchClient organizationSearchClient, BrokerEntityClient brokerEntityClient,
                            DefaultConfigFe defaultConfigFe,
                            PersonalisationFE2ConfigFEMapper personalisationFE2ConfigFEMapper) {
-    this.organizationClient = organizationClient;
+    this.organizationSearchClient = organizationSearchClient;
+    this.brokerEntityClient = brokerEntityClient;
     this.defaultConfigFe = defaultConfigFe;
     this.personalisationFE2ConfigFEMapper = personalisationFE2ConfigFEMapper;
     this.defaultFEConfig = getFEConfiguration(null);
@@ -43,9 +43,9 @@ public class BrokerServiceImpl implements BrokerService {
       );
 
     if (StringUtils.isNotBlank(orgIpaCode)) {
-      EntityModelOrganization organization = organizationClient.getOrganizationByIpaCode(orgIpaCode, accessToken);
+      EntityModelOrganization organization = organizationSearchClient.getOrganizationByIpaCode(orgIpaCode, accessToken);
       if (organization != null && organization.getBrokerId() != null) {
-        return getFEConfiguration(organizationClient.getBrokerById(organization.getBrokerId(), accessToken));
+        return getFEConfiguration(brokerEntityClient.getBrokerById(organization.getBrokerId(), accessToken));
       }
     }
     return this.defaultFEConfig;

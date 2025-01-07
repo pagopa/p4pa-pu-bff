@@ -71,4 +71,42 @@ class OrganizationSearchClientTest {
     // Then
     Assertions.assertNull(result);
   }
+
+  @Test
+  void givenGenericHttpExceptionWhenGetOrganizationByIpaCodeThenThrowIt() {
+    // Given
+    String orgIpaCode = "ORGIPACODE";
+    String accessToken = "ACCESSTOKEN";
+    HttpClientErrorException expectedException = new HttpClientErrorException(HttpStatus.INTERNAL_SERVER_ERROR);
+
+    Mockito.when(organizationApisHolder.getOrganizationSearchControllerApi(accessToken))
+      .thenReturn(organizationSearchControllerApiMock);
+    Mockito.when(organizationSearchControllerApiMock.executeSearchOrganizationGet(orgIpaCode))
+      .thenThrow(expectedException);
+
+    // When
+    HttpClientErrorException result = Assertions.assertThrows(expectedException.getClass(), () -> organizationSearchClient.getOrganizationByIpaCode(orgIpaCode, accessToken));
+
+    // Then
+    Assertions.assertSame(expectedException, result);
+  }
+
+  @Test
+  void givenGenericExceptionWhenGetOrganizationByIpaCodeThenThrowIt() {
+    // Given
+    String orgIpaCode = "ORGIPACODE";
+    String accessToken = "ACCESSTOKEN";
+    RuntimeException expectedException = new RuntimeException();
+
+    Mockito.when(organizationApisHolder.getOrganizationSearchControllerApi(accessToken))
+      .thenReturn(organizationSearchControllerApiMock);
+    Mockito.when(organizationSearchControllerApiMock.executeSearchOrganizationGet(orgIpaCode))
+      .thenThrow(expectedException);
+
+    // When
+    RuntimeException result = Assertions.assertThrows(expectedException.getClass(), () -> organizationSearchClient.getOrganizationByIpaCode(orgIpaCode, accessToken));
+
+    // Then
+    Assertions.assertSame(expectedException, result);
+  }
 }

@@ -43,7 +43,7 @@ class OrganizationApiHolderTest extends BaseApiHolderTest {
   void whenGetOrganizationSearchControllerApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
     assertAuthenticationShouldBeSetInThreadSafeMode(
       accessToken -> organizationApisHolder.getOrganizationSearchControllerApi(accessToken)
-        .executeSearchOrganizationGet("IPACODE"),
+        .crudOrganizationsFindByIpaCode("IPACODE"),
       Organization.class,
       organizationApisHolder::unload);
   }
@@ -52,7 +52,7 @@ class OrganizationApiHolderTest extends BaseApiHolderTest {
   void whenGetAuthnApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
     assertAuthenticationShouldBeSetInThreadSafeMode(
       accessToken -> organizationApisHolder.getBrokerEntityControllerApi(accessToken)
-        .getItemResourceBrokerGet("BROKERID"),
+        .crudGetBroker("BROKERID"),
       Broker.class,
       organizationApisHolder::unload);
   }

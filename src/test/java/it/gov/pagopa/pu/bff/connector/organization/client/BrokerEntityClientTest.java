@@ -44,7 +44,7 @@ class BrokerEntityClientTest {
 
     Mockito.when(organizationApisHolder.getBrokerEntityControllerApi(accessToken))
       .thenReturn(brokerEntityControllerApiMock);
-    Mockito.when(brokerEntityControllerApiMock.getItemResourceBrokerGet(brokerId.toString()))
+    Mockito.when(brokerEntityControllerApiMock.crudGetBroker(brokerId.toString()))
       .thenReturn(expectedResult);
 
     // When
@@ -62,7 +62,7 @@ class BrokerEntityClientTest {
 
     Mockito.when(organizationApisHolder.getBrokerEntityControllerApi(accessToken))
       .thenReturn(brokerEntityControllerApiMock);
-    Mockito.when(brokerEntityControllerApiMock.getItemResourceBrokerGet(brokerId.toString()))
+    Mockito.when(brokerEntityControllerApiMock.crudGetBroker(brokerId.toString()))
       .thenThrow(new HttpClientErrorException(HttpStatus.NOT_FOUND));
 
     // When
@@ -81,7 +81,7 @@ class BrokerEntityClientTest {
 
     Mockito.when(organizationApisHolder.getBrokerEntityControllerApi(accessToken))
       .thenReturn(brokerEntityControllerApiMock);
-    Mockito.when(brokerEntityControllerApiMock.getItemResourceBrokerGet(brokerId.toString()))
+    Mockito.when(brokerEntityControllerApiMock.crudGetBroker(brokerId.toString()))
       .thenThrow(expectedException);
 
     // When
@@ -100,7 +100,7 @@ class BrokerEntityClientTest {
 
     Mockito.when(organizationApisHolder.getBrokerEntityControllerApi(accessToken))
       .thenReturn(brokerEntityControllerApiMock);
-    Mockito.when(brokerEntityControllerApiMock.getItemResourceBrokerGet(brokerId.toString()))
+    Mockito.when(brokerEntityControllerApiMock.crudGetBroker(brokerId.toString()))
       .thenThrow(expectedException);
 
     // When

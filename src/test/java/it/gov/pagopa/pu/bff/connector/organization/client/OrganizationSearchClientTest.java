@@ -44,7 +44,7 @@ class OrganizationSearchClientTest {
 
     Mockito.when(organizationApisHolder.getOrganizationSearchControllerApi(accessToken))
       .thenReturn(organizationSearchControllerApiMock);
-    Mockito.when(organizationSearchControllerApiMock.executeSearchOrganizationGet(orgIpaCode))
+    Mockito.when(organizationSearchControllerApiMock.crudOrganizationsFindByIpaCode(orgIpaCode))
       .thenReturn(expectedResult);
 
     // When
@@ -62,7 +62,7 @@ class OrganizationSearchClientTest {
 
     Mockito.when(organizationApisHolder.getOrganizationSearchControllerApi(accessToken))
       .thenReturn(organizationSearchControllerApiMock);
-    Mockito.when(organizationSearchControllerApiMock.executeSearchOrganizationGet(orgIpaCode))
+    Mockito.when(organizationSearchControllerApiMock.crudOrganizationsFindByIpaCode(orgIpaCode))
       .thenThrow(new HttpClientErrorException(HttpStatus.NOT_FOUND));
 
     // When
@@ -81,7 +81,7 @@ class OrganizationSearchClientTest {
 
     Mockito.when(organizationApisHolder.getOrganizationSearchControllerApi(accessToken))
       .thenReturn(organizationSearchControllerApiMock);
-    Mockito.when(organizationSearchControllerApiMock.executeSearchOrganizationGet(orgIpaCode))
+    Mockito.when(organizationSearchControllerApiMock.crudOrganizationsFindByIpaCode(orgIpaCode))
       .thenThrow(expectedException);
 
     // When
@@ -100,7 +100,7 @@ class OrganizationSearchClientTest {
 
     Mockito.when(organizationApisHolder.getOrganizationSearchControllerApi(accessToken))
       .thenReturn(organizationSearchControllerApiMock);
-    Mockito.when(organizationSearchControllerApiMock.executeSearchOrganizationGet(orgIpaCode))
+    Mockito.when(organizationSearchControllerApiMock.crudOrganizationsFindByIpaCode(orgIpaCode))
       .thenThrow(expectedException);
 
     // When

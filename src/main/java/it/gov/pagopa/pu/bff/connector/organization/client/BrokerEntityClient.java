@@ -20,7 +20,7 @@ public class BrokerEntityClient {
   public Broker getBrokerById(Long id, String accessToken) {
     try {
       return organizationApisHolder.getBrokerEntityControllerApi(accessToken)
-        .getItemResourceBrokerGet(String.valueOf(id));
+        .crudGetBroker(String.valueOf(id));
     } catch (HttpClientErrorException e) {
       if (e.getStatusCode() == HttpStatus.NOT_FOUND) {
         log.warn("Broker with id {} not found", id);

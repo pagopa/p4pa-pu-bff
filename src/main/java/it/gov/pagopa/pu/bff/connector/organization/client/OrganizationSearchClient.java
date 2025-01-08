@@ -20,7 +20,7 @@ public class OrganizationSearchClient {
   public Organization getOrganizationByIpaCode(String ipaCode, String accessToken) {
     try {
       return organizationApisHolder.getOrganizationSearchControllerApi(accessToken)
-        .executeSearchOrganizationGet(ipaCode);
+        .crudOrganizationsFindByIpaCode(ipaCode);
     } catch (HttpClientErrorException e) {
       if (e.getStatusCode() == HttpStatus.NOT_FOUND) {
         log.warn("Organization with IPA code {} not found", ipaCode);

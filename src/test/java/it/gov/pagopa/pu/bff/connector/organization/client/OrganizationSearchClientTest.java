@@ -2,7 +2,7 @@ package it.gov.pagopa.pu.bff.connector.organization.client;
 
 import it.gov.pagopa.pu.bff.connector.organization.config.OrganizationApisHolder;
 import it.gov.pagopa.pu.p4pa_organization.controller.generated.OrganizationSearchControllerApi;
-import it.gov.pagopa.pu.p4pa_organization.dto.generated.EntityModelOrganization;
+import it.gov.pagopa.pu.p4pa_organization.dto.generated.Organization;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -40,7 +40,7 @@ class OrganizationSearchClientTest {
     // Given
     String orgIpaCode = "ORGIPACODE";
     String accessToken = "ACCESSTOKEN";
-    EntityModelOrganization expectedResult = new EntityModelOrganization();
+    Organization expectedResult = new Organization();
 
     Mockito.when(organizationApisHolder.getOrganizationSearchControllerApi(accessToken))
       .thenReturn(organizationSearchControllerApiMock);
@@ -48,7 +48,7 @@ class OrganizationSearchClientTest {
       .thenReturn(expectedResult);
 
     // When
-    EntityModelOrganization result = organizationSearchClient.getOrganizationByIpaCode(orgIpaCode, accessToken);
+    Organization result = organizationSearchClient.getOrganizationByIpaCode(orgIpaCode, accessToken);
 
     // Then
     Assertions.assertSame(expectedResult, result);
@@ -66,7 +66,7 @@ class OrganizationSearchClientTest {
       .thenThrow(new HttpClientErrorException(HttpStatus.NOT_FOUND));
 
     // When
-    EntityModelOrganization result = organizationSearchClient.getOrganizationByIpaCode(orgIpaCode, accessToken);
+    Organization result = organizationSearchClient.getOrganizationByIpaCode(orgIpaCode, accessToken);
 
     // Then
     Assertions.assertNull(result);

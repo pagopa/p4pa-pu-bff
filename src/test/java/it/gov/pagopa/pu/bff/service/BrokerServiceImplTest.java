@@ -9,8 +9,8 @@ import it.gov.pagopa.pu.bff.dto.generated.ConfigFE;
 import it.gov.pagopa.pu.bff.mapper.PersonalisationFE2ConfigFEMapper;
 import it.gov.pagopa.pu.bff.service.broker.BrokerServiceImpl;
 import it.gov.pagopa.pu.bff.util.TestUtils;
-import it.gov.pagopa.pu.p4pa_organization.dto.generated.EntityModelBroker;
-import it.gov.pagopa.pu.p4pa_organization.dto.generated.EntityModelOrganization;
+import it.gov.pagopa.pu.p4pa_organization.dto.generated.Broker;
+import it.gov.pagopa.pu.p4pa_organization.dto.generated.Organization;
 import it.gov.pagopa.pu.p4pa_organization.dto.generated.PersonalisationFe;
 import it.gov.pagopa.pu.p4paauth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.p4paauth.dto.generated.UserOrganizationRoles;
@@ -41,8 +41,8 @@ class BrokerServiceImplTest {
   private PersonalisationFE2ConfigFEMapper personalisationFE2ConfigFEMapperMock;
   private BrokerServiceImpl brokerService;
 
-  private EntityModelOrganization entityModelOrganization;
-  private EntityModelBroker entityModelBroker;
+  private Organization entityModelOrganization;
+  private Broker entityModelBroker;
   private PersonalisationFe personalisationFe;
 
   private final String accessToken = "TOKEN";
@@ -57,10 +57,10 @@ class BrokerServiceImplTest {
     UserInfo userInfo = new UserInfo();
     userInfo.setOrganizations(Collections.singletonList(userOrganizationRoles));
 
-    entityModelOrganization = new EntityModelOrganization();
+    entityModelOrganization = new Organization();
     entityModelOrganization.setBrokerId(1L);
 
-    entityModelBroker = new EntityModelBroker();
+    entityModelBroker = new Broker();
     personalisationFe = new PersonalisationFe();
     entityModelBroker.setPersonalisationFe(personalisationFe);
 

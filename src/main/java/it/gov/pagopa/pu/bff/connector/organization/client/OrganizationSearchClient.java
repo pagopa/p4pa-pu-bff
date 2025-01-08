@@ -1,7 +1,7 @@
 package it.gov.pagopa.pu.bff.connector.organization.client;
 
 import it.gov.pagopa.pu.bff.connector.organization.config.OrganizationApisHolder;
-import it.gov.pagopa.pu.p4pa_organization.dto.generated.EntityModelOrganization;
+import it.gov.pagopa.pu.p4pa_organization.dto.generated.Organization;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -17,7 +17,7 @@ public class OrganizationSearchClient {
         this.organizationApisHolder = organizationApisHolder;
     }
 
-  public EntityModelOrganization getOrganizationByIpaCode(String ipaCode, String accessToken) {
+  public Organization getOrganizationByIpaCode(String ipaCode, String accessToken) {
     try {
       return organizationApisHolder.getOrganizationSearchControllerApi(accessToken)
         .executeSearchOrganizationGet(ipaCode);

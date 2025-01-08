@@ -1,7 +1,7 @@
 package it.gov.pagopa.pu.bff.connector.organization.client;
 
 import it.gov.pagopa.pu.bff.connector.organization.config.OrganizationApisHolder;
-import it.gov.pagopa.pu.p4pa_organization.dto.generated.EntityModelBroker;
+import it.gov.pagopa.pu.p4pa_organization.dto.generated.Broker;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -17,7 +17,7 @@ public class BrokerEntityClient {
         this.organizationApisHolder = organizationApisHolder;
     }
 
-  public EntityModelBroker getBrokerById(Long id, String accessToken) {
+  public Broker getBrokerById(Long id, String accessToken) {
     try {
       return organizationApisHolder.getBrokerEntityControllerApi(accessToken)
         .getItemResourceBrokerGet(String.valueOf(id));

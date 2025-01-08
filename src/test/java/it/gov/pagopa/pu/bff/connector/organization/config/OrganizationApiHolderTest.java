@@ -2,8 +2,8 @@ package it.gov.pagopa.pu.bff.connector.organization.config;
 
 import it.gov.pagopa.pu.bff.connector.BaseApiHolderTest;
 import it.gov.pagopa.pu.p4pa_organization.controller.ApiClient;
-import it.gov.pagopa.pu.p4pa_organization.dto.generated.EntityModelBroker;
-import it.gov.pagopa.pu.p4pa_organization.dto.generated.EntityModelOrganization;
+import it.gov.pagopa.pu.p4pa_organization.dto.generated.Broker;
+import it.gov.pagopa.pu.p4pa_organization.dto.generated.Organization;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -44,7 +44,7 @@ class OrganizationApiHolderTest extends BaseApiHolderTest {
     assertAuthenticationShouldBeSetInThreadSafeMode(
       accessToken -> organizationApisHolder.getOrganizationSearchControllerApi(accessToken)
         .executeSearchOrganizationGet("IPACODE"),
-      EntityModelOrganization.class,
+      Organization.class,
       organizationApisHolder::unload);
   }
 
@@ -53,7 +53,7 @@ class OrganizationApiHolderTest extends BaseApiHolderTest {
     assertAuthenticationShouldBeSetInThreadSafeMode(
       accessToken -> organizationApisHolder.getBrokerEntityControllerApi(accessToken)
         .getItemResourceBrokerGet("BROKERID"),
-      EntityModelBroker.class,
+      Broker.class,
       organizationApisHolder::unload);
   }
 

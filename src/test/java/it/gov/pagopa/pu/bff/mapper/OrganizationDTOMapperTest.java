@@ -2,7 +2,7 @@ package it.gov.pagopa.pu.bff.mapper;
 
 import it.gov.pagopa.pu.bff.dto.generated.OrganizationDTO;
 import it.gov.pagopa.pu.bff.util.TestUtils;
-import it.gov.pagopa.pu.p4pa_organization.dto.generated.EntityModelOrganization;
+import it.gov.pagopa.pu.p4pa_organization.dto.generated.Organization;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -20,7 +20,7 @@ class OrganizationDTOMapperTest {
 
   @Test
   void testMapToOrganizationDTO() {
-    EntityModelOrganization organization = new EntityModelOrganization();
+    Organization organization = new Organization();
     organization.setOrganizationId(123L);
     organization.setIpaCode("testIpaCode");
     organization.setOrgName("Test Organization");
@@ -40,7 +40,7 @@ class OrganizationDTOMapperTest {
 
   @Test
   void testMapToOrganizationDTO_EmptyRoles() {
-    EntityModelOrganization organization = new EntityModelOrganization();
+    Organization organization = new Organization();
     organization.setOrganizationId(123L);
     organization.setIpaCode("testIpaCode");
     organization.setOrgName("Test Organization");

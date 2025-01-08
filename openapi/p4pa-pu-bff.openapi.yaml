@@ -13,8 +13,6 @@ paths:
         - Organizations
       summary: "Retrieve the list of organizations"
       operationId: getOrganizations
-      security:
-        - bearerAuth: [ ]
       responses:
         '200':
           description: OK
@@ -36,8 +34,6 @@ paths:
         - Brokers
       summary: "Retrieve application information for FE"
       operationId: getBrokerConfig
-      security:
-        - bearerAuth: [ ]
       responses:
         '200':
           description: OK
@@ -51,6 +47,8 @@ paths:
           description: Forbidden - Access denied
         '500':
           description: Internal Server Error
+security:
+  - bearerAuth: []
 components:
   securitySchemes:
     bearerAuth:

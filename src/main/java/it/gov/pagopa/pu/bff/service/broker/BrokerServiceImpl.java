@@ -5,8 +5,8 @@ import it.gov.pagopa.pu.bff.connector.organization.client.BrokerEntityClient;
 import it.gov.pagopa.pu.bff.connector.organization.client.OrganizationSearchClient;
 import it.gov.pagopa.pu.bff.dto.generated.ConfigFE;
 import it.gov.pagopa.pu.bff.mapper.PersonalisationFE2ConfigFEMapper;
-import it.gov.pagopa.pu.p4pa_organization.dto.generated.EntityModelBroker;
-import it.gov.pagopa.pu.p4pa_organization.dto.generated.EntityModelOrganization;
+import it.gov.pagopa.pu.p4pa_organization.dto.generated.Broker;
+import it.gov.pagopa.pu.p4pa_organization.dto.generated.Organization;
 import it.gov.pagopa.pu.p4paauth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.p4paauth.dto.generated.UserOrganizationRoles;
 import org.apache.commons.lang3.StringUtils;
@@ -43,7 +43,7 @@ public class BrokerServiceImpl implements BrokerService {
       );
 
     if (StringUtils.isNotBlank(orgIpaCode)) {
-      EntityModelOrganization organization = organizationSearchClient.getOrganizationByIpaCode(orgIpaCode, accessToken);
+      Organization organization = organizationSearchClient.getOrganizationByIpaCode(orgIpaCode, accessToken);
       if (organization != null && organization.getBrokerId() != null) {
         return getFEConfiguration(brokerEntityClient.getBrokerById(organization.getBrokerId(), accessToken));
       }
@@ -51,7 +51,7 @@ public class BrokerServiceImpl implements BrokerService {
     return this.defaultFEConfig;
   }
 
-  public ConfigFE getFEConfiguration(EntityModelBroker broker) {
+  public ConfigFE getFEConfiguration(Broker broker) {
     if (broker != null) {
       return personalisationFE2ConfigFEMapper.mapPersonalisationFE2ConfigFE(broker.getPersonalisationFe());
     } else {

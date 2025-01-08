@@ -2,7 +2,7 @@ package it.gov.pagopa.pu.bff.connector.organization.client;
 
 import it.gov.pagopa.pu.bff.connector.organization.config.OrganizationApisHolder;
 import it.gov.pagopa.pu.p4pa_organization.controller.generated.BrokerEntityControllerApi;
-import it.gov.pagopa.pu.p4pa_organization.dto.generated.EntityModelBroker;
+import it.gov.pagopa.pu.p4pa_organization.dto.generated.Broker;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -40,7 +40,7 @@ class BrokerEntityClientTest {
     // Given
     Long brokerId = 0L;
     String accessToken = "ACCESSTOKEN";
-    EntityModelBroker expectedResult = new EntityModelBroker();
+    Broker expectedResult = new Broker();
 
     Mockito.when(organizationApisHolder.getBrokerEntityControllerApi(accessToken))
       .thenReturn(brokerEntityControllerApiMock);
@@ -48,7 +48,7 @@ class BrokerEntityClientTest {
       .thenReturn(expectedResult);
 
     // When
-    EntityModelBroker result = brokerEntityClient.getBrokerById(brokerId, accessToken);
+    Broker result = brokerEntityClient.getBrokerById(brokerId, accessToken);
 
     // Then
     Assertions.assertSame(expectedResult, result);
@@ -66,7 +66,7 @@ class BrokerEntityClientTest {
       .thenThrow(new HttpClientErrorException(HttpStatus.NOT_FOUND));
 
     // When
-    EntityModelBroker result = brokerEntityClient.getBrokerById(brokerId, accessToken);
+    Broker result = brokerEntityClient.getBrokerById(brokerId, accessToken);
 
     // Then
     Assertions.assertNull(result);

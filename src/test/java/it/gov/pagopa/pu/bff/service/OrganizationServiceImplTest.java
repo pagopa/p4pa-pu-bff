@@ -4,7 +4,7 @@ import it.gov.pagopa.pu.bff.connector.organization.client.OrganizationSearchClie
 import it.gov.pagopa.pu.bff.dto.generated.OrganizationDTO;
 import it.gov.pagopa.pu.bff.mapper.OrganizationDTOMapper;
 import it.gov.pagopa.pu.bff.service.organization.OrganizationServiceImpl;
-import it.gov.pagopa.pu.p4pa_organization.dto.generated.EntityModelOrganization;
+import it.gov.pagopa.pu.p4pa_organization.dto.generated.Organization;
 import it.gov.pagopa.pu.p4paauth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.p4paauth.dto.generated.UserOrganizationRoles;
 import org.junit.jupiter.api.BeforeEach;
@@ -31,7 +31,7 @@ class OrganizationServiceImplTest {
   private OrganizationServiceImpl organizationService;
   private UserInfo userInfo;
   private UserOrganizationRoles userOrganizationRoles;
-  private EntityModelOrganization entityModelOrganization;
+  private Organization entityModelOrganization;
   private OrganizationDTO organizationDTO;
   private final String accessToken = "TOKEN";
 
@@ -44,7 +44,7 @@ class OrganizationServiceImplTest {
     userInfo = new UserInfo();
     userInfo.setOrganizations(Collections.singletonList(userOrganizationRoles));
 
-    entityModelOrganization = new EntityModelOrganization();
+    entityModelOrganization = new Organization();
     entityModelOrganization.setOrganizationId(123L);
     entityModelOrganization.setIpaCode("testIpaCode");
     entityModelOrganization.setOrgName("Test Organization");
@@ -63,7 +63,7 @@ class OrganizationServiceImplTest {
   void testGetOrganizations() {
     Mockito.when(organizationSearchClientMock.getOrganizationByIpaCode(anyString(), anyString()))
       .thenReturn(entityModelOrganization);
-    Mockito.when(organizationDTOMapperMock.mapToOrganizationDTO(any(EntityModelOrganization.class), anyList()))
+    Mockito.when(organizationDTOMapperMock.mapToOrganizationDTO(any(Organization.class), anyList()))
       .thenReturn(organizationDTO);
 
     List<OrganizationDTO> result = organizationService.getOrganizations(userInfo, accessToken);

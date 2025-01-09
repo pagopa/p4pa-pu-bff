@@ -1,6 +1,5 @@
 package it.gov.pagopa.pu.bff.config;
 
-import it.gov.pagopa.pu.bff.model.ServiceStatus;
 import java.util.Map;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -14,5 +13,13 @@ import org.springframework.stereotype.Component;
 @AllArgsConstructor
 @NoArgsConstructor
 public class MonitoringServiceConf {
-  private Map<String, ServiceStatus> services;
+  private Map<String, ServiceConfig> services;
+
+  @Data
+  @AllArgsConstructor
+  @NoArgsConstructor
+  public static class ServiceConfig {
+    private String serviceName;
+    private String url;
+  }
 }

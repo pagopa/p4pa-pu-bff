@@ -26,9 +26,9 @@ monitoring:
   services:
     auth:
       serviceName: "P4PA-Auth Service"
-      url: "\${AUTH_SERVER_BASE_URL:https://hub.internal.dev.p4pa.pagopa.it/p4paauth}/actuator/health/readiness"
+      url: "\${AUTH_SERVER_BASE_URL:}/actuator/health/readiness"
     organization:
-      serviceName: "P4PA Organization Service"
+      serviceName: "P4PA-Organization Service"
       url: "\${ORGANIZATION_BASE_URL:}/actuator/health/readiness"
 
 app:
@@ -46,6 +46,6 @@ rest:
     connect-millis: "\${DEFAULT_REST_CONNECT_TIMEOUT_MILLIS:120000}"
     read-millis: "\${DEFAULT_REST_READ_TIMEOUT_MILLIS:120000}"
   auth:
-    base-url: "\${AUTH_SERVER_BASE_URL:}"
+    base-url: "\${AUTH_SERVER_BASE_URL:}/payhub"
   organization:
     base-url: "\${ORGANIZATION_BASE_URL:}"

@@ -29,7 +29,7 @@ public class WebSecurityConfig {
           "/swagger-ui.html",
           "/swagger-ui/**",
           "/v3/api-docs/**",
-          "/health/**"
+          "/bff/health/**"
         ).permitAll()
 
         // Actuator endpoints

@@ -22,6 +22,14 @@ management:
         exposure.include: "*"
       web:
         exposure.include: info, health
+monitoring:
+  services:
+    auth:
+      serviceName: "P4PA-Auth Service"
+      url: "\${AUTH_SERVER_BASE_URL:https://hub.internal.dev.p4pa.pagopa.it/p4paauth}/actuator/health/readiness"
+    organization:
+      serviceName: "P4PA Organization Service"
+      url: "\${ORGANIZATION_BASE_URL:}/actuator/health/readiness"
 
 app:
   default-config-fe:

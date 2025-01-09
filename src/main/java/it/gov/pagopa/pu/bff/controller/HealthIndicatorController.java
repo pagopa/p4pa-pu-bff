@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class HealthIndicatorController {
 
   @Autowired
-  HealthIndicatorService healthIndicatorService;
+  private HealthIndicatorService healthIndicatorService;
 
   @GetMapping("/health")
   public CompletableFuture<List<ServiceStatus>> getStatus() {

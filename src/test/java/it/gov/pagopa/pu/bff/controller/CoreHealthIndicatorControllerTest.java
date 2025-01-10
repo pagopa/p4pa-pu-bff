@@ -74,7 +74,7 @@ class CoreHealthIndicatorControllerTest {
     // Then
     mockMvc.perform(get("/bff/health")
         .accept(MediaType.APPLICATION_JSON))
-        .andExpect(status().isServiceUnavailable()) // Verifica lo stato HTTP 503
+        .andExpect(status().isServiceUnavailable())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(content().json(
         "[{\"serviceName\":\"ServiceA\",\"statusMessage\":\"UP\"},{\"serviceName\":\"ServiceB\",\"statusMessage\":\"DOWN\"}]"));

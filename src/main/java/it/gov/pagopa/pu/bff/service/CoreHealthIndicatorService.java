@@ -5,7 +5,6 @@ import it.gov.pagopa.pu.bff.dto.generated.ServiceStatus;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import org.springframework.boot.web.client.RestTemplateBuilder;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -21,7 +20,6 @@ public class CoreHealthIndicatorService {
     this.restTemplate = restTemplateBuilder.build();
   }
 
-  @Async
   public List<ServiceStatus> getStatus() {
     List<CompletableFuture<ServiceStatus>> checks = monitoringServiceConf.getServices().values().stream()
       .map(serviceConfig -> checkServiceAsync(serviceConfig.getUrl(),

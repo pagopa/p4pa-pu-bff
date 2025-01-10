@@ -27,6 +27,13 @@ public class BrokerServiceImpl implements BrokerService {
 
   @Override
   public ConfigFE getBrokerConfig(UserInfo user, String accessToken) {
+    if (user.getBrokerId() == null) {
+      log.warn("BrokerId is null, returning default configuration.");
+      ConfigFE defaultConfig = getFEConfiguration(null);
+      defaultConfig.setCanManageUsers(user.getCanManageUsers());
+      return defaultConfig;
+    }
+
     log.info("BrokerId retrieved from UserInfo: {}", user.getBrokerId());
     Broker broker = brokerEntityClient.getBrokerById(user.getBrokerId(), accessToken);
     ConfigFE configFE = getFEConfiguration(broker);

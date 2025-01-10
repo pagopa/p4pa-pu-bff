@@ -215,7 +215,7 @@
 									"\r",
 									"pm.response.json().forEach((item) => {\r",
 									"    pm.expect(item.serviceName).not.null;\r",
-									"    pm.expect(item.status).to.eql(\"\\\"status\\\":\\\"UP\\\"\");\r",
+									"    pm.expect(item.statusMessage).to.eql(\"\\\"status\\\":\\\"UP\\\"\");\r",
 									"})"
 								],
 								"type": "text/javascript",

@@ -41,21 +41,42 @@ class CoreHealthIndicatorControllerTest {
 
   @BeforeEach
   void setUp() {
-    mockServiceStatuses = Arrays.asList(
-      new ServiceStatus("ServiceA", "UP"),
-      new ServiceStatus("ServiceB", "DOWN")
-    );
   }
 
   @Test
   void givenValidRequestWhenGetStatusThenOk() throws Exception {
+    // When
+    mockServiceStatuses = Arrays.asList(
+      new ServiceStatus("ServiceA", "UP"),
+      new ServiceStatus("ServiceB", "UP")
+    );
+
     Mockito.when(coreHealthIndicatorService.getStatus()).thenReturn(mockServiceStatuses);
 
+    // Then
     mockMvc.perform(get("/bff/health")
         .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(content().json(
-          "[{\"serviceName\":\"ServiceA\",\"status\":\"UP\"},{\"serviceName\":\"ServiceB\",\"status\":\"DOWN\"}]"));
+          "[{\"serviceName\":\"ServiceA\",\"statusMessage\":\"UP\"},{\"serviceName\":\"ServiceB\",\"statusMessage\":\"UP\"}]"));
+  }
+
+  @Test
+  void givenServiceDownWhenGetStatusThenServiceUnavailable() throws Exception {
+    // When
+    mockServiceStatuses = Arrays.asList(
+      new ServiceStatus("ServiceA", "UP"),
+      new ServiceStatus("ServiceB", "DOWN")
+    );
+    Mockito.when(coreHealthIndicatorService.getStatus()).thenReturn(mockServiceStatuses);
+
+    // Then
+    mockMvc.perform(get("/bff/health")
+        .accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isServiceUnavailable()) // Verifica lo stato HTTP 503
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(content().json(
+        "[{\"serviceName\":\"ServiceA\",\"statusMessage\":\"UP\"},{\"serviceName\":\"ServiceB\",\"statusMessage\":\"DOWN\"}]"));
   }
 }

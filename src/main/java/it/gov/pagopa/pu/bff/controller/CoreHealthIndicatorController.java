@@ -22,6 +22,13 @@ public class CoreHealthIndicatorController implements MonitoringApi {
   @Override
   public ResponseEntity<List<ServiceStatus>> getHealthStatus() {
     log.info("Check services status");
-    return ResponseEntity.ok(coreHealthIndicatorService.getStatus());
+    List<ServiceStatus> services = coreHealthIndicatorService.getStatus();
+    boolean allServicesUp = services.stream()
+      .allMatch(status -> status.getStatusMessage().contains("UP"));
+    if (allServicesUp) {
+      return ResponseEntity.ok(services);
+    } else {
+      return ResponseEntity.status(503).body(services);
+    }
   }
 }

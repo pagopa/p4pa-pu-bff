@@ -145,6 +145,6 @@ components:
         serviceName:
           type: string
           description: Service Name
-        status:
+        statusMessage:
           type: string
           description: Service status

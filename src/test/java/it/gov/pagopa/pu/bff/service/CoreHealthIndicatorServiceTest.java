@@ -57,6 +57,6 @@ class CoreHealthIndicatorServiceTest {
 
     ServiceStatus status = result.getFirst();
     assertEquals("P4PA", status.getServiceName());
-    assertEquals("\"UP\"", status.getStatus());
+    assertEquals("\"UP\"", status.getStatusMessage());
   }
 }

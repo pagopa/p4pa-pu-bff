@@ -9,7 +9,6 @@ import it.gov.pagopa.pu.bff.security.JwtAuthenticationFilter;
 import it.gov.pagopa.pu.bff.service.CoreHealthIndicatorService;
 import java.util.Arrays;
 import java.util.List;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mockito;
@@ -39,10 +38,6 @@ class CoreHealthIndicatorControllerTest {
 
   private List<ServiceStatus> mockServiceStatuses;
 
-  @BeforeEach
-  void setUp() {
-  }
-
   @Test
   void givenValidRequestWhenGetStatusThenOk() throws Exception {
     // When
@@ -54,7 +49,7 @@ class CoreHealthIndicatorControllerTest {
     Mockito.when(coreHealthIndicatorService.getStatus()).thenReturn(mockServiceStatuses);
 
     // Then
-    mockMvc.perform(get("/bff/health")
+    mockMvc.perform(get("/bff/core-health")
         .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -72,7 +67,7 @@ class CoreHealthIndicatorControllerTest {
     Mockito.when(coreHealthIndicatorService.getStatus()).thenReturn(mockServiceStatuses);
 
     // Then
-    mockMvc.perform(get("/bff/health")
+    mockMvc.perform(get("/bff/core-health")
         .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isServiceUnavailable())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))

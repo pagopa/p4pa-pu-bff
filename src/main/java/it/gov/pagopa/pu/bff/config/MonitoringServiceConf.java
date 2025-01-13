@@ -13,13 +13,5 @@ import org.springframework.stereotype.Component;
 @AllArgsConstructor
 @NoArgsConstructor
 public class MonitoringServiceConf {
-  private Map<String, ServiceConfig> services;
-
-  @Data
-  @AllArgsConstructor
-  @NoArgsConstructor
-  public static class ServiceConfig {
-    private String serviceName;
-    private String url;
-  }
+  private Map<String, CoreServiceHealthStatusConfig> services;
 }

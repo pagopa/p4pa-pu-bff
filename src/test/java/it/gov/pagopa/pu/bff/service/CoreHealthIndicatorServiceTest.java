@@ -6,6 +6,7 @@ import com.github.tomakehurst.wiremock.WireMockServer;
 import com.maciejwalkowiak.wiremock.spring.ConfigureWireMock;
 import com.maciejwalkowiak.wiremock.spring.EnableWireMock;
 import com.maciejwalkowiak.wiremock.spring.InjectWireMock;
+import it.gov.pagopa.pu.bff.config.CoreServiceHealthStatusConfig;
 import it.gov.pagopa.pu.bff.config.MonitoringServiceConf;
 import it.gov.pagopa.pu.bff.dto.generated.ServiceStatus;
 import java.util.List;
@@ -47,7 +48,7 @@ class CoreHealthIndicatorServiceTest {
   void givenValidRequestWhenGetStatusThenOk() {
     // When
     Mockito.when(monitoringServiceConf.getServices()).thenReturn(Map.of(
-      "P4PA", new MonitoringServiceConf.ServiceConfig("P4PA", "http://localhost:8888/actuator/health/readiness")
+      "P4PA", new CoreServiceHealthStatusConfig("P4PA", "http://localhost:8888/actuator/health/readiness")
     ));
 
     List<ServiceStatus> result = coreHealthIndicatorService.getStatus();

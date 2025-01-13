@@ -9,7 +9,14 @@ spring:
     threads:
       virtual:
         enabled: "\${VIRTUAL_THREADS_ENABLED:true}"
-
+monitoring:
+    services:
+      auth:
+        serviceName: "P4PA-Auth Service"
+        url: "\${AUTH_SERVER_BASE_URL:}/actuator/health/readiness"
+      organization:
+        serviceName: "P4PA-Organization Service"
+        url: "\${ORGANIZATION_BASE_URL:}/actuator/health/readiness"
 management:
     endpoints:
       jmx:
@@ -56,6 +63,6 @@ rest:
     connect-millis: "\${DEFAULT_REST_CONNECT_TIMEOUT_MILLIS:120000}"
     read-millis: "\${DEFAULT_REST_READ_TIMEOUT_MILLIS:120000}"
   auth:
-    base-url: "\${AUTH_SERVER_BASE_URL:}"
+    base-url: "\${AUTH_SERVER_BASE_URL:}/payhub"
   organization:
     base-url: "\${ORGANIZATION_BASE_URL:}"

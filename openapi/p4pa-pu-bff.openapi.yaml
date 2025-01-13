@@ -47,7 +47,7 @@ paths:
           description: Forbidden - Access denied
         '500':
           description: Internal Server Error
-  /health:
+  /core-health:
     get:
       tags:
         - Monitoring
@@ -61,8 +61,8 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/ServiceStatus'
-        '500':
-          description: Internal Server Error
+        '503':
+          description: Service is unavailable
 security:
   - bearerAuth: []
 components:

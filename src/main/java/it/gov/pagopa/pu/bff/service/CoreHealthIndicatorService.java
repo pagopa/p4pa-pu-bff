@@ -1,5 +1,6 @@
 package it.gov.pagopa.pu.bff.service;
 
+import it.gov.pagopa.pu.bff.config.CoreServiceHealthStatusConfig;
 import it.gov.pagopa.pu.bff.config.MonitoringServiceConf;
 import it.gov.pagopa.pu.bff.dto.generated.ServiceStatus;
 import java.util.List;
@@ -22,8 +23,7 @@ public class CoreHealthIndicatorService {
 
   public List<ServiceStatus> getStatus() {
     List<CompletableFuture<ServiceStatus>> checks = monitoringServiceConf.getServices().values().stream()
-      .map(serviceConfig -> checkServiceAsync(serviceConfig.getUrl(),
-        serviceConfig.getServiceName()))
+      .map(this::checkServiceAsync)
       .toList();
 
     return CompletableFuture.allOf(checks.toArray(new CompletableFuture[0]))
@@ -33,13 +33,14 @@ public class CoreHealthIndicatorService {
       ).join();
   }
 
-  private CompletableFuture<ServiceStatus> checkServiceAsync(String url, String serviceName) {
+  private CompletableFuture<ServiceStatus> checkServiceAsync(
+    CoreServiceHealthStatusConfig coreServiceHealthStatusConfig) {
     return CompletableFuture.supplyAsync(() -> {
       try {
-        String response = restTemplate.getForObject(url, String.class);
-        return new ServiceStatus(serviceName, response);
+        String response = restTemplate.getForObject(coreServiceHealthStatusConfig.getUrl(), String.class);
+        return new ServiceStatus(coreServiceHealthStatusConfig.getServiceName(), response);
       } catch (Exception e) {
-        return new ServiceStatus(serviceName,"Unreachable: " + e.getMessage());
+        return new ServiceStatus(coreServiceHealthStatusConfig.getServiceName(), "Unreachable: " + e.getMessage());
       }
     });
   }

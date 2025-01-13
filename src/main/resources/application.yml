@@ -11,25 +11,35 @@ spring:
         enabled: "\${VIRTUAL_THREADS_ENABLED:true}"
 
 management:
+    endpoints:
+      jmx:
+        exposure.include: "*"
+      web:
+        exposure:
+          include: health, info, prometheus, metrics
+        base-path: /actuator
     endpoint:
       health:
         probes.enabled: true
         group:
           readiness.include: "*"
           liveness.include: livenessState,diskSpace,ping
-    endpoints:
-      jmx:
-        exposure.include: "*"
-      web:
-        exposure.include: info, health
-monitoring:
-  services:
-    auth:
-      serviceName: "P4PA-Auth Service"
-      url: "\${AUTH_SERVER_BASE_URL:}/actuator/health/readiness"
-    organization:
-      serviceName: "P4PA-Organization Service"
-      url: "\${ORGANIZATION_BASE_URL:}/actuator/health/readiness"
+      prometheus:
+        enabled: true
+    metrics:
+      tags:
+        application: ${artifactId}
+      export:
+        prometheus:
+          enabled: true
+          step: 1m
+          descriptions: true
+      enable:
+        jvm: true
+        process: true
+        system: true
+        http: true
+        logback: true
 
 app:
   default-config-fe:
@@ -46,6 +56,6 @@ rest:
     connect-millis: "\${DEFAULT_REST_CONNECT_TIMEOUT_MILLIS:120000}"
     read-millis: "\${DEFAULT_REST_READ_TIMEOUT_MILLIS:120000}"
   auth:
-    base-url: "\${AUTH_SERVER_BASE_URL:}/payhub"
+    base-url: "\${AUTH_SERVER_BASE_URL:}"
   organization:
     base-url: "\${ORGANIZATION_BASE_URL:}"

@@ -1,9 +1,10 @@
 {
 	"info": {
-		"_postman_id": "3ff2d89f-c05c-42c2-b319-6f6b67bd1a51",
+		"_postman_id": "476b284d-d6a9-429e-b31a-5b6837de4b9f",
 		"name": "PU-BFF",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "36568841"
+		"_exporter_id": "15747968",
+		"_collection_link": "https://warped-astronaut-141685.postman.co/workspace/P4PA~9a8b7dd5-97b6-4dd0-b3f5-95f25fd0b455/collection/15747968-476b284d-d6a9-429e-b31a-5b6837de4b9f?action=share&source=collection_link&creator=15747968"
 	},
 	"item": [
 		{
@@ -25,13 +26,13 @@
 									"pm.test(\"MyPay - 01_authtoken jwt - Verify response body\", function () {\r",
 									"    let jsonResponse = pm.response.json();\r",
 									"\r",
-									"    pm.expect(jsonResponse).have.property(\"accessToken\")\r",
-									"    pm.expect(jsonResponse).have.property(\"tokenType\")\r",
-									"    pm.expect(jsonResponse).have.property(\"expiresIn\")\r",
+									"    pm.expect(jsonResponse).have.property(\"access_token\")\r",
+									"    pm.expect(jsonResponse).have.property(\"token_type\")\r",
+									"    pm.expect(jsonResponse).have.property(\"expires_in\")\r",
 									"});\r",
 									"\r",
 									"let jsonResponse = pm.response.json();\r",
-									"pm.collectionVariables.set(\"accessToken\", jsonResponse.accessToken);\r",
+									"pm.collectionVariables.set(\"accessToken\", jsonResponse.access_token);\r",
 									""
 								],
 								"type": "text/javascript",
@@ -43,12 +44,11 @@
 						"method": "POST",
 						"header": [],
 						"url": {
-							"raw": "{{p4paAuthBaseUrl}}/payhub/auth/token?client_id=piattaforma-unitaria&grant_type=urn:ietf:params:oauth:grant-type:token-exchange&subject_token={{tokenExchange_subjectToken}}&subject_issuer={{tokenExchange_issuer}}&scope=openid&subject_token_type=urn:ietf:params:oauth:token-type:jwt",
+							"raw": "{{p4paAuthBaseUrl}}/auth/token?client_id=piattaforma-unitaria&grant_type=urn:ietf:params:oauth:grant-type:token-exchange&subject_token={{tokenExchange_subjectToken}}&subject_issuer={{tokenExchange_issuer}}&scope=openid&subject_token_type=urn:ietf:params:oauth:token-type:jwt",
 							"host": [
 								"{{p4paAuthBaseUrl}}"
 							],
 							"path": [
-								"payhub",
 								"auth",
 								"token"
 							],
@@ -190,50 +190,6 @@
 							],
 							"path": [
 								"organizations"
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "99_Monitoring",
-			"item": [
-				{
-					"name": "99_coreHealthIndicator",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"let jsonResponse = pm.response.json();\r",
-									"\r",
-									"pm.test(\"expected httpStatus: 200\", () => {\r",
-									"    pm.response.to.have.status(200);\r",
-									"})\r",
-									"\r",
-									"pm.response.json().forEach((item) => {\r",
-									"    pm.expect(item.serviceName).not.null;\r",
-									"    pm.expect(item.statusMessage).to.eql(\"\\\"status\\\":\\\"UP\\\"\");\r",
-									"})"
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						}
-					],
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{puBffBaseUrl}}/bff/health",
-							"host": [
-								"{{puBffBaseUrl}}"
-							],
-							"path": [
-								"bff",
-								"health"
 							]
 						}
 					},

@@ -47,6 +47,28 @@ paths:
           description: Forbidden - Access denied
         '500':
           description: Internal Server Error
+  /core-health:
+    get:
+      tags:
+        - Monitoring
+      operationId: getHealthStatus
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ServiceStatus'
+        '503':
+          description: Service is unavailable
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ServiceStatus'
 security:
   - bearerAuth: []
 components:
@@ -123,3 +145,12 @@ components:
         canManageUsers:
           type: boolean
           description: Indicates if the user can manage other users
+    ServiceStatus:
+      type: object
+      properties:
+        serviceName:
+          type: string
+          description: Service Name
+        statusMessage:
+          type: string
+          description: Service status

@@ -28,7 +28,8 @@ public class WebSecurityConfig {
         .requestMatchers(
           "/swagger-ui.html",
           "/swagger-ui/**",
-          "/v3/api-docs/**"
+          "/v3/api-docs/**",
+          "/bff/core-health/**"
         ).permitAll()
 
         // Actuator endpoints

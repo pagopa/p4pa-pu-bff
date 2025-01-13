@@ -101,15 +101,9 @@ RUN mkdir -p src/main/java && \
     chown -R ${APP_USER}:${APP_GROUP} /build && \
     chmod -R 775 /build
 
-
-
 USER ${APP_USER}
 
-RUN gradle openApiGenerateBFF dependencies --no-daemon
-
-RUN gradle openApiGenerateP4PAAUTH dependencies --no-daemon
-
-RUN gradle openApiGenerateOrganization dependencies --no-daemon
+RUN gradle dependenciesBuild dependencies --no-daemon
 
 #
 # 🏗️ Build Stage

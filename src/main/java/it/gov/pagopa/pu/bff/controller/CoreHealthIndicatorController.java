@@ -5,6 +5,7 @@ import it.gov.pagopa.pu.bff.dto.generated.ServiceStatus;
 import it.gov.pagopa.pu.bff.service.CoreHealthIndicatorService;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -28,7 +29,7 @@ public class CoreHealthIndicatorController implements MonitoringApi {
     if (allServicesUp) {
       return ResponseEntity.ok(services);
     } else {
-      return ResponseEntity.status(503).body(services);
+      return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(services);
     }
   }
 }

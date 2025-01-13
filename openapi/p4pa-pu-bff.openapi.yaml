@@ -63,6 +63,12 @@ paths:
                   $ref: '#/components/schemas/ServiceStatus'
         '503':
           description: Service is unavailable
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ServiceStatus'
 security:
   - bearerAuth: []
 components:

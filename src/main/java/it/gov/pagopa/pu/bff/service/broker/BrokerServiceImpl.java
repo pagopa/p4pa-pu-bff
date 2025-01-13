@@ -16,6 +16,7 @@ public class BrokerServiceImpl implements BrokerService {
   private final BrokerEntityClient brokerEntityClient;
   private final PersonalisationFE2ConfigFEMapper personalisationFE2ConfigFEMapper;
   private final DefaultConfigFe defaultConfigFe;
+  private final ConfigFE defaultFEConfig;
 
   public BrokerServiceImpl(BrokerEntityClient brokerEntityClient,
                            DefaultConfigFe defaultConfigFe,
@@ -23,15 +24,14 @@ public class BrokerServiceImpl implements BrokerService {
     this.brokerEntityClient = brokerEntityClient;
     this.defaultConfigFe = defaultConfigFe;
     this.personalisationFE2ConfigFEMapper = personalisationFE2ConfigFEMapper;
+    this.defaultFEConfig = getFEConfiguration(null);
   }
 
   @Override
   public ConfigFE getBrokerConfig(UserInfo user, String accessToken) {
     if (user.getBrokerId() == null) {
       log.warn("BrokerId is null, returning default configuration.");
-      ConfigFE defaultConfig = getFEConfiguration(null);
-      defaultConfig.setCanManageUsers(user.getCanManageUsers());
-      return defaultConfig;
+      return this.defaultFEConfig;
     }
 
     log.info("BrokerId retrieved from UserInfo: {}", user.getBrokerId());

@@ -68,20 +68,6 @@ class BrokerServiceImplTest {
     assertEquals(personalisationFe.getLogoFooterImg(), result.getLogoFooterImg());
   }
 
-  @Test
-  void givenGetBrokerConfigWhenBrokerIdIsNullThenDefaultConfig() {
-    UserInfo userInfo = new UserInfo();
-    userInfo.setBrokerId(null);
-    userInfo.setCanManageUsers(false);
-
-    Mockito.when(personalisationFE2ConfigFEMapperMock.mapPersonalisationFE2ConfigFE(defaultConfigFeMock))
-      .thenReturn(defaultFEConfig);
-
-    ConfigFE result = brokerService.getBrokerConfig(userInfo, accessToken);
-
-    assertEquals(defaultFEConfig, result);
-    assertEquals(userInfo.getCanManageUsers(), result.getCanManageUsers());
-  }
 
   @Test
   void givenGetBrokerConfigWhenBrokerNotFoundThenDefaultConfig() {

@@ -16,7 +16,6 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -42,11 +41,13 @@ class OrganizationControllerTest {
     SecurityContextHolder.setContext(securityContext);
 
     organizationDTOList = new ArrayList<>();
+    OrganizationDTO.OperatorRoleEnum operatorRole = OrganizationDTO.OperatorRoleEnum.ADMIN;
+
     OrganizationDTO organizationDTO = OrganizationDTO.builder()
       .organizationId(123L)
       .ipaCode("IPA001")
       .orgName("Test Organization")
-      .operatorRole(Arrays.asList("Admin", "User"))
+      .operatorRole(operatorRole)
       .build();
 
     organizationDTOList.add(organizationDTO);
@@ -61,6 +62,7 @@ class OrganizationControllerTest {
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertEquals(1, response.getBody().size());
     assertEquals("Test Organization", response.getBody().get(0).getOrgName());
+    assertEquals(OrganizationDTO.OperatorRoleEnum.ADMIN, response.getBody().get(0).getOperatorRole());
 
     verify(organizationService, times(1)).getOrganizations(any(), any());
   }

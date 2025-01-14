@@ -39,7 +39,7 @@ class OrganizationServiceImplTest {
   void setUp() {
     userOrganizationRoles = new UserOrganizationRoles();
     userOrganizationRoles.setOrganizationIpaCode("testIpaCode");
-    userOrganizationRoles.setRoles(Collections.singletonList("Admin"));
+    userOrganizationRoles.setRoles(Collections.singletonList("ROLE_ADMIN"));
 
     userInfo = new UserInfo();
     userInfo.setOrganizations(Collections.singletonList(userOrganizationRoles));
@@ -53,7 +53,7 @@ class OrganizationServiceImplTest {
       .organizationId(123L)
       .ipaCode("testIpaCode")
       .orgName("Test Organization")
-      .operatorRole(Collections.singletonList("Admin"))
+      .operatorRole(OrganizationDTO.OperatorRoleEnum.ADMIN)
       .build();
 
     organizationService = new OrganizationServiceImpl(organizationSearchClientMock, organizationDTOMapperMock);
@@ -69,10 +69,10 @@ class OrganizationServiceImplTest {
     List<OrganizationDTO> result = organizationService.getOrganizations(userInfo, accessToken);
 
     assertEquals(1, result.size());
-    assertEquals(123L, result.getFirst().getOrganizationId());
-    assertEquals("testIpaCode", result.getFirst().getIpaCode());
-    assertEquals("Test Organization", result.getFirst().getOrgName());
-    assertEquals(Collections.singletonList("Admin"), result.getFirst().getOperatorRole());
+    assertEquals(123L, result.get(0).getOrganizationId());
+    assertEquals("testIpaCode", result.get(0).getIpaCode());
+    assertEquals("Test Organization", result.get(0).getOrgName());
+    assertEquals(OrganizationDTO.OperatorRoleEnum.ADMIN, result.get(0).getOperatorRole());
   }
 
   @Test

@@ -97,9 +97,10 @@ components:
           type: string
           description: Organization name
         operatorRole:
-          type: array
-          items:
-            type: string
+          type: string
+          enum:
+              - ROLE_ADMIN
+              - ROLE_OPER
           description: Operator role
         orgLogo:
           type: string

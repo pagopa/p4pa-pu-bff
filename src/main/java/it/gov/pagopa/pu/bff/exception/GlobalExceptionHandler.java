@@ -1,6 +1,6 @@
 package it.gov.pagopa.pu.bff.exception;
 
-import it.gov.pagopa.pu.bff.dto.ErrorDTO;
+import it.gov.pagopa.pu.bff.dto.generated.ErrorDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;

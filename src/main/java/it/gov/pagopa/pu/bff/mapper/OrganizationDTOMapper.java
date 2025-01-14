@@ -11,17 +11,7 @@ import java.util.List;
 public class OrganizationDTOMapper {
 
   public OrganizationDTO mapToOrganizationDTO(Organization organization, List<String> roles) {
-
-    String operatorRoleValue = (roles != null && !roles.isEmpty()) ? roles.get(0) : null;
-
-    OrganizationDTO.OperatorRoleEnum operatorRole = null;
-    if (operatorRoleValue != null) {
-      try {
-        operatorRole = OrganizationDTO.OperatorRoleEnum.fromValue(operatorRoleValue);
-      } catch (IllegalArgumentException e) {
-        throw new InvalidOperatorRoleException("INVALID_OPERATOR_ROLE: " + operatorRoleValue);
-      }
-    }
+    OrganizationDTO.OperatorRoleEnum operatorRole = determineOperatorRole(roles);
 
     return OrganizationDTO.builder()
       .organizationId(organization.getOrganizationId())
@@ -30,6 +20,23 @@ public class OrganizationDTOMapper {
       .operatorRole(operatorRole)
       .orgLogo(organization.getOrgLogoDesc())
       .build();
+  }
+
+  private OrganizationDTO.OperatorRoleEnum determineOperatorRole(List<String> roles) {
+    if (roles == null || roles.isEmpty()) {
+      return null;
+    }
+
+    String operatorRoleValue = roles.stream()
+      .filter("ROLE_ADMIN"::equals)
+      .findFirst()
+      .orElse(roles.get(0));
+
+    try {
+      return OrganizationDTO.OperatorRoleEnum.fromValue(operatorRoleValue);
+    } catch (IllegalArgumentException e) {
+      throw new InvalidOperatorRoleException("INVALID_OPERATOR_ROLE: " + operatorRoleValue);
+    }
   }
 
 }

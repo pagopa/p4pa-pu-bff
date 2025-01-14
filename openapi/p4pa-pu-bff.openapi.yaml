@@ -28,6 +28,10 @@ paths:
           description: Forbidden - Access denied
         '500':
           description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDTO'
   /brokers/config:
     get:
       tags:
@@ -70,7 +74,7 @@ paths:
                 items:
                   $ref: '#/components/schemas/ServiceStatus'
 security:
-  - bearerAuth: []
+  - bearerAuth: [ ]
 components:
   securitySchemes:
     bearerAuth:
@@ -99,8 +103,8 @@ components:
         operatorRole:
           type: string
           enum:
-              - ROLE_ADMIN
-              - ROLE_OPER
+            - ROLE_ADMIN
+            - ROLE_OPER
           description: Operator role
         orgLogo:
           type: string
@@ -155,3 +159,15 @@ components:
         statusMessage:
           type: string
           description: Service status
+    ErrorDTO:
+      type: object
+      required:
+        - title
+        - description
+      properties:
+        title:
+          type: string
+          description: The title describing the error
+        description:
+          type: string
+          description: Description of the error

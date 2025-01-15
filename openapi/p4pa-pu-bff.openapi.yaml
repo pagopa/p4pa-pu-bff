@@ -51,6 +51,34 @@ paths:
           description: Forbidden - Access denied
         '500':
           description: Internal Server Error
+  /token:
+    post:
+      tags:
+        - Authentication
+      summary: "Generate an access token"
+      operationId: postToken
+      parameters:
+        - name: idToken
+          in: query
+          required: true
+          schema:
+            type: string
+          description: ID token from the client
+      responses:
+        '200':
+          description: Access Token generated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccessTokenDTO'
+        '400':
+          description: Invalid request
+        '401':
+          description: Authentication failed
+        '429':
+          description: Too many requests
+        '500':
+          description: Internal Server Error
   /core-health:
     get:
       tags:
@@ -172,3 +200,16 @@ components:
         description:
           type: string
           description: Description of the error
+    AccessTokenDTO:
+      type: object
+      properties:
+        accessToken:
+          type: string
+          description: The access token
+        tokenType:
+          type: string
+          example: Bearer
+          description: The type of the token
+        expiresIn:
+          type: integer
+          description: Time in seconds until the token expires

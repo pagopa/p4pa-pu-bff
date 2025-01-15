@@ -73,6 +73,135 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/ServiceStatus'
+  /taxonomy/getOrganizationTypes:
+    get:
+      tags:
+        - Taxonomy
+      summary: "Retrieve distinct organization types for FE"
+      operationId: getOrganizationTypes
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CollectionModelTaxonomyOrganizationTypeDTO'
+        '401':
+          description: Unauthorized - Missing or invalid token
+        '403':
+          description: Forbidden - Access denied
+        '500':
+          description: Internal Server Error
+  /taxonomy/getMacroArea:
+    get:
+      tags:
+        - Taxonomy
+      operationId: getMacroArea
+      parameters:
+        - name: organizationType
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/hal+json:
+              schema:
+                  $ref: '#/components/schemas/CollectionModelTaxonomyMacroAreaCodeDTO'
+        '401':
+          description: Unauthorized - Missing or invalid token
+        '403':
+          description: Forbidden - Access denied
+        '500':
+          description: Internal Server Error
+  /taxonomy/getServiceType:
+    get:
+      tags:
+        - Taxonomy
+      operationId: getServiceType
+      parameters:
+        - name: organizationType
+          in: query
+          schema:
+            type: string
+        - name: macroAreaCode
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/hal+json:
+              schema:
+                $ref: '#/components/schemas/CollectionModelTaxonomyServiceTypeCodeDTO'
+        '401':
+          description: Unauthorized - Missing or invalid token
+        '403':
+          description: Forbidden - Access denied
+        '500':
+          description: Internal Server Error
+  /taxonomy/getCollectionReason:
+    get:
+      tags:
+        - Taxonomy
+      operationId: getCollectionReason
+      parameters:
+        - name: organizationType
+          in: query
+          schema:
+            type: string
+        - name: macroAreaCode
+          in: query
+          schema:
+            type: string
+        - name: serviceTypeCode
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/hal+json:
+              schema:
+                $ref: '#/components/schemas/CollectionModelTaxonomyCollectionReasonDTO'
+        '401':
+          description: Unauthorized - Missing or invalid token
+        '403':
+          description: Forbidden - Access denied
+        '500':
+          description: Internal Server Error
+  /taxonomy/getTaxonomyCode:
+    get:
+      tags:
+        - Taxonomy
+      operationId: getTaxonomyCode
+      parameters:
+        - name: organizationType
+          in: query
+          schema:
+            type: string
+        - name: macroAreaCode
+          in: query
+          schema:
+            type: string
+        - name: serviceTypeCode
+          in: query
+          schema:
+            type: string
+        - name: collectionReason
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/hal+json:
+              schema:
+                $ref: '#/components/schemas/CollectionModelTaxonomyCodeDTO'
 security:
   - bearerAuth: [ ]
 components:
@@ -82,6 +211,124 @@ components:
       scheme: bearer
       bearerFormat: JWT
   schemas:
+    CollectionModelTaxonomyCodeDTO:
+      type: object
+      properties:
+        taxonomyCodeDTOes:
+          type: array
+          items:
+            $ref: '#/components/schemas/TaxonomyCodeDTO'
+    TaxonomyCodeDTO:
+      type: object
+      properties:
+        organizationType:
+          type: string
+        organizationTypeDescription:
+          type: string
+        macroAreaCode:
+          type: string
+        macroAreaName:
+          type: string
+        macroAreaDescription:
+          type: string
+        serviceTypeCode:
+          type: string
+        serviceType:
+          type: string
+        serviceTypeDescription:
+          type: string
+        collectionReason:
+          type: string
+        taxonomyCode:
+          type: string
+    CollectionModelTaxonomyCollectionReasonDTO:
+      type: object
+      properties:
+        taxonomyCollectionReasonDTOes:
+          type: array
+          items:
+            $ref: '#/components/schemas/TaxonomyCollectionReasonDTO'
+    TaxonomyCollectionReasonDTO:
+      type: object
+      properties:
+        organizationType:
+          type: string
+        organizationTypeDescription:
+          type: string
+        macroAreaCode:
+          type: string
+        macroAreaName:
+          type: string
+        macroAreaDescription:
+          type: string
+        serviceTypeCode:
+          type: string
+        serviceType:
+          type: string
+        serviceTypeDescription:
+          type: string
+        collectionReason:
+          type: string
+    CollectionModelTaxonomyServiceTypeCodeDTO:
+      type: object
+      properties:
+        taxonomyServiceTypeCodeDTOes:
+          type: array
+          items:
+            $ref: '#/components/schemas/TaxonomyServiceTypeCodeDTO'
+    TaxonomyServiceTypeCodeDTO:
+      type: object
+      properties:
+        organizationType:
+          type: string
+        organizationTypeDescription:
+          type: string
+        macroAreaCode:
+          type: string
+        macroAreaName:
+          type: string
+        macroAreaDescription:
+          type: string
+        serviceTypeCode:
+          type: string
+        serviceType:
+          type: string
+        serviceTypeDescription:
+          type: string
+    CollectionModelTaxonomyMacroAreaCodeDTO:
+      type: object
+      properties:
+        taxonomyMacroAreaCodeDTOes:
+          type: array
+          items:
+            $ref: '#/components/schemas/TaxonomyMacroAreaCodeDTO'
+    TaxonomyMacroAreaCodeDTO:
+      type: object
+      properties:
+        organizationType:
+          type: string
+        organizationTypeDescription:
+          type: string
+        macroAreaCode:
+          type: string
+        macroAreaName:
+          type: string
+        macroAreaDescription:
+          type: string
+    CollectionModelTaxonomyOrganizationTypeDTO:
+      type: object
+      properties:
+        taxonomyOrganizationTypeDTOes:
+          type: array
+          items:
+            $ref: '#/components/schemas/TaxonomyOrganizationTypeDTO'
+    TaxonomyOrganizationTypeDTO:
+      type: object
+      properties:
+        organizationType:
+          type: string
+        organizationTypeDescription:
+          type: string
     OrganizationDTO:
       type: object
       required:

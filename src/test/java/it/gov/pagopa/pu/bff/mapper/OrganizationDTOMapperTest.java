@@ -24,7 +24,7 @@ class OrganizationDTOMapperTest {
     organization.setOrganizationId(123L);
     organization.setIpaCode("testIpaCode");
     organization.setOrgName("Test Organization");
-    organization.setOrgLogoDesc("base64LogoString");
+    organization.setOrgLogo("base64LogoString");
     List<String> roles = Collections.singletonList("ROLE_ADMIN");
 
     OrganizationDTO result = mapper.mapToOrganizationDTO(organization, roles);

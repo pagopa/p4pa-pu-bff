@@ -13,5 +13,11 @@ public class GlobalExceptionHandler {
     ErrorDTO errorDTO = new ErrorDTO("GENERIC_ERROR", e.getMessage());
     return new ResponseEntity<>(errorDTO, HttpStatus.INTERNAL_SERVER_ERROR);
   }
+
+  @ExceptionHandler(UnparsableEntityException.class)
+  public ResponseEntity<ErrorDTO> handleUnparsableEntityException(UnparsableEntityException e){
+    ErrorDTO errorDTO = new ErrorDTO("GENERIC_ERROR", e.getMessage());
+    return new ResponseEntity<>(errorDTO, HttpStatus.INTERNAL_SERVER_ERROR);
+  }
 }
 

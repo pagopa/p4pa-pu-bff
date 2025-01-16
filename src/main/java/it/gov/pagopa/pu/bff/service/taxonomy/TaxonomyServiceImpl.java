@@ -8,6 +8,7 @@ import it.gov.pagopa.pu.bff.dto.generated.CollectionModelTaxonomyCollectionReaso
 import it.gov.pagopa.pu.bff.dto.generated.CollectionModelTaxonomyMacroAreaCodeDTO;
 import it.gov.pagopa.pu.bff.dto.generated.CollectionModelTaxonomyOrganizationTypeDTO;
 import it.gov.pagopa.pu.bff.dto.generated.CollectionModelTaxonomyServiceTypeCodeDTO;
+import it.gov.pagopa.pu.p4pa_organization.dto.generated.CollectionModelTaxonomyOrganizationTypeDTOEmbedded;
 import lombok.Setter;
 import org.springframework.stereotype.Service;
 
@@ -27,7 +28,8 @@ public class TaxonomyServiceImpl implements TaxonomyService{
     String macroAreaCode, String serviceTypeCode, String accessToken)
     {
       try {
-        return objectMapper.readValue(taxonomyClient.getCollectionReason(organizationType,macroAreaCode,serviceTypeCode,accessToken).toString(),CollectionModelTaxonomyCollectionReasonDTO.class);
+        String collectionReason = objectMapper.writeValueAsString(taxonomyClient.getCollectionReason(organizationType,macroAreaCode,serviceTypeCode,accessToken).getEmbedded());
+        return objectMapper.readValue(collectionReason,CollectionModelTaxonomyCollectionReasonDTO.class);
       } catch (JsonProcessingException e) {
         throw new RuntimeException(e);
       }
@@ -38,7 +40,8 @@ public class TaxonomyServiceImpl implements TaxonomyService{
     String organizationType,
     String accessToken) {
     try {
-      return objectMapper.readValue(taxonomyClient.getMacroArea(organizationType,accessToken).toString(),CollectionModelTaxonomyMacroAreaCodeDTO.class);
+      String macroArea = objectMapper.writeValueAsString(taxonomyClient.getMacroArea(organizationType,accessToken).getEmbedded());
+      return objectMapper.readValue(macroArea,CollectionModelTaxonomyMacroAreaCodeDTO.class);
     } catch (JsonProcessingException e) {
       throw new RuntimeException(e);
     }
@@ -48,7 +51,8 @@ public class TaxonomyServiceImpl implements TaxonomyService{
   public CollectionModelTaxonomyOrganizationTypeDTO getOrganizationTypes (
     String accessToken) {
     try {
-      return objectMapper.readValue(taxonomyClient.getOrganizationType(accessToken).toString(),CollectionModelTaxonomyOrganizationTypeDTO.class);
+      String orgTypes = objectMapper.writeValueAsString(taxonomyClient.getOrganizationType(accessToken).getEmbedded());
+      return objectMapper.readValue(orgTypes,CollectionModelTaxonomyOrganizationTypeDTO.class);
     } catch (JsonProcessingException e) {
       throw new RuntimeException(e);
     }
@@ -59,7 +63,8 @@ public class TaxonomyServiceImpl implements TaxonomyService{
     String organizationType,
     String macroAreaCode, String accessToken) {
     try {
-      return objectMapper.readValue(taxonomyClient.getServiceType(organizationType,macroAreaCode,accessToken).toString(),CollectionModelTaxonomyServiceTypeCodeDTO.class);
+      String serviceType = objectMapper.writeValueAsString(taxonomyClient.getServiceType(organizationType,macroAreaCode,accessToken).getEmbedded());
+      return objectMapper.readValue(serviceType,CollectionModelTaxonomyServiceTypeCodeDTO.class);
     } catch (JsonProcessingException e) {
       throw new RuntimeException(e);
     }
@@ -71,7 +76,8 @@ public class TaxonomyServiceImpl implements TaxonomyService{
     String macroAreaCode, String serviceTypeCode, String collectionReason,
     String accessToken) {
     try {
-      return objectMapper.readValue(taxonomyClient.getTaxonomyCode(organizationType,macroAreaCode,serviceTypeCode,collectionReason,accessToken).toString(),CollectionModelTaxonomyCodeDTO.class);
+      String taxonomyCode = objectMapper.writeValueAsString(taxonomyClient.getTaxonomyCode(organizationType,macroAreaCode,serviceTypeCode,collectionReason,accessToken).getEmbedded());
+      return objectMapper.readValue(taxonomyCode,CollectionModelTaxonomyCodeDTO.class);
     } catch (JsonProcessingException e) {
       throw new RuntimeException(e);
     }

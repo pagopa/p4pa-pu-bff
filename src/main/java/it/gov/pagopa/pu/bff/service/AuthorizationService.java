@@ -34,7 +34,7 @@ public class AuthorizationService {
   }
 
   public AccessTokenDTO postToken(String idToken) {
-    log.info("token: {}", idToken);
+    log.info("Posting token for validation");
 
     return accessTokenDTOMapper.toDTO(
       authClientImpl.postToken(

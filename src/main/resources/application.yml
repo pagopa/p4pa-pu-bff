@@ -64,5 +64,6 @@ rest:
     read-millis: "\${DEFAULT_REST_READ_TIMEOUT_MILLIS:120000}"
   auth:
     base-url: "\${AUTH_SERVER_BASE_URL:}/payhub"
+    tokenExchange_issuer: "\${TOKEN_EXCHANGE_ISSUER:}"
   organization:
     base-url: "\${ORGANIZATION_BASE_URL:}"

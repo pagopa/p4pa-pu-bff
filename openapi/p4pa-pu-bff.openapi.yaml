@@ -57,6 +57,7 @@ paths:
         - Authentication
       summary: "Generate an access token"
       operationId: postToken
+      security: []
       parameters:
         - name: idToken
           in: query

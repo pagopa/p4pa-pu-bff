@@ -74,6 +74,145 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/ServiceStatus'
+  /taxonomy/getOrganizationTypes:
+    get:
+      tags:
+        - Taxonomy
+      summary: "Retrieve distinct organization types for FE"
+      operationId: getOrganizationTypes
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TaxonomyOrganizationTypeDTO'
+        '401':
+          description: Unauthorized - Missing or invalid token
+        '403':
+          description: Forbidden - Access denied
+        '500':
+          description: Internal Server Error
+  /taxonomy/getMacroArea:
+    get:
+      tags:
+        - Taxonomy
+      operationId: getMacroArea
+      parameters:
+        - name: organizationType
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TaxonomyMacroAreaCodeDTO'
+        '401':
+          description: Unauthorized - Missing or invalid token
+        '403':
+          description: Forbidden - Access denied
+        '500':
+          description: Internal Server Error
+  /taxonomy/getServiceType:
+    get:
+      tags:
+        - Taxonomy
+      operationId: getServiceType
+      parameters:
+        - name: organizationType
+          in: query
+          schema:
+            type: string
+        - name: macroAreaCode
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TaxonomyServiceTypeCodeDTO'
+        '401':
+          description: Unauthorized - Missing or invalid token
+        '403':
+          description: Forbidden - Access denied
+        '500':
+          description: Internal Server Error
+  /taxonomy/getCollectionReason:
+    get:
+      tags:
+        - Taxonomy
+      operationId: getCollectionReason
+      parameters:
+        - name: organizationType
+          in: query
+          schema:
+            type: string
+        - name: macroAreaCode
+          in: query
+          schema:
+            type: string
+        - name: serviceTypeCode
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TaxonomyCollectionReasonDTO'
+        '401':
+          description: Unauthorized - Missing or invalid token
+        '403':
+          description: Forbidden - Access denied
+        '500':
+          description: Internal Server Error
+  /taxonomy/getTaxonomyCode:
+    get:
+      tags:
+        - Taxonomy
+      operationId: getTaxonomyCode
+      parameters:
+        - name: organizationType
+          in: query
+          schema:
+            type: string
+        - name: macroAreaCode
+          in: query
+          schema:
+            type: string
+        - name: serviceTypeCode
+          in: query
+          schema:
+            type: string
+        - name: collectionReason
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TaxonomyCodeDTO'
 security:
   - bearerAuth: [ ]
 components:
@@ -83,6 +222,89 @@ components:
       scheme: bearer
       bearerFormat: JWT
   schemas:
+    TaxonomyCodeDTO:
+      type: object
+      properties:
+        organizationType:
+          type: string
+        organizationTypeDescription:
+          type: string
+        macroAreaCode:
+          type: string
+        macroAreaName:
+          type: string
+        macroAreaDescription:
+          type: string
+        serviceTypeCode:
+          type: string
+        serviceType:
+          type: string
+        serviceTypeDescription:
+          type: string
+        collectionReason:
+          type: string
+        taxonomyCode:
+          type: string
+    TaxonomyCollectionReasonDTO:
+      type: object
+      properties:
+        organizationType:
+          type: string
+        organizationTypeDescription:
+          type: string
+        macroAreaCode:
+          type: string
+        macroAreaName:
+          type: string
+        macroAreaDescription:
+          type: string
+        serviceTypeCode:
+          type: string
+        serviceType:
+          type: string
+        serviceTypeDescription:
+          type: string
+        collectionReason:
+          type: string
+    TaxonomyServiceTypeCodeDTO:
+      type: object
+      properties:
+        organizationType:
+          type: string
+        organizationTypeDescription:
+          type: string
+        macroAreaCode:
+          type: string
+        macroAreaName:
+          type: string
+        macroAreaDescription:
+          type: string
+        serviceTypeCode:
+          type: string
+        serviceType:
+          type: string
+        serviceTypeDescription:
+          type: string
+    TaxonomyMacroAreaCodeDTO:
+      type: object
+      properties:
+        organizationType:
+          type: string
+        organizationTypeDescription:
+          type: string
+        macroAreaCode:
+          type: string
+        macroAreaName:
+          type: string
+        macroAreaDescription:
+          type: string
+    TaxonomyOrganizationTypeDTO:
+      type: object
+      properties:
+        organizationType:
+          type: string
+        organizationTypeDescription:
+          type: string
     OrganizationDTO:
       type: object
       required:

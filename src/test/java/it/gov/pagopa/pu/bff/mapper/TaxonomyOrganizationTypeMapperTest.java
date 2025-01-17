@@ -3,6 +3,7 @@ package it.gov.pagopa.pu.bff.mapper;
 import static org.junit.jupiter.api.Assertions.*;
 
 import it.gov.pagopa.pu.bff.dto.generated.TaxonomyOrganizationTypeDTO;
+import it.gov.pagopa.pu.bff.util.TestUtils;
 import org.junit.jupiter.api.Test;
 
 class TaxonomyOrganizationTypeMapperTest {
@@ -18,5 +19,6 @@ class TaxonomyOrganizationTypeMapperTest {
 
     assertEquals("Type1. Description1", output.getOrganizationTypeDescription());
     assertEquals("Type1", output.getOrganizationType());
+    TestUtils.checkNotNullFields(output);
   }
 }

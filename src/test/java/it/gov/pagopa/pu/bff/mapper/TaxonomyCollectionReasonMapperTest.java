@@ -3,6 +3,7 @@ package it.gov.pagopa.pu.bff.mapper;
 import static org.junit.jupiter.api.Assertions.*;
 
 import it.gov.pagopa.pu.bff.dto.generated.TaxonomyCollectionReasonDTO;
+import it.gov.pagopa.pu.bff.util.TestUtils;
 import org.junit.jupiter.api.Test;
 
 class TaxonomyCollectionReasonMapperTest {
@@ -33,6 +34,7 @@ class TaxonomyCollectionReasonMapperTest {
     assertEquals("ServiceCode1. Service1", output.getServiceType());
     assertEquals("ServiceDescription1", output.getServiceTypeDescription());
     assertEquals("Reason1", output.getCollectionReason());
+    TestUtils.checkNotNullFields(output);
   }
 
 }

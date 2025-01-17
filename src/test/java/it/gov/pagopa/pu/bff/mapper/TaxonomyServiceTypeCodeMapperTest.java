@@ -3,6 +3,7 @@ package it.gov.pagopa.pu.bff.mapper;
 import static org.junit.jupiter.api.Assertions.*;
 
 import it.gov.pagopa.pu.bff.dto.generated.TaxonomyServiceTypeCodeDTO;
+import it.gov.pagopa.pu.bff.util.TestUtils;
 import org.junit.jupiter.api.Test;
 
 class TaxonomyServiceTypeCodeMapperTest {
@@ -30,5 +31,6 @@ class TaxonomyServiceTypeCodeMapperTest {
     assertEquals("ServiceCode1", output.getServiceTypeCode());
     assertEquals("ServiceCode1. Service1", output.getServiceType());
     assertEquals("ServiceDescription1", output.getServiceTypeDescription());
+    TestUtils.checkNotNullFields(output);
   }
 }

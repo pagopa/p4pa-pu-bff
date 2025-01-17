@@ -3,6 +3,7 @@ package it.gov.pagopa.pu.bff.mapper;
 import static org.junit.jupiter.api.Assertions.*;
 
 import it.gov.pagopa.pu.bff.dto.generated.TaxonomyMacroAreaCodeDTO;
+import it.gov.pagopa.pu.bff.util.TestUtils;
 import org.junit.jupiter.api.Test;
 
 class TaxonomyMacroAreaCodeMapperTest {
@@ -24,5 +25,6 @@ class TaxonomyMacroAreaCodeMapperTest {
     assertEquals("Macro1", output.getMacroAreaCode());
     assertEquals("Macro1. MacroName1", output.getMacroAreaName());
     assertEquals("MacroDescription1", output.getMacroAreaDescription());
+    TestUtils.checkNotNullFields(output);
   }
 }

@@ -3,6 +3,7 @@ package it.gov.pagopa.pu.bff.mapper;
 import static org.junit.jupiter.api.Assertions.*;
 
 import it.gov.pagopa.pu.bff.dto.generated.TaxonomyCodeDTO;
+import it.gov.pagopa.pu.bff.util.TestUtils;
 import org.junit.jupiter.api.Test;
 
 class TaxonomyCodeMapperTest {
@@ -24,7 +25,6 @@ class TaxonomyCodeMapperTest {
     input.setTaxonomyCode("Taxonomy1");
 
     TaxonomyCodeDTO output = mapper.map(input);
-
     assertEquals("Type1. Description1", output.getOrganizationTypeDescription());
     assertEquals("Type1", output.getOrganizationType());
     assertEquals("Macro1", output.getMacroAreaCode());
@@ -35,6 +35,7 @@ class TaxonomyCodeMapperTest {
     assertEquals("ServiceDescription1", output.getServiceTypeDescription());
     assertEquals("Reason1", output.getCollectionReason());
     assertEquals("Taxonomy1", output.getTaxonomyCode());
+    TestUtils.checkNotNullFields(output);
   }
 
 }

@@ -1,28 +1,25 @@
 package it.gov.pagopa.pu.bff.mapper;
 
 import it.gov.pagopa.pu.bff.dto.generated.TaxonomyCodeDTO;
-import it.gov.pagopa.pu.p4pa_organization.dto.generated.CollectionModelTaxonomyCodeDTOEmbedded;
-import java.util.List;
 import org.springframework.stereotype.Component;
 
 @Component
 public class TaxonomyCodeMapper {
 
-  public List<TaxonomyCodeDTO> map(CollectionModelTaxonomyCodeDTOEmbedded input) {
-    return input.getTaxonomyCodeDTOes().stream().map(taxonomyCodeDTO -> {
-      TaxonomyCodeDTO element = new TaxonomyCodeDTO();
-      element.setOrganizationTypeDescription(taxonomyCodeDTO.getOrganizationTypeDescription());
-      element.setOrganizationType(taxonomyCodeDTO.getOrganizationType());
-      element.setMacroAreaCode(taxonomyCodeDTO.getMacroAreaCode());
-      element.setMacroAreaName(taxonomyCodeDTO.getMacroAreaName());
-      element.setMacroAreaDescription(taxonomyCodeDTO.getMacroAreaDescription());
-      element.setServiceTypeCode(taxonomyCodeDTO.getServiceTypeCode());
-      element.setServiceType(taxonomyCodeDTO.getServiceType());
-      element.setServiceTypeDescription(taxonomyCodeDTO.getServiceTypeDescription());
-      element.setCollectionReason(taxonomyCodeDTO.getCollectionReason());
-      element.setTaxonomyCode(taxonomyCodeDTO.getTaxonomyCode());
-      return element;
-    }).toList();
+  public TaxonomyCodeDTO map(
+    it.gov.pagopa.pu.p4pa_organization.dto.generated.TaxonomyCodeDTO input) {
+    TaxonomyCodeDTO dto = new TaxonomyCodeDTO();
+    dto.setOrganizationTypeDescription(input.getOrganizationType()+". "+input.getOrganizationTypeDescription());
+    dto.setOrganizationType(input.getOrganizationType());
+    dto.setMacroAreaCode(input.getMacroAreaCode());
+    dto.setMacroAreaName(input.getMacroAreaCode()+". "+input.getMacroAreaName());
+    dto.setMacroAreaDescription(input.getMacroAreaDescription());
+    dto.setServiceTypeCode(input.getServiceTypeCode());
+    dto.setServiceType(input.getServiceTypeCode()+". "+input.getServiceType());
+    dto.setServiceTypeDescription(input.getServiceTypeDescription());
+    dto.setCollectionReason(input.getCollectionReason());
+    dto.setTaxonomyCode(input.getTaxonomyCode());
+    return dto;
   }
 
 }

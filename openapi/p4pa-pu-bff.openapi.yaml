@@ -86,7 +86,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CollectionModelTaxonomyOrganizationTypeDTO'
+                type: array
+                items:
+                  $ref: '#/components/schemas/TaxonomyOrganizationTypeDTO'
         '401':
           description: Unauthorized - Missing or invalid token
         '403':
@@ -107,9 +109,11 @@ paths:
         '200':
           description: OK
           content:
-            application/hal+json:
+            application/json:
               schema:
-                  $ref: '#/components/schemas/CollectionModelTaxonomyMacroAreaCodeDTO'
+                type: array
+                items:
+                  $ref: '#/components/schemas/TaxonomyMacroAreaCodeDTO'
         '401':
           description: Unauthorized - Missing or invalid token
         '403':
@@ -134,9 +138,11 @@ paths:
         '200':
           description: OK
           content:
-            application/hal+json:
+            application/json:
               schema:
-                $ref: '#/components/schemas/CollectionModelTaxonomyServiceTypeCodeDTO'
+                type: array
+                items:
+                  $ref: '#/components/schemas/TaxonomyServiceTypeCodeDTO'
         '401':
           description: Unauthorized - Missing or invalid token
         '403':
@@ -165,9 +171,11 @@ paths:
         '200':
           description: OK
           content:
-            application/hal+json:
+            application/json:
               schema:
-                $ref: '#/components/schemas/CollectionModelTaxonomyCollectionReasonDTO'
+                type: array
+                items:
+                  $ref: '#/components/schemas/TaxonomyCollectionReasonDTO'
         '401':
           description: Unauthorized - Missing or invalid token
         '403':
@@ -200,9 +208,11 @@ paths:
         '200':
           description: OK
           content:
-            application/hal+json:
+            application/json:
               schema:
-                $ref: '#/components/schemas/CollectionModelTaxonomyCodeDTO'
+                type: array
+                items:
+                  $ref: '#/components/schemas/TaxonomyCodeDTO'
 security:
   - bearerAuth: [ ]
 components:
@@ -212,10 +222,6 @@ components:
       scheme: bearer
       bearerFormat: JWT
   schemas:
-    CollectionModelTaxonomyCodeDTO:
-      type: array
-      items:
-        $ref: '#/components/schemas/TaxonomyCodeDTO'
     TaxonomyCodeDTO:
       type: object
       properties:
@@ -239,10 +245,6 @@ components:
           type: string
         taxonomyCode:
           type: string
-    CollectionModelTaxonomyCollectionReasonDTO:
-      type: array
-      items:
-        $ref: '#/components/schemas/TaxonomyCollectionReasonDTO'
     TaxonomyCollectionReasonDTO:
       type: object
       properties:
@@ -264,10 +266,6 @@ components:
           type: string
         collectionReason:
           type: string
-    CollectionModelTaxonomyServiceTypeCodeDTO:
-      type: array
-      items:
-        $ref: '#/components/schemas/TaxonomyServiceTypeCodeDTO'
     TaxonomyServiceTypeCodeDTO:
       type: object
       properties:
@@ -287,10 +285,6 @@ components:
           type: string
         serviceTypeDescription:
           type: string
-    CollectionModelTaxonomyMacroAreaCodeDTO:
-      type: array
-      items:
-        $ref: '#/components/schemas/TaxonomyMacroAreaCodeDTO'
     TaxonomyMacroAreaCodeDTO:
       type: object
       properties:
@@ -304,10 +298,6 @@ components:
           type: string
         macroAreaDescription:
           type: string
-    CollectionModelTaxonomyOrganizationTypeDTO:
-      type: array
-      items:
-        $ref: '#/components/schemas/TaxonomyOrganizationTypeDTO'
     TaxonomyOrganizationTypeDTO:
       type: object
       properties:

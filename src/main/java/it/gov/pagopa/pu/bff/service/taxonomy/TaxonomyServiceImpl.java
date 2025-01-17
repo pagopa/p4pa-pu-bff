@@ -40,28 +40,43 @@ public class TaxonomyServiceImpl implements TaxonomyService{
   public List<TaxonomyCollectionReasonDTO> getCollectionReason (
     String organizationType,
     String macroAreaCode, String serviceTypeCode, String accessToken){
-      return taxonomyCollectionReasonMapper.map(taxonomyClient.getCollectionReason(organizationType,macroAreaCode,serviceTypeCode,accessToken).getEmbedded());
+    return taxonomyClient.getCollectionReason(organizationType, macroAreaCode, serviceTypeCode, accessToken)
+      .getEmbedded().getTaxonomyCollectionReasonDTOes()
+      .stream()
+      .map(taxonomyCollectionReasonMapper::map)
+      .toList();
   }
 
   @Override
   public List<TaxonomyMacroAreaCodeDTO> getMacroArea (
     String organizationType,
     String accessToken) {
-    return taxonomyMacroAreaCodeMapper.map(taxonomyClient.getMacroArea(organizationType,accessToken).getEmbedded());
+    return taxonomyClient.getMacroArea(organizationType,accessToken).getEmbedded()
+      .getTaxonomyMacroAreaCodeDTOes()
+      .stream()
+      .map(taxonomyMacroAreaCodeMapper::map)
+      .toList();
   }
 
   @Override
   public List<TaxonomyOrganizationTypeDTO> getOrganizationTypes (
     String accessToken) {
-    return taxonomyOrganizationTypeMapper
-        .map(taxonomyClient.getOrganizationType(accessToken).getEmbedded());
+    return taxonomyClient.getOrganizationType(accessToken).getEmbedded()
+      .getTaxonomyOrganizationTypeDTOes()
+      .stream()
+      .map(taxonomyOrganizationTypeMapper::map)
+      .toList();
   }
 
   @Override
   public List<TaxonomyServiceTypeCodeDTO> getServiceType (
     String organizationType,
     String macroAreaCode, String accessToken) {
-    return taxonomyServiceTypeCodeMapper.map(taxonomyClient.getServiceType(organizationType,macroAreaCode,accessToken).getEmbedded());
+    return taxonomyClient.getServiceType(organizationType,macroAreaCode,accessToken).getEmbedded()
+      .getTaxonomyServiceTypeCodeDTOes()
+      .stream()
+      .map(taxonomyServiceTypeCodeMapper::map)
+      .toList();
   }
 
   @Override
@@ -69,6 +84,10 @@ public class TaxonomyServiceImpl implements TaxonomyService{
     String organizationType,
     String macroAreaCode, String serviceTypeCode, String collectionReason,
     String accessToken) {
-    return taxonomyCodeMapper.map(taxonomyClient.getTaxonomyCode(organizationType,macroAreaCode,serviceTypeCode,collectionReason,accessToken).getEmbedded());
+    return taxonomyClient.getTaxonomyCode(organizationType,macroAreaCode,serviceTypeCode,collectionReason,accessToken).getEmbedded()
+      .getTaxonomyCodeDTOes()
+      .stream()
+      .map(taxonomyCodeMapper::map)
+      .toList();
   }
 }

@@ -1,22 +1,22 @@
 package it.gov.pagopa.pu.bff.service.taxonomy;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import it.gov.pagopa.pu.bff.dto.generated.CollectionModelTaxonomyCodeDTO;
-import it.gov.pagopa.pu.bff.dto.generated.CollectionModelTaxonomyCollectionReasonDTO;
-import it.gov.pagopa.pu.bff.dto.generated.CollectionModelTaxonomyMacroAreaCodeDTO;
-import it.gov.pagopa.pu.bff.dto.generated.CollectionModelTaxonomyOrganizationTypeDTO;
-import it.gov.pagopa.pu.bff.dto.generated.CollectionModelTaxonomyServiceTypeCodeDTO;
+import it.gov.pagopa.pu.bff.dto.generated.TaxonomyCodeDTO;
+import it.gov.pagopa.pu.bff.dto.generated.TaxonomyCollectionReasonDTO;
+import it.gov.pagopa.pu.bff.dto.generated.TaxonomyMacroAreaCodeDTO;
+import it.gov.pagopa.pu.bff.dto.generated.TaxonomyOrganizationTypeDTO;
+import it.gov.pagopa.pu.bff.dto.generated.TaxonomyServiceTypeCodeDTO;
+import java.util.List;
 
 public interface TaxonomyService {
 
-  CollectionModelTaxonomyCollectionReasonDTO getCollectionReason(String organizationType, String macroAreaCode, String serviceTypeCode,String accessToken);
+  List<TaxonomyCollectionReasonDTO> getCollectionReason(String organizationType, String macroAreaCode, String serviceTypeCode,String accessToken);
 
-  CollectionModelTaxonomyMacroAreaCodeDTO getMacroArea(String organizationType,String accessToken);
+  List<TaxonomyMacroAreaCodeDTO> getMacroArea(String organizationType,String accessToken);
 
-  CollectionModelTaxonomyOrganizationTypeDTO getOrganizationTypes(String accessToken);
+  List<TaxonomyOrganizationTypeDTO> getOrganizationTypes(String accessToken);
 
-  CollectionModelTaxonomyServiceTypeCodeDTO getServiceType(String organizationType, String macroAreaCode,String accessToken);
+  List<TaxonomyServiceTypeCodeDTO> getServiceType(String organizationType, String macroAreaCode,String accessToken);
 
-  CollectionModelTaxonomyCodeDTO getTaxonomyCode(String organizationType,
+  List<TaxonomyCodeDTO> getTaxonomyCode(String organizationType,
     String macroAreaCode, String serviceTypeCode, String collectionReason,String accessToken);
 }

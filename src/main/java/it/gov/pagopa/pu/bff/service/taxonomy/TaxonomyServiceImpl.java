@@ -1,68 +1,74 @@
 package it.gov.pagopa.pu.bff.service.taxonomy;
 
 import it.gov.pagopa.pu.bff.connector.organization.client.TaxonomyClient;
-import it.gov.pagopa.pu.bff.dto.generated.CollectionModelTaxonomyCodeDTO;
-import it.gov.pagopa.pu.bff.dto.generated.CollectionModelTaxonomyCollectionReasonDTO;
-import it.gov.pagopa.pu.bff.dto.generated.CollectionModelTaxonomyMacroAreaCodeDTO;
-import it.gov.pagopa.pu.bff.dto.generated.CollectionModelTaxonomyOrganizationTypeDTO;
-import it.gov.pagopa.pu.bff.dto.generated.CollectionModelTaxonomyServiceTypeCodeDTO;
-import it.gov.pagopa.pu.bff.mapper.CollectionModelTaxonomyCodeDTOEmbeddedToCollectionModelTaxonomyCodeDTO;
-import it.gov.pagopa.pu.bff.mapper.CollectionModelTaxonomyCollectionReasonDTOEmbeddedToCollectionModelTaxonomyCollectionReasonDTO;
-import it.gov.pagopa.pu.bff.mapper.CollectionModelTaxonomyMacroAreaCodeDTOEmbeddedToCollectionModelTaxonomyMacroAreaCodeDTO;
-import it.gov.pagopa.pu.bff.mapper.CollectionModelTaxonomyOrganizationTypeDTOEmbeddedToCollectionModelTaxonomyOrganizationTypeDTO;
-import it.gov.pagopa.pu.bff.mapper.CollectionModelTaxonomyServiceTypeCodeDTOEmbeddedToCollectionModelTaxonomyServiceTypeCodeDTO;
+import it.gov.pagopa.pu.bff.dto.generated.TaxonomyCodeDTO;
+import it.gov.pagopa.pu.bff.dto.generated.TaxonomyCollectionReasonDTO;
+import it.gov.pagopa.pu.bff.dto.generated.TaxonomyMacroAreaCodeDTO;
+import it.gov.pagopa.pu.bff.dto.generated.TaxonomyOrganizationTypeDTO;
+import it.gov.pagopa.pu.bff.dto.generated.TaxonomyServiceTypeCodeDTO;
+import it.gov.pagopa.pu.bff.mapper.TaxonomyCodeMapper;
+import it.gov.pagopa.pu.bff.mapper.TaxonomyCollectionReasonMapper;
+import it.gov.pagopa.pu.bff.mapper.TaxonomyMacroAreaCodeMapper;
+import it.gov.pagopa.pu.bff.mapper.TaxonomyOrganizationTypeMapper;
+import it.gov.pagopa.pu.bff.mapper.TaxonomyServiceTypeCodeMapper;
+import java.util.List;
 import org.springframework.stereotype.Service;
 
 @Service
 public class TaxonomyServiceImpl implements TaxonomyService{
 
   private final TaxonomyClient taxonomyClient;
-  private final CollectionModelTaxonomyOrganizationTypeDTOEmbeddedToCollectionModelTaxonomyOrganizationTypeDTO collectionModelTaxonomyOrganizationTypeDTOEmbeddedToCollectionModelTaxonomyOrganizationTypeDTO;
-  private final CollectionModelTaxonomyMacroAreaCodeDTOEmbeddedToCollectionModelTaxonomyMacroAreaCodeDTO collectionModelTaxonomyMacroAreaCodeDTOEmbeddedToCollectionModelTaxonomyMacroAreaCodeDTO;
-  private final CollectionModelTaxonomyCollectionReasonDTOEmbeddedToCollectionModelTaxonomyCollectionReasonDTO collectionModelTaxonomyCollectionReasonDTOEmbeddedToCollectionModelTaxonomyCollectionReasonDTO;
-  private final CollectionModelTaxonomyServiceTypeCodeDTOEmbeddedToCollectionModelTaxonomyServiceTypeCodeDTO collectionModelTaxonomyServiceTypeCodeDTOEmbeddedToCollectionModelTaxonomyServiceTypeCodeDTO;
-  private final CollectionModelTaxonomyCodeDTOEmbeddedToCollectionModelTaxonomyCodeDTO collectionModelTaxonomyCodeDTOEmbeddedToCollectionModelTaxonomyCodeDTO;
-  public TaxonomyServiceImpl(TaxonomyClient taxonomyClient,CollectionModelTaxonomyOrganizationTypeDTOEmbeddedToCollectionModelTaxonomyOrganizationTypeDTO collectionModelTaxonomyOrganizationTypeDTOEmbeddedToCollectionModelTaxonomyOrganizationTypeDTO,CollectionModelTaxonomyMacroAreaCodeDTOEmbeddedToCollectionModelTaxonomyMacroAreaCodeDTO collectionModelTaxonomyMacroAreaCodeDTOEmbeddedToCollectionModelTaxonomyMacroAreaCodeDTO,CollectionModelTaxonomyCollectionReasonDTOEmbeddedToCollectionModelTaxonomyCollectionReasonDTO collectionModelTaxonomyCollectionReasonDTOEmbeddedToCollectionModelTaxonomyCollectionReasonDTO,CollectionModelTaxonomyServiceTypeCodeDTOEmbeddedToCollectionModelTaxonomyServiceTypeCodeDTO collectionModelTaxonomyServiceTypeCodeDTOEmbeddedToCollectionModelTaxonomyServiceTypeCodeDTO,CollectionModelTaxonomyCodeDTOEmbeddedToCollectionModelTaxonomyCodeDTO collectionModelTaxonomyCodeDTOEmbeddedToCollectionModelTaxonomyCodeDTO){
+  private final TaxonomyOrganizationTypeMapper taxonomyOrganizationTypeMapper;
+  private final TaxonomyMacroAreaCodeMapper taxonomyMacroAreaCodeMapper;
+  private final TaxonomyCollectionReasonMapper taxonomyCollectionReasonMapper;
+  private final TaxonomyServiceTypeCodeMapper taxonomyServiceTypeCodeMapper;
+  private final TaxonomyCodeMapper taxonomyCodeMapper;
+  public TaxonomyServiceImpl(TaxonomyClient taxonomyClient,
+    TaxonomyOrganizationTypeMapper taxonomyOrganizationTypeMapper,
+    TaxonomyMacroAreaCodeMapper taxonomyMacroAreaCodeMapper,
+    TaxonomyCollectionReasonMapper taxonomyCollectionReasonMapper,
+    TaxonomyServiceTypeCodeMapper taxonomyServiceTypeCodeMapper,
+    TaxonomyCodeMapper taxonomyCodeMapper){
     this.taxonomyClient = taxonomyClient;
-    this.collectionModelTaxonomyOrganizationTypeDTOEmbeddedToCollectionModelTaxonomyOrganizationTypeDTO = collectionModelTaxonomyOrganizationTypeDTOEmbeddedToCollectionModelTaxonomyOrganizationTypeDTO;
-    this.collectionModelTaxonomyMacroAreaCodeDTOEmbeddedToCollectionModelTaxonomyMacroAreaCodeDTO = collectionModelTaxonomyMacroAreaCodeDTOEmbeddedToCollectionModelTaxonomyMacroAreaCodeDTO;
-    this.collectionModelTaxonomyCollectionReasonDTOEmbeddedToCollectionModelTaxonomyCollectionReasonDTO = collectionModelTaxonomyCollectionReasonDTOEmbeddedToCollectionModelTaxonomyCollectionReasonDTO;
-    this.collectionModelTaxonomyServiceTypeCodeDTOEmbeddedToCollectionModelTaxonomyServiceTypeCodeDTO = collectionModelTaxonomyServiceTypeCodeDTOEmbeddedToCollectionModelTaxonomyServiceTypeCodeDTO;
-    this.collectionModelTaxonomyCodeDTOEmbeddedToCollectionModelTaxonomyCodeDTO = collectionModelTaxonomyCodeDTOEmbeddedToCollectionModelTaxonomyCodeDTO;
+    this.taxonomyOrganizationTypeMapper = taxonomyOrganizationTypeMapper;
+    this.taxonomyMacroAreaCodeMapper = taxonomyMacroAreaCodeMapper;
+    this.taxonomyCollectionReasonMapper = taxonomyCollectionReasonMapper;
+    this.taxonomyServiceTypeCodeMapper = taxonomyServiceTypeCodeMapper;
+    this.taxonomyCodeMapper = taxonomyCodeMapper;
   }
   @Override
-  public CollectionModelTaxonomyCollectionReasonDTO getCollectionReason (
+  public List<TaxonomyCollectionReasonDTO> getCollectionReason (
     String organizationType,
     String macroAreaCode, String serviceTypeCode, String accessToken){
-      return collectionModelTaxonomyCollectionReasonDTOEmbeddedToCollectionModelTaxonomyCollectionReasonDTO.map(taxonomyClient.getCollectionReason(organizationType,macroAreaCode,serviceTypeCode,accessToken).getEmbedded());
+      return taxonomyCollectionReasonMapper.map(taxonomyClient.getCollectionReason(organizationType,macroAreaCode,serviceTypeCode,accessToken).getEmbedded());
   }
 
   @Override
-  public CollectionModelTaxonomyMacroAreaCodeDTO getMacroArea (
+  public List<TaxonomyMacroAreaCodeDTO> getMacroArea (
     String organizationType,
     String accessToken) {
-    return collectionModelTaxonomyMacroAreaCodeDTOEmbeddedToCollectionModelTaxonomyMacroAreaCodeDTO.map(taxonomyClient.getMacroArea(organizationType,accessToken).getEmbedded());
+    return taxonomyMacroAreaCodeMapper.map(taxonomyClient.getMacroArea(organizationType,accessToken).getEmbedded());
   }
 
   @Override
-  public CollectionModelTaxonomyOrganizationTypeDTO getOrganizationTypes (
+  public List<TaxonomyOrganizationTypeDTO> getOrganizationTypes (
     String accessToken) {
-    return collectionModelTaxonomyOrganizationTypeDTOEmbeddedToCollectionModelTaxonomyOrganizationTypeDTO
+    return taxonomyOrganizationTypeMapper
         .map(taxonomyClient.getOrganizationType(accessToken).getEmbedded());
   }
 
   @Override
-  public CollectionModelTaxonomyServiceTypeCodeDTO getServiceType (
+  public List<TaxonomyServiceTypeCodeDTO> getServiceType (
     String organizationType,
     String macroAreaCode, String accessToken) {
-    return collectionModelTaxonomyServiceTypeCodeDTOEmbeddedToCollectionModelTaxonomyServiceTypeCodeDTO.map(taxonomyClient.getServiceType(organizationType,macroAreaCode,accessToken).getEmbedded());
+    return taxonomyServiceTypeCodeMapper.map(taxonomyClient.getServiceType(organizationType,macroAreaCode,accessToken).getEmbedded());
   }
 
   @Override
-  public CollectionModelTaxonomyCodeDTO getTaxonomyCode (
+  public List<TaxonomyCodeDTO> getTaxonomyCode (
     String organizationType,
     String macroAreaCode, String serviceTypeCode, String collectionReason,
     String accessToken) {
-    return collectionModelTaxonomyCodeDTOEmbeddedToCollectionModelTaxonomyCodeDTO.map(taxonomyClient.getTaxonomyCode(organizationType,macroAreaCode,serviceTypeCode,collectionReason,accessToken).getEmbedded());
+    return taxonomyCodeMapper.map(taxonomyClient.getTaxonomyCode(organizationType,macroAreaCode,serviceTypeCode,collectionReason,accessToken).getEmbedded());
   }
 }

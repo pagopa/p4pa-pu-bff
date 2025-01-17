@@ -213,12 +213,9 @@ components:
       bearerFormat: JWT
   schemas:
     CollectionModelTaxonomyCodeDTO:
-      type: object
-      properties:
-        taxonomyCodeDTOes:
-          type: array
-          items:
-            $ref: '#/components/schemas/TaxonomyCodeDTO'
+      type: array
+      items:
+        $ref: '#/components/schemas/TaxonomyCodeDTO'
     TaxonomyCodeDTO:
       type: object
       properties:
@@ -243,12 +240,9 @@ components:
         taxonomyCode:
           type: string
     CollectionModelTaxonomyCollectionReasonDTO:
-      type: object
-      properties:
-        taxonomyCollectionReasonDTOes:
-          type: array
-          items:
-            $ref: '#/components/schemas/TaxonomyCollectionReasonDTO'
+      type: array
+      items:
+        $ref: '#/components/schemas/TaxonomyCollectionReasonDTO'
     TaxonomyCollectionReasonDTO:
       type: object
       properties:
@@ -271,12 +265,9 @@ components:
         collectionReason:
           type: string
     CollectionModelTaxonomyServiceTypeCodeDTO:
-      type: object
-      properties:
-        taxonomyServiceTypeCodeDTOes:
-          type: array
-          items:
-            $ref: '#/components/schemas/TaxonomyServiceTypeCodeDTO'
+      type: array
+      items:
+        $ref: '#/components/schemas/TaxonomyServiceTypeCodeDTO'
     TaxonomyServiceTypeCodeDTO:
       type: object
       properties:
@@ -297,12 +288,9 @@ components:
         serviceTypeDescription:
           type: string
     CollectionModelTaxonomyMacroAreaCodeDTO:
-      type: object
-      properties:
-        taxonomyMacroAreaCodeDTOes:
-          type: array
-          items:
-            $ref: '#/components/schemas/TaxonomyMacroAreaCodeDTO'
+      type: array
+      items:
+        $ref: '#/components/schemas/TaxonomyMacroAreaCodeDTO'
     TaxonomyMacroAreaCodeDTO:
       type: object
       properties:
@@ -317,12 +305,9 @@ components:
         macroAreaDescription:
           type: string
     CollectionModelTaxonomyOrganizationTypeDTO:
-      type: object
-      properties:
-        taxonomyOrganizationTypeDTOes:
-          type: array
-          items:
-            $ref: '#/components/schemas/TaxonomyOrganizationTypeDTO'
+      type: array
+      items:
+        $ref: '#/components/schemas/TaxonomyOrganizationTypeDTO'
     TaxonomyOrganizationTypeDTO:
       type: object
       properties:

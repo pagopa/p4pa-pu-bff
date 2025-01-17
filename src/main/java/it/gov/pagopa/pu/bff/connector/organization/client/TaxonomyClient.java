@@ -7,7 +7,6 @@ import it.gov.pagopa.pu.p4pa_organization.dto.generated.CollectionModelTaxonomyM
 import it.gov.pagopa.pu.p4pa_organization.dto.generated.CollectionModelTaxonomyOrganizationTypeDTO;
 import it.gov.pagopa.pu.p4pa_organization.dto.generated.CollectionModelTaxonomyServiceTypeCodeDTO;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 
@@ -23,7 +22,7 @@ public class TaxonomyClient {
   public CollectionModelTaxonomyCollectionReasonDTO getCollectionReason(String organizationType,
     String macroAreaCode, String serviceTypeCode, String accessToken){
     try {
-      return organizationApisHolder.getTaxonomyEntityControllerApi(accessToken).crudTaxonomiesCollectionReasonFindDistinctCollectionReasonByOrganizationTypeAndMacroAreaCodeAndServiceTypeCodeOrderByCollectionReasonAsc(organizationType,macroAreaCode,serviceTypeCode);
+      return organizationApisHolder.getTaxonomyEntityControllerApi(accessToken).crudTaxonomiesCollectionReasonFindCollectionReasons(organizationType,macroAreaCode,serviceTypeCode);
     } catch (HttpClientErrorException e) {
       log.error("Error while retrieving taxonomy collection reason", e);
       throw e;
@@ -36,7 +35,7 @@ public class TaxonomyClient {
   public CollectionModelTaxonomyMacroAreaCodeDTO getMacroArea(String organizationType,
     String accessToken){
     try {
-      return organizationApisHolder.getMacroArea(accessToken).crudTaxonomiesMacroAreaFindDistinctMacroAreaCodeByOrganizationTypeOrderByMacroAreaCodeAsc(organizationType);
+      return organizationApisHolder.getMacroArea(accessToken).crudTaxonomiesMacroAreaFindMacroAreaCodes(organizationType);
     } catch (HttpClientErrorException e) {
       log.error("Error while retrieving taxonomy macro area code", e);
       throw e;
@@ -48,7 +47,7 @@ public class TaxonomyClient {
 
   public CollectionModelTaxonomyOrganizationTypeDTO getOrganizationType(String accessToken){
     try {
-      return organizationApisHolder.getOrganizationTypes(accessToken).crudTaxonomiesOrganizationTypesFindDistinctOrganizationTypeByOrderByOrganizationTypeAsc();
+      return organizationApisHolder.getOrganizationTypes(accessToken).crudTaxonomiesOrganizationTypesFindOrganizationTypes();
     } catch (HttpClientErrorException e) {
       log.error("Error while retrieving taxonomy organization type", e);
       throw e;
@@ -61,7 +60,7 @@ public class TaxonomyClient {
   public CollectionModelTaxonomyServiceTypeCodeDTO getServiceType(String organizationType,
     String macroAreaCode, String accessToken){
     try {
-      return organizationApisHolder.getServiceType(accessToken).crudTaxonomiesServiceTypeFindDistinctServiceTypeCodeByOrganizationTypeAndMacroAreaCodeOrderByServiceTypeCodeAsc(organizationType,macroAreaCode);
+      return organizationApisHolder.getServiceType(accessToken).crudTaxonomiesServiceTypeFindServiceTypeCodes(organizationType,macroAreaCode);
     } catch (HttpClientErrorException e) {
       log.error("Error while retrieving taxonomy service type", e);
       throw e;
@@ -75,7 +74,7 @@ public class TaxonomyClient {
     String macroAreaCode, String serviceTypeCode, String collectionReason,
     String accessToken){
     try {
-      return organizationApisHolder.getTaxonomyCode(accessToken).crudTaxonomiesTaxonomyCodeFindDistinctTaxonomyCodeByOrganizationTypeAndMacroAreaCodeAndServiceTypeCodeAndCollectionReasonOrderByTaxonomyCodeAsc(organizationType,macroAreaCode,serviceTypeCode,collectionReason);
+      return organizationApisHolder.getTaxonomyCode(accessToken).crudTaxonomiesTaxonomyCodeFindTaxonomyCodes(organizationType,macroAreaCode,serviceTypeCode,collectionReason);
     } catch (HttpClientErrorException e) {
       log.error("Error while retrieving taxonomy code", e);
       throw e;

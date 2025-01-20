@@ -343,7 +343,6 @@ components:
         - footerGDPRUrl
         - footerTermsCondUrl
         - footerAccessibilityUrl
-        - brokerId
         - canManageUsers
       properties:
         headerAssistanceUrl:

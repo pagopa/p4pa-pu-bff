@@ -2,7 +2,9 @@ package it.gov.pagopa.pu.bff.mapper;
 
 import it.gov.pagopa.pu.bff.dto.generated.ConfigFE;
 import it.gov.pagopa.pu.bff.util.TestUtils;
+import it.gov.pagopa.pu.p4pa_organization.dto.generated.Broker;
 import it.gov.pagopa.pu.p4pa_organization.dto.generated.PersonalisationFe;
+import it.gov.pagopa.pu.p4paauth.dto.generated.UserInfo;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -30,7 +32,13 @@ class PersonalisationFE2ConfigFEMapperTest {
     personalisationFe.setFooterAccessibilityUrl("Accessibility URL");
     personalisationFe.setLogoFooterImg("img");
 
-    ConfigFE configFE = mapper.mapPersonalisationFE2ConfigFE(personalisationFe);
+    Broker broker = new Broker();
+    broker.setBrokerId(1L);
+
+    UserInfo userInfo = new UserInfo();
+    userInfo.setCanManageUsers(true);
+
+    ConfigFE configFE = mapper.mapPersonalisationFE2ConfigFE(personalisationFe, broker, userInfo);
 
     Assertions.assertEquals("img", configFE.getLogoFooterImg());
     Assertions.assertEquals("Footer Description", configFE.getFooterDescText());
@@ -39,12 +47,14 @@ class PersonalisationFE2ConfigFEMapperTest {
     Assertions.assertEquals("Terms and Conditions URL", configFE.getFooterTermsCondUrl());
     Assertions.assertEquals("Assistance URL", configFE.getHeaderAssistanceUrl());
     Assertions.assertEquals("Accessibility URL", configFE.getFooterAccessibilityUrl());
-    TestUtils.checkNotNullFields(configFE,"canManageUsers","brokerId");
+    Assertions.assertEquals(String.valueOf(broker.getBrokerId()), configFE.getBrokerId());
+    Assertions.assertTrue(configFE.getCanManageUsers());
+    TestUtils.checkNotNullFields(configFE);
   }
 
   @Test
   void testMapPersonalisationFE2ConfigFEWithNullInput() {
-    ConfigFE configFE = mapper.mapPersonalisationFE2ConfigFE(null);
+    ConfigFE configFE = mapper.mapPersonalisationFE2ConfigFE(null, null, null);
     Assertions.assertNull(configFE);
   }
 

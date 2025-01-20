@@ -20,7 +20,7 @@ public class AuthorizationService {
   public static final String SCOPE = "openid";
   public static final String SUBJECT_TOKEN_TYPE = "urn:ietf:params:oauth:token-type:jwt";
 
-  public AuthorizationService(@Value("${TOKEN_EXCHANGE_ISSUER}") String subjectIssuer,
+  public AuthorizationService(@Value("${rest.auth.token-exchange-issuer}") String subjectIssuer,
                               AccessTokenDTOMapper accessTokenDTOMapper,
                               AuthnClient authClientImpl) {
     this.subjectIssuer = subjectIssuer;

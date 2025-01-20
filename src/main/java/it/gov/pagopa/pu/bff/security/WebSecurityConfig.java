@@ -37,6 +37,11 @@ public class WebSecurityConfig {
           "/actuator",
           "/actuator/**"
         ).permitAll()
+
+        // Application endpoints
+        .requestMatchers(
+          "/bff/token"
+        ).permitAll()
         .anyRequest().authenticated()
       )
       .sessionManagement(session -> session

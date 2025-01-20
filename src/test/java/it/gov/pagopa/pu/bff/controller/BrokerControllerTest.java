@@ -23,7 +23,7 @@ import static org.mockito.Mockito.*;
 class BrokerControllerTest {
 
   @Mock
-  private BrokerService brokerService;
+  private BrokerService brokerServiceMock;
 
   @InjectMocks
   private BrokerController brokerController;
@@ -54,14 +54,14 @@ class BrokerControllerTest {
 
   @Test
   void testGetBrokerConfig() {
-    when(brokerService.getBrokerConfig(userInfo, "fakeAccessToken")).thenReturn(configFE);
+    when(brokerServiceMock.getBrokerConfig(userInfo, "fakeAccessToken")).thenReturn(configFE);
 
     ResponseEntity<ConfigFE> response = brokerController.getBrokerConfig();
 
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertEquals(configFE, response.getBody());
 
-    verify(brokerService, times(1)).getBrokerConfig(userInfo, "fakeAccessToken");
+    verify(brokerServiceMock, times(1)).getBrokerConfig(userInfo, "fakeAccessToken");
   }
 
 }

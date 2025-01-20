@@ -81,6 +81,58 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "00_postToken",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm=instrumentPmMethod(pm);\r",
+									"\r",
+									"pm.test(\"00_postToken - Responses with 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"00_postToken - Verify response body\", function () {\r",
+									"    let jsonResponse = pm.response.json();\r",
+									"\r",
+									"    pm.expect(jsonResponse).have.property(\"accessToken\")\r",
+									"    pm.expect(jsonResponse).have.property(\"tokenType\")\r",
+									"    pm.expect(jsonResponse).have.property(\"expiresIn\")\r",
+									"\r",
+									"});\r",
+									"\r",
+									"let jsonResponse = pm.response.json();\r",
+									"pm.environment.set(\"accessToken\", jsonResponse);\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{puBffBaseUrl}}/token?idToken={{tokenExchange_subjectToken}}",
+							"host": [
+								"{{puBffBaseUrl}}"
+							],
+							"path": [
+								"token"
+							],
+							"query": [
+								{
+									"key": "idToken",
+									"value": "{{tokenExchange_subjectToken}}"
+								}
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},

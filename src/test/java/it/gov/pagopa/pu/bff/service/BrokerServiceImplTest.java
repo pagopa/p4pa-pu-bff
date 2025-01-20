@@ -17,6 +17,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
 
 @ExtendWith(MockitoExtension.class)
 class BrokerServiceImplTest {
@@ -56,7 +57,7 @@ class BrokerServiceImplTest {
     userInfo.setCanManageUsers(true);
 
     Mockito.when(brokerEntityClientMock.getBrokerById(1L, accessToken)).thenReturn(entityModelBroker);
-    Mockito.when(personalisationFE2ConfigFEMapperMock.mapPersonalisationFE2ConfigFE(personalisationFe)).thenReturn(configFE);
+    Mockito.when(personalisationFE2ConfigFEMapperMock.mapPersonalisationFE2ConfigFE(personalisationFe, entityModelBroker, userInfo)).thenReturn(configFE);
 
     ConfigFE result = brokerService.getBrokerConfig(userInfo, accessToken);
 
@@ -76,12 +77,11 @@ class BrokerServiceImplTest {
     userInfo.setCanManageUsers(false);
 
     Mockito.when(brokerEntityClientMock.getBrokerById(1L, accessToken)).thenReturn(null);
-    Mockito.when(personalisationFE2ConfigFEMapperMock.mapPersonalisationFE2ConfigFE(defaultConfigFeMock)).thenReturn(defaultFEConfig);
+    Mockito.when(personalisationFE2ConfigFEMapperMock.mapPersonalisationFE2ConfigFE(defaultConfigFeMock, null, userInfo)).thenReturn(defaultFEConfig);
 
     ConfigFE result = brokerService.getBrokerConfig(userInfo, accessToken);
 
-    assertEquals(defaultFEConfig, result);
-    assertEquals(userInfo.getCanManageUsers(), result.getCanManageUsers());
+    assertSame(defaultFEConfig, result);
   }
 
 }

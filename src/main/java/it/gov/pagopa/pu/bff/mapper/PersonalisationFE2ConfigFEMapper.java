@@ -1,20 +1,19 @@
 package it.gov.pagopa.pu.bff.mapper;
 
 import it.gov.pagopa.pu.bff.dto.generated.ConfigFE;
+import it.gov.pagopa.pu.p4pa_organization.dto.generated.Broker;
 import it.gov.pagopa.pu.p4pa_organization.dto.generated.PersonalisationFe;
+import it.gov.pagopa.pu.p4paauth.dto.generated.UserInfo;
 import org.springframework.stereotype.Component;
 
 @Component
 public class PersonalisationFE2ConfigFEMapper {
 
-  public ConfigFE mapPersonalisationFE2ConfigFE(PersonalisationFe personalisationFe) {
+  public ConfigFE mapPersonalisationFE2ConfigFE(PersonalisationFe personalisationFe, Broker broker, UserInfo userInfo) {
     if(personalisationFe == null){
       return null;
     }
-    return ConfigFE.builder()
-      // TODO add canManageUsers and BrokerId for UserInfo https://pagopa.atlassian.net/browse/P4ADEV-1753
-      .canManageUsers(null)
-      .brokerId(null)
+    ConfigFE out = ConfigFE.builder()
       .logoFooterImg(personalisationFe.getLogoFooterImg())
       .footerDescText(personalisationFe.getFooterDescText())
       .footerGDPRUrl(personalisationFe.getFooterGDPRUrl())
@@ -23,6 +22,11 @@ public class PersonalisationFE2ConfigFEMapper {
       .headerAssistanceUrl(personalisationFe.getHeaderAssistanceUrl())
       .footerAccessibilityUrl(personalisationFe.getFooterAccessibilityUrl())
       .build();
+    if(broker!=null){
+      out.setBrokerId(String.valueOf(broker.getBrokerId()));
+    }
+    out.setCanManageUsers(userInfo!=null && Boolean.TRUE.equals(userInfo.getCanManageUsers()));
+    return out;
   }
 
 }

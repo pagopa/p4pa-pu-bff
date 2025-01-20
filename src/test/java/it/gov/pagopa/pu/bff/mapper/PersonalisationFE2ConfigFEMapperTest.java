@@ -22,7 +22,7 @@ class PersonalisationFE2ConfigFEMapperTest {
   }
 
   @Test
-  void testMapPersonalisationFE2ConfigFEWithValidData() {
+  void givenCompleteInputsWhenMapPersonalisationFE2ConfigFEThenOk() {
     PersonalisationFe personalisationFe = new PersonalisationFe();
     personalisationFe.setFooterDescText("Footer Description");
     personalisationFe.setFooterGDPRUrl("GDPR URL");
@@ -53,9 +53,17 @@ class PersonalisationFE2ConfigFEMapperTest {
   }
 
   @Test
-  void testMapPersonalisationFE2ConfigFEWithNullInput() {
+  void givenNullPersonalizationFeWhenMapPersonalisationFE2ConfigFEThenNull() {
     ConfigFE configFE = mapper.mapPersonalisationFE2ConfigFE(null, null, null);
     Assertions.assertNull(configFE);
+  }
+
+  @Test
+  void givenNullBrokerAndNullUserInfoWhenMapPersonalisationFE2ConfigFEThenOk() {
+    ConfigFE configFE = mapper.mapPersonalisationFE2ConfigFE(new PersonalisationFe(), null, null);
+    Assertions.assertNotNull(configFE);
+    Assertions.assertNull(configFE.getBrokerId());
+    Assertions.assertFalse(configFE.getCanManageUsers());
   }
 
 }

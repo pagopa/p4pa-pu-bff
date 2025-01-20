@@ -25,9 +25,7 @@ public class PersonalisationFE2ConfigFEMapper {
     if(broker!=null){
       out.setBrokerId(String.valueOf(broker.getBrokerId()));
     }
-    if(userInfo!=null){
-      out.setCanManageUsers(Boolean.TRUE.equals(userInfo.getCanManageUsers()));
-    }
+    out.setCanManageUsers(userInfo!=null && Boolean.TRUE.equals(userInfo.getCanManageUsers()));
     return out;
   }
 

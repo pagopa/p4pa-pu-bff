@@ -1,10 +1,10 @@
 {
 	"info": {
-		"_postman_id": "9d0d0f8b-757a-4162-b71f-edb5da3549fc",
+		"_postman_id": "bf678c33-70d9-4e68-bfd0-e7173d70a393",
 		"name": "PU-BFF",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "29647564",
-		"_collection_link": "https://galactic-eclipse-948669.postman.co/workspace/New-Team-Workspace~be56c5f1-de0c-4252-95d0-ee80f35e2474/collection/29647564-9d0d0f8b-757a-4162-b71f-edb5da3549fc?action=share&source=collection_link&creator=29647564"
+		"_collection_link": "https://galactic-eclipse-948669.postman.co/workspace/New-Team-Workspace~be56c5f1-de0c-4252-95d0-ee80f35e2474/collection/29647564-bf678c33-70d9-4e68-bfd0-e7173d70a393?action=share&source=collection_link&creator=29647564"
 	},
 	"item": [
 		{
@@ -250,7 +250,349 @@
 			]
 		},
 		{
-			"name": "99_Monitoring Copy",
+			"name": "02_Taxonomy",
+			"item": [
+				{
+					"name": "02_getOrganizationTypes",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let jsonResponse = pm.response.json();\r",
+									"\r",
+									"pm.test(\"[taxonomy getOrganizationTypes], expected httpStatus: 200\", () => {\r",
+									"    pm.response.to.have.status(200);\r",
+									"})\r",
+									"\r",
+									"pm.test(\"[taxonomy getOrganizationTypes] - getOrganizationTypes\", () => {\r",
+									"    pm.expect(jsonResponse).to.be.an('array').that.is.not.empty;\r",
+									"\r",
+									"    pm.expect(jsonResponse[0].organizationType).not.null;\r",
+									"    pm.expect(jsonResponse[0].organizationTypeDescription).not.null;\r",
+									"})\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{puBffBaseUrl}}/taxonomy/getOrganizationTypes",
+							"host": [
+								"{{puBffBaseUrl}}"
+							],
+							"path": [
+								"taxonomy",
+								"getOrganizationTypes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "02_getMacroArea",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let jsonResponse = pm.response.json();\r",
+									"\r",
+									"pm.test(\"[taxonomy getMacroArea], expected httpStatus: 200\", () => {\r",
+									"    pm.response.to.have.status(200);\r",
+									"})\r",
+									"\r",
+									"pm.test(\"[taxonomy getMacroArea] - getMacroArea\", () => {\r",
+									"    pm.expect(jsonResponse).to.be.an('array').that.is.not.empty;\r",
+									"\r",
+									"    pm.expect(jsonResponse[0].organizationType).not.null;\r",
+									"    pm.expect(jsonResponse[0].organizationTypeDescription).not.null;\r",
+									"    pm.expect(jsonResponse[0].macroAreaCode).not.null;\r",
+									"    pm.expect(jsonResponse[0].macroAreaName).not.null;\r",
+									"    pm.expect(jsonResponse[0].macroAreaDescription).not.null;\r",
+									"})\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{puBffBaseUrl}}/taxonomy/getMacroArea?organizationType=01",
+							"host": [
+								"{{puBffBaseUrl}}"
+							],
+							"path": [
+								"taxonomy",
+								"getMacroArea"
+							],
+							"query": [
+								{
+									"key": "organizationType",
+									"value": "01"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "02_getServiceType",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let jsonResponse = pm.response.json();\r",
+									"\r",
+									"pm.test(\"[taxonomy getServiceType], expected httpStatus: 200\", () => {\r",
+									"    pm.response.to.have.status(200);\r",
+									"})\r",
+									"\r",
+									"pm.test(\"[taxonomy getServiceType] - getServiceType\", () => {\r",
+									"    pm.expect(jsonResponse).to.be.an('array').that.is.not.empty;\r",
+									"\r",
+									"    pm.expect(jsonResponse[0].organizationType).not.null;\r",
+									"    pm.expect(jsonResponse[0].organizationTypeDescription).not.null;\r",
+									"    pm.expect(jsonResponse[0].macroAreaCode).not.null;\r",
+									"    pm.expect(jsonResponse[0].macroAreaName).not.null;\r",
+									"    pm.expect(jsonResponse[0].macroAreaDescription).not.null;\r",
+									"    pm.expect(jsonResponse[0].serviceTypeCode).not.null;\r",
+									"    pm.expect(jsonResponse[0].serviceType).not.null;\r",
+									"    pm.expect(jsonResponse[0].serviceTypeDescription).not.null;\r",
+									"})\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{puBffBaseUrl}}/taxonomy/getServiceType?organizationType=01&macroAreaCode=01",
+							"host": [
+								"{{puBffBaseUrl}}"
+							],
+							"path": [
+								"taxonomy",
+								"getServiceType"
+							],
+							"query": [
+								{
+									"key": "organizationType",
+									"value": "01"
+								},
+								{
+									"key": "macroAreaCode",
+									"value": "01"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "02_getCollectionReason",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let jsonResponse = pm.response.json();\r",
+									"\r",
+									"pm.test(\"[taxonomy getCollectionReason], expected httpStatus: 200\", () => {\r",
+									"    pm.response.to.have.status(200);\r",
+									"})\r",
+									"\r",
+									"pm.test(\"[taxonomy getCollectionReason] - getTaxonomyCode\", () => {\r",
+									"    pm.expect(jsonResponse).to.be.an('array').that.is.not.empty;\r",
+									"\r",
+									"    pm.expect(jsonResponse[0].organizationType).not.null;\r",
+									"    pm.expect(jsonResponse[0].organizationTypeDescription).not.null;\r",
+									"    pm.expect(jsonResponse[0].macroAreaCode).not.null;\r",
+									"    pm.expect(jsonResponse[0].macroAreaName).not.null;\r",
+									"    pm.expect(jsonResponse[0].macroAreaDescription).not.null;\r",
+									"    pm.expect(jsonResponse[0].serviceTypeCode).not.null;\r",
+									"    pm.expect(jsonResponse[0].serviceType).not.null;\r",
+									"    pm.expect(jsonResponse[0].serviceTypeDescription).not.null;\r",
+									"    pm.expect(jsonResponse[0].collectionReason).not.null;\r",
+									"})\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{puBffBaseUrl}}/taxonomy/getCollectionReason?organizationType=01&macroAreaCode=01&serviceTypeCode=100",
+							"host": [
+								"{{puBffBaseUrl}}"
+							],
+							"path": [
+								"taxonomy",
+								"getCollectionReason"
+							],
+							"query": [
+								{
+									"key": "organizationType",
+									"value": "01"
+								},
+								{
+									"key": "macroAreaCode",
+									"value": "01"
+								},
+								{
+									"key": "serviceTypeCode",
+									"value": "100"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "02_getTaxonomyCode",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let jsonResponse = pm.response.json();\r",
+									"\r",
+									"pm.test(\"[taxonomy getTaxonomyCode], expected httpStatus: 200\", () => {\r",
+									"    pm.response.to.have.status(200);\r",
+									"})\r",
+									"\r",
+									"pm.test(\"[taxonomy getTaxonomyCode] - getTaxonomyCode\", () => {\r",
+									"    pm.expect(jsonResponse).to.be.an('array').that.is.not.empty;\r",
+									"\r",
+									"    pm.expect(jsonResponse[0].organizationType).not.null;\r",
+									"    pm.expect(jsonResponse[0].organizationTypeDescription).not.null;\r",
+									"    pm.expect(jsonResponse[0].macroAreaCode).not.null;\r",
+									"    pm.expect(jsonResponse[0].macroAreaName).not.null;\r",
+									"    pm.expect(jsonResponse[0].macroAreaDescription).not.null;\r",
+									"    pm.expect(jsonResponse[0].serviceTypeCode).not.null;\r",
+									"    pm.expect(jsonResponse[0].serviceType).not.null;\r",
+									"    pm.expect(jsonResponse[0].serviceTypeDescription).not.null;\r",
+									"    pm.expect(jsonResponse[0].collectionReason).not.null;\r",
+									"    pm.expect(jsonResponse[0].taxonomyCode).not.null;\r",
+									"})\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{puBffBaseUrl}}/taxonomy/getTaxonomyCode?organizationType=01&macroAreaCode=01&serviceTypeCode=100&collectionReason=IM",
+							"host": [
+								"{{puBffBaseUrl}}"
+							],
+							"path": [
+								"taxonomy",
+								"getTaxonomyCode"
+							],
+							"query": [
+								{
+									"key": "organizationType",
+									"value": "01"
+								},
+								{
+									"key": "macroAreaCode",
+									"value": "01"
+								},
+								{
+									"key": "serviceTypeCode",
+									"value": "100"
+								},
+								{
+									"key": "collectionReason",
+									"value": "IM"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "99_Monitoring",
 			"item": [
 				{
 					"name": "99_coreHealthIndicator",

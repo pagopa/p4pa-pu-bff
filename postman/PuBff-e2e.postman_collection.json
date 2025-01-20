@@ -240,11 +240,12 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{puBffBaseUrl}}taxonomy/getOrganizationTypes",
+              "raw": "{{puBffBaseUrl}}/taxonomy/getOrganizationTypes",
               "host": [
-                "{{puBffBaseUrl}}taxonomy"
+                "{{puBffBaseUrl}}"
               ],
               "path": [
+                "taxonomy",
                 "getOrganizationTypes"
               ]
             }
@@ -295,11 +296,12 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{puBffBaseUrl}}taxonomy/getMacroArea?organizationType=01",
+              "raw": "{{puBffBaseUrl}}/taxonomy/getMacroArea?organizationType=01",
               "host": [
-                "{{puBffBaseUrl}}taxonomy"
+                "{{puBffBaseUrl}}"
               ],
               "path": [
+                "taxonomy",
                 "getMacroArea"
               ],
               "query": [
@@ -359,11 +361,12 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{puBffBaseUrl}}taxonomy/getServiceType?organizationType=01&macroAreaCode=01",
+              "raw": "{{puBffBaseUrl}}/taxonomy/getServiceType?organizationType=01&macroAreaCode=01",
               "host": [
-                "{{puBffBaseUrl}}taxonomy"
+                "{{puBffBaseUrl}}"
               ],
               "path": [
+                "taxonomy",
                 "getServiceType"
               ],
               "query": [
@@ -428,11 +431,12 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{puBffBaseUrl}}taxonomy/getCollectionReason?organizationType=01&macroAreaCode=01&serviceTypeCode=100",
+              "raw": "{{puBffBaseUrl}}/taxonomy/getCollectionReason?organizationType=01&macroAreaCode=01&serviceTypeCode=100",
               "host": [
-                "{{puBffBaseUrl}}taxonomy"
+                "{{puBffBaseUrl}}"
               ],
               "path": [
+                "taxonomy",
                 "getCollectionReason"
               ],
               "query": [
@@ -502,11 +506,12 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{puBffBaseUrl}}taxonomy/getTaxonomyCode?organizationType=01&macroAreaCode=01&serviceTypeCode=100&collectionReason=IM",
+              "raw": "{{puBffBaseUrl}}/taxonomy/getTaxonomyCode?organizationType=01&macroAreaCode=01&serviceTypeCode=100&collectionReason=IM",
               "host": [
-                "{{puBffBaseUrl}}taxonomy"
+                "{{puBffBaseUrl}}"
               ],
               "path": [
+                "taxonomy",
                 "getTaxonomyCode"
               ],
               "query": [

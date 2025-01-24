@@ -2,11 +2,11 @@ package it.gov.pagopa.pu.bff.service.debtposition;
 
 import it.gov.pagopa.pu.bff.dto.generated.PagedDebtPositionTypeWithCount;
 import it.gov.pagopa.pu.p4paauth.dto.generated.UserInfo;
-import java.util.List;
+import org.springframework.data.domain.Pageable;
 
 public interface DebtPositionTypeService {
 
   PagedDebtPositionTypeWithCount getDebtPositionTypeWithCount(
-    Long organizationId, Integer page, Long size, List<String> sort,
+    Long organizationId, Pageable pageable,
     UserInfo loggedUser, String accessToken);
 }

@@ -5,8 +5,8 @@ import it.gov.pagopa.pu.bff.dto.generated.PagedDebtPositionTypeWithCount;
 import it.gov.pagopa.pu.bff.mapper.DebtPositionTypeWithCountMapper;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
 import it.gov.pagopa.pu.p4paauth.dto.generated.UserInfo;
-import java.util.List;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -26,11 +26,17 @@ public class DebtPositionTypeServiceImpl implements DebtPositionTypeService {
 
   @Override
   public PagedDebtPositionTypeWithCount getDebtPositionTypeWithCount(
-      Long organizationId, Integer page, Long size, List<String> sort,
+      Long organizationId, Pageable pageable,
       UserInfo loggedUser, String accessToken) {
     authorizationService.validateAdminRole(organizationId,loggedUser);
     return debtPositionTypeWithCountMapper.mapToPagedDebtPositionWithCount(
-      debtPositionClient.getDebtPositionTypeWithCount(loggedUser.getBrokerId(),page,size!=null?size.intValue():null,sort,accessToken)
+      debtPositionClient.getDebtPositionTypeWithCount(
+        loggedUser.getBrokerId(),
+        pageable.getPageNumber(),
+        pageable.getPageSize(),
+        pageable.getSort().stream()
+          .map(o->o.getProperty()+","+o.getDirection()).toList(),
+        accessToken)
     );
   }
 }

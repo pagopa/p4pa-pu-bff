@@ -4,8 +4,8 @@ import it.gov.pagopa.pu.bff.controller.generated.DebtPositionTypeApi;
 import it.gov.pagopa.pu.bff.dto.generated.PagedDebtPositionTypeWithCount;
 import it.gov.pagopa.pu.bff.security.SecurityUtils;
 import it.gov.pagopa.pu.bff.service.debtposition.DebtPositionTypeService;
-import java.util.List;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -22,8 +22,8 @@ public class DebtPositionTypeController implements DebtPositionTypeApi {
 
     @Override
     public ResponseEntity<PagedDebtPositionTypeWithCount> getDebtPositionTypeWithCount(
-      Long organizationId, Integer page, Long size, List<String> sort) {
+      Long organizationId, Pageable pageable) {
       return ResponseEntity.ok(debtPositionTypeService.getDebtPositionTypeWithCount(
-        organizationId, page, size, sort, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken()));
+        organizationId, pageable, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken()));
     }
   }

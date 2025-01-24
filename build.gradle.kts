@@ -46,6 +46,7 @@ dependencies {
 	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:$springDocOpenApiVersion")
 	implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
 	implementation("org.openapitools:jackson-databind-nullable:$openApiToolsVersion")
+  implementation("org.springframework.data:spring-data-commons")
 
 
 	compileOnly("org.projectlombok:lombok")

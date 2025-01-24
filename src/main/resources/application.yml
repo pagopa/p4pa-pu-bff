@@ -67,3 +67,5 @@ rest:
     token-exchange-issuer: "\${TOKEN_EXCHANGE_ISSUER:}"
   organization:
     base-url: "\${ORGANIZATION_BASE_URL:}"
+  debt-position:
+    base-url: "\${DEBT_POSITION_BASE_URL:}"

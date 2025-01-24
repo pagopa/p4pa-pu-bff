@@ -6,7 +6,9 @@ import it.gov.pagopa.pu.bff.mapper.AccessTokenDTOMapper;
 import it.gov.pagopa.pu.p4paauth.dto.generated.UserInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 @Service
 @Slf4j
@@ -19,6 +21,7 @@ public class AuthorizationService {
   public static final String GRANT_TYPE = "urn:ietf:params:oauth:grant-type:token-exchange";
   public static final String SCOPE = "openid";
   public static final String SUBJECT_TOKEN_TYPE = "urn:ietf:params:oauth:token-type:jwt";
+  public static final String ROLE_ADMIN = "ROLE_ADMIN";
 
   public AuthorizationService(@Value("${rest.auth.token-exchange-issuer}") String subjectIssuer,
                               AccessTokenDTOMapper accessTokenDTOMapper,
@@ -47,4 +50,15 @@ public class AuthorizationService {
         null));
   }
 
+  public void validateAdminRole(Long organizationId, UserInfo loggedUser) {
+    boolean roleAdmin = loggedUser.getOrganizations().stream()
+      .filter(o->!CollectionUtils.isEmpty(o.getRoles()))
+      .anyMatch(o ->
+        organizationId.equals(o.getOrganizationId())
+        && o.getRoles().contains(ROLE_ADMIN));
+    if(!roleAdmin){
+      log.debug("Unauthorized user. [organizationId:{}]", organizationId);
+      throw new AuthorizationDeniedException("Access Denied");
+    }
+  }
 }

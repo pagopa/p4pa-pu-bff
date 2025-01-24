@@ -63,6 +63,7 @@ microservice-chart:
 
     AUTH_SERVER_BASE_URL: "http://p4pa-auth-microservice-chart:8080"
     ORGANIZATION_BASE_URL: "http://p4pa-organization-microservice-chart:8080"
+    DEBT_POSITION_BASE_URL: "http://p4pa-debt-positions-microservice-chart:8080"
 
   envSecret:
     APPLICATIONINSIGHTS_CONNECTION_STRING: appinsights-connection-string

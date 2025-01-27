@@ -57,7 +57,7 @@ paths:
         - Authentication
       summary: "Generate an access token"
       operationId: postToken
-      security: []
+      security: [ ]
       parameters:
         - name: idToken
           in: query
@@ -85,7 +85,7 @@ paths:
       tags:
         - Monitoring
       operationId: getHealthStatus
-      security: []
+      security: [ ]
       responses:
         '200':
           description: OK
@@ -242,6 +242,34 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/TaxonomyCodeDTO'
+  /debt-position-types/{id}:
+    get:
+      tags:
+        - DebtPositionTypes
+      summary: "Retrieve a specific debt position type"
+      operationId: getDebtPositionType
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The unique identifier of the debt position type
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DebtPositionTypeDTO'
+        '404':
+          description: Not Found - Debt position type not found
+        '401':
+          description: Unauthorized - Missing or invalid token
+        '403':
+          description: Forbidden - Access denied
+        '500':
+          description: Internal Server Error
 security:
   - bearerAuth: [ ]
 components:
@@ -436,3 +464,47 @@ components:
         expiresIn:
           type: integer
           description: Time in seconds until the token expires
+    DebtPositionTypeDTO:
+      type: object
+      properties:
+        debtPositionTypeId:
+          type: integer
+          format: int64
+          description: Unique identifier for the debt position type
+        brokerId:
+          type: integer
+          format: int64
+          description: Identifier for the broker associated with this debt position type
+        code:
+          type: string
+          description: Code representing the debt position type
+        description:
+          type: string
+          description: Description of the debt position type
+        orgType:
+          type: string
+          description: Organization type associated with this debt position type
+        macroArea:
+          type: string
+          description: Macro area related to the debt position type
+        serviceType:
+          type: string
+          description: Service type associated with the debt position type
+        collectingReason:
+          type: string
+          description: Reason for collecting this debt position
+        taxonomyCode:
+          type: string
+          description: Taxonomy code for this debt position type
+        flagAnonymousFiscalCode:
+          type: boolean
+          description: Indicates if an anonymous fiscal code is allowed
+        flagMandatoryDueDate:
+          type: boolean
+          description: Indicates if a due date is mandatory
+        flagNotifyIo:
+          type: boolean
+          description: Indicates if notifications to IO are required
+        ioTemplateMessage:
+          type: string
+          description: Template message for IO notifications

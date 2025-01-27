@@ -73,12 +73,13 @@ class DebtPositionTypeServiceImplTest {
     long brokerId = 1L;
     UserInfo userInfo = new UserInfo();
     userInfo.setBrokerId(brokerId);
+    PageRequest pageRequest = PageRequest.of(0, 10);
 
     Mockito.doThrow(new AuthorizationDeniedException("")).when(authorizationServiceMock).validateAdminRole(1L,userInfo);
 
     Assertions.assertThrows(AuthorizationDeniedException.class,()->
       debtPositionTypeService.getDebtPositionTypeWithCount(
-      1L, PageRequest.of(0,10), userInfo, accessToken));
+      1L, pageRequest, userInfo, accessToken));
 
     Mockito.verifyNoMoreInteractions(authorizationServiceMock);
     Mockito.verifyNoInteractions(debtPositionClientMock,debtPositionTypeWithCountMapperMock);

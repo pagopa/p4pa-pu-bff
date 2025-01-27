@@ -223,9 +223,9 @@ tasks.register<FilterTask>("filterPaginatedOpenAPIBFF") {
   group = "openapi"
   description= "description"
 
-  srcInputPath.set("./openapi/p4pa-pu-bff.openapi.yaml")
+  srcInputPath.set("${rootDir}/openapi/p4pa-pu-bff.openapi.yaml")
   filteredFileName.set("openapi-BFF-filtered.yaml")
-  projectDir.set(".")
+  projectDir.set(rootDir.absolutePath)
   jsonOpenapi.set(false)
   remoteUrl.set(false)
 }

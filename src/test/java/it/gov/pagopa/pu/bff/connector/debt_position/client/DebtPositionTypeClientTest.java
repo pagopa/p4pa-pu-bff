@@ -1,6 +1,5 @@
 package it.gov.pagopa.pu.bff.connector.debt_position.client;
 
-import it.gov.pagopa.pu.bff.connector.debt_position.client.DebtPositionTypeClient;
 import it.gov.pagopa.pu.bff.connector.debt_position.config.DebtPositionApisHolder;
 import it.gov.pagopa.pu.p4pa_debt_positions.controller.generated.DebtPositionTypeEntityControllerApi;
 import it.gov.pagopa.pu.p4pa_debt_positions.dto.generated.DebtPositionType;

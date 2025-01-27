@@ -1,7 +1,6 @@
 package it.gov.pagopa.pu.bff.connector.debt_position.config;
 
 import it.gov.pagopa.pu.bff.connector.BaseApiHolderTest;
-import it.gov.pagopa.pu.bff.connector.debt_position.config.DebtPositionApisHolder;
 import it.gov.pagopa.pu.p4pa_debt_positions.dto.generated.DebtPositionType;
 import it.gov.pagopa.pu.p4pa_organization.controller.ApiClient;
 import org.junit.jupiter.api.AfterEach;

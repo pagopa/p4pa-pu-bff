@@ -626,6 +626,77 @@
 					"response": []
 				}
 			]
+		},
+		{
+			"name": "03_Debt_Positions",
+			"item": [
+				{
+					"name": "03_getDebtPositionType",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let jsonResponse = pm.response.json();\r",
+									"\r",
+									"pm.test(\"[debt-position-type], expected httpStatus: 200\", () => {\r",
+									"    pm.response.to.have.status(200);\r",
+									"})\r",
+									"\r",
+									"pm.test(\"[debt-position-type] - get debtPositionType\", () => {\r",
+									"    pm.expect(jsonResponse.debtPositionTypeId).not.null;\r",
+									"    pm.expect(jsonResponse.brokerId).not.null;\r",
+									"    pm.expect(jsonResponse.code).not.null;\r",
+									"    pm.expect(jsonResponse.description).not.null;\r",
+									"    pm.expect(jsonResponse.orgType).not.null;\r",
+									"    pm.expect(jsonResponse.macroArea).not.null;\r",
+									"    pm.expect(jsonResponse.serviceType).not.null;\r",
+									"    pm.expect(jsonResponse.collectingReason).not.null;\r",
+									"    pm.expect(jsonResponse.taxonomyCode).not.null;\r",
+									"    pm.expect(jsonResponse.flagAnonymousFiscalCode).not.null;\r",
+									"    pm.expect(jsonResponse.flagMandatoryDueDate).not.null;\r",
+									"    pm.expect(jsonResponse.flagNotifyIo).not.null;\r",
+									"    pm.expect(jsonResponse.ioTemplateMessage).not.null;\r",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{puBffBaseUrl}}/debt-position-types/:id",
+							"host": [
+								"{{puBffBaseUrl}}"
+							],
+							"path": [
+								"debt-position-types",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
 		}
 	],
 	"event": [

@@ -53,7 +53,6 @@ paths:
           description: Internal Server Error
   /debt-position-type/{organizationId}:
     get:
-      x-spring-paginated: true
       tags:
         - DebtPositionType
       summary: "Retrieve a page of DebtPositionTypeWithCount based on the organization's brokerId"
@@ -65,6 +64,32 @@ paths:
           schema:
             type: integer
             format: int64
+        - name: page
+          in: query
+          description: Zero-based page index (0..N)
+          required: false
+          x-ignore: true
+          schema:
+            minimum: 0
+            type: integer
+            default: 0
+        - name: size
+          in: query
+          description: The size of the page to be returned
+          required: false
+          x-ignore: true
+          schema:
+            type: integer
+            format: int64
+        - name: sort
+          in: query
+          description: 'Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.'
+          required: false
+          x-ignore: true
+          schema:
+            type: array
+            items:
+              type: string
       responses:
         '200':
           description: OK
@@ -84,6 +109,7 @@ paths:
           description: Forbidden - Access denied
         '500':
           description: Internal Server Error
+      x-spring-paginated: true
   /token:
     post:
       tags:

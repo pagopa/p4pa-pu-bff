@@ -13,6 +13,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -53,14 +54,12 @@ class DebtPositionTypeControllerTest {
     expectedResult.setTotalPages(0L);
     expectedResult.setNumber(0L);
 
-    List<String> sortList = List.of("sort1","sort2");
-
     Mockito.when(serviceMock.getDebtPositionTypeWithCount(Mockito.eq(organizationId),
-        Mockito.eq(0),Mockito.eq(10L),Mockito.eq(sortList),
+        Mockito.argThat(p->p.getPageNumber()==0 && p.getPageSize()==10 && p.getSort().isUnsorted()),
         Mockito.any(), Mockito.anyString()))
       .thenReturn(expectedResult);
 
-    ResponseEntity<PagedDebtPositionTypeWithCount> response = debtPositionTypeController.getDebtPositionTypeWithCount(organizationId,0,10L,sortList);
+    ResponseEntity<PagedDebtPositionTypeWithCount> response = debtPositionTypeController.getDebtPositionTypeWithCount(organizationId,PageRequest.of(0,10));
 
     Assertions.assertEquals(HttpStatus.OK,response.getStatusCode());
     Assertions.assertNotNull(response.getBody());

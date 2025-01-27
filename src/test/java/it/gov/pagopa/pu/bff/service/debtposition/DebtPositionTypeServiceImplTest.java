@@ -17,6 +17,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Order;
 import org.springframework.security.authorization.AuthorizationDeniedException;
 
 @ExtendWith(MockitoExtension.class)
@@ -47,7 +50,7 @@ class DebtPositionTypeServiceImplTest {
     userInfo.setBrokerId(brokerId);
     PagedModelDebtPositionTypeWithCount pagedModelDebtPositionTypeWithCount = new PagedModelDebtPositionTypeWithCount();
     PagedDebtPositionTypeWithCount pagedDebtPositionTypeWithCount = new PagedDebtPositionTypeWithCount();
-    List<String> sortList = List.of("sort1","sort2");
+    List<String> sortList = List.of("sort1,ASC","sort2,DESC");
 
     Mockito.doNothing().when(authorizationServiceMock).validateAdminRole(1L,userInfo);
     Mockito.when(debtPositionClientMock.getDebtPositionTypeWithCount(brokerId, 0, 10,
@@ -55,7 +58,9 @@ class DebtPositionTypeServiceImplTest {
     Mockito.when(debtPositionTypeWithCountMapperMock.mapToPagedDebtPositionWithCount(pagedModelDebtPositionTypeWithCount)).thenReturn(pagedDebtPositionTypeWithCount);
 
     PagedDebtPositionTypeWithCount result = debtPositionTypeService.getDebtPositionTypeWithCount(
-      1L, 0, 10L, sortList, userInfo, accessToken);
+      1L, PageRequest.of(0,10,
+        Sort.by(List.of(Order.asc("sort1"),Order.desc("sort2")))),
+      userInfo, accessToken);
 
     assertNotNull(result);
     assertSame(pagedDebtPositionTypeWithCount,result);
@@ -68,13 +73,12 @@ class DebtPositionTypeServiceImplTest {
     long brokerId = 1L;
     UserInfo userInfo = new UserInfo();
     userInfo.setBrokerId(brokerId);
-    List<String> sortList = List.of("sort1","sort2");
 
     Mockito.doThrow(new AuthorizationDeniedException("")).when(authorizationServiceMock).validateAdminRole(1L,userInfo);
 
     Assertions.assertThrows(AuthorizationDeniedException.class,()->
       debtPositionTypeService.getDebtPositionTypeWithCount(
-      1L, 0, 10L, sortList, userInfo, accessToken));
+      1L, PageRequest.of(0,10), userInfo, accessToken));
 
     Mockito.verifyNoMoreInteractions(authorizationServiceMock);
     Mockito.verifyNoInteractions(debtPositionClientMock,debtPositionTypeWithCountMapperMock);

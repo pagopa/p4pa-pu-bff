@@ -107,6 +107,7 @@ class DebtPositionTypeWithCountMapperTest {
     assertNull(result.getSize());
     assertFalse(CollectionUtils.isEmpty(result.getContent()));
     assertEquals(1, result.getContent().size());
+    TestUtils.checkNotNullFields(result.getContent().getFirst());
     assertEquals(debtPositionTypeWithCount.getDebtPositionTypeId(), result.getContent().getFirst().getDebtPositionTypeId());
     assertEquals(debtPositionTypeWithCount.getCode(), result.getContent().getFirst().getCode());
     assertEquals(debtPositionTypeWithCount.getDescription(), result.getContent().getFirst().getDescription());

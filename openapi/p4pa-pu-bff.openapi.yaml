@@ -242,7 +242,7 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/TaxonomyCodeDTO'
-  /debt-position-types/{organizationId}:
+  /debt-position-types/organization/{organizationId}:
     get:
       tags:
         - DebtPositionTypes

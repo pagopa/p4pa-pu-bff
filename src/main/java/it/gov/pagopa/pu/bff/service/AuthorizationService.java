@@ -58,7 +58,7 @@ public class AuthorizationService {
         .isPresent();
     if(!roleAdmin){
       log.debug("Unauthorized user. [organizationId:{}]", organizationId);
-      throw new AuthorizationDeniedException("Access Denied");
+      throw new AuthorizationDeniedException("Access denied on organizationId " + organizationId + " to user " + loggedUser.getMappedExternalUserId());
     }
   }
 }

@@ -2,7 +2,7 @@ package it.gov.pagopa.pu.bff.mapper;
 
 import it.gov.pagopa.pu.bff.dto.generated.DebtPositionTypeWithCount;
 import it.gov.pagopa.pu.bff.dto.generated.PagedDebtPositionTypeWithCount;
-import it.gov.pagopa.pu.p4pa_debt_positions.dto.generated.PagedModelDebtPositionTypeWithCount;
+import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelDebtPositionTypeWithCount;
 import java.util.Collections;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
@@ -31,7 +31,7 @@ public class DebtPositionTypeWithCountMapper {
   }
 
   private DebtPositionTypeWithCount mapToDebtPositionTypeWithCount(
-    it.gov.pagopa.pu.p4pa_debt_positions.dto.generated.DebtPositionTypeWithCount debtPositionTypeWithCount) {
+    it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeWithCount debtPositionTypeWithCount) {
     return DebtPositionTypeWithCount.builder()
       .debtPositionTypeId(debtPositionTypeWithCount.getDebtPositionTypeId())
       .code(debtPositionTypeWithCount.getCode())

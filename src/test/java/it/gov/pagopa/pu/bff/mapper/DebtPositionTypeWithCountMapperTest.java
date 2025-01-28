@@ -8,10 +8,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import it.gov.pagopa.pu.bff.dto.generated.PagedDebtPositionTypeWithCount;
 import it.gov.pagopa.pu.bff.util.TestUtils;
-import it.gov.pagopa.pu.p4pa_debt_positions.dto.generated.DebtPositionTypeWithCount;
-import it.gov.pagopa.pu.p4pa_debt_positions.dto.generated.PageMetadata;
-import it.gov.pagopa.pu.p4pa_debt_positions.dto.generated.PagedModelDebtPositionTypeWithCount;
-import it.gov.pagopa.pu.p4pa_debt_positions.dto.generated.PagedModelDebtPositionTypeWithCountEmbedded;
+import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeWithCount;
+import it.gov.pagopa.pu.debtpositions.dto.generated.PageMetadata;
+import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelDebtPositionTypeWithCount;
+import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelDebtPositionTypeWithCountEmbedded;
 import java.time.OffsetDateTime;
 import java.util.List;
 import org.junit.jupiter.api.Test;

@@ -116,11 +116,12 @@ class AuthorizationServiceTest {
     userTestRole.setOrganizationId(2L);
     UserInfo userInfo = new UserInfo();
     userInfo.setOrganizations(List.of(userAdminRole,userTestRole));
+    userInfo.setMappedExternalUserId("externalUserId");
     AuthorizationDeniedException result = Assertions.assertThrows(
       AuthorizationDeniedException.class,
       () -> authorizationService.validateAdminRole(2L,userInfo));
 
-    Assertions.assertEquals("Access Denied", result.getMessage());
+    Assertions.assertEquals("Access denied on organizationId " + 2L + " to user externalUserId", result.getMessage());
   }
 }
 

@@ -51,7 +51,7 @@ paths:
           description: Forbidden - Access denied
         '500':
           description: Internal Server Error
-  /debt-position-type/{organizationId}:
+  /debt-position-types/{organizationId}:
     get:
       tags:
         - DebtPositionType

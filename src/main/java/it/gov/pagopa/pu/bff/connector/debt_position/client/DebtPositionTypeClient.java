@@ -1,7 +1,7 @@
 package it.gov.pagopa.pu.bff.connector.debt_position.client;
 
 import it.gov.pagopa.pu.bff.connector.debt_position.config.DebtPositionApisHolder;
-import it.gov.pagopa.pu.p4pa_debt_positions.dto.generated.DebtPositionType;
+import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionType;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;

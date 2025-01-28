@@ -4,7 +4,7 @@ import it.gov.pagopa.pu.bff.connector.debt_position.client.DebtPositionTypeClien
 import it.gov.pagopa.pu.bff.dto.generated.DebtPositionTypeDTO;
 import it.gov.pagopa.pu.bff.mapper.DebtPositionTypeDTOMapper;
 import it.gov.pagopa.pu.bff.service.debt_position.DebtPositionTypeServiceImpl;
-import it.gov.pagopa.pu.p4pa_debt_positions.dto.generated.DebtPositionType;
+import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

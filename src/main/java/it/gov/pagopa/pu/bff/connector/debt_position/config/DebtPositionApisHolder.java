@@ -1,8 +1,8 @@
 package it.gov.pagopa.pu.bff.connector.debt_position.config;
 
-import it.gov.pagopa.pu.p4pa_debt_positions.controller.ApiClient;
-import it.gov.pagopa.pu.p4pa_debt_positions.controller.BaseApi;
-import it.gov.pagopa.pu.p4pa_debt_positions.controller.generated.DebtPositionTypeEntityControllerApi;
+import it.gov.pagopa.pu.debtpositions.controller.ApiClient;
+import it.gov.pagopa.pu.debtpositions.controller.BaseApi;
+import it.gov.pagopa.pu.debtpositions.controller.generated.DebtPositionTypeEntityControllerApi;
 import jakarta.annotation.PreDestroy;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;

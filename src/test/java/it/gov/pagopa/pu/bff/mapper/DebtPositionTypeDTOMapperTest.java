@@ -2,7 +2,7 @@ package it.gov.pagopa.pu.bff.mapper;
 
 import it.gov.pagopa.pu.bff.dto.generated.DebtPositionTypeDTO;
 import it.gov.pagopa.pu.bff.util.TestUtils;
-import it.gov.pagopa.pu.p4pa_debt_positions.dto.generated.DebtPositionType;
+import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionType;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;

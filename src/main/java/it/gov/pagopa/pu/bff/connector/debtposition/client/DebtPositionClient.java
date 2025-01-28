@@ -22,9 +22,11 @@ public class DebtPositionClient {
 
   public PagedModelDebtPositionTypeWithCount getDebtPositionTypeWithCount(Long brokerId, Pageable pageable, String accessToken) {
     try {
+      Integer pageNumber = pageable.isPaged()? pageable.getPageNumber() : 0;
+      Integer pageSize = pageable.isPaged()? pageable.getPageSize() : null;
       return debtPositionApisHolder.getDebtPositionTypeWithCountSearchControllerApi(accessToken)
-        .crudDebtPositionTypesWithCountFindByBrokerId( brokerId,pageable.getPageNumber(),
-          pageable.getPageSize(),
+        .crudDebtPositionTypesWithCountFindByBrokerId( brokerId, pageNumber,
+          pageSize,
           getSortList(pageable));
     } catch (HttpClientErrorException e) {
       if (e.getStatusCode() == HttpStatus.NOT_FOUND) {

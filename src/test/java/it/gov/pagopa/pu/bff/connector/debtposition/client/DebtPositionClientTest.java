@@ -6,6 +6,7 @@ import static org.mockito.Mockito.when;
 import it.gov.pagopa.pu.bff.connector.debtposition.config.DebtPositionApisHolder;
 import it.gov.pagopa.pu.debtpositions.controller.generated.DebtPositionTypeWithCountSearchControllerApi;
 import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelDebtPositionTypeWithCount;
+import java.util.Collections;
 import java.util.List;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -16,6 +17,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Order;
 import org.springframework.http.HttpStatus;
@@ -58,6 +60,24 @@ class DebtPositionClientTest {
     PagedModelDebtPositionTypeWithCount result = debtPositionClient.getDebtPositionTypeWithCount(
       brokerId, PageRequest.of(0,10,
       Sort.by(List.of(Order.asc("sort1"),Order.desc("sort2")))), accessToken);
+
+    assertSame(expectedResult, result);
+  }
+
+  @Test
+  void givenUnpagedWhenGetDebtPositionTypeWithCountThenInvokeWithAccessToken() {
+    long brokerId = 1L;
+    String accessToken = "ACCESSTOKEN";
+    PagedModelDebtPositionTypeWithCount expectedResult = new PagedModelDebtPositionTypeWithCount();
+
+    when(debtPositionApisHolderMock.getDebtPositionTypeWithCountSearchControllerApi(accessToken))
+      .thenReturn(debtPositionTypeWithCountSearchControllerApiMock);
+    when(debtPositionTypeWithCountSearchControllerApiMock.crudDebtPositionTypesWithCountFindByBrokerId(
+      brokerId,0,null, Collections.emptyList()))
+      .thenReturn(expectedResult);
+
+    PagedModelDebtPositionTypeWithCount result = debtPositionClient.getDebtPositionTypeWithCount(
+      brokerId, Pageable.unpaged(), accessToken);
 
     assertSame(expectedResult, result);
   }

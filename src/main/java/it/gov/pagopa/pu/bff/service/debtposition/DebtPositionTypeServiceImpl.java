@@ -32,10 +32,7 @@ public class DebtPositionTypeServiceImpl implements DebtPositionTypeService {
     return debtPositionTypeWithCountMapper.mapToPagedDebtPositionWithCount(
       debtPositionClient.getDebtPositionTypeWithCount(
         loggedUser.getBrokerId(),
-        pageable.getPageNumber(),
-        pageable.getPageSize(),
-        pageable.getSort().stream()
-          .map(o->o.getProperty()+","+o.getDirection()).toList(),
+        pageable,
         accessToken)
     );
   }

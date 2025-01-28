@@ -9,7 +9,6 @@ import it.gov.pagopa.pu.bff.mapper.DebtPositionTypeWithCountMapper;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
 import it.gov.pagopa.pu.p4pa_debt_positions.dto.generated.PagedModelDebtPositionTypeWithCount;
 import it.gov.pagopa.pu.p4paauth.dto.generated.UserInfo;
-import java.util.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,8 +17,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.Sort.Order;
 import org.springframework.security.authorization.AuthorizationDeniedException;
 
 @ExtendWith(MockitoExtension.class)
@@ -50,16 +47,13 @@ class DebtPositionTypeServiceImplTest {
     userInfo.setBrokerId(brokerId);
     PagedModelDebtPositionTypeWithCount pagedModelDebtPositionTypeWithCount = new PagedModelDebtPositionTypeWithCount();
     PagedDebtPositionTypeWithCount pagedDebtPositionTypeWithCount = new PagedDebtPositionTypeWithCount();
-    List<String> sortList = List.of("sort1,ASC","sort2,DESC");
 
     Mockito.doNothing().when(authorizationServiceMock).validateAdminRole(1L,userInfo);
-    Mockito.when(debtPositionClientMock.getDebtPositionTypeWithCount(brokerId, 0, 10,
-      sortList,accessToken)).thenReturn(pagedModelDebtPositionTypeWithCount);
+    Mockito.when(debtPositionClientMock.getDebtPositionTypeWithCount(brokerId, PageRequest.of(0,10),accessToken)).thenReturn(pagedModelDebtPositionTypeWithCount);
     Mockito.when(debtPositionTypeWithCountMapperMock.mapToPagedDebtPositionWithCount(pagedModelDebtPositionTypeWithCount)).thenReturn(pagedDebtPositionTypeWithCount);
 
     PagedDebtPositionTypeWithCount result = debtPositionTypeService.getDebtPositionTypeWithCount(
-      1L, PageRequest.of(0,10,
-        Sort.by(List.of(Order.asc("sort1"),Order.desc("sort2")))),
+      1L, PageRequest.of(0,10),
       userInfo, accessToken);
 
     assertNotNull(result);

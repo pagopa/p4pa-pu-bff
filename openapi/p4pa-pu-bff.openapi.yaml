@@ -94,15 +94,9 @@ paths:
         '200':
           description: OK
           content:
-            application/hal+json:
+            application/json:
               schema:
                 $ref: '#/components/schemas/PagedDebtPositionTypeWithCount'
-            application/x-spring-data-compact+json:
-              schema:
-                $ref: '#/components/schemas/PagedDebtPositionTypeWithCount'
-            text/uri-list:
-              schema:
-                type: string
         '401':
           description: Unauthorized - Missing or invalid token
         '403':

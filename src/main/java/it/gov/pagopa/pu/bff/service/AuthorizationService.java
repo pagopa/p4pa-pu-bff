@@ -52,10 +52,10 @@ public class AuthorizationService {
 
   public void validateAdminRole(Long organizationId, UserInfo loggedUser) {
     boolean roleAdmin = loggedUser.getOrganizations().stream()
-      .filter(o->!CollectionUtils.isEmpty(o.getRoles()))
-      .anyMatch(o ->
-        organizationId.equals(o.getOrganizationId())
-        && o.getRoles().contains(ROLE_ADMIN));
+      .filter(o->organizationId.equals(o.getOrganizationId()))
+        .findFirst()
+        .filter(o ->!CollectionUtils.isEmpty(o.getRoles()) && o.getRoles().contains(ROLE_ADMIN))
+        .isPresent();
     if(!roleAdmin){
       log.debug("Unauthorized user. [organizationId:{}]", organizationId);
       throw new AuthorizationDeniedException("Access Denied");

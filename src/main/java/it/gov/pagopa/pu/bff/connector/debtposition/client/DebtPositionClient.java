@@ -2,8 +2,8 @@ package it.gov.pagopa.pu.bff.connector.debtposition.client;
 
 import it.gov.pagopa.pu.bff.connector.debtposition.config.DebtPositionApisHolder;
 import it.gov.pagopa.pu.p4pa_debt_positions.dto.generated.PagedModelDebtPositionTypeWithCount;
-import java.util.List;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
@@ -18,10 +18,13 @@ public class DebtPositionClient {
         this.debtPositionApisHolder = debtPositionApisHolder;
     }
 
-  public PagedModelDebtPositionTypeWithCount getDebtPositionTypeWithCount(Long brokerId, Integer page, Integer size, List<String> sort, String accessToken) {
+  public PagedModelDebtPositionTypeWithCount getDebtPositionTypeWithCount(Long brokerId, Pageable pageable, String accessToken) {
     try {
       return debtPositionApisHolder.getDebtPositionTypeWithCountSearchControllerApi(accessToken)
-        .crudDebtPositionTypesWithCountFindByBrokerId( brokerId,page,size,sort);
+        .crudDebtPositionTypesWithCountFindByBrokerId( brokerId,pageable.getPageNumber(),
+          pageable.getPageSize(),
+          pageable.getSort().stream()
+            .map(o->o.getProperty()+","+o.getDirection()).toList());
     } catch (HttpClientErrorException e) {
       if (e.getStatusCode() == HttpStatus.NOT_FOUND) {
         log.warn("DebtPositionType with brokerId {} not found", brokerId);

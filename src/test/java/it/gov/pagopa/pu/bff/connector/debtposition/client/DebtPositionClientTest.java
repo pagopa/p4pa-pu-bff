@@ -15,6 +15,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.client.HttpClientErrorException;
 
@@ -42,7 +45,7 @@ class DebtPositionClientTest {
   @Test
   void whenGetDebtPositionTypeWithCountThenInvokeWithAccessToken() {
     long brokerId = 1L;
-    List<String> sortList = List.of("sort1","sort2");
+    List<String> sortList = List.of("sort1,ASC","sort2,DESC");
     String accessToken = "ACCESSTOKEN";
     PagedModelDebtPositionTypeWithCount expectedResult = new PagedModelDebtPositionTypeWithCount();
 
@@ -53,8 +56,8 @@ class DebtPositionClientTest {
       .thenReturn(expectedResult);
 
     PagedModelDebtPositionTypeWithCount result = debtPositionClient.getDebtPositionTypeWithCount(
-      brokerId,0,10,
-      sortList, accessToken);
+      brokerId, PageRequest.of(0,10,
+      Sort.by(List.of(Order.asc("sort1"),Order.desc("sort2")))), accessToken);
 
     assertSame(expectedResult, result);
   }
@@ -63,7 +66,7 @@ class DebtPositionClientTest {
   @Test
   void givenNoExistentBrokerIdWhenGetDebtPositionTypeWithCountThenNull() {
     long brokerId = 1L;
-    List<String> sortList = List.of("sort1","sort2");
+    List<String> sortList = List.of("sort1,ASC","sort2,DESC");
     String accessToken = "ACCESSTOKEN";
 
     when(debtPositionApisHolderMock.getDebtPositionTypeWithCountSearchControllerApi(accessToken))
@@ -73,8 +76,8 @@ class DebtPositionClientTest {
       .thenThrow(new HttpClientErrorException(HttpStatus.NOT_FOUND));
 
     PagedModelDebtPositionTypeWithCount result = debtPositionClient.getDebtPositionTypeWithCount(
-      brokerId,0,10,
-      sortList, accessToken);
+      brokerId,PageRequest.of(0,10,
+        Sort.by(List.of(Order.asc("sort1"),Order.desc("sort2")))), accessToken);
 
     Assertions.assertNull(result);
   }
@@ -82,7 +85,7 @@ class DebtPositionClientTest {
   @Test
   void givenGenericHttpExceptionWhenGetDebtPositionTypeWithCountThenThrowIt() {
     long brokerId = 1L;
-    List<String> sortList = List.of("sort1","sort2");
+    List<String> sortList = List.of("sort1,ASC","sort2,DESC");
     String accessToken = "ACCESSTOKEN";
     HttpClientErrorException expectedException = new HttpClientErrorException(HttpStatus.INTERNAL_SERVER_ERROR);
 
@@ -95,8 +98,8 @@ class DebtPositionClientTest {
     HttpClientErrorException result = Assertions.assertThrows(
       expectedException.getClass(),
       () -> debtPositionClient.getDebtPositionTypeWithCount(
-      brokerId,0,10,
-      sortList, accessToken));
+      brokerId,PageRequest.of(0,10,
+          Sort.by(List.of(Order.asc("sort1"),Order.desc("sort2")))), accessToken));
 
     Assertions.assertSame(expectedException, result);
   }
@@ -104,7 +107,7 @@ class DebtPositionClientTest {
   @Test
   void givenGenericExceptionWhenGetDebtPositionTypeWithCountThenThrowIt() {
     long brokerId = 1L;
-    List<String> sortList = List.of("sort1","sort2");
+    List<String> sortList = List.of("sort1,ASC","sort2,DESC");
     String accessToken = "ACCESSTOKEN";
     RuntimeException expectedException = new RuntimeException();
 
@@ -117,8 +120,8 @@ class DebtPositionClientTest {
     RuntimeException result = Assertions.assertThrows(
       expectedException.getClass(),
       () -> debtPositionClient.getDebtPositionTypeWithCount(
-        brokerId,0,10,
-        sortList, accessToken));
+        brokerId,PageRequest.of(0,10,
+          Sort.by(List.of(Order.asc("sort1"),Order.desc("sort2")))), accessToken));
 
     Assertions.assertSame(expectedException, result);
   }

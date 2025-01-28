@@ -23,7 +23,7 @@ public class DebtPositionTypeClient {
         .crudGetDebtpositiontype(String.valueOf(id));
     } catch (HttpClientErrorException e) {
       if (e.getStatusCode() == HttpStatus.NOT_FOUND) {
-        log.warn("Debt Position Type with ID {} not found", id);
+        log.info("Debt Position Type with ID {} not found", id);
         return null;
       }
       log.error("Error retrieving Debt Position Type with ID: {}", id, e);

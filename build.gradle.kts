@@ -1,13 +1,3 @@
-import com.fasterxml.jackson.core.type.TypeReference
-import com.fasterxml.jackson.databind.ObjectMapper
-import org.yaml.snakeyaml.DumperOptions
-import org.yaml.snakeyaml.Yaml
-import java.net.URI
-import java.nio.file.Files
-import java.nio.file.Paths
-import java.nio.file.StandardCopyOption
-import kotlin.io.path.createFile
-import kotlin.io.path.notExists
 
 plugins {
 	java
@@ -129,113 +119,12 @@ springBoot {
 	mainClass.value("it.gov.pagopa.pu.bff.PiattaformaUnitariaBffApplication")
 }
 
-abstract class FilterTask : DefaultTask() {
-  @get:Input
-  abstract val srcInputPath: Property<String>
-  @get:Input
-  abstract val filteredFileName: Property<String>
-  @get:Input
-  abstract val projectDir: Property<String>
-  @get:Input
-  abstract val jsonOpenapi: Property<Boolean>
-  @get:Input
-  abstract val remoteUrl: Property<Boolean>
-
-  @TaskAction
-  fun run(){
-    val inputSpecPath = if (remoteUrl.get()) {
-      downloadRemoteFile(srcInputPath.get())
-    } else {
-      Paths.get(srcInputPath.get())
-    }
-    val openApiContent = Files.readString(inputSpecPath)
-    val objectMapper = ObjectMapper();
-    val content: Map<String, Any> = if(jsonOpenapi.get()){
-      objectMapper.readValue(openApiContent, object : TypeReference<Map<String, Any>>() {})
-    }else{
-      Yaml().load(openApiContent)
-    }
-
-    val paths = (content["paths"] as? Map<*, *>)
-      ?.mapKeys { it.key.toString() }
-      ?.mapValues { (_, operations) ->
-        val operationMap = operations as? Map<*, *> ?: emptyMap<String, Any>()
-        operationMap.mapKeys { it.key.toString() }
-          .mapValues { (_, operationDetails) ->
-            val mutableOperationDetails = (operationDetails as? Map<*, *>)?.toMutableMap() ?: mutableMapOf()
-
-            val parameters = mutableOperationDetails["parameters"] as? List<*>
-            val unfiltered = parameters
-              ?.filterIsInstance<Map<*, *>>()
-              ?.filter { it["x-ignore"] == true }
-              ?.map { it.mapKeys { param -> param.key.toString() } }
-            if(!unfiltered.isNullOrEmpty() && mutableOperationDetails["x-spring-paginated"]==null){
-              mutableOperationDetails["x-spring-paginated"] = true
-            }
-            val filteredParameters = parameters
-              ?.filterIsInstance<Map<*, *>>()
-              ?.filterNot { it["x-ignore"] == true }
-              ?.map { it.mapKeys { param -> param.key.toString() } }
-
-            if(!filteredParameters.isNullOrEmpty()){
-              mutableOperationDetails["parameters"] = filteredParameters
-            }else{
-              mutableOperationDetails.remove("parameters")
-            }
-            mutableOperationDetails
-          }
-      }
-
-    if (paths != null) {
-      val mutableContent = content.toMutableMap()
-      mutableContent["paths"] = paths
-      val outputFile = Paths.get("${projectDir.get()}/build/${filteredFileName.get()}")
-      if(!Files.exists(outputFile.parent)){
-        Files.createDirectories(outputFile.parent)
-      }
-      if(outputFile.notExists()){
-        outputFile.createFile()
-      }
-        Files.writeString(
-          outputFile,
-          Yaml(DumperOptions().apply {
-            defaultFlowStyle = DumperOptions.FlowStyle.BLOCK
-          }).dump(mutableContent)
-        )
-      println("Filtered OpenAPI spec generated at: $outputFile")
-    } else {
-      throw IllegalStateException("Could not parse 'paths' from OpenAPI.")
-    }
-  }
-
-  private fun downloadRemoteFile(remoteUrl: String): java.nio.file.Path {
-    val fileName = remoteUrl.substringAfterLast("/")
-    val tempFile = Files.createTempFile(fileName, "")
-    println("Downloading remote file from $remoteUrl to ${tempFile.toAbsolutePath()}")
-    URI(remoteUrl).toURL().openStream().use { inputStream ->
-      Files.copy(inputStream, tempFile, StandardCopyOption.REPLACE_EXISTING)
-    }
-    return tempFile
-  }
-}
-
-tasks.register<FilterTask>("filterPaginatedOpenAPIBFF") {
-  group = "openapi"
-  description= "description"
-
-  srcInputPath.set("${rootDir}/openapi/p4pa-pu-bff.openapi.yaml")
-  filteredFileName.set("openapi-BFF-filtered.yaml")
-  projectDir.set(rootDir.absolutePath)
-  jsonOpenapi.set(false)
-  remoteUrl.set(false)
-}
-
 tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>("openApiGenerateBFF") {
   group = "openapi"
   description = "description"
 
   generatorName.set("spring")
-  inputSpec.set("$rootDir/build/openapi-BFF-filtered.yaml")
+  inputSpec.set("$rootDir/openapi/p4pa-pu-bff.openapi.yaml")
   outputDir.set("$projectDir/build/generated")
   apiPackage.set("it.gov.pagopa.pu.bff.controller.generated")
   modelPackage.set("it.gov.pagopa.pu.bff.dto.generated")
@@ -250,7 +139,6 @@ tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>("ope
     "generatedConstructorWithRequiredArgs" to "true",
     "additionalModelTypeAnnotations" to "@lombok.Builder"
   ))
-  dependsOn("filterPaginatedOpenAPIBFF")
 }
 
 var targetEnv = when (grgit.branch.current().name) {

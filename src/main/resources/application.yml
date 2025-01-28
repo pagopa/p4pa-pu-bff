@@ -48,6 +48,9 @@ management:
         http: true
         logback: true
 
+springdoc:
+  writer-with-default-pretty-printer: true
+
 app:
   default-config-fe:
     headerAssistanceUrl: "\${BROKER_FE_DEFAULT_CONFIG_HEADER_ASSISTANCE_URL:DEFAULT}"

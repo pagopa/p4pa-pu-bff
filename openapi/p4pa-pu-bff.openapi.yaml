@@ -466,6 +466,19 @@ components:
           description: Time in seconds until the token expires
     DebtPositionTypeDTO:
       type: object
+      required:
+        - debtPositionTypeId
+        - brokerId
+        - code
+        - description
+        - orgType
+        - macroArea
+        - serviceType
+        - collectingReason
+        - taxonomyCode
+        - flagAnonymousFiscalCode
+        - flagMandatoryDueDate
+        - flagNotifyIo
       properties:
         debtPositionTypeId:
           type: integer

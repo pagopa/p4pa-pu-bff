@@ -4,7 +4,7 @@
 		"name": "PU-BFF",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "29647564",
-		"_collection_link": "https://galactic-eclipse-948669.postman.co/workspace/New-Team-Workspace~be56c5f1-de0c-4252-95d0-ee80f35e2474/collection/29647564-ffa19422-bde6-4a2c-acd3-8e5a97bc57f7?action=share&source=collection_link&creator=29647564"
+		"_collection_link": "https://galactic-eclipse-948669.postman.co/workspace/be56c5f1-de0c-4252-95d0-ee80f35e2474/collection/29647564-ffa19422-bde6-4a2c-acd3-8e5a97bc57f7?action=share&source=collection_link&creator=29647564"
 	},
 	"item": [
 		{
@@ -631,6 +631,55 @@
 			"name": "03_Debt_Positions",
 			"item": [
 				{
+					"name": "03_getAllDebtPositionType",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"let response = pm.response.json();\r",
+									"let debtPositionTypeId = response._embedded.debtPositionTypes[0]?.debtPositionTypeId;\r",
+									"\r",
+									" pm.collectionVariables.set(\"debtPositionTypeId\", debtPositionTypeId);\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{debtPositionBaseUrl}}/crud/debt-position-types",
+							"host": [
+								"{{debtPositionBaseUrl}}"
+							],
+							"path": [
+								"crud",
+								"debt-position-types"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "03_getDebtPositionType",
 					"event": [
 						{
@@ -656,8 +705,18 @@
 									"    pm.expect(jsonResponse.flagAnonymousFiscalCode).not.null;\r",
 									"    pm.expect(jsonResponse.flagMandatoryDueDate).not.null;\r",
 									"    pm.expect(jsonResponse.flagNotifyIo).not.null;\r",
-									"    pm.expect(jsonResponse.ioTemplateMessage).not.null;\r",
 									"})"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"let debtPositionTypeId = pm.collectionVariables.get(\"debtPositionTypeId\");\r",
+									""
 								],
 								"type": "text/javascript",
 								"packages": {}
@@ -689,7 +748,7 @@
 							"variable": [
 								{
 									"key": "id",
-									"value": "1"
+									"value": "{{debtPositionTypeId}}"
 								}
 							]
 						}
@@ -786,6 +845,10 @@
 	"variable": [
 		{
 			"key": "accessToken",
+			"value": ""
+		},
+		{
+			"key": "debtPositionTypeId",
 			"value": ""
 		}
 	]

@@ -3,6 +3,7 @@ package it.gov.pagopa.pu.bff.connector.debt_position.client;
 import it.gov.pagopa.pu.bff.connector.debt_position.config.DebtPositionApisHolder;
 import it.gov.pagopa.pu.p4pa_debt_positions.dto.generated.DebtPositionType;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 
@@ -21,7 +22,7 @@ public class DebtPositionTypeClient {
       return debtPositionApisHolder.getDebtPositionTypeControllerApi(accessToken)
         .crudGetDebtpositiontype(String.valueOf(id));
     } catch (HttpClientErrorException e) {
-      if (e.getStatusCode().is4xxClientError()) {
+      if (e.getStatusCode() == HttpStatus.NOT_FOUND) {
         log.warn("Debt Position Type with ID {} not found", id);
         return null;
       }

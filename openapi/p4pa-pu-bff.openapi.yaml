@@ -493,6 +493,11 @@ components:
           description: Time in seconds until the token expires
     PagedDebtPositionTypeWithCount:
       type: object
+      required:
+        - size
+        - totalElements
+        - totalPages
+        - number
       properties:
         content:
           type: array
@@ -512,6 +517,12 @@ components:
           format: int64
     DebtPositionTypeWithCount:
       type: object
+      required:
+        - debtPositionTypeId
+        - code
+        - description
+        - updateDate
+        - activeOrganizations
       properties:
         debtPositionTypeId:
           type: integer

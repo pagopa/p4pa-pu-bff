@@ -1010,6 +1010,7 @@
         }
       },
       "DebtPositionTypeWithCount" : {
+        "required" : [ "activeOrganizations", "code", "debtPositionTypeId", "description", "updateDate" ],
         "type" : "object",
         "properties" : {
           "debtPositionTypeId" : {
@@ -1033,6 +1034,7 @@
         }
       },
       "PagedDebtPositionTypeWithCount" : {
+        "required" : [ "number", "size", "totalElements", "totalPages" ],
         "type" : "object",
         "properties" : {
           "content" : {

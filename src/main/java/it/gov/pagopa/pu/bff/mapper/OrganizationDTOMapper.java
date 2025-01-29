@@ -30,7 +30,7 @@ public class OrganizationDTOMapper {
     String operatorRoleValue = roles.stream()
       .filter("ROLE_ADMIN"::equals)
       .findFirst()
-      .orElse(roles.get(0));
+      .orElse(roles.getFirst());
 
     try {
       return OrganizationDTO.OperatorRoleEnum.fromValue(operatorRoleValue);

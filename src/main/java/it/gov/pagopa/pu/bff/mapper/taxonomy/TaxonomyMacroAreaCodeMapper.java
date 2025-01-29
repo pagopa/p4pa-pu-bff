@@ -1,4 +1,4 @@
-package it.gov.pagopa.pu.bff.mapper;
+package it.gov.pagopa.pu.bff.mapper.taxonomy;
 
 import it.gov.pagopa.pu.bff.dto.generated.TaxonomyMacroAreaCodeDTO;
 import org.springframework.stereotype.Component;

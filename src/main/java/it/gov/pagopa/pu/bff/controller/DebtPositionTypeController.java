@@ -1,10 +1,10 @@
 package it.gov.pagopa.pu.bff.controller;
 
 import it.gov.pagopa.pu.bff.controller.generated.DebtPositionTypesApi;
-import it.gov.pagopa.pu.bff.dto.generated.DebtPositionTypeDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedDebtPositionTypeWithCount;
 import it.gov.pagopa.pu.bff.security.SecurityUtils;
 import it.gov.pagopa.pu.bff.service.debt_position.DebtPositionTypeService;
+import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionType;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -23,7 +23,7 @@ public class DebtPositionTypeController implements DebtPositionTypesApi {
   }
 
   @Override
-  public ResponseEntity<DebtPositionTypeDTO> getDebtPositionType(String id) {
+  public ResponseEntity<DebtPositionType> getDebtPositionType(String id) {
     log.info("User requested getDebtPositionType()");
     return new ResponseEntity<>(debtPositionTypeService.getDebtPositionTypeById(SecurityUtils.getAccessToken(), Long.valueOf(id)), HttpStatus.OK);
   }

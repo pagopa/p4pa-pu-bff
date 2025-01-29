@@ -1,7 +1,7 @@
 package it.gov.pagopa.pu.bff.controller;
 
-import it.gov.pagopa.pu.bff.dto.generated.AccessTokenDTO;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
+import it.gov.pagopa.pu.p4paauth.dto.generated.AccessToken;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,11 +23,11 @@ class AuthenticationControllerTest {
   @InjectMocks
   private AuthenticationController authenticationController;
 
-  private AccessTokenDTO accessTokenDTO;
+  private AccessToken accessTokenDTO;
 
   @BeforeEach
   void setUp() {
-    accessTokenDTO = new AccessTokenDTO();
+    accessTokenDTO = new AccessToken();
     accessTokenDTO.setAccessToken("fake-access-token");
     accessTokenDTO.setExpiresIn(3600);
     accessTokenDTO.setTokenType("bearer");
@@ -39,7 +39,7 @@ class AuthenticationControllerTest {
 
     when(authorizationService.postToken(idToken)).thenReturn(accessTokenDTO);
 
-    ResponseEntity<AccessTokenDTO> response = authenticationController.postToken(idToken);
+    ResponseEntity<AccessToken> response = authenticationController.postToken(idToken);
 
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertEquals("fake-access-token", response.getBody().getAccessToken());

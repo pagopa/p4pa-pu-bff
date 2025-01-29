@@ -1,4 +1,4 @@
-package it.gov.pagopa.pu.bff.mapper;
+package it.gov.pagopa.pu.bff.mapper.taxonomy;
 
 import static org.junit.jupiter.api.Assertions.*;
 

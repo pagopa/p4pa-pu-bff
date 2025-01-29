@@ -1,13 +1,14 @@
-package it.gov.pagopa.pu.bff.mapper;
+package it.gov.pagopa.pu.bff.mapper.taxonomy;
 
-import it.gov.pagopa.pu.bff.dto.generated.TaxonomyCollectionReasonDTO;
+import it.gov.pagopa.pu.bff.dto.generated.TaxonomyCodeDTO;
 import org.springframework.stereotype.Component;
 
 @Component
-public class TaxonomyCollectionReasonMapper {
-  public TaxonomyCollectionReasonDTO map(
-    it.gov.pagopa.pu.p4pa_organization.dto.generated.TaxonomyCollectionReasonDTO input) {
-    TaxonomyCollectionReasonDTO dto = new TaxonomyCollectionReasonDTO();
+public class TaxonomyCodeMapper {
+
+  public TaxonomyCodeDTO map(
+    it.gov.pagopa.pu.p4pa_organization.dto.generated.TaxonomyCodeDTO input) {
+    TaxonomyCodeDTO dto = new TaxonomyCodeDTO();
     dto.setOrganizationTypeDescription(input.getOrganizationType()+". "+input.getOrganizationTypeDescription());
     dto.setOrganizationType(input.getOrganizationType());
     dto.setMacroAreaCode(input.getMacroAreaCode());
@@ -17,6 +18,7 @@ public class TaxonomyCollectionReasonMapper {
     dto.setServiceType(input.getServiceTypeCode()+". "+input.getServiceType());
     dto.setServiceTypeDescription(input.getServiceTypeDescription());
     dto.setCollectionReason(input.getCollectionReason());
+    dto.setTaxonomyCode(input.getTaxonomyCode());
     return dto;
   }
 

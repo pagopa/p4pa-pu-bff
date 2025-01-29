@@ -10,9 +10,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 
 import it.gov.pagopa.pu.bff.connector.debt_position.client.DebtPositionTypeClient;
-import it.gov.pagopa.pu.bff.dto.generated.DebtPositionTypeDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedDebtPositionTypeWithCount;
-import it.gov.pagopa.pu.bff.mapper.DebtPositionTypeDTOMapper;
 import it.gov.pagopa.pu.bff.mapper.DebtPositionTypeWithCountMapper;
 import it.gov.pagopa.pu.bff.service.debt_position.DebtPositionTypeServiceImpl;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionType;
@@ -35,8 +33,6 @@ class DebtPositionTypeServiceImplTest {
   private DebtPositionTypeClient debtPositionTypeClientMock;
 
   @Mock
-  private DebtPositionTypeDTOMapper debtPositionTypeDTOMapperMock;
-  @Mock
   private AuthorizationService authorizationServiceMock;
   @Mock
   private DebtPositionTypeWithCountMapper debtPositionTypeWithCountMapperMock;
@@ -44,7 +40,6 @@ class DebtPositionTypeServiceImplTest {
   private DebtPositionTypeServiceImpl debtPositionTypeService;
 
   private DebtPositionType debtPositionType;
-  private DebtPositionTypeDTO debtPositionTypeDTO;
 
   private final String accessToken = "TOKEN";
 
@@ -65,33 +60,15 @@ class DebtPositionTypeServiceImplTest {
     debtPositionType.setFlagNotifyIo(true);
     debtPositionType.setIoTemplateMessage("Test IO Template Message");
 
-    debtPositionTypeDTO = DebtPositionTypeDTO.builder()
-      .debtPositionTypeId(123L)
-      .brokerId(456L)
-      .code("CODE001")
-      .description("Test Description")
-      .orgType("OrgType001")
-      .macroArea("MacroArea001")
-      .serviceType("ServiceType001")
-      .collectingReason("Collecting Reason 001")
-      .taxonomyCode("TaxonomyCode001")
-      .flagAnonymousFiscalCode(true)
-      .flagMandatoryDueDate(false)
-      .flagNotifyIo(true)
-      .ioTemplateMessage("Test IO Template Message")
-      .build();
-
-    debtPositionTypeService = new DebtPositionTypeServiceImpl(debtPositionTypeClientMock, debtPositionTypeDTOMapperMock, debtPositionTypeWithCountMapperMock, authorizationServiceMock);
+    debtPositionTypeService = new DebtPositionTypeServiceImpl(debtPositionTypeClientMock, debtPositionTypeWithCountMapperMock, authorizationServiceMock);
   }
 
   @Test
   void testGetDebtPositionTypeById() {
     Mockito.when(debtPositionTypeClientMock.getDebtPositionTypeById(anyLong(), any()))
       .thenReturn(debtPositionType);
-    Mockito.when(debtPositionTypeDTOMapperMock.mapToDebtPositionTypeDTO(any(DebtPositionType.class)))
-      .thenReturn(debtPositionTypeDTO);
 
-    DebtPositionTypeDTO result = debtPositionTypeService.getDebtPositionTypeById(accessToken, 123L);
+    DebtPositionType result = debtPositionTypeService.getDebtPositionTypeById(accessToken, 123L);
 
     assertNotNull(result);
     assertEquals(123L, result.getDebtPositionTypeId());
@@ -114,7 +91,7 @@ class DebtPositionTypeServiceImplTest {
     Mockito.when(debtPositionTypeClientMock.getDebtPositionTypeById(anyLong(), any()))
       .thenReturn(null);
 
-    DebtPositionTypeDTO result = debtPositionTypeService.getDebtPositionTypeById(accessToken, 123L);
+    DebtPositionType result = debtPositionTypeService.getDebtPositionTypeById(accessToken, 123L);
 
     assertNull(result);
   }

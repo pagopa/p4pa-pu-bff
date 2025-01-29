@@ -8,11 +8,11 @@ import it.gov.pagopa.pu.bff.dto.generated.TaxonomyCollectionReasonDTO;
 import it.gov.pagopa.pu.bff.dto.generated.TaxonomyMacroAreaCodeDTO;
 import it.gov.pagopa.pu.bff.dto.generated.TaxonomyOrganizationTypeDTO;
 import it.gov.pagopa.pu.bff.dto.generated.TaxonomyServiceTypeCodeDTO;
-import it.gov.pagopa.pu.bff.mapper.TaxonomyCodeMapper;
-import it.gov.pagopa.pu.bff.mapper.TaxonomyCollectionReasonMapper;
-import it.gov.pagopa.pu.bff.mapper.TaxonomyMacroAreaCodeMapper;
-import it.gov.pagopa.pu.bff.mapper.TaxonomyOrganizationTypeMapper;
-import it.gov.pagopa.pu.bff.mapper.TaxonomyServiceTypeCodeMapper;
+import it.gov.pagopa.pu.bff.mapper.taxonomy.TaxonomyCodeMapper;
+import it.gov.pagopa.pu.bff.mapper.taxonomy.TaxonomyCollectionReasonMapper;
+import it.gov.pagopa.pu.bff.mapper.taxonomy.TaxonomyMacroAreaCodeMapper;
+import it.gov.pagopa.pu.bff.mapper.taxonomy.TaxonomyOrganizationTypeMapper;
+import it.gov.pagopa.pu.bff.mapper.taxonomy.TaxonomyServiceTypeCodeMapper;
 import it.gov.pagopa.pu.p4pa_organization.dto.generated.CollectionModelTaxonomyCodeDTO;
 import it.gov.pagopa.pu.p4pa_organization.dto.generated.CollectionModelTaxonomyCodeDTOEmbedded;
 import it.gov.pagopa.pu.p4pa_organization.dto.generated.CollectionModelTaxonomyCollectionReasonDTO;
@@ -68,7 +68,7 @@ class TaxonomyServiceImplTest {
 
     // Assert the result
     assertEquals(1, result.size());
-    assertEquals(outputDTO, result.get(0));
+    assertEquals(outputDTO, result.getFirst());
   }
 
   @Test
@@ -92,7 +92,7 @@ class TaxonomyServiceImplTest {
 
     // Assert the result
     assertEquals(1, result.size());
-    assertEquals(outputDTO, result.get(0));
+    assertEquals(outputDTO, result.getFirst());
   }
 
   @Test
@@ -116,7 +116,7 @@ class TaxonomyServiceImplTest {
 
     // Assert the result
     assertEquals(1, result.size());
-    assertEquals(outputDTO, result.get(0));
+    assertEquals(outputDTO, result.getFirst());
   }
 
   @Test
@@ -140,7 +140,7 @@ class TaxonomyServiceImplTest {
 
     // Assert the result
     assertEquals(1, result.size());
-    assertEquals(outputDTO, result.get(0));
+    assertEquals(outputDTO, result.getFirst());
   }
 
   @Test
@@ -164,7 +164,7 @@ class TaxonomyServiceImplTest {
 
     // Assert the result
     assertEquals(1, result.size());
-    assertEquals(outputDTO, result.get(0));
+    assertEquals(outputDTO, result.getFirst());
   }
 
 }

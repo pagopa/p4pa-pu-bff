@@ -6,11 +6,11 @@ import it.gov.pagopa.pu.bff.dto.generated.TaxonomyCollectionReasonDTO;
 import it.gov.pagopa.pu.bff.dto.generated.TaxonomyMacroAreaCodeDTO;
 import it.gov.pagopa.pu.bff.dto.generated.TaxonomyOrganizationTypeDTO;
 import it.gov.pagopa.pu.bff.dto.generated.TaxonomyServiceTypeCodeDTO;
-import it.gov.pagopa.pu.bff.mapper.TaxonomyCodeMapper;
-import it.gov.pagopa.pu.bff.mapper.TaxonomyCollectionReasonMapper;
-import it.gov.pagopa.pu.bff.mapper.TaxonomyMacroAreaCodeMapper;
-import it.gov.pagopa.pu.bff.mapper.TaxonomyOrganizationTypeMapper;
-import it.gov.pagopa.pu.bff.mapper.TaxonomyServiceTypeCodeMapper;
+import it.gov.pagopa.pu.bff.mapper.taxonomy.TaxonomyCodeMapper;
+import it.gov.pagopa.pu.bff.mapper.taxonomy.TaxonomyCollectionReasonMapper;
+import it.gov.pagopa.pu.bff.mapper.taxonomy.TaxonomyMacroAreaCodeMapper;
+import it.gov.pagopa.pu.bff.mapper.taxonomy.TaxonomyOrganizationTypeMapper;
+import it.gov.pagopa.pu.bff.mapper.taxonomy.TaxonomyServiceTypeCodeMapper;
 import java.util.List;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +23,7 @@ public class TaxonomyServiceImpl implements TaxonomyService{
   private final TaxonomyCollectionReasonMapper taxonomyCollectionReasonMapper;
   private final TaxonomyServiceTypeCodeMapper taxonomyServiceTypeCodeMapper;
   private final TaxonomyCodeMapper taxonomyCodeMapper;
+
   public TaxonomyServiceImpl(TaxonomyClient taxonomyClient,
     TaxonomyOrganizationTypeMapper taxonomyOrganizationTypeMapper,
     TaxonomyMacroAreaCodeMapper taxonomyMacroAreaCodeMapper,
@@ -36,6 +37,7 @@ public class TaxonomyServiceImpl implements TaxonomyService{
     this.taxonomyServiceTypeCodeMapper = taxonomyServiceTypeCodeMapper;
     this.taxonomyCodeMapper = taxonomyCodeMapper;
   }
+
   @Override
   public List<TaxonomyCollectionReasonDTO> getCollectionReason (
     String organizationType,

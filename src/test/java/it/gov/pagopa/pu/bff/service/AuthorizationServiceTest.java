@@ -4,9 +4,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import it.gov.pagopa.pu.bff.connector.auth.client.AuthnClient;
-import it.gov.pagopa.pu.bff.dto.generated.AccessTokenDTO;
 import it.gov.pagopa.pu.bff.exception.InvalidAccessTokenException;
-import it.gov.pagopa.pu.bff.mapper.AccessTokenDTOMapper;
 import it.gov.pagopa.pu.p4paauth.dto.generated.AccessToken;
 import it.gov.pagopa.pu.p4paauth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.p4paauth.dto.generated.UserOrganizationRoles;
@@ -27,8 +25,6 @@ class AuthorizationServiceTest {
   private AuthorizationService authorizationService;
   @Mock
   private AuthnClient authClientImplMock;
-  @Mock
-  private AccessTokenDTOMapper accessTokenDTOMapperMock;
 
   @Test
   void givenValidAccessTokenWhenValidateTokenThenOk() {
@@ -60,11 +56,6 @@ class AuthorizationServiceTest {
     accessToken.setExpiresIn(3600);
     accessToken.setTokenType("bearer");
 
-    AccessTokenDTO expectedDto = new AccessTokenDTO();
-    expectedDto.setAccessToken("fake-access-token");
-    expectedDto.setTokenType("bearer");
-    expectedDto.setExpiresIn(3600);
-
     when(authClientImplMock.postToken(
       "piattaforma-unitaria",
       "urn:ietf:params:oauth:grant-type:token-exchange",
@@ -75,9 +66,7 @@ class AuthorizationServiceTest {
       null))
       .thenReturn(accessToken);
 
-    when(accessTokenDTOMapperMock.toDTO(accessToken)).thenReturn(expectedDto);
-
-    AccessTokenDTO result = authorizationService.postToken(idToken);
+    AccessToken result = authorizationService.postToken(idToken);
 
     verify(authClientImplMock).postToken(
       "piattaforma-unitaria",

@@ -128,6 +128,10 @@ tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>("ope
   outputDir.set("$projectDir/build/generated")
   apiPackage.set("it.gov.pagopa.pu.bff.controller.generated")
   modelPackage.set("it.gov.pagopa.pu.bff.dto.generated")
+  typeMappings.set(mapOf(
+    "AccessToken" to "it.gov.pagopa.pu.p4paauth.dto.generated.AccessToken",
+    "DebtPositionType" to "it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionType"
+  ))
   configOptions.set(mapOf(
     "dateLibrary" to "java8",
     "requestMappingMode" to "api_interface",

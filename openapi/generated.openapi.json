@@ -1034,7 +1034,7 @@
         }
       },
       "PagedDebtPositionTypeWithCount" : {
-        "required" : [ "number", "size", "totalElements", "totalPages" ],
+        "required" : [ "content", "number", "size", "totalElements", "totalPages" ],
         "type" : "object",
         "properties" : {
           "content" : {

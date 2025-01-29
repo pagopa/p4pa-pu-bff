@@ -494,6 +494,7 @@ components:
     PagedDebtPositionTypeWithCount:
       type: object
       required:
+        - content
         - size
         - totalElements
         - totalPages

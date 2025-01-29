@@ -1,9 +1,9 @@
 package it.gov.pagopa.pu.bff.mapper;
 
 import it.gov.pagopa.pu.bff.dto.generated.ConfigFE;
-import it.gov.pagopa.pu.p4pa_organization.dto.generated.Broker;
-import it.gov.pagopa.pu.p4pa_organization.dto.generated.PersonalisationFe;
-import it.gov.pagopa.pu.p4paauth.dto.generated.UserInfo;
+import it.gov.pagopa.pu.organization.dto.generated.Broker;
+import it.gov.pagopa.pu.organization.dto.generated.PersonalisationFe;
+import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import org.springframework.stereotype.Component;
 
 @Component

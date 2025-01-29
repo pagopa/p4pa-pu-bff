@@ -11,7 +11,7 @@ class TaxonomyServiceTypeCodeMapperTest {
 
   @Test
   void testMap() {
-    it.gov.pagopa.pu.p4pa_organization.dto.generated.TaxonomyServiceTypeCodeDTO input = new it.gov.pagopa.pu.p4pa_organization.dto.generated.TaxonomyServiceTypeCodeDTO();
+    it.gov.pagopa.pu.organization.dto.generated.TaxonomyServiceTypeCodeDTO input = new it.gov.pagopa.pu.organization.dto.generated.TaxonomyServiceTypeCodeDTO();
     input.setOrganizationType("Type1");
     input.setOrganizationTypeDescription("Description1");
     input.setMacroAreaCode("Macro1");

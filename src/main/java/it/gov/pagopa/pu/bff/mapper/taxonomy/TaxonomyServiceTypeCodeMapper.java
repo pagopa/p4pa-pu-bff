@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class TaxonomyServiceTypeCodeMapper {
   public TaxonomyServiceTypeCodeDTO map(
-    it.gov.pagopa.pu.p4pa_organization.dto.generated.TaxonomyServiceTypeCodeDTO input) {
+    it.gov.pagopa.pu.organization.dto.generated.TaxonomyServiceTypeCodeDTO input) {
     TaxonomyServiceTypeCodeDTO dto = new TaxonomyServiceTypeCodeDTO();
     dto.setOrganizationTypeDescription(input.getOrganizationType()+". "+input.getOrganizationTypeDescription());
     dto.setOrganizationType(input.getOrganizationType());

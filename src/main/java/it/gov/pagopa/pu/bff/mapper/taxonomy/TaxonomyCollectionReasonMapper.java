@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class TaxonomyCollectionReasonMapper {
   public TaxonomyCollectionReasonDTO map(
-    it.gov.pagopa.pu.p4pa_organization.dto.generated.TaxonomyCollectionReasonDTO input) {
+    it.gov.pagopa.pu.organization.dto.generated.TaxonomyCollectionReasonDTO input) {
     TaxonomyCollectionReasonDTO dto = new TaxonomyCollectionReasonDTO();
     dto.setOrganizationTypeDescription(input.getOrganizationType()+". "+input.getOrganizationTypeDescription());
     dto.setOrganizationType(input.getOrganizationType());

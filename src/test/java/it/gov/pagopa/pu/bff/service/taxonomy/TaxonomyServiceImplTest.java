@@ -13,16 +13,16 @@ import it.gov.pagopa.pu.bff.mapper.taxonomy.TaxonomyCollectionReasonMapper;
 import it.gov.pagopa.pu.bff.mapper.taxonomy.TaxonomyMacroAreaCodeMapper;
 import it.gov.pagopa.pu.bff.mapper.taxonomy.TaxonomyOrganizationTypeMapper;
 import it.gov.pagopa.pu.bff.mapper.taxonomy.TaxonomyServiceTypeCodeMapper;
-import it.gov.pagopa.pu.p4pa_organization.dto.generated.CollectionModelTaxonomyCodeDTO;
-import it.gov.pagopa.pu.p4pa_organization.dto.generated.CollectionModelTaxonomyCodeDTOEmbedded;
-import it.gov.pagopa.pu.p4pa_organization.dto.generated.CollectionModelTaxonomyCollectionReasonDTO;
-import it.gov.pagopa.pu.p4pa_organization.dto.generated.CollectionModelTaxonomyCollectionReasonDTOEmbedded;
-import it.gov.pagopa.pu.p4pa_organization.dto.generated.CollectionModelTaxonomyMacroAreaCodeDTO;
-import it.gov.pagopa.pu.p4pa_organization.dto.generated.CollectionModelTaxonomyMacroAreaCodeDTOEmbedded;
-import it.gov.pagopa.pu.p4pa_organization.dto.generated.CollectionModelTaxonomyOrganizationTypeDTO;
-import it.gov.pagopa.pu.p4pa_organization.dto.generated.CollectionModelTaxonomyOrganizationTypeDTOEmbedded;
-import it.gov.pagopa.pu.p4pa_organization.dto.generated.CollectionModelTaxonomyServiceTypeCodeDTO;
-import it.gov.pagopa.pu.p4pa_organization.dto.generated.CollectionModelTaxonomyServiceTypeCodeDTOEmbedded;
+import it.gov.pagopa.pu.organization.dto.generated.CollectionModelTaxonomyCodeDTO;
+import it.gov.pagopa.pu.organization.dto.generated.CollectionModelTaxonomyCodeDTOEmbedded;
+import it.gov.pagopa.pu.organization.dto.generated.CollectionModelTaxonomyCollectionReasonDTO;
+import it.gov.pagopa.pu.organization.dto.generated.CollectionModelTaxonomyCollectionReasonDTOEmbedded;
+import it.gov.pagopa.pu.organization.dto.generated.CollectionModelTaxonomyMacroAreaCodeDTO;
+import it.gov.pagopa.pu.organization.dto.generated.CollectionModelTaxonomyMacroAreaCodeDTOEmbedded;
+import it.gov.pagopa.pu.organization.dto.generated.CollectionModelTaxonomyOrganizationTypeDTO;
+import it.gov.pagopa.pu.organization.dto.generated.CollectionModelTaxonomyOrganizationTypeDTOEmbedded;
+import it.gov.pagopa.pu.organization.dto.generated.CollectionModelTaxonomyServiceTypeCodeDTO;
+import it.gov.pagopa.pu.organization.dto.generated.CollectionModelTaxonomyServiceTypeCodeDTOEmbedded;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -53,7 +53,7 @@ class TaxonomyServiceImplTest {
     CollectionModelTaxonomyCodeDTO taxonomyCodeDTO = new CollectionModelTaxonomyCodeDTO();
     CollectionModelTaxonomyCodeDTOEmbedded collectionModelTaxonomyCodeDTOEmbedded = new CollectionModelTaxonomyCodeDTOEmbedded();
 
-    var inputDTO = new it.gov.pagopa.pu.p4pa_organization.dto.generated.TaxonomyCodeDTO();
+    var inputDTO = new it.gov.pagopa.pu.organization.dto.generated.TaxonomyCodeDTO();
     var outputDTO = new TaxonomyCodeDTO();
 
     collectionModelTaxonomyCodeDTOEmbedded.addTaxonomyCodeDTOesItem(inputDTO);
@@ -77,7 +77,7 @@ class TaxonomyServiceImplTest {
     CollectionModelTaxonomyServiceTypeCodeDTO collectionModelTaxonomyServiceTypeCodeDTO = new CollectionModelTaxonomyServiceTypeCodeDTO();
     CollectionModelTaxonomyServiceTypeCodeDTOEmbedded collectionModelTaxonomyServiceTypeCodeDTOEmbedded = new CollectionModelTaxonomyServiceTypeCodeDTOEmbedded();
 
-    var inputDTO = new it.gov.pagopa.pu.p4pa_organization.dto.generated.TaxonomyServiceTypeCodeDTO();
+    var inputDTO = new it.gov.pagopa.pu.organization.dto.generated.TaxonomyServiceTypeCodeDTO();
     var outputDTO = new TaxonomyServiceTypeCodeDTO();
 
     collectionModelTaxonomyServiceTypeCodeDTOEmbedded.addTaxonomyServiceTypeCodeDTOesItem(inputDTO);
@@ -101,7 +101,7 @@ class TaxonomyServiceImplTest {
     CollectionModelTaxonomyOrganizationTypeDTO collectionModelTaxonomyOrganizationTypeDTO = new CollectionModelTaxonomyOrganizationTypeDTO();
     CollectionModelTaxonomyOrganizationTypeDTOEmbedded collectionModelTaxonomyOrganizationTypeDTOEmbedded = new CollectionModelTaxonomyOrganizationTypeDTOEmbedded();
 
-    var inputDTO = new it.gov.pagopa.pu.p4pa_organization.dto.generated.TaxonomyOrganizationTypeDTO();
+    var inputDTO = new it.gov.pagopa.pu.organization.dto.generated.TaxonomyOrganizationTypeDTO();
     var outputDTO = new TaxonomyOrganizationTypeDTO();
 
     collectionModelTaxonomyOrganizationTypeDTOEmbedded.addTaxonomyOrganizationTypeDTOesItem(inputDTO);
@@ -125,7 +125,7 @@ class TaxonomyServiceImplTest {
     CollectionModelTaxonomyMacroAreaCodeDTO collectionModelTaxonomyMacroAreaCodeDTO = new CollectionModelTaxonomyMacroAreaCodeDTO();
     CollectionModelTaxonomyMacroAreaCodeDTOEmbedded collectionModelTaxonomyMacroAreaCodeDTOEmbedded = new CollectionModelTaxonomyMacroAreaCodeDTOEmbedded();
 
-    var inputDTO = new it.gov.pagopa.pu.p4pa_organization.dto.generated.TaxonomyMacroAreaCodeDTO();
+    var inputDTO = new it.gov.pagopa.pu.organization.dto.generated.TaxonomyMacroAreaCodeDTO();
     var outputDTO = new TaxonomyMacroAreaCodeDTO();
 
     collectionModelTaxonomyMacroAreaCodeDTOEmbedded.addTaxonomyMacroAreaCodeDTOesItem(inputDTO);
@@ -149,7 +149,7 @@ class TaxonomyServiceImplTest {
     CollectionModelTaxonomyCollectionReasonDTO collectionModelTaxonomyCollectionReasonDTO = new CollectionModelTaxonomyCollectionReasonDTO();
     CollectionModelTaxonomyCollectionReasonDTOEmbedded collectionModelTaxonomyCollectionReasonDTOEmbedded = new CollectionModelTaxonomyCollectionReasonDTOEmbedded();
 
-    var inputDTO = new it.gov.pagopa.pu.p4pa_organization.dto.generated.TaxonomyCollectionReasonDTO();
+    var inputDTO = new it.gov.pagopa.pu.organization.dto.generated.TaxonomyCollectionReasonDTO();
     var outputDTO = new TaxonomyCollectionReasonDTO();
 
     collectionModelTaxonomyCollectionReasonDTOEmbedded.addTaxonomyCollectionReasonDTOesItem(inputDTO);

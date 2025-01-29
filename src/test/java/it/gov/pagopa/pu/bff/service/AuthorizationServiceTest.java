@@ -5,9 +5,9 @@ import static org.mockito.Mockito.when;
 
 import it.gov.pagopa.pu.bff.connector.auth.client.AuthnClient;
 import it.gov.pagopa.pu.bff.exception.InvalidAccessTokenException;
-import it.gov.pagopa.pu.p4paauth.dto.generated.AccessToken;
-import it.gov.pagopa.pu.p4paauth.dto.generated.UserInfo;
-import it.gov.pagopa.pu.p4paauth.dto.generated.UserOrganizationRoles;
+import it.gov.pagopa.pu.auth.dto.generated.AccessToken;
+import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
+import it.gov.pagopa.pu.auth.dto.generated.UserOrganizationRoles;
 import java.util.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

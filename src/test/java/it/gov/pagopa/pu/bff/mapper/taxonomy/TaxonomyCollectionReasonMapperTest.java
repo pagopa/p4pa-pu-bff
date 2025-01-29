@@ -12,7 +12,7 @@ class TaxonomyCollectionReasonMapperTest {
 
   @Test
   void testMap() {
-    it.gov.pagopa.pu.p4pa_organization.dto.generated.TaxonomyCollectionReasonDTO input = new it.gov.pagopa.pu.p4pa_organization.dto.generated.TaxonomyCollectionReasonDTO();
+    it.gov.pagopa.pu.organization.dto.generated.TaxonomyCollectionReasonDTO input = new it.gov.pagopa.pu.organization.dto.generated.TaxonomyCollectionReasonDTO();
     input.setOrganizationType("Type1");
     input.setOrganizationTypeDescription("Description1");
     input.setMacroAreaCode("Macro1");

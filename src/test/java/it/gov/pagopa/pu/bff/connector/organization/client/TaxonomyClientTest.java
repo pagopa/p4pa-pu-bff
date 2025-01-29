@@ -1,16 +1,16 @@
 package it.gov.pagopa.pu.bff.connector.organization.client;
 
 import it.gov.pagopa.pu.bff.connector.organization.config.OrganizationApisHolder;
-import it.gov.pagopa.pu.p4pa_organization.controller.generated.TaxonomyCodeDtoSearchControllerApi;
-import it.gov.pagopa.pu.p4pa_organization.controller.generated.TaxonomyCollectionReasonDtoSearchControllerApi;
-import it.gov.pagopa.pu.p4pa_organization.controller.generated.TaxonomyMacroAreaCodeDtoSearchControllerApi;
-import it.gov.pagopa.pu.p4pa_organization.controller.generated.TaxonomyOrganizationTypeDtoSearchControllerApi;
-import it.gov.pagopa.pu.p4pa_organization.controller.generated.TaxonomyServiceTypeCodeDtoSearchControllerApi;
-import it.gov.pagopa.pu.p4pa_organization.dto.generated.CollectionModelTaxonomyCodeDTO;
-import it.gov.pagopa.pu.p4pa_organization.dto.generated.CollectionModelTaxonomyCollectionReasonDTO;
-import it.gov.pagopa.pu.p4pa_organization.dto.generated.CollectionModelTaxonomyMacroAreaCodeDTO;
-import it.gov.pagopa.pu.p4pa_organization.dto.generated.CollectionModelTaxonomyOrganizationTypeDTO;
-import it.gov.pagopa.pu.p4pa_organization.dto.generated.CollectionModelTaxonomyServiceTypeCodeDTO;
+import it.gov.pagopa.pu.organization.controller.generated.TaxonomyCodeDtoSearchControllerApi;
+import it.gov.pagopa.pu.organization.controller.generated.TaxonomyCollectionReasonDtoSearchControllerApi;
+import it.gov.pagopa.pu.organization.controller.generated.TaxonomyMacroAreaCodeDtoSearchControllerApi;
+import it.gov.pagopa.pu.organization.controller.generated.TaxonomyOrganizationTypeDtoSearchControllerApi;
+import it.gov.pagopa.pu.organization.controller.generated.TaxonomyServiceTypeCodeDtoSearchControllerApi;
+import it.gov.pagopa.pu.organization.dto.generated.CollectionModelTaxonomyCodeDTO;
+import it.gov.pagopa.pu.organization.dto.generated.CollectionModelTaxonomyCollectionReasonDTO;
+import it.gov.pagopa.pu.organization.dto.generated.CollectionModelTaxonomyMacroAreaCodeDTO;
+import it.gov.pagopa.pu.organization.dto.generated.CollectionModelTaxonomyOrganizationTypeDTO;
+import it.gov.pagopa.pu.organization.dto.generated.CollectionModelTaxonomyServiceTypeCodeDTO;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;

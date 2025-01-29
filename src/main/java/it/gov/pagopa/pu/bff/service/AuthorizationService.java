@@ -1,8 +1,8 @@
 package it.gov.pagopa.pu.bff.service;
 
 import it.gov.pagopa.pu.bff.connector.auth.client.AuthnClient;
-import it.gov.pagopa.pu.p4paauth.dto.generated.AccessToken;
-import it.gov.pagopa.pu.p4paauth.dto.generated.UserInfo;
+import it.gov.pagopa.pu.auth.dto.generated.AccessToken;
+import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authorization.AuthorizationDeniedException;

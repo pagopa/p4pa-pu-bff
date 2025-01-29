@@ -1,7 +1,7 @@
 package it.gov.pagopa.pu.bff.security;
 
-import it.gov.pagopa.pu.p4paauth.dto.generated.UserInfo;
-import it.gov.pagopa.pu.p4paauth.dto.generated.UserOrganizationRoles;
+import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
+import it.gov.pagopa.pu.auth.dto.generated.UserOrganizationRoles;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;

@@ -1,9 +1,9 @@
 package it.gov.pagopa.pu.bff.connector.auth.client;
 
 import it.gov.pagopa.pu.bff.connector.auth.config.AuthApisHolder;
-import it.gov.pagopa.pu.p4paauth.controller.generated.AuthnApi;
-import it.gov.pagopa.pu.p4paauth.dto.generated.AccessToken;
-import it.gov.pagopa.pu.p4paauth.dto.generated.UserInfo;
+import it.gov.pagopa.pu.auth.controller.generated.AuthnApi;
+import it.gov.pagopa.pu.auth.dto.generated.AccessToken;
+import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

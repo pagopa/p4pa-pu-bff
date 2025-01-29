@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class TaxonomyMacroAreaCodeMapper {
   public TaxonomyMacroAreaCodeDTO map(
-    it.gov.pagopa.pu.p4pa_organization.dto.generated.TaxonomyMacroAreaCodeDTO input) {
+    it.gov.pagopa.pu.organization.dto.generated.TaxonomyMacroAreaCodeDTO input) {
     TaxonomyMacroAreaCodeDTO dto = new TaxonomyMacroAreaCodeDTO();
     dto.setOrganizationTypeDescription(input.getOrganizationType()+". "+input.getOrganizationTypeDescription());
     dto.setOrganizationType(input.getOrganizationType());

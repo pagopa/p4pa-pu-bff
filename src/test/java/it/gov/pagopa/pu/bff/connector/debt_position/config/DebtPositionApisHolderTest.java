@@ -2,7 +2,9 @@ package it.gov.pagopa.pu.bff.connector.debt_position.config;
 
 import it.gov.pagopa.pu.bff.connector.BaseApiHolderTest;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionType;
+import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelDebtPositionTypeWithCount;
 import it.gov.pagopa.pu.p4pa_organization.controller.ApiClient;
+import java.util.Collections;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -49,5 +51,13 @@ class DebtPositionApisHolderTest extends BaseApiHolderTest {
     );
   }
 
+  @Test
+  void whenGetDebtPositionTypeWithCountSearchControllerApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
+    assertAuthenticationShouldBeSetInThreadSafeMode(
+      accessToken -> debtPositionApisHolder.getDebtPositionTypeWithCountSearchControllerApi(accessToken)
+        .crudDebtPositionTypesWithCountFindByBrokerId(1L,0,0, Collections.emptyList()),
+      PagedModelDebtPositionTypeWithCount.class,
+      debtPositionApisHolder::unload);
+  }
 }
 

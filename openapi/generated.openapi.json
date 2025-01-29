@@ -1,0 +1,1128 @@
+{
+  "openapi" : "3.0.1",
+  "info" : {
+    "title" : "p4pa-pu-bff",
+    "description" : "Api and Models",
+    "version" : "0.0.1"
+  },
+  "servers" : [ {
+    "url" : "http://localhost",
+    "description" : "Generated server url"
+  } ],
+  "tags" : [ {
+    "name" : "DebtPositionTypes",
+    "description" : "the DebtPositionTypes API"
+  }, {
+    "name" : "Taxonomy",
+    "description" : "the Taxonomy API"
+  }, {
+    "name" : "Monitoring",
+    "description" : "the Monitoring API"
+  }, {
+    "name" : "Brokers",
+    "description" : "the Brokers API"
+  }, {
+    "name" : "Organizations",
+    "description" : "the Organizations API"
+  }, {
+    "name" : "Authentication",
+    "description" : "the Authentication API"
+  } ],
+  "paths" : {
+    "/bff/token" : {
+      "post" : {
+        "tags" : [ "Authentication" ],
+        "summary" : "Generate an access token",
+        "operationId" : "postToken",
+        "parameters" : [ {
+          "name" : "idToken",
+          "in" : "query",
+          "description" : "ID token from the client",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Access Token generated successfully",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/AccessTokenDTO"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Invalid request",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/AccessTokenDTO"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Authentication failed",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/AccessTokenDTO"
+                }
+              }
+            }
+          },
+          "429" : {
+            "description" : "Too many requests",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/AccessTokenDTO"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal Server Error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/AccessTokenDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/bff/taxonomy/getTaxonomyCode" : {
+      "get" : {
+        "tags" : [ "Taxonomy" ],
+        "operationId" : "getTaxonomyCode",
+        "parameters" : [ {
+          "name" : "organizationType",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "macroAreaCode",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "serviceTypeCode",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "collectionReason",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/TaxonomyCodeDTO"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "bearerAuth" : [ ]
+        } ]
+      }
+    },
+    "/bff/taxonomy/getServiceType" : {
+      "get" : {
+        "tags" : [ "Taxonomy" ],
+        "operationId" : "getServiceType",
+        "parameters" : [ {
+          "name" : "organizationType",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "macroAreaCode",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/TaxonomyServiceTypeCodeDTO"
+                  }
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Unauthorized - Missing or invalid token",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/TaxonomyServiceTypeCodeDTO"
+                  }
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Forbidden - Access denied",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/TaxonomyServiceTypeCodeDTO"
+                  }
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal Server Error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/TaxonomyServiceTypeCodeDTO"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "bearerAuth" : [ ]
+        } ]
+      }
+    },
+    "/bff/taxonomy/getOrganizationTypes" : {
+      "get" : {
+        "tags" : [ "Taxonomy" ],
+        "summary" : "Retrieve distinct organization types for FE",
+        "operationId" : "getOrganizationTypes",
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/TaxonomyOrganizationTypeDTO"
+                  }
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Unauthorized - Missing or invalid token",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/TaxonomyOrganizationTypeDTO"
+                  }
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Forbidden - Access denied",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/TaxonomyOrganizationTypeDTO"
+                  }
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal Server Error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/TaxonomyOrganizationTypeDTO"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "bearerAuth" : [ ]
+        } ]
+      }
+    },
+    "/bff/taxonomy/getMacroArea" : {
+      "get" : {
+        "tags" : [ "Taxonomy" ],
+        "operationId" : "getMacroArea",
+        "parameters" : [ {
+          "name" : "organizationType",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/TaxonomyMacroAreaCodeDTO"
+                  }
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Unauthorized - Missing or invalid token",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/TaxonomyMacroAreaCodeDTO"
+                  }
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Forbidden - Access denied",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/TaxonomyMacroAreaCodeDTO"
+                  }
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal Server Error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/TaxonomyMacroAreaCodeDTO"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "bearerAuth" : [ ]
+        } ]
+      }
+    },
+    "/bff/taxonomy/getCollectionReason" : {
+      "get" : {
+        "tags" : [ "Taxonomy" ],
+        "operationId" : "getCollectionReason",
+        "parameters" : [ {
+          "name" : "organizationType",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "macroAreaCode",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "serviceTypeCode",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/TaxonomyCollectionReasonDTO"
+                  }
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Unauthorized - Missing or invalid token",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/TaxonomyCollectionReasonDTO"
+                  }
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Forbidden - Access denied",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/TaxonomyCollectionReasonDTO"
+                  }
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal Server Error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/TaxonomyCollectionReasonDTO"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "bearerAuth" : [ ]
+        } ]
+      }
+    },
+    "/bff/organizations" : {
+      "get" : {
+        "tags" : [ "Organizations" ],
+        "summary" : "Retrieve the list of organizations",
+        "operationId" : "getOrganizations",
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/OrganizationDTO"
+                  }
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Unauthorized - Missing or invalid token",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/OrganizationDTO"
+                  }
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Forbidden - Access denied",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/OrganizationDTO"
+                  }
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal Server Error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorDTO"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "bearerAuth" : [ ]
+        } ]
+      }
+    },
+    "/bff/debt-position-types/{id}" : {
+      "get" : {
+        "tags" : [ "DebtPositionTypes" ],
+        "summary" : "Retrieve a specific debt position type",
+        "operationId" : "getDebtPositionType",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "description" : "The unique identifier of the debt position type",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/DebtPositionTypeDTO"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Not Found - Debt position type not found",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/DebtPositionTypeDTO"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Unauthorized - Missing or invalid token",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/DebtPositionTypeDTO"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Forbidden - Access denied",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/DebtPositionTypeDTO"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal Server Error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/DebtPositionTypeDTO"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "bearerAuth" : [ ]
+        } ]
+      }
+    },
+    "/bff/debt-position-types/organization/{organizationId}" : {
+      "get" : {
+        "tags" : [ "DebtPositionTypes" ],
+        "summary" : "Retrieve a page of DebtPositionTypeWithCount based on the organization's brokerId",
+        "operationId" : "getDebtPositionTypeWithCount",
+        "parameters" : [ {
+          "name" : "organizationId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }, {
+          "name" : "page",
+          "in" : "query",
+          "description" : "Zero-based page index (0..N)",
+          "required" : false,
+          "schema" : {
+            "minimum" : 0,
+            "type" : "integer",
+            "default" : 0
+          }
+        }, {
+          "name" : "size",
+          "in" : "query",
+          "description" : "The size of the page to be returned",
+          "required" : false,
+          "schema" : {
+            "minimum" : 1,
+            "type" : "integer",
+            "default" : 20
+          }
+        }, {
+          "name" : "sort",
+          "in" : "query",
+          "description" : "Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/PagedDebtPositionTypeWithCount"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Unauthorized - Missing or invalid token",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/PagedDebtPositionTypeWithCount"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Forbidden - Access denied",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/PagedDebtPositionTypeWithCount"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal Server Error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/PagedDebtPositionTypeWithCount"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "bearerAuth" : [ ]
+        } ]
+      }
+    },
+    "/bff/core-health" : {
+      "get" : {
+        "tags" : [ "Monitoring" ],
+        "operationId" : "getHealthStatus",
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/ServiceStatus"
+                  }
+                }
+              }
+            }
+          },
+          "503" : {
+            "description" : "Service is unavailable",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/ServiceStatus"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/bff/brokers/config" : {
+      "get" : {
+        "tags" : [ "Brokers" ],
+        "summary" : "Retrieve application information for FE",
+        "operationId" : "getBrokerConfig",
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ConfigFE"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Unauthorized - Missing or invalid token",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ConfigFE"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Forbidden - Access denied",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ConfigFE"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal Server Error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ConfigFE"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "bearerAuth" : [ ]
+        } ]
+      }
+    }
+  },
+  "components" : {
+    "schemas" : {
+      "AccessTokenDTO" : {
+        "type" : "object",
+        "properties" : {
+          "accessToken" : {
+            "type" : "string",
+            "description" : "The access token"
+          },
+          "tokenType" : {
+            "type" : "string",
+            "description" : "The type of the token",
+            "example" : "Bearer"
+          },
+          "expiresIn" : {
+            "type" : "integer",
+            "description" : "Time in seconds until the token expires",
+            "format" : "int32"
+          }
+        }
+      },
+      "TaxonomyCodeDTO" : {
+        "type" : "object",
+        "properties" : {
+          "organizationType" : {
+            "type" : "string"
+          },
+          "organizationTypeDescription" : {
+            "type" : "string"
+          },
+          "macroAreaCode" : {
+            "type" : "string"
+          },
+          "macroAreaName" : {
+            "type" : "string"
+          },
+          "macroAreaDescription" : {
+            "type" : "string"
+          },
+          "serviceTypeCode" : {
+            "type" : "string"
+          },
+          "serviceType" : {
+            "type" : "string"
+          },
+          "serviceTypeDescription" : {
+            "type" : "string"
+          },
+          "collectionReason" : {
+            "type" : "string"
+          },
+          "taxonomyCode" : {
+            "type" : "string"
+          }
+        }
+      },
+      "TaxonomyServiceTypeCodeDTO" : {
+        "type" : "object",
+        "properties" : {
+          "organizationType" : {
+            "type" : "string"
+          },
+          "organizationTypeDescription" : {
+            "type" : "string"
+          },
+          "macroAreaCode" : {
+            "type" : "string"
+          },
+          "macroAreaName" : {
+            "type" : "string"
+          },
+          "macroAreaDescription" : {
+            "type" : "string"
+          },
+          "serviceTypeCode" : {
+            "type" : "string"
+          },
+          "serviceType" : {
+            "type" : "string"
+          },
+          "serviceTypeDescription" : {
+            "type" : "string"
+          }
+        }
+      },
+      "TaxonomyOrganizationTypeDTO" : {
+        "type" : "object",
+        "properties" : {
+          "organizationType" : {
+            "type" : "string"
+          },
+          "organizationTypeDescription" : {
+            "type" : "string"
+          }
+        }
+      },
+      "TaxonomyMacroAreaCodeDTO" : {
+        "type" : "object",
+        "properties" : {
+          "organizationType" : {
+            "type" : "string"
+          },
+          "organizationTypeDescription" : {
+            "type" : "string"
+          },
+          "macroAreaCode" : {
+            "type" : "string"
+          },
+          "macroAreaName" : {
+            "type" : "string"
+          },
+          "macroAreaDescription" : {
+            "type" : "string"
+          }
+        }
+      },
+      "TaxonomyCollectionReasonDTO" : {
+        "type" : "object",
+        "properties" : {
+          "organizationType" : {
+            "type" : "string"
+          },
+          "organizationTypeDescription" : {
+            "type" : "string"
+          },
+          "macroAreaCode" : {
+            "type" : "string"
+          },
+          "macroAreaName" : {
+            "type" : "string"
+          },
+          "macroAreaDescription" : {
+            "type" : "string"
+          },
+          "serviceTypeCode" : {
+            "type" : "string"
+          },
+          "serviceType" : {
+            "type" : "string"
+          },
+          "serviceTypeDescription" : {
+            "type" : "string"
+          },
+          "collectionReason" : {
+            "type" : "string"
+          }
+        }
+      },
+      "OrganizationDTO" : {
+        "required" : [ "ipaCode", "operatorRole", "orgName", "organizationId" ],
+        "type" : "object",
+        "properties" : {
+          "organizationId" : {
+            "type" : "integer",
+            "description" : "Organization ID",
+            "format" : "int64"
+          },
+          "ipaCode" : {
+            "type" : "string",
+            "description" : "IPA code of the organization"
+          },
+          "orgName" : {
+            "type" : "string",
+            "description" : "Organization name"
+          },
+          "operatorRole" : {
+            "type" : "string",
+            "description" : "Operator role",
+            "enum" : [ "ROLE_ADMIN", "ROLE_OPER" ]
+          },
+          "orgLogo" : {
+            "type" : "string",
+            "description" : "Base64 encoded logo of the organization"
+          }
+        }
+      },
+      "ErrorDTO" : {
+        "required" : [ "description", "title" ],
+        "type" : "object",
+        "properties" : {
+          "title" : {
+            "type" : "string",
+            "description" : "The title describing the error"
+          },
+          "description" : {
+            "type" : "string",
+            "description" : "Description of the error"
+          }
+        }
+      },
+      "DebtPositionTypeDTO" : {
+        "required" : [ "brokerId", "code", "collectingReason", "debtPositionTypeId", "description", "flagAnonymousFiscalCode", "flagMandatoryDueDate", "flagNotifyIo", "macroArea", "orgType", "serviceType", "taxonomyCode" ],
+        "type" : "object",
+        "properties" : {
+          "debtPositionTypeId" : {
+            "type" : "integer",
+            "description" : "Unique identifier for the debt position type",
+            "format" : "int64"
+          },
+          "brokerId" : {
+            "type" : "integer",
+            "description" : "Identifier for the broker associated with this debt position type",
+            "format" : "int64"
+          },
+          "code" : {
+            "type" : "string",
+            "description" : "Code representing the debt position type"
+          },
+          "description" : {
+            "type" : "string",
+            "description" : "Description of the debt position type"
+          },
+          "orgType" : {
+            "type" : "string",
+            "description" : "Organization type associated with this debt position type"
+          },
+          "macroArea" : {
+            "type" : "string",
+            "description" : "Macro area related to the debt position type"
+          },
+          "serviceType" : {
+            "type" : "string",
+            "description" : "Service type associated with the debt position type"
+          },
+          "collectingReason" : {
+            "type" : "string",
+            "description" : "Reason for collecting this debt position"
+          },
+          "taxonomyCode" : {
+            "type" : "string",
+            "description" : "Taxonomy code for this debt position type"
+          },
+          "flagAnonymousFiscalCode" : {
+            "type" : "boolean",
+            "description" : "Indicates if an anonymous fiscal code is allowed"
+          },
+          "flagMandatoryDueDate" : {
+            "type" : "boolean",
+            "description" : "Indicates if a due date is mandatory"
+          },
+          "flagNotifyIo" : {
+            "type" : "boolean",
+            "description" : "Indicates if notifications to IO are required"
+          },
+          "ioTemplateMessage" : {
+            "type" : "string",
+            "description" : "Template message for IO notifications"
+          }
+        }
+      },
+      "DebtPositionTypeWithCount" : {
+        "required" : [ "activeOrganizations", "code", "debtPositionTypeId", "description", "updateDate" ],
+        "type" : "object",
+        "properties" : {
+          "debtPositionTypeId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "code" : {
+            "type" : "string"
+          },
+          "description" : {
+            "type" : "string"
+          },
+          "updateDate" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "activeOrganizations" : {
+            "type" : "integer",
+            "format" : "int32"
+          }
+        }
+      },
+      "PagedDebtPositionTypeWithCount" : {
+        "required" : [ "content", "number", "size", "totalElements", "totalPages" ],
+        "type" : "object",
+        "properties" : {
+          "content" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/DebtPositionTypeWithCount"
+            }
+          },
+          "size" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "totalElements" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "totalPages" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "number" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }
+      },
+      "ServiceStatus" : {
+        "type" : "object",
+        "properties" : {
+          "serviceName" : {
+            "type" : "string",
+            "description" : "Service Name"
+          },
+          "statusMessage" : {
+            "type" : "string",
+            "description" : "Service status"
+          }
+        }
+      },
+      "ConfigFE" : {
+        "required" : [ "brokerId", "canManageUsers", "footerAccessibilityUrl", "footerDescText", "footerGDPRUrl", "footerPrivacyInfoUrl", "footerTermsCondUrl", "headerAssistanceUrl", "logoFooterImg" ],
+        "type" : "object",
+        "properties" : {
+          "headerAssistanceUrl" : {
+            "type" : "string",
+            "description" : "URL for header assistance"
+          },
+          "logoFooterImg" : {
+            "type" : "string",
+            "description" : "URL for footer logo image"
+          },
+          "footerDescText" : {
+            "type" : "string",
+            "description" : "Description text for the footer"
+          },
+          "footerPrivacyInfoUrl" : {
+            "type" : "string",
+            "description" : "URL for privacy information in the footer"
+          },
+          "footerGDPRUrl" : {
+            "type" : "string",
+            "description" : "URL for GDPR information in the footer"
+          },
+          "footerTermsCondUrl" : {
+            "type" : "string",
+            "description" : "URL for terms and conditions in the footer"
+          },
+          "footerAccessibilityUrl" : {
+            "type" : "string",
+            "description" : "URL for accessibility information in the footer"
+          },
+          "brokerId" : {
+            "type" : "string",
+            "description" : "Broker ID"
+          },
+          "canManageUsers" : {
+            "type" : "boolean",
+            "description" : "Indicates if the user can manage other users"
+          }
+        }
+      }
+    },
+    "securitySchemes" : {
+      "bearerAuth" : {
+        "type" : "http",
+        "scheme" : "bearer",
+        "bearerFormat" : "JWT"
+      }
+    }
+  }
+}

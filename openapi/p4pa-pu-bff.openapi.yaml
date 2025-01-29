@@ -242,6 +242,33 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/TaxonomyCodeDTO'
+  /debt-position-types/organization/{organizationId}:
+    get:
+      tags:
+        - DebtPositionTypes
+      summary: "Retrieve a page of DebtPositionTypeWithCount based on the organization's brokerId"
+      operationId: getDebtPositionTypeWithCount
+      parameters:
+        - name: organizationId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PagedDebtPositionTypeWithCount'
+        '401':
+          description: Unauthorized - Missing or invalid token
+        '403':
+          description: Forbidden - Access denied
+        '500':
+          description: Internal Server Error
+      x-spring-paginated: true
   /debt-position-types/{id}:
     get:
       tags:
@@ -464,6 +491,53 @@ components:
         expiresIn:
           type: integer
           description: Time in seconds until the token expires
+    PagedDebtPositionTypeWithCount:
+      type: object
+      required:
+        - content
+        - size
+        - totalElements
+        - totalPages
+        - number
+      properties:
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/DebtPositionTypeWithCount'
+        size:
+          type: integer
+          format: int64
+        totalElements:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer
+          format: int64
+        number:
+          type: integer
+          format: int64
+    DebtPositionTypeWithCount:
+      type: object
+      required:
+        - debtPositionTypeId
+        - code
+        - description
+        - updateDate
+        - activeOrganizations
+      properties:
+        debtPositionTypeId:
+          type: integer
+          format: int64
+        code:
+          type: string
+        description:
+          type: string
+        updateDate:
+          type: string
+          format: date-time
+        activeOrganizations:
+          type: integer
+          format: int32
     DebtPositionTypeDTO:
       type: object
       required:

@@ -8,12 +8,13 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import it.gov.pagopa.pu.bff.dto.generated.DebtPositionTypeDTO;
 import it.gov.pagopa.pu.bff.dto.generated.DebtPositionTypeWithCount;
 import it.gov.pagopa.pu.bff.dto.generated.PagedDebtPositionTypeWithCount;
 import it.gov.pagopa.pu.bff.service.debt_position.DebtPositionTypeService;
 import java.time.OffsetDateTime;
 import java.util.List;
+
+import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionType;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -39,7 +40,7 @@ class DebtPositionTypeControllerTest {
   @InjectMocks
   private DebtPositionTypeController debtPositionTypeController;
 
-  private DebtPositionTypeDTO debtPositionTypeDTO;
+  private DebtPositionType debtPositionTypeDTO;
 
   @BeforeEach
   void setUp() {
@@ -48,7 +49,7 @@ class DebtPositionTypeControllerTest {
     securityContext.setAuthentication(authentication);
     SecurityContextHolder.setContext(securityContext);
 
-    debtPositionTypeDTO = new DebtPositionTypeDTO();
+    debtPositionTypeDTO = new DebtPositionType();
     debtPositionTypeDTO.setDebtPositionTypeId(123L);
     debtPositionTypeDTO.setBrokerId(456L);
     debtPositionTypeDTO.setCode("CODE001");
@@ -69,7 +70,7 @@ class DebtPositionTypeControllerTest {
   void testGetDebtPositionType() {
     when(debtPositionTypeServiceMock.getDebtPositionTypeById(any(), anyLong())).thenReturn(debtPositionTypeDTO);
 
-    ResponseEntity<DebtPositionTypeDTO> response = debtPositionTypeController.getDebtPositionType("123");
+    ResponseEntity<DebtPositionType> response = debtPositionTypeController.getDebtPositionType("123");
 
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertEquals(123L, response.getBody().getDebtPositionTypeId());

@@ -1,11 +1,11 @@
 package it.gov.pagopa.pu.bff.connector.organization.client;
 
 import it.gov.pagopa.pu.bff.connector.organization.config.OrganizationApisHolder;
-import it.gov.pagopa.pu.p4pa_organization.dto.generated.CollectionModelTaxonomyCodeDTO;
-import it.gov.pagopa.pu.p4pa_organization.dto.generated.CollectionModelTaxonomyCollectionReasonDTO;
-import it.gov.pagopa.pu.p4pa_organization.dto.generated.CollectionModelTaxonomyMacroAreaCodeDTO;
-import it.gov.pagopa.pu.p4pa_organization.dto.generated.CollectionModelTaxonomyOrganizationTypeDTO;
-import it.gov.pagopa.pu.p4pa_organization.dto.generated.CollectionModelTaxonomyServiceTypeCodeDTO;
+import it.gov.pagopa.pu.organization.dto.generated.CollectionModelTaxonomyCodeDTO;
+import it.gov.pagopa.pu.organization.dto.generated.CollectionModelTaxonomyCollectionReasonDTO;
+import it.gov.pagopa.pu.organization.dto.generated.CollectionModelTaxonomyMacroAreaCodeDTO;
+import it.gov.pagopa.pu.organization.dto.generated.CollectionModelTaxonomyOrganizationTypeDTO;
+import it.gov.pagopa.pu.organization.dto.generated.CollectionModelTaxonomyServiceTypeCodeDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;

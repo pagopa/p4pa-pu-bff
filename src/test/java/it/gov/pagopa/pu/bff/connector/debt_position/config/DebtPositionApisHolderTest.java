@@ -3,7 +3,7 @@ package it.gov.pagopa.pu.bff.connector.debt_position.config;
 import it.gov.pagopa.pu.bff.connector.BaseApiHolderTest;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionType;
 import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelDebtPositionTypeWithCount;
-import it.gov.pagopa.pu.p4pa_organization.controller.ApiClient;
+import it.gov.pagopa.pu.organization.controller.ApiClient;
 import java.util.Collections;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;

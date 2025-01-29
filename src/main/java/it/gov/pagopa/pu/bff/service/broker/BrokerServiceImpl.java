@@ -4,8 +4,8 @@ import it.gov.pagopa.pu.bff.config.DefaultConfigFe;
 import it.gov.pagopa.pu.bff.connector.organization.client.BrokerEntityClient;
 import it.gov.pagopa.pu.bff.dto.generated.ConfigFE;
 import it.gov.pagopa.pu.bff.mapper.PersonalisationFE2ConfigFEMapper;
-import it.gov.pagopa.pu.p4pa_organization.dto.generated.Broker;
-import it.gov.pagopa.pu.p4paauth.dto.generated.UserInfo;
+import it.gov.pagopa.pu.organization.dto.generated.Broker;
+import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 

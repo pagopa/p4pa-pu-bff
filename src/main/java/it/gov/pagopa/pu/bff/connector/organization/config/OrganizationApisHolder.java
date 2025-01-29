@@ -1,14 +1,14 @@
 package it.gov.pagopa.pu.bff.connector.organization.config;
 
-import it.gov.pagopa.pu.p4pa_organization.controller.ApiClient;
-import it.gov.pagopa.pu.p4pa_organization.controller.BaseApi;
-import it.gov.pagopa.pu.p4pa_organization.controller.generated.BrokerEntityControllerApi;
-import it.gov.pagopa.pu.p4pa_organization.controller.generated.OrganizationSearchControllerApi;
-import it.gov.pagopa.pu.p4pa_organization.controller.generated.TaxonomyCodeDtoSearchControllerApi;
-import it.gov.pagopa.pu.p4pa_organization.controller.generated.TaxonomyCollectionReasonDtoSearchControllerApi;
-import it.gov.pagopa.pu.p4pa_organization.controller.generated.TaxonomyMacroAreaCodeDtoSearchControllerApi;
-import it.gov.pagopa.pu.p4pa_organization.controller.generated.TaxonomyOrganizationTypeDtoSearchControllerApi;
-import it.gov.pagopa.pu.p4pa_organization.controller.generated.TaxonomyServiceTypeCodeDtoSearchControllerApi;
+import it.gov.pagopa.pu.organization.controller.ApiClient;
+import it.gov.pagopa.pu.organization.controller.BaseApi;
+import it.gov.pagopa.pu.organization.controller.generated.BrokerEntityControllerApi;
+import it.gov.pagopa.pu.organization.controller.generated.OrganizationSearchControllerApi;
+import it.gov.pagopa.pu.organization.controller.generated.TaxonomyCodeDtoSearchControllerApi;
+import it.gov.pagopa.pu.organization.controller.generated.TaxonomyCollectionReasonDtoSearchControllerApi;
+import it.gov.pagopa.pu.organization.controller.generated.TaxonomyMacroAreaCodeDtoSearchControllerApi;
+import it.gov.pagopa.pu.organization.controller.generated.TaxonomyOrganizationTypeDtoSearchControllerApi;
+import it.gov.pagopa.pu.organization.controller.generated.TaxonomyServiceTypeCodeDtoSearchControllerApi;
 import jakarta.annotation.PreDestroy;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;

@@ -4,9 +4,9 @@ import it.gov.pagopa.pu.bff.connector.organization.client.OrganizationSearchClie
 import it.gov.pagopa.pu.bff.dto.generated.OrganizationDTO;
 import it.gov.pagopa.pu.bff.mapper.OrganizationDTOMapper;
 import it.gov.pagopa.pu.bff.service.organization.OrganizationServiceImpl;
-import it.gov.pagopa.pu.p4pa_organization.dto.generated.Organization;
-import it.gov.pagopa.pu.p4paauth.dto.generated.UserInfo;
-import it.gov.pagopa.pu.p4paauth.dto.generated.UserOrganizationRoles;
+import it.gov.pagopa.pu.organization.dto.generated.Organization;
+import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
+import it.gov.pagopa.pu.auth.dto.generated.UserOrganizationRoles;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -69,10 +69,10 @@ class OrganizationServiceImplTest {
     List<OrganizationDTO> result = organizationService.getOrganizations(userInfo, accessToken);
 
     assertEquals(1, result.size());
-    assertEquals(123L, result.get(0).getOrganizationId());
-    assertEquals("testIpaCode", result.get(0).getIpaCode());
-    assertEquals("Test Organization", result.get(0).getOrgName());
-    assertEquals(OrganizationDTO.OperatorRoleEnum.ADMIN, result.get(0).getOperatorRole());
+    assertEquals(123L, result.getFirst().getOrganizationId());
+    assertEquals("testIpaCode", result.getFirst().getIpaCode());
+    assertEquals("Test Organization", result.getFirst().getOrgName());
+    assertEquals(OrganizationDTO.OperatorRoleEnum.ADMIN, result.getFirst().getOperatorRole());
   }
 
   @Test

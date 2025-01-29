@@ -1,8 +1,8 @@
 package it.gov.pagopa.pu.bff.connector.auth.client;
 
 import it.gov.pagopa.pu.bff.connector.auth.config.AuthApisHolder;
-import it.gov.pagopa.pu.p4paauth.dto.generated.AccessToken;
-import it.gov.pagopa.pu.p4paauth.dto.generated.UserInfo;
+import it.gov.pagopa.pu.auth.dto.generated.AccessToken;
+import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;

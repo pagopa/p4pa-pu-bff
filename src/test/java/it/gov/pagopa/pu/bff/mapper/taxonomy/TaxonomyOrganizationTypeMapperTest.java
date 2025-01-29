@@ -1,4 +1,4 @@
-package it.gov.pagopa.pu.bff.mapper;
+package it.gov.pagopa.pu.bff.mapper.taxonomy;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -11,7 +11,7 @@ class TaxonomyOrganizationTypeMapperTest {
 
   @Test
   void testMap() {
-    it.gov.pagopa.pu.p4pa_organization.dto.generated.TaxonomyOrganizationTypeDTO input = new it.gov.pagopa.pu.p4pa_organization.dto.generated.TaxonomyOrganizationTypeDTO();
+    it.gov.pagopa.pu.organization.dto.generated.TaxonomyOrganizationTypeDTO input = new it.gov.pagopa.pu.organization.dto.generated.TaxonomyOrganizationTypeDTO();
     input.setOrganizationType("Type1");
     input.setOrganizationTypeDescription("Description1");
 

@@ -1,4 +1,4 @@
-package it.gov.pagopa.pu.bff.mapper;
+package it.gov.pagopa.pu.bff.mapper.taxonomy;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -12,7 +12,7 @@ class TaxonomyCodeMapperTest {
 
   @Test
   void testMap() {
-    it.gov.pagopa.pu.p4pa_organization.dto.generated.TaxonomyCodeDTO input = new it.gov.pagopa.pu.p4pa_organization.dto.generated.TaxonomyCodeDTO();
+    it.gov.pagopa.pu.organization.dto.generated.TaxonomyCodeDTO input = new it.gov.pagopa.pu.organization.dto.generated.TaxonomyCodeDTO();
     input.setOrganizationType("Type1");
     input.setOrganizationTypeDescription("Description1");
     input.setMacroAreaCode("Macro1");

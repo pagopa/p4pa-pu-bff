@@ -49,7 +49,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/AccessTokenDTO"
+                  "$ref" : "#/components/schemas/AccessToken"
                 }
               }
             }
@@ -59,7 +59,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/AccessTokenDTO"
+                  "$ref" : "#/components/schemas/AccessToken"
                 }
               }
             }
@@ -69,7 +69,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/AccessTokenDTO"
+                  "$ref" : "#/components/schemas/AccessToken"
                 }
               }
             }
@@ -79,7 +79,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/AccessTokenDTO"
+                  "$ref" : "#/components/schemas/AccessToken"
                 }
               }
             }
@@ -89,7 +89,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/AccessTokenDTO"
+                  "$ref" : "#/components/schemas/AccessToken"
                 }
               }
             }
@@ -529,7 +529,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/DebtPositionTypeDTO"
+                  "$ref" : "#/components/schemas/DebtPositionType"
                 }
               }
             }
@@ -539,7 +539,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/DebtPositionTypeDTO"
+                  "$ref" : "#/components/schemas/DebtPositionType"
                 }
               }
             }
@@ -549,7 +549,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/DebtPositionTypeDTO"
+                  "$ref" : "#/components/schemas/DebtPositionType"
                 }
               }
             }
@@ -559,7 +559,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/DebtPositionTypeDTO"
+                  "$ref" : "#/components/schemas/DebtPositionType"
                 }
               }
             }
@@ -569,7 +569,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/DebtPositionTypeDTO"
+                  "$ref" : "#/components/schemas/DebtPositionType"
                 }
               }
             }
@@ -761,21 +761,17 @@
   },
   "components" : {
     "schemas" : {
-      "AccessTokenDTO" : {
+      "AccessToken" : {
         "type" : "object",
         "properties" : {
-          "accessToken" : {
-            "type" : "string",
-            "description" : "The access token"
+          "access_token" : {
+            "type" : "string"
           },
-          "tokenType" : {
-            "type" : "string",
-            "description" : "The type of the token",
-            "example" : "Bearer"
+          "token_type" : {
+            "type" : "string"
           },
-          "expiresIn" : {
+          "expires_in" : {
             "type" : "integer",
-            "description" : "Time in seconds until the token expires",
             "format" : "int32"
           }
         }
@@ -949,63 +945,95 @@
           }
         }
       },
-      "DebtPositionTypeDTO" : {
-        "required" : [ "brokerId", "code", "collectingReason", "debtPositionTypeId", "description", "flagAnonymousFiscalCode", "flagMandatoryDueDate", "flagNotifyIo", "macroArea", "orgType", "serviceType", "taxonomyCode" ],
+      "DebtPositionType" : {
         "type" : "object",
         "properties" : {
+          "creationDate" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "updateDate" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "updateOperatorExternalId" : {
+            "type" : "string"
+          },
           "debtPositionTypeId" : {
             "type" : "integer",
-            "description" : "Unique identifier for the debt position type",
             "format" : "int64"
           },
           "brokerId" : {
             "type" : "integer",
-            "description" : "Identifier for the broker associated with this debt position type",
             "format" : "int64"
           },
           "code" : {
-            "type" : "string",
-            "description" : "Code representing the debt position type"
+            "type" : "string"
           },
           "description" : {
-            "type" : "string",
-            "description" : "Description of the debt position type"
+            "type" : "string"
           },
           "orgType" : {
-            "type" : "string",
-            "description" : "Organization type associated with this debt position type"
+            "type" : "string"
           },
           "macroArea" : {
-            "type" : "string",
-            "description" : "Macro area related to the debt position type"
+            "type" : "string"
           },
           "serviceType" : {
-            "type" : "string",
-            "description" : "Service type associated with the debt position type"
+            "type" : "string"
           },
           "collectingReason" : {
-            "type" : "string",
-            "description" : "Reason for collecting this debt position"
+            "type" : "string"
           },
           "taxonomyCode" : {
-            "type" : "string",
-            "description" : "Taxonomy code for this debt position type"
+            "type" : "string"
           },
           "flagAnonymousFiscalCode" : {
-            "type" : "boolean",
-            "description" : "Indicates if an anonymous fiscal code is allowed"
+            "type" : "boolean"
           },
           "flagMandatoryDueDate" : {
-            "type" : "boolean",
-            "description" : "Indicates if a due date is mandatory"
+            "type" : "boolean"
           },
           "flagNotifyIo" : {
-            "type" : "boolean",
-            "description" : "Indicates if notifications to IO are required"
+            "type" : "boolean"
           },
           "ioTemplateMessage" : {
-            "type" : "string",
-            "description" : "Template message for IO notifications"
+            "type" : "string"
+          },
+          "_links" : {
+            "type" : "object",
+            "additionalProperties" : {
+              "$ref" : "#/components/schemas/Link"
+            }
+          }
+        }
+      },
+      "Link" : {
+        "type" : "object",
+        "properties" : {
+          "href" : {
+            "type" : "string"
+          },
+          "hreflang" : {
+            "type" : "string"
+          },
+          "title" : {
+            "type" : "string"
+          },
+          "type" : {
+            "type" : "string"
+          },
+          "deprecation" : {
+            "type" : "string"
+          },
+          "profile" : {
+            "type" : "string"
+          },
+          "name" : {
+            "type" : "string"
+          },
+          "templated" : {
+            "type" : "boolean"
           }
         }
       },

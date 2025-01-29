@@ -2,7 +2,7 @@ package it.gov.pagopa.pu.bff.controller;
 
 import it.gov.pagopa.pu.bff.dto.generated.ConfigFE;
 import it.gov.pagopa.pu.bff.service.broker.BrokerService;
-import it.gov.pagopa.pu.p4paauth.dto.generated.UserInfo;
+import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

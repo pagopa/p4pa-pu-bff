@@ -2,7 +2,7 @@ package it.gov.pagopa.pu.bff.mapper;
 
 import it.gov.pagopa.pu.bff.dto.generated.OrganizationDTO;
 import it.gov.pagopa.pu.bff.exception.InvalidOperatorRoleException;
-import it.gov.pagopa.pu.p4pa_organization.dto.generated.Organization;
+import it.gov.pagopa.pu.organization.dto.generated.Organization;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -30,7 +30,7 @@ public class OrganizationDTOMapper {
     String operatorRoleValue = roles.stream()
       .filter("ROLE_ADMIN"::equals)
       .findFirst()
-      .orElse(roles.get(0));
+      .orElse(roles.getFirst());
 
     try {
       return OrganizationDTO.OperatorRoleEnum.fromValue(operatorRoleValue);

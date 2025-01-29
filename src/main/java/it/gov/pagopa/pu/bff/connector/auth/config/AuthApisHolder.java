@@ -1,8 +1,8 @@
 package it.gov.pagopa.pu.bff.connector.auth.config;
 
-import it.gov.pagopa.pu.p4paauth.controller.ApiClient;
-import it.gov.pagopa.pu.p4paauth.controller.BaseApi;
-import it.gov.pagopa.pu.p4paauth.controller.generated.AuthnApi;
+import it.gov.pagopa.pu.auth.controller.ApiClient;
+import it.gov.pagopa.pu.auth.controller.BaseApi;
+import it.gov.pagopa.pu.auth.controller.generated.AuthnApi;
 import jakarta.annotation.PreDestroy;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;

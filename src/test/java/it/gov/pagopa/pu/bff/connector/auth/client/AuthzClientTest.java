@@ -55,6 +55,21 @@ class AuthzClientTest {
   }
 
   @Test
+  void givenNoExistentUserWhenGetUserInfoFromMappedExternalUserIdThenNull() {
+    String mappedExternalUserId = "mappedExternalUserId";
+    String accessToken = "ACCESSTOKEN";
+
+    when(authApisHolderMock.getAuthzApi(accessToken))
+      .thenReturn(authzApiMock);
+    when(authzApiMock.getUserInfoFromMappedExternaUserId(mappedExternalUserId))
+      .thenThrow(new HttpClientErrorException(HttpStatus.NOT_FOUND));
+
+    UserInfo result = authzClient.getUserInfoFromMappedExternaUserId(mappedExternalUserId,accessToken);
+
+    Assertions.assertNull(result);
+  }
+
+  @Test
   void givenHttpExceptionWhenGetUserInfoFromMappedExternalUserIdThenThrowIt() {
     String accessToken = "ACCESSTOKEN";
     String mappedExternalUserId = "mappedExternalUserId";

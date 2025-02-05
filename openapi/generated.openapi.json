@@ -13,8 +13,8 @@
     "name" : "DebtPositionTypes",
     "description" : "the DebtPositionTypes API"
   }, {
-    "name" : "ingestion-flow-file-controller",
-    "description" : "the ingestion-flow-file-controller API"
+    "name" : "IngestionFlowFiles",
+    "description" : "the IngestionFlowFiles API"
   }, {
     "name" : "Taxonomy",
     "description" : "the Taxonomy API"
@@ -514,7 +514,7 @@
     },
     "/bff/ingestion-flow-files/{organizationId}" : {
       "get" : {
-        "tags" : [ "ingestion-flow-file-controller" ],
+        "tags" : [ "IngestionFlowFiles" ],
         "operationId" : "getIngestionFlowFiles",
         "parameters" : [ {
           "name" : "organizationId",
@@ -529,7 +529,8 @@
           "in" : "query",
           "required" : true,
           "schema" : {
-            "type" : "string"
+            "type" : "string",
+            "enum" : [ "RECEIPT", "RECEIPT_PAGOPA", "PAYMENTS_REPORTING", "PAYMENTS_REPORTING_PAGOPA", "TREASURY_OPI", "TREASURY_CSV", "TREASURY_XLS", "TREASURY_POSTE" ]
           }
         }, {
           "name" : "creationDateFrom",

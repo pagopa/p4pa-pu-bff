@@ -5,6 +5,7 @@ import it.gov.pagopa.pu.bff.dto.generated.IngestionFlowFile;
 import it.gov.pagopa.pu.bff.dto.generated.IngestionFlowFile.StatusEnum;
 import it.gov.pagopa.pu.bff.dto.generated.PagedIngestionFlowFile;
 import it.gov.pagopa.pu.bff.service.ingestion_flow_file.IngestionFlowFileService;
+import it.gov.pagopa.pu.processexecutions.dto.generated.IngestionFlowFile.FlowFileTypeEnum;
 import java.time.OffsetDateTime;
 import java.util.List;
 import org.junit.jupiter.api.Assertions;
@@ -43,7 +44,7 @@ class IngestionFlowFileControllerTest {
   @Test
   void givenCorrectRequestWhenGetIngestionFlowFilesThenOk() {
     long organizationId = 1L;
-    String flowFileType = "flowFileType";
+    FlowFileTypeEnum flowFileType = FlowFileTypeEnum.TREASURY_OPI;
     OffsetDateTime creationDateFrom = OffsetDateTime.now().minusDays(10);
     OffsetDateTime creationDateTo = OffsetDateTime.now().plusDays(10);
     String status = "status";

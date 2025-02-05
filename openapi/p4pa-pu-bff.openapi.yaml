@@ -300,7 +300,7 @@ paths:
   /ingestion-flow-files/{organizationId}:
     get:
       tags:
-        - ingestion-flow-file-controller
+        - IngestionFlowFiles
       operationId: getIngestionFlowFiles
       parameters:
         - name: organizationId
@@ -313,7 +313,7 @@ paths:
           in: query
           required: true
           schema:
-            type: string
+            type: 'FlowFileType'
         - name: creationDateFrom
           in: query
           schema:

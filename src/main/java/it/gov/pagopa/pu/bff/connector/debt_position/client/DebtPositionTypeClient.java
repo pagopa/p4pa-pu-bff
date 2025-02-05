@@ -1,10 +1,9 @@
 package it.gov.pagopa.pu.bff.connector.debt_position.client;
 
 import it.gov.pagopa.pu.bff.connector.debt_position.config.DebtPositionApisHolder;
+import it.gov.pagopa.pu.bff.util.PageUtils;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionType;
 import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelDebtPositionTypeWithCount;
-import java.util.Collections;
-import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -40,12 +39,12 @@ public class DebtPositionTypeClient {
 
   public PagedModelDebtPositionTypeWithCount getDebtPositionTypeWithCount(Long brokerId, Pageable pageable, String accessToken) {
     try {
-      Integer pageNumber = pageable.isPaged()? pageable.getPageNumber() : 0;
-      Integer pageSize = pageable.isPaged()? pageable.getPageSize() : null;
+      Integer pageNumber = PageUtils.getPageNumber(pageable);
+      Integer pageSize = PageUtils.getPageSize(pageable);
       return debtPositionApisHolder.getDebtPositionTypeWithCountSearchControllerApi(accessToken)
         .crudDebtPositionTypesWithCountFindByBrokerId( brokerId, pageNumber,
           pageSize,
-          getSortList(pageable));
+          PageUtils.getSortList(pageable));
     } catch (HttpClientErrorException e) {
       if (e.getStatusCode() == HttpStatus.NOT_FOUND) {
         log.warn("DebtPositionType with brokerId {} not found", brokerId);
@@ -57,13 +56,6 @@ public class DebtPositionTypeClient {
       log.error("Unexpected error while retrieving DebtPositionType by brokerId: {}", brokerId, e);
       throw e;
     }
-  }
-
-  private static List<String> getSortList(Pageable pageable) {
-    return pageable.getSort().isSorted()?
-      pageable.getSort().stream()
-        .map(o -> o.getProperty() + "," + o.getDirection()).toList()
-      : Collections.emptyList();
   }
 }
 

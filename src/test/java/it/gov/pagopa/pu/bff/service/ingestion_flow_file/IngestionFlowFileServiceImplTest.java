@@ -6,6 +6,7 @@ import it.gov.pagopa.pu.bff.dto.IngestionFlowFileFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedIngestionFlowFile;
 import it.gov.pagopa.pu.bff.mapper.IngestionFlowFileMapper;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
+import it.gov.pagopa.pu.processexecutions.dto.generated.IngestionFlowFile.FlowFileTypeEnum;
 import it.gov.pagopa.pu.processexecutions.dto.generated.PagedModelIngestionFlowFile;
 import java.time.OffsetDateTime;
 import org.junit.jupiter.api.Assertions;
@@ -35,7 +36,7 @@ class IngestionFlowFileServiceImplTest {
   void givenAdminUserWhenGetIngestionFlowFilesThenOk() {
     String accessToken = "ACCESSTOKEN";
     long organizationId = 1L;
-    String flowFileType = "flowFileType";
+    FlowFileTypeEnum flowFileType = FlowFileTypeEnum.TREASURY_OPI;
     OffsetDateTime creationDateFrom = OffsetDateTime.now().minusDays(10);
     OffsetDateTime creationDateTo = OffsetDateTime.now().plusDays(10);
     String status = "status";
@@ -73,7 +74,7 @@ class IngestionFlowFileServiceImplTest {
   void givenNoAdminUserWhenGetIngestionFlowFilesThenOk(){
     String accessToken="ACCESSTOKEN";
     long organizationId = 1L;
-    String flowFileType = "flowFileType";
+    FlowFileTypeEnum flowFileType = FlowFileTypeEnum.TREASURY_OPI;
     OffsetDateTime creationDateFrom = OffsetDateTime.now().minusDays(10);
     OffsetDateTime creationDateTo = OffsetDateTime.now().plusDays(10);
     String status = "status";

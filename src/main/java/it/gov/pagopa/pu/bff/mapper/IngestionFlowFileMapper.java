@@ -63,8 +63,9 @@ public class IngestionFlowFileMapper {
   private String getOperator(
     it.gov.pagopa.pu.processexecutions.dto.generated.IngestionFlowFile ingestionFlowFile, UserInfo userInfo, String accessToken) {
     if(!ingestionFlowFile.getOperatorExternalId().equals(userInfo.getMappedExternalUserId())){
-      return getOperatorString(authzClient.getUserInfoFromMappedExternaUserId(
-        ingestionFlowFile.getOperatorExternalId(), accessToken));
+      UserInfo userInfoFromMappedExternaUserId = authzClient.getUserInfoFromMappedExternaUserId(
+        ingestionFlowFile.getOperatorExternalId(), accessToken);
+      return userInfoFromMappedExternaUserId!=null?getOperatorString(userInfoFromMappedExternaUserId):ingestionFlowFile.getOperatorExternalId();
     }else{
       return getOperatorString(userInfo);
     }

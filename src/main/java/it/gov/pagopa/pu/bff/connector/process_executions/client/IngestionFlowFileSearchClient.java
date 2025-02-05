@@ -22,8 +22,6 @@ public class IngestionFlowFileSearchClient {
 
   public PagedModelIngestionFlowFile getIngestionFlowFiles(IngestionFlowFileFiltersDTO ingestionFlowFileFilters, String operatorExternalId, Pageable pageable, String accessToken) {
     try {
-      Integer pageNumber = PageUtils.getPageNumber(pageable);
-      Integer pageSize = PageUtils.getPageSize(pageable);
       return processExecutionsApisHolder.getIngestionFlowFileSearchControllerApi(accessToken)
         .crudIngestionFlowFilesFindByOrganizationIDFlowTypeCreateDate(
           String.valueOf(ingestionFlowFileFilters.getOrganizationId()),
@@ -33,8 +31,8 @@ public class IngestionFlowFileSearchClient {
           ingestionFlowFileFilters.getStatus(),
           ingestionFlowFileFilters.getFileName(),
           operatorExternalId,
-          pageNumber,
-          pageSize,
+          PageUtils.getPageNumber(pageable),
+          PageUtils.getPageSize(pageable),
           PageUtils.getSortList(pageable));
     } catch (HttpClientErrorException e) {
       log.error("Error while retrieving ingestion flow files", e);

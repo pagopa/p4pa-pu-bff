@@ -30,7 +30,7 @@ public class IngestionFlowFileController implements IngestionFlowFilesApi {
     FlowFileTypeEnum flowFileType, OffsetDateTime creationDateFrom,
     OffsetDateTime creationDateTo, String status, String fileName,
     Pageable pageable) {
-    log.info("User requested getIngestionFlowFiles()");
+    log.info("User requested getIngestionFlowFiles having organizationId {} and flowFileType {}", organizationId, flowFileType);
     return ResponseEntity.ok(ingestionFlowFileService.getIngestionFlowFiles(new IngestionFlowFileFiltersDTO(organizationId,flowFileType,creationDateFrom,creationDateTo,status,fileName),pageable, SecurityUtils.getLoggedUser(),SecurityUtils.getAccessToken()));
   }
 }

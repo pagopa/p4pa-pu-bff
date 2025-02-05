@@ -1,8 +1,8 @@
 package it.gov.pagopa.pu.bff.service;
 
-import it.gov.pagopa.pu.bff.connector.auth.client.AuthnClient;
 import it.gov.pagopa.pu.auth.dto.generated.AccessToken;
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
+import it.gov.pagopa.pu.bff.connector.auth.client.AuthnClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authorization.AuthorizationDeniedException;
@@ -46,14 +46,19 @@ public class AuthorizationService {
   }
 
   public void validateAdminRole(Long organizationId, UserInfo loggedUser) {
-    boolean roleAdmin = loggedUser.getOrganizations().stream()
-      .filter(o->organizationId.equals(o.getOrganizationId()))
-        .findFirst()
-        .filter(o ->!CollectionUtils.isEmpty(o.getRoles()) && o.getRoles().contains(ROLE_ADMIN))
-        .isPresent();
+    boolean roleAdmin = isAdminRole(organizationId, loggedUser);
     if(!roleAdmin){
       log.debug("Unauthorized user. [organizationId:{}]", organizationId);
       throw new AuthorizationDeniedException("Access denied on organizationId " + organizationId + " to user " + loggedUser.getMappedExternalUserId());
     }
+  }
+
+  public static boolean isAdminRole(Long organizationId, UserInfo loggedUser) {
+    return loggedUser.getOrganizations().stream()
+      .filter(o -> organizationId.equals(o.getOrganizationId()))
+      .findFirst()
+      .filter(o -> !CollectionUtils.isEmpty(o.getRoles()) && o.getRoles()
+        .contains(ROLE_ADMIN))
+      .isPresent();
   }
 }

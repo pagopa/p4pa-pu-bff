@@ -81,3 +81,5 @@ rest:
     base-url: "\${ORGANIZATION_BASE_URL:}"
   debt-positions:
     base-url: "\${DEBT_POSITIONS_BASE_URL:}"
+  process-executions:
+    base-url: "\${PROCESS_EXECUTIONS_BASE_URL:}"

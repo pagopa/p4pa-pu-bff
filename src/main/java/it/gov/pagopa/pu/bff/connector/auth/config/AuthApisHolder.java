@@ -3,6 +3,7 @@ package it.gov.pagopa.pu.bff.connector.auth.config;
 import it.gov.pagopa.pu.auth.controller.ApiClient;
 import it.gov.pagopa.pu.auth.controller.BaseApi;
 import it.gov.pagopa.pu.auth.controller.generated.AuthnApi;
+import it.gov.pagopa.pu.auth.controller.generated.AuthzApi;
 import jakarta.annotation.PreDestroy;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -13,6 +14,7 @@ import org.springframework.web.client.RestTemplate;
 public class AuthApisHolder {
 
     private final AuthnApi authnApi;
+    private final AuthzApi authzApi;
 
     private final ThreadLocal<String> bearerTokenHolder = new ThreadLocal<>();
 
@@ -26,6 +28,7 @@ public class AuthApisHolder {
         apiClient.setBearerToken(bearerTokenHolder::get);
 
         this.authnApi = new AuthnApi(apiClient);
+        this.authzApi = new AuthzApi(apiClient);
     }
 
     @PreDestroy
@@ -36,6 +39,11 @@ public class AuthApisHolder {
     /** It will return a {@link AuthnApi} instrumented with the provided accessToken. Use null if auth is not required */
     public AuthnApi getAuthnApi(String accessToken){
         return getApi(accessToken, authnApi);
+    }
+
+    /** It will return a {@link AuthzApi} instrumented with the provided accessToken. Use null if auth is not required */
+    public AuthzApi getAuthzApi(String accessToken){
+        return getApi(accessToken, authzApi);
     }
 
     private <T extends BaseApi> T getApi(String accessToken, T api) {

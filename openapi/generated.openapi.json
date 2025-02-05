@@ -937,7 +937,8 @@
         "properties" : {
           "title" : {
             "type" : "string",
-            "description" : "The title describing the error"
+            "description" : "The title describing the error",
+            "enum" : [ "BAD_REQUEST", "GENERIC_ERROR" ]
           },
           "description" : {
             "type" : "string",

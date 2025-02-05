@@ -7,7 +7,6 @@ import it.gov.pagopa.pu.bff.dto.generated.IngestionFlowFile.StatusEnum;
 import it.gov.pagopa.pu.bff.dto.generated.PagedIngestionFlowFile;
 import it.gov.pagopa.pu.processexecutions.dto.generated.PagedModelIngestionFlowFile;
 import java.util.Collections;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
@@ -63,10 +62,6 @@ public class IngestionFlowFileMapper {
 
   private String getOperator(
     it.gov.pagopa.pu.processexecutions.dto.generated.IngestionFlowFile ingestionFlowFile, UserInfo userInfo, String accessToken) {
-    if(StringUtils.isBlank(ingestionFlowFile.getOperatorExternalId())){
-      return null;
-    }
-
     if(!ingestionFlowFile.getOperatorExternalId().equals(userInfo.getMappedExternalUserId())){
       return getOperatorString(authzClient.getUserInfoFromMappedExternaUserId(
         ingestionFlowFile.getOperatorExternalId(), accessToken));

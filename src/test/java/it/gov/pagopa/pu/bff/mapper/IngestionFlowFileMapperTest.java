@@ -80,6 +80,7 @@ class IngestionFlowFileMapperTest {
     flowFileWithNoTotalRows.setCreationDate(OffsetDateTime.now());
     flowFileWithNoTotalRows.setIngestionFlowFileId(3L);
     flowFileWithNoTotalRows.setFileName("fileName");
+    flowFileWithNoTotalRows.setOperatorExternalId(otherOperatorExternalId);
     flowFileWithNoTotalRows.setStatus(StatusEnum.ERROR);
     flowFileWithNoTotalRows.setNumTotalRows(null);
     flowFileWithNoTotalRows.setNumCorrectlyImportedRows(8L);
@@ -124,10 +125,10 @@ class IngestionFlowFileMapperTest {
       it.gov.pagopa.pu.bff.dto.generated.IngestionFlowFile.StatusEnum.PROCESSING, "correctlyImportedRows","totalRows");
     checkIngestionFlowFile(flowFileWithNoTotalRows,
       result.getContent().get(3),
-      null,
+      otherUserInfo.getFamilyName() + " " +otherUserInfo.getName(),
       0L,
-      it.gov.pagopa.pu.bff.dto.generated.IngestionFlowFile.StatusEnum.ERROR, "totalRows", "operator");
-    Mockito.verify(authzClientMock, Mockito.times(2)).getUserInfoFromMappedExternaUserId(otherOperatorExternalId,accessToken);
+      it.gov.pagopa.pu.bff.dto.generated.IngestionFlowFile.StatusEnum.ERROR, "totalRows");
+    Mockito.verify(authzClientMock, Mockito.times(3)).getUserInfoFromMappedExternaUserId(otherOperatorExternalId,accessToken);
     Mockito.verifyNoMoreInteractions(authzClientMock);
   }
 

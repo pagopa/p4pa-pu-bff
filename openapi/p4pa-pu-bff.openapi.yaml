@@ -297,6 +297,57 @@ paths:
           description: Forbidden - Access denied
         '500':
           description: Internal Server Error
+  /ingestion-flow-files/{organizationId}:
+    get:
+      tags:
+        - IngestionFlowFiles
+      operationId: getIngestionFlowFiles
+      parameters:
+        - name: organizationId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: flowFileType
+          in: query
+          required: true
+          schema:
+            type: 'FlowFileType'
+        - name: creationDateFrom
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: creationDateTo
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum:
+              - REQUESTED
+              - PROCESSING
+              - COMPLETED
+              - EXPIRED
+              - ERROR
+        - name: fileName
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/hal+json:
+              schema:
+                $ref: '#/components/schemas/PagedIngestionFlowFile'
+        '404':
+          description: Not Found
+      x-spring-paginated: true
 security:
   - bearerAuth: [ ]
 components:
@@ -525,3 +576,63 @@ components:
         activeOrganizations:
           type: integer
           format: int32
+    PagedIngestionFlowFile:
+      type: object
+      required:
+        - content
+        - size
+        - totalElements
+        - totalPages
+        - number
+      properties:
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/IngestionFlowFile'
+        size:
+          type: integer
+          format: int64
+        totalElements:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer
+          format: int64
+        number:
+          type: integer
+          format: int64
+    IngestionFlowFile:
+      required:
+        - ingestionFlowFileId
+        - fileName
+        - creationDate
+        - operator
+        - status
+      type: object
+      properties:
+        ingestionFlowFileId:
+          type: integer
+          format: int64
+        fileName:
+          type: string
+        creationDate:
+          type: string
+          format: date-time
+        operator:
+          type: string
+        totalRows:
+          type: integer
+          format: int64
+        correctlyImportedRows:
+          type: integer
+          format: int64
+        discardedRows:
+          type: integer
+          format: int64
+        status:
+          type: string
+          enum:
+            - UPLOADED
+            - PROCESSING
+            - COMPLETED
+            - ERROR

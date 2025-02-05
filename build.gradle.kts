@@ -105,7 +105,8 @@ tasks.register("dependenciesBuild") {
     "openApiGenerateBFF",
     "openApiGenerateP4PAAUTH",
     "openApiGenerateORGANIZATION",
-    "openApiGenerateDEBTPOSITIONS"
+    "openApiGenerateDEBTPOSITIONS",
+    "openApiGeneratePROCESSEXECUTIONS"
   )
 }
 
@@ -130,7 +131,8 @@ tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>("ope
   modelPackage.set("it.gov.pagopa.pu.bff.dto.generated")
   typeMappings.set(mapOf(
     "AccessToken" to "it.gov.pagopa.pu.auth.dto.generated.AccessToken",
-    "DebtPositionType" to "it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionType"
+    "DebtPositionType" to "it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionType",
+    "FlowFileType" to "it.gov.pagopa.pu.processexecutions.dto.generated.IngestionFlowFile.FlowFileTypeEnum"
   ))
   configOptions.set(mapOf(
     "dateLibrary" to "java8",
@@ -208,6 +210,30 @@ tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>("ope
   outputDir.set("$projectDir/build/generated")
   apiPackage.set("it.gov.pagopa.pu.debtpositions.controller.generated")
   modelPackage.set("it.gov.pagopa.pu.debtpositions.dto.generated")
+  configOptions.set(mapOf(
+    "swaggerAnnotations" to "false",
+    "openApiNullable" to "false",
+    "dateLibrary" to "java8",
+    "useSpringBoot3" to "true",
+    "useJakartaEe" to "true",
+    "serializationLibrary" to "jackson",
+    "generateSupportingFiles" to "true",
+    "generateConstructorWithAllArgs" to "true",
+    "generatedConstructorWithRequiredArgs" to "true",
+    "additionalModelTypeAnnotations" to "@lombok.experimental.SuperBuilder(toBuilder = true)"
+  ))
+  library.set("resttemplate")
+}
+
+tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>("openApiGeneratePROCESSEXECUTIONS") {
+  group = "openapi"
+  description = "description"
+
+  generatorName.set("java")
+  remoteInputSpec.set("https://raw.githubusercontent.com/pagopa/p4pa-process-executions/refs/heads/$targetEnv/openapi/generated.openapi.json")
+  outputDir.set("$projectDir/build/generated")
+  apiPackage.set("it.gov.pagopa.pu.processexecutions.controller.generated")
+  modelPackage.set("it.gov.pagopa.pu.processexecutions.dto.generated")
   configOptions.set(mapOf(
     "swaggerAnnotations" to "false",
     "openApiNullable" to "false",

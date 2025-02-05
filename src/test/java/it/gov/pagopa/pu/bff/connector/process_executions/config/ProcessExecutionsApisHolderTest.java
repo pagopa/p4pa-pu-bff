@@ -1,9 +1,9 @@
-package it.gov.pagopa.pu.bff.connector.auth.config;
+package it.gov.pagopa.pu.bff.connector.process_executions.config;
 
-import it.gov.pagopa.pu.auth.controller.ApiClient;
-import it.gov.pagopa.pu.auth.dto.generated.AccessToken;
-import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.connector.BaseApiHolderTest;
+import it.gov.pagopa.pu.processexecutions.controller.ApiClient;
+import it.gov.pagopa.pu.processexecutions.dto.generated.PagedModelIngestionFlowFile;
+import java.time.OffsetDateTime;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,11 +15,11 @@ import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.web.util.DefaultUriBuilderFactory;
 
 @ExtendWith(MockitoExtension.class)
-class AuthApiHolderTest extends BaseApiHolderTest {
+class ProcessExecutionsApisHolderTest extends BaseApiHolderTest {
   @Mock
   private RestTemplateBuilder restTemplateBuilderMock;
 
-  private AuthApisHolder authApisHolder;
+  private ProcessExecutionsApisHolder processExecutionsApisHolder;
 
   @BeforeEach
   void setUp() {
@@ -28,7 +28,7 @@ class AuthApiHolderTest extends BaseApiHolderTest {
     ApiClient apiClient = new ApiClient(restTemplateMock);
     String baseUrl = "http://example.com";
     apiClient.setBasePath(baseUrl);
-    authApisHolder = new AuthApisHolder(baseUrl, restTemplateBuilderMock);
+    processExecutionsApisHolder = new ProcessExecutionsApisHolder(baseUrl, restTemplateBuilderMock);
   }
 
   @AfterEach
@@ -40,20 +40,14 @@ class AuthApiHolderTest extends BaseApiHolderTest {
   }
 
   @Test
-  void whenGetAuthnApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
+  void whenGetIngestionFlowFileSearchControllerApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
     assertAuthenticationShouldBeSetInThreadSafeMode(
-      accessToken -> authApisHolder.getAuthnApi(accessToken)
-        .postToken("clientId", "grantType", "scope", "subjectToken", "subjectIssuer", "subjectTokenType", "clientSecret"),
-      AccessToken.class,
-      authApisHolder::unload);
-  }
-
-  @Test
-  void whenGetAuthzApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
-    assertAuthenticationShouldBeSetInThreadSafeMode(
-      accessToken -> authApisHolder.getAuthzApi(accessToken)
-        .getUserInfoFromMappedExternaUserId("mappedExternalUserId"),
-      UserInfo.class,
-      authApisHolder::unload);
+      accessToken -> processExecutionsApisHolder.getIngestionFlowFileSearchControllerApi(accessToken)
+        .crudIngestionFlowFilesFindByOrganizationIDFlowTypeCreateDate(String.valueOf(123L), "flowFileType",
+          OffsetDateTime.now(),OffsetDateTime.now(),"status","fileName","operatorExternalId",0,0,null),
+      PagedModelIngestionFlowFile.class,
+      processExecutionsApisHolder::unload
+    );
   }
 }
+

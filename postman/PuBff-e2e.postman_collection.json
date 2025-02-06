@@ -165,15 +165,24 @@
                   "\r",
                   "pm.test(\"[brokers - config] - get list of config\", () => {\r",
                   "    expectedProperties.forEach(property => {\r",
-                  "            pm.expect(jsonResponse, `${property} is missing`).to.have.property(property);\r",
-                  "        });\r",
-                  "\r",
-                  "    expectedProperties.forEach(property => {\r",
+                  "        pm.expect(jsonResponse, `${property} is missing`).to.have.property(property);\r",
                   "        if (jsonResponse.hasOwnProperty(property)) {\r",
                   "            pm.expect(jsonResponse[property], `${property} is null`).to.not.be.null;\r",
                   "        }\r",
                   "    });\r",
-                  "})"
+                  "})\r",
+                  "\r",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
                 ],
                 "type": "text/javascript",
                 "packages": {}
@@ -220,16 +229,23 @@
                   "pm.test(\"[organizations] - get list of organizations\", () => {\r",
                   "    jsonResponse.forEach((item, index)=> {\r",
                   "        expectedProperties.forEach(property => {\r",
-                  "                pm.expect(item, `${property} is missing`).to.have.property(property);\r",
-                  "            });\r",
-                  "\r",
-                  "        expectedProperties.forEach(property => {\r",
+                  "            pm.expect(item, `${property} is missing`).to.have.property(property);\r",
                   "            if (jsonResponse.hasOwnProperty(property)) {\r",
                   "                pm.expect(item[property], `${property} is null`).to.not.be.null;\r",
                   "            }\r",
                   "        });\r",
                   "    });\r",
                   "})"
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
                 ],
                 "type": "text/javascript",
                 "packages": {}

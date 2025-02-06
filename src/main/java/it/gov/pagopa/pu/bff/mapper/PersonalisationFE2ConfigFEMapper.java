@@ -1,9 +1,9 @@
 package it.gov.pagopa.pu.bff.mapper;
 
+import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.dto.generated.ConfigFE;
 import it.gov.pagopa.pu.organization.dto.generated.Broker;
 import it.gov.pagopa.pu.organization.dto.generated.PersonalisationFe;
-import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -24,6 +24,7 @@ public class PersonalisationFE2ConfigFEMapper {
       .build();
     if(broker!=null){
       out.setBrokerId(String.valueOf(broker.getBrokerId()));
+      out.setBrokerFiscalCode(broker.getBrokerFiscalCode());
     }
     out.setCanManageUsers(userInfo!=null && Boolean.TRUE.equals(userInfo.getCanManageUsers()));
     return out;

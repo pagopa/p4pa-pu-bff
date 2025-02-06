@@ -1016,7 +1016,7 @@
         }
       },
       "OrganizationDTO" : {
-        "required" : [ "ipaCode", "operatorRole", "orgName", "organizationId" ],
+        "required" : [ "ipaCode", "operatorRole", "orgFiscalCode", "orgName", "organizationId" ],
         "type" : "object",
         "properties" : {
           "organizationId" : {
@@ -1040,6 +1040,9 @@
           "orgLogo" : {
             "type" : "string",
             "description" : "Base64 encoded logo of the organization"
+          },
+          "orgFiscalCode" : {
+            "type" : "string"
           }
         }
       },
@@ -1280,7 +1283,7 @@
         }
       },
       "ConfigFE" : {
-        "required" : [ "brokerId", "canManageUsers", "footerAccessibilityUrl", "footerDescText", "footerGDPRUrl", "footerPrivacyInfoUrl", "footerTermsCondUrl", "headerAssistanceUrl", "logoFooterImg" ],
+        "required" : [ "brokerFiscalCode", "brokerId", "canManageUsers", "footerAccessibilityUrl", "footerDescText", "footerGDPRUrl", "footerPrivacyInfoUrl", "footerTermsCondUrl", "headerAssistanceUrl", "logoFooterImg" ],
         "type" : "object",
         "properties" : {
           "headerAssistanceUrl" : {
@@ -1318,6 +1321,9 @@
           "canManageUsers" : {
             "type" : "boolean",
             "description" : "Indicates if the user can manage other users"
+          },
+          "brokerFiscalCode" : {
+            "type" : "string"
           }
         }
       }

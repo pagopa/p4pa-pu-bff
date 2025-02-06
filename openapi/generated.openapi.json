@@ -1265,7 +1265,7 @@
           },
           "status" : {
             "type" : "string",
-            "enum" : [ "UPLOADED", "PROCESSING", "COMPLETED", "ERROR" ]
+            "enum" : [ "REQUESTED", "PROCESSING", "COMPLETED", "EXPIRED", "ERROR" ]
           }
         }
       },

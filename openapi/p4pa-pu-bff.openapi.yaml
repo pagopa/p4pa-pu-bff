@@ -313,7 +313,7 @@ paths:
           in: query
           required: true
           schema:
-            type: 'FlowFileType'
+            type: 'IngestionFlowFileType'
         - name: creationDateFrom
           in: query
           schema:
@@ -345,6 +345,57 @@ paths:
             application/hal+json:
               schema:
                 $ref: '#/components/schemas/PagedIngestionFlowFile'
+        '404':
+          description: Not Found
+      x-spring-paginated: true
+  /export-flow-files/{organizationId}:
+    get:
+      tags:
+        - ExportFiles
+      operationId: getExportFiles
+      parameters:
+        - name: organizationId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: flowFileType
+          in: query
+          required: true
+          schema:
+            type: 'ExportFileType'
+        - name: creationDateFrom
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: creationDateTo
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum:
+              - REQUESTED
+              - PROCESSING
+              - COMPLETED
+              - EXPIRED
+              - ERROR
+        - name: fileName
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/hal+json:
+              schema:
+                $ref: '#/components/schemas/PagedExportFile'
         '404':
           description: Not Found
       x-spring-paginated: true
@@ -629,6 +680,67 @@ components:
         discardedRows:
           type: integer
           format: int64
+        status:
+          type: string
+          enum:
+            - UPLOADED
+            - PROCESSING
+            - COMPLETED
+            - ERROR
+    PagedExportFile:
+      type: object
+      required:
+        - content
+        - size
+        - totalElements
+        - totalPages
+        - number
+      properties:
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/ExportFile'
+        size:
+          type: integer
+          format: int64
+        totalElements:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer
+          format: int64
+        number:
+          type: integer
+          format: int64
+    ExportFile:
+      required:
+        - exportFileId
+        - fileName
+        - creationDate
+        - operator
+        - status
+        - fileSize
+      type: object
+      properties:
+        exportFileId:
+          type: integer
+          format: int64
+        fileName:
+          type: string
+        creationDate:
+          type: string
+          format: date-time
+        paymentDateFrom:
+          type: string
+          format: date-time
+        paymentDateTo:
+          type: string
+          format: date-time
+        totalRows:
+          type: integer
+          format: int64
+        operator:
+          type: string
         status:
           type: string
           enum:

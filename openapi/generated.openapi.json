@@ -16,6 +16,9 @@
     "name" : "IngestionFlowFiles",
     "description" : "the IngestionFlowFiles API"
   }, {
+    "name" : "ExportFiles",
+    "description" : "the ExportFiles API"
+  }, {
     "name" : "Taxonomy",
     "description" : "the Taxonomy API"
   }, {
@@ -621,6 +624,115 @@
         } ]
       }
     },
+    "/bff/export-flow-files/{organizationId}" : {
+      "get" : {
+        "tags" : [ "ExportFiles" ],
+        "operationId" : "getExportFiles",
+        "parameters" : [ {
+          "name" : "organizationId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }, {
+          "name" : "flowFileType",
+          "in" : "query",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "enum" : [ "PAID", "CLASSIFICATIONS", "PAYMENTS_REPORTING" ]
+          }
+        }, {
+          "name" : "creationDateFrom",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "format" : "date-time"
+          }
+        }, {
+          "name" : "creationDateTo",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "format" : "date-time"
+          }
+        }, {
+          "name" : "status",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "fileName",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "page",
+          "in" : "query",
+          "description" : "Zero-based page index (0..N)",
+          "required" : false,
+          "schema" : {
+            "minimum" : 0,
+            "type" : "integer",
+            "default" : 0
+          }
+        }, {
+          "name" : "size",
+          "in" : "query",
+          "description" : "The size of the page to be returned",
+          "required" : false,
+          "schema" : {
+            "minimum" : 1,
+            "type" : "integer",
+            "default" : 20
+          }
+        }, {
+          "name" : "sort",
+          "in" : "query",
+          "description" : "Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/hal+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/PagedExportFile"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Not Found",
+            "content" : {
+              "application/hal+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/PagedExportFile"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "bearerAuth" : [ ]
+        } ]
+      }
+    },
     "/bff/debt-position-types/{id}" : {
       "get" : {
         "tags" : [ "DebtPositionTypes" ],
@@ -1101,6 +1213,70 @@
             "type" : "array",
             "items" : {
               "$ref" : "#/components/schemas/IngestionFlowFile"
+            }
+          },
+          "size" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "totalElements" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "totalPages" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "number" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }
+      },
+      "ExportFile" : {
+        "required" : [ "creationDate", "exportFileId", "fileName", "operator", "status" ],
+        "type" : "object",
+        "properties" : {
+          "exportFileId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "fileName" : {
+            "type" : "string"
+          },
+          "creationDate" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "paymentDateFrom" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "paymentDateTo" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "totalRows" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "operator" : {
+            "type" : "string"
+          },
+          "status" : {
+            "type" : "string",
+            "enum" : [ "UPLOADED", "PROCESSING", "COMPLETED", "ERROR" ]
+          }
+        }
+      },
+      "PagedExportFile" : {
+        "required" : [ "content", "number", "size", "totalElements", "totalPages" ],
+        "type" : "object",
+        "properties" : {
+          "content" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/ExportFile"
             }
           },
           "size" : {

@@ -1248,13 +1248,13 @@
             "type" : "string",
             "format" : "date-time"
           },
-          "paymentDateFrom" : {
+          "billDateFrom" : {
             "type" : "string",
-            "format" : "date-time"
+            "format" : "date"
           },
-          "paymentDateTo" : {
+          "billDateTo" : {
             "type" : "string",
-            "format" : "date-time"
+            "format" : "date"
           },
           "totalRows" : {
             "type" : "integer",

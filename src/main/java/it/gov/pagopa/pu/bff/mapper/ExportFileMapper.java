@@ -5,7 +5,9 @@ import it.gov.pagopa.pu.bff.connector.auth.client.AuthzClient;
 import it.gov.pagopa.pu.bff.dto.generated.ExportFile;
 import it.gov.pagopa.pu.bff.dto.generated.ExportFile.StatusEnum;
 import it.gov.pagopa.pu.bff.dto.generated.PagedExportFile;
+import it.gov.pagopa.pu.processexecutions.dto.generated.LocalDateIntervalFilter;
 import it.gov.pagopa.pu.processexecutions.dto.generated.PagedModelExportFile;
+import java.time.LocalDate;
 import java.util.Collections;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
@@ -44,9 +46,6 @@ public class ExportFileMapper {
       .exportFileId(exportFile.getExportFileId())
       .fileName(exportFile.getFileName())
       .creationDate(exportFile.getCreationDate())
-//      TODO: paymentDates
-//      .paymentDateFrom()
-//      .paymentDateTo()
       .totalRows(exportFile.getNumTotalRows())
       .operator(getOperator(exportFile, userInfo, accessToken))
       .status(StatusEnum.valueOf(exportFile.getStatus().toString()))

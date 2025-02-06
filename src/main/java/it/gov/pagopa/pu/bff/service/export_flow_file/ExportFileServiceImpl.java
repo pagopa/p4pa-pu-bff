@@ -5,7 +5,6 @@ import it.gov.pagopa.pu.bff.connector.process_executions.client.ExportFileSearch
 import it.gov.pagopa.pu.bff.dto.ExportFileFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedExportFile;
 import it.gov.pagopa.pu.bff.mapper.ExportFileMapper;
-import it.gov.pagopa.pu.bff.mapper.IngestionFlowFileMapper;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;

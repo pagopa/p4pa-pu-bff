@@ -1,10 +1,10 @@
 package it.gov.pagopa.pu.bff.mapper;
 
+import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.dto.generated.ConfigFE;
 import it.gov.pagopa.pu.bff.util.TestUtils;
 import it.gov.pagopa.pu.organization.dto.generated.Broker;
 import it.gov.pagopa.pu.organization.dto.generated.PersonalisationFe;
-import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -34,6 +34,7 @@ class PersonalisationFE2ConfigFEMapperTest {
 
     Broker broker = new Broker();
     broker.setBrokerId(1L);
+    broker.setBrokerFiscalCode("brokerFiscalCode");
 
     UserInfo userInfo = new UserInfo();
     userInfo.setCanManageUsers(true);
@@ -48,6 +49,7 @@ class PersonalisationFE2ConfigFEMapperTest {
     Assertions.assertEquals("Assistance URL", configFE.getHeaderAssistanceUrl());
     Assertions.assertEquals("Accessibility URL", configFE.getFooterAccessibilityUrl());
     Assertions.assertEquals(String.valueOf(broker.getBrokerId()), configFE.getBrokerId());
+    Assertions.assertEquals(broker.getBrokerFiscalCode(), configFE.getBrokerFiscalCode());
     Assertions.assertTrue(configFE.getCanManageUsers());
     TestUtils.checkNotNullFields(configFE);
   }

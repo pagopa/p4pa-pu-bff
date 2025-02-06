@@ -3,9 +3,8 @@ package it.gov.pagopa.pu.bff.mapper;
 import it.gov.pagopa.pu.bff.dto.generated.OrganizationDTO;
 import it.gov.pagopa.pu.bff.exception.InvalidOperatorRoleException;
 import it.gov.pagopa.pu.organization.dto.generated.Organization;
-import org.springframework.stereotype.Component;
-
 import java.util.List;
+import org.springframework.stereotype.Component;
 
 @Component
 public class OrganizationDTOMapper {
@@ -19,6 +18,7 @@ public class OrganizationDTOMapper {
       .orgName(organization.getOrgName())
       .operatorRole(operatorRole)
       .orgLogo(organization.getOrgLogo())
+      .orgFiscalCode(organization.getOrgFiscalCode())
       .build();
   }
 

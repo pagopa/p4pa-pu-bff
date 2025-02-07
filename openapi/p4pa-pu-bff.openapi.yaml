@@ -533,6 +533,7 @@ components:
           type: string
           description: The title describing the error
           enum:
+            - NOT_FOUND
             - BAD_REQUEST
             - GENERIC_ERROR
         description:

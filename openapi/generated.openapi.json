@@ -1058,7 +1058,7 @@
           "title" : {
             "type" : "string",
             "description" : "The title describing the error",
-            "enum" : [ "BAD_REQUEST", "GENERIC_ERROR" ]
+            "enum" : [ "NOT_FOUND", "BAD_REQUEST", "GENERIC_ERROR" ]
           },
           "description" : {
             "type" : "string",

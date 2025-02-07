@@ -137,6 +137,14 @@ class GlobalExceptionHandlerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.description").value("No acceptable representation"));
     }
 
+  @Test
+  void handleUrlNotFound() throws Exception {
+    mockMvc.perform(MockMvcRequestBuilders.post("/NOTEXISTENTURL"))
+      .andExpect(MockMvcResultMatchers.status().isNotFound())
+      .andExpect(MockMvcResultMatchers.jsonPath("$.title").value("NOT_FOUND"))
+      .andExpect(MockMvcResultMatchers.jsonPath("$.description").value("No static resource NOTEXISTENTURL."));
+  }
+
     @Test
     void handleNoBodyException() throws Exception {
         performRequest(DATA, MediaType.APPLICATION_JSON, null)

@@ -1,6 +1,8 @@
 package it.gov.pagopa.pu.bff.config;
 
+import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
@@ -13,6 +15,14 @@ import org.springframework.context.annotation.Configuration;
  * The Class SwaggerConfig.
  */
 @Configuration
+@OpenAPIDefinition(
+  info = @io.swagger.v3.oas.annotations.info.Info(
+    title = "${spring.application.name}",
+    version = "${spring.application.version}",
+    description = "Api and Models"
+  ),
+  security = @SecurityRequirement(name = "BearerAuth")
+)
 @SecurityScheme(
   name = "bearerAuth",
   type = SecuritySchemeType.HTTP,

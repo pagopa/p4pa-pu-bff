@@ -24,8 +24,6 @@ import java.util.concurrent.TimeUnit;
 public class CacheConfig {
 
     @NestedConfigurationProperty
-    private CacheConfigurationProperties jwks;
-    @NestedConfigurationProperty
     private CacheConfigurationProperties organization;
     @NestedConfigurationProperty
     private CacheConfigurationProperties taxonomy;

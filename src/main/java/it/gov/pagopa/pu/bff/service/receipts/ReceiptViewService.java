@@ -8,6 +8,7 @@ import java.time.OffsetDateTime;
 
 public interface ReceiptViewService {
 
+  @SuppressWarnings("squid:S107")
   PagedReceiptView getReceipts(
     Long organizationId,
     String receiptOrigin,

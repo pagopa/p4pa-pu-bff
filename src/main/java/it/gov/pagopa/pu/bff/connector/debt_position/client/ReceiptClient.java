@@ -21,6 +21,7 @@ public class ReceiptClient {
     this.debtPositionApisHolder = debtPositionApisHolder;
   }
 
+  @SuppressWarnings("squid:S107")
   public PagedModelReceiptView getReceipts(
     Long organizationId,
     String receiptOrigin,

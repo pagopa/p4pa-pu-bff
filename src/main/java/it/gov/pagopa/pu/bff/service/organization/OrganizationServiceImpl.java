@@ -1,9 +1,9 @@
 package it.gov.pagopa.pu.bff.service.organization;
 
-import it.gov.pagopa.pu.bff.connector.organization.client.OrganizationSearchClient;
+import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
+import it.gov.pagopa.pu.bff.connector.organization.OrganizationClientService;
 import it.gov.pagopa.pu.bff.dto.generated.OrganizationDTO;
 import it.gov.pagopa.pu.bff.mapper.OrganizationDTOMapper;
-import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,12 +13,12 @@ import java.util.Optional;
 @Service
 public class OrganizationServiceImpl implements OrganizationService {
 
-  private final OrganizationSearchClient organizationSearchClient;
+  private final OrganizationClientService organizationClientService;
 
   private final OrganizationDTOMapper organizationDTOMapper;
 
-  public OrganizationServiceImpl(OrganizationSearchClient organizationSearchClient, OrganizationDTOMapper organizationDTOMapper) {
-    this.organizationSearchClient = organizationSearchClient;
+  public OrganizationServiceImpl(OrganizationClientService organizationClientService, OrganizationDTOMapper organizationDTOMapper) {
+    this.organizationClientService = organizationClientService;
     this.organizationDTOMapper = organizationDTOMapper;
   }
 
@@ -26,7 +26,7 @@ public class OrganizationServiceImpl implements OrganizationService {
   public List<OrganizationDTO> getOrganizations(UserInfo userInfo, String accessToken) {
     return userInfo.getOrganizations().stream()
       .map(orgRoles -> Optional.ofNullable(
-          organizationSearchClient.getOrganizationByIpaCode(orgRoles.getOrganizationIpaCode(), accessToken))
+          organizationClientService.getOrganizationByIpaCode(orgRoles.getOrganizationIpaCode(), accessToken))
         .map(organization -> organizationDTOMapper.mapToOrganizationDTO(organization, orgRoles.getRoles()))
         .orElse(null)
       ).filter(Objects::nonNull).toList();

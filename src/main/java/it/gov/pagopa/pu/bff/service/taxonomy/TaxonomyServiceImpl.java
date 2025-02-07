@@ -1,6 +1,6 @@
 package it.gov.pagopa.pu.bff.service.taxonomy;
 
-import it.gov.pagopa.pu.bff.connector.organization.client.TaxonomyClient;
+import it.gov.pagopa.pu.bff.connector.organization.TaxonomyClientService;
 import it.gov.pagopa.pu.bff.dto.generated.TaxonomyCodeDTO;
 import it.gov.pagopa.pu.bff.dto.generated.TaxonomyCollectionReasonDTO;
 import it.gov.pagopa.pu.bff.dto.generated.TaxonomyMacroAreaCodeDTO;
@@ -17,20 +17,20 @@ import org.springframework.stereotype.Service;
 @Service
 public class TaxonomyServiceImpl implements TaxonomyService{
 
-  private final TaxonomyClient taxonomyClient;
+  private final TaxonomyClientService taxonomyClientService;
   private final TaxonomyOrganizationTypeMapper taxonomyOrganizationTypeMapper;
   private final TaxonomyMacroAreaCodeMapper taxonomyMacroAreaCodeMapper;
   private final TaxonomyCollectionReasonMapper taxonomyCollectionReasonMapper;
   private final TaxonomyServiceTypeCodeMapper taxonomyServiceTypeCodeMapper;
   private final TaxonomyCodeMapper taxonomyCodeMapper;
 
-  public TaxonomyServiceImpl(TaxonomyClient taxonomyClient,
+  public TaxonomyServiceImpl(TaxonomyClientService taxonomyClientService,
     TaxonomyOrganizationTypeMapper taxonomyOrganizationTypeMapper,
     TaxonomyMacroAreaCodeMapper taxonomyMacroAreaCodeMapper,
     TaxonomyCollectionReasonMapper taxonomyCollectionReasonMapper,
     TaxonomyServiceTypeCodeMapper taxonomyServiceTypeCodeMapper,
     TaxonomyCodeMapper taxonomyCodeMapper){
-    this.taxonomyClient = taxonomyClient;
+    this.taxonomyClientService = taxonomyClientService;
     this.taxonomyOrganizationTypeMapper = taxonomyOrganizationTypeMapper;
     this.taxonomyMacroAreaCodeMapper = taxonomyMacroAreaCodeMapper;
     this.taxonomyCollectionReasonMapper = taxonomyCollectionReasonMapper;
@@ -42,7 +42,7 @@ public class TaxonomyServiceImpl implements TaxonomyService{
   public List<TaxonomyCollectionReasonDTO> getCollectionReason (
     String organizationType,
     String macroAreaCode, String serviceTypeCode, String accessToken){
-    return taxonomyClient.getCollectionReason(organizationType, macroAreaCode, serviceTypeCode, accessToken)
+    return taxonomyClientService.getCollectionReason(organizationType, macroAreaCode, serviceTypeCode, accessToken)
       .getEmbedded().getTaxonomyCollectionReasonDTOes()
       .stream()
       .map(taxonomyCollectionReasonMapper::map)
@@ -53,7 +53,7 @@ public class TaxonomyServiceImpl implements TaxonomyService{
   public List<TaxonomyMacroAreaCodeDTO> getMacroArea (
     String organizationType,
     String accessToken) {
-    return taxonomyClient.getMacroArea(organizationType,accessToken).getEmbedded()
+    return taxonomyClientService.getMacroArea(organizationType,accessToken).getEmbedded()
       .getTaxonomyMacroAreaCodeDTOes()
       .stream()
       .map(taxonomyMacroAreaCodeMapper::map)
@@ -63,7 +63,7 @@ public class TaxonomyServiceImpl implements TaxonomyService{
   @Override
   public List<TaxonomyOrganizationTypeDTO> getOrganizationTypes (
     String accessToken) {
-    return taxonomyClient.getOrganizationType(accessToken).getEmbedded()
+    return taxonomyClientService.getOrganizationType(accessToken).getEmbedded()
       .getTaxonomyOrganizationTypeDTOes()
       .stream()
       .map(taxonomyOrganizationTypeMapper::map)
@@ -74,7 +74,7 @@ public class TaxonomyServiceImpl implements TaxonomyService{
   public List<TaxonomyServiceTypeCodeDTO> getServiceType (
     String organizationType,
     String macroAreaCode, String accessToken) {
-    return taxonomyClient.getServiceType(organizationType,macroAreaCode,accessToken).getEmbedded()
+    return taxonomyClientService.getServiceType(organizationType,macroAreaCode,accessToken).getEmbedded()
       .getTaxonomyServiceTypeCodeDTOes()
       .stream()
       .map(taxonomyServiceTypeCodeMapper::map)
@@ -86,7 +86,7 @@ public class TaxonomyServiceImpl implements TaxonomyService{
     String organizationType,
     String macroAreaCode, String serviceTypeCode, String collectionReason,
     String accessToken) {
-    return taxonomyClient.getTaxonomyCode(organizationType,macroAreaCode,serviceTypeCode,collectionReason,accessToken).getEmbedded()
+    return taxonomyClientService.getTaxonomyCode(organizationType,macroAreaCode,serviceTypeCode,collectionReason,accessToken).getEmbedded()
       .getTaxonomyCodeDTOes()
       .stream()
       .map(taxonomyCodeMapper::map)

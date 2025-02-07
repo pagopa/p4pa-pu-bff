@@ -1,7 +1,7 @@
 package it.gov.pagopa.pu.bff.service.broker;
 
 import it.gov.pagopa.pu.bff.config.DefaultConfigFe;
-import it.gov.pagopa.pu.bff.connector.organization.BrokerClientService;
+import it.gov.pagopa.pu.bff.connector.organization.BrokerService;
 import it.gov.pagopa.pu.bff.dto.generated.ConfigFE;
 import it.gov.pagopa.pu.bff.mapper.PersonalisationFE2ConfigFEMapper;
 import it.gov.pagopa.pu.organization.dto.generated.Broker;
@@ -11,17 +11,17 @@ import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
-public class BrokerServiceImpl implements BrokerService {
+public class BrokerServiceImpl implements it.gov.pagopa.pu.bff.service.broker.BrokerService {
 
-  private final BrokerClientService brokerClientService;
+  private final BrokerService brokerService;
   private final PersonalisationFE2ConfigFEMapper personalisationFE2ConfigFEMapper;
   private final DefaultConfigFe defaultConfigFe;
   private final ConfigFE defaultFEConfig;
 
-  public BrokerServiceImpl(BrokerClientService brokerClientService,
+  public BrokerServiceImpl(BrokerService brokerService,
                            DefaultConfigFe defaultConfigFe,
                            PersonalisationFE2ConfigFEMapper personalisationFE2ConfigFEMapper) {
-    this.brokerClientService = brokerClientService;
+    this.brokerService = brokerService;
     this.defaultConfigFe = defaultConfigFe;
     this.personalisationFE2ConfigFEMapper = personalisationFE2ConfigFEMapper;
     this.defaultFEConfig = getFEConfiguration(null, null);
@@ -35,7 +35,7 @@ public class BrokerServiceImpl implements BrokerService {
     }
 
     log.info("BrokerId retrieved from UserInfo: {}", user.getBrokerId());
-    Broker broker = brokerClientService.getBrokerById(user.getBrokerId(), accessToken);
+    Broker broker = brokerService.getBrokerById(user.getBrokerId(), accessToken);
 
     return getFEConfiguration(broker, user);
   }

@@ -12,16 +12,16 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class BrokerClientServiceTest {
+class BrokerServiceTest {
 
   @Mock
   private BrokerEntityClient client;
 
-  private BrokerClientService service;
+  private BrokerService service;
 
   @BeforeEach
   void setUp() {
-    service = new BrokerClientServiceImpl(client);
+    service = new BrokerServiceImpl(client);
   }
 
   @Test

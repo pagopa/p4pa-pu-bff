@@ -8,11 +8,11 @@ import org.springframework.stereotype.Service;
 
 @Service
 @CacheConfig(cacheNames = it.gov.pagopa.pu.bff.config.CacheConfig.Fields.broker)
-public class BrokerClientServiceImpl implements BrokerClientService{
+public class BrokerServiceImpl implements BrokerService {
 
   private final BrokerEntityClient client;
 
-  public BrokerClientServiceImpl(BrokerEntityClient client) {
+  public BrokerServiceImpl(BrokerEntityClient client) {
     this.client = client;
   }
 

@@ -8,11 +8,11 @@ import org.springframework.stereotype.Service;
 
 @Service
 @CacheConfig(cacheNames = it.gov.pagopa.pu.bff.config.CacheConfig.Fields.organization)
-public class OrganizationClientServiceImpl implements OrganizationClientService{
+public class OrganizationServiceImpl implements OrganizationService {
 
   private final OrganizationSearchClient organizationSearchClient;
 
-  public OrganizationClientServiceImpl(OrganizationSearchClient organizationSearchClient) {
+  public OrganizationServiceImpl(OrganizationSearchClient organizationSearchClient) {
     this.organizationSearchClient = organizationSearchClient;
   }
 

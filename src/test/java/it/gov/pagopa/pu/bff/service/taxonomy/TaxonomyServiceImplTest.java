@@ -2,7 +2,7 @@ package it.gov.pagopa.pu.bff.service.taxonomy;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import it.gov.pagopa.pu.bff.connector.organization.TaxonomyClientService;
+import it.gov.pagopa.pu.bff.connector.organization.TaxonomyService;
 import it.gov.pagopa.pu.bff.dto.generated.TaxonomyCodeDTO;
 import it.gov.pagopa.pu.bff.dto.generated.TaxonomyCollectionReasonDTO;
 import it.gov.pagopa.pu.bff.dto.generated.TaxonomyMacroAreaCodeDTO;
@@ -34,7 +34,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class TaxonomyServiceImplTest {
   @Mock
-  private TaxonomyClientService taxonomyClientServiceMock;
+  private TaxonomyService taxonomyServiceMock;
   @Mock
   private TaxonomyCodeMapper taxonomyCodeMapperMock;
   @Mock
@@ -61,7 +61,7 @@ class TaxonomyServiceImplTest {
     collectionModelTaxonomyCodeDTOEmbedded.addTaxonomyCodeDTOesItem(inputDTO);
     taxonomyCodeDTO.setEmbedded(collectionModelTaxonomyCodeDTOEmbedded);
 
-    Mockito.when(taxonomyClientServiceMock.getTaxonomyCode(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(), Mockito.anyString(), Mockito.anyString()))
+    Mockito.when(taxonomyServiceMock.getTaxonomyCode(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(), Mockito.anyString(), Mockito.anyString()))
       .thenReturn(taxonomyCodeDTO);
     Mockito.when(taxonomyCodeMapperMock.map(inputDTO)).thenReturn(outputDTO);
 
@@ -85,7 +85,7 @@ class TaxonomyServiceImplTest {
     collectionModelTaxonomyServiceTypeCodeDTOEmbedded.addTaxonomyServiceTypeCodeDTOesItem(inputDTO);
     collectionModelTaxonomyServiceTypeCodeDTO.setEmbedded(collectionModelTaxonomyServiceTypeCodeDTOEmbedded);
 
-    Mockito.when(taxonomyClientServiceMock.getServiceType(Mockito.anyString(), Mockito.anyString(), Mockito.anyString()))
+    Mockito.when(taxonomyServiceMock.getServiceType(Mockito.anyString(), Mockito.anyString(), Mockito.anyString()))
       .thenReturn(collectionModelTaxonomyServiceTypeCodeDTO);
     Mockito.when(taxonomyServiceTypeCodeMapperMock.map(inputDTO)).thenReturn(outputDTO);
 
@@ -109,7 +109,7 @@ class TaxonomyServiceImplTest {
     collectionModelTaxonomyOrganizationTypeDTOEmbedded.addTaxonomyOrganizationTypeDTOesItem(inputDTO);
     collectionModelTaxonomyOrganizationTypeDTO.setEmbedded(collectionModelTaxonomyOrganizationTypeDTOEmbedded);
 
-    Mockito.when(taxonomyClientServiceMock.getOrganizationType(Mockito.anyString()))
+    Mockito.when(taxonomyServiceMock.getOrganizationType(Mockito.anyString()))
       .thenReturn(collectionModelTaxonomyOrganizationTypeDTO);
     Mockito.when(taxonomyOrganizationTypeMapperMock.map(inputDTO)).thenReturn(outputDTO);
 
@@ -133,7 +133,7 @@ class TaxonomyServiceImplTest {
     collectionModelTaxonomyMacroAreaCodeDTOEmbedded.addTaxonomyMacroAreaCodeDTOesItem(inputDTO);
     collectionModelTaxonomyMacroAreaCodeDTO.setEmbedded(collectionModelTaxonomyMacroAreaCodeDTOEmbedded);
 
-    Mockito.when(taxonomyClientServiceMock.getMacroArea(Mockito.anyString(), Mockito.anyString()))
+    Mockito.when(taxonomyServiceMock.getMacroArea(Mockito.anyString(), Mockito.anyString()))
       .thenReturn(collectionModelTaxonomyMacroAreaCodeDTO);
     Mockito.when(taxonomyMacroAreaCodeMapperMock.map(inputDTO)).thenReturn(outputDTO);
 
@@ -157,7 +157,7 @@ class TaxonomyServiceImplTest {
     collectionModelTaxonomyCollectionReasonDTOEmbedded.addTaxonomyCollectionReasonDTOesItem(inputDTO);
     collectionModelTaxonomyCollectionReasonDTO.setEmbedded(collectionModelTaxonomyCollectionReasonDTOEmbedded);
 
-    Mockito.when(taxonomyClientServiceMock.getCollectionReason(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(), Mockito.anyString()))
+    Mockito.when(taxonomyServiceMock.getCollectionReason(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(), Mockito.anyString()))
       .thenReturn(collectionModelTaxonomyCollectionReasonDTO);
     Mockito.when(taxonomyCollectionReasonMapperMock.map(inputDTO)).thenReturn(outputDTO);
 

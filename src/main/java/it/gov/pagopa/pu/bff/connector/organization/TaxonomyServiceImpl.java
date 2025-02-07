@@ -8,11 +8,11 @@ import org.springframework.stereotype.Service;
 
 @Service
 @CacheConfig(cacheNames = it.gov.pagopa.pu.bff.config.CacheConfig.Fields.taxonomy)
-public class TaxonomyClientServiceImpl implements TaxonomyClientService {
+public class TaxonomyServiceImpl implements TaxonomyService {
 
   private final TaxonomyClient taxonomyClient;
 
-  public TaxonomyClientServiceImpl(TaxonomyClient taxonomyClient) {
+  public TaxonomyServiceImpl(TaxonomyClient taxonomyClient) {
     this.taxonomyClient = taxonomyClient;
   }
 
@@ -29,7 +29,7 @@ public class TaxonomyClientServiceImpl implements TaxonomyClientService {
   }
 
   @Override
-  @Cacheable(key = "'organizationType'", unless = "#result == null")
+  @Cacheable(key = "'organizationTypes'", unless = "#result == null")
   public CollectionModelTaxonomyOrganizationTypeDTO getOrganizationType(String accessToken) {
     return taxonomyClient.getOrganizationType(accessToken);
   }

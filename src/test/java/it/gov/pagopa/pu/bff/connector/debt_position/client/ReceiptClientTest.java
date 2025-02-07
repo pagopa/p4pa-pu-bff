@@ -1,6 +1,7 @@
 package it.gov.pagopa.pu.bff.connector.debt_position.client;
 
 import it.gov.pagopa.pu.bff.connector.debt_position.config.DebtPositionApisHolder;
+import it.gov.pagopa.pu.bff.dto.generated.ReceiptFilterDTO;
 import it.gov.pagopa.pu.debtpositions.controller.generated.ReceiptViewSearchControllerApi;
 import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelReceiptView;
 import org.junit.jupiter.api.AfterEach;
@@ -43,82 +44,126 @@ class ReceiptClientTest {
 
   @Test
   void whenGetReceiptsThenInvokeWithAccessToken() {
-    long organizationId = 1L;
+    ReceiptFilterDTO filter = new ReceiptFilterDTO();
+    filter.setOrganizationId(1L);
+    filter.setReceiptOrigin("origin");
+    filter.setOperatorExternalUserId("operator");
+    filter.setIuv("iuv");
+    filter.setIur("iur");
+    filter.setIud("iud");
+    filter.setDebtPositionTypeOrgId(1L);
+    filter.setFromDate(null);
+    filter.setToDate(null);
+
     String accessToken = "ACCESSTOKEN";
     PagedModelReceiptView expectedResult = new PagedModelReceiptView();
 
     when(debtPositionApisHolderMock.getReceiptViewSearchControllerApi(accessToken))
       .thenReturn(receiptViewSearchControllerApiMock);
     when(receiptViewSearchControllerApiMock.crudReceiptsViewFindReceiptsByFilters(
-      String.valueOf(organizationId), "origin", "operator", "iuv", "iur", "iud", 1L, null, null, 0, 10, Collections.emptyList()))
+      String.valueOf(filter.getOrganizationId()), filter.getReceiptOrigin(), filter.getOperatorExternalUserId(),
+      filter.getIuv(), filter.getIur(), filter.getIud(), filter.getDebtPositionTypeOrgId(), filter.getFromDate(),
+      filter.getToDate(), 0, 10, Collections.emptyList()))
       .thenReturn(expectedResult);
 
     PagedModelReceiptView result = receiptClient.getReceipts(
-      organizationId, "origin", "operator", "iuv", "iur", "iud", 1L, null, null,
-      PageRequest.of(0, 10, Sort.unsorted()), accessToken);
+      filter, PageRequest.of(0, 10, Sort.unsorted()), accessToken);
 
     assertSame(expectedResult, result);
   }
 
   @Test
   void givenNoReceiptsFoundWhenGetReceiptsThenReturnNull() {
-    long organizationId = 1L;
+    // Prepare the filter DTO instead of individual parameters
+    ReceiptFilterDTO filter = new ReceiptFilterDTO();
+    filter.setOrganizationId(1L);
+    filter.setReceiptOrigin("origin");
+    filter.setOperatorExternalUserId("operator");
+    filter.setIuv("iuv");
+    filter.setIur("iur");
+    filter.setIud("iud");
+    filter.setDebtPositionTypeOrgId(1L);
+    filter.setFromDate(null);
+    filter.setToDate(null);
+
     String accessToken = "ACCESSTOKEN";
 
     when(debtPositionApisHolderMock.getReceiptViewSearchControllerApi(accessToken))
       .thenReturn(receiptViewSearchControllerApiMock);
     when(receiptViewSearchControllerApiMock.crudReceiptsViewFindReceiptsByFilters(
-      String.valueOf(organizationId), "origin", "operator", "iuv", "iur", "iud", 1L, null, null, 0, 10, Collections.emptyList()))
+      String.valueOf(filter.getOrganizationId()), filter.getReceiptOrigin(), filter.getOperatorExternalUserId(),
+      filter.getIuv(), filter.getIur(), filter.getIud(), filter.getDebtPositionTypeOrgId(), filter.getFromDate(),
+      filter.getToDate(), 0, 10, Collections.emptyList()))
       .thenThrow(new HttpClientErrorException(HttpStatus.NOT_FOUND));
 
     PagedModelReceiptView result = receiptClient.getReceipts(
-      organizationId, "origin", "operator", "iuv", "iur", "iud", 1L, null, null,
-      PageRequest.of(0, 10, Sort.unsorted()), accessToken);
+      filter, PageRequest.of(0, 10, Sort.unsorted()), accessToken);
 
     Assertions.assertNull(result);
   }
 
   @Test
   void givenGenericHttpExceptionWhenGetReceiptsThenThrowIt() {
-    long organizationId = 1L;
+    ReceiptFilterDTO filter = new ReceiptFilterDTO();
+    filter.setOrganizationId(1L);
+    filter.setReceiptOrigin("origin");
+    filter.setOperatorExternalUserId("operator");
+    filter.setIuv("iuv");
+    filter.setIur("iur");
+    filter.setIud("iud");
+    filter.setDebtPositionTypeOrgId(1L);
+    filter.setFromDate(null);
+    filter.setToDate(null);
+
     String accessToken = "ACCESSTOKEN";
     HttpClientErrorException expectedException = new HttpClientErrorException(HttpStatus.INTERNAL_SERVER_ERROR);
 
     when(debtPositionApisHolderMock.getReceiptViewSearchControllerApi(accessToken))
       .thenReturn(receiptViewSearchControllerApiMock);
     when(receiptViewSearchControllerApiMock.crudReceiptsViewFindReceiptsByFilters(
-      String.valueOf(organizationId), "origin", "operator", "iuv", "iur", "iud", 1L, null, null, 0, 10, Collections.emptyList()))
+      String.valueOf(filter.getOrganizationId()), filter.getReceiptOrigin(), filter.getOperatorExternalUserId(),
+      filter.getIuv(), filter.getIur(), filter.getIud(), filter.getDebtPositionTypeOrgId(), filter.getFromDate(),
+      filter.getToDate(), 0, 10, Collections.emptyList()))
       .thenThrow(expectedException);
 
     HttpClientErrorException result = Assertions.assertThrows(
       expectedException.getClass(),
       () -> receiptClient.getReceipts(
-        organizationId, "origin", "operator", "iuv", "iur", "iud", 1L, null, null,
-        PageRequest.of(0, 10, Sort.unsorted()), accessToken));
+        filter, PageRequest.of(0, 10, Sort.unsorted()), accessToken));
 
     Assertions.assertSame(expectedException, result);
   }
 
   @Test
   void givenGenericExceptionWhenGetReceiptsThenThrowIt() {
-    long organizationId = 1L;
+    ReceiptFilterDTO filter = new ReceiptFilterDTO();
+    filter.setOrganizationId(1L);
+    filter.setReceiptOrigin("origin");
+    filter.setOperatorExternalUserId("operator");
+    filter.setIuv("iuv");
+    filter.setIur("iur");
+    filter.setIud("iud");
+    filter.setDebtPositionTypeOrgId(1L);
+    filter.setFromDate(null);
+    filter.setToDate(null);
+
     String accessToken = "ACCESSTOKEN";
     RuntimeException expectedException = new RuntimeException();
 
     when(debtPositionApisHolderMock.getReceiptViewSearchControllerApi(accessToken))
       .thenReturn(receiptViewSearchControllerApiMock);
     when(receiptViewSearchControllerApiMock.crudReceiptsViewFindReceiptsByFilters(
-      String.valueOf(organizationId), "origin", "operator", "iuv", "iur", "iud", 1L, null, null, 0, 10, Collections.emptyList()))
+      String.valueOf(filter.getOrganizationId()), filter.getReceiptOrigin(), filter.getOperatorExternalUserId(),
+      filter.getIuv(), filter.getIur(), filter.getIud(), filter.getDebtPositionTypeOrgId(), filter.getFromDate(),
+      filter.getToDate(), 0, 10, Collections.emptyList()))
       .thenThrow(expectedException);
 
     RuntimeException result = Assertions.assertThrows(
       expectedException.getClass(),
       () -> receiptClient.getReceipts(
-        organizationId, "origin", "operator", "iuv", "iur", "iud", 1L, null, null,
-        PageRequest.of(0, 10, Sort.unsorted()), accessToken));
+        filter, PageRequest.of(0, 10, Sort.unsorted()), accessToken));
 
     Assertions.assertSame(expectedException, result);
   }
 
 }
-

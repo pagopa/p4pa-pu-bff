@@ -3,6 +3,7 @@ package it.gov.pagopa.pu.bff.service;
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.connector.debt_position.client.ReceiptClient;
 import it.gov.pagopa.pu.bff.dto.generated.PagedReceiptView;
+import it.gov.pagopa.pu.bff.dto.generated.ReceiptFilterDTO;
 import it.gov.pagopa.pu.bff.mapper.ReceiptViewMapper;
 import it.gov.pagopa.pu.bff.service.receipts.ReceiptViewServiceImpl;
 import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelReceiptView;
@@ -43,65 +44,59 @@ class ReceiptViewServiceImplTest {
 
   @Test
   void givenValidUserWhenGetReceiptsThenOk() {
-    long organizationId = 1L;
-    String receiptOrigin = "ORIGIN";
-    String iuv = "IUV123";
-    String iur = "IUR456";
-    String iud = "IUD789";
+    ReceiptFilterDTO filter = new ReceiptFilterDTO();
+    filter.setOrganizationId(1L);
+    filter.setReceiptOrigin("ORIGIN");
+    filter.setIuv("IUV123");
+    filter.setIur("IUR456");
+    filter.setIud("IUD789");
     Pageable pageable = PageRequest.of(0, 10);
+
     UserInfo loggedUser = new UserInfo();
     loggedUser.setUserId("user-123");
 
     PagedModelReceiptView pagedModelReceiptView = new PagedModelReceiptView();
     PagedReceiptView expectedPagedReceiptView = new PagedReceiptView();
 
-    Mockito.doNothing().when(authorizationServiceMock).validateAdminRole(organizationId, loggedUser);
+    Mockito.doNothing().when(authorizationServiceMock).validateAdminRole(filter.getOrganizationId(), loggedUser);
     Mockito.when(receiptClientMock.getReceipts(
-      Mockito.eq(organizationId),
-      Mockito.eq(receiptOrigin),
-      Mockito.isNull(),
-      Mockito.eq(iuv),
-      Mockito.eq(iur),
-      Mockito.eq(iud),
-      Mockito.isNull(),
-      Mockito.isNull(),
-      Mockito.isNull(),
-      Mockito.eq(pageable),
-      Mockito.eq(accessToken)
+      filter,
+      pageable,
+      accessToken
     )).thenReturn(pagedModelReceiptView);
 
     Mockito.when(receiptViewMapperMock.mapToPagedReceiptView(pagedModelReceiptView))
       .thenReturn(expectedPagedReceiptView);
 
     PagedReceiptView result = receiptViewService.getReceipts(
-      organizationId, receiptOrigin, null, iuv, iur, iud,
-      null, null, null, pageable, loggedUser, accessToken);
+      filter, pageable, loggedUser, accessToken);
 
     assertNotNull(result);
     assertSame(expectedPagedReceiptView, result);
 
-    Mockito.verify(authorizationServiceMock).validateAdminRole(organizationId, loggedUser);
-    Mockito.verify(receiptClientMock).getReceipts(
-      organizationId, receiptOrigin, null, iuv, iur, iud, null, null, null, pageable, accessToken);
+    Mockito.verify(authorizationServiceMock).validateAdminRole(filter.getOrganizationId(), loggedUser);
+    Mockito.verify(receiptClientMock).getReceipts(filter, pageable, accessToken);
     Mockito.verify(receiptViewMapperMock).mapToPagedReceiptView(pagedModelReceiptView);
     Mockito.verifyNoMoreInteractions(authorizationServiceMock, receiptClientMock, receiptViewMapperMock);
   }
 
+
   @Test
   void givenInvalidUserWhenGetReceiptsThenAuthorizationDeniedException() {
-    long organizationId = 1L;
+    ReceiptFilterDTO filter = new ReceiptFilterDTO();
+    filter.setOrganizationId(1L);
     UserInfo loggedUser = new UserInfo();
     loggedUser.setUserId("user-123");
     Pageable pageable = PageRequest.of(0, 10);
 
     Mockito.doThrow(new AuthorizationDeniedException("Access denied"))
-      .when(authorizationServiceMock).validateAdminRole(organizationId, loggedUser);
+      .when(authorizationServiceMock).validateAdminRole(filter.getOrganizationId(), loggedUser);
 
     Assertions.assertThrows(AuthorizationDeniedException.class, () ->
       receiptViewService.getReceipts(
-        organizationId, "ORIGIN", null, "IUV123", "IUR456", "IUD789", null, null, null, pageable, loggedUser, accessToken));
+        filter, pageable, loggedUser, accessToken));
 
-    Mockito.verify(authorizationServiceMock).validateAdminRole(organizationId, loggedUser);
+    Mockito.verify(authorizationServiceMock).validateAdminRole(filter.getOrganizationId(), loggedUser);
     Mockito.verifyNoMoreInteractions(authorizationServiceMock);
     Mockito.verifyNoInteractions(receiptClientMock, receiptViewMapperMock);
   }

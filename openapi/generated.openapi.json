@@ -152,7 +152,7 @@
           }
         },
         "security" : [ {
-          "bearerAuth" : [ ]
+          "BearerAuth" : [ ]
         } ]
       }
     },
@@ -230,7 +230,7 @@
           }
         },
         "security" : [ {
-          "bearerAuth" : [ ]
+          "BearerAuth" : [ ]
         } ]
       }
     },
@@ -294,7 +294,7 @@
           }
         },
         "security" : [ {
-          "bearerAuth" : [ ]
+          "BearerAuth" : [ ]
         } ]
       }
     },
@@ -365,7 +365,7 @@
           }
         },
         "security" : [ {
-          "bearerAuth" : [ ]
+          "BearerAuth" : [ ]
         } ]
       }
     },
@@ -450,7 +450,7 @@
           }
         },
         "security" : [ {
-          "bearerAuth" : [ ]
+          "BearerAuth" : [ ]
         } ]
       }
     },
@@ -511,7 +511,7 @@
           }
         },
         "security" : [ {
-          "bearerAuth" : [ ]
+          "BearerAuth" : [ ]
         } ]
       }
     },
@@ -620,7 +620,7 @@
           }
         },
         "security" : [ {
-          "bearerAuth" : [ ]
+          "BearerAuth" : [ ]
         } ]
       }
     },
@@ -691,7 +691,7 @@
           }
         },
         "security" : [ {
-          "bearerAuth" : [ ]
+          "BearerAuth" : [ ]
         } ]
       }
     },
@@ -783,7 +783,7 @@
           }
         },
         "security" : [ {
-          "bearerAuth" : [ ]
+          "BearerAuth" : [ ]
         } ]
       }
     },
@@ -869,7 +869,7 @@
           }
         },
         "security" : [ {
-          "bearerAuth" : [ ]
+          "BearerAuth" : [ ]
         } ]
       }
     }
@@ -1332,7 +1332,7 @@
       }
     },
     "securitySchemes" : {
-      "bearerAuth" : {
+      "BearerAuth" : {
         "type" : "http",
         "scheme" : "bearer",
         "bearerFormat" : "JWT"

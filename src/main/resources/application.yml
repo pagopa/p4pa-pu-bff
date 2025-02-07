@@ -85,9 +85,6 @@ rest:
     base-url: "\${PROCESS_EXECUTIONS_BASE_URL:}"
 
 cache:
-  jwks:
-    size: "\${CACHE_JWKS_SIZE:10}"
-    expire-in: "\${CACHE_JWKS_MINUTES:60}"
   organization:
     size: "\${CACHE_ORGANIZATION_SIZE:100}"
     expire-in: "\${CACHE_ORGANIZATION_MINUTES:60}"

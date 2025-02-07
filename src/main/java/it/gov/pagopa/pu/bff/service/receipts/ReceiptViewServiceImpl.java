@@ -41,13 +41,8 @@ public class ReceiptViewServiceImpl implements ReceiptViewService {
 
     authorizationService.validateAdminRole(organizationId, loggedUser);
 
-    return receiptViewMapper.mapToPagedReceiptView(
-      receiptClient.getReceipts(
-        organizationId, receiptOrigin, operatorExternalUserId,
-        iuv, iur, iud, debtPositionTypeOrgId, fromDate, toDate,
-        pageable, accessToken
-      )
-    );
+    return receiptViewMapper.mapToPagedReceiptView(receiptClient.getReceipts(
+      organizationId, receiptOrigin, operatorExternalUserId, iuv, iur, iud, debtPositionTypeOrgId, fromDate, toDate, pageable, accessToken));
   }
 
 }

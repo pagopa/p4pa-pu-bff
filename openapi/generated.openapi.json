@@ -846,7 +846,7 @@
           }
         },
         "security" : [ {
-          "bearerAuth" : [ ]
+          "BearerAuth" : [ ]
         } ]
       }
     },

@@ -100,7 +100,8 @@
               }
             }
           }
-        }
+        },
+        "security" : [ ]
       }
     },
     "/bff/taxonomy/getTaxonomyCode" : {
@@ -818,7 +819,8 @@
               }
             }
           }
-        }
+        },
+        "security" : [ ]
       }
     },
     "/bff/brokers/config" : {

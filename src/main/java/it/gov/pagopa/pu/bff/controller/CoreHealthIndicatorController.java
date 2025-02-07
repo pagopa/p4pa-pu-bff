@@ -1,5 +1,6 @@
 package it.gov.pagopa.pu.bff.controller;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import it.gov.pagopa.pu.bff.controller.generated.MonitoringApi;
 import it.gov.pagopa.pu.bff.dto.generated.ServiceStatus;
 import it.gov.pagopa.pu.bff.service.CoreHealthIndicatorService;
@@ -21,6 +22,7 @@ public class CoreHealthIndicatorController implements MonitoringApi {
   }
 
   @Override
+  @SecurityRequirements // no security is required
   public ResponseEntity<List<ServiceStatus>> getHealthStatus() {
     log.info("Check services status");
     List<ServiceStatus> services = coreHealthIndicatorService.getStatus();

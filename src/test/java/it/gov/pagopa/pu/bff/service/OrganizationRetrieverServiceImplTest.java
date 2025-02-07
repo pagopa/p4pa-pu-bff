@@ -3,7 +3,7 @@ package it.gov.pagopa.pu.bff.service;
 import it.gov.pagopa.pu.bff.connector.organization.OrganizationService;
 import it.gov.pagopa.pu.bff.dto.generated.OrganizationDTO;
 import it.gov.pagopa.pu.bff.mapper.OrganizationDTOMapper;
-import it.gov.pagopa.pu.bff.service.organization.OrganizationServiceImpl;
+import it.gov.pagopa.pu.bff.service.organization.OrganizationRetrieverServiceImpl;
 import it.gov.pagopa.pu.organization.dto.generated.Organization;
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.auth.dto.generated.UserOrganizationRoles;
@@ -22,13 +22,13 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.*;
 
 @ExtendWith(MockitoExtension.class)
-class OrganizationServiceImplTest {
+class OrganizationRetrieverServiceImplTest {
 
   @Mock
   private OrganizationService organizationServiceMock;
   @Mock
   private OrganizationDTOMapper organizationDTOMapperMock;
-  private OrganizationServiceImpl organizationService;
+  private OrganizationRetrieverServiceImpl organizationService;
   private UserInfo userInfo;
   private UserOrganizationRoles userOrganizationRoles;
   private Organization entityModelOrganization;
@@ -56,7 +56,7 @@ class OrganizationServiceImplTest {
       .operatorRole(OrganizationDTO.OperatorRoleEnum.ADMIN)
       .build();
 
-    organizationService = new OrganizationServiceImpl(organizationServiceMock, organizationDTOMapperMock);
+    organizationService = new OrganizationRetrieverServiceImpl(organizationServiceMock, organizationDTOMapperMock);
   }
 
   @Test

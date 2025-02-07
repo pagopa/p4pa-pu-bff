@@ -11,16 +11,16 @@ import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
-public class BrokerServiceImpl implements it.gov.pagopa.pu.bff.service.broker.BrokerService {
+public class BrokerRetrieverServiceImpl implements BrokerRetrieverService {
 
   private final BrokerService brokerService;
   private final PersonalisationFE2ConfigFEMapper personalisationFE2ConfigFEMapper;
   private final DefaultConfigFe defaultConfigFe;
   private final ConfigFE defaultFEConfig;
 
-  public BrokerServiceImpl(BrokerService brokerService,
-                           DefaultConfigFe defaultConfigFe,
-                           PersonalisationFE2ConfigFEMapper personalisationFE2ConfigFEMapper) {
+  public BrokerRetrieverServiceImpl(BrokerService brokerService,
+                                    DefaultConfigFe defaultConfigFe,
+                                    PersonalisationFE2ConfigFEMapper personalisationFE2ConfigFEMapper) {
     this.brokerService = brokerService;
     this.defaultConfigFe = defaultConfigFe;
     this.personalisationFE2ConfigFEMapper = personalisationFE2ConfigFEMapper;

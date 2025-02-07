@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class TaxonomyServiceTest {
+class TaxonomyRetrieverServiceTest {
 
   private final String organizationType = "organizationType";
   private final String macroAreaCode = "macroAreaCode";

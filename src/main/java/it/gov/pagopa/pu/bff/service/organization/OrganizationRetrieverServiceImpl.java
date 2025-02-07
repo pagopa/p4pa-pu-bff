@@ -11,13 +11,13 @@ import java.util.Objects;
 import java.util.Optional;
 
 @Service
-public class OrganizationServiceImpl implements it.gov.pagopa.pu.bff.service.organization.OrganizationService {
+public class OrganizationRetrieverServiceImpl implements OrganizationRetrieverService {
 
   private final OrganizationService organizationService;
 
   private final OrganizationDTOMapper organizationDTOMapper;
 
-  public OrganizationServiceImpl(OrganizationService organizationService, OrganizationDTOMapper organizationDTOMapper) {
+  public OrganizationRetrieverServiceImpl(OrganizationService organizationService, OrganizationDTOMapper organizationDTOMapper) {
     this.organizationService = organizationService;
     this.organizationDTOMapper = organizationDTOMapper;
   }

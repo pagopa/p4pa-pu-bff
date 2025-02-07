@@ -4,7 +4,7 @@ import it.gov.pagopa.pu.bff.config.DefaultConfigFe;
 import it.gov.pagopa.pu.bff.connector.organization.BrokerService;
 import it.gov.pagopa.pu.bff.dto.generated.ConfigFE;
 import it.gov.pagopa.pu.bff.mapper.PersonalisationFE2ConfigFEMapper;
-import it.gov.pagopa.pu.bff.service.broker.BrokerServiceImpl;
+import it.gov.pagopa.pu.bff.service.broker.BrokerRetrieverServiceImpl;
 import it.gov.pagopa.pu.bff.util.TestUtils;
 import it.gov.pagopa.pu.organization.dto.generated.Broker;
 import it.gov.pagopa.pu.organization.dto.generated.PersonalisationFe;
@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
 
 @ExtendWith(MockitoExtension.class)
-class BrokerServiceImplTest {
+class BrokerRetrieverServiceImplTest {
   @Mock
   private BrokerService brokerServiceMock;
   @Mock
@@ -28,7 +28,7 @@ class BrokerServiceImplTest {
   @Mock
   private PersonalisationFE2ConfigFEMapper personalisationFE2ConfigFEMapperMock;
 
-  private BrokerServiceImpl brokerService;
+  private BrokerRetrieverServiceImpl brokerService;
   private Broker entityModelBroker;
   private PersonalisationFe personalisationFe;
   private final String accessToken = "TOKEN";
@@ -42,7 +42,7 @@ class BrokerServiceImplTest {
 
     defaultFEConfig = new ConfigFE();
 
-    brokerService = new BrokerServiceImpl(
+    brokerService = new BrokerRetrieverServiceImpl(
       brokerServiceMock,
       defaultConfigFeMock,
       personalisationFE2ConfigFEMapperMock

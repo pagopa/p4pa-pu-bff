@@ -32,7 +32,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-class TaxonomyServiceImplTest {
+class TaxonomyRetrieverServiceImplTest {
   @Mock
   private TaxonomyService taxonomyServiceMock;
   @Mock
@@ -47,7 +47,7 @@ class TaxonomyServiceImplTest {
   private TaxonomyMacroAreaCodeMapper taxonomyMacroAreaCodeMapperMock;
 
   @InjectMocks
-  private TaxonomyServiceImpl taxonomyService;
+  private TaxonomyRetrieverServiceImpl taxonomyService;
 
   @Test
   void testGetTaxonomyCode() {

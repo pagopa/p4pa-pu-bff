@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class OrganizationServiceTest {
+class OrganizationRetrieverServiceTest {
 
   @Mock
   private OrganizationSearchClient client;

@@ -15,7 +15,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 @Service
-public class TaxonomyServiceImpl implements it.gov.pagopa.pu.bff.service.taxonomy.TaxonomyService {
+public class TaxonomyRetrieverServiceImpl implements TaxonomyRetrieverService {
 
   private final TaxonomyService taxonomyService;
   private final TaxonomyOrganizationTypeMapper taxonomyOrganizationTypeMapper;
@@ -24,12 +24,12 @@ public class TaxonomyServiceImpl implements it.gov.pagopa.pu.bff.service.taxonom
   private final TaxonomyServiceTypeCodeMapper taxonomyServiceTypeCodeMapper;
   private final TaxonomyCodeMapper taxonomyCodeMapper;
 
-  public TaxonomyServiceImpl(TaxonomyService taxonomyService,
-                             TaxonomyOrganizationTypeMapper taxonomyOrganizationTypeMapper,
-                             TaxonomyMacroAreaCodeMapper taxonomyMacroAreaCodeMapper,
-                             TaxonomyCollectionReasonMapper taxonomyCollectionReasonMapper,
-                             TaxonomyServiceTypeCodeMapper taxonomyServiceTypeCodeMapper,
-                             TaxonomyCodeMapper taxonomyCodeMapper){
+  public TaxonomyRetrieverServiceImpl(TaxonomyService taxonomyService,
+                                      TaxonomyOrganizationTypeMapper taxonomyOrganizationTypeMapper,
+                                      TaxonomyMacroAreaCodeMapper taxonomyMacroAreaCodeMapper,
+                                      TaxonomyCollectionReasonMapper taxonomyCollectionReasonMapper,
+                                      TaxonomyServiceTypeCodeMapper taxonomyServiceTypeCodeMapper,
+                                      TaxonomyCodeMapper taxonomyCodeMapper){
     this.taxonomyService = taxonomyService;
     this.taxonomyOrganizationTypeMapper = taxonomyOrganizationTypeMapper;
     this.taxonomyMacroAreaCodeMapper = taxonomyMacroAreaCodeMapper;

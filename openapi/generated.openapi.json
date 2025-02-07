@@ -9,6 +9,9 @@
     "url" : "http://localhost",
     "description" : "Generated server url"
   } ],
+  "security" : [ {
+    "BearerAuth" : [ ]
+  } ],
   "tags" : [ {
     "name" : "DebtPositionTypes",
     "description" : "the DebtPositionTypes API"
@@ -100,7 +103,8 @@
               }
             }
           }
-        }
+        },
+        "security" : [ ]
       }
     },
     "/bff/taxonomy/getTaxonomyCode" : {
@@ -152,7 +156,7 @@
           }
         },
         "security" : [ {
-          "bearerAuth" : [ ]
+          "BearerAuth" : [ ]
         } ]
       }
     },
@@ -230,7 +234,7 @@
           }
         },
         "security" : [ {
-          "bearerAuth" : [ ]
+          "BearerAuth" : [ ]
         } ]
       }
     },
@@ -294,7 +298,7 @@
           }
         },
         "security" : [ {
-          "bearerAuth" : [ ]
+          "BearerAuth" : [ ]
         } ]
       }
     },
@@ -365,7 +369,7 @@
           }
         },
         "security" : [ {
-          "bearerAuth" : [ ]
+          "BearerAuth" : [ ]
         } ]
       }
     },
@@ -450,7 +454,7 @@
           }
         },
         "security" : [ {
-          "bearerAuth" : [ ]
+          "BearerAuth" : [ ]
         } ]
       }
     },
@@ -511,7 +515,7 @@
           }
         },
         "security" : [ {
-          "bearerAuth" : [ ]
+          "BearerAuth" : [ ]
         } ]
       }
     },
@@ -620,7 +624,7 @@
           }
         },
         "security" : [ {
-          "bearerAuth" : [ ]
+          "BearerAuth" : [ ]
         } ]
       }
     },
@@ -691,7 +695,7 @@
           }
         },
         "security" : [ {
-          "bearerAuth" : [ ]
+          "BearerAuth" : [ ]
         } ]
       }
     },
@@ -934,7 +938,7 @@
           }
         },
         "security" : [ {
-          "bearerAuth" : [ ]
+          "BearerAuth" : [ ]
         } ]
       }
     },
@@ -969,7 +973,8 @@
               }
             }
           }
-        }
+        },
+        "security" : [ ]
       }
     },
     "/bff/brokers/config" : {
@@ -1020,7 +1025,7 @@
           }
         },
         "security" : [ {
-          "bearerAuth" : [ ]
+          "BearerAuth" : [ ]
         } ]
       }
     }
@@ -1547,7 +1552,7 @@
       }
     },
     "securitySchemes" : {
-      "bearerAuth" : {
+      "BearerAuth" : {
         "type" : "http",
         "scheme" : "bearer",
         "bearerFormat" : "JWT"

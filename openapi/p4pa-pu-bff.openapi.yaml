@@ -419,10 +419,10 @@ paths:
           description: Not Found
       x-spring-paginated: true
 security:
-  - bearerAuth: [ ]
+  - BearerAuth: [ ]
 components:
   securitySchemes:
-    bearerAuth:
+    BearerAuth:
       type: http
       scheme: bearer
       bearerFormat: JWT

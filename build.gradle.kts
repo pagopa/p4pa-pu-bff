@@ -36,6 +36,7 @@ val micrometerVersion = "1.4.1"
 
 val wiremockVersion = "3.10.0"
 val wiremockSpringBootVersion = "2.1.3"
+val caffeineVersion = "3.2.0"
 
 dependencies {
 	implementation("org.springframework.boot:spring-boot-starter")
@@ -49,6 +50,8 @@ dependencies {
 	implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
 	implementation("org.openapitools:jackson-databind-nullable:$openApiToolsVersion")
   implementation("org.springframework.data:spring-data-commons")
+  implementation("org.springframework.boot:spring-boot-starter-cache")
+  implementation("com.github.ben-manes.caffeine:caffeine:$caffeineVersion")
 
 
 	compileOnly("org.projectlombok:lombok")

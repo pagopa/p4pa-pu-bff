@@ -5,7 +5,7 @@ import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 
 import java.util.List;
 
-public interface OrganizationService {
+public interface OrganizationRetrieverService {
 
   List<OrganizationDTO> getOrganizations(UserInfo userInfo, String accessToken);
 

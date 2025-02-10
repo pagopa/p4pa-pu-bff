@@ -6,7 +6,7 @@ import it.gov.pagopa.pu.bff.dto.generated.TaxonomyServiceTypeCodeDTO;
 import it.gov.pagopa.pu.bff.util.TestUtils;
 import org.junit.jupiter.api.Test;
 
-class TaxonomyServiceTypeCodeMapperTest {
+class TaxonomyRetrieverServiceTypeCodeMapperTest {
   private final TaxonomyServiceTypeCodeMapper mapper = new TaxonomyServiceTypeCodeMapper();
 
   @Test

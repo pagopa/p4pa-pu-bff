@@ -309,11 +309,13 @@ paths:
           schema:
             type: integer
             format: int64
-        - name: flowFileType
+        - name: flowFileTypes
           in: query
           required: true
           schema:
-            type: 'FlowFileType'
+            type: array
+            items:
+              type: 'FlowFileType'
         - name: creationDateFrom
           in: query
           schema:

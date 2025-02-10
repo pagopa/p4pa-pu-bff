@@ -44,13 +44,13 @@ class IngestionFlowFileControllerTest {
   @Test
   void givenCorrectRequestWhenGetIngestionFlowFilesThenOk() {
     long organizationId = 1L;
-    FlowFileTypeEnum flowFileType = FlowFileTypeEnum.TREASURY_OPI;
+    List<FlowFileTypeEnum> flowFileTypes = List.of(FlowFileTypeEnum.TREASURY_OPI,FlowFileTypeEnum.PAYMENTS_REPORTING);
     OffsetDateTime creationDateFrom = OffsetDateTime.now().minusDays(10);
     OffsetDateTime creationDateTo = OffsetDateTime.now().plusDays(10);
     String status = "status";
     String fileName = "filename";
     IngestionFlowFileFiltersDTO expectedFilter = new IngestionFlowFileFiltersDTO(
-      organizationId, flowFileType, creationDateFrom, creationDateTo, status,
+      organizationId, flowFileTypes, creationDateFrom, creationDateTo, status,
       fileName);
     PagedIngestionFlowFile expectedResult = new PagedIngestionFlowFile();
     expectedResult.setContent(List.of(IngestionFlowFile.builder()
@@ -75,7 +75,7 @@ class IngestionFlowFileControllerTest {
       .thenReturn(expectedResult);
 
     ResponseEntity<PagedIngestionFlowFile> response = ingestionFlowFileController.getIngestionFlowFiles(organizationId,
-      flowFileType,creationDateFrom,creationDateTo,status,fileName,
+      flowFileTypes,creationDateFrom,creationDateTo,status,fileName,
       PageRequest.of(0,10));
 
     Assertions.assertEquals(HttpStatus.OK,response.getStatusCode());

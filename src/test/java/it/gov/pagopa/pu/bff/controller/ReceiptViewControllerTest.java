@@ -1,7 +1,7 @@
 package it.gov.pagopa.pu.bff.controller;
 
+import it.gov.pagopa.pu.bff.dto.ReceiptViewFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedReceiptView;
-import it.gov.pagopa.pu.bff.dto.generated.ReceiptFilterDTO;
 import it.gov.pagopa.pu.bff.service.receipts.ReceiptViewService;
 import it.gov.pagopa.pu.debtpositions.dto.generated.ReceiptView;
 import org.junit.jupiter.api.Assertions;
@@ -43,23 +43,20 @@ class ReceiptViewControllerTest {
 
   @Test
   void givenCorrectRequestWhenGetReceiptsThenOk() {
-    ReceiptFilterDTO filter = new ReceiptFilterDTO();
-    filter.setOrganizationId(1L);
-    filter.setReceiptOrigin("ORIGIN");
-    filter.setIuv("IUV123");
-    filter.setFromDate(null);
-    filter.setToDate(null);
-
+    long organizationId = 1L;
+    String receiptOrigin = "ORIGIN";
+    String iuv = "IUV123";
     Pageable pageable = PageRequest.of(0, 10);
 
-    PagedReceiptView expectedResult = new PagedReceiptView();
+    ReceiptViewFiltersDTO filtersDTO = new ReceiptViewFiltersDTO(organizationId, receiptOrigin, null, iuv, null, null, null, null, null);
 
+    PagedReceiptView expectedResult = new PagedReceiptView();
     expectedResult.setContent(List.of(ReceiptView.builder()
       .receiptId(100L)
       .paymentAmountCents(1000L)
       .paymentDateTime(OffsetDateTime.now())
-      .receiptOrigin("ORIGIN")
-      .iuv("IUV123")
+      .receiptOrigin(receiptOrigin)
+      .iuv(iuv)
       .build()));
     expectedResult.setSize(10L);
     expectedResult.setTotalElements(1L);
@@ -67,14 +64,15 @@ class ReceiptViewControllerTest {
     expectedResult.setNumber(0L);
 
     Mockito.when(receiptViewServiceMock.getReceipts(
-      Mockito.eq(filter),
-      Mockito.argThat(p -> p.getPageNumber() == 0 && p.getPageSize() == 10 && p.getSort().isUnsorted()),
+      Mockito.eq(filtersDTO),
+      Mockito.eq(pageable),
       Mockito.any(),
       Mockito.anyString()
     )).thenReturn(expectedResult);
 
     ResponseEntity<PagedReceiptView> response = receiptViewController.getReceipts(
-      filter, pageable);
+      organizationId, receiptOrigin, null, iuv, null, null,
+      null, null, null, pageable);
 
     Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
     Assertions.assertNotNull(response.getBody());
@@ -82,3 +80,4 @@ class ReceiptViewControllerTest {
   }
 
 }
+

@@ -705,11 +705,71 @@
         "summary" : "Retrieve a page of receipts based on filters",
         "operationId" : "getReceipts",
         "parameters" : [ {
-          "name" : "filter",
+          "name" : "organizationId",
           "in" : "query",
           "required" : true,
           "schema" : {
-            "$ref" : "#/components/schemas/ReceiptFilterDTO"
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }, {
+          "name" : "receiptOrigin",
+          "in" : "query",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "operatorExternalUserId",
+          "in" : "query",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "iuv",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "iur",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "iud",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "debtPositionTypeOrgId",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }, {
+          "name" : "fromDate",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "format" : "date-time"
+          }
+        }, {
+          "name" : "toDate",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "format" : "date-time"
           }
         }, {
           "name" : "page",
@@ -1377,43 +1437,6 @@
             "additionalProperties" : {
               "$ref" : "#/components/schemas/Link"
             }
-          }
-        }
-      },
-      "ReceiptFilterDTO" : {
-        "required" : [ "operatorExternalUserId", "organizationId", "receiptOrigin" ],
-        "type" : "object",
-        "properties" : {
-          "organizationId" : {
-            "type" : "integer",
-            "format" : "int64"
-          },
-          "receiptOrigin" : {
-            "type" : "string"
-          },
-          "operatorExternalUserId" : {
-            "type" : "string"
-          },
-          "iuv" : {
-            "type" : "string"
-          },
-          "iur" : {
-            "type" : "string"
-          },
-          "iud" : {
-            "type" : "string"
-          },
-          "debtPositionTypeOrgId" : {
-            "type" : "integer",
-            "format" : "int64"
-          },
-          "fromDate" : {
-            "type" : "string",
-            "format" : "date-time"
-          },
-          "toDate" : {
-            "type" : "string",
-            "format" : "date-time"
           }
         }
       },

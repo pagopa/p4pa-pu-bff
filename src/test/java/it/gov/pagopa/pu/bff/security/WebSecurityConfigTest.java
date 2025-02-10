@@ -2,7 +2,7 @@ package it.gov.pagopa.pu.bff.security;
 
 import it.gov.pagopa.pu.bff.controller.generated.BrokersApi;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
-import it.gov.pagopa.pu.bff.service.broker.BrokerServiceImpl;
+import it.gov.pagopa.pu.bff.service.broker.BrokerRetrieverServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -24,7 +24,7 @@ class WebSecurityConfigTest {
   private MockMvc mockMvc;
 
   @MockitoBean
-  private BrokerServiceImpl serviceMock;
+  private BrokerRetrieverServiceImpl serviceMock;
 
   @MockitoBean
   private AuthorizationService authorizationServiceMock;

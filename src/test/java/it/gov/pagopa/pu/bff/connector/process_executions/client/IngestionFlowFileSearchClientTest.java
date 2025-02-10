@@ -49,14 +49,14 @@ class IngestionFlowFileSearchClientTest {
   @Test
   void whenGetIngestionFlowFilesThenInvokeWithAccessToken() {
     long organizationId = 1L;
-    FlowFileTypeEnum flowFileType = FlowFileTypeEnum.TREASURY_OPI;
+    List<FlowFileTypeEnum> flowFileTypes = List.of(FlowFileTypeEnum.TREASURY_OPI,FlowFileTypeEnum.PAYMENTS_REPORTING);
     OffsetDateTime creationDateFrom = OffsetDateTime.now().minusDays(10);
     OffsetDateTime creationDateTo = OffsetDateTime.now().plusDays(10);
     String status = "status";
     String fileName = "filename";
     String operatorExternalId = "operatorExternalId";
     IngestionFlowFileFiltersDTO ingestionFlowFileFilters = new IngestionFlowFileFiltersDTO(
-      organizationId, flowFileType, creationDateFrom, creationDateTo, status,
+      organizationId, flowFileTypes, creationDateFrom, creationDateTo, status,
       fileName);
     List<String> sortList = List.of("sort1,ASC","sort2,DESC");
     String accessToken = "ACCESSTOKEN";
@@ -65,8 +65,8 @@ class IngestionFlowFileSearchClientTest {
     when(processExecutionsApisHolderMock.getIngestionFlowFileSearchControllerApi(accessToken))
       .thenReturn(ingestionFlowFileSearchControllerApiMock);
     when(ingestionFlowFileSearchControllerApiMock.crudIngestionFlowFilesFindByOrganizationIDFlowTypeCreateDate(
-      String.valueOf(organizationId),flowFileType.toString(),creationDateFrom,
-      creationDateTo,status,fileName,operatorExternalId,0,10,sortList))
+      String.valueOf(organizationId),List.of(FlowFileTypeEnum.TREASURY_OPI.toString(),FlowFileTypeEnum.PAYMENTS_REPORTING.toString()),creationDateFrom.toLocalDateTime(),
+      creationDateTo.toLocalDateTime(),status,fileName,operatorExternalId,0,10,sortList))
       .thenReturn(expectedResult);
 
     PagedModelIngestionFlowFile result = ingestionFlowFileSearchClient.getIngestionFlowFiles(
@@ -86,7 +86,7 @@ class IngestionFlowFileSearchClientTest {
     String fileName = "filename";
     String operatorExternalId = "operatorExternalId";
     IngestionFlowFileFiltersDTO ingestionFlowFileFilters = new IngestionFlowFileFiltersDTO(
-      organizationId, flowFileType, creationDateFrom, creationDateTo, status,
+      organizationId, List.of(flowFileType), creationDateFrom, creationDateTo, status,
       fileName);
     String accessToken = "ACCESSTOKEN";
     PagedModelIngestionFlowFile expectedResult = new PagedModelIngestionFlowFile();
@@ -94,8 +94,8 @@ class IngestionFlowFileSearchClientTest {
     when(processExecutionsApisHolderMock.getIngestionFlowFileSearchControllerApi(accessToken))
       .thenReturn(ingestionFlowFileSearchControllerApiMock);
     when(ingestionFlowFileSearchControllerApiMock.crudIngestionFlowFilesFindByOrganizationIDFlowTypeCreateDate(
-      String.valueOf(organizationId),flowFileType.toString(),creationDateFrom,
-      creationDateTo,status,fileName,operatorExternalId,0,null,Collections.emptyList()))
+      String.valueOf(organizationId),List.of(flowFileType.toString()),creationDateFrom.toLocalDateTime(),
+      creationDateTo.toLocalDateTime(),status,fileName,operatorExternalId,0,null,Collections.emptyList()))
       .thenReturn(expectedResult);
 
     PagedModelIngestionFlowFile result = ingestionFlowFileSearchClient.getIngestionFlowFiles(
@@ -114,7 +114,7 @@ class IngestionFlowFileSearchClientTest {
     String fileName = "filename";
     String operatorExternalId = "operatorExternalId";
     IngestionFlowFileFiltersDTO ingestionFlowFileFilters = new IngestionFlowFileFiltersDTO(
-      organizationId, flowFileType, creationDateFrom, creationDateTo, status,
+      organizationId, List.of(flowFileType), creationDateFrom, creationDateTo, status,
       fileName);
     List<String> sortList = List.of("sort1,ASC","sort2,DESC");
     String accessToken = "ACCESSTOKEN";
@@ -123,8 +123,8 @@ class IngestionFlowFileSearchClientTest {
     when(processExecutionsApisHolderMock.getIngestionFlowFileSearchControllerApi(accessToken))
       .thenReturn(ingestionFlowFileSearchControllerApiMock);
     when(ingestionFlowFileSearchControllerApiMock.crudIngestionFlowFilesFindByOrganizationIDFlowTypeCreateDate(
-      String.valueOf(organizationId),flowFileType.toString(),creationDateFrom,
-      creationDateTo,status,fileName,operatorExternalId,0,10,sortList))
+      String.valueOf(organizationId),List.of(flowFileType.toString()),creationDateFrom.toLocalDateTime(),
+      creationDateTo.toLocalDateTime(),status,fileName,operatorExternalId,0,10,sortList))
       .thenThrow(expectedException);
 
     HttpClientErrorException result = Assertions.assertThrows(
@@ -146,7 +146,7 @@ class IngestionFlowFileSearchClientTest {
     String fileName = "filename";
     String operatorExternalId = "operatorExternalId";
     IngestionFlowFileFiltersDTO ingestionFlowFileFilters = new IngestionFlowFileFiltersDTO(
-      organizationId, flowFileType, creationDateFrom, creationDateTo, status,
+      organizationId, List.of(flowFileType), creationDateFrom, creationDateTo, status,
       fileName);
     List<String> sortList = List.of("sort1,ASC","sort2,DESC");
     String accessToken = "ACCESSTOKEN";
@@ -155,8 +155,8 @@ class IngestionFlowFileSearchClientTest {
     when(processExecutionsApisHolderMock.getIngestionFlowFileSearchControllerApi(accessToken))
       .thenReturn(ingestionFlowFileSearchControllerApiMock);
     when(ingestionFlowFileSearchControllerApiMock.crudIngestionFlowFilesFindByOrganizationIDFlowTypeCreateDate(
-      String.valueOf(organizationId),flowFileType.toString(),creationDateFrom,
-      creationDateTo,status,fileName,operatorExternalId,0,10,sortList))
+      String.valueOf(organizationId),List.of(flowFileType.toString()),creationDateFrom.toLocalDateTime(),
+      creationDateTo.toLocalDateTime(),status,fileName,operatorExternalId,0,10,sortList))
       .thenThrow(expectedException);
 
     RuntimeException result = Assertions.assertThrows(

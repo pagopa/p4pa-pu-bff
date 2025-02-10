@@ -239,6 +239,9 @@ tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>("ope
   outputDir.set("$projectDir/build/generated")
   apiPackage.set("it.gov.pagopa.pu.processexecutions.controller.generated")
   modelPackage.set("it.gov.pagopa.pu.processexecutions.dto.generated")
+  typeMappings.set(mapOf(
+    "LocalDateTime" to "java.time.LocalDateTime"
+  ))
   configOptions.set(mapOf(
     "swaggerAnnotations" to "false",
     "openApiNullable" to "false",

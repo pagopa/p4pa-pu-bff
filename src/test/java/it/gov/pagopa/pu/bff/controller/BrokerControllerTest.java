@@ -40,7 +40,6 @@ class BrokerControllerTest {
     userInfo.setFiscalCode("fakeFiscalCode");
     userInfo.setFamilyName("FakeFamilyName");
     userInfo.setName("FakeName");
-    userInfo.setEmail("fake@example.com");
     userInfo.setIssuer("fakeIssuer");
     userInfo.setCanManageUsers(true);
 

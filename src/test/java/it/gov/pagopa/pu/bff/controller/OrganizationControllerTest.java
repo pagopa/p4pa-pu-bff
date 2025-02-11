@@ -1,7 +1,7 @@
 package it.gov.pagopa.pu.bff.controller;
 
 import it.gov.pagopa.pu.bff.dto.generated.OrganizationDTO;
-import it.gov.pagopa.pu.bff.service.organization.OrganizationService;
+import it.gov.pagopa.pu.bff.service.organization.OrganizationRetrieverService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -26,7 +26,7 @@ import static org.mockito.Mockito.*;
 class OrganizationControllerTest {
 
   @Mock
-  private OrganizationService organizationService;
+  private OrganizationRetrieverService organizationRetrieverService;
 
   @InjectMocks
   private OrganizationController organizationController;
@@ -55,7 +55,7 @@ class OrganizationControllerTest {
 
   @Test
   void testGetOrganizations() {
-    when(organizationService.getOrganizations(any(), any())).thenReturn(organizationDTOList);
+    when(organizationRetrieverService.getOrganizations(any(), any())).thenReturn(organizationDTOList);
 
     ResponseEntity<List<OrganizationDTO>> response = organizationController.getOrganizations();
 
@@ -64,7 +64,7 @@ class OrganizationControllerTest {
     assertEquals("Test Organization", response.getBody().get(0).getOrgName());
     assertEquals(OrganizationDTO.OperatorRoleEnum.ADMIN, response.getBody().get(0).getOperatorRole());
 
-    verify(organizationService, times(1)).getOrganizations(any(), any());
+    verify(organizationRetrieverService, times(1)).getOrganizations(any(), any());
   }
 
 }

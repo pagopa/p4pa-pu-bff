@@ -11,8 +11,8 @@ import it.gov.pagopa.pu.bff.dto.generated.TaxonomyMacroAreaCodeDTO;
 import it.gov.pagopa.pu.bff.dto.generated.TaxonomyOrganizationTypeDTO;
 import it.gov.pagopa.pu.bff.dto.generated.TaxonomyServiceTypeCodeDTO;
 import it.gov.pagopa.pu.bff.security.JwtAuthenticationFilter;
-import it.gov.pagopa.pu.bff.service.broker.BrokerService;
-import it.gov.pagopa.pu.bff.service.taxonomy.TaxonomyService;
+import it.gov.pagopa.pu.bff.service.broker.BrokerRetrieverService;
+import it.gov.pagopa.pu.bff.service.taxonomy.TaxonomyRetrieverService;
 import it.gov.pagopa.pu.bff.util.TestUtils;
 import java.util.ArrayList;
 import java.util.List;
@@ -40,10 +40,10 @@ class TaxonomyControllerTest {
   private ObjectMapper objectMapper;
 
   @MockitoBean
-  private TaxonomyService serviceMock;
+  private TaxonomyRetrieverService serviceMock;
 
   @MockitoBean
-  private BrokerService serviceBrokerMock;
+  private BrokerRetrieverService serviceBrokerMock;
 
   @Test
   void testGetCollectionReason() throws Exception {

@@ -7,7 +7,7 @@ import it.gov.pagopa.pu.bff.dto.generated.TaxonomyOrganizationTypeDTO;
 import it.gov.pagopa.pu.bff.dto.generated.TaxonomyServiceTypeCodeDTO;
 import java.util.List;
 
-public interface TaxonomyService {
+public interface TaxonomyRetrieverService {
 
   List<TaxonomyCollectionReasonDTO> getCollectionReason(String organizationType, String macroAreaCode, String serviceTypeCode,String accessToken);
 

@@ -309,11 +309,13 @@ paths:
           schema:
             type: integer
             format: int64
-        - name: flowFileType
+        - name: flowFileTypes
           in: query
           required: true
           schema:
-            type: 'IngestionFlowFileType'
+            type: array
+            items:
+              type: 'IngestionFlowFileType'
         - name: creationDateFrom
           in: query
           schema:
@@ -360,11 +362,12 @@ paths:
           schema:
             type: integer
             format: int64
-        - name: flowFileType
+        - name: flowFileTypes
           in: query
           required: true
           schema:
-            type: 'ExportFileType'
+            type: array
+            items: 'ExportFileType'
         - name: creationDateFrom
           in: query
           schema:
@@ -400,10 +403,10 @@ paths:
           description: Not Found
       x-spring-paginated: true
 security:
-  - bearerAuth: [ ]
+  - BearerAuth: [ ]
 components:
   securitySchemes:
-    bearerAuth:
+    BearerAuth:
       type: http
       scheme: bearer
       bearerFormat: JWT
@@ -498,6 +501,7 @@ components:
         - ipaCode
         - orgName
         - operatorRole
+        - orgFiscalCode
       properties:
         organizationId:
           type: integer
@@ -519,6 +523,8 @@ components:
           type: string
           format: base64
           description: Base64 encoded logo of the organization
+        orgFiscalCode:
+          type: string
     ConfigFE:
       type: object
       required:
@@ -531,6 +537,7 @@ components:
         - footerAccessibilityUrl
         - brokerId
         - canManageUsers
+        - brokerFiscalCode
       properties:
         headerAssistanceUrl:
           type: string
@@ -559,6 +566,8 @@ components:
         canManageUsers:
           type: boolean
           description: Indicates if the user can manage other users
+        brokerFiscalCode:
+          type: string
     ServiceStatus:
       type: object
       properties:
@@ -577,6 +586,10 @@ components:
         title:
           type: string
           description: The title describing the error
+          enum:
+            - NOT_FOUND
+            - BAD_REQUEST
+            - GENERIC_ERROR
         description:
           type: string
           description: Description of the error

@@ -1,10 +1,10 @@
 package it.gov.pagopa.pu.bff.service;
 
 import it.gov.pagopa.pu.bff.config.DefaultConfigFe;
-import it.gov.pagopa.pu.bff.connector.organization.client.BrokerEntityClient;
+import it.gov.pagopa.pu.bff.connector.organization.BrokerService;
 import it.gov.pagopa.pu.bff.dto.generated.ConfigFE;
 import it.gov.pagopa.pu.bff.mapper.PersonalisationFE2ConfigFEMapper;
-import it.gov.pagopa.pu.bff.service.broker.BrokerServiceImpl;
+import it.gov.pagopa.pu.bff.service.broker.BrokerRetrieverServiceImpl;
 import it.gov.pagopa.pu.bff.util.TestUtils;
 import it.gov.pagopa.pu.organization.dto.generated.Broker;
 import it.gov.pagopa.pu.organization.dto.generated.PersonalisationFe;
@@ -20,14 +20,15 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
 
 @ExtendWith(MockitoExtension.class)
-class BrokerServiceImplTest {
+class BrokerRetrieverServiceImplTest {
   @Mock
-  private BrokerEntityClient brokerEntityClientMock;
+  private BrokerService brokerServiceMock;
   @Mock
   private DefaultConfigFe defaultConfigFeMock;
   @Mock
   private PersonalisationFE2ConfigFEMapper personalisationFE2ConfigFEMapperMock;
-  private BrokerServiceImpl brokerService;
+
+  private BrokerRetrieverServiceImpl brokerService;
   private Broker entityModelBroker;
   private PersonalisationFe personalisationFe;
   private final String accessToken = "TOKEN";
@@ -41,8 +42,8 @@ class BrokerServiceImplTest {
 
     defaultFEConfig = new ConfigFE();
 
-    brokerService = new BrokerServiceImpl(
-      brokerEntityClientMock,
+    brokerService = new BrokerRetrieverServiceImpl(
+      brokerServiceMock,
       defaultConfigFeMock,
       personalisationFE2ConfigFEMapperMock
     );
@@ -56,7 +57,7 @@ class BrokerServiceImplTest {
     userInfo.setBrokerId(1L);
     userInfo.setCanManageUsers(true);
 
-    Mockito.when(brokerEntityClientMock.getBrokerById(1L, accessToken)).thenReturn(entityModelBroker);
+    Mockito.when(brokerServiceMock.getBrokerById(1L, accessToken)).thenReturn(entityModelBroker);
     Mockito.when(personalisationFE2ConfigFEMapperMock.mapPersonalisationFE2ConfigFE(personalisationFe, entityModelBroker, userInfo)).thenReturn(configFE);
 
     ConfigFE result = brokerService.getBrokerConfig(userInfo, accessToken);
@@ -76,7 +77,7 @@ class BrokerServiceImplTest {
     userInfo.setBrokerId(1L);
     userInfo.setCanManageUsers(false);
 
-    Mockito.when(brokerEntityClientMock.getBrokerById(1L, accessToken)).thenReturn(null);
+    Mockito.when(brokerServiceMock.getBrokerById(1L, accessToken)).thenReturn(null);
     Mockito.when(personalisationFE2ConfigFEMapperMock.mapPersonalisationFE2ConfigFE(defaultConfigFeMock, null, userInfo)).thenReturn(defaultFEConfig);
 
     ConfigFE result = brokerService.getBrokerConfig(userInfo, accessToken);

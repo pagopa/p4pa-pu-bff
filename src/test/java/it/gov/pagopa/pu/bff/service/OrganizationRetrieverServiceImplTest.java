@@ -1,9 +1,9 @@
 package it.gov.pagopa.pu.bff.service;
 
-import it.gov.pagopa.pu.bff.connector.organization.client.OrganizationSearchClient;
+import it.gov.pagopa.pu.bff.connector.organization.OrganizationService;
 import it.gov.pagopa.pu.bff.dto.generated.OrganizationDTO;
 import it.gov.pagopa.pu.bff.mapper.OrganizationDTOMapper;
-import it.gov.pagopa.pu.bff.service.organization.OrganizationServiceImpl;
+import it.gov.pagopa.pu.bff.service.organization.OrganizationRetrieverServiceImpl;
 import it.gov.pagopa.pu.organization.dto.generated.Organization;
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.auth.dto.generated.UserOrganizationRoles;
@@ -22,13 +22,13 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.*;
 
 @ExtendWith(MockitoExtension.class)
-class OrganizationServiceImplTest {
+class OrganizationRetrieverServiceImplTest {
 
   @Mock
-  private OrganizationSearchClient organizationSearchClientMock;
+  private OrganizationService organizationServiceMock;
   @Mock
   private OrganizationDTOMapper organizationDTOMapperMock;
-  private OrganizationServiceImpl organizationService;
+  private OrganizationRetrieverServiceImpl organizationService;
   private UserInfo userInfo;
   private UserOrganizationRoles userOrganizationRoles;
   private Organization entityModelOrganization;
@@ -56,12 +56,12 @@ class OrganizationServiceImplTest {
       .operatorRole(OrganizationDTO.OperatorRoleEnum.ADMIN)
       .build();
 
-    organizationService = new OrganizationServiceImpl(organizationSearchClientMock, organizationDTOMapperMock);
+    organizationService = new OrganizationRetrieverServiceImpl(organizationServiceMock, organizationDTOMapperMock);
   }
 
   @Test
   void testGetOrganizations() {
-    Mockito.when(organizationSearchClientMock.getOrganizationByIpaCode(anyString(), anyString()))
+    Mockito.when(organizationServiceMock.getOrganizationByIpaCode(anyString(), anyString()))
       .thenReturn(entityModelOrganization);
     Mockito.when(organizationDTOMapperMock.mapToOrganizationDTO(any(Organization.class), anyList()))
       .thenReturn(organizationDTO);
@@ -88,7 +88,7 @@ class OrganizationServiceImplTest {
   void testGetOrganizations_GivenNullOrganization() {
     userOrganizationRoles.setRoles(Collections.emptyList());
 
-    Mockito.when(organizationSearchClientMock.getOrganizationByIpaCode(anyString(), anyString()))
+    Mockito.when(organizationServiceMock.getOrganizationByIpaCode(anyString(), anyString()))
       .thenReturn(null);
 
     List<OrganizationDTO> result = organizationService.getOrganizations(userInfo, accessToken);
@@ -99,7 +99,7 @@ class OrganizationServiceImplTest {
 
   @Test
   void testGetOrganizations_NotFound() {
-    Mockito.when(organizationSearchClientMock.getOrganizationByIpaCode(anyString(), anyString()))
+    Mockito.when(organizationServiceMock.getOrganizationByIpaCode(anyString(), anyString()))
       .thenReturn(null);
 
     List<OrganizationDTO> result = organizationService.getOrganizations(userInfo, accessToken);

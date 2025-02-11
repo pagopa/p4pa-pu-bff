@@ -1,17 +1,18 @@
 package it.gov.pagopa.pu.bff.mapper;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import it.gov.pagopa.pu.bff.dto.generated.OrganizationDTO;
 import it.gov.pagopa.pu.bff.exception.InvalidOperatorRoleException;
 import it.gov.pagopa.pu.bff.util.TestUtils;
 import it.gov.pagopa.pu.organization.dto.generated.Organization;
+import java.util.Collections;
+import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.util.Collections;
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
 class OrganizationDTOMapperTest {
@@ -25,6 +26,7 @@ class OrganizationDTOMapperTest {
     organization.setIpaCode("testIpaCode");
     organization.setOrgName("Test Organization");
     organization.setOrgLogo("base64LogoString");
+    organization.setOrgFiscalCode("orgFiscalCode");
     List<String> roles = Collections.singletonList("ROLE_ADMIN");
 
     OrganizationDTO result = mapper.mapToOrganizationDTO(organization, roles);
@@ -36,6 +38,7 @@ class OrganizationDTOMapperTest {
     assertEquals("Test Organization", result.getOrgName());
     assertEquals(OrganizationDTO.OperatorRoleEnum.ADMIN, result.getOperatorRole());
     assertEquals("base64LogoString", result.getOrgLogo());
+    assertEquals("orgFiscalCode", result.getOrgFiscalCode());
   }
 
   @Test
@@ -58,6 +61,7 @@ class OrganizationDTOMapperTest {
     organization.setOrganizationId(123L);
     organization.setIpaCode("testIpaCode");
     organization.setOrgName("Test Organization");
+    organization.setOrgFiscalCode("orgFiscalCode");
 
     OrganizationDTO result = mapper.mapToOrganizationDTO(organization, Collections.emptyList());
 
@@ -68,6 +72,7 @@ class OrganizationDTOMapperTest {
     assertEquals("Test Organization", result.getOrgName());
     assertNull(result.getOperatorRole());
     assertNull(result.getOrgLogo());
+    assertEquals("orgFiscalCode", result.getOrgFiscalCode());
   }
 
 }

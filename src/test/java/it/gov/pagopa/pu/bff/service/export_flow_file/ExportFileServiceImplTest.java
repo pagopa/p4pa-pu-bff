@@ -9,6 +9,7 @@ import it.gov.pagopa.pu.bff.service.AuthorizationService;
 import it.gov.pagopa.pu.processexecutions.dto.generated.ExportFile.FlowFileTypeEnum;
 import it.gov.pagopa.pu.processexecutions.dto.generated.PagedModelExportFile;
 import java.time.OffsetDateTime;
+import java.util.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -37,13 +38,13 @@ class ExportFileServiceImplTest {
   void givenAdminUserWhenGetExportFilesThenOk() {
     String accessToken = "ACCESSTOKEN";
     long organizationId = 1L;
-    FlowFileTypeEnum flowFileType = FlowFileTypeEnum.CLASSIFICATIONS;
+    List<FlowFileTypeEnum> flowFileTypes = List.of(FlowFileTypeEnum.CLASSIFICATIONS);
     OffsetDateTime creationDateFrom = OffsetDateTime.now().minusDays(10);
     OffsetDateTime creationDateTo = OffsetDateTime.now().plusDays(10);
     String status = "status";
     String fileName = "filename";
     ExportFileFiltersDTO exportFileFilters = new ExportFileFiltersDTO(
-      organizationId, flowFileType, creationDateFrom, creationDateTo, status,
+      organizationId, flowFileTypes, creationDateFrom, creationDateTo, status,
       fileName);
     UserInfo userInfo = new UserInfo();
     PagedModelExportFile pagedModelExportFile = new PagedModelExportFile();
@@ -75,13 +76,13 @@ class ExportFileServiceImplTest {
   void givenNoAdminUserWhenGetIngestionFlowFilesThenOk(){
     String accessToken="ACCESSTOKEN";
     long organizationId = 1L;
-    FlowFileTypeEnum flowFileType = FlowFileTypeEnum.CLASSIFICATIONS;
+    List<FlowFileTypeEnum> flowFileTypes = List.of(FlowFileTypeEnum.CLASSIFICATIONS);
     OffsetDateTime creationDateFrom = OffsetDateTime.now().minusDays(10);
     OffsetDateTime creationDateTo = OffsetDateTime.now().plusDays(10);
     String status = "status";
     String fileName = "filename";
     ExportFileFiltersDTO exportFileFilters = new ExportFileFiltersDTO(
-      organizationId, flowFileType, creationDateFrom, creationDateTo, status,
+      organizationId, flowFileTypes, creationDateFrom, creationDateTo, status,
       fileName);
     String operatorExternalId = "operatorExternalId";
     UserInfo userInfo = new UserInfo();

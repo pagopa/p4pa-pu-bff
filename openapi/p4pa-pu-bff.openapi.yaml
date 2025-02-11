@@ -367,7 +367,8 @@ paths:
           required: true
           schema:
             type: array
-            items: 'ExportFileType'
+            items:
+              type: 'ExportFileType'
         - name: creationDateFrom
           in: query
           schema:
@@ -743,12 +744,6 @@ components:
         creationDate:
           type: string
           format: date-time
-        billDateFrom:
-          type: string
-          format: date
-        billDateTo:
-          type: string
-          format: date
         totalRows:
           type: integer
           format: int64

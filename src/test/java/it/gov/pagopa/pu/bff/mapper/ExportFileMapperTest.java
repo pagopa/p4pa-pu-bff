@@ -97,12 +97,12 @@ class ExportFileMapperTest {
       result.getContent().getFirst(),
       userInfo.getFamilyName() + " " + userInfo.getName(),
       it.gov.pagopa.pu.bff.dto.generated.ExportFile.StatusEnum.COMPLETED
-      , "billDateFrom", "billDateTo");
+    );
     checkExportFile(flowFileWithNoTotalRows,
       result.getContent().get(1),
       otherUserInfo.getFamilyName() + " " + otherUserInfo.getName(),
       it.gov.pagopa.pu.bff.dto.generated.ExportFile.StatusEnum.ERROR,
-      "totalRows", "billDateFrom", "billDateTo");
+      "totalRows");
     Mockito.verify(authzClientMock)
       .getUserInfoFromMappedExternaUserId(otherOperatorExternalId, accessToken);
     Mockito.verifyNoMoreInteractions(authzClientMock);
@@ -180,12 +180,11 @@ class ExportFileMapperTest {
     assertNull(result.getSize());
     assertFalse(CollectionUtils.isEmpty(result.getContent()));
     assertEquals(1, result.getContent().size());
-    TestUtils.checkNotNullFields(result.getContent().getFirst(), "billDateFrom",
-      "billDateTo");
+    TestUtils.checkNotNullFields(result.getContent().getFirst());
     checkExportFile(exportFileMatchingOperator,
       result.getContent().getFirst(),
       userInfo.getFamilyName() + " " + userInfo.getName(),
       it.gov.pagopa.pu.bff.dto.generated.ExportFile.StatusEnum.COMPLETED
-      , "billDateFrom", "billDateTo");
+    );
   }
 }

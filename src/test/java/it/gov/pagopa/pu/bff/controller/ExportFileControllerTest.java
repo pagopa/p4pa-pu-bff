@@ -44,13 +44,13 @@ class ExportFileControllerTest {
   @Test
   void givenCorrectRequestWhenGetExportFilesThenOk() {
     long organizationId = 1L;
-    FlowFileTypeEnum flowFileType = FlowFileTypeEnum.CLASSIFICATIONS;
+    List<FlowFileTypeEnum> flowFileTypes = List.of(FlowFileTypeEnum.CLASSIFICATIONS);
     OffsetDateTime creationDateFrom = OffsetDateTime.now().minusDays(10);
     OffsetDateTime creationDateTo = OffsetDateTime.now().plusDays(10);
     String status = "status";
     String fileName = "filename";
     ExportFileFiltersDTO expectedFilter = new ExportFileFiltersDTO(
-      organizationId, flowFileType, creationDateFrom, creationDateTo, status,
+      organizationId, flowFileTypes, creationDateFrom, creationDateTo, status,
       fileName);
     PagedExportFile expectedResult = new PagedExportFile();
     expectedResult.setContent(List.of(ExportFile.builder()
@@ -58,8 +58,6 @@ class ExportFileControllerTest {
       .fileName("fileName")
       .creationDate(OffsetDateTime.now())
       .operator("operator")
-//        .paymentDateFrom()
-//        .paymentDateTo()
       .totalRows(10L)
       .status(StatusEnum.COMPLETED)
       .build()));
@@ -75,7 +73,7 @@ class ExportFileControllerTest {
       .thenReturn(expectedResult);
 
     ResponseEntity<PagedExportFile> response = exportFileController.getExportFiles(organizationId,
-      flowFileType,creationDateFrom,creationDateTo,status,fileName,
+      flowFileTypes,creationDateFrom,creationDateTo,status,fileName,
       PageRequest.of(0,10));
 
     Assertions.assertEquals(HttpStatus.OK,response.getStatusCode());

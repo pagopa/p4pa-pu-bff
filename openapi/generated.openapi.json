@@ -644,12 +644,15 @@
             "format" : "int64"
           }
         }, {
-          "name" : "flowFileType",
+          "name" : "flowFileTypes",
           "in" : "query",
           "required" : true,
           "schema" : {
-            "type" : "string",
-            "enum" : [ "PAID", "CLASSIFICATIONS", "PAYMENTS_REPORTING" ]
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "enum" : [ "PAID", "CLASSIFICATIONS", "PAYMENTS_REPORTING" ]
+            }
           }
         }, {
           "name" : "creationDateFrom",
@@ -736,7 +739,7 @@
           }
         },
         "security" : [ {
-          "bearerAuth" : [ ]
+          "BearerAuth" : [ ]
         } ]
       }
     },
@@ -1259,14 +1262,6 @@
           "creationDate" : {
             "type" : "string",
             "format" : "date-time"
-          },
-          "billDateFrom" : {
-            "type" : "string",
-            "format" : "date"
-          },
-          "billDateTo" : {
-            "type" : "string",
-            "format" : "date"
           },
           "totalRows" : {
             "type" : "integer",

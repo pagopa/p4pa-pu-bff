@@ -3,7 +3,8 @@ package it.gov.pagopa.pu.bff.connector.process_executions.config;
 import it.gov.pagopa.pu.bff.connector.BaseApiHolderTest;
 import it.gov.pagopa.pu.processexecutions.controller.ApiClient;
 import it.gov.pagopa.pu.processexecutions.dto.generated.PagedModelIngestionFlowFile;
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
+import java.util.List;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -43,8 +44,9 @@ class ProcessExecutionsApisHolderTest extends BaseApiHolderTest {
   void whenGetIngestionFlowFileSearchControllerApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
     assertAuthenticationShouldBeSetInThreadSafeMode(
       accessToken -> processExecutionsApisHolder.getIngestionFlowFileSearchControllerApi(accessToken)
-        .crudIngestionFlowFilesFindByOrganizationIDFlowTypeCreateDate(String.valueOf(123L), "flowFileType",
-          OffsetDateTime.now(),OffsetDateTime.now(),"status","fileName","operatorExternalId",0,0,null),
+        .crudIngestionFlowFilesFindByOrganizationIDFlowTypeCreateDate(String.valueOf(123L),
+          List.of("flowFileType"),
+          LocalDateTime.now(),LocalDateTime.now(),"status","fileName","operatorExternalId",0,0,null),
       PagedModelIngestionFlowFile.class,
       processExecutionsApisHolder::unload
     );

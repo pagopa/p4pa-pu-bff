@@ -532,12 +532,15 @@
             "format" : "int64"
           }
         }, {
-          "name" : "flowFileType",
+          "name" : "flowFileTypes",
           "in" : "query",
           "required" : true,
           "schema" : {
-            "type" : "string",
-            "enum" : [ "RECEIPT", "RECEIPT_PAGOPA", "PAYMENTS_REPORTING", "PAYMENTS_REPORTING_PAGOPA", "TREASURY_OPI", "TREASURY_CSV", "TREASURY_XLS", "TREASURY_POSTE" ]
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "enum" : [ "RECEIPT", "RECEIPT_PAGOPA", "PAYMENTS_REPORTING", "PAYMENTS_REPORTING_PAGOPA", "TREASURY_OPI", "TREASURY_CSV", "TREASURY_XLS", "TREASURY_POSTE" ]
+            }
           }
         }, {
           "name" : "creationDateFrom",

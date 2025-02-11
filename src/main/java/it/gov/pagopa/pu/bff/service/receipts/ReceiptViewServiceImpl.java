@@ -11,21 +11,17 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class ReceiptViewServiceImpl implements ReceiptViewService {
-
-  private final AuthorizationService authorizationService;
   private final ReceiptClient receiptClient;
   private final ReceiptViewMapper receiptViewMapper;
 
-  public ReceiptViewServiceImpl(
-    AuthorizationService authorizationService, ReceiptClient receiptClient, ReceiptViewMapper receiptViewMapper) {
-    this.authorizationService = authorizationService;
+  public ReceiptViewServiceImpl(ReceiptClient receiptClient, ReceiptViewMapper receiptViewMapper) {
     this.receiptClient = receiptClient;
     this.receiptViewMapper = receiptViewMapper;
   }
 
   @Override
   public PagedReceiptView getReceipts(ReceiptViewFiltersDTO receiptViewFiltersDTO, Pageable pageable, UserInfo loggedUser, String accessToken) {
-    authorizationService.validateAdminRole(receiptViewFiltersDTO.getOrganizationId(), loggedUser);
+    AuthorizationService.isUserEnabledToOrganizationId(receiptViewFiltersDTO.getOrganizationId(), loggedUser);
     return receiptViewMapper.mapToPagedReceiptView(receiptClient.getReceipts(receiptViewFiltersDTO, pageable, accessToken));
   }
 

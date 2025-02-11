@@ -12,6 +12,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
+import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageRequest;
@@ -25,9 +26,6 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 class ReceiptViewServiceImplTest {
 
   @Mock
-  private AuthorizationService authorizationServiceMock;
-
-  @Mock
   private ReceiptClient receiptClientMock;
 
   @Mock
@@ -39,7 +37,7 @@ class ReceiptViewServiceImplTest {
 
   @BeforeEach
   void setUp() {
-    receiptViewService = new ReceiptViewServiceImpl(authorizationServiceMock, receiptClientMock, receiptViewMapperMock);
+    receiptViewService = new ReceiptViewServiceImpl(receiptClientMock, receiptViewMapperMock);
   }
 
   @Test
@@ -53,23 +51,27 @@ class ReceiptViewServiceImplTest {
     PagedModelReceiptView pagedModelReceiptView = new PagedModelReceiptView();
     PagedReceiptView expectedPagedReceiptView = new PagedReceiptView();
 
-    Mockito.doNothing().when(authorizationServiceMock).validateAdminRole(filtersDTO.getOrganizationId(), loggedUser);
+    try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(
+      AuthorizationService.class)) {
+      authorizationServiceMockedStatic.when(() -> AuthorizationService.isUserEnabledToOrganizationId(filtersDTO.getOrganizationId(), loggedUser))
+        .thenReturn(true);
 
-    Mockito.when(receiptClientMock.getReceipts(filtersDTO, pageable, accessToken))
-      .thenReturn(pagedModelReceiptView);
+      Mockito.when(receiptClientMock.getReceipts(filtersDTO, pageable, accessToken))
+        .thenReturn(pagedModelReceiptView);
 
-    Mockito.when(receiptViewMapperMock.mapToPagedReceiptView(pagedModelReceiptView))
-      .thenReturn(expectedPagedReceiptView);
+      Mockito.when(receiptViewMapperMock.mapToPagedReceiptView(pagedModelReceiptView))
+        .thenReturn(expectedPagedReceiptView);
 
-    PagedReceiptView result = receiptViewService.getReceipts(filtersDTO, pageable, loggedUser, accessToken);
+      PagedReceiptView result = receiptViewService.getReceipts(filtersDTO, pageable, loggedUser, accessToken);
 
-    assertNotNull(result);
-    assertSame(expectedPagedReceiptView, result);
+      assertNotNull(result);
+      assertSame(expectedPagedReceiptView, result);
 
-    Mockito.verify(authorizationServiceMock).validateAdminRole(filtersDTO.getOrganizationId(), loggedUser);
-    Mockito.verify(receiptClientMock).getReceipts(filtersDTO, pageable, accessToken);
-    Mockito.verify(receiptViewMapperMock).mapToPagedReceiptView(pagedModelReceiptView);
-    Mockito.verifyNoMoreInteractions(authorizationServiceMock, receiptClientMock, receiptViewMapperMock);
+      authorizationServiceMockedStatic.verify(() -> AuthorizationService.isUserEnabledToOrganizationId(filtersDTO.getOrganizationId(), loggedUser));
+      Mockito.verify(receiptClientMock).getReceipts(filtersDTO, pageable, accessToken);
+      Mockito.verify(receiptViewMapperMock).mapToPagedReceiptView(pagedModelReceiptView);
+      Mockito.verifyNoMoreInteractions(receiptClientMock, receiptViewMapperMock);
+    }
   }
 
   @Test
@@ -79,15 +81,15 @@ class ReceiptViewServiceImplTest {
     ReceiptViewFiltersDTO filtersDTO = new ReceiptViewFiltersDTO(1L, "ORIGIN", null, "IUV123", "IUR456", "IUD789", null, null, null);
     Pageable pageable = PageRequest.of(0, 10);
 
-    Mockito.doThrow(new AuthorizationDeniedException("Access denied"))
-      .when(authorizationServiceMock).validateAdminRole(filtersDTO.getOrganizationId(), loggedUser);
+    try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
+      authorizationServiceMockedStatic.when(() -> AuthorizationService.isUserEnabledToOrganizationId(filtersDTO.getOrganizationId(), loggedUser))
+        .thenThrow(new AuthorizationDeniedException("Access denied"));
 
-    Assertions.assertThrows(AuthorizationDeniedException.class, () ->
-      receiptViewService.getReceipts(filtersDTO, pageable, loggedUser, accessToken));
+      Assertions.assertThrows(AuthorizationDeniedException.class, () ->
+        receiptViewService.getReceipts(filtersDTO, pageable, loggedUser, accessToken));
 
-    Mockito.verify(authorizationServiceMock).validateAdminRole(filtersDTO.getOrganizationId(), loggedUser);
-
-    Mockito.verifyNoMoreInteractions(authorizationServiceMock);
+      authorizationServiceMockedStatic.verify(() -> AuthorizationService.isUserEnabledToOrganizationId(filtersDTO.getOrganizationId(), loggedUser));
+    }
     Mockito.verifyNoInteractions(receiptClientMock, receiptViewMapperMock);
   }
 

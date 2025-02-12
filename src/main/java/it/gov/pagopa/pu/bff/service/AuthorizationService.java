@@ -69,7 +69,7 @@ public class AuthorizationService {
 
   private static Optional<UserOrganizationRoles> getUserOrganizationRoles(Long organizationId, UserInfo loggedUser) {
     return loggedUser.getOrganizations().stream()
-      .filter(o -> organizationId.equals(o.getOrganizationId()))
+      .filter(o -> organizationId.equals(o.getOrganizationId()) && !CollectionUtils.isEmpty(o.getRoles()))
       .findFirst();
   }
 

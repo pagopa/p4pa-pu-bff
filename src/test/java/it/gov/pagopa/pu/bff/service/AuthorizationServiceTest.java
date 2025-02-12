@@ -143,6 +143,63 @@ class AuthorizationServiceTest {
 
     Assertions.assertFalse(adminRole);
   }
+
+  @Test
+  void givenUserEnabledToOrganizationIdWhenIsUserEnabledThenTrue() {
+    UserOrganizationRoles userOrgRole = new UserOrganizationRoles();
+    userOrgRole.setRoles(List.of("TEST"));
+    userOrgRole.setOrganizationId(1L);
+
+    UserInfo userInfo = new UserInfo();
+    userInfo.setOrganizations(List.of(userOrgRole));
+
+    boolean isEnabled = AuthorizationService.isUserEnabledToOrganizationId(1L, userInfo);
+
+    Assertions.assertTrue(isEnabled);
+  }
+
+  @Test
+  void givenUserNotEnabledToOrganizationIdWhenIsUserEnabledThenFalse() {
+    UserOrganizationRoles userOrgRole = new UserOrganizationRoles();
+    userOrgRole.setRoles(List.of("TEST"));
+    userOrgRole.setOrganizationId(1L);
+
+    UserInfo userInfo = new UserInfo();
+    userInfo.setOrganizations(List.of(userOrgRole));
+
+    boolean isEnabled = AuthorizationService.isUserEnabledToOrganizationId(2L, userInfo);
+
+    Assertions.assertFalse(isEnabled);
+  }
+
+  @Test
+  void givenUserWithEmptyRolesWhenIsUserEnabledThenFalse() {
+    UserOrganizationRoles userOrgRole = new UserOrganizationRoles();
+    userOrgRole.setRoles(List.of());
+    userOrgRole.setOrganizationId(1L);
+
+    UserInfo userInfo = new UserInfo();
+    userInfo.setOrganizations(List.of(userOrgRole));
+
+    boolean isEnabled = AuthorizationService.isUserEnabledToOrganizationId(1L, userInfo);
+
+    Assertions.assertFalse(isEnabled);
+  }
+
+  @Test
+  void givenUserWithNullRolesWhenIsUserEnabledThenFalse() {
+    UserOrganizationRoles userOrgRole = new UserOrganizationRoles();
+    userOrgRole.setRoles(null);
+    userOrgRole.setOrganizationId(1L);
+
+    UserInfo userInfo = new UserInfo();
+    userInfo.setOrganizations(List.of(userOrgRole));
+
+    boolean isEnabled = AuthorizationService.isUserEnabledToOrganizationId(1L, userInfo);
+
+    Assertions.assertFalse(isEnabled);
+  }
+
 }
 
 

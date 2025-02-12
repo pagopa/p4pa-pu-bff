@@ -539,7 +539,7 @@
             "type" : "array",
             "items" : {
               "type" : "string",
-              "enum" : [ "RECEIPT", "RECEIPT_PAGOPA", "PAYMENTS_REPORTING", "PAYMENTS_REPORTING_PAGOPA", "TREASURY_OPI", "TREASURY_CSV", "TREASURY_XLS", "TREASURY_POSTE" ]
+              "enum" : [ "RECEIPT", "RECEIPT_PAGOPA", "PAYMENTS_REPORTING", "PAYMENTS_REPORTING_PAGOPA", "TREASURY_OPI", "TREASURY_CSV", "TREASURY_XLS", "TREASURY_POSTE", "DP_INSTALLMENTS" ]
             }
           }
         }, {
@@ -720,7 +720,8 @@
           "in" : "query",
           "required" : true,
           "schema" : {
-            "type" : "string"
+            "type" : "string",
+            "enum" : [ "RECEIPT_PAGOPA", "RECEIPT_FILE" ]
           }
         }, {
           "name" : "operatorExternalUserId",
@@ -1427,7 +1428,8 @@
             "format" : "int64"
           },
           "receiptOrigin" : {
-            "type" : "string"
+            "type" : "string",
+            "enum" : [ "RECEIPT_PAGOPA", "RECEIPT_FILE" ]
           },
           "iuv" : {
             "type" : "string"

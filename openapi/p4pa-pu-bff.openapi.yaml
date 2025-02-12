@@ -286,7 +286,7 @@ paths:
           in: query
           required: true
           schema:
-            type: string
+            type: 'ReceiptOriginType'
         - name: operatorExternalUserId
           in: query
           required: true

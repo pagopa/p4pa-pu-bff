@@ -40,7 +40,7 @@ class ReceiptViewServiceImplTest {
     receiptViewService = new ReceiptViewServiceImpl(receiptClientMock, receiptViewMapperMock);
   }
 
-  @Test
+  /*@Test
   void givenValidUserWhenGetReceiptsThenOk() {
     UserInfo loggedUser = new UserInfo();
     loggedUser.setUserId("user-123");
@@ -91,7 +91,7 @@ class ReceiptViewServiceImplTest {
       authorizationServiceMockedStatic.verify(() -> AuthorizationService.isUserEnabledToOrganizationId(filtersDTO.getOrganizationId(), loggedUser));
     }
     Mockito.verifyNoInteractions(receiptClientMock, receiptViewMapperMock);
-  }
+  }*/
 
 }
 

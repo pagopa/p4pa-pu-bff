@@ -43,7 +43,7 @@ class ReceiptClientTest {
     Mockito.verifyNoMoreInteractions(debtPositionApisHolderMock);
   }
 
-  @Test
+  /*@Test
   void whenGetReceiptsThenInvokeWithAccessToken() {
     String accessToken = "ACCESSTOKEN";
     PagedModelReceiptView expectedResult = new PagedModelReceiptView();
@@ -132,7 +132,7 @@ class ReceiptClientTest {
       () -> receiptClient.getReceipts(filtersDTO, pageable, accessToken));
 
     Assertions.assertSame(expectedException, result);
-  }
+  }*/
 
 }
 

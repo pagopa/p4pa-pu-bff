@@ -94,6 +94,7 @@ class IngestionFlowFileMapperTest {
     page.setNumber(4L);
     pagedModelIngestionFlowFile.setPage(page);
 
+    Mockito.when(authzClientMock.getUserInfoFromMappedExternalUserId(operatorExternalId,accessToken)).thenReturn(userInfo);
     Mockito.when(authzClientMock.getUserInfoFromMappedExternalUserId(otherOperatorExternalId,accessToken)).thenReturn(otherUserInfo);
 
     PagedIngestionFlowFile result = mapper.mapToPagedIngestionFlowFile(
@@ -128,6 +129,7 @@ class IngestionFlowFileMapperTest {
       otherUserInfo.getFamilyName() + " " +otherUserInfo.getName(),
       0L,
       it.gov.pagopa.pu.processexecutions.dto.generated.IngestionFlowFile.StatusEnum.ERROR, "totalRows");
+    Mockito.verify(authzClientMock).getUserInfoFromMappedExternalUserId(operatorExternalId,accessToken);
     Mockito.verify(authzClientMock, Mockito.times(3)).getUserInfoFromMappedExternalUserId(otherOperatorExternalId,accessToken);
     Mockito.verifyNoMoreInteractions(authzClientMock);
   }

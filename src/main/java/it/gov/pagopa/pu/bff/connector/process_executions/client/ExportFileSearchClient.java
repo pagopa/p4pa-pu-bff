@@ -7,7 +7,6 @@ import it.gov.pagopa.pu.processexecutions.dto.generated.PagedModelExportFile;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
 
 @Service
 @Slf4j

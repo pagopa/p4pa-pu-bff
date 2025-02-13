@@ -1,9 +1,6 @@
 package it.gov.pagopa.pu.bff.util;
 
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
-import java.time.LocalDateTime;
-import java.time.OffsetDateTime;
-import java.time.ZoneId;
 
 public class UserUtils {
 
@@ -11,9 +8,9 @@ public class UserUtils {
   }
 
   public static String getOperator(String operatorExternalId, UserInfo userInfo,
-    UserInfo userInfoFromMappedExternaUserId) {
+    UserInfo userInfoFromMappedExternalUserId) {
     if(!operatorExternalId.equals(userInfo.getMappedExternalUserId())){
-      return userInfoFromMappedExternaUserId!=null?getOperatorString(userInfoFromMappedExternaUserId):operatorExternalId;
+      return userInfoFromMappedExternalUserId!=null?getOperatorString(userInfoFromMappedExternalUserId):operatorExternalId;
     }else{
       return getOperatorString(userInfo);
     }

@@ -79,6 +79,8 @@ class ExportFileMapperTest {
     pagedModelExportFile.setPage(page);
 
     Mockito.when(authzClientMock.getUserInfoFromMappedExternalUserId(
+      operatorExternalId, accessToken)).thenReturn(userInfo);
+    Mockito.when(authzClientMock.getUserInfoFromMappedExternalUserId(
       otherOperatorExternalId, accessToken)).thenReturn(otherUserInfo);
 
     PagedExportFile result = mapper.mapToPagedExportFile(
@@ -103,6 +105,8 @@ class ExportFileMapperTest {
       otherUserInfo.getFamilyName() + " " + otherUserInfo.getName(),
       it.gov.pagopa.pu.processexecutions.dto.generated.ExportFile.StatusEnum.ERROR,
       "totalRows");
+    Mockito.verify(authzClientMock)
+      .getUserInfoFromMappedExternalUserId(operatorExternalId, accessToken);
     Mockito.verify(authzClientMock)
       .getUserInfoFromMappedExternalUserId(otherOperatorExternalId, accessToken);
     Mockito.verifyNoMoreInteractions(authzClientMock);

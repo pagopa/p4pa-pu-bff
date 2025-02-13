@@ -48,7 +48,7 @@ class ExportFileMapperTest {
     userInfo.setFamilyName("familyName");
     userInfo.setName("name");
     UserInfo otherUserInfo = new UserInfo();
-    otherUserInfo.setMappedExternalUserId(operatorExternalId);
+    otherUserInfo.setMappedExternalUserId(otherOperatorExternalId);
     otherUserInfo.setFamilyName("otherFamilyName");
     otherUserInfo.setName("otherName");
     PagedModelExportFile pagedModelExportFile = new PagedModelExportFile();
@@ -78,7 +78,7 @@ class ExportFileMapperTest {
     page.setNumber(4L);
     pagedModelExportFile.setPage(page);
 
-    Mockito.when(authzClientMock.getUserInfoFromMappedExternaUserId(
+    Mockito.when(authzClientMock.getUserInfoFromMappedExternalUserId(
       otherOperatorExternalId, accessToken)).thenReturn(otherUserInfo);
 
     PagedExportFile result = mapper.mapToPagedExportFile(
@@ -96,15 +96,15 @@ class ExportFileMapperTest {
     checkExportFile(exportFileMatchingOperator,
       result.getContent().getFirst(),
       userInfo.getFamilyName() + " " + userInfo.getName(),
-      it.gov.pagopa.pu.bff.dto.generated.ExportFile.StatusEnum.COMPLETED
+      it.gov.pagopa.pu.processexecutions.dto.generated.ExportFile.StatusEnum.COMPLETED
     );
     checkExportFile(flowFileWithNoTotalRows,
       result.getContent().get(1),
       otherUserInfo.getFamilyName() + " " + otherUserInfo.getName(),
-      it.gov.pagopa.pu.bff.dto.generated.ExportFile.StatusEnum.ERROR,
+      it.gov.pagopa.pu.processexecutions.dto.generated.ExportFile.StatusEnum.ERROR,
       "totalRows");
     Mockito.verify(authzClientMock)
-      .getUserInfoFromMappedExternaUserId(otherOperatorExternalId, accessToken);
+      .getUserInfoFromMappedExternalUserId(otherOperatorExternalId, accessToken);
     Mockito.verifyNoMoreInteractions(authzClientMock);
   }
 
@@ -112,7 +112,7 @@ class ExportFileMapperTest {
     ExportFile expectedExportFile,
     it.gov.pagopa.pu.bff.dto.generated.ExportFile mappedIngestionFlowFile,
     String expectedOperator,
-    it.gov.pagopa.pu.bff.dto.generated.ExportFile.StatusEnum expectedStatus,
+    it.gov.pagopa.pu.processexecutions.dto.generated.ExportFile.StatusEnum expectedStatus,
     String... nullFields) {
     TestUtils.checkNotNullFields(mappedIngestionFlowFile, nullFields);
     assertEquals(expectedExportFile.getExportFileId(),
@@ -184,7 +184,7 @@ class ExportFileMapperTest {
     checkExportFile(exportFileMatchingOperator,
       result.getContent().getFirst(),
       userInfo.getFamilyName() + " " + userInfo.getName(),
-      it.gov.pagopa.pu.bff.dto.generated.ExportFile.StatusEnum.COMPLETED
+      it.gov.pagopa.pu.processexecutions.dto.generated.ExportFile.StatusEnum.COMPLETED
     );
   }
 }

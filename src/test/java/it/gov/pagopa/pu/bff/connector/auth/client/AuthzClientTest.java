@@ -49,7 +49,7 @@ class AuthzClientTest {
     when(authzApiMock.getUserInfoFromMappedExternaUserId(mappedExternalUserId))
       .thenReturn(expectedResult);
 
-    UserInfo result = authzClient.getUserInfoFromMappedExternaUserId(mappedExternalUserId,accessToken);
+    UserInfo result = authzClient.getUserInfoFromMappedExternalUserId(mappedExternalUserId,accessToken);
 
     assertSame(expectedResult, result);
   }
@@ -64,7 +64,7 @@ class AuthzClientTest {
     when(authzApiMock.getUserInfoFromMappedExternaUserId(mappedExternalUserId))
       .thenThrow(new HttpClientErrorException(HttpStatus.NOT_FOUND));
 
-    UserInfo result = authzClient.getUserInfoFromMappedExternaUserId(mappedExternalUserId,accessToken);
+    UserInfo result = authzClient.getUserInfoFromMappedExternalUserId(mappedExternalUserId,accessToken);
 
     Assertions.assertNull(result);
   }
@@ -82,7 +82,7 @@ class AuthzClientTest {
       .thenThrow(expectedException);
 
     HttpClientErrorException result = Assertions.assertThrows(expectedException.getClass(),
-      () -> authzClient.getUserInfoFromMappedExternaUserId(mappedExternalUserId,accessToken));
+      () -> authzClient.getUserInfoFromMappedExternalUserId(mappedExternalUserId,accessToken));
 
     Assertions.assertSame(expectedException, result);
   }
@@ -99,7 +99,7 @@ class AuthzClientTest {
       .thenThrow(expectedException);
 
     RuntimeException result = Assertions.assertThrows(expectedException.getClass(),
-      () -> authzClient.getUserInfoFromMappedExternaUserId(mappedExternalUserId,accessToken));
+      () -> authzClient.getUserInfoFromMappedExternalUserId(mappedExternalUserId,accessToken));
 
     Assertions.assertSame(expectedException, result);
   }

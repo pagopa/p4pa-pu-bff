@@ -25,7 +25,7 @@ public class ExportFileSearchClient {
       return processExecutionsApisHolder.getExportFileSearchControllerApi(accessToken)
         .crudExportFilesFindByOrganizationIDFlowTypeCreateDate(
           String.valueOf(exportFileFilters.getOrganizationId()),
-          exportFileFilters.getFlowFileTypes().toString(),
+          exportFileFilters.getFlowFileType().toString(),
           exportFileFilters.getCreationDateFrom(),
           exportFileFilters.getCreationDateTo(),
           exportFileFilters.getStatus(),
@@ -34,14 +34,10 @@ public class ExportFileSearchClient {
           PageUtils.getPageNumber(pageable),
           PageUtils.getPageSize(pageable),
           PageUtils.getSortList(pageable));
-    } catch (HttpClientErrorException e) {
-      log.error("Error while retrieving ingestion flow files", e);
-      throw e;
     } catch (Exception e) {
       log.error("Unexpected error while retrieving ingestion flow files", e);
       throw e;
     }
   }
-
 
 }

@@ -362,13 +362,11 @@ paths:
           schema:
             type: integer
             format: int64
-        - name: flowFileTypes
+        - name: flowFileType
           in: query
           required: true
           schema:
-            type: array
-            items:
-              type: 'ExportFileType'
+            type: 'ExportFileType'
         - name: creationDateFrom
           in: query
           schema:
@@ -695,12 +693,7 @@ components:
           type: integer
           format: int64
         status:
-          type: string
-          enum:
-            - UPLOADED
-            - PROCESSING
-            - COMPLETED
-            - ERROR
+          type: 'IngestionFlowFileStatus'
     PagedExportFile:
       type: object
       required:
@@ -733,7 +726,6 @@ components:
         - creationDate
         - operator
         - status
-        - fileSize
       type: object
       properties:
         exportFileId:
@@ -750,10 +742,4 @@ components:
         operator:
           type: string
         status:
-          type: string
-          enum:
-            - REQUESTED
-            - PROCESSING
-            - COMPLETED
-            - EXPIRED
-            - ERROR
+          type: 'ExportFileStatus'

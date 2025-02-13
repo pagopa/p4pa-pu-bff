@@ -94,7 +94,7 @@ class IngestionFlowFileMapperTest {
     page.setNumber(4L);
     pagedModelIngestionFlowFile.setPage(page);
 
-    Mockito.when(authzClientMock.getUserInfoFromMappedExternaUserId(otherOperatorExternalId,accessToken)).thenReturn(otherUserInfo);
+    Mockito.when(authzClientMock.getUserInfoFromMappedExternalUserId(otherOperatorExternalId,accessToken)).thenReturn(otherUserInfo);
 
     PagedIngestionFlowFile result = mapper.mapToPagedIngestionFlowFile(
       pagedModelIngestionFlowFile,userInfo,accessToken);
@@ -112,28 +112,28 @@ class IngestionFlowFileMapperTest {
       result.getContent().getFirst(),
       userInfo.getFamilyName() + " " +userInfo.getName(),
       2L,
-      it.gov.pagopa.pu.bff.dto.generated.IngestionFlowFile.StatusEnum.COMPLETED);
+      it.gov.pagopa.pu.processexecutions.dto.generated.IngestionFlowFile.StatusEnum.COMPLETED);
     checkIngestionFlowFile(flowFileWithNoCorrectlyImportedRows,
       result.getContent().get(1),
       otherUserInfo.getFamilyName() + " " +otherUserInfo.getName(),
       10L,
-      it.gov.pagopa.pu.bff.dto.generated.IngestionFlowFile.StatusEnum.UPLOADED, "correctlyImportedRows");
+      it.gov.pagopa.pu.processexecutions.dto.generated.IngestionFlowFile.StatusEnum.UPLOADED, "correctlyImportedRows");
     checkIngestionFlowFile(flowFileWithNoTotalAndCorrectlyImportedRows,
       result.getContent().get(2),
       otherUserInfo.getFamilyName() + " " +otherUserInfo.getName(),
       0L,
-      it.gov.pagopa.pu.bff.dto.generated.IngestionFlowFile.StatusEnum.PROCESSING, "correctlyImportedRows","totalRows");
+      it.gov.pagopa.pu.processexecutions.dto.generated.IngestionFlowFile.StatusEnum.PROCESSING, "correctlyImportedRows","totalRows");
     checkIngestionFlowFile(flowFileWithNoTotalRows,
       result.getContent().get(3),
       otherUserInfo.getFamilyName() + " " +otherUserInfo.getName(),
       0L,
-      it.gov.pagopa.pu.bff.dto.generated.IngestionFlowFile.StatusEnum.ERROR, "totalRows");
-    Mockito.verify(authzClientMock, Mockito.times(3)).getUserInfoFromMappedExternaUserId(otherOperatorExternalId,accessToken);
+      it.gov.pagopa.pu.processexecutions.dto.generated.IngestionFlowFile.StatusEnum.ERROR, "totalRows");
+    Mockito.verify(authzClientMock, Mockito.times(3)).getUserInfoFromMappedExternalUserId(otherOperatorExternalId,accessToken);
     Mockito.verifyNoMoreInteractions(authzClientMock);
   }
 
   private void checkIngestionFlowFile(
-    IngestionFlowFile expectedIngestionFlowFile, it.gov.pagopa.pu.bff.dto.generated.IngestionFlowFile mappedIngestionFlowFile, String expectedOperator, Long expectedDiscardedRows, it.gov.pagopa.pu.bff.dto.generated.IngestionFlowFile.StatusEnum expectedStatus, String... nullFields){
+    IngestionFlowFile expectedIngestionFlowFile, it.gov.pagopa.pu.bff.dto.generated.IngestionFlowFile mappedIngestionFlowFile, String expectedOperator, Long expectedDiscardedRows, it.gov.pagopa.pu.processexecutions.dto.generated.IngestionFlowFile.StatusEnum expectedStatus, String... nullFields){
     TestUtils.checkNotNullFields(mappedIngestionFlowFile, nullFields);
     assertEquals(expectedIngestionFlowFile.getIngestionFlowFileId(), mappedIngestionFlowFile.getIngestionFlowFileId());
     assertEquals(expectedIngestionFlowFile.getFileName(), mappedIngestionFlowFile.getFileName());
@@ -204,6 +204,6 @@ class IngestionFlowFileMapperTest {
       result.getContent().getFirst(),
       userInfo.getFamilyName() + " " +userInfo.getName(),
       2L,
-      it.gov.pagopa.pu.bff.dto.generated.IngestionFlowFile.StatusEnum.COMPLETED);
+      it.gov.pagopa.pu.processexecutions.dto.generated.IngestionFlowFile.StatusEnum.COMPLETED);
   }
 }

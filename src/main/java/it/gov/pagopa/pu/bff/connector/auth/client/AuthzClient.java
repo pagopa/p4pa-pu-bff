@@ -17,7 +17,7 @@ public class AuthzClient {
     this.authApisHolder = authApisHolder;
   }
 
-  public UserInfo getUserInfoFromMappedExternaUserId(String mappedExternalUserId, String accessToken) {
+  public UserInfo getUserInfoFromMappedExternalUserId(String mappedExternalUserId, String accessToken) {
     try{
       return authApisHolder.getAuthzApi(accessToken)
         .getUserInfoFromMappedExternaUserId(mappedExternalUserId);

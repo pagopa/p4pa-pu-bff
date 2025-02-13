@@ -38,13 +38,13 @@ class ExportFileServiceImplTest {
   void givenAdminUserWhenGetExportFilesThenOk() {
     String accessToken = "ACCESSTOKEN";
     long organizationId = 1L;
-    List<FlowFileTypeEnum> flowFileTypes = List.of(FlowFileTypeEnum.CLASSIFICATIONS);
+    FlowFileTypeEnum flowFileType = FlowFileTypeEnum.CLASSIFICATIONS;
     OffsetDateTime creationDateFrom = OffsetDateTime.now().minusDays(10);
     OffsetDateTime creationDateTo = OffsetDateTime.now().plusDays(10);
     String status = "status";
     String fileName = "filename";
     ExportFileFiltersDTO exportFileFilters = new ExportFileFiltersDTO(
-      organizationId, flowFileTypes, creationDateFrom, creationDateTo, status,
+      organizationId, flowFileType, creationDateFrom, creationDateTo, status,
       fileName);
     UserInfo userInfo = new UserInfo();
     PagedModelExportFile pagedModelExportFile = new PagedModelExportFile();
@@ -76,13 +76,13 @@ class ExportFileServiceImplTest {
   void givenNoAdminUserWhenGetIngestionFlowFilesThenOk(){
     String accessToken="ACCESSTOKEN";
     long organizationId = 1L;
-    List<FlowFileTypeEnum> flowFileTypes = List.of(FlowFileTypeEnum.CLASSIFICATIONS);
+    FlowFileTypeEnum flowFileType = FlowFileTypeEnum.CLASSIFICATIONS;
     OffsetDateTime creationDateFrom = OffsetDateTime.now().minusDays(10);
     OffsetDateTime creationDateTo = OffsetDateTime.now().plusDays(10);
     String status = "status";
     String fileName = "filename";
     ExportFileFiltersDTO exportFileFilters = new ExportFileFiltersDTO(
-      organizationId, flowFileTypes, creationDateFrom, creationDateTo, status,
+      organizationId, flowFileType, creationDateFrom, creationDateTo, status,
       fileName);
     String operatorExternalId = "operatorExternalId";
     UserInfo userInfo = new UserInfo();

@@ -2,10 +2,10 @@ package it.gov.pagopa.pu.bff.controller;
 
 import it.gov.pagopa.pu.bff.dto.IngestionFlowFileFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.generated.IngestionFlowFile;
-import it.gov.pagopa.pu.bff.dto.generated.IngestionFlowFile.StatusEnum;
 import it.gov.pagopa.pu.bff.dto.generated.PagedIngestionFlowFile;
 import it.gov.pagopa.pu.bff.service.ingestion_flow_file.IngestionFlowFileService;
 import it.gov.pagopa.pu.processexecutions.dto.generated.IngestionFlowFile.FlowFileTypeEnum;
+import it.gov.pagopa.pu.processexecutions.dto.generated.IngestionFlowFile.StatusEnum;
 import java.time.OffsetDateTime;
 import java.util.List;
 import org.junit.jupiter.api.Assertions;

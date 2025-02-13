@@ -2,10 +2,10 @@ package it.gov.pagopa.pu.bff.controller;
 
 import it.gov.pagopa.pu.bff.dto.ExportFileFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.generated.ExportFile;
-import it.gov.pagopa.pu.bff.dto.generated.ExportFile.StatusEnum;
 import it.gov.pagopa.pu.bff.dto.generated.PagedExportFile;
 import it.gov.pagopa.pu.bff.service.export_flow_file.ExportFileService;
 import it.gov.pagopa.pu.processexecutions.dto.generated.ExportFile.FlowFileTypeEnum;
+import it.gov.pagopa.pu.processexecutions.dto.generated.ExportFile.StatusEnum;
 import java.time.OffsetDateTime;
 import java.util.List;
 import org.junit.jupiter.api.Assertions;
@@ -44,13 +44,13 @@ class ExportFileControllerTest {
   @Test
   void givenCorrectRequestWhenGetExportFilesThenOk() {
     long organizationId = 1L;
-    List<FlowFileTypeEnum> flowFileTypes = List.of(FlowFileTypeEnum.CLASSIFICATIONS);
+    FlowFileTypeEnum flowFileType = FlowFileTypeEnum.CLASSIFICATIONS;
     OffsetDateTime creationDateFrom = OffsetDateTime.now().minusDays(10);
     OffsetDateTime creationDateTo = OffsetDateTime.now().plusDays(10);
     String status = "status";
     String fileName = "filename";
     ExportFileFiltersDTO expectedFilter = new ExportFileFiltersDTO(
-      organizationId, flowFileTypes, creationDateFrom, creationDateTo, status,
+      organizationId, flowFileType, creationDateFrom, creationDateTo, status,
       fileName);
     PagedExportFile expectedResult = new PagedExportFile();
     expectedResult.setContent(List.of(ExportFile.builder()
@@ -73,7 +73,7 @@ class ExportFileControllerTest {
       .thenReturn(expectedResult);
 
     ResponseEntity<PagedExportFile> response = exportFileController.getExportFiles(organizationId,
-      flowFileTypes,creationDateFrom,creationDateTo,status,fileName,
+      flowFileType,creationDateFrom,creationDateTo,status,fileName,
       PageRequest.of(0,10));
 
     Assertions.assertEquals(HttpStatus.OK,response.getStatusCode());

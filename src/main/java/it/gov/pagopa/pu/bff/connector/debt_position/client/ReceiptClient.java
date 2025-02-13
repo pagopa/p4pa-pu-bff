@@ -7,7 +7,6 @@ import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelReceiptView;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
 
 @Service
 @Slf4j
@@ -30,14 +29,11 @@ public class ReceiptClient {
           receiptViewFiltersDTO.getIur(),
           receiptViewFiltersDTO.getIud(),
           receiptViewFiltersDTO.getDebtPositionTypeOrgId(),
-          receiptViewFiltersDTO.getPaymentDateTime().getPaymentDateTimeFrom(),
-          receiptViewFiltersDTO.getPaymentDateTime().getPaymentDateTimeTo(),
+          receiptViewFiltersDTO.getPaymentDateTime().getFrom(),
+          receiptViewFiltersDTO.getPaymentDateTime().getTo(),
           PageUtils.getPageNumber(pageable),
           PageUtils.getPageSize(pageable),
           PageUtils.getSortList(pageable));
-    } catch (HttpClientErrorException e) {
-      log.error("Error retrieving receipts for organizationId: {}", receiptViewFiltersDTO.getOrganizationId(), e);
-      throw e;
     } catch (Exception e) {
       log.error("Unexpected error while retrieving receipts for organizationId: {}", receiptViewFiltersDTO.getOrganizationId(), e);
       throw e;

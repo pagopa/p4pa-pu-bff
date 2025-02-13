@@ -14,7 +14,7 @@ import java.time.OffsetDateTime;
 @AllArgsConstructor
 public class OffsetDateTimeIntervalFilter implements Serializable {
 
-  private OffsetDateTime paymentDateTimeFrom;
-  private OffsetDateTime paymentDateTimeTo;
+  private OffsetDateTime from;
+  private OffsetDateTime to;
 
 }

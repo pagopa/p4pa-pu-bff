@@ -2,10 +2,11 @@ package it.gov.pagopa.pu.bff.service;
 
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.connector.debt_position.client.ReceiptClient;
+import it.gov.pagopa.pu.bff.dto.OffsetDateTimeIntervalFilter;
 import it.gov.pagopa.pu.bff.dto.ReceiptViewFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedReceiptView;
 import it.gov.pagopa.pu.bff.mapper.ReceiptViewMapper;
-import it.gov.pagopa.pu.bff.service.receipts.ReceiptViewServiceImpl;
+import it.gov.pagopa.pu.bff.service.receipt.ReceiptServiceImpl;
 import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelReceiptView;
 import it.gov.pagopa.pu.debtpositions.dto.generated.ReceiptView;
 import org.junit.jupiter.api.Assertions;
@@ -20,11 +21,13 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.authorization.AuthorizationDeniedException;
 
+import java.time.OffsetDateTime;
+
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 
 @ExtendWith(MockitoExtension.class)
-class ReceiptViewServiceImplTest {
+class ReceiptServiceImplTest {
 
   @Mock
   private ReceiptClient receiptClientMock;
@@ -32,13 +35,13 @@ class ReceiptViewServiceImplTest {
   @Mock
   private ReceiptViewMapper receiptViewMapperMock;
 
-  private ReceiptViewServiceImpl receiptViewService;
+  private ReceiptServiceImpl receiptViewService;
 
   private final String accessToken = "TOKEN";
 
   @BeforeEach
   void setUp() {
-    receiptViewService = new ReceiptViewServiceImpl(receiptClientMock, receiptViewMapperMock);
+    receiptViewService = new ReceiptServiceImpl(receiptClientMock, receiptViewMapperMock);
   }
 
   @Test
@@ -47,14 +50,17 @@ class ReceiptViewServiceImplTest {
     loggedUser.setUserId("user-123");
 
     ReceiptView.ReceiptOriginEnum receiptOrigin = ReceiptView.ReceiptOriginEnum.RECEIPT_PAGOPA;
-    ReceiptViewFiltersDTO filtersDTO = new ReceiptViewFiltersDTO(1L, receiptOrigin, null, "IUV123", "IUR456", "IUD789", null, null, null);
+    OffsetDateTime paymentDateTimeFrom = OffsetDateTime.now().minusDays(1);
+    OffsetDateTime paymentDateTimeTo = OffsetDateTime.now();
+    OffsetDateTimeIntervalFilter paymentDateTimeFilter = new OffsetDateTimeIntervalFilter(paymentDateTimeFrom, paymentDateTimeTo);
+
+    ReceiptViewFiltersDTO filtersDTO = new ReceiptViewFiltersDTO(1L, receiptOrigin, null, "IUV123", "IUR456", "IUD789", null, paymentDateTimeFilter);
     Pageable pageable = PageRequest.of(0, 10);
 
     PagedModelReceiptView pagedModelReceiptView = new PagedModelReceiptView();
     PagedReceiptView expectedPagedReceiptView = new PagedReceiptView();
 
-    try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(
-      AuthorizationService.class)) {
+    try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
       authorizationServiceMockedStatic.when(() -> AuthorizationService.isUserEnabledToOrganizationId(filtersDTO.getOrganizationId(), loggedUser))
         .thenReturn(true);
 
@@ -82,7 +88,11 @@ class ReceiptViewServiceImplTest {
     loggedUser.setUserId("user-123");
 
     ReceiptView.ReceiptOriginEnum receiptOrigin = ReceiptView.ReceiptOriginEnum.RECEIPT_PAGOPA;
-    ReceiptViewFiltersDTO filtersDTO = new ReceiptViewFiltersDTO(1L, receiptOrigin, null, "IUV123", "IUR456", "IUD789", null, null, null);
+    OffsetDateTime paymentDateTimeFrom = OffsetDateTime.now().minusDays(1);
+    OffsetDateTime paymentDateTimeTo = OffsetDateTime.now();
+    OffsetDateTimeIntervalFilter paymentDateTimeFilter = new OffsetDateTimeIntervalFilter(paymentDateTimeFrom, paymentDateTimeTo);
+
+    ReceiptViewFiltersDTO filtersDTO = new ReceiptViewFiltersDTO(1L, receiptOrigin, null, "IUV123", "IUR456", "IUD789", null, paymentDateTimeFilter);
     Pageable pageable = PageRequest.of(0, 10);
 
     try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
@@ -98,5 +108,6 @@ class ReceiptViewServiceImplTest {
   }
 
 }
+
 
 

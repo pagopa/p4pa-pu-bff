@@ -1,4 +1,4 @@
-package it.gov.pagopa.pu.bff.service.receipts;
+package it.gov.pagopa.pu.bff.service.receipt;
 
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.connector.debt_position.client.ReceiptClient;
@@ -10,11 +10,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
-public class ReceiptViewServiceImpl implements ReceiptViewService {
+public class ReceiptServiceImpl implements ReceiptService {
   private final ReceiptClient receiptClient;
   private final ReceiptViewMapper receiptViewMapper;
 
-  public ReceiptViewServiceImpl(ReceiptClient receiptClient, ReceiptViewMapper receiptViewMapper) {
+  public ReceiptServiceImpl(ReceiptClient receiptClient, ReceiptViewMapper receiptViewMapper) {
     this.receiptClient = receiptClient;
     this.receiptViewMapper = receiptViewMapper;
   }

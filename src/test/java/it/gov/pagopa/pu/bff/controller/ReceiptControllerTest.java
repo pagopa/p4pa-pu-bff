@@ -1,8 +1,11 @@
 package it.gov.pagopa.pu.bff.controller;
 
+import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
+import it.gov.pagopa.pu.bff.dto.OffsetDateTimeIntervalFilter;
 import it.gov.pagopa.pu.bff.dto.ReceiptViewFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedReceiptView;
-import it.gov.pagopa.pu.bff.service.receipts.ReceiptViewService;
+import it.gov.pagopa.pu.bff.security.SecurityUtils;
+import it.gov.pagopa.pu.bff.service.receipt.ReceiptService;
 import it.gov.pagopa.pu.debtpositions.dto.generated.ReceiptView;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -25,13 +28,13 @@ import java.time.OffsetDateTime;
 import java.util.List;
 
 @ExtendWith(MockitoExtension.class)
-class ReceiptViewControllerTest {
+class ReceiptControllerTest {
 
   @Mock
-  private ReceiptViewService receiptViewServiceMock;
+  private ReceiptService receiptServiceMock;
 
   @InjectMocks
-  private ReceiptViewController receiptViewController;
+  private ReceiptController receiptController;
 
   @BeforeEach
   void setUp() {
@@ -46,9 +49,22 @@ class ReceiptViewControllerTest {
     long organizationId = 1L;
     ReceiptView.ReceiptOriginEnum receiptOrigin = ReceiptView.ReceiptOriginEnum.RECEIPT_PAGOPA;
     String iuv = "IUV123";
+    String iur = "IUR123";
+    String iud = "IUD123";
+    long debtPositionTypeOrgId = 2L;
     Pageable pageable = PageRequest.of(0, 10);
+    OffsetDateTime fromDate = OffsetDateTime.now().minusDays(10);
+    OffsetDateTime toDate = OffsetDateTime.now();
 
-    ReceiptViewFiltersDTO filtersDTO = new ReceiptViewFiltersDTO(organizationId, receiptOrigin, null, iuv, null, null, null, null, null);
+    UserInfo mockUserInfo = new UserInfo();
+    mockUserInfo.setMappedExternalUserId("fakeExternalUser");
+    Mockito.mockStatic(SecurityUtils.class);
+    Mockito.when(SecurityUtils.getLoggedUser()).thenReturn(mockUserInfo);
+    Mockito.when(SecurityUtils.getAccessToken()).thenReturn("fakeAccessToken");
+
+    OffsetDateTimeIntervalFilter paymentDateTimeFilter = new OffsetDateTimeIntervalFilter(fromDate, toDate);
+
+    ReceiptViewFiltersDTO filtersDTO = new ReceiptViewFiltersDTO(organizationId, receiptOrigin, mockUserInfo.getMappedExternalUserId(), iuv, iur, iud, debtPositionTypeOrgId, paymentDateTimeFilter);
 
     PagedReceiptView expectedResult = new PagedReceiptView();
     expectedResult.setContent(List.of(ReceiptView.builder()
@@ -63,16 +79,10 @@ class ReceiptViewControllerTest {
     expectedResult.setTotalPages(1L);
     expectedResult.setNumber(0L);
 
-    Mockito.when(receiptViewServiceMock.getReceipts(
-      Mockito.eq(filtersDTO),
-      Mockito.eq(pageable),
-      Mockito.any(),
-      Mockito.anyString()
-    )).thenReturn(expectedResult);
+    Mockito.when(receiptServiceMock.getReceipts(filtersDTO, pageable, mockUserInfo, "fakeAccessToken"))
+      .thenReturn(expectedResult);
 
-    ResponseEntity<PagedReceiptView> response = receiptViewController.getReceipts(
-      organizationId, receiptOrigin, null, iuv, null, null,
-      null, null, null, pageable);
+    ResponseEntity<PagedReceiptView> response = receiptController.getReceipts(organizationId, receiptOrigin, iuv, iur, iud, debtPositionTypeOrgId, fromDate, toDate, pageable);
 
     Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
     Assertions.assertNotNull(response.getBody());

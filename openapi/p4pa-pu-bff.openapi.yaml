@@ -269,7 +269,7 @@ paths:
         '500':
           description: Internal Server Error
       x-spring-paginated: true
-  /debt-position-types/receipts:
+  /receipts:
     get:
       tags:
         - Receipts
@@ -287,11 +287,6 @@ paths:
           required: true
           schema:
             type: 'ReceiptOriginType'
-        - name: operatorExternalUserId
-          in: query
-          required: true
-          schema:
-            type: string
         - name: iuv
           in: query
           required: false
@@ -313,13 +308,13 @@ paths:
           schema:
             type: integer
             format: int64
-        - name: fromDate
+        - name: paymentDateTimeFrom
           in: query
           required: false
           schema:
             type: string
             format: date-time
-        - name: toDate
+        - name: paymentDateTimeTo
           in: query
           required: false
           schema:

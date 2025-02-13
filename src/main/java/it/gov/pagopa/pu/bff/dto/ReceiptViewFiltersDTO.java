@@ -5,12 +5,11 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.OffsetDateTime;
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class ReceiptViewFiltersDTO {
+
   private Long organizationId;
   private ReceiptView.ReceiptOriginEnum receiptOrigin;
   private String operatorExternalUserId;
@@ -18,6 +17,6 @@ public class ReceiptViewFiltersDTO {
   private String iur;
   private String iud;
   private Long debtPositionTypeOrgId;
-  private OffsetDateTime fromDate;
-  private OffsetDateTime toDate;
+  private OffsetDateTimeIntervalFilter paymentDateTime;
+
 }

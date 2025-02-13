@@ -44,7 +44,7 @@ class ReceiptViewControllerTest {
   @Test
   void givenCorrectRequestWhenGetReceiptsThenOk() {
     long organizationId = 1L;
-    String receiptOrigin = "ORIGIN";
+    ReceiptView.ReceiptOriginEnum receiptOrigin = ReceiptView.ReceiptOriginEnum.RECEIPT_PAGOPA;
     String iuv = "IUV123";
     Pageable pageable = PageRequest.of(0, 10);
 

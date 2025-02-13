@@ -5,6 +5,7 @@ import it.gov.pagopa.pu.bff.dto.ReceiptViewFiltersDTO;
 import it.gov.pagopa.pu.bff.util.PageUtils;
 import it.gov.pagopa.pu.debtpositions.controller.generated.ReceiptViewSearchControllerApi;
 import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelReceiptView;
+import it.gov.pagopa.pu.debtpositions.dto.generated.ReceiptView;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -43,18 +44,19 @@ class ReceiptClientTest {
     Mockito.verifyNoMoreInteractions(debtPositionApisHolderMock);
   }
 
-  /*@Test
+  @Test
   void whenGetReceiptsThenInvokeWithAccessToken() {
     String accessToken = "ACCESSTOKEN";
     PagedModelReceiptView expectedResult = new PagedModelReceiptView();
 
-    ReceiptViewFiltersDTO filtersDTO = new ReceiptViewFiltersDTO(1L, "origin", "operator", "iuv", "iur", "iud", 1L, null, null);
+    ReceiptView.ReceiptOriginEnum receiptOrigin = ReceiptView.ReceiptOriginEnum.RECEIPT_PAGOPA;
+    ReceiptViewFiltersDTO filtersDTO = new ReceiptViewFiltersDTO(1L, receiptOrigin, "operator", "iuv", "iur", "iud", 1L, null, null);
     Pageable pageable = PageRequest.of(0, 10, Sort.unsorted());
 
     when(debtPositionApisHolderMock.getReceiptViewSearchControllerApi(accessToken))
       .thenReturn(receiptViewSearchControllerApiMock);
     when(receiptViewSearchControllerApiMock.crudReceiptsViewFindReceiptsByFilters(
-      String.valueOf(filtersDTO.getOrganizationId()), filtersDTO.getReceiptOrigin(), filtersDTO.getOperatorExternalUserId(),
+      String.valueOf(filtersDTO.getOrganizationId()), filtersDTO.getReceiptOrigin().toString(), filtersDTO.getOperatorExternalUserId(),
       filtersDTO.getIuv(), filtersDTO.getIur(), filtersDTO.getIud(), filtersDTO.getDebtPositionTypeOrgId(),
       filtersDTO.getFromDate(), filtersDTO.getToDate(),
       PageUtils.getPageNumber(pageable), PageUtils.getPageSize(pageable), PageUtils.getSortList(pageable)))
@@ -68,14 +70,15 @@ class ReceiptClientTest {
   @Test
   void givenNoReceiptsFoundWhenGetReceiptsThenReturnNull() {
     String accessToken = "ACCESSTOKEN";
+    ReceiptView.ReceiptOriginEnum receiptOrigin = ReceiptView.ReceiptOriginEnum.RECEIPT_PAGOPA;
 
-    ReceiptViewFiltersDTO filtersDTO = new ReceiptViewFiltersDTO(1L, "origin", "operator", "iuv", "iur", "iud", 1L, null, null);
+    ReceiptViewFiltersDTO filtersDTO = new ReceiptViewFiltersDTO(1L, receiptOrigin, "operator", "iuv", "iur", "iud", 1L, null, null);
     Pageable pageable = PageRequest.of(0, 10, Sort.unsorted());
 
     when(debtPositionApisHolderMock.getReceiptViewSearchControllerApi(accessToken))
       .thenReturn(receiptViewSearchControllerApiMock);
     when(receiptViewSearchControllerApiMock.crudReceiptsViewFindReceiptsByFilters(
-      String.valueOf(filtersDTO.getOrganizationId()), filtersDTO.getReceiptOrigin(), filtersDTO.getOperatorExternalUserId(),
+      String.valueOf(filtersDTO.getOrganizationId()), filtersDTO.getReceiptOrigin().toString(), filtersDTO.getOperatorExternalUserId(),
       filtersDTO.getIuv(), filtersDTO.getIur(), filtersDTO.getIud(), filtersDTO.getDebtPositionTypeOrgId(),
       filtersDTO.getFromDate(), filtersDTO.getToDate(),
       PageUtils.getPageNumber(pageable), PageUtils.getPageSize(pageable), PageUtils.getSortList(pageable)))
@@ -90,14 +93,15 @@ class ReceiptClientTest {
   void givenGenericHttpExceptionWhenGetReceiptsThenThrowIt() {
     String accessToken = "ACCESSTOKEN";
     HttpClientErrorException expectedException = new HttpClientErrorException(HttpStatus.INTERNAL_SERVER_ERROR);
+    ReceiptView.ReceiptOriginEnum receiptOrigin = ReceiptView.ReceiptOriginEnum.RECEIPT_PAGOPA;
 
-    ReceiptViewFiltersDTO filtersDTO = new ReceiptViewFiltersDTO(1L, "origin", "operator", "iuv", "iur", "iud", 1L, null, null);
+    ReceiptViewFiltersDTO filtersDTO = new ReceiptViewFiltersDTO(1L, receiptOrigin, "operator", "iuv", "iur", "iud", 1L, null, null);
     Pageable pageable = PageRequest.of(0, 10, Sort.unsorted());
 
     when(debtPositionApisHolderMock.getReceiptViewSearchControllerApi(accessToken))
       .thenReturn(receiptViewSearchControllerApiMock);
     when(receiptViewSearchControllerApiMock.crudReceiptsViewFindReceiptsByFilters(
-      String.valueOf(filtersDTO.getOrganizationId()), filtersDTO.getReceiptOrigin(), filtersDTO.getOperatorExternalUserId(),
+      String.valueOf(filtersDTO.getOrganizationId()), filtersDTO.getReceiptOrigin().toString(), filtersDTO.getOperatorExternalUserId(),
       filtersDTO.getIuv(), filtersDTO.getIur(), filtersDTO.getIud(), filtersDTO.getDebtPositionTypeOrgId(),
       filtersDTO.getFromDate(), filtersDTO.getToDate(),
       PageUtils.getPageNumber(pageable), PageUtils.getPageSize(pageable), PageUtils.getSortList(pageable)))
@@ -114,14 +118,15 @@ class ReceiptClientTest {
   void givenGenericExceptionWhenGetReceiptsThenThrowIt() {
     String accessToken = "ACCESSTOKEN";
     RuntimeException expectedException = new RuntimeException();
+    ReceiptView.ReceiptOriginEnum receiptOrigin = ReceiptView.ReceiptOriginEnum.RECEIPT_PAGOPA;
 
-    ReceiptViewFiltersDTO filtersDTO = new ReceiptViewFiltersDTO(1L, "origin", "operator", "iuv", "iur", "iud", 1L, null, null);
+    ReceiptViewFiltersDTO filtersDTO = new ReceiptViewFiltersDTO(1L, receiptOrigin, "operator", "iuv", "iur", "iud", 1L, null, null);
     Pageable pageable = PageRequest.of(0, 10, Sort.unsorted());
 
     when(debtPositionApisHolderMock.getReceiptViewSearchControllerApi(accessToken))
       .thenReturn(receiptViewSearchControllerApiMock);
     when(receiptViewSearchControllerApiMock.crudReceiptsViewFindReceiptsByFilters(
-      String.valueOf(filtersDTO.getOrganizationId()), filtersDTO.getReceiptOrigin(), filtersDTO.getOperatorExternalUserId(),
+      String.valueOf(filtersDTO.getOrganizationId()), filtersDTO.getReceiptOrigin().toString(), filtersDTO.getOperatorExternalUserId(),
       filtersDTO.getIuv(), filtersDTO.getIur(), filtersDTO.getIud(), filtersDTO.getDebtPositionTypeOrgId(),
       filtersDTO.getFromDate(), filtersDTO.getToDate(),
       PageUtils.getPageNumber(pageable), PageUtils.getPageSize(pageable), PageUtils.getSortList(pageable)))
@@ -132,7 +137,7 @@ class ReceiptClientTest {
       () -> receiptClient.getReceipts(filtersDTO, pageable, accessToken));
 
     Assertions.assertSame(expectedException, result);
-  }*/
+  }
 
 }
 

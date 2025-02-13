@@ -25,7 +25,7 @@ public class ReceiptClient {
       return debtPositionApisHolder.getReceiptViewSearchControllerApi(accessToken)
         .crudReceiptsViewFindReceiptsByFilters(
           String.valueOf(receiptViewFiltersDTO.getOrganizationId()),
-          receiptViewFiltersDTO.getReceiptOrigin().getValue(),
+          receiptViewFiltersDTO.getReceiptOrigin().toString(),
           receiptViewFiltersDTO.getOperatorExternalUserId(),
           receiptViewFiltersDTO.getIuv(),
           receiptViewFiltersDTO.getIur(),

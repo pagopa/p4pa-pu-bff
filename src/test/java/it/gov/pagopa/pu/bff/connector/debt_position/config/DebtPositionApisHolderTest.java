@@ -3,8 +3,8 @@ package it.gov.pagopa.pu.bff.connector.debt_position.config;
 import it.gov.pagopa.pu.bff.connector.BaseApiHolderTest;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionType;
 import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelDebtPositionTypeWithCount;
+import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelReceiptView;
 import it.gov.pagopa.pu.organization.controller.ApiClient;
-import java.util.Collections;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,6 +14,8 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.web.util.DefaultUriBuilderFactory;
+
+import java.util.Collections;
 
 @ExtendWith(MockitoExtension.class)
 class DebtPositionApisHolderTest extends BaseApiHolderTest {
@@ -37,8 +39,7 @@ class DebtPositionApisHolderTest extends BaseApiHolderTest {
   void verifyNoMoreInteractions() {
     Mockito.verifyNoMoreInteractions(
       restTemplateBuilderMock,
-      restTemplateMock
-    );
+      restTemplateMock);
   }
 
   @Test
@@ -46,18 +47,24 @@ class DebtPositionApisHolderTest extends BaseApiHolderTest {
     assertAuthenticationShouldBeSetInThreadSafeMode(
       accessToken -> debtPositionApisHolder.getDebtPositionTypeControllerApi(accessToken)
         .crudGetDebtpositiontype(String.valueOf(123L)),
-      DebtPositionType.class,
-      debtPositionApisHolder::unload
-    );
+      DebtPositionType.class, debtPositionApisHolder::unload);
   }
 
   @Test
   void whenGetDebtPositionTypeWithCountSearchControllerApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
     assertAuthenticationShouldBeSetInThreadSafeMode(
       accessToken -> debtPositionApisHolder.getDebtPositionTypeWithCountSearchControllerApi(accessToken)
-        .crudDebtPositionTypesWithCountFindByBrokerId(1L,0,0, Collections.emptyList()),
-      PagedModelDebtPositionTypeWithCount.class,
-      debtPositionApisHolder::unload);
+        .crudDebtPositionTypesWithCountFindByBrokerId(1L, 0, 0, Collections.emptyList()),
+      PagedModelDebtPositionTypeWithCount.class, debtPositionApisHolder::unload);
   }
+
+  @Test
+  void whenGetReceiptViewSearchControllerApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
+    assertAuthenticationShouldBeSetInThreadSafeMode(
+      accessToken -> debtPositionApisHolder.getReceiptViewSearchControllerApi(accessToken)
+        .crudReceiptsViewFindReceiptsByFilters("1", "origin", "operator", "iuv", "iur", "iud", 1L, null, null, 0, 10, Collections.emptyList()),
+      PagedModelReceiptView.class, debtPositionApisHolder::unload);
+  }
+
 }
 

@@ -269,6 +269,71 @@ paths:
         '500':
           description: Internal Server Error
       x-spring-paginated: true
+  /receipts:
+    get:
+      tags:
+        - Receipts
+      summary: "Retrieve a page of receipts based on filters"
+      operationId: getReceipts
+      parameters:
+        - name: organizationId
+          in: query
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: receiptOrigin
+          in: query
+          required: true
+          schema:
+            type: 'ReceiptOriginType'
+        - name: iuv
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: iur
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: iud
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: debtPositionTypeOrgId
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int64
+        - name: paymentDateTimeFrom
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date-time
+        - name: paymentDateTimeTo
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date-time
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PagedReceiptView'
+        '401':
+          description: Unauthorized - Missing or invalid token
+        '403':
+          description: Forbidden - Access denied
+        '500':
+          description: Internal Server Error
+      x-spring-paginated: true
   /debt-position-types/{id}:
     get:
       tags:
@@ -639,6 +704,31 @@ components:
         activeOrganizations:
           type: integer
           format: int32
+    PagedReceiptView:
+      type: object
+      required:
+        - content
+        - size
+        - totalElements
+        - totalPages
+        - number
+      properties:
+        content:
+          type: array
+          items:
+            type: 'ReceiptView'
+        size:
+          type: integer
+          format: int64
+        totalElements:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer
+          format: int64
+        number:
+          type: integer
+          format: int64
     PagedIngestionFlowFile:
       type: object
       required:

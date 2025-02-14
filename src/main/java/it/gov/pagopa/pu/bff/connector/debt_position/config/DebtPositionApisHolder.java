@@ -4,6 +4,7 @@ import it.gov.pagopa.pu.debtpositions.controller.ApiClient;
 import it.gov.pagopa.pu.debtpositions.controller.BaseApi;
 import it.gov.pagopa.pu.debtpositions.controller.generated.DebtPositionTypeEntityControllerApi;
 import it.gov.pagopa.pu.debtpositions.controller.generated.DebtPositionTypeWithCountSearchControllerApi;
+import it.gov.pagopa.pu.debtpositions.controller.generated.ReceiptViewSearchControllerApi;
 import jakarta.annotation.PreDestroy;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -17,6 +18,7 @@ public class DebtPositionApisHolder {
 
   private final DebtPositionTypeEntityControllerApi debtPositionTypeEntityControllerApi;
   private final DebtPositionTypeWithCountSearchControllerApi debtPositionTypeWithCountSearchControllerApi;
+  private final ReceiptViewSearchControllerApi receiptViewSearchControllerApi;
   private final ThreadLocal<String> bearerTokenHolder = new ThreadLocal<>();
 
   public DebtPositionApisHolder(
@@ -29,6 +31,7 @@ public class DebtPositionApisHolder {
 
     this.debtPositionTypeEntityControllerApi = new DebtPositionTypeEntityControllerApi(apiClient);
     this.debtPositionTypeWithCountSearchControllerApi = new DebtPositionTypeWithCountSearchControllerApi(apiClient);
+    this.receiptViewSearchControllerApi = new ReceiptViewSearchControllerApi(apiClient);
   }
 
   @PreDestroy
@@ -43,9 +46,15 @@ public class DebtPositionApisHolder {
     return getApi(accessToken, debtPositionTypeEntityControllerApi);
   }
 
-  /** It will return a {@link DebtPositionTypeWithCountSearchControllerApi} instrumented with the provided accessToken. Use null if auth is not required */
-  public DebtPositionTypeWithCountSearchControllerApi getDebtPositionTypeWithCountSearchControllerApi(String accessToken){
+  /**
+   * It will return a {@link DebtPositionTypeWithCountSearchControllerApi} instrumented with the provided accessToken. Use null if auth is not required
+   */
+  public DebtPositionTypeWithCountSearchControllerApi getDebtPositionTypeWithCountSearchControllerApi(String accessToken) {
     return getApi(accessToken, debtPositionTypeWithCountSearchControllerApi);
+  }
+
+  public ReceiptViewSearchControllerApi getReceiptViewSearchControllerApi(String accessToken) {
+    return getApi(accessToken, receiptViewSearchControllerApi);
   }
 
   private <T extends BaseApi> T getApi(String accessToken, T api) {

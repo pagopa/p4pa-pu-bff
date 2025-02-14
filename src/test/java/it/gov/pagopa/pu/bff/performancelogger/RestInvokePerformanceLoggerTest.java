@@ -1,7 +1,6 @@
 package it.gov.pagopa.pu.bff.performancelogger;
 
-import it.gov.pagopa.payhub.auth.performancelogger.PerformanceLoggerTest;
-import it.gov.pagopa.payhub.auth.utils.MemoryAppender;
+import it.gov.pagopa.pu.bff.util.MemoryAppender;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;

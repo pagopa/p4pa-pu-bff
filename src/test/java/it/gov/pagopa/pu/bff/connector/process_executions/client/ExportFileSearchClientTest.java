@@ -5,6 +5,7 @@ import static org.mockito.Mockito.when;
 
 import it.gov.pagopa.pu.bff.connector.process_executions.config.ProcessExecutionsApisHolder;
 import it.gov.pagopa.pu.bff.dto.ExportFileFiltersDTO;
+import it.gov.pagopa.pu.bff.dto.OffsetDateTimeIntervalFilter;
 import it.gov.pagopa.pu.processexecutions.controller.generated.ExportFileSearchControllerApi;
 import it.gov.pagopa.pu.processexecutions.dto.generated.ExportFile.FlowFileTypeEnum;
 import it.gov.pagopa.pu.processexecutions.dto.generated.PagedModelExportFile;
@@ -56,7 +57,7 @@ class ExportFileSearchClientTest {
     String fileName = "filename";
     String operatorExternalId = "operatorExternalId";
     ExportFileFiltersDTO exportFileFilters = new ExportFileFiltersDTO(
-      organizationId, flowFileType, creationDateFrom, creationDateTo, status,
+      organizationId, flowFileType, new OffsetDateTimeIntervalFilter(creationDateFrom, creationDateTo), status,
       fileName);
     List<String> sortList = List.of("sort1,ASC","sort2,DESC");
     String accessToken = "ACCESSTOKEN";
@@ -86,7 +87,7 @@ class ExportFileSearchClientTest {
     String fileName = "filename";
     String operatorExternalId = "operatorExternalId";
     ExportFileFiltersDTO exportFileFilters = new ExportFileFiltersDTO(
-      organizationId, flowFileType, creationDateFrom, creationDateTo, status,
+      organizationId, flowFileType, new OffsetDateTimeIntervalFilter(creationDateFrom, creationDateTo), status,
       fileName);
     String accessToken = "ACCESSTOKEN";
     PagedModelExportFile expectedResult = new PagedModelExportFile();
@@ -114,7 +115,7 @@ class ExportFileSearchClientTest {
     String fileName = "filename";
     String operatorExternalId = "operatorExternalId";
     ExportFileFiltersDTO exportFileFilters = new ExportFileFiltersDTO(
-      organizationId, flowFileType, creationDateFrom, creationDateTo, status,
+      organizationId, flowFileType, new OffsetDateTimeIntervalFilter(creationDateFrom, creationDateTo), status,
       fileName);
     List<String> sortList = List.of("sort1,ASC","sort2,DESC");
     String accessToken = "ACCESSTOKEN";
@@ -146,7 +147,7 @@ class ExportFileSearchClientTest {
     String fileName = "filename";
     String operatorExternalId = "operatorExternalId";
     ExportFileFiltersDTO exportFileFilters = new ExportFileFiltersDTO(
-      organizationId, flowFileType, creationDateFrom, creationDateTo, status,
+      organizationId, flowFileType, new OffsetDateTimeIntervalFilter(creationDateFrom, creationDateTo), status,
       fileName);
     List<String> sortList = List.of("sort1,ASC","sort2,DESC");
     String accessToken = "ACCESSTOKEN";

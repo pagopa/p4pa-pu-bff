@@ -25,8 +25,8 @@ public class ExportFileSearchClient {
         .crudExportFilesFindByOrganizationIDFlowTypeCreateDate(
           String.valueOf(exportFileFilters.getOrganizationId()),
           exportFileFilters.getFlowFileType().toString(),
-          exportFileFilters.getCreationDateFrom(),
-          exportFileFilters.getCreationDateTo(),
+          exportFileFilters.getCreationDate().getFrom(),
+          exportFileFilters.getCreationDate().getTo(),
           exportFileFilters.getStatus(),
           exportFileFilters.getFileName(),
           operatorExternalId,

@@ -3,6 +3,7 @@ package it.gov.pagopa.pu.bff.service.export_flow_file;
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.connector.process_executions.client.ExportFileSearchClient;
 import it.gov.pagopa.pu.bff.dto.ExportFileFiltersDTO;
+import it.gov.pagopa.pu.bff.dto.OffsetDateTimeIntervalFilter;
 import it.gov.pagopa.pu.bff.dto.generated.PagedExportFile;
 import it.gov.pagopa.pu.bff.mapper.ExportFileMapper;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
@@ -43,7 +44,7 @@ class ExportFileServiceImplTest {
     String status = "status";
     String fileName = "filename";
     ExportFileFiltersDTO exportFileFilters = new ExportFileFiltersDTO(
-      organizationId, flowFileType, creationDateFrom, creationDateTo, status,
+      organizationId, flowFileType, new OffsetDateTimeIntervalFilter(creationDateFrom, creationDateTo), status,
       fileName);
     UserInfo userInfo = new UserInfo();
     PagedModelExportFile pagedModelExportFile = new PagedModelExportFile();
@@ -81,7 +82,7 @@ class ExportFileServiceImplTest {
     String status = "status";
     String fileName = "filename";
     ExportFileFiltersDTO exportFileFilters = new ExportFileFiltersDTO(
-      organizationId, flowFileType, creationDateFrom, creationDateTo, status,
+      organizationId, flowFileType, new OffsetDateTimeIntervalFilter(creationDateFrom, creationDateTo), status,
       fileName);
     String operatorExternalId = "operatorExternalId";
     UserInfo userInfo = new UserInfo();

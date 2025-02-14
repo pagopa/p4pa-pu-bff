@@ -1,6 +1,7 @@
 package it.gov.pagopa.pu.bff.controller;
 
 import it.gov.pagopa.pu.bff.dto.ExportFileFiltersDTO;
+import it.gov.pagopa.pu.bff.dto.OffsetDateTimeIntervalFilter;
 import it.gov.pagopa.pu.bff.dto.generated.ExportFile;
 import it.gov.pagopa.pu.bff.dto.generated.PagedExportFile;
 import it.gov.pagopa.pu.bff.service.export_flow_file.ExportFileService;
@@ -50,7 +51,7 @@ class ExportFileControllerTest {
     String status = "status";
     String fileName = "filename";
     ExportFileFiltersDTO expectedFilter = new ExportFileFiltersDTO(
-      organizationId, flowFileType, creationDateFrom, creationDateTo, status,
+      organizationId, flowFileType, new OffsetDateTimeIntervalFilter(creationDateFrom, creationDateTo), status,
       fileName);
     PagedExportFile expectedResult = new PagedExportFile();
     expectedResult.setContent(List.of(ExportFile.builder()

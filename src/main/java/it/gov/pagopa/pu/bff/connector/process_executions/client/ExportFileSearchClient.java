@@ -27,7 +27,7 @@ public class ExportFileSearchClient {
           exportFileFilters.getFlowFileType().toString(),
           exportFileFilters.getCreationDate().getFrom(),
           exportFileFilters.getCreationDate().getTo(),
-          exportFileFilters.getStatus(),
+          exportFileFilters.getStatus().name(),
           exportFileFilters.getFileName(),
           operatorExternalId,
           PageUtils.getPageNumber(pageable),

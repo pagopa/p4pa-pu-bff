@@ -8,6 +8,7 @@ import it.gov.pagopa.pu.bff.dto.ExportFileFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.OffsetDateTimeIntervalFilter;
 import it.gov.pagopa.pu.processexecutions.controller.generated.ExportFileSearchControllerApi;
 import it.gov.pagopa.pu.processexecutions.dto.generated.ExportFile.FlowFileTypeEnum;
+import it.gov.pagopa.pu.processexecutions.dto.generated.ExportFile.StatusEnum;
 import it.gov.pagopa.pu.processexecutions.dto.generated.PagedModelExportFile;
 import java.time.OffsetDateTime;
 import java.util.Collections;
@@ -53,7 +54,7 @@ class ExportFileSearchClientTest {
     FlowFileTypeEnum flowFileType = FlowFileTypeEnum.CLASSIFICATIONS;
     OffsetDateTime creationDateFrom = OffsetDateTime.now().minusDays(10);
     OffsetDateTime creationDateTo = OffsetDateTime.now().plusDays(10);
-    String status = "status";
+    StatusEnum status = StatusEnum.COMPLETED;
     String fileName = "filename";
     String operatorExternalId = "operatorExternalId";
     ExportFileFiltersDTO exportFileFilters = new ExportFileFiltersDTO(
@@ -67,7 +68,7 @@ class ExportFileSearchClientTest {
       .thenReturn(exportFileSearchControllerApi);
     when(exportFileSearchControllerApi.crudExportFilesFindByOrganizationIDFlowTypeCreateDate(
       String.valueOf(organizationId),flowFileType.toString(),creationDateFrom,
-      creationDateTo,status,fileName,operatorExternalId,0,10,sortList))
+      creationDateTo,status.name(),fileName,operatorExternalId,0,10,sortList))
       .thenReturn(expectedResult);
 
     PagedModelExportFile result = exportFileSearchClient.getExportFiles(
@@ -83,7 +84,7 @@ class ExportFileSearchClientTest {
     FlowFileTypeEnum flowFileType = FlowFileTypeEnum.CLASSIFICATIONS;
     OffsetDateTime creationDateFrom = OffsetDateTime.now().minusDays(10);
     OffsetDateTime creationDateTo = OffsetDateTime.now().plusDays(10);
-    String status = "status";
+    StatusEnum status = StatusEnum.COMPLETED;
     String fileName = "filename";
     String operatorExternalId = "operatorExternalId";
     ExportFileFiltersDTO exportFileFilters = new ExportFileFiltersDTO(
@@ -96,7 +97,7 @@ class ExportFileSearchClientTest {
       .thenReturn(exportFileSearchControllerApi);
     when(exportFileSearchControllerApi.crudExportFilesFindByOrganizationIDFlowTypeCreateDate(
       String.valueOf(organizationId),flowFileType.toString(),creationDateFrom,
-      creationDateTo,status,fileName,operatorExternalId,0,null,Collections.emptyList()))
+      creationDateTo,status.name(),fileName,operatorExternalId,0,null,Collections.emptyList()))
       .thenReturn(expectedResult);
 
     PagedModelExportFile result = exportFileSearchClient.getExportFiles(
@@ -111,7 +112,7 @@ class ExportFileSearchClientTest {
     FlowFileTypeEnum flowFileType = FlowFileTypeEnum.CLASSIFICATIONS;
     OffsetDateTime creationDateFrom = OffsetDateTime.now().minusDays(10);
     OffsetDateTime creationDateTo = OffsetDateTime.now().plusDays(10);
-    String status = "status";
+    StatusEnum status = StatusEnum.COMPLETED;
     String fileName = "filename";
     String operatorExternalId = "operatorExternalId";
     ExportFileFiltersDTO exportFileFilters = new ExportFileFiltersDTO(
@@ -125,7 +126,7 @@ class ExportFileSearchClientTest {
       .thenReturn(exportFileSearchControllerApi);
     when(exportFileSearchControllerApi.crudExportFilesFindByOrganizationIDFlowTypeCreateDate(
       String.valueOf(organizationId),flowFileType.toString(),creationDateFrom,
-      creationDateTo,status,fileName,operatorExternalId,0,10,sortList))
+      creationDateTo,status.name(),fileName,operatorExternalId,0,10,sortList))
       .thenThrow(expectedException);
 
     HttpClientErrorException result = Assertions.assertThrows(
@@ -143,7 +144,7 @@ class ExportFileSearchClientTest {
     FlowFileTypeEnum flowFileType = FlowFileTypeEnum.CLASSIFICATIONS;
     OffsetDateTime creationDateFrom = OffsetDateTime.now().minusDays(10);
     OffsetDateTime creationDateTo = OffsetDateTime.now().plusDays(10);
-    String status = "status";
+    StatusEnum status = StatusEnum.COMPLETED;
     String fileName = "filename";
     String operatorExternalId = "operatorExternalId";
     ExportFileFiltersDTO exportFileFilters = new ExportFileFiltersDTO(
@@ -157,7 +158,7 @@ class ExportFileSearchClientTest {
       .thenReturn(exportFileSearchControllerApi);
     when(exportFileSearchControllerApi.crudExportFilesFindByOrganizationIDFlowTypeCreateDate(
       String.valueOf(organizationId),flowFileType.toString(),creationDateFrom,
-      creationDateTo,status,fileName,operatorExternalId,0,10,sortList))
+      creationDateTo,status.name(),fileName,operatorExternalId,0,10,sortList))
       .thenThrow(expectedException);
 
     RuntimeException result = Assertions.assertThrows(

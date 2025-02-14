@@ -48,7 +48,7 @@ class ExportFileControllerTest {
     FlowFileTypeEnum flowFileType = FlowFileTypeEnum.CLASSIFICATIONS;
     OffsetDateTime creationDateFrom = OffsetDateTime.now().minusDays(10);
     OffsetDateTime creationDateTo = OffsetDateTime.now().plusDays(10);
-    String status = "status";
+    StatusEnum status = StatusEnum.COMPLETED;
     String fileName = "filename";
     ExportFileFiltersDTO expectedFilter = new ExportFileFiltersDTO(
       organizationId, flowFileType, new OffsetDateTimeIntervalFilter(creationDateFrom, creationDateTo), status,

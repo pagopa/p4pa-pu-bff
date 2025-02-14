@@ -711,7 +711,8 @@
           "in" : "query",
           "required" : false,
           "schema" : {
-            "type" : "string"
+            "type" : "string",
+            "enum" : [ "UPLOADED", "PROCESSING", "COMPLETED", "ERROR" ]
           }
         }, {
           "name" : "fileName",
@@ -820,7 +821,8 @@
           "in" : "query",
           "required" : false,
           "schema" : {
-            "type" : "string"
+            "type" : "string",
+            "enum" : [ "REQUESTED", "PROCESSING", "COMPLETED", "EXPIRED", "ERROR" ]
           }
         }, {
           "name" : "fileName",

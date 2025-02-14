@@ -8,6 +8,7 @@ import it.gov.pagopa.pu.bff.dto.generated.PagedExportFile;
 import it.gov.pagopa.pu.bff.mapper.ExportFileMapper;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
 import it.gov.pagopa.pu.processexecutions.dto.generated.ExportFile.FlowFileTypeEnum;
+import it.gov.pagopa.pu.processexecutions.dto.generated.ExportFile.StatusEnum;
 import it.gov.pagopa.pu.processexecutions.dto.generated.PagedModelExportFile;
 import java.time.OffsetDateTime;
 import org.junit.jupiter.api.Assertions;
@@ -41,7 +42,7 @@ class ExportFileServiceImplTest {
     FlowFileTypeEnum flowFileType = FlowFileTypeEnum.CLASSIFICATIONS;
     OffsetDateTime creationDateFrom = OffsetDateTime.now().minusDays(10);
     OffsetDateTime creationDateTo = OffsetDateTime.now().plusDays(10);
-    String status = "status";
+    StatusEnum status = StatusEnum.COMPLETED;
     String fileName = "filename";
     ExportFileFiltersDTO exportFileFilters = new ExportFileFiltersDTO(
       organizationId, flowFileType, new OffsetDateTimeIntervalFilter(creationDateFrom, creationDateTo), status,
@@ -79,7 +80,7 @@ class ExportFileServiceImplTest {
     FlowFileTypeEnum flowFileType = FlowFileTypeEnum.CLASSIFICATIONS;
     OffsetDateTime creationDateFrom = OffsetDateTime.now().minusDays(10);
     OffsetDateTime creationDateTo = OffsetDateTime.now().plusDays(10);
-    String status = "status";
+    StatusEnum status = StatusEnum.COMPLETED;
     String fileName = "filename";
     ExportFileFiltersDTO exportFileFilters = new ExportFileFiltersDTO(
       organizationId, flowFileType, new OffsetDateTimeIntervalFilter(creationDateFrom, creationDateTo), status,

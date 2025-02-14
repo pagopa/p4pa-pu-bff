@@ -6,6 +6,7 @@ import static org.mockito.Mockito.when;
 import it.gov.pagopa.pu.bff.connector.process_executions.config.ProcessExecutionsApisHolder;
 import it.gov.pagopa.pu.bff.dto.IngestionFlowFileFiltersDTO;
 import it.gov.pagopa.pu.processexecutions.controller.generated.IngestionFlowFileSearchControllerApi;
+import it.gov.pagopa.pu.processexecutions.dto.generated.IngestionFlowFile.StatusEnum;
 import it.gov.pagopa.pu.processexecutions.dto.generated.IngestionFlowFile.FlowFileTypeEnum;
 import it.gov.pagopa.pu.processexecutions.dto.generated.PagedModelIngestionFlowFile;
 import java.time.OffsetDateTime;
@@ -52,7 +53,7 @@ class IngestionFlowFileSearchClientTest {
     List<FlowFileTypeEnum> flowFileTypes = List.of(FlowFileTypeEnum.TREASURY_OPI,FlowFileTypeEnum.PAYMENTS_REPORTING);
     OffsetDateTime creationDateFrom = OffsetDateTime.now().minusDays(10);
     OffsetDateTime creationDateTo = OffsetDateTime.now().plusDays(10);
-    String status = "status";
+    StatusEnum status = StatusEnum.COMPLETED;
     String fileName = "filename";
     String operatorExternalId = "operatorExternalId";
     IngestionFlowFileFiltersDTO ingestionFlowFileFilters = new IngestionFlowFileFiltersDTO(
@@ -66,7 +67,7 @@ class IngestionFlowFileSearchClientTest {
       .thenReturn(ingestionFlowFileSearchControllerApiMock);
     when(ingestionFlowFileSearchControllerApiMock.crudIngestionFlowFilesFindByOrganizationIDFlowTypeCreateDate(
       String.valueOf(organizationId),List.of(FlowFileTypeEnum.TREASURY_OPI.toString(),FlowFileTypeEnum.PAYMENTS_REPORTING.toString()),creationDateFrom.toLocalDateTime(),
-      creationDateTo.toLocalDateTime(),status,fileName,operatorExternalId,0,10,sortList))
+      creationDateTo.toLocalDateTime(),status.name(),fileName,operatorExternalId,0,10,sortList))
       .thenReturn(expectedResult);
 
     PagedModelIngestionFlowFile result = ingestionFlowFileSearchClient.getIngestionFlowFiles(
@@ -82,7 +83,7 @@ class IngestionFlowFileSearchClientTest {
     FlowFileTypeEnum flowFileType = FlowFileTypeEnum.TREASURY_OPI;
     OffsetDateTime creationDateFrom = OffsetDateTime.now().minusDays(10);
     OffsetDateTime creationDateTo = OffsetDateTime.now().plusDays(10);
-    String status = "status";
+    StatusEnum status = StatusEnum.COMPLETED;
     String fileName = "filename";
     String operatorExternalId = "operatorExternalId";
     IngestionFlowFileFiltersDTO ingestionFlowFileFilters = new IngestionFlowFileFiltersDTO(
@@ -95,7 +96,7 @@ class IngestionFlowFileSearchClientTest {
       .thenReturn(ingestionFlowFileSearchControllerApiMock);
     when(ingestionFlowFileSearchControllerApiMock.crudIngestionFlowFilesFindByOrganizationIDFlowTypeCreateDate(
       String.valueOf(organizationId),List.of(flowFileType.toString()),creationDateFrom.toLocalDateTime(),
-      creationDateTo.toLocalDateTime(),status,fileName,operatorExternalId,0,null,Collections.emptyList()))
+      creationDateTo.toLocalDateTime(),status.name(),fileName,operatorExternalId,0,null,Collections.emptyList()))
       .thenReturn(expectedResult);
 
     PagedModelIngestionFlowFile result = ingestionFlowFileSearchClient.getIngestionFlowFiles(
@@ -110,7 +111,7 @@ class IngestionFlowFileSearchClientTest {
     FlowFileTypeEnum flowFileType = FlowFileTypeEnum.TREASURY_OPI;
     OffsetDateTime creationDateFrom = OffsetDateTime.now().minusDays(10);
     OffsetDateTime creationDateTo = OffsetDateTime.now().plusDays(10);
-    String status = "status";
+    StatusEnum status = StatusEnum.COMPLETED;
     String fileName = "filename";
     String operatorExternalId = "operatorExternalId";
     IngestionFlowFileFiltersDTO ingestionFlowFileFilters = new IngestionFlowFileFiltersDTO(
@@ -124,7 +125,7 @@ class IngestionFlowFileSearchClientTest {
       .thenReturn(ingestionFlowFileSearchControllerApiMock);
     when(ingestionFlowFileSearchControllerApiMock.crudIngestionFlowFilesFindByOrganizationIDFlowTypeCreateDate(
       String.valueOf(organizationId),List.of(flowFileType.toString()),creationDateFrom.toLocalDateTime(),
-      creationDateTo.toLocalDateTime(),status,fileName,operatorExternalId,0,10,sortList))
+      creationDateTo.toLocalDateTime(),status.name(),fileName,operatorExternalId,0,10,sortList))
       .thenThrow(expectedException);
 
     HttpClientErrorException result = Assertions.assertThrows(
@@ -142,7 +143,7 @@ class IngestionFlowFileSearchClientTest {
     FlowFileTypeEnum flowFileType = FlowFileTypeEnum.TREASURY_OPI;
     OffsetDateTime creationDateFrom = OffsetDateTime.now().minusDays(10);
     OffsetDateTime creationDateTo = OffsetDateTime.now().plusDays(10);
-    String status = "status";
+    StatusEnum status = StatusEnum.COMPLETED;
     String fileName = "filename";
     String operatorExternalId = "operatorExternalId";
     IngestionFlowFileFiltersDTO ingestionFlowFileFilters = new IngestionFlowFileFiltersDTO(
@@ -156,7 +157,7 @@ class IngestionFlowFileSearchClientTest {
       .thenReturn(ingestionFlowFileSearchControllerApiMock);
     when(ingestionFlowFileSearchControllerApiMock.crudIngestionFlowFilesFindByOrganizationIDFlowTypeCreateDate(
       String.valueOf(organizationId),List.of(flowFileType.toString()),creationDateFrom.toLocalDateTime(),
-      creationDateTo.toLocalDateTime(),status,fileName,operatorExternalId,0,10,sortList))
+      creationDateTo.toLocalDateTime(),status.name(),fileName,operatorExternalId,0,10,sortList))
       .thenThrow(expectedException);
 
     RuntimeException result = Assertions.assertThrows(

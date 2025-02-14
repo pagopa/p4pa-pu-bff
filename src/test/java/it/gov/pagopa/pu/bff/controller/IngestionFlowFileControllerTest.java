@@ -47,7 +47,7 @@ class IngestionFlowFileControllerTest {
     List<FlowFileTypeEnum> flowFileTypes = List.of(FlowFileTypeEnum.TREASURY_OPI,FlowFileTypeEnum.PAYMENTS_REPORTING);
     OffsetDateTime creationDateFrom = OffsetDateTime.now().minusDays(10);
     OffsetDateTime creationDateTo = OffsetDateTime.now().plusDays(10);
-    String status = "status";
+    StatusEnum status = StatusEnum.COMPLETED;
     String fileName = "filename";
     IngestionFlowFileFiltersDTO expectedFilter = new IngestionFlowFileFiltersDTO(
       organizationId, flowFileTypes, creationDateFrom, creationDateTo, status,

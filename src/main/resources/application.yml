@@ -2,53 +2,53 @@ server:
   port: "\${SERVER_PORT:8080}"
 
 spring:
-    application:
-      name: ${artifactId}
-      version: ${version}
-    jmx.enabled: true
-    threads:
-      virtual:
-        enabled: "\${VIRTUAL_THREADS_ENABLED:true}"
+  application:
+    name: ${artifactId}
+    version: ${version}
+  jmx.enabled: true
+  threads:
+    virtual:
+      enabled: "\${VIRTUAL_THREADS_ENABLED:true}"
 monitoring:
-    services:
-      auth:
-        serviceName: "P4PA-Auth Service"
-        url: "\${AUTH_SERVER_BASE_URL:}/actuator/health/readiness"
-      organization:
-        serviceName: "P4PA-Organization Service"
-        url: "\${ORGANIZATION_BASE_URL:}/actuator/health/readiness"
+  services:
+    auth:
+      serviceName: "P4PA-Auth Service"
+      url: "\${AUTH_SERVER_BASE_URL:}/actuator/health/readiness"
+    organization:
+      serviceName: "P4PA-Organization Service"
+      url: "\${ORGANIZATION_BASE_URL:}/actuator/health/readiness"
 
 management:
-    endpoints:
-      jmx:
-        exposure.include: "*"
-      web:
-        exposure:
-          include: health, info, prometheus, metrics, caches
-        base-path: /actuator
-    endpoint:
-      health:
-        probes.enabled: true
-        logging.slow-indicator-threshold: "\${HEALTH_ACTUATOR_LOGGER_TIMEOUT_DURATION:PT1S}"
-        group:
-          readiness.include: "*"
-          liveness.include: livenessState,diskSpace,ping
+  endpoints:
+    jmx:
+      exposure.include: "*"
+    web:
+      exposure:
+        include: health, info, prometheus, metrics, caches
+      base-path: /actuator
+  endpoint:
+    health:
+      probes.enabled: true
+      logging.slow-indicator-threshold: "\${HEALTH_ACTUATOR_LOGGER_TIMEOUT_DURATION:PT1S}"
+      group:
+        readiness.include: "*"
+        liveness.include: livenessState,diskSpace,ping
+    prometheus:
+      enabled: true
+  metrics:
+    tags:
+      application: ${artifactId}
+    export:
       prometheus:
         enabled: true
-    metrics:
-      tags:
-        application: ${artifactId}
-      export:
-        prometheus:
-          enabled: true
-          step: 1m
-          descriptions: true
-      enable:
-        jvm: true
-        process: true
-        system: true
-        http: true
-        logback: true
+        step: 1m
+        descriptions: true
+    enable:
+      jvm: true
+      process: true
+      system: true
+      http: true
+      logback: true
 
 logging:
   level:
@@ -56,6 +56,11 @@ logging:
     it.gov.pagopa: "\${LOG_LEVEL_PAGOPA:INFO}"
     org.springframework: "\${LOG_LEVEL_SPRING:INFO}"
     org.springframework.boot.availability: "\${LOG_LEVEL_SPRING_BOOT_AVAILABILITY:DEBUG}"
+    it.gov.pagopa.pu.bff.exception.GlobalExceptionHandler: "\${LOGGING_LEVEL_API_REQUEST_EXCEPTION:INFO}"
+    org.springdoc.core.utils.SpringDocAnnotationsUtils: "\${LOG_LEVEL_SPRING_DOC:ERROR}"
+    PERFORMANCE_LOG: "\${LOG_LEVEL_PERFORMANCE_LOG:INFO}"
+    PERFORMANCE_LOG.API_REQUEST: "\${LOG_LEVEL_PERFORMANCE_LOG_API_REQUEST:\${logging.level.PERFORMANCE_LOG}}"
+    PERFORMANCE_LOG.REST_INVOKE: "\${LOG_LEVEL_PERFORMANCE_LOG_REST_INVOKE:\${logging.level.PERFORMANCE_LOG}}"
 
 springdoc:
   writer-with-default-pretty-printer: true

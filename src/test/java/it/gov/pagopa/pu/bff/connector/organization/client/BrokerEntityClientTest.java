@@ -36,7 +36,7 @@ class BrokerEntityClientTest {
   }
 
   @Test
-  void whenGetOrganizationByIpaCodeThenInvokeWithAccessToken() {
+  void whenGetBrokerByIdThenInvokeWithAccessToken() {
     // Given
     Long brokerId = 0L;
     String accessToken = "ACCESSTOKEN";
@@ -55,7 +55,7 @@ class BrokerEntityClientTest {
   }
 
   @Test
-  void givenNoExistentIpaCodeWhenGetOrganizationByIpaCodeThenNull() {
+  void givenNoExistentIpaCodeWhenGetBrokerByIdThenNull() {
     // Given
     Long brokerId = 0L;
     String accessToken = "ACCESSTOKEN";

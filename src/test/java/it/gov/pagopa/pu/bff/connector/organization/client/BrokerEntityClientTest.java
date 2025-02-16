@@ -31,7 +31,8 @@ class BrokerEntityClientTest {
   @AfterEach
   void verifyNoMoreInteractions() {
     Mockito.verifyNoMoreInteractions(
-      organizationApisHolder
+      organizationApisHolder,
+      brokerEntityControllerApiMock
     );
   }
 

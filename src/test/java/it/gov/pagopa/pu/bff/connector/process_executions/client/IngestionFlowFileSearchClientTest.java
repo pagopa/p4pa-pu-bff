@@ -41,7 +41,10 @@ class IngestionFlowFileSearchClientTest {
 
   @AfterEach
   void verifyNoMoreInteractions() {
-    Mockito.verifyNoMoreInteractions(processExecutionsApisHolderMock);
+    Mockito.verifyNoMoreInteractions(
+      processExecutionsApisHolderMock,
+      ingestionFlowFileSearchControllerApiMock
+    );
   }
 
   @Test

@@ -31,7 +31,8 @@ class OrganizationSearchClientTest {
   @AfterEach
   void verifyNoMoreInteractions() {
     Mockito.verifyNoMoreInteractions(
-      organizationApisHolder
+      organizationApisHolder,
+      organizationSearchControllerApiMock
     );
   }
 

@@ -20,17 +20,15 @@ class TaxonomyClientTest {
 
   @Mock
   private TaxonomyCollectionReasonDtoSearchControllerApi taxonomyCollectionReasonDtoSearchControllerApiMock;
-
   @Mock
   private TaxonomyMacroAreaCodeDtoSearchControllerApi taxonomyMacroAreaCodeDtoSearchControllerApiMock;
   @Mock
   private TaxonomyOrganizationTypeDtoSearchControllerApi taxonomyOrganizationTypeDtoSearchControllerApiMock;
-
   @Mock
   private TaxonomyServiceTypeCodeDtoSearchControllerApi taxonomyServiceTypeCodeDtoSearchControllerApiMock;
-
   @Mock
   private TaxonomyCodeDtoSearchControllerApi taxonomyCodeDtoSearchControllerApiMock;
+
   private TaxonomyClient taxonomyClient;
 
   @BeforeEach
@@ -41,7 +39,12 @@ class TaxonomyClientTest {
   @AfterEach
   void verifyNoMoreInteractions() {
     Mockito.verifyNoMoreInteractions(
-      organizationApisHolder
+      organizationApisHolder,
+      taxonomyCollectionReasonDtoSearchControllerApiMock,
+      taxonomyMacroAreaCodeDtoSearchControllerApiMock,
+      taxonomyOrganizationTypeDtoSearchControllerApiMock,
+      taxonomyServiceTypeCodeDtoSearchControllerApiMock,
+      taxonomyCodeDtoSearchControllerApiMock
     );
   }
 

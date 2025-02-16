@@ -28,7 +28,6 @@ class ReceiptClientTest {
 
   @Mock
   private DebtPositionApisHolder debtPositionApisHolderMock;
-
   @Mock
   private ReceiptViewSearchControllerApi receiptViewSearchControllerApiMock;
 
@@ -41,7 +40,10 @@ class ReceiptClientTest {
 
   @AfterEach
   void verifyNoMoreInteractions() {
-    Mockito.verifyNoMoreInteractions(debtPositionApisHolderMock);
+    Mockito.verifyNoMoreInteractions(
+      debtPositionApisHolderMock,
+      receiptViewSearchControllerApiMock
+    );
   }
 
   @Test

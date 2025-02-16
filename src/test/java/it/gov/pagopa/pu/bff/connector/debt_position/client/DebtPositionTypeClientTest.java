@@ -33,7 +33,6 @@ class DebtPositionTypeClientTest {
   private DebtPositionApisHolder debtPositionApisHolderMock;
   @Mock
   private DebtPositionTypeWithCountSearchControllerApi debtPositionTypeWithCountSearchControllerApiMock;
-
   @Mock
   private DebtPositionTypeEntityControllerApi debtPositionTypeEntityControllerApiMock;
 
@@ -46,7 +45,11 @@ class DebtPositionTypeClientTest {
 
   @AfterEach
   void verifyNoMoreInteractions() {
-    Mockito.verifyNoMoreInteractions(debtPositionApisHolderMock);
+    Mockito.verifyNoMoreInteractions(
+      debtPositionApisHolderMock,
+      debtPositionTypeWithCountSearchControllerApiMock,
+      debtPositionTypeEntityControllerApiMock
+      );
   }
 
   @Test

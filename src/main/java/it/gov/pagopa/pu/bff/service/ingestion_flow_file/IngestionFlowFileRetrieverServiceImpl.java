@@ -1,7 +1,7 @@
 package it.gov.pagopa.pu.bff.service.ingestion_flow_file;
 
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
-import it.gov.pagopa.pu.bff.connector.process_executions.client.IngestionFlowFileSearchClient;
+import it.gov.pagopa.pu.bff.connector.process_executions.IngestionFlowFileService;
 import it.gov.pagopa.pu.bff.dto.IngestionFlowFileFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedIngestionFlowFile;
 import it.gov.pagopa.pu.bff.mapper.IngestionFlowFileMapper;
@@ -12,14 +12,14 @@ import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service
-public class IngestionFlowFileServiceImpl implements IngestionFlowFileService{
-  private final IngestionFlowFileSearchClient ingestionFlowFileSearchClient;
+public class IngestionFlowFileRetrieverServiceImpl implements IngestionFlowFileRetrieverService {
+  private final IngestionFlowFileService ingestionFlowFileService;
   private final IngestionFlowFileMapper ingestionFlowFileMapper;
 
-  public IngestionFlowFileServiceImpl(
-    IngestionFlowFileSearchClient ingestionFlowFileSearchClient,
+  public IngestionFlowFileRetrieverServiceImpl(
+    IngestionFlowFileService ingestionFlowFileService,
     IngestionFlowFileMapper ingestionFlowFileMapper) {
-    this.ingestionFlowFileSearchClient = ingestionFlowFileSearchClient;
+    this.ingestionFlowFileService = ingestionFlowFileService;
     this.ingestionFlowFileMapper = ingestionFlowFileMapper;
   }
 
@@ -34,7 +34,7 @@ public class IngestionFlowFileServiceImpl implements IngestionFlowFileService{
     }
 
     return ingestionFlowFileMapper.mapToPagedIngestionFlowFile(
-      ingestionFlowFileSearchClient.getIngestionFlowFiles(
+      ingestionFlowFileService.getIngestionFlowFiles(
           ingestionFlowFileFiltersDTO, operatorExternalUserId, pageable, accessToken),
       loggedUser,accessToken);
   }

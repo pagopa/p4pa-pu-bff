@@ -1,21 +1,12 @@
 package it.gov.pagopa.pu.bff.service;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
-
-import it.gov.pagopa.pu.bff.connector.debt_position.client.DebtPositionTypeClient;
+import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
+import it.gov.pagopa.pu.bff.connector.debt_position.DebtPositionTypeService;
 import it.gov.pagopa.pu.bff.dto.generated.PagedDebtPositionTypeWithCount;
 import it.gov.pagopa.pu.bff.mapper.DebtPositionTypeWithCountMapper;
-import it.gov.pagopa.pu.bff.service.debt_position.DebtPositionTypeServiceImpl;
+import it.gov.pagopa.pu.bff.service.debt_position.DebtPositionTypeRetrieverServiceImpl;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionType;
 import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelDebtPositionTypeWithCount;
-import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -26,18 +17,22 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.authorization.AuthorizationDeniedException;
 
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+
 @ExtendWith(MockitoExtension.class)
-class DebtPositionTypeServiceImplTest {
+class DebtPositionTypeRetrieverServiceImplTest {
 
   @Mock
-  private DebtPositionTypeClient debtPositionTypeClientMock;
+  private DebtPositionTypeService debtPositionTypeServiceMock;
 
   @Mock
   private AuthorizationService authorizationServiceMock;
   @Mock
   private DebtPositionTypeWithCountMapper debtPositionTypeWithCountMapperMock;
 
-  private DebtPositionTypeServiceImpl debtPositionTypeService;
+  private DebtPositionTypeRetrieverServiceImpl debtPositionTypeService;
 
   private DebtPositionType debtPositionType;
 
@@ -60,12 +55,12 @@ class DebtPositionTypeServiceImplTest {
     debtPositionType.setFlagNotifyIo(true);
     debtPositionType.setIoTemplateMessage("Test IO Template Message");
 
-    debtPositionTypeService = new DebtPositionTypeServiceImpl(debtPositionTypeClientMock, debtPositionTypeWithCountMapperMock, authorizationServiceMock);
+    debtPositionTypeService = new DebtPositionTypeRetrieverServiceImpl(debtPositionTypeServiceMock, debtPositionTypeWithCountMapperMock, authorizationServiceMock);
   }
 
   @Test
   void testGetDebtPositionTypeById() {
-    Mockito.when(debtPositionTypeClientMock.getDebtPositionTypeById(anyLong(), any()))
+    Mockito.when(debtPositionTypeServiceMock.getDebtPositionTypeById(anyLong(), any()))
       .thenReturn(debtPositionType);
 
     DebtPositionType result = debtPositionTypeService.getDebtPositionTypeById(accessToken, 123L);
@@ -88,7 +83,7 @@ class DebtPositionTypeServiceImplTest {
 
   @Test
   void testGetDebtPositionTypeById_NullResponse() {
-    Mockito.when(debtPositionTypeClientMock.getDebtPositionTypeById(anyLong(), any()))
+    Mockito.when(debtPositionTypeServiceMock.getDebtPositionTypeById(anyLong(), any()))
       .thenReturn(null);
 
     DebtPositionType result = debtPositionTypeService.getDebtPositionTypeById(accessToken, 123L);
@@ -106,7 +101,7 @@ class DebtPositionTypeServiceImplTest {
     PagedDebtPositionTypeWithCount pagedDebtPositionTypeWithCount = new PagedDebtPositionTypeWithCount();
 
     Mockito.doNothing().when(authorizationServiceMock).validateAdminRole(1L,userInfo);
-    Mockito.when(debtPositionTypeClientMock.getDebtPositionTypeWithCount(brokerId, PageRequest.of(0,10),accessToken)).thenReturn(pagedModelDebtPositionTypeWithCount);
+    Mockito.when(debtPositionTypeServiceMock.getDebtPositionTypeWithCount(brokerId, PageRequest.of(0,10),accessToken)).thenReturn(pagedModelDebtPositionTypeWithCount);
     Mockito.when(debtPositionTypeWithCountMapperMock.mapToPagedDebtPositionWithCount(pagedModelDebtPositionTypeWithCount)).thenReturn(pagedDebtPositionTypeWithCount);
 
     PagedDebtPositionTypeWithCount result = debtPositionTypeService.getDebtPositionTypeWithCount(
@@ -116,7 +111,7 @@ class DebtPositionTypeServiceImplTest {
     assertNotNull(result);
     assertSame(pagedDebtPositionTypeWithCount,result);
 
-    Mockito.verifyNoMoreInteractions(debtPositionTypeClientMock,debtPositionTypeWithCountMapperMock,authorizationServiceMock);
+    Mockito.verifyNoMoreInteractions(debtPositionTypeServiceMock,debtPositionTypeWithCountMapperMock,authorizationServiceMock);
   }
 
   @Test
@@ -133,7 +128,7 @@ class DebtPositionTypeServiceImplTest {
         1L, pageRequest, userInfo, accessToken));
 
     Mockito.verifyNoMoreInteractions(authorizationServiceMock);
-    Mockito.verifyNoInteractions(debtPositionTypeClientMock,debtPositionTypeWithCountMapperMock);
+    Mockito.verifyNoInteractions(debtPositionTypeServiceMock,debtPositionTypeWithCountMapperMock);
   }
 }
 

@@ -4,7 +4,7 @@ import it.gov.pagopa.pu.bff.dto.IngestionFlowFileFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.generated.IngestionFlowFile;
 import it.gov.pagopa.pu.bff.dto.generated.IngestionFlowFile.StatusEnum;
 import it.gov.pagopa.pu.bff.dto.generated.PagedIngestionFlowFile;
-import it.gov.pagopa.pu.bff.service.ingestion_flow_file.IngestionFlowFileService;
+import it.gov.pagopa.pu.bff.service.ingestion_flow_file.IngestionFlowFileRetrieverService;
 import it.gov.pagopa.pu.processexecutions.dto.generated.IngestionFlowFile.FlowFileTypeEnum;
 import java.time.OffsetDateTime;
 import java.util.List;
@@ -28,7 +28,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 class IngestionFlowFileControllerTest {
 
   @Mock
-  private IngestionFlowFileService ingestionFlowFileServiceMock;
+  private IngestionFlowFileRetrieverService ingestionFlowFileRetrieverServiceMock;
 
   @InjectMocks
   private IngestionFlowFileController ingestionFlowFileController;
@@ -68,7 +68,7 @@ class IngestionFlowFileControllerTest {
     expectedResult.setTotalPages(0L);
     expectedResult.setNumber(0L);
 
-    Mockito.when(ingestionFlowFileServiceMock.getIngestionFlowFiles(
+    Mockito.when(ingestionFlowFileRetrieverServiceMock.getIngestionFlowFiles(
         Mockito.eq(expectedFilter),
         Mockito.argThat(p->p.getPageNumber()==0 && p.getPageSize()==10 && p.getSort().isUnsorted()),
         Mockito.any(), Mockito.anyString()))

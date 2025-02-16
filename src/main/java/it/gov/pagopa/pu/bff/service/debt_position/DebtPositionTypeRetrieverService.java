@@ -5,7 +5,7 @@ import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionType;
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import org.springframework.data.domain.Pageable;
 
-public interface DebtPositionTypeService {
+public interface DebtPositionTypeRetrieverService {
 
   DebtPositionType getDebtPositionTypeById(String accessToken, Long id);
 

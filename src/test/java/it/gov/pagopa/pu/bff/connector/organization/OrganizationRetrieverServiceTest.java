@@ -6,9 +6,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -30,10 +31,11 @@ class OrganizationRetrieverServiceTest {
     String ipaCode = "ipaCode";
     String accessToken = "accessToken";
 
-    when(client.getOrganizationByIpaCode(ipaCode, accessToken)).thenReturn(expected);
+    when(client.getOrganizationByIpaCode(Mockito.same(ipaCode), Mockito.same(accessToken)))
+      .thenReturn(expected);
 
     Organization result = service.getOrganizationByIpaCode(ipaCode, accessToken);
 
-    assertEquals(expected, result);
+    assertSame(expected, result);
   }
 }

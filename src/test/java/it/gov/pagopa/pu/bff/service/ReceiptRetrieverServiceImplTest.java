@@ -1,12 +1,12 @@
 package it.gov.pagopa.pu.bff.service;
 
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
-import it.gov.pagopa.pu.bff.connector.debt_position.client.ReceiptClient;
+import it.gov.pagopa.pu.bff.connector.debt_position.ReceiptService;
 import it.gov.pagopa.pu.bff.dto.OffsetDateTimeIntervalFilter;
 import it.gov.pagopa.pu.bff.dto.ReceiptViewFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedReceiptView;
 import it.gov.pagopa.pu.bff.mapper.ReceiptViewMapper;
-import it.gov.pagopa.pu.bff.service.receipt.ReceiptServiceImpl;
+import it.gov.pagopa.pu.bff.service.receipt.ReceiptRetrieverServiceImpl;
 import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelReceiptView;
 import it.gov.pagopa.pu.debtpositions.dto.generated.ReceiptView;
 import org.junit.jupiter.api.Assertions;
@@ -27,21 +27,21 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 
 @ExtendWith(MockitoExtension.class)
-class ReceiptServiceImplTest {
+class ReceiptRetrieverServiceImplTest {
 
   @Mock
-  private ReceiptClient receiptClientMock;
+  private ReceiptService receiptServiceMock;
 
   @Mock
   private ReceiptViewMapper receiptViewMapperMock;
 
-  private ReceiptServiceImpl receiptViewService;
+  private ReceiptRetrieverServiceImpl receiptViewService;
 
   private final String accessToken = "TOKEN";
 
   @BeforeEach
   void setUp() {
-    receiptViewService = new ReceiptServiceImpl(receiptClientMock, receiptViewMapperMock);
+    receiptViewService = new ReceiptRetrieverServiceImpl(receiptServiceMock, receiptViewMapperMock);
   }
 
   @Test
@@ -64,7 +64,7 @@ class ReceiptServiceImplTest {
       authorizationServiceMockedStatic.when(() -> AuthorizationService.isUserEnabledToOrganizationId(filtersDTO.getOrganizationId(), loggedUser))
         .thenReturn(true);
 
-      Mockito.when(receiptClientMock.getReceipts(filtersDTO, pageable, accessToken))
+      Mockito.when(receiptServiceMock.getReceipts(filtersDTO, pageable, accessToken))
         .thenReturn(pagedModelReceiptView);
 
       Mockito.when(receiptViewMapperMock.mapToPagedReceiptView(pagedModelReceiptView))
@@ -76,9 +76,9 @@ class ReceiptServiceImplTest {
       assertSame(expectedPagedReceiptView, result);
 
       authorizationServiceMockedStatic.verify(() -> AuthorizationService.isUserEnabledToOrganizationId(filtersDTO.getOrganizationId(), loggedUser));
-      Mockito.verify(receiptClientMock).getReceipts(filtersDTO, pageable, accessToken);
+      Mockito.verify(receiptServiceMock).getReceipts(filtersDTO, pageable, accessToken);
       Mockito.verify(receiptViewMapperMock).mapToPagedReceiptView(pagedModelReceiptView);
-      Mockito.verifyNoMoreInteractions(receiptClientMock, receiptViewMapperMock);
+      Mockito.verifyNoMoreInteractions(receiptServiceMock, receiptViewMapperMock);
     }
   }
 
@@ -104,7 +104,7 @@ class ReceiptServiceImplTest {
 
       authorizationServiceMockedStatic.verify(() -> AuthorizationService.isUserEnabledToOrganizationId(filtersDTO.getOrganizationId(), loggedUser));
     }
-    Mockito.verifyNoInteractions(receiptClientMock, receiptViewMapperMock);
+    Mockito.verifyNoInteractions(receiptServiceMock, receiptViewMapperMock);
   }
 
 }

@@ -7,13 +7,10 @@ import it.gov.pagopa.pu.debtpositions.controller.generated.DebtPositionTypeEntit
 import it.gov.pagopa.pu.debtpositions.controller.generated.DebtPositionTypeWithCountSearchControllerApi;
 import it.gov.pagopa.pu.debtpositions.controller.generated.ReceiptViewSearchControllerApi;
 import jakarta.annotation.PreDestroy;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-@Lazy
 @Service
 public class DebtPositionApisHolder {
 
@@ -23,7 +20,7 @@ public class DebtPositionApisHolder {
   private final ThreadLocal<String> bearerTokenHolder = new ThreadLocal<>();
 
   public DebtPositionApisHolder(
-    DebtPositionClientConfig clientConfig,
+    DebtPositionApiClientConfig clientConfig,
     RestTemplateBuilder restTemplateBuilder
   ) {
     RestTemplate restTemplate = restTemplateBuilder.build();
@@ -33,7 +30,7 @@ public class DebtPositionApisHolder {
     apiClient.setMaxAttemptsForRetry(Math.max(1, clientConfig.getMaxAttempts()));
     apiClient.setWaitTimeMillis(clientConfig.getWaitTimeMillis());
     if (clientConfig.isPrintBodyWhenError()) {
-      restTemplate.setErrorHandler(RestTemplateConfig.bodyPrinterWhenError("ORGANIZATION"));
+      restTemplate.setErrorHandler(RestTemplateConfig.bodyPrinterWhenError("DEBT-POSITIONS"));
     }
 
     this.debtPositionTypeEntityControllerApi = new DebtPositionTypeEntityControllerApi(apiClient);

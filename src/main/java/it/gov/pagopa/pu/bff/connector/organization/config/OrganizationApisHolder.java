@@ -6,11 +6,9 @@ import it.gov.pagopa.pu.organization.controller.BaseApi;
 import it.gov.pagopa.pu.organization.controller.generated.*;
 import jakarta.annotation.PreDestroy;
 import org.springframework.boot.web.client.RestTemplateBuilder;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-@Lazy
 @Service
 public class OrganizationApisHolder {
 
@@ -24,18 +22,18 @@ public class OrganizationApisHolder {
     private final ThreadLocal<String> bearerTokenHolder = new ThreadLocal<>();
 
     public OrganizationApisHolder(
-        OrganizationClientConfig clientConfig,
+        OrganizationApiClientConfig clientConfig,
         RestTemplateBuilder restTemplateBuilder
     ) {
         RestTemplate restTemplate = restTemplateBuilder.build();
         ApiClient apiClient = new ApiClient(restTemplate);
-      apiClient.setBasePath(clientConfig.getBaseUrl());
-      apiClient.setBearerToken(bearerTokenHolder::get);
-      apiClient.setMaxAttemptsForRetry(Math.max(1, clientConfig.getMaxAttempts()));
-      apiClient.setWaitTimeMillis(clientConfig.getWaitTimeMillis());
-      if (clientConfig.isPrintBodyWhenError()) {
-        restTemplate.setErrorHandler(RestTemplateConfig.bodyPrinterWhenError("ORGANIZATION"));
-      }
+        apiClient.setBasePath(clientConfig.getBaseUrl());
+        apiClient.setBearerToken(bearerTokenHolder::get);
+        apiClient.setMaxAttemptsForRetry(Math.max(1, clientConfig.getMaxAttempts()));
+        apiClient.setWaitTimeMillis(clientConfig.getWaitTimeMillis());
+        if (clientConfig.isPrintBodyWhenError()) {
+          restTemplate.setErrorHandler(RestTemplateConfig.bodyPrinterWhenError("ORGANIZATION"));
+        }
 
         this.organizationSearchControllerApi = new OrganizationSearchControllerApi(apiClient);
         this.brokerEntityControllerApi = new BrokerEntityControllerApi(apiClient);

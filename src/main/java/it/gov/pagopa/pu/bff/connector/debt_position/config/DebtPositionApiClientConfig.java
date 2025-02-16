@@ -1,14 +1,14 @@
-package it.gov.pagopa.pu.bff.connector.organization.config;
+package it.gov.pagopa.pu.bff.connector.debt_position.config;
 
-import it.gov.pagopa.pu.bff.connector.config.ClientConfig;
+import it.gov.pagopa.pu.bff.config.ApiClientConfig;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@ConfigurationProperties(prefix = "rest.organization")
+@ConfigurationProperties(prefix = "rest.debt-positions")
 @SuperBuilder
 @NoArgsConstructor
-public class OrganizationClientConfig extends ClientConfig {
+public class DebtPositionApiClientConfig extends ApiClientConfig {
 }

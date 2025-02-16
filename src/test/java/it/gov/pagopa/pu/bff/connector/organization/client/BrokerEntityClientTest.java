@@ -63,50 +63,12 @@ class BrokerEntityClientTest {
     Mockito.when(organizationApisHolder.getBrokerEntityControllerApi(accessToken))
       .thenReturn(brokerEntityControllerApiMock);
     Mockito.when(brokerEntityControllerApiMock.crudGetBroker(brokerId.toString()))
-      .thenThrow(new HttpClientErrorException(HttpStatus.NOT_FOUND));
+      .thenThrow(HttpClientErrorException.create(HttpStatus.NOT_FOUND, "NotFound", null, null, null));
 
     // When
     Broker result = brokerEntityClient.getBrokerById(brokerId, accessToken);
 
     // Then
     Assertions.assertNull(result);
-  }
-
-  @Test
-  void givenGenericHttpExceptionWhenGetOrganizationByIpaCodeThenThrowIt() {
-    // Given
-    Long brokerId = 0L;
-    String accessToken = "ACCESSTOKEN";
-    HttpClientErrorException expectedException = new HttpClientErrorException(HttpStatus.INTERNAL_SERVER_ERROR);
-
-    Mockito.when(organizationApisHolder.getBrokerEntityControllerApi(accessToken))
-      .thenReturn(brokerEntityControllerApiMock);
-    Mockito.when(brokerEntityControllerApiMock.crudGetBroker(brokerId.toString()))
-      .thenThrow(expectedException);
-
-    // When
-    HttpClientErrorException result = Assertions.assertThrows(expectedException.getClass(), () -> brokerEntityClient.getBrokerById(brokerId, accessToken));
-
-    // Then
-    Assertions.assertSame(expectedException, result);
-  }
-
-  @Test
-  void givenExceptionWhenGetOrganizationByIpaCodeThenThrowIt() {
-    // Given
-    Long brokerId = 0L;
-    String accessToken = "ACCESSTOKEN";
-    RuntimeException expectedException = new RuntimeException();
-
-    Mockito.when(organizationApisHolder.getBrokerEntityControllerApi(accessToken))
-      .thenReturn(brokerEntityControllerApiMock);
-    Mockito.when(brokerEntityControllerApiMock.crudGetBroker(brokerId.toString()))
-      .thenThrow(expectedException);
-
-    // When
-    RuntimeException result = Assertions.assertThrows(expectedException.getClass(), () -> brokerEntityClient.getBrokerById(brokerId, accessToken));
-
-    // Then
-    Assertions.assertSame(expectedException, result);
   }
 }

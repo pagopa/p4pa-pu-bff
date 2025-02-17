@@ -15,6 +15,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.TimeZone;
 
 @Configuration
@@ -43,7 +44,8 @@ public class JsonConfig {
   /** openApi is documenting LocalDateTime as date-time, which is interpreted as an OffsetDateTime by openApiGenerator */
   private static SimpleModule configureDateTimeModule() {
     return new JavaTimeModule()
-      .addSerializer(LocalDateTime.class, new LocalDateTimeToOffsetDateTimeSerializer())
+      // FE requires all date-time fields to be in Europe/Rome LocalDateTime
+      .addSerializer(OffsetDateTime.class, new OffsetDateTimeToLocalDateTimeSerializer())
       .addDeserializer(LocalDateTime.class, new OffsetDateTimeToLocalDateTimeDeserializer());
   }
 }

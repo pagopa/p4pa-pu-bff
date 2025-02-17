@@ -8,14 +8,17 @@ public class ReceiptDetailDTOMapper {
 
   public ReceiptDetailDTO mapToReceiptDetailDTO(
     it.gov.pagopa.pu.debtpositions.dto.generated.ReceiptDetailDTO receiptDetailDTO) {
+    if (receiptDetailDTO == null) {
+      return null;
+    }
     return ReceiptDetailDTO.builder()
       .receiptId(receiptDetailDTO.getReceiptId())
       .iuv(receiptDetailDTO.getIuv())
       .paymentAmountCents(receiptDetailDTO.getPaymentAmountCents())
       .remittanceInformation(receiptDetailDTO.getRemittanceInformation())
       .debtPositionDescription(receiptDetailDTO.getDebtPositionDescription())
-      .debtorFullName(receiptDetailDTO.getDebtor()!=null?receiptDetailDTO.getDebtor().getFullName():null)
-      .debtorFiscalCode(receiptDetailDTO.getDebtor()!=null?receiptDetailDTO.getDebtor().getFiscalCode():null)
+      .debtorFullName(receiptDetailDTO.getDebtor().getFullName())
+      .debtorFiscalCode(receiptDetailDTO.getDebtor().getFiscalCode())
       .payerFullName(receiptDetailDTO.getPayer()!=null?receiptDetailDTO.getPayer().getFullName():null)
       .payerFiscalCode(receiptDetailDTO.getPayer()!=null?receiptDetailDTO.getPayer().getFiscalCode():null)
       .paymentDateTime(receiptDetailDTO.getPaymentDateTime())

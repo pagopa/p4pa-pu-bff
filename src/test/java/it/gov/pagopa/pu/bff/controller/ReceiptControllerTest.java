@@ -104,5 +104,18 @@ class ReceiptControllerTest {
     Mockito.verify(receiptRetrieverServiceMock).getReceiptDetail(Mockito.eq(organizationId),Mockito.eq(receiptId),
       Mockito.any(), Mockito.anyString());
   }
+
+  @Test
+  void givenNoReceiptWhenGetReceiptDetailThenNotFound() {
+    long organizationId = 1L;
+    long receiptId = 2L;
+
+    ResponseEntity<ReceiptDetailDTO> response = receiptController.getReceiptDetail(organizationId,receiptId);
+
+    Assertions.assertEquals(HttpStatus.NOT_FOUND,response.getStatusCode());
+    Assertions.assertNull(response.getBody());
+    Mockito.verify(receiptRetrieverServiceMock).getReceiptDetail(Mockito.eq(organizationId),Mockito.eq(receiptId),
+      Mockito.any(), Mockito.anyString());
+  }
 }
 

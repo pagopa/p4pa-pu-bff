@@ -26,20 +26,24 @@ class ReceiptDetailDTOMapperTest {
   }
 
   @Test
-  void givenNoDebtorAndPayerWhenMapToReceiptDetailDTOThenResultWithNoDebtorAndPayer() {
+  void givenNoPayerWhenMapToReceiptDetailDTOThenResultWithNoPayer() {
     it.gov.pagopa.pu.debtpositions.dto.generated.ReceiptDetailDTO receiptDetailDTO = podamFactory.manufacturePojo(it.gov.pagopa.pu.debtpositions.dto.generated.ReceiptDetailDTO.class);
-    receiptDetailDTO.setDebtor(null);
     receiptDetailDTO.setPayer(null);
 
     ReceiptDetailDTO result = mapper.mapToReceiptDetailDTO(receiptDetailDTO);
 
     Assertions.assertNotNull(result);
     TestUtils.reflectionEqualsByName(receiptDetailDTO, result);
-    Assertions.assertNull(result.getDebtorFullName());
-    Assertions.assertNull(result.getDebtorFiscalCode());
     Assertions.assertNull(result.getPayerFullName());
     Assertions.assertNull(result.getPayerFiscalCode());
-    TestUtils.checkNotNullFields(result,"debtorFullName","debtorFiscalCode","payerFullName","payerFiscalCode");
+    TestUtils.checkNotNullFields(result,"payerFullName","payerFiscalCode");
+  }
+
+  @Test
+  void givenNoReceiptDetailDTOThenNullResult() {
+    ReceiptDetailDTO result = mapper.mapToReceiptDetailDTO(null);
+
+    Assertions.assertNull(result);
   }
 
 }

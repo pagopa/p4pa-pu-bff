@@ -4,8 +4,11 @@ import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.dto.OffsetDateTimeIntervalFilter;
 import it.gov.pagopa.pu.bff.dto.ReceiptViewFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedReceiptView;
+import it.gov.pagopa.pu.bff.dto.generated.ReceiptDetailDTO;
 import it.gov.pagopa.pu.bff.service.receipt.ReceiptRetrieverService;
 import it.gov.pagopa.pu.debtpositions.dto.generated.ReceiptView;
+import java.time.OffsetDateTime;
+import java.util.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -22,9 +25,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-
-import java.time.OffsetDateTime;
-import java.util.List;
 
 @ExtendWith(MockitoExtension.class)
 class ReceiptControllerTest {
@@ -86,5 +86,23 @@ class ReceiptControllerTest {
     Assertions.assertSame(expectedResult, response.getBody());
   }
 
+  @Test
+  void givenCorrectRequestWhenGetReceiptDetailThenOk() {
+    long organizationId = 1L;
+    long receiptId = 2L;
+    ReceiptDetailDTO expectedResult = new ReceiptDetailDTO();
+
+    Mockito.when(receiptRetrieverServiceMock.getReceiptDetail(Mockito.eq(organizationId),Mockito.eq(receiptId),
+        Mockito.any(), Mockito.anyString()))
+      .thenReturn(expectedResult);
+
+    ResponseEntity<ReceiptDetailDTO> response = receiptController.getReceiptDetail(organizationId,receiptId);
+
+    Assertions.assertEquals(HttpStatus.OK,response.getStatusCode());
+    Assertions.assertNotNull(response.getBody());
+    Assertions.assertSame(expectedResult,response.getBody());
+    Mockito.verify(receiptRetrieverServiceMock).getReceiptDetail(Mockito.eq(organizationId),Mockito.eq(receiptId),
+      Mockito.any(), Mockito.anyString());
+  }
 }
 

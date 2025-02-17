@@ -5,14 +5,14 @@ import it.gov.pagopa.pu.bff.controller.generated.ReceiptsApi;
 import it.gov.pagopa.pu.bff.dto.OffsetDateTimeIntervalFilter;
 import it.gov.pagopa.pu.bff.dto.ReceiptViewFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedReceiptView;
+import it.gov.pagopa.pu.bff.dto.generated.ReceiptDetailDTO;
 import it.gov.pagopa.pu.bff.security.SecurityUtils;
 import it.gov.pagopa.pu.bff.service.receipt.ReceiptRetrieverService;
 import it.gov.pagopa.pu.debtpositions.dto.generated.ReceiptView;
+import java.time.OffsetDateTime;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.time.OffsetDateTime;
 
 @RestController
 public class ReceiptController implements ReceiptsApi {
@@ -33,4 +33,8 @@ public class ReceiptController implements ReceiptsApi {
       pageable, userInfo, SecurityUtils.getAccessToken()));
   }
 
+  @Override
+  public ResponseEntity<ReceiptDetailDTO> getReceiptDetail(Long organizationId, Long receiptId) {
+    return ResponseEntity.ok(receiptRetrieverService.getReceiptDetail(organizationId, receiptId, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken()));
+  }
 }

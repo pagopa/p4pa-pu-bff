@@ -4,15 +4,12 @@ import it.gov.pagopa.pu.bff.connector.debt_position.config.DebtPositionApisHolde
 import it.gov.pagopa.pu.debtpositions.controller.generated.DebtPositionTypeOrgSearchControllerApi;
 import it.gov.pagopa.pu.debtpositions.dto.generated.CollectionModelDebtPositionTypeOrg;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.client.HttpClientErrorException;
 
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.Mockito.when;
@@ -58,45 +55,4 @@ class DebtPositionTypeOrgClientTest {
     assertSame(expectedResult, result);
   }
 
-  @Test
-  void givenGenericHttpExceptionWhenGetDebtPositionTypeOrgsThenThrowIt() {
-    String accessToken = "ACCESSTOKEN";
-    HttpClientErrorException expectedException = new HttpClientErrorException(HttpStatus.INTERNAL_SERVER_ERROR);
-
-    long organizationId = 1L;
-    String operatorExternalUserId = "operator123";
-
-    when(debtPositionApisHolderMock.getDebtPositionTypeOrgSearchControllerApi(accessToken))
-      .thenReturn(debtPositionTypeOrgSearchControllerApiMock);
-
-    when(debtPositionTypeOrgSearchControllerApiMock.crudDebtPositionTypeOrgsFindDebtPositionTypeOrgs(
-      String.valueOf(organizationId), operatorExternalUserId))
-      .thenThrow(expectedException);
-
-    HttpClientErrorException result = Assertions.assertThrows(
-      expectedException.getClass(), () -> debtPositionTypeOrgClient.getDebtPositionTypeOrgs(organizationId, operatorExternalUserId, accessToken));
-
-    Assertions.assertSame(expectedException, result);
-  }
-
-  @Test
-  void givenGenericExceptionWhenGetDebtPositionTypeOrgsThenThrowIt() {
-    String accessToken = "ACCESSTOKEN";
-    RuntimeException expectedException = new RuntimeException();
-
-    long organizationId = 1L;
-    String operatorExternalUserId = "operator123";
-
-    when(debtPositionApisHolderMock.getDebtPositionTypeOrgSearchControllerApi(accessToken))
-      .thenReturn(debtPositionTypeOrgSearchControllerApiMock);
-
-    when(debtPositionTypeOrgSearchControllerApiMock.crudDebtPositionTypeOrgsFindDebtPositionTypeOrgs(
-      String.valueOf(organizationId), operatorExternalUserId))
-      .thenThrow(expectedException);
-
-    RuntimeException result = Assertions.assertThrows(
-      expectedException.getClass(), () -> debtPositionTypeOrgClient.getDebtPositionTypeOrgs(organizationId, operatorExternalUserId, accessToken));
-
-    Assertions.assertSame(expectedException, result);
-  }
 }

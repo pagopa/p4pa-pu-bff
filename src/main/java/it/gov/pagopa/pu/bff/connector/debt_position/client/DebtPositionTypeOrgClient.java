@@ -16,13 +16,8 @@ public class DebtPositionTypeOrgClient {
   }
 
   public CollectionModelDebtPositionTypeOrg getDebtPositionTypeOrgs(Long organizationId, String operatorExternalUserId, String accessToken) {
-    try {
-      return debtPositionApisHolder.getDebtPositionTypeOrgSearchControllerApi(accessToken)
-        .crudDebtPositionTypeOrgsFindDebtPositionTypeOrgs(String.valueOf(organizationId), operatorExternalUserId);
-    } catch (Exception e) {
-      log.error("Unexpected error retrieving DebtPositionTypeOrg for organizationId {}: {}", organizationId, e.getMessage(), e);
-      throw e;
-    }
+    return debtPositionApisHolder.getDebtPositionTypeOrgSearchControllerApi(accessToken)
+      .crudDebtPositionTypeOrgsFindDebtPositionTypeOrgs(String.valueOf(organizationId), operatorExternalUserId);
   }
 
 }

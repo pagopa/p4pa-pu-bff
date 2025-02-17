@@ -1,14 +1,7 @@
 package it.gov.pagopa.pu.bff.connector.organization.config;
 
 import it.gov.pagopa.pu.bff.connector.BaseApiHolderTest;
-import it.gov.pagopa.pu.organization.controller.ApiClient;
-import it.gov.pagopa.pu.organization.dto.generated.Broker;
-import it.gov.pagopa.pu.organization.dto.generated.CollectionModelTaxonomyCodeDTO;
-import it.gov.pagopa.pu.organization.dto.generated.CollectionModelTaxonomyCollectionReasonDTO;
-import it.gov.pagopa.pu.organization.dto.generated.CollectionModelTaxonomyMacroAreaCodeDTO;
-import it.gov.pagopa.pu.organization.dto.generated.CollectionModelTaxonomyOrganizationTypeDTO;
-import it.gov.pagopa.pu.organization.dto.generated.CollectionModelTaxonomyServiceTypeCodeDTO;
-import it.gov.pagopa.pu.organization.dto.generated.Organization;
+import it.gov.pagopa.pu.organization.dto.generated.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -30,10 +23,10 @@ class OrganizationApiHolderTest extends BaseApiHolderTest {
   void setUp() {
     Mockito.when(restTemplateBuilderMock.build()).thenReturn(restTemplateMock);
     Mockito.when(restTemplateMock.getUriTemplateHandler()).thenReturn(new DefaultUriBuilderFactory());
-    ApiClient apiClient = new ApiClient(restTemplateMock);
-    String baseUrl = "http://example.com";
-    apiClient.setBasePath(baseUrl);
-    organizationApisHolder = new OrganizationApisHolder(baseUrl, restTemplateBuilderMock);
+    OrganizationApiClientConfig clientConfig = OrganizationApiClientConfig.builder()
+      .baseUrl("http://example.com")
+      .build();
+    organizationApisHolder = new OrganizationApisHolder(clientConfig, restTemplateBuilderMock);
   }
 
   @AfterEach

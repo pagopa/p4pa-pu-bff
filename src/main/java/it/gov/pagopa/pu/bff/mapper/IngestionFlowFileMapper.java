@@ -1,21 +1,22 @@
 package it.gov.pagopa.pu.bff.mapper;
 
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
-import it.gov.pagopa.pu.bff.connector.auth.client.AuthzClient;
+import it.gov.pagopa.pu.bff.connector.auth.AuthzService;
 import it.gov.pagopa.pu.bff.dto.generated.IngestionFlowFile;
 import it.gov.pagopa.pu.bff.dto.generated.IngestionFlowFile.StatusEnum;
 import it.gov.pagopa.pu.bff.dto.generated.PagedIngestionFlowFile;
 import it.gov.pagopa.pu.processexecutions.dto.generated.PagedModelIngestionFlowFile;
-import java.util.Collections;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
+import java.util.Collections;
+
 @Component
 public class IngestionFlowFileMapper {
-  private final AuthzClient authzClient;
+  private final AuthzService authzService;
 
-  public IngestionFlowFileMapper(AuthzClient authzClient) {
-    this.authzClient = authzClient;
+  public IngestionFlowFileMapper(AuthzService authzService) {
+    this.authzService = authzService;
   }
 
   public PagedIngestionFlowFile mapToPagedIngestionFlowFile(
@@ -63,7 +64,7 @@ public class IngestionFlowFileMapper {
   private String getOperator(
     it.gov.pagopa.pu.processexecutions.dto.generated.IngestionFlowFile ingestionFlowFile, UserInfo userInfo, String accessToken) {
     if(!ingestionFlowFile.getOperatorExternalId().equals(userInfo.getMappedExternalUserId())){
-      UserInfo userInfoFromMappedExternaUserId = authzClient.getUserInfoFromMappedExternaUserId(
+      UserInfo userInfoFromMappedExternaUserId = authzService.getUserInfoFromMappedExternaUserId(
         ingestionFlowFile.getOperatorExternalId(), accessToken);
       return userInfoFromMappedExternaUserId!=null?getOperatorString(userInfoFromMappedExternaUserId):ingestionFlowFile.getOperatorExternalId();
     }else{

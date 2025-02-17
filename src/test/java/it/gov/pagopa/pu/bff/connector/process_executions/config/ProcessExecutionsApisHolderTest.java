@@ -1,10 +1,7 @@
 package it.gov.pagopa.pu.bff.connector.process_executions.config;
 
 import it.gov.pagopa.pu.bff.connector.BaseApiHolderTest;
-import it.gov.pagopa.pu.processexecutions.controller.ApiClient;
 import it.gov.pagopa.pu.processexecutions.dto.generated.PagedModelIngestionFlowFile;
-import java.time.LocalDateTime;
-import java.util.List;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,6 +11,9 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.web.util.DefaultUriBuilderFactory;
+
+import java.time.LocalDateTime;
+import java.util.List;
 
 @ExtendWith(MockitoExtension.class)
 class ProcessExecutionsApisHolderTest extends BaseApiHolderTest {
@@ -26,10 +26,10 @@ class ProcessExecutionsApisHolderTest extends BaseApiHolderTest {
   void setUp() {
     Mockito.when(restTemplateBuilderMock.build()).thenReturn(restTemplateMock);
     Mockito.when(restTemplateMock.getUriTemplateHandler()).thenReturn(new DefaultUriBuilderFactory());
-    ApiClient apiClient = new ApiClient(restTemplateMock);
-    String baseUrl = "http://example.com";
-    apiClient.setBasePath(baseUrl);
-    processExecutionsApisHolder = new ProcessExecutionsApisHolder(baseUrl, restTemplateBuilderMock);
+    ProcessExecutionsApiClientConfig clientConfig = ProcessExecutionsApiClientConfig.builder()
+      .baseUrl("http://example.com")
+      .build();
+    processExecutionsApisHolder = new ProcessExecutionsApisHolder(clientConfig, restTemplateBuilderMock);
   }
 
   @AfterEach

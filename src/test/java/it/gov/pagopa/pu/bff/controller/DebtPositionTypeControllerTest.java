@@ -10,7 +10,7 @@ import static org.mockito.Mockito.when;
 
 import it.gov.pagopa.pu.bff.dto.generated.DebtPositionTypeWithCount;
 import it.gov.pagopa.pu.bff.dto.generated.PagedDebtPositionTypeWithCount;
-import it.gov.pagopa.pu.bff.service.debt_position.DebtPositionTypeService;
+import it.gov.pagopa.pu.bff.service.debt_position.DebtPositionTypeRetrieverService;
 import java.time.OffsetDateTime;
 import java.util.List;
 
@@ -35,7 +35,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 class DebtPositionTypeControllerTest {
 
   @Mock
-  private DebtPositionTypeService debtPositionTypeServiceMock;
+  private DebtPositionTypeRetrieverService debtPositionTypeRetrieverServiceMock;
 
   @InjectMocks
   private DebtPositionTypeController debtPositionTypeController;
@@ -68,7 +68,7 @@ class DebtPositionTypeControllerTest {
 
   @Test
   void testGetDebtPositionType() {
-    when(debtPositionTypeServiceMock.getDebtPositionTypeById(any(), anyLong())).thenReturn(debtPositionTypeDTO);
+    when(debtPositionTypeRetrieverServiceMock.getDebtPositionTypeById(any(), anyLong())).thenReturn(debtPositionTypeDTO);
 
     ResponseEntity<DebtPositionType> response = debtPositionTypeController.getDebtPositionType("123");
 
@@ -87,7 +87,7 @@ class DebtPositionTypeControllerTest {
     assertEquals(true, response.getBody().getFlagNotifyIo());
     assertEquals("Test IO Template Message", response.getBody().getIoTemplateMessage());
 
-    verify(debtPositionTypeServiceMock, times(1)).getDebtPositionTypeById(any(), eq(123L));
+    verify(debtPositionTypeRetrieverServiceMock, times(1)).getDebtPositionTypeById(any(), eq(123L));
   }
 
   @Test
@@ -106,7 +106,7 @@ class DebtPositionTypeControllerTest {
     expectedResult.setTotalPages(0L);
     expectedResult.setNumber(0L);
 
-    Mockito.when(debtPositionTypeServiceMock.getDebtPositionTypeWithCount(Mockito.eq(organizationId),
+    Mockito.when(debtPositionTypeRetrieverServiceMock.getDebtPositionTypeWithCount(Mockito.eq(organizationId),
         Mockito.argThat(p->p.getPageNumber()==0 && p.getPageSize()==10 && p.getSort().isUnsorted()),
         Mockito.any(), Mockito.anyString()))
       .thenReturn(expectedResult);

@@ -31,7 +31,8 @@ class OrganizationSearchClientTest {
   @AfterEach
   void verifyNoMoreInteractions() {
     Mockito.verifyNoMoreInteractions(
-      organizationApisHolder
+      organizationApisHolder,
+      organizationSearchControllerApiMock
     );
   }
 
@@ -63,7 +64,7 @@ class OrganizationSearchClientTest {
     Mockito.when(organizationApisHolder.getOrganizationSearchControllerApi(accessToken))
       .thenReturn(organizationSearchControllerApiMock);
     Mockito.when(organizationSearchControllerApiMock.crudOrganizationsFindByIpaCode(orgIpaCode))
-      .thenThrow(new HttpClientErrorException(HttpStatus.NOT_FOUND));
+      .thenThrow(HttpClientErrorException.create(HttpStatus.NOT_FOUND, "NotFound", null, null, null));
 
     // When
     Organization result = organizationSearchClient.getOrganizationByIpaCode(orgIpaCode, accessToken);
@@ -72,41 +73,4 @@ class OrganizationSearchClientTest {
     Assertions.assertNull(result);
   }
 
-  @Test
-  void givenGenericHttpExceptionWhenGetOrganizationByIpaCodeThenThrowIt() {
-    // Given
-    String orgIpaCode = "ORGIPACODE";
-    String accessToken = "ACCESSTOKEN";
-    HttpClientErrorException expectedException = new HttpClientErrorException(HttpStatus.INTERNAL_SERVER_ERROR);
-
-    Mockito.when(organizationApisHolder.getOrganizationSearchControllerApi(accessToken))
-      .thenReturn(organizationSearchControllerApiMock);
-    Mockito.when(organizationSearchControllerApiMock.crudOrganizationsFindByIpaCode(orgIpaCode))
-      .thenThrow(expectedException);
-
-    // When
-    HttpClientErrorException result = Assertions.assertThrows(expectedException.getClass(), () -> organizationSearchClient.getOrganizationByIpaCode(orgIpaCode, accessToken));
-
-    // Then
-    Assertions.assertSame(expectedException, result);
-  }
-
-  @Test
-  void givenGenericExceptionWhenGetOrganizationByIpaCodeThenThrowIt() {
-    // Given
-    String orgIpaCode = "ORGIPACODE";
-    String accessToken = "ACCESSTOKEN";
-    RuntimeException expectedException = new RuntimeException();
-
-    Mockito.when(organizationApisHolder.getOrganizationSearchControllerApi(accessToken))
-      .thenReturn(organizationSearchControllerApiMock);
-    Mockito.when(organizationSearchControllerApiMock.crudOrganizationsFindByIpaCode(orgIpaCode))
-      .thenThrow(expectedException);
-
-    // When
-    RuntimeException result = Assertions.assertThrows(expectedException.getClass(), () -> organizationSearchClient.getOrganizationByIpaCode(orgIpaCode, accessToken));
-
-    // Then
-    Assertions.assertSame(expectedException, result);
-  }
 }

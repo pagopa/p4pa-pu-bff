@@ -1,18 +1,16 @@
 package it.gov.pagopa.pu.bff.connector.debt_position.config;
 
+import it.gov.pagopa.pu.bff.config.RestTemplateConfig;
 import it.gov.pagopa.pu.debtpositions.controller.ApiClient;
 import it.gov.pagopa.pu.debtpositions.controller.BaseApi;
 import it.gov.pagopa.pu.debtpositions.controller.generated.DebtPositionTypeEntityControllerApi;
 import it.gov.pagopa.pu.debtpositions.controller.generated.DebtPositionTypeWithCountSearchControllerApi;
 import it.gov.pagopa.pu.debtpositions.controller.generated.ReceiptViewSearchControllerApi;
 import jakarta.annotation.PreDestroy;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-@Lazy
 @Service
 public class DebtPositionApisHolder {
 
@@ -22,12 +20,18 @@ public class DebtPositionApisHolder {
   private final ThreadLocal<String> bearerTokenHolder = new ThreadLocal<>();
 
   public DebtPositionApisHolder(
-    @Value("${rest.debt-positions.base-url}") String baseUrl,
-    RestTemplateBuilder restTemplateBuilder) {
+    DebtPositionApiClientConfig clientConfig,
+    RestTemplateBuilder restTemplateBuilder
+  ) {
     RestTemplate restTemplate = restTemplateBuilder.build();
     ApiClient apiClient = new ApiClient(restTemplate);
-    apiClient.setBasePath(baseUrl);
+    apiClient.setBasePath(clientConfig.getBaseUrl());
     apiClient.setBearerToken(bearerTokenHolder::get);
+    apiClient.setMaxAttemptsForRetry(Math.max(1, clientConfig.getMaxAttempts()));
+    apiClient.setWaitTimeMillis(clientConfig.getWaitTimeMillis());
+    if (clientConfig.isPrintBodyWhenError()) {
+      restTemplate.setErrorHandler(RestTemplateConfig.bodyPrinterWhenError("DEBT-POSITIONS"));
+    }
 
     this.debtPositionTypeEntityControllerApi = new DebtPositionTypeEntityControllerApi(apiClient);
     this.debtPositionTypeWithCountSearchControllerApi = new DebtPositionTypeWithCountSearchControllerApi(apiClient);

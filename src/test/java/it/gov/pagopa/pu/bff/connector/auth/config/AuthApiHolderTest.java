@@ -1,6 +1,5 @@
 package it.gov.pagopa.pu.bff.connector.auth.config;
 
-import it.gov.pagopa.pu.auth.controller.ApiClient;
 import it.gov.pagopa.pu.auth.dto.generated.AccessToken;
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.connector.BaseApiHolderTest;
@@ -25,10 +24,10 @@ class AuthApiHolderTest extends BaseApiHolderTest {
   void setUp() {
     Mockito.when(restTemplateBuilderMock.build()).thenReturn(restTemplateMock);
     Mockito.when(restTemplateMock.getUriTemplateHandler()).thenReturn(new DefaultUriBuilderFactory());
-    ApiClient apiClient = new ApiClient(restTemplateMock);
-    String baseUrl = "http://example.com";
-    apiClient.setBasePath(baseUrl);
-    authApisHolder = new AuthApisHolder(baseUrl, restTemplateBuilderMock);
+    AuthApiClientConfig clientConfig = AuthApiClientConfig.builder()
+      .baseUrl("http://example.com")
+      .build();
+    authApisHolder = new AuthApisHolder(clientConfig, restTemplateBuilderMock);
   }
 
   @AfterEach

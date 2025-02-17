@@ -19,25 +19,20 @@ public class ReceiptClient {
   }
 
   public PagedModelReceiptView getReceipts(ReceiptViewFiltersDTO receiptViewFiltersDTO, Pageable pageable, String accessToken) {
-    try {
-      return debtPositionApisHolder.getReceiptViewSearchControllerApi(accessToken)
-        .crudReceiptsViewFindReceiptsByFilters(
-          String.valueOf(receiptViewFiltersDTO.getOrganizationId()),
-          receiptViewFiltersDTO.getReceiptOrigin().toString(),
-          receiptViewFiltersDTO.getOperatorExternalUserId(),
-          receiptViewFiltersDTO.getIuv(),
-          receiptViewFiltersDTO.getIur(),
-          receiptViewFiltersDTO.getIud(),
-          receiptViewFiltersDTO.getDebtPositionTypeOrgId(),
-          receiptViewFiltersDTO.getPaymentDateTime().getFrom(),
-          receiptViewFiltersDTO.getPaymentDateTime().getTo(),
-          PageUtils.getPageNumber(pageable),
-          PageUtils.getPageSize(pageable),
-          PageUtils.getSortList(pageable));
-    } catch (Exception e) {
-      log.error("Unexpected error while retrieving receipts for organizationId: {}", receiptViewFiltersDTO.getOrganizationId(), e);
-      throw e;
-    }
+    return debtPositionApisHolder.getReceiptViewSearchControllerApi(accessToken)
+      .crudReceiptsViewFindReceiptsByFilters(
+        String.valueOf(receiptViewFiltersDTO.getOrganizationId()),
+        receiptViewFiltersDTO.getReceiptOrigin().toString(),
+        receiptViewFiltersDTO.getOperatorExternalUserId(),
+        receiptViewFiltersDTO.getIuv(),
+        receiptViewFiltersDTO.getIur(),
+        receiptViewFiltersDTO.getIud(),
+        receiptViewFiltersDTO.getDebtPositionTypeOrgId(),
+        receiptViewFiltersDTO.getPaymentDateTime().getFrom(),
+        receiptViewFiltersDTO.getPaymentDateTime().getTo(),
+        PageUtils.getPageNumber(pageable),
+        PageUtils.getPageSize(pageable),
+        PageUtils.getSortList(pageable));
   }
 
 }

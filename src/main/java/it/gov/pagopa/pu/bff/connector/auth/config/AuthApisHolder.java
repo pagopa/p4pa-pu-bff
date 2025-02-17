@@ -4,8 +4,8 @@ import it.gov.pagopa.pu.auth.controller.ApiClient;
 import it.gov.pagopa.pu.auth.controller.BaseApi;
 import it.gov.pagopa.pu.auth.controller.generated.AuthnApi;
 import it.gov.pagopa.pu.auth.controller.generated.AuthzApi;
+import it.gov.pagopa.pu.bff.config.RestTemplateConfig;
 import jakarta.annotation.PreDestroy;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -19,13 +19,18 @@ public class AuthApisHolder {
     private final ThreadLocal<String> bearerTokenHolder = new ThreadLocal<>();
 
     public AuthApisHolder(
-            @Value("${rest.auth.base-url}") String baseUrl,
-
-            RestTemplateBuilder restTemplateBuilder) {
+        AuthApiClientConfig clientConfig,
+        RestTemplateBuilder restTemplateBuilder
+    ) {
         RestTemplate restTemplate = restTemplateBuilder.build();
         ApiClient apiClient = new ApiClient(restTemplate);
-        apiClient.setBasePath(baseUrl);
+        apiClient.setBasePath(clientConfig.getBaseUrl());
         apiClient.setBearerToken(bearerTokenHolder::get);
+        apiClient.setMaxAttemptsForRetry(Math.max(1, clientConfig.getMaxAttempts()));
+        apiClient.setWaitTimeMillis(clientConfig.getWaitTimeMillis());
+        if (clientConfig.isPrintBodyWhenError()) {
+          restTemplate.setErrorHandler(RestTemplateConfig.bodyPrinterWhenError("AUTH"));
+        }
 
         this.authnApi = new AuthnApi(apiClient);
         this.authzApi = new AuthzApi(apiClient);

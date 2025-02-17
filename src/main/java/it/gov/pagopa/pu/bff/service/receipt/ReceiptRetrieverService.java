@@ -5,7 +5,7 @@ import it.gov.pagopa.pu.bff.dto.ReceiptViewFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedReceiptView;
 import org.springframework.data.domain.Pageable;
 
-public interface ReceiptService {
+public interface ReceiptRetrieverService {
 
   PagedReceiptView getReceipts(ReceiptViewFiltersDTO receiptViewFiltersDTO, Pageable pageable, UserInfo loggedUser, String accessToken);
 

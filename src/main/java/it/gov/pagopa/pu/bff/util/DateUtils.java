@@ -7,9 +7,7 @@ import java.time.ZoneId;
 public class DateUtils {
   private DateUtils(){}
 
-  public static final ZoneId europeRomeZoneId = ZoneId.of("Europe/Rome");
-
   public static LocalDateTime toLocalDateTime(OffsetDateTime date){
-    return date!=null?date.atZoneSameInstant(europeRomeZoneId).toLocalDateTime():null;
+    return date!=null?date.atZoneSameInstant(ZoneId.systemDefault()).toLocalDateTime():null;
   }
 }

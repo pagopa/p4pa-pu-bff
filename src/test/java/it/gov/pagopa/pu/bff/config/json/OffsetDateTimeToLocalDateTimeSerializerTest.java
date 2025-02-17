@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
+import java.util.TimeZone;
 
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
@@ -30,15 +31,17 @@ class OffsetDateTimeToLocalDateTimeSerializerTest {
   @BeforeEach
   public void setUp() {
     dateTimeSerializer = new OffsetDateTimeToLocalDateTimeSerializer();
+
+    TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
   }
 
   @Test
   void testDateSerializer() throws IOException {
-    OffsetDateTime offsetDateTime = OffsetDateTime.of(LocalDateTime.of(2025, 1, 16, 9, 15, 20), ZoneOffset.UTC);
+    OffsetDateTime offsetDateTime = OffsetDateTime.of(LocalDateTime.of(2025, 1, 16, 9, 15, 20), ZoneOffset.ofHours(1));
 
     dateTimeSerializer.serialize(offsetDateTime, jsonGenerator, serializerProvider);
 
-    verify(jsonGenerator).writeString("2025-01-16T10:15:20");
+    verify(jsonGenerator).writeString("2025-01-16T08:15:20");
   }
 
   @Test

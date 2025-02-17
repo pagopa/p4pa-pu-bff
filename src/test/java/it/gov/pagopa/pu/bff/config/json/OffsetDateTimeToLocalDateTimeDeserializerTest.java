@@ -15,7 +15,7 @@ class OffsetDateTimeToLocalDateTimeDeserializerTest {
   private final OffsetDateTimeToLocalDateTimeDeserializer deserializer = new OffsetDateTimeToLocalDateTimeDeserializer();
 
   @Test
-  void givenOffsetDateTimeWhenThenOk() throws IOException {
+  void givenOffsetDateTimeWhenDeserializeThenOk() throws IOException {
     // Given
     OffsetDateTime offsetDateTime = OffsetDateTime.now();
     JsonParser parser = Mockito.mock(JsonParser.class);
@@ -30,7 +30,7 @@ class OffsetDateTimeToLocalDateTimeDeserializerTest {
   }
 
   @Test
-  void givenUTCOffsetDateTimeWhenThenOk() throws IOException {
+  void givenUTCOffsetDateTimeWhenDeserializeThenOk() throws IOException {
     // Given
     OffsetDateTime offsetDateTime = OffsetDateTime.now().withOffsetSameInstant(ZoneOffset.UTC);
     JsonParser parser = Mockito.mock(JsonParser.class);
@@ -45,7 +45,7 @@ class OffsetDateTimeToLocalDateTimeDeserializerTest {
   }
 
   @Test
-  void givenLocalDateTimeWhenThenOk() throws IOException {
+  void givenLocalDateTimeWhenThenDeserializeOk() throws IOException {
     // Given
     LocalDateTime localDateTime = LocalDateTime.now();
     JsonParser parser = Mockito.mock(JsonParser.class);

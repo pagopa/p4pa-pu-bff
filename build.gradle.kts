@@ -148,7 +148,8 @@ tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>("ope
     "DebtPositionType" to "it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionType",
     "FlowFileType" to "it.gov.pagopa.pu.processexecutions.dto.generated.IngestionFlowFile.FlowFileTypeEnum",
     "ReceiptView" to "it.gov.pagopa.pu.debtpositions.dto.generated.ReceiptView",
-    "ReceiptOriginType" to "it.gov.pagopa.pu.debtpositions.dto.generated.ReceiptView.ReceiptOriginEnum"
+    "ReceiptOriginType" to "it.gov.pagopa.pu.debtpositions.dto.generated.ReceiptView.ReceiptOriginEnum",
+    "DebtPositionTypeOrg" to "it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrg"
   ))
   configOptions.set(mapOf(
     "dateLibrary" to "java8",

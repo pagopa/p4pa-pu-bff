@@ -4,6 +4,7 @@ import it.gov.pagopa.pu.bff.config.RestTemplateConfig;
 import it.gov.pagopa.pu.debtpositions.controller.ApiClient;
 import it.gov.pagopa.pu.debtpositions.controller.BaseApi;
 import it.gov.pagopa.pu.debtpositions.controller.generated.DebtPositionTypeEntityControllerApi;
+import it.gov.pagopa.pu.debtpositions.controller.generated.DebtPositionTypeOrgSearchControllerApi;
 import it.gov.pagopa.pu.debtpositions.controller.generated.DebtPositionTypeWithCountSearchControllerApi;
 import it.gov.pagopa.pu.debtpositions.controller.generated.ReceiptViewSearchControllerApi;
 import jakarta.annotation.PreDestroy;
@@ -16,6 +17,7 @@ public class DebtPositionApisHolder {
 
   private final DebtPositionTypeEntityControllerApi debtPositionTypeEntityControllerApi;
   private final DebtPositionTypeWithCountSearchControllerApi debtPositionTypeWithCountSearchControllerApi;
+  private final DebtPositionTypeOrgSearchControllerApi debtPositionTypeOrgSearchControllerApi;
   private final ReceiptViewSearchControllerApi receiptViewSearchControllerApi;
   private final ThreadLocal<String> bearerTokenHolder = new ThreadLocal<>();
 
@@ -35,6 +37,7 @@ public class DebtPositionApisHolder {
 
     this.debtPositionTypeEntityControllerApi = new DebtPositionTypeEntityControllerApi(apiClient);
     this.debtPositionTypeWithCountSearchControllerApi = new DebtPositionTypeWithCountSearchControllerApi(apiClient);
+    this.debtPositionTypeOrgSearchControllerApi = new DebtPositionTypeOrgSearchControllerApi(apiClient);
     this.receiptViewSearchControllerApi = new ReceiptViewSearchControllerApi(apiClient);
   }
 
@@ -55,6 +58,10 @@ public class DebtPositionApisHolder {
    */
   public DebtPositionTypeWithCountSearchControllerApi getDebtPositionTypeWithCountSearchControllerApi(String accessToken) {
     return getApi(accessToken, debtPositionTypeWithCountSearchControllerApi);
+  }
+
+  public DebtPositionTypeOrgSearchControllerApi getDebtPositionTypeOrgSearchControllerApi(String accessToken) {
+    return getApi(accessToken, debtPositionTypeOrgSearchControllerApi);
   }
 
   public ReceiptViewSearchControllerApi getReceiptViewSearchControllerApi(String accessToken) {

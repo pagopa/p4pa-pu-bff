@@ -32,7 +32,7 @@ class DebtPositionTypeOrgClientTest {
 
   @AfterEach
   void verifyNoMoreInteractions() {
-    Mockito.verifyNoMoreInteractions(debtPositionApisHolderMock);
+    Mockito.verifyNoMoreInteractions(debtPositionApisHolderMock, debtPositionTypeOrgSearchControllerApiMock);
   }
 
   @Test

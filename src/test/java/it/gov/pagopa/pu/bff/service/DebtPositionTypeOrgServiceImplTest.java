@@ -6,6 +6,7 @@ import it.gov.pagopa.pu.bff.service.debt_position_type_org.DebtPositionTypeOrgSe
 import it.gov.pagopa.pu.debtpositions.dto.generated.CollectionModelDebtPositionTypeOrg;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrg;
 import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelDebtPositionTypeOrgEmbedded;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -33,6 +34,11 @@ class DebtPositionTypeOrgServiceImplTest {
   @BeforeEach
   void setUp() {
     debtPositionTypeOrgService = new DebtPositionTypeOrgServiceImpl(debtPositionTypeOrgClientMock);
+  }
+
+  @AfterEach
+  void verifyNoMoreInteractions() {
+    Mockito.verifyNoMoreInteractions(debtPositionTypeOrgClientMock);
   }
 
   @Test
@@ -63,7 +69,6 @@ class DebtPositionTypeOrgServiceImplTest {
 
       authorizationServiceMockedStatic.verify(() -> AuthorizationService.isUserEnabledToOrganizationId(organizationId, loggedUser));
       Mockito.verify(debtPositionTypeOrgClientMock).getDebtPositionTypeOrgs(organizationId, operatorExternalUserId, accessToken);
-      Mockito.verifyNoMoreInteractions(debtPositionTypeOrgClientMock);
     }
   }
 
@@ -90,7 +95,6 @@ class DebtPositionTypeOrgServiceImplTest {
 
       authorizationServiceMockedStatic.verify(() -> AuthorizationService.isUserEnabledToOrganizationId(organizationId, loggedUser));
       Mockito.verify(debtPositionTypeOrgClientMock).getDebtPositionTypeOrgs(organizationId, operatorExternalUserId, accessToken);
-      Mockito.verifyNoMoreInteractions(debtPositionTypeOrgClientMock);
     }
   }
 
@@ -111,6 +115,5 @@ class DebtPositionTypeOrgServiceImplTest {
 
       authorizationServiceMockedStatic.verify(() -> AuthorizationService.isUserEnabledToOrganizationId(organizationId, loggedUser));
     }
-    Mockito.verifyNoInteractions(debtPositionTypeOrgClientMock);
   }
 }

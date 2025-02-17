@@ -116,11 +116,12 @@
 						"method": "POST",
 						"header": [],
 						"url": {
-							"raw": "{{puBffBaseUrl}}/token?idToken={{tokenExchange_subjectToken}}",
+							"raw": "{{puBffBaseUrl}}/bff/token?idToken={{tokenExchange_subjectToken}}",
 							"host": [
 								"{{puBffBaseUrl}}"
 							],
 							"path": [
+								"bff",
 								"token"
 							],
 							"query": [
@@ -185,11 +186,12 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{puBffBaseUrl}}/brokers/config",
+							"raw": "{{puBffBaseUrl}}/bff/brokers/config",
 							"host": [
 								"{{puBffBaseUrl}}"
 							],
 							"path": [
+								"bff",
 								"brokers",
 								"config"
 							]
@@ -239,11 +241,12 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{puBffBaseUrl}}/organizations",
+							"raw": "{{puBffBaseUrl}}/bff/organizations",
 							"host": [
 								"{{puBffBaseUrl}}"
 							],
 							"path": [
+								"bff",
 								"organizations"
 							]
 						}
@@ -318,11 +321,12 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{puBffBaseUrl}}/taxonomy/getOrganizationTypes",
+							"raw": "{{puBffBaseUrl}}/bff/taxonomy/getOrganizationTypes",
 							"host": [
 								"{{puBffBaseUrl}}"
 							],
 							"path": [
+								"bff",
 								"taxonomy",
 								"getOrganizationTypes"
 							]
@@ -364,11 +368,12 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{puBffBaseUrl}}/taxonomy/getMacroArea?organizationType=01",
+							"raw": "{{puBffBaseUrl}}/bff/taxonomy/getMacroArea?organizationType=01",
 							"host": [
 								"{{puBffBaseUrl}}"
 							],
 							"path": [
+								"bff",
 								"taxonomy",
 								"getMacroArea"
 							],
@@ -419,11 +424,12 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{puBffBaseUrl}}/taxonomy/getServiceType?organizationType=01&macroAreaCode=01",
+							"raw": "{{puBffBaseUrl}}/bff/taxonomy/getServiceType?organizationType=01&macroAreaCode=01",
 							"host": [
 								"{{puBffBaseUrl}}"
 							],
 							"path": [
+								"bff",
 								"taxonomy",
 								"getServiceType"
 							],
@@ -479,11 +485,12 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{puBffBaseUrl}}/taxonomy/getCollectionReason?organizationType=01&macroAreaCode=01&serviceTypeCode=100",
+							"raw": "{{puBffBaseUrl}}/bff/taxonomy/getCollectionReason?organizationType=01&macroAreaCode=01&serviceTypeCode=100",
 							"host": [
 								"{{puBffBaseUrl}}"
 							],
 							"path": [
+								"bff",
 								"taxonomy",
 								"getCollectionReason"
 							],
@@ -544,11 +551,12 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{puBffBaseUrl}}/taxonomy/getTaxonomyCode?organizationType=01&macroAreaCode=01&serviceTypeCode=100&collectionReason=IM",
+							"raw": "{{puBffBaseUrl}}/bff/taxonomy/getTaxonomyCode?organizationType=01&macroAreaCode=01&serviceTypeCode=100&collectionReason=IM",
 							"host": [
 								"{{puBffBaseUrl}}"
 							],
 							"path": [
+								"bff",
 								"taxonomy",
 								"getTaxonomyCode"
 							],
@@ -638,11 +646,12 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{puBffBaseUrl}}/core-health",
+							"raw": "{{puBffBaseUrl}}/bff/core-health",
 							"host": [
 								"{{puBffBaseUrl}}"
 							],
 							"path": [
+								"bff",
 								"core-health"
 							]
 						}
@@ -761,11 +770,12 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{puBffBaseUrl}}/debt-position-types/:id",
+							"raw": "{{puBffBaseUrl}}/bff/debt-position-types/:id",
 							"host": [
 								"{{puBffBaseUrl}}"
 							],
 							"path": [
+								"bff",
 								"debt-position-types",
 								":id"
 							],

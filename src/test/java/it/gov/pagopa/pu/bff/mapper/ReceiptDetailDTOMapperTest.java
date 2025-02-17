@@ -21,7 +21,7 @@ class ReceiptDetailDTOMapperTest {
     ReceiptDetailDTO result = mapper.mapToReceiptDetailDTO(receiptDetailDTO);
 
     Assertions.assertNotNull(result);
-    TestUtils.reflectionEqualsByName(receiptDetailDTO, result);
+    TestUtils.reflectionEqualsByName(receiptDetailDTO, result, "debtor", "payer");
     Assertions.assertEquals(receiptDetailDTO.getDebtor().getFullName(),result.getDebtorFullName());
     Assertions.assertEquals(receiptDetailDTO.getDebtor().getFiscalCode(),result.getDebtorFiscalCode());
     Assertions.assertEquals(receiptDetailDTO.getPayer().getFullName(),result.getPayerFullName());
@@ -37,7 +37,7 @@ class ReceiptDetailDTOMapperTest {
     ReceiptDetailDTO result = mapper.mapToReceiptDetailDTO(receiptDetailDTO);
 
     Assertions.assertNotNull(result);
-    TestUtils.reflectionEqualsByName(receiptDetailDTO, result);
+    TestUtils.reflectionEqualsByName(receiptDetailDTO, result, "debtor", "payer");
     Assertions.assertEquals(receiptDetailDTO.getDebtor().getFullName(),result.getDebtorFullName());
     Assertions.assertEquals(receiptDetailDTO.getDebtor().getFiscalCode(),result.getDebtorFiscalCode());
     Assertions.assertNull(result.getPayerFullName());

@@ -29,5 +29,4 @@ public class DebtPositionTypeOrgServiceImpl implements DebtPositionTypeOrgServic
     return collection.getEmbedded().getDebtPositionTypeOrgs();
   }
 
-
 }

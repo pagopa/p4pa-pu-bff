@@ -22,6 +22,10 @@ class ReceiptDetailDTOMapperTest {
 
     Assertions.assertNotNull(result);
     TestUtils.reflectionEqualsByName(receiptDetailDTO, result);
+    Assertions.assertEquals(receiptDetailDTO.getDebtor().getFullName(),result.getDebtorFullName());
+    Assertions.assertEquals(receiptDetailDTO.getDebtor().getFiscalCode(),result.getDebtorFiscalCode());
+    Assertions.assertEquals(receiptDetailDTO.getPayer().getFullName(),result.getPayerFullName());
+    Assertions.assertEquals(receiptDetailDTO.getPayer().getFiscalCode(),result.getPayerFiscalCode());
     TestUtils.checkNotNullFields(result);
   }
 
@@ -34,6 +38,8 @@ class ReceiptDetailDTOMapperTest {
 
     Assertions.assertNotNull(result);
     TestUtils.reflectionEqualsByName(receiptDetailDTO, result);
+    Assertions.assertEquals(receiptDetailDTO.getDebtor().getFullName(),result.getDebtorFullName());
+    Assertions.assertEquals(receiptDetailDTO.getDebtor().getFiscalCode(),result.getDebtorFiscalCode());
     Assertions.assertNull(result.getPayerFullName());
     Assertions.assertNull(result.getPayerFiscalCode());
     TestUtils.checkNotNullFields(result,"payerFullName","payerFiscalCode");

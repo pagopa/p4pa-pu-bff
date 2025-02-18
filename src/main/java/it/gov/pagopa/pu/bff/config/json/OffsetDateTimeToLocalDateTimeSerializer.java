@@ -11,13 +11,13 @@ import java.time.OffsetDateTime;
 import java.time.ZoneId;
 
 @Configuration
-public class LocalDateTimeToOffsetDateTimeSerializer extends JsonSerializer<LocalDateTime> {
+public class OffsetDateTimeToLocalDateTimeSerializer extends JsonSerializer<OffsetDateTime> {
 
   @Override
-  public void serialize(LocalDateTime value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
+  public void serialize(OffsetDateTime value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
     if (value != null) {
-      OffsetDateTime offsetDateTime = value.atZone(ZoneId.systemDefault()).toOffsetDateTime();
-      gen.writeString(offsetDateTime.toString());
+      LocalDateTime localDateTime = value.atZoneSameInstant(ZoneId.systemDefault()).toLocalDateTime();
+      gen.writeString(localDateTime.toString());
     }
   }
 }

@@ -1,22 +1,14 @@
 package it.gov.pagopa.pu.bff.connector.organization.config;
 
+import it.gov.pagopa.pu.bff.config.RestTemplateConfig;
 import it.gov.pagopa.pu.organization.controller.ApiClient;
 import it.gov.pagopa.pu.organization.controller.BaseApi;
-import it.gov.pagopa.pu.organization.controller.generated.BrokerEntityControllerApi;
-import it.gov.pagopa.pu.organization.controller.generated.OrganizationSearchControllerApi;
-import it.gov.pagopa.pu.organization.controller.generated.TaxonomyCodeDtoSearchControllerApi;
-import it.gov.pagopa.pu.organization.controller.generated.TaxonomyCollectionReasonDtoSearchControllerApi;
-import it.gov.pagopa.pu.organization.controller.generated.TaxonomyMacroAreaCodeDtoSearchControllerApi;
-import it.gov.pagopa.pu.organization.controller.generated.TaxonomyOrganizationTypeDtoSearchControllerApi;
-import it.gov.pagopa.pu.organization.controller.generated.TaxonomyServiceTypeCodeDtoSearchControllerApi;
+import it.gov.pagopa.pu.organization.controller.generated.*;
 import jakarta.annotation.PreDestroy;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-@Lazy
 @Service
 public class OrganizationApisHolder {
 
@@ -30,12 +22,18 @@ public class OrganizationApisHolder {
     private final ThreadLocal<String> bearerTokenHolder = new ThreadLocal<>();
 
     public OrganizationApisHolder(
-            @Value("${rest.organization.base-url}") String baseUrl,
-            RestTemplateBuilder restTemplateBuilder) {
+        OrganizationApiClientConfig clientConfig,
+        RestTemplateBuilder restTemplateBuilder
+    ) {
         RestTemplate restTemplate = restTemplateBuilder.build();
         ApiClient apiClient = new ApiClient(restTemplate);
-        apiClient.setBasePath(baseUrl);
+        apiClient.setBasePath(clientConfig.getBaseUrl());
         apiClient.setBearerToken(bearerTokenHolder::get);
+        apiClient.setMaxAttemptsForRetry(Math.max(1, clientConfig.getMaxAttempts()));
+        apiClient.setWaitTimeMillis(clientConfig.getWaitTimeMillis());
+        if (clientConfig.isPrintBodyWhenError()) {
+          restTemplate.setErrorHandler(RestTemplateConfig.bodyPrinterWhenError("ORGANIZATION"));
+        }
 
         this.organizationSearchControllerApi = new OrganizationSearchControllerApi(apiClient);
         this.brokerEntityControllerApi = new BrokerEntityControllerApi(apiClient);

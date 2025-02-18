@@ -4,7 +4,7 @@ import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.dto.OffsetDateTimeIntervalFilter;
 import it.gov.pagopa.pu.bff.dto.ReceiptViewFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedReceiptView;
-import it.gov.pagopa.pu.bff.service.receipt.ReceiptService;
+import it.gov.pagopa.pu.bff.service.receipt.ReceiptRetrieverService;
 import it.gov.pagopa.pu.debtpositions.dto.generated.ReceiptView;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -30,7 +30,7 @@ import java.util.List;
 class ReceiptControllerTest {
 
   @Mock
-  private ReceiptService receiptServiceMock;
+  private ReceiptRetrieverService receiptRetrieverServiceMock;
 
   @InjectMocks
   private ReceiptController receiptController;
@@ -76,7 +76,7 @@ class ReceiptControllerTest {
     expectedResult.setTotalPages(1L);
     expectedResult.setNumber(0L);
 
-    Mockito.when(receiptServiceMock.getReceipts(filtersDTO, pageable, userInfo, "fakeAccessToken"))
+    Mockito.when(receiptRetrieverServiceMock.getReceipts(filtersDTO, pageable, userInfo, "fakeAccessToken"))
       .thenReturn(expectedResult);
 
     ResponseEntity<PagedReceiptView> response = receiptController.getReceipts(organizationId, receiptOrigin, iuv, iur, iud, debtPositionTypeOrgId, fromDate, toDate, pageable);

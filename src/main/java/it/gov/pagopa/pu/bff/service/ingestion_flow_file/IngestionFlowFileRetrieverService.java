@@ -5,7 +5,7 @@ import it.gov.pagopa.pu.bff.dto.IngestionFlowFileFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedIngestionFlowFile;
 import org.springframework.data.domain.Pageable;
 
-public interface IngestionFlowFileService {
+public interface IngestionFlowFileRetrieverService {
 
   PagedIngestionFlowFile getIngestionFlowFiles(IngestionFlowFileFiltersDTO ingestionFlowFileFiltersDTO, Pageable pageable, UserInfo loggedUser, String accessToken);
 }

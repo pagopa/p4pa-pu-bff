@@ -15,14 +15,14 @@ import java.util.Optional;
 @Service
 @Slf4j
 public class AuthorizationService {
-
-  private final AuthnClient authClientImpl;
-  private final String subjectIssuer;
   public static final String CLIENT_ID = "piattaforma-unitaria";
   public static final String GRANT_TYPE = "urn:ietf:params:oauth:grant-type:token-exchange";
   public static final String SCOPE = "openid";
   public static final String SUBJECT_TOKEN_TYPE = "urn:ietf:params:oauth:token-type:jwt";
   public static final String ROLE_ADMIN = "ROLE_ADMIN";
+
+  private final AuthnClient authClientImpl;
+  private final String subjectIssuer;
 
   public AuthorizationService(@Value("${rest.auth.token-exchange-issuer}") String subjectIssuer,
                               AuthnClient authClientImpl) {

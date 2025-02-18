@@ -71,6 +71,16 @@ tasks.withType<Test> {
   finalizedBy(tasks.jacocoTestReport)
 }
 
+val mockitoAgent = configurations.create("mockitoAgent")
+dependencies {
+  mockitoAgent("org.mockito:mockito-core") { isTransitive = false }
+}
+tasks {
+  test {
+    jvmArgs("-javaagent:${mockitoAgent.asPath}")
+  }
+}
+
 tasks.jacocoTestReport {
   dependsOn(tasks.test)
   reports {
@@ -141,7 +151,8 @@ tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>("ope
     "IngestionFlowFileStatus" to "it.gov.pagopa.pu.processexecutions.dto.generated.IngestionFlowFile.StatusEnum",
     "ExportFileStatus" to "it.gov.pagopa.pu.processexecutions.dto.generated.ExportFile.StatusEnum",
     "ReceiptView" to "it.gov.pagopa.pu.debtpositions.dto.generated.ReceiptView",
-    "ReceiptOriginType" to "it.gov.pagopa.pu.debtpositions.dto.generated.ReceiptView.ReceiptOriginEnum"
+    "ReceiptOriginType" to "it.gov.pagopa.pu.debtpositions.dto.generated.ReceiptView.ReceiptOriginEnum",
+    "DebtPositionTypeOrg" to "it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrg"
   ))
   configOptions.set(mapOf(
     "dateLibrary" to "java8",

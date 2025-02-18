@@ -10,13 +10,15 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.TimeZone;
 
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 
 @ExtendWith(MockitoExtension.class)
-class LocalDateTimeToOffsetDateTimeSerializerTest {
+class OffsetDateTimeToLocalDateTimeSerializerTest {
 
   @Mock
   private JsonGenerator jsonGenerator;
@@ -24,22 +26,22 @@ class LocalDateTimeToOffsetDateTimeSerializerTest {
   @Mock
   private SerializerProvider serializerProvider;
 
-  private LocalDateTimeToOffsetDateTimeSerializer dateTimeSerializer;
+  private OffsetDateTimeToLocalDateTimeSerializer dateTimeSerializer;
 
   @BeforeEach
   public void setUp() {
-    dateTimeSerializer = new LocalDateTimeToOffsetDateTimeSerializer();
+    dateTimeSerializer = new OffsetDateTimeToLocalDateTimeSerializer();
+
+    TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
   }
 
   @Test
   void testDateSerializer() throws IOException {
-    LocalDateTime localDateTime = LocalDateTime.of(2025, 1, 16, 9, 15, 20);
+    OffsetDateTime offsetDateTime = OffsetDateTime.of(LocalDateTime.of(2025, 1, 16, 9, 15, 20), ZoneOffset.ofHours(1));
 
-    TimeZone.setDefault(TimeZone.getTimeZone("Europe/Rome"));
+    dateTimeSerializer.serialize(offsetDateTime, jsonGenerator, serializerProvider);
 
-    dateTimeSerializer.serialize(localDateTime, jsonGenerator, serializerProvider);
-
-    verify(jsonGenerator).writeString("2025-01-16T09:15:20+01:00");
+    verify(jsonGenerator).writeString("2025-01-16T08:15:20");
   }
 
   @Test

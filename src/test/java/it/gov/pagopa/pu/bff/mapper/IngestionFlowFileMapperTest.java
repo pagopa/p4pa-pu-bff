@@ -1,13 +1,7 @@
 package it.gov.pagopa.pu.bff.mapper;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
-import it.gov.pagopa.pu.bff.connector.auth.client.AuthzClient;
+import it.gov.pagopa.pu.bff.connector.auth.AuthzService;
 import it.gov.pagopa.pu.bff.dto.generated.PagedIngestionFlowFile;
 import it.gov.pagopa.pu.bff.util.TestUtils;
 import it.gov.pagopa.pu.processexecutions.dto.generated.IngestionFlowFile;
@@ -15,8 +9,6 @@ import it.gov.pagopa.pu.processexecutions.dto.generated.IngestionFlowFile.Status
 import it.gov.pagopa.pu.processexecutions.dto.generated.PageMetadata;
 import it.gov.pagopa.pu.processexecutions.dto.generated.PagedModelIngestionFlowFile;
 import it.gov.pagopa.pu.processexecutions.dto.generated.PagedModelIngestionFlowFileEmbedded;
-import java.time.OffsetDateTime;
-import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -25,16 +17,21 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.util.CollectionUtils;
 
+import java.time.OffsetDateTime;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
+
 @ExtendWith(MockitoExtension.class)
 class IngestionFlowFileMapperTest {
   @Mock
-  private AuthzClient authzClientMock;
+  private AuthzService authzServiceMock;
 
   private IngestionFlowFileMapper mapper;
 
   @BeforeEach
   void setUp() {
-    mapper = new IngestionFlowFileMapper(authzClientMock);
+    mapper = new IngestionFlowFileMapper(authzServiceMock);
   }
 
   @Test
@@ -94,8 +91,8 @@ class IngestionFlowFileMapperTest {
     page.setNumber(4L);
     pagedModelIngestionFlowFile.setPage(page);
 
-    Mockito.when(authzClientMock.getUserInfoFromMappedExternalUserId(operatorExternalId,accessToken)).thenReturn(userInfo);
-    Mockito.when(authzClientMock.getUserInfoFromMappedExternalUserId(otherOperatorExternalId,accessToken)).thenReturn(otherUserInfo);
+    Mockito.when(authzServiceMock.getUserInfoFromMappedExternaUserId(operatorExternalId,accessToken)).thenReturn(userInfo);
+    Mockito.when(authzServiceMock.getUserInfoFromMappedExternaUserId(otherOperatorExternalId,accessToken)).thenReturn(otherUserInfo);
 
     PagedIngestionFlowFile result = mapper.mapToPagedIngestionFlowFile(
       pagedModelIngestionFlowFile,userInfo,accessToken);
@@ -128,10 +125,9 @@ class IngestionFlowFileMapperTest {
       result.getContent().get(3),
       otherUserInfo.getFamilyName() + " " +otherUserInfo.getName(),
       0L,
-      it.gov.pagopa.pu.processexecutions.dto.generated.IngestionFlowFile.StatusEnum.ERROR, "totalRows");
-    Mockito.verify(authzClientMock).getUserInfoFromMappedExternalUserId(operatorExternalId,accessToken);
-    Mockito.verify(authzClientMock, Mockito.times(3)).getUserInfoFromMappedExternalUserId(otherOperatorExternalId,accessToken);
-    Mockito.verifyNoMoreInteractions(authzClientMock);
+      it.gov.pagopa.pu.bff.dto.generated.IngestionFlowFile.StatusEnum.ERROR, "totalRows");
+    Mockito.verify(authzServiceMock, Mockito.times(3)).getUserInfoFromMappedExternaUserId(otherOperatorExternalId,accessToken);
+    Mockito.verifyNoMoreInteractions(authzServiceMock);
   }
 
   private void checkIngestionFlowFile(

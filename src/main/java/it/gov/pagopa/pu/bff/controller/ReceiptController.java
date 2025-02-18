@@ -6,7 +6,7 @@ import it.gov.pagopa.pu.bff.dto.OffsetDateTimeIntervalFilter;
 import it.gov.pagopa.pu.bff.dto.ReceiptViewFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedReceiptView;
 import it.gov.pagopa.pu.bff.security.SecurityUtils;
-import it.gov.pagopa.pu.bff.service.receipt.ReceiptService;
+import it.gov.pagopa.pu.bff.service.receipt.ReceiptRetrieverService;
 import it.gov.pagopa.pu.debtpositions.dto.generated.ReceiptView;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -17,10 +17,10 @@ import java.time.OffsetDateTime;
 @RestController
 public class ReceiptController implements ReceiptsApi {
 
-  private final ReceiptService receiptService;
+  private final ReceiptRetrieverService receiptRetrieverService;
 
-  public ReceiptController(ReceiptService receiptService) {
-    this.receiptService = receiptService;
+  public ReceiptController(ReceiptRetrieverService receiptRetrieverService) {
+    this.receiptRetrieverService = receiptRetrieverService;
   }
 
   @Override
@@ -28,7 +28,7 @@ public class ReceiptController implements ReceiptsApi {
     UserInfo userInfo = SecurityUtils.getLoggedUser();
     OffsetDateTimeIntervalFilter paymentDateTimeFilter = new OffsetDateTimeIntervalFilter(paymentDateTimeFrom, paymentDateTimeTo);
 
-    return ResponseEntity.ok(receiptService.getReceipts(
+    return ResponseEntity.ok(receiptRetrieverService.getReceipts(
       new ReceiptViewFiltersDTO(organizationId, receiptOrigin, userInfo.getMappedExternalUserId(), iuv, iur, iud, debtPositionTypeOrgId, paymentDateTimeFilter),
       pageable, userInfo, SecurityUtils.getAccessToken()));
   }

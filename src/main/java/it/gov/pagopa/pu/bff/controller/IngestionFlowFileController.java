@@ -4,7 +4,7 @@ import it.gov.pagopa.pu.bff.controller.generated.IngestionFlowFilesApi;
 import it.gov.pagopa.pu.bff.dto.IngestionFlowFileFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedIngestionFlowFile;
 import it.gov.pagopa.pu.bff.security.SecurityUtils;
-import it.gov.pagopa.pu.bff.service.ingestion_flow_file.IngestionFlowFileService;
+import it.gov.pagopa.pu.bff.service.ingestion_flow_file.IngestionFlowFileRetrieverService;
 import it.gov.pagopa.pu.processexecutions.dto.generated.IngestionFlowFile.FlowFileTypeEnum;
 import it.gov.pagopa.pu.processexecutions.dto.generated.IngestionFlowFile.StatusEnum;
 import java.time.OffsetDateTime;
@@ -19,11 +19,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class IngestionFlowFileController implements IngestionFlowFilesApi {
 
-  private final IngestionFlowFileService ingestionFlowFileService;
+  private final IngestionFlowFileRetrieverService ingestionFlowFileRetrieverService;
 
   public IngestionFlowFileController(
-    IngestionFlowFileService ingestionFlowFileService) {
-    this.ingestionFlowFileService = ingestionFlowFileService;
+    IngestionFlowFileRetrieverService ingestionFlowFileRetrieverService) {
+    this.ingestionFlowFileRetrieverService = ingestionFlowFileRetrieverService;
   }
 
   @Override
@@ -33,6 +33,6 @@ public class IngestionFlowFileController implements IngestionFlowFilesApi {
     OffsetDateTime creationDateTo, StatusEnum status, String fileName,
     Pageable pageable) {
     log.info("User requested getIngestionFlowFiles having organizationId {} and flowFileType {}", organizationId, flowFileTypes);
-    return ResponseEntity.ok(ingestionFlowFileService.getIngestionFlowFiles(new IngestionFlowFileFiltersDTO(organizationId,flowFileTypes,creationDateFrom,creationDateTo,status,fileName),pageable, SecurityUtils.getLoggedUser(),SecurityUtils.getAccessToken()));
+    return ResponseEntity.ok(ingestionFlowFileRetrieverService.getIngestionFlowFiles(new IngestionFlowFileFiltersDTO(organizationId,flowFileTypes,creationDateFrom,creationDateTo,status,fileName),pageable, SecurityUtils.getLoggedUser(),SecurityUtils.getAccessToken()));
   }
 }

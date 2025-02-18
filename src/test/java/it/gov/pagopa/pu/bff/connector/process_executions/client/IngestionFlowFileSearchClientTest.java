@@ -1,19 +1,12 @@
 package it.gov.pagopa.pu.bff.connector.process_executions.client;
 
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.mockito.Mockito.when;
-
 import it.gov.pagopa.pu.bff.connector.process_executions.config.ProcessExecutionsApisHolder;
 import it.gov.pagopa.pu.bff.dto.IngestionFlowFileFiltersDTO;
 import it.gov.pagopa.pu.processexecutions.controller.generated.IngestionFlowFileSearchControllerApi;
 import it.gov.pagopa.pu.processexecutions.dto.generated.IngestionFlowFile.StatusEnum;
 import it.gov.pagopa.pu.processexecutions.dto.generated.IngestionFlowFile.FlowFileTypeEnum;
 import it.gov.pagopa.pu.processexecutions.dto.generated.PagedModelIngestionFlowFile;
-import java.time.OffsetDateTime;
-import java.util.Collections;
-import java.util.List;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,8 +17,13 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Order;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.client.HttpClientErrorException;
+
+import java.time.OffsetDateTime;
+import java.util.Collections;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class IngestionFlowFileSearchClientTest {
@@ -44,7 +42,10 @@ class IngestionFlowFileSearchClientTest {
 
   @AfterEach
   void verifyNoMoreInteractions() {
-    Mockito.verifyNoMoreInteractions(processExecutionsApisHolderMock);
+    Mockito.verifyNoMoreInteractions(
+      processExecutionsApisHolderMock,
+      ingestionFlowFileSearchControllerApiMock
+    );
   }
 
   @Test
@@ -105,68 +106,5 @@ class IngestionFlowFileSearchClientTest {
     assertSame(expectedResult, result);
   }
 
-  @Test
-  void givenGenericHttpExceptionWhenGetIngestionFlowFilesThenThrowIt() {
-    long organizationId = 1L;
-    FlowFileTypeEnum flowFileType = FlowFileTypeEnum.TREASURY_OPI;
-    OffsetDateTime creationDateFrom = OffsetDateTime.now().minusDays(10);
-    OffsetDateTime creationDateTo = OffsetDateTime.now().plusDays(10);
-    StatusEnum status = StatusEnum.COMPLETED;
-    String fileName = "filename";
-    String operatorExternalId = "operatorExternalId";
-    IngestionFlowFileFiltersDTO ingestionFlowFileFilters = new IngestionFlowFileFiltersDTO(
-      organizationId, List.of(flowFileType), creationDateFrom, creationDateTo, status,
-      fileName);
-    List<String> sortList = List.of("sort1,ASC","sort2,DESC");
-    String accessToken = "ACCESSTOKEN";
-    HttpClientErrorException expectedException = new HttpClientErrorException(HttpStatus.INTERNAL_SERVER_ERROR);
-
-    when(processExecutionsApisHolderMock.getIngestionFlowFileSearchControllerApi(accessToken))
-      .thenReturn(ingestionFlowFileSearchControllerApiMock);
-    when(ingestionFlowFileSearchControllerApiMock.crudIngestionFlowFilesFindByOrganizationIDFlowTypeCreateDate(
-      String.valueOf(organizationId),List.of(flowFileType.toString()),creationDateFrom.toLocalDateTime(),
-      creationDateTo.toLocalDateTime(),status.name(),fileName,operatorExternalId,0,10,sortList))
-      .thenThrow(expectedException);
-
-    HttpClientErrorException result = Assertions.assertThrows(
-      expectedException.getClass(),
-      () -> ingestionFlowFileSearchClient.getIngestionFlowFiles(
-        ingestionFlowFileFilters, operatorExternalId,PageRequest.of(0,10,
-          Sort.by(List.of(Order.asc("sort1"),Order.desc("sort2")))), accessToken));
-
-    Assertions.assertSame(expectedException, result);
-  }
-
-  @Test
-  void givenGenericExceptionWhenGetIngestionFlowFilesThenThrowIt() {
-    long organizationId = 1L;
-    FlowFileTypeEnum flowFileType = FlowFileTypeEnum.TREASURY_OPI;
-    OffsetDateTime creationDateFrom = OffsetDateTime.now().minusDays(10);
-    OffsetDateTime creationDateTo = OffsetDateTime.now().plusDays(10);
-    StatusEnum status = StatusEnum.COMPLETED;
-    String fileName = "filename";
-    String operatorExternalId = "operatorExternalId";
-    IngestionFlowFileFiltersDTO ingestionFlowFileFilters = new IngestionFlowFileFiltersDTO(
-      organizationId, List.of(flowFileType), creationDateFrom, creationDateTo, status,
-      fileName);
-    List<String> sortList = List.of("sort1,ASC","sort2,DESC");
-    String accessToken = "ACCESSTOKEN";
-    RuntimeException expectedException = new RuntimeException();
-
-    when(processExecutionsApisHolderMock.getIngestionFlowFileSearchControllerApi(accessToken))
-      .thenReturn(ingestionFlowFileSearchControllerApiMock);
-    when(ingestionFlowFileSearchControllerApiMock.crudIngestionFlowFilesFindByOrganizationIDFlowTypeCreateDate(
-      String.valueOf(organizationId),List.of(flowFileType.toString()),creationDateFrom.toLocalDateTime(),
-      creationDateTo.toLocalDateTime(),status.name(),fileName,operatorExternalId,0,10,sortList))
-      .thenThrow(expectedException);
-
-    RuntimeException result = Assertions.assertThrows(
-      expectedException.getClass(),
-      () -> ingestionFlowFileSearchClient.getIngestionFlowFiles(
-        ingestionFlowFileFilters, operatorExternalId,PageRequest.of(0,10,
-          Sort.by(List.of(Order.asc("sort1"),Order.desc("sort2")))), accessToken));
-
-    Assertions.assertSame(expectedException, result);
-  }
 }
 

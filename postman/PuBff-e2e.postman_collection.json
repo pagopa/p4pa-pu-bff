@@ -1,878 +1,889 @@
 {
-  "info": {
-    "_postman_id": "5ef7ae85-523d-4b58-92b8-bd795698763b",
-    "name": "PU-BFF",
-    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "_exporter_id": "17966353"
-  },
-  "item": [
-    {
-      "name": "00_login",
-      "item": [
-        {
-          "name": "00_authtoken jwt",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "pm=instrumentPmMethod(pm);\r",
-                  "\r",
-                  "pm.test(\"MyPay - 01_authtoken - Responses with 200\", function () {\r",
-                  "    pm.response.to.have.status(200);\r",
-                  "});\r",
-                  "\r",
-                  "pm.test(\"MyPay - 01_authtoken jwt - Verify response body\", function () {\r",
-                  "    let jsonResponse = pm.response.json();\r",
-                  "\r",
-                  "    pm.expect(jsonResponse).have.property(\"access_token\")\r",
-                  "    pm.expect(jsonResponse).have.property(\"token_type\")\r",
-                  "    pm.expect(jsonResponse).have.property(\"expires_in\")\r",
-                  "});\r",
-                  "\r",
-                  "let jsonResponse = pm.response.json();\r",
-                  "pm.collectionVariables.set(\"accessToken\", jsonResponse.access_token);\r",
-                  ""
-                ],
-                "type": "text/javascript",
-                "packages": {}
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [],
-            "url": {
-              "raw": "{{p4paAuthBaseUrl}}/auth/token?client_id=piattaforma-unitaria&grant_type=urn:ietf:params:oauth:grant-type:token-exchange&subject_token={{tokenExchange_subjectToken}}&subject_issuer={{tokenExchange_issuer}}&scope=openid&subject_token_type=urn:ietf:params:oauth:token-type:jwt",
-              "host": [
-                "{{p4paAuthBaseUrl}}"
-              ],
-              "path": [
-                "auth",
-                "token"
-              ],
-              "query": [
-                {
-                  "key": "client_id",
-                  "value": "piattaforma-unitaria"
-                },
-                {
-                  "key": "grant_type",
-                  "value": "urn:ietf:params:oauth:grant-type:token-exchange"
-                },
-                {
-                  "key": "subject_token",
-                  "value": "{{tokenExchange_subjectToken}}"
-                },
-                {
-                  "key": "subject_issuer",
-                  "value": "{{tokenExchange_issuer}}"
-                },
-                {
-                  "key": "scope",
-                  "value": "openid"
-                },
-                {
-                  "key": "subject_token_type",
-                  "value": "urn:ietf:params:oauth:token-type:jwt"
-                }
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "00_postToken",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "pm=instrumentPmMethod(pm);\r",
-                  "\r",
-                  "pm.test(\"00_postToken - Responses with 200\", function () {\r",
-                  "    pm.response.to.have.status(200);\r",
-                  "});\r",
-                  "\r",
-                  "pm.test(\"00_postToken - Verify response body\", function () {\r",
-                  "    let jsonResponse = pm.response.json();\r",
-                  "\r",
-                  "    pm.expect(jsonResponse).have.property(\"accessToken\")\r",
-                  "    pm.expect(jsonResponse).have.property(\"tokenType\")\r",
-                  "    pm.expect(jsonResponse).have.property(\"expiresIn\")\r",
-                  "\r",
-                  "});\r",
-                  "\r",
-                  "let jsonResponse = pm.response.json();\r",
-                  ""
-                ],
-                "type": "text/javascript",
-                "packages": {}
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [],
-            "url": {
-              "raw": "{{puBffBaseUrl}}/token?idToken={{tokenExchange_subjectToken}}",
-              "host": [
-                "{{puBffBaseUrl}}"
-              ],
-              "path": [
-                "token"
-              ],
-              "query": [
-                {
-                  "key": "idToken",
-                  "value": "{{tokenExchange_subjectToken}}"
-                }
-              ]
-            }
-          },
-          "response": []
-        }
-      ]
-    },
-    {
-      "name": "01_Organization",
-      "item": [
-        {
-          "name": "01_getBrokerConfig",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "let jsonResponse = pm.response.json();\r",
-                  "\r",
-                  "pm.test(\"[brokers - config], expected httpStatus: 200\", () => {\r",
-                  "    pm.response.to.have.status(200);\r",
-                  "})\r",
-                  "\r",
-                  "pm.test(\"[brokers - config] - get list of config\", () => {\r",
-                  "    pm.expect(jsonResponse).to.have.property(\"headerAssistanceUrl\").and.to.not.be.null;\r",
-                  "    pm.expect(jsonResponse).to.have.property(\"logoFooterImg\").and.to.not.be.null;\r",
-                  "    pm.expect(jsonResponse).to.have.property(\"footerDescText\").and.to.not.be.null;\r",
-                  "    pm.expect(jsonResponse).to.have.property(\"footerPrivacyInfoUrl\").and.to.not.be.null;\r",
-                  "    pm.expect(jsonResponse).to.have.property(\"footerGDPRUrl\").and.to.not.be.null;\r",
-                  "    pm.expect(jsonResponse).to.have.property(\"footerTermsCondUrl\").and.to.not.be.null;\r",
-                  "    pm.expect(jsonResponse).to.have.property(\"footerAccessibilityUrl\").and.to.not.be.null;\r",
-                  "    pm.expect(jsonResponse).to.have.property(\"brokerId\").and.to.not.be.null;\r",
-                  "    pm.expect(jsonResponse).to.have.property(\"brokerFiscalCode\").and.to.not.be.null;\r",
-                  "    pm.expect(jsonResponse).to.have.property(\"canManageUsers\").and.to.not.be.null;\r",
-                  "})\r",
-                  "\r",
-                  ""
-                ],
-                "type": "text/javascript",
-                "packages": {}
-              }
-            },
-            {
-              "listen": "prerequest",
-              "script": {
-                "exec": [
-                  ""
-                ],
-                "type": "text/javascript",
-                "packages": {}
-              }
-            }
-          ],
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{puBffBaseUrl}}/brokers/config",
-              "host": [
-                "{{puBffBaseUrl}}"
-              ],
-              "path": [
-                "brokers",
-                "config"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "01_getOrganizations",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "let jsonResponse = pm.response.json();\r",
-                  "\r",
-                  "pm.test(\"[organizations], expected httpStatus: 200\", () => {\r",
-                  "    pm.response.to.have.status(200);\r",
-                  "})\r",
-                  "\r",
-                  "pm.test(\"[organizations] - get list of organizations\", () => {\r",
-                  "    jsonResponse.forEach((item)=> {\r",
-                  "        pm.expect(item).to.have.property(\"organizationId\").and.to.not.be.null;\r",
-                  "        pm.expect(item).to.have.property(\"ipaCode\").and.to.not.be.null;\r",
-                  "        pm.expect(item).to.have.property(\"orgName\").and.to.not.be.null;\r",
-                  "        pm.expect(item).to.have.property(\"operatorRole\").and.to.not.be.null;\r",
-                  "        pm.expect(item).to.have.property(\"orgFiscalCode\").and.to.not.be.null;\r",
-                  "    });\r",
-                  "})"
-                ],
-                "type": "text/javascript",
-                "packages": {}
-              }
-            },
-            {
-              "listen": "prerequest",
-              "script": {
-                "exec": [
-                  ""
-                ],
-                "type": "text/javascript",
-                "packages": {}
-              }
-            }
-          ],
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{puBffBaseUrl}}/organizations",
-              "host": [
-                "{{puBffBaseUrl}}"
-              ],
-              "path": [
-                "organizations"
-              ]
-            }
-          },
-          "response": []
-        }
-      ],
-      "auth": {
-        "type": "bearer",
-        "bearer": [
-          {
-            "key": "token",
-            "value": "{{accessToken}}",
-            "type": "string"
-          }
-        ]
-      },
-      "event": [
-        {
-          "listen": "prerequest",
-          "script": {
-            "type": "text/javascript",
-            "packages": {},
-            "exec": [
-              ""
-            ]
-          }
-        },
-        {
-          "listen": "test",
-          "script": {
-            "type": "text/javascript",
-            "packages": {},
-            "exec": [
-              ""
-            ]
-          }
-        }
-      ]
-    },
-    {
-      "name": "02_Taxonomy",
-      "item": [
-        {
-          "name": "02_getOrganizationTypes",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "let jsonResponse = pm.response.json();\r",
-                  "\r",
-                  "pm.test(\"[taxonomy getOrganizationTypes], expected httpStatus: 200\", () => {\r",
-                  "    pm.response.to.have.status(200);\r",
-                  "})\r",
-                  "\r",
-                  "pm.test(\"[taxonomy getOrganizationTypes] - getOrganizationTypes\", () => {\r",
-                  "    pm.expect(jsonResponse).to.be.an('array').that.is.not.empty;\r",
-                  "\r",
-                  "    pm.expect(jsonResponse[0].organizationType).not.null;\r",
-                  "    pm.expect(jsonResponse[0].organizationTypeDescription).not.null;\r",
-                  "})\r",
-                  "\r",
-                  ""
-                ],
-                "type": "text/javascript",
-                "packages": {}
-              }
-            }
-          ],
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{puBffBaseUrl}}/taxonomy/getOrganizationTypes",
-              "host": [
-                "{{puBffBaseUrl}}"
-              ],
-              "path": [
-                "taxonomy",
-                "getOrganizationTypes"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "02_getMacroArea",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "let jsonResponse = pm.response.json();\r",
-                  "\r",
-                  "pm.test(\"[taxonomy getMacroArea], expected httpStatus: 200\", () => {\r",
-                  "    pm.response.to.have.status(200);\r",
-                  "})\r",
-                  "\r",
-                  "pm.test(\"[taxonomy getMacroArea] - getMacroArea\", () => {\r",
-                  "    pm.expect(jsonResponse).to.be.an('array').that.is.not.empty;\r",
-                  "\r",
-                  "    pm.expect(jsonResponse[0].organizationType).not.null;\r",
-                  "    pm.expect(jsonResponse[0].organizationTypeDescription).not.null;\r",
-                  "    pm.expect(jsonResponse[0].macroAreaCode).not.null;\r",
-                  "    pm.expect(jsonResponse[0].macroAreaName).not.null;\r",
-                  "    pm.expect(jsonResponse[0].macroAreaDescription).not.null;\r",
-                  "})\r",
-                  "\r",
-                  ""
-                ],
-                "type": "text/javascript",
-                "packages": {}
-              }
-            }
-          ],
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{puBffBaseUrl}}/taxonomy/getMacroArea?organizationType=01",
-              "host": [
-                "{{puBffBaseUrl}}"
-              ],
-              "path": [
-                "taxonomy",
-                "getMacroArea"
-              ],
-              "query": [
-                {
-                  "key": "organizationType",
-                  "value": "01"
-                }
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "02_getServiceType",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "let jsonResponse = pm.response.json();\r",
-                  "\r",
-                  "pm.test(\"[taxonomy getServiceType], expected httpStatus: 200\", () => {\r",
-                  "    pm.response.to.have.status(200);\r",
-                  "})\r",
-                  "\r",
-                  "pm.test(\"[taxonomy getServiceType] - getServiceType\", () => {\r",
-                  "    pm.expect(jsonResponse).to.be.an('array').that.is.not.empty;\r",
-                  "\r",
-                  "    pm.expect(jsonResponse[0].organizationType).not.null;\r",
-                  "    pm.expect(jsonResponse[0].organizationTypeDescription).not.null;\r",
-                  "    pm.expect(jsonResponse[0].macroAreaCode).not.null;\r",
-                  "    pm.expect(jsonResponse[0].macroAreaName).not.null;\r",
-                  "    pm.expect(jsonResponse[0].macroAreaDescription).not.null;\r",
-                  "    pm.expect(jsonResponse[0].serviceTypeCode).not.null;\r",
-                  "    pm.expect(jsonResponse[0].serviceType).not.null;\r",
-                  "    pm.expect(jsonResponse[0].serviceTypeDescription).not.null;\r",
-                  "})\r",
-                  "\r",
-                  ""
-                ],
-                "type": "text/javascript",
-                "packages": {}
-              }
-            }
-          ],
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{puBffBaseUrl}}/taxonomy/getServiceType?organizationType=01&macroAreaCode=01",
-              "host": [
-                "{{puBffBaseUrl}}"
-              ],
-              "path": [
-                "taxonomy",
-                "getServiceType"
-              ],
-              "query": [
-                {
-                  "key": "organizationType",
-                  "value": "01"
-                },
-                {
-                  "key": "macroAreaCode",
-                  "value": "01"
-                }
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "02_getCollectionReason",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "let jsonResponse = pm.response.json();\r",
-                  "\r",
-                  "pm.test(\"[taxonomy getCollectionReason], expected httpStatus: 200\", () => {\r",
-                  "    pm.response.to.have.status(200);\r",
-                  "})\r",
-                  "\r",
-                  "pm.test(\"[taxonomy getCollectionReason] - getTaxonomyCode\", () => {\r",
-                  "    pm.expect(jsonResponse).to.be.an('array').that.is.not.empty;\r",
-                  "\r",
-                  "    pm.expect(jsonResponse[0].organizationType).not.null;\r",
-                  "    pm.expect(jsonResponse[0].organizationTypeDescription).not.null;\r",
-                  "    pm.expect(jsonResponse[0].macroAreaCode).not.null;\r",
-                  "    pm.expect(jsonResponse[0].macroAreaName).not.null;\r",
-                  "    pm.expect(jsonResponse[0].macroAreaDescription).not.null;\r",
-                  "    pm.expect(jsonResponse[0].serviceTypeCode).not.null;\r",
-                  "    pm.expect(jsonResponse[0].serviceType).not.null;\r",
-                  "    pm.expect(jsonResponse[0].serviceTypeDescription).not.null;\r",
-                  "    pm.expect(jsonResponse[0].collectionReason).not.null;\r",
-                  "})\r",
-                  "\r",
-                  ""
-                ],
-                "type": "text/javascript",
-                "packages": {}
-              }
-            }
-          ],
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{puBffBaseUrl}}/taxonomy/getCollectionReason?organizationType=01&macroAreaCode=01&serviceTypeCode=100",
-              "host": [
-                "{{puBffBaseUrl}}"
-              ],
-              "path": [
-                "taxonomy",
-                "getCollectionReason"
-              ],
-              "query": [
-                {
-                  "key": "organizationType",
-                  "value": "01"
-                },
-                {
-                  "key": "macroAreaCode",
-                  "value": "01"
-                },
-                {
-                  "key": "serviceTypeCode",
-                  "value": "100"
-                }
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "02_getTaxonomyCode",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "let jsonResponse = pm.response.json();\r",
-                  "\r",
-                  "pm.test(\"[taxonomy getTaxonomyCode], expected httpStatus: 200\", () => {\r",
-                  "    pm.response.to.have.status(200);\r",
-                  "})\r",
-                  "\r",
-                  "pm.test(\"[taxonomy getTaxonomyCode] - getTaxonomyCode\", () => {\r",
-                  "    pm.expect(jsonResponse).to.be.an('array').that.is.not.empty;\r",
-                  "\r",
-                  "    pm.expect(jsonResponse[0].organizationType).not.null;\r",
-                  "    pm.expect(jsonResponse[0].organizationTypeDescription).not.null;\r",
-                  "    pm.expect(jsonResponse[0].macroAreaCode).not.null;\r",
-                  "    pm.expect(jsonResponse[0].macroAreaName).not.null;\r",
-                  "    pm.expect(jsonResponse[0].macroAreaDescription).not.null;\r",
-                  "    pm.expect(jsonResponse[0].serviceTypeCode).not.null;\r",
-                  "    pm.expect(jsonResponse[0].serviceType).not.null;\r",
-                  "    pm.expect(jsonResponse[0].serviceTypeDescription).not.null;\r",
-                  "    pm.expect(jsonResponse[0].collectionReason).not.null;\r",
-                  "    pm.expect(jsonResponse[0].taxonomyCode).not.null;\r",
-                  "})\r",
-                  "\r",
-                  ""
-                ],
-                "type": "text/javascript",
-                "packages": {}
-              }
-            }
-          ],
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{puBffBaseUrl}}/taxonomy/getTaxonomyCode?organizationType=01&macroAreaCode=01&serviceTypeCode=100&collectionReason=IM",
-              "host": [
-                "{{puBffBaseUrl}}"
-              ],
-              "path": [
-                "taxonomy",
-                "getTaxonomyCode"
-              ],
-              "query": [
-                {
-                  "key": "organizationType",
-                  "value": "01"
-                },
-                {
-                  "key": "macroAreaCode",
-                  "value": "01"
-                },
-                {
-                  "key": "serviceTypeCode",
-                  "value": "100"
-                },
-                {
-                  "key": "collectionReason",
-                  "value": "IM"
-                }
-              ]
-            }
-          },
-          "response": []
-        }
-      ],
-      "auth": {
-        "type": "bearer",
-        "bearer": [
-          {
-            "key": "token",
-            "value": "{{accessToken}}",
-            "type": "string"
-          }
-        ]
-      },
-      "event": [
-        {
-          "listen": "prerequest",
-          "script": {
-            "type": "text/javascript",
-            "packages": {},
-            "exec": [
-              ""
-            ]
-          }
-        },
-        {
-          "listen": "test",
-          "script": {
-            "type": "text/javascript",
-            "packages": {},
-            "exec": [
-              ""
-            ]
-          }
-        }
-      ]
-    },
-    {
-      "name": "99_Monitoring",
-      "item": [
-        {
-          "name": "99_coreHealthIndicator",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "let jsonResponse = pm.response.json();\r",
-                  "\r",
-                  "pm.test(\"expected httpStatus: 200\", () => {\r",
-                  "    pm.response.to.have.status(200);\r",
-                  "})\r",
-                  "\r",
-                  "pm.response.json().forEach((item) => {\r",
-                  "    pm.expect(item.serviceName).not.null;\r",
-                  "    pm.expect(item.statusMessage).to.eql(\"{\\\"status\\\":\\\"UP\\\"}\");\r",
-                  "})"
-                ],
-                "type": "text/javascript",
-                "packages": {}
-              }
-            }
-          ],
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{puBffBaseUrl}}/core-health",
-              "host": [
-                "{{puBffBaseUrl}}"
-              ],
-              "path": [
-                "core-health"
-              ]
-            }
-          },
-          "response": []
-        }
-      ]
-    },
-    {
-      "name": "03_Debt_Positions",
-      "item": [
-        {
-          "name": "03_getAllDebtPositionType",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "pm.test(\"Response status is 200\", function () {\r",
-                  "    pm.response.to.have.status(200);\r",
-                  "});\r",
-                  "\r",
-                  "let response = pm.response.json();\r",
-                  "let debtPositionTypeId = response._embedded.debtPositionTypes[0]?.debtPositionTypeId;\r",
-                  "\r",
-                  " pm.collectionVariables.set(\"debtPositionTypeId\", debtPositionTypeId);\r",
-                  "\r",
-                  ""
-                ],
-                "type": "text/javascript",
-                "packages": {}
-              }
-            }
-          ],
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{debtPositionBaseUrl}}/crud/debt-position-types",
-              "host": [
-                "{{debtPositionBaseUrl}}"
-              ],
-              "path": [
-                "crud",
-                "debt-position-types"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "03_getDebtPositionType",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "let jsonResponse = pm.response.json();\r",
-                  "\r",
-                  "pm.test(\"[debt-position-type], expected httpStatus: 200\", () => {\r",
-                  "    pm.response.to.have.status(200);\r",
-                  "})\r",
-                  "\r",
-                  "pm.test(\"[debt-position-type] - get debtPositionType\", () => {\r",
-                  "    pm.expect(jsonResponse.debtPositionTypeId).not.null;\r",
-                  "    pm.expect(jsonResponse.brokerId).not.null;\r",
-                  "    pm.expect(jsonResponse.code).not.null;\r",
-                  "    pm.expect(jsonResponse.description).not.null;\r",
-                  "    pm.expect(jsonResponse.orgType).not.null;\r",
-                  "    pm.expect(jsonResponse.macroArea).not.null;\r",
-                  "    pm.expect(jsonResponse.serviceType).not.null;\r",
-                  "    pm.expect(jsonResponse.collectingReason).not.null;\r",
-                  "    pm.expect(jsonResponse.taxonomyCode).not.null;\r",
-                  "    pm.expect(jsonResponse.flagAnonymousFiscalCode).not.null;\r",
-                  "    pm.expect(jsonResponse.flagMandatoryDueDate).not.null;\r",
-                  "    pm.expect(jsonResponse.flagNotifyIo).not.null;\r",
-                  "})"
-                ],
-                "type": "text/javascript",
-                "packages": {}
-              }
-            },
-            {
-              "listen": "prerequest",
-              "script": {
-                "exec": [
-                  "let debtPositionTypeId = pm.collectionVariables.get(\"debtPositionTypeId\");\r",
-                  ""
-                ],
-                "type": "text/javascript",
-                "packages": {}
-              }
-            }
-          ],
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{puBffBaseUrl}}/debt-position-types/:id",
-              "host": [
-                "{{puBffBaseUrl}}"
-              ],
-              "path": [
-                "debt-position-types",
-                ":id"
-              ],
-              "variable": [
-                {
-                  "key": "id",
-                  "value": "{{debtPositionTypeId}}"
-                }
-              ]
-            }
-          },
-          "response": []
-        }
-      ]
-    }
-  ],
-  "event": [
-    {
-      "listen": "prerequest",
-      "script": {
-        "type": "text/javascript",
-        "packages": {},
-        "exec": [
-          ""
-        ]
-      }
-    },
-    {
-      "listen": "test",
-      "script": {
-        "type": "text/javascript",
-        "packages": {},
-        "exec": [
-          "// START COMMON UTILITIES\r",
-          "\r",
-          "// global variable to use in order to skip tests\r",
-          "skipTests=false;\r",
-          "\r",
-          "// method to be invoked as first thing inside tests in order to instrument the \"pm\" variable:\r",
-          "// eg: pm = pm=instrumentPmMethod(pm);\r",
-          "instrumentPmMethod = (pm) => {\r",
-          "    const pmProxy = {\r",
-          "        get: function(pm, key) {\r",
-          "            if (key == 'test') {\r",
-          "                return (skipTests ? pm.test.skip : pm.test);\r",
-          "            }\r",
-          "            return pm[key];\r",
-          "        }\r",
-          "    };\r",
-          "\r",
-          "    return new Proxy(pm, pmProxy);\r",
-          "}\r",
-          "\r",
-          "// function to be used in order to retry the current request, configuring a maximum number of attempts and a fixed delay between each invoke\r",
-          "retryRequest = (pm, setTimeout, waitingMillis = 1000, maxAttempts = 30) => {\r",
-          "    if(!pm || !setTimeout){\r",
-          "        throw new Error(\"Invalid invoke to retryRequest function! Some required parameters are undefined: pm=\" + pm + \", setTimeout=\" + setTimeout)\r",
-          "    }\r",
-          "\r",
-          "    const retryVariableName = \"retry_\" + pm.info.requestId\r",
-          "    const attempt = (pm.variables.get(retryVariableName) ?? 0) + 1;\r",
-          "    if(attempt < maxAttempts) {\r",
-          "        console.info(pm.info.requestName + \" not ready, retrying [attempt \" + attempt + \"/\" + maxAttempts + \"] after \" + waitingMillis + \" ms\");\r",
-          "        pm.variables.set(retryVariableName, attempt)\r",
-          "        pm.execution.setNextRequest(pm.info.requestId);\r",
-          "        return setTimeout(()=>{}, waitingMillis);\r",
-          "    } else {\r",
-          "        pm.test(pm.info.requestName + \" not ready\", () => pm.expect.fail(attempt + \" attempts\"));\r",
-          "    }\r",
-          "}\r",
-          "\r",
-          "// function to be used in order to retry the current request until it returns a known response HTTP status code\r",
-          "retryWhenStatusCode = (pm, setTimeout, statusCode, waitingMillis, maxAttempts) => {\r",
-          "    if(pm.response.code == statusCode){\r",
-          "        console.log(\"Obtained \" + statusCode + \"! Performing retry...\")\r",
-          "        skipTests=true;\r",
-          "        return retryRequest(pm, setTimeout, waitingMillis, maxAttempts)\r",
-          "    }\r",
-          "}\r",
-          "\r",
-          "// XML utilities\r",
-          "xml2js = require('xml2js');\r",
-          "\r",
-          "parseXmlResponse = (response) => {\r",
-          "    let body;\r",
-          "    xml2js.parseString(response.text(), {\r",
-          "            ignoreAttrs: true, \r",
-          "            explicitArray: false,\r",
-          "        }, function (err, result) {\r",
-          "            if(err){\r",
-          "                console.error(err)\r",
-          "            }\r",
-          "        body = result;\r",
-          "    });\r",
-          "    return body;\r",
-          "};"
-        ]
-      }
-    }
-  ],
-  "variable": [
-    {
-      "key": "accessToken",
-      "value": ""
-    },
-    {
-      "key": "debtPositionTypeId",
-      "value": ""
-    }
-  ]
+	"info": {
+		"_postman_id": "e02c4e6c-ae64-4c0c-9d65-5bf467386a83",
+		"name": "PU-BFF",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "15747968",
+		"_collection_link": "https://warped-astronaut-141685.postman.co/workspace/P4PA~9a8b7dd5-97b6-4dd0-b3f5-95f25fd0b455/collection/15747968-e02c4e6c-ae64-4c0c-9d65-5bf467386a83?action=share&source=collection_link&creator=15747968"
+	},
+	"item": [
+		{
+			"name": "00_login",
+			"item": [
+				{
+					"name": "00_authtoken jwt",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm=instrumentPmMethod(pm);\r",
+									"\r",
+									"pm.test(\"MyPay - 00_authtoken jwt - Responses with 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"MyPay - 00_authtoken jwt - Verify response body\", function () {\r",
+									"    let jsonResponse = pm.response.json();\r",
+									"\r",
+									"    pm.expect(jsonResponse).have.property(\"access_token\")\r",
+									"    pm.expect(jsonResponse).have.property(\"token_type\")\r",
+									"    pm.expect(jsonResponse).have.property(\"expires_in\")\r",
+									"});\r",
+									"\r",
+									"let jsonResponse = pm.response.json();\r",
+									"pm.collectionVariables.set(\"accessToken\", jsonResponse.access_token);\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{p4paAuthBaseUrl}}/auth/token?client_id=piattaforma-unitaria&grant_type=urn:ietf:params:oauth:grant-type:token-exchange&subject_token={{tokenExchange_subjectToken}}&subject_issuer={{tokenExchange_issuer}}&scope=openid&subject_token_type=urn:ietf:params:oauth:token-type:jwt",
+							"host": [
+								"{{p4paAuthBaseUrl}}"
+							],
+							"path": [
+								"auth",
+								"token"
+							],
+							"query": [
+								{
+									"key": "client_id",
+									"value": "piattaforma-unitaria"
+								},
+								{
+									"key": "grant_type",
+									"value": "urn:ietf:params:oauth:grant-type:token-exchange"
+								},
+								{
+									"key": "subject_token",
+									"value": "{{tokenExchange_subjectToken}}"
+								},
+								{
+									"key": "subject_issuer",
+									"value": "{{tokenExchange_issuer}}"
+								},
+								{
+									"key": "scope",
+									"value": "openid"
+								},
+								{
+									"key": "subject_token_type",
+									"value": "urn:ietf:params:oauth:token-type:jwt"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "00_postToken",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm=instrumentPmMethod(pm);\r",
+									"\r",
+									"pm.test(\"00_postToken - Responses with 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"00_postToken - Verify response body\", function () {\r",
+									"    let jsonResponse = pm.response.json();\r",
+									"\r",
+									"    pm.expect(jsonResponse).have.property(\"access_token\")\r",
+									"    pm.expect(jsonResponse).have.property(\"token_type\")\r",
+									"    pm.expect(jsonResponse).have.property(\"expires_in\")\r",
+									"\r",
+									"});\r",
+									"\r",
+									"let jsonResponse = pm.response.json();\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{puBffBaseUrl}}/bff/token?idToken={{tokenExchange_subjectToken}}",
+							"host": [
+								"{{puBffBaseUrl}}"
+							],
+							"path": [
+								"bff",
+								"token"
+							],
+							"query": [
+								{
+									"key": "idToken",
+									"value": "{{tokenExchange_subjectToken}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "01_Organization",
+			"item": [
+				{
+					"name": "01_getBrokerConfig",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let jsonResponse = pm.response.json();\r",
+									"\r",
+									"pm.test(\"[brokers - config], expected httpStatus: 200\", () => {\r",
+									"    pm.response.to.have.status(200);\r",
+									"})\r",
+									"\r",
+									"pm.test(\"[brokers - config] - get list of config\", () => {\r",
+									"    pm.expect(jsonResponse).to.have.property(\"headerAssistanceUrl\").and.to.not.be.null;\r",
+									"    pm.expect(jsonResponse).to.have.property(\"logoFooterImg\").and.to.not.be.null;\r",
+									"    pm.expect(jsonResponse).to.have.property(\"footerDescText\").and.to.not.be.null;\r",
+									"    pm.expect(jsonResponse).to.have.property(\"footerPrivacyInfoUrl\").and.to.not.be.null;\r",
+									"    pm.expect(jsonResponse).to.have.property(\"footerGDPRUrl\").and.to.not.be.null;\r",
+									"    pm.expect(jsonResponse).to.have.property(\"footerTermsCondUrl\").and.to.not.be.null;\r",
+									"    pm.expect(jsonResponse).to.have.property(\"footerAccessibilityUrl\").and.to.not.be.null;\r",
+									"    pm.expect(jsonResponse).to.have.property(\"brokerId\").and.to.not.be.null;\r",
+									"    pm.expect(jsonResponse).to.have.property(\"brokerFiscalCode\").and.to.not.be.null;\r",
+									"    pm.expect(jsonResponse).to.have.property(\"canManageUsers\").and.to.not.be.null;\r",
+									"})\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{puBffBaseUrl}}/bff/brokers/config",
+							"host": [
+								"{{puBffBaseUrl}}"
+							],
+							"path": [
+								"bff",
+								"brokers",
+								"config"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "01_getOrganizations",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let jsonResponse = pm.response.json();\r",
+									"\r",
+									"pm.test(\"[organizations], expected httpStatus: 200\", () => {\r",
+									"    pm.response.to.have.status(200);\r",
+									"})\r",
+									"\r",
+									"pm.test(\"[organizations] - get list of organizations\", () => {\r",
+									"    jsonResponse.forEach((item)=> {\r",
+									"        pm.expect(item).to.have.property(\"organizationId\").and.to.not.be.null;\r",
+									"        pm.expect(item).to.have.property(\"ipaCode\").and.to.not.be.null;\r",
+									"        pm.expect(item).to.have.property(\"orgName\").and.to.not.be.null;\r",
+									"        pm.expect(item).to.have.property(\"operatorRole\").and.to.not.be.null;\r",
+									"        pm.expect(item).to.have.property(\"orgFiscalCode\").and.to.not.be.null;\r",
+									"    });\r",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{puBffBaseUrl}}/bff/organizations",
+							"host": [
+								"{{puBffBaseUrl}}"
+							],
+							"path": [
+								"bff",
+								"organizations"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{
+						"key": "token",
+						"value": "{{accessToken}}",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "02_Taxonomy",
+			"item": [
+				{
+					"name": "02_getOrganizationTypes",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let jsonResponse = pm.response.json();\r",
+									"\r",
+									"pm.test(\"[taxonomy getOrganizationTypes], expected httpStatus: 200\", () => {\r",
+									"    pm.response.to.have.status(200);\r",
+									"})\r",
+									"\r",
+									"pm.test(\"[taxonomy getOrganizationTypes] - getOrganizationTypes\", () => {\r",
+									"    pm.expect(jsonResponse).to.be.an('array').that.is.not.empty;\r",
+									"\r",
+									"    pm.expect(jsonResponse[0].organizationType).not.null;\r",
+									"    pm.expect(jsonResponse[0].organizationTypeDescription).not.null;\r",
+									"})\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{puBffBaseUrl}}/bff/taxonomy/getOrganizationTypes",
+							"host": [
+								"{{puBffBaseUrl}}"
+							],
+							"path": [
+								"bff",
+								"taxonomy",
+								"getOrganizationTypes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "02_getMacroArea",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let jsonResponse = pm.response.json();\r",
+									"\r",
+									"pm.test(\"[taxonomy getMacroArea], expected httpStatus: 200\", () => {\r",
+									"    pm.response.to.have.status(200);\r",
+									"})\r",
+									"\r",
+									"pm.test(\"[taxonomy getMacroArea] - getMacroArea\", () => {\r",
+									"    pm.expect(jsonResponse).to.be.an('array').that.is.not.empty;\r",
+									"\r",
+									"    pm.expect(jsonResponse[0].organizationType).not.null;\r",
+									"    pm.expect(jsonResponse[0].organizationTypeDescription).not.null;\r",
+									"    pm.expect(jsonResponse[0].macroAreaCode).not.null;\r",
+									"    pm.expect(jsonResponse[0].macroAreaName).not.null;\r",
+									"    pm.expect(jsonResponse[0].macroAreaDescription).not.null;\r",
+									"})\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{puBffBaseUrl}}/bff/taxonomy/getMacroArea?organizationType=01",
+							"host": [
+								"{{puBffBaseUrl}}"
+							],
+							"path": [
+								"bff",
+								"taxonomy",
+								"getMacroArea"
+							],
+							"query": [
+								{
+									"key": "organizationType",
+									"value": "01"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "02_getServiceType",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let jsonResponse = pm.response.json();\r",
+									"\r",
+									"pm.test(\"[taxonomy getServiceType], expected httpStatus: 200\", () => {\r",
+									"    pm.response.to.have.status(200);\r",
+									"})\r",
+									"\r",
+									"pm.test(\"[taxonomy getServiceType] - getServiceType\", () => {\r",
+									"    pm.expect(jsonResponse).to.be.an('array').that.is.not.empty;\r",
+									"\r",
+									"    pm.expect(jsonResponse[0].organizationType).not.null;\r",
+									"    pm.expect(jsonResponse[0].organizationTypeDescription).not.null;\r",
+									"    pm.expect(jsonResponse[0].macroAreaCode).not.null;\r",
+									"    pm.expect(jsonResponse[0].macroAreaName).not.null;\r",
+									"    pm.expect(jsonResponse[0].macroAreaDescription).not.null;\r",
+									"    pm.expect(jsonResponse[0].serviceTypeCode).not.null;\r",
+									"    pm.expect(jsonResponse[0].serviceType).not.null;\r",
+									"    pm.expect(jsonResponse[0].serviceTypeDescription).not.null;\r",
+									"})\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{puBffBaseUrl}}/bff/taxonomy/getServiceType?organizationType=01&macroAreaCode=01",
+							"host": [
+								"{{puBffBaseUrl}}"
+							],
+							"path": [
+								"bff",
+								"taxonomy",
+								"getServiceType"
+							],
+							"query": [
+								{
+									"key": "organizationType",
+									"value": "01"
+								},
+								{
+									"key": "macroAreaCode",
+									"value": "01"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "02_getCollectionReason",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let jsonResponse = pm.response.json();\r",
+									"\r",
+									"pm.test(\"[taxonomy getCollectionReason], expected httpStatus: 200\", () => {\r",
+									"    pm.response.to.have.status(200);\r",
+									"})\r",
+									"\r",
+									"pm.test(\"[taxonomy getCollectionReason] - getTaxonomyCode\", () => {\r",
+									"    pm.expect(jsonResponse).to.be.an('array').that.is.not.empty;\r",
+									"\r",
+									"    pm.expect(jsonResponse[0].organizationType).not.null;\r",
+									"    pm.expect(jsonResponse[0].organizationTypeDescription).not.null;\r",
+									"    pm.expect(jsonResponse[0].macroAreaCode).not.null;\r",
+									"    pm.expect(jsonResponse[0].macroAreaName).not.null;\r",
+									"    pm.expect(jsonResponse[0].macroAreaDescription).not.null;\r",
+									"    pm.expect(jsonResponse[0].serviceTypeCode).not.null;\r",
+									"    pm.expect(jsonResponse[0].serviceType).not.null;\r",
+									"    pm.expect(jsonResponse[0].serviceTypeDescription).not.null;\r",
+									"    pm.expect(jsonResponse[0].collectionReason).not.null;\r",
+									"})\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{puBffBaseUrl}}/bff/taxonomy/getCollectionReason?organizationType=01&macroAreaCode=01&serviceTypeCode=100",
+							"host": [
+								"{{puBffBaseUrl}}"
+							],
+							"path": [
+								"bff",
+								"taxonomy",
+								"getCollectionReason"
+							],
+							"query": [
+								{
+									"key": "organizationType",
+									"value": "01"
+								},
+								{
+									"key": "macroAreaCode",
+									"value": "01"
+								},
+								{
+									"key": "serviceTypeCode",
+									"value": "100"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "02_getTaxonomyCode",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let jsonResponse = pm.response.json();\r",
+									"\r",
+									"pm.test(\"[taxonomy getTaxonomyCode], expected httpStatus: 200\", () => {\r",
+									"    pm.response.to.have.status(200);\r",
+									"})\r",
+									"\r",
+									"pm.test(\"[taxonomy getTaxonomyCode] - getTaxonomyCode\", () => {\r",
+									"    pm.expect(jsonResponse).to.be.an('array').that.is.not.empty;\r",
+									"\r",
+									"    pm.expect(jsonResponse[0].organizationType).not.null;\r",
+									"    pm.expect(jsonResponse[0].organizationTypeDescription).not.null;\r",
+									"    pm.expect(jsonResponse[0].macroAreaCode).not.null;\r",
+									"    pm.expect(jsonResponse[0].macroAreaName).not.null;\r",
+									"    pm.expect(jsonResponse[0].macroAreaDescription).not.null;\r",
+									"    pm.expect(jsonResponse[0].serviceTypeCode).not.null;\r",
+									"    pm.expect(jsonResponse[0].serviceType).not.null;\r",
+									"    pm.expect(jsonResponse[0].serviceTypeDescription).not.null;\r",
+									"    pm.expect(jsonResponse[0].collectionReason).not.null;\r",
+									"    pm.expect(jsonResponse[0].taxonomyCode).not.null;\r",
+									"})\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{puBffBaseUrl}}/bff/taxonomy/getTaxonomyCode?organizationType=01&macroAreaCode=01&serviceTypeCode=100&collectionReason=IM",
+							"host": [
+								"{{puBffBaseUrl}}"
+							],
+							"path": [
+								"bff",
+								"taxonomy",
+								"getTaxonomyCode"
+							],
+							"query": [
+								{
+									"key": "organizationType",
+									"value": "01"
+								},
+								{
+									"key": "macroAreaCode",
+									"value": "01"
+								},
+								{
+									"key": "serviceTypeCode",
+									"value": "100"
+								},
+								{
+									"key": "collectionReason",
+									"value": "IM"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{
+						"key": "token",
+						"value": "{{accessToken}}",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "99_Monitoring",
+			"item": [
+				{
+					"name": "99_coreHealthIndicator",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let jsonResponse = pm.response.json();\r",
+									"\r",
+									"pm.test(\"expected httpStatus: 200\", () => {\r",
+									"    pm.response.to.have.status(200);\r",
+									"})\r",
+									"\r",
+									"pm.response.json().forEach((item) => {\r",
+									"    pm.expect(item.serviceName).not.null;\r",
+									"    pm.expect(item.statusMessage).to.eql(\"{\\\"status\\\":\\\"UP\\\"}\");\r",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{puBffBaseUrl}}/bff/core-health",
+							"host": [
+								"{{puBffBaseUrl}}"
+							],
+							"path": [
+								"bff",
+								"core-health"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "03_Debt_Positions",
+			"item": [
+				{
+					"name": "03_getAllDebtPositionType",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"let response = pm.response.json();\r",
+									"let debtPositionTypeId = response._embedded.debtPositionTypes[0]?.debtPositionTypeId;\r",
+									"\r",
+									" pm.collectionVariables.set(\"debtPositionTypeId\", debtPositionTypeId);\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{debtPositionBaseUrl}}/crud/debt-position-types",
+							"host": [
+								"{{debtPositionBaseUrl}}"
+							],
+							"path": [
+								"crud",
+								"debt-position-types"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "03_getDebtPositionType",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let jsonResponse = pm.response.json();\r",
+									"\r",
+									"pm.test(\"[debt-position-type], expected httpStatus: 200\", () => {\r",
+									"    pm.response.to.have.status(200);\r",
+									"})\r",
+									"\r",
+									"pm.test(\"[debt-position-type] - get debtPositionType\", () => {\r",
+									"    pm.expect(jsonResponse.debtPositionTypeId).not.null;\r",
+									"    pm.expect(jsonResponse.brokerId).not.null;\r",
+									"    pm.expect(jsonResponse.code).not.null;\r",
+									"    pm.expect(jsonResponse.description).not.null;\r",
+									"    pm.expect(jsonResponse.orgType).not.null;\r",
+									"    pm.expect(jsonResponse.macroArea).not.null;\r",
+									"    pm.expect(jsonResponse.serviceType).not.null;\r",
+									"    pm.expect(jsonResponse.collectingReason).not.null;\r",
+									"    pm.expect(jsonResponse.taxonomyCode).not.null;\r",
+									"    pm.expect(jsonResponse.flagAnonymousFiscalCode).not.null;\r",
+									"    pm.expect(jsonResponse.flagMandatoryDueDate).not.null;\r",
+									"    pm.expect(jsonResponse.flagNotifyIo).not.null;\r",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"let debtPositionTypeId = pm.collectionVariables.get(\"debtPositionTypeId\");\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{puBffBaseUrl}}/bff/debt-position-types/:id",
+							"host": [
+								"{{puBffBaseUrl}}"
+							],
+							"path": [
+								"bff",
+								"debt-position-types",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{debtPositionTypeId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					"// START COMMON UTILITIES\r",
+					"\r",
+					"// global variable to use in order to skip tests\r",
+					"skipTests=false;\r",
+					"\r",
+					"// method to be invoked as first thing inside tests in order to instrument the \"pm\" variable:\r",
+					"// eg: pm = pm=instrumentPmMethod(pm);\r",
+					"instrumentPmMethod = (pm) => {\r",
+					"    const pmProxy = {\r",
+					"        get: function(pm, key) {\r",
+					"            if (key == 'test') {\r",
+					"                return (skipTests ? pm.test.skip : pm.test);\r",
+					"            }\r",
+					"            return pm[key];\r",
+					"        }\r",
+					"    };\r",
+					"\r",
+					"    return new Proxy(pm, pmProxy);\r",
+					"}\r",
+					"\r",
+					"// function to be used in order to retry the current request, configuring a maximum number of attempts and a fixed delay between each invoke\r",
+					"retryRequest = (pm, setTimeout, waitingMillis = 1000, maxAttempts = 30) => {\r",
+					"    if(!pm || !setTimeout){\r",
+					"        throw new Error(\"Invalid invoke to retryRequest function! Some required parameters are undefined: pm=\" + pm + \", setTimeout=\" + setTimeout)\r",
+					"    }\r",
+					"\r",
+					"    const retryVariableName = \"retry_\" + pm.info.requestId\r",
+					"    const attempt = (pm.variables.get(retryVariableName) ?? 0) + 1;\r",
+					"    if(attempt < maxAttempts) {\r",
+					"        console.info(pm.info.requestName + \" not ready, retrying [attempt \" + attempt + \"/\" + maxAttempts + \"] after \" + waitingMillis + \" ms\");\r",
+					"        pm.variables.set(retryVariableName, attempt)\r",
+					"        pm.execution.setNextRequest(pm.info.requestId);\r",
+					"        return setTimeout(()=>{}, waitingMillis);\r",
+					"    } else {\r",
+					"        pm.test(pm.info.requestName + \" not ready\", () => pm.expect.fail(attempt + \" attempts\"));\r",
+					"    }\r",
+					"}\r",
+					"\r",
+					"// function to be used in order to retry the current request until it returns a known response HTTP status code\r",
+					"retryWhenStatusCode = (pm, setTimeout, statusCode, waitingMillis, maxAttempts) => {\r",
+					"    if(pm.response.code == statusCode){\r",
+					"        console.log(\"Obtained \" + statusCode + \"! Performing retry...\")\r",
+					"        skipTests=true;\r",
+					"        return retryRequest(pm, setTimeout, waitingMillis, maxAttempts)\r",
+					"    }\r",
+					"}\r",
+					"\r",
+					"// XML utilities\r",
+					"xml2js = require('xml2js');\r",
+					"\r",
+					"parseXmlResponse = (response) => {\r",
+					"    let body;\r",
+					"    xml2js.parseString(response.text(), {\r",
+					"            ignoreAttrs: true, \r",
+					"            explicitArray: false,\r",
+					"        }, function (err, result) {\r",
+					"            if(err){\r",
+					"                console.error(err)\r",
+					"            }\r",
+					"        body = result;\r",
+					"    });\r",
+					"    return body;\r",
+					"};"
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "accessToken",
+			"value": ""
+		},
+		{
+			"key": "debtPositionTypeId",
+			"value": ""
+		}
+	]
 }

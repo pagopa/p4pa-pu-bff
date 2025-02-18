@@ -362,6 +362,55 @@ paths:
         '500':
           description: Internal Server Error
       x-spring-paginated: true
+  /payments-reporting/organization/{organizationId}:
+    get:
+      tags:
+        - PaymentsReporting
+      summary: "Retrieve a paged list of payments reporting based on filters"
+      operationId: getPaymentsReporting
+      parameters:
+        - name: organizationId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: iuf
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: regulationUniqueIdentifier
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: regulationDateFrom
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date
+        - name: regulationDateTo
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PagedPaymentsReportingView'
+        '401':
+          description: Unauthorized - Missing or invalid token
+        '403':
+          description: Forbidden - Access denied
+        '500':
+          description: Internal Server Error
+      x-spring-paginated: true
   /debt-position-types/{id}:
     get:
       tags:
@@ -694,6 +743,31 @@ components:
           type: array
           items:
             type: 'ReceiptView'
+        size:
+          type: integer
+          format: int64
+        totalElements:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer
+          format: int64
+        number:
+          type: integer
+          format: int64
+    PagedPaymentsReportingView:
+      type: object
+      required:
+        - content
+        - size
+        - totalElements
+        - totalPages
+        - number
+      properties:
+        content:
+          type: array
+          items:
+            type: 'PaymentsReportingView'
         size:
           type: integer
           format: int64

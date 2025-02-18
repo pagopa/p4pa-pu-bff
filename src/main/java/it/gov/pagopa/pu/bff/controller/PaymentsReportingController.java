@@ -24,8 +24,8 @@ public class PaymentsReportingController implements PaymentsReportingApi {
   public ResponseEntity<PagedPaymentsReportingView> getPaymentsReporting(Long organizationId, String iuf, String regulationUniqueIdentifier, LocalDate regulationDateFrom, LocalDate regulationDateTo, Pageable pageable) {
     LocalDateIntervalFilter regulationDateFilter = new LocalDateIntervalFilter(regulationDateFrom, regulationDateTo);
 
-    return ResponseEntity.ok(paymentsReportingRetrieverService.getPaymentsReporting(organizationId, iuf, regulationUniqueIdentifier, regulationDateFilter,
-      pageable, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken()));
+    return ResponseEntity.ok(paymentsReportingRetrieverService.getPaymentsReporting(
+      organizationId, iuf, regulationUniqueIdentifier, regulationDateFilter, pageable, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken()));
   }
 
 }

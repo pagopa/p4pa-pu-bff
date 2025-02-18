@@ -15,16 +15,18 @@ public class PaymentsReportingRetrieverServiceImpl implements PaymentsReportingR
   private final PaymentsReportingService paymentsReportingService;
   private final PaymentsReportingViewMapper paymentsReportingViewMapper;
 
-  public PaymentsReportingRetrieverServiceImpl(PaymentsReportingService paymentsReportingService, PaymentsReportingViewMapper paymentsReportingViewMapper) {
+  public PaymentsReportingRetrieverServiceImpl(PaymentsReportingService paymentsReportingService,
+                                               PaymentsReportingViewMapper paymentsReportingViewMapper) {
     this.paymentsReportingService = paymentsReportingService;
     this.paymentsReportingViewMapper = paymentsReportingViewMapper;
   }
 
   @Override
-  public PagedPaymentsReportingView getPaymentsReporting(Long organizationId, String iuf, String regulationUniqueIdentifier, LocalDateIntervalFilter regulationDateFilter,
-                                                         Pageable pageable, UserInfo loggedUser, String accessToken) {
+  public PagedPaymentsReportingView getPaymentsReporting(Long organizationId, String iuf, String regulationUniqueIdentifier, LocalDateIntervalFilter regulationDateFilter, Pageable pageable, UserInfo loggedUser, String accessToken) {
     AuthorizationService.isUserEnabledToOrganizationId(organizationId, loggedUser);
-    return paymentsReportingViewMapper.mapToPagedPaymentsReporting(paymentsReportingService.getPaymentsReporting(organizationId, iuf, regulationUniqueIdentifier, regulationDateFilter, pageable, accessToken));
+
+    return paymentsReportingViewMapper.mapToPagedPaymentsReporting(
+      paymentsReportingService.getPaymentsReporting(organizationId, iuf, regulationUniqueIdentifier, regulationDateFilter, pageable, accessToken));
   }
 
 }

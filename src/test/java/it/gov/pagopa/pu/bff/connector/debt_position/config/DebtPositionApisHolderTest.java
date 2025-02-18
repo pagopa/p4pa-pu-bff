@@ -5,6 +5,8 @@ import it.gov.pagopa.pu.debtpositions.dto.generated.CollectionModelDebtPositionT
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionType;
 import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelDebtPositionTypeWithCount;
 import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelReceiptView;
+import it.gov.pagopa.pu.debtpositions.dto.generated.ReceiptDetailDTO;
+import java.util.Collections;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,8 +16,6 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.web.util.DefaultUriBuilderFactory;
-
-import java.util.Collections;
 
 @ExtendWith(MockitoExtension.class)
 class DebtPositionApisHolderTest extends BaseApiHolderTest {
@@ -72,6 +72,14 @@ class DebtPositionApisHolderTest extends BaseApiHolderTest {
       accessToken -> debtPositionApisHolder.getDebtPositionTypeOrgSearchControllerApi(accessToken)
         .crudDebtPositionTypeOrgsFindDebtPositionTypeOrgs("1", "operator123"),
       CollectionModelDebtPositionTypeOrg.class, debtPositionApisHolder::unload);
+  }
+
+  @Test
+  void whenGetReceiptApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
+    assertAuthenticationShouldBeSetInThreadSafeMode(
+      accessToken -> debtPositionApisHolder.getReceiptApi(accessToken)
+        .getReceiptDetail(1L,"operatorExternalUserId"),
+      ReceiptDetailDTO.class, debtPositionApisHolder::unload);
   }
 
 }

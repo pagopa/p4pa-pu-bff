@@ -362,12 +362,12 @@ paths:
         '500':
           description: Internal Server Error
       x-spring-paginated: true
-  /payments-reporting/organization/{organizationId}:
+  /receipts/{organizationId}/{receiptId}:
     get:
       tags:
-        - PaymentsReporting
-      summary: "Retrieve a paged list of payments reporting based on filters"
-      operationId: getPaymentsReporting
+        - Receipts
+      summary: "Retrieve a specific receipt"
+      operationId: getReceiptDetail
       parameters:
         - name: organizationId
           in: path
@@ -375,42 +375,32 @@ paths:
           schema:
             type: integer
             format: int64
-        - name: iuf
-          in: query
-          required: false
+        - name: receiptId
+          in: path
+          required: true
           schema:
-            type: string
-        - name: regulationUniqueIdentifier
-          in: query
-          required: false
-          schema:
-            type: string
-        - name: regulationDateFrom
-          in: query
-          required: false
-          schema:
-            type: string
-            format: date
-        - name: regulationDateTo
-          in: query
-          required: false
-          schema:
-            type: string
-            format: date
+            type: integer
+            format: int64
+          description: The unique identifier of the receipt
       responses:
         '200':
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PagedPaymentsReportingView'
+                $ref: '#/components/schemas/ReceiptDetailDTO'
+        '404':
+          description: Not Found - Receipt not found
         '401':
           description: Unauthorized - Missing or invalid token
         '403':
           description: Forbidden - Access denied
         '500':
           description: Internal Server Error
-      x-spring-paginated: true
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDTO'
   /debt-position-types/{id}:
     get:
       tags:
@@ -755,31 +745,52 @@ components:
         number:
           type: integer
           format: int64
-    PagedPaymentsReportingView:
+    ReceiptDetailDTO:
       type: object
       required:
-        - content
-        - size
-        - totalElements
-        - totalPages
-        - number
+        - receiptId
+        - paymentAmountCents
+        - remittanceInformation
+        - debtPositionDescription
+        - debtor
+        - pspCompanyName
+        - iud
       properties:
-        content:
-          type: array
-          items:
-            type: 'PaymentsReportingView'
-        size:
+        receiptId:
           type: integer
           format: int64
-        totalElements:
+        iuv:
+          type: string
+        paymentAmountCents:
           type: integer
           format: int64
-        totalPages:
-          type: integer
-          format: int64
-        number:
-          type: integer
-          format: int64
+        remittanceInformation:
+          type: string
+        debtPositionDescription:
+          type: string
+        debtor:
+          $ref: "#/components/schemas/PersonDTO"
+        payer:
+          $ref: "#/components/schemas/PersonDTO"
+        paymentDateTime:
+          type: string
+          format: date-time
+        pspCompanyName:
+          type: string
+        iud:
+          type: string
+        iur:
+          type: string
+    PersonDTO:
+      required:
+        - fullName
+        - fiscalCode
+      type: object
+      properties:
+        fiscalCode:
+          type: string
+        fullName:
+          type: string
     PagedIngestionFlowFile:
       type: object
       required:

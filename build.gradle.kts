@@ -32,10 +32,11 @@ repositories {
 val springDocOpenApiVersion = "2.7.0"
 val openApiToolsVersion = "0.2.6"
 val micrometerVersion = "1.4.1"
+val caffeineVersion = "3.2.0"
 
 val wiremockVersion = "3.10.0"
 val wiremockSpringBootVersion = "2.1.3"
-val caffeineVersion = "3.2.0"
+val podamVersion = "8.0.2.RELEASE"
 
 dependencies {
   implementation("org.springframework.boot:spring-boot-starter")
@@ -64,6 +65,7 @@ dependencies {
   testImplementation("org.projectlombok:lombok")
   testImplementation("org.wiremock:wiremock-standalone:$wiremockVersion")
   testImplementation("com.maciejwalkowiak.spring:wiremock-spring-boot:$wiremockSpringBootVersion")
+  testImplementation("uk.co.jemos.podam:podam:$podamVersion")
 }
 
 tasks.withType<Test> {

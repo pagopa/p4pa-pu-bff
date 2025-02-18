@@ -1,13 +1,20 @@
 package it.gov.pagopa.pu.bff.connector.debt_position.client;
 
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.mockito.Mockito.when;
+
 import it.gov.pagopa.pu.bff.connector.debt_position.config.DebtPositionApisHolder;
 import it.gov.pagopa.pu.bff.dto.OffsetDateTimeIntervalFilter;
 import it.gov.pagopa.pu.bff.dto.ReceiptViewFiltersDTO;
 import it.gov.pagopa.pu.bff.util.PageUtils;
+import it.gov.pagopa.pu.debtpositions.controller.generated.ReceiptApi;
 import it.gov.pagopa.pu.debtpositions.controller.generated.ReceiptViewSearchControllerApi;
 import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelReceiptView;
+import it.gov.pagopa.pu.debtpositions.dto.generated.ReceiptDetailDTO;
 import it.gov.pagopa.pu.debtpositions.dto.generated.ReceiptView;
+import java.time.OffsetDateTime;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -17,11 +24,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-
-import java.time.OffsetDateTime;
-
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.mockito.Mockito.when;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.client.HttpClientErrorException;
 
 @ExtendWith(MockitoExtension.class)
 class ReceiptClientTest {
@@ -30,6 +34,8 @@ class ReceiptClientTest {
   private DebtPositionApisHolder debtPositionApisHolderMock;
   @Mock
   private ReceiptViewSearchControllerApi receiptViewSearchControllerApiMock;
+  @Mock
+  private ReceiptApi receiptApiMock;
 
   private ReceiptClient receiptClient;
 
@@ -87,5 +93,37 @@ class ReceiptClientTest {
     assertSame(expectedResult, result);
   }
 
+  @Test
+  void whenGetReceiptDetailThenInvokeWithAccessToken() {
+    Long receiptId = 123L;
+    String operatorExternalUserId = "operatorExternalUserId";
+    String accessToken = "ACCESSTOKEN";
+    ReceiptDetailDTO expectedResult = new ReceiptDetailDTO();
+
+    when(debtPositionApisHolderMock.getReceiptApi(accessToken))
+      .thenReturn(receiptApiMock);
+    when(receiptApiMock.getReceiptDetail(receiptId,operatorExternalUserId))
+      .thenReturn(expectedResult);
+
+    ReceiptDetailDTO result = receiptClient.getReceiptDetail(receiptId, operatorExternalUserId, accessToken);
+
+    assertSame(expectedResult, result);
+  }
+
+  @Test
+  void givenExceptionWhenGetReceiptDetailThenReturnNull() {
+    Long receiptId = 123L;
+    String operatorExternalUserId = "operatorExternalUserId";
+    String accessToken = "ACCESSTOKEN";
+
+    when(debtPositionApisHolderMock.getReceiptApi(accessToken))
+      .thenReturn(receiptApiMock);
+    when(receiptApiMock.getReceiptDetail(receiptId,operatorExternalUserId))
+      .thenThrow(HttpClientErrorException.create(HttpStatus.NOT_FOUND, "NotFound", null, null, null));
+
+    ReceiptDetailDTO result = receiptClient.getReceiptDetail(receiptId, operatorExternalUserId, accessToken);
+
+    Assertions.assertNull(result);
+  }
 }
 

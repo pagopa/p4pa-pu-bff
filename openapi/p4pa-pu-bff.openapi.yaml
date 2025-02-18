@@ -752,8 +752,8 @@ components:
         - paymentAmountCents
         - remittanceInformation
         - debtPositionDescription
-        - debtorFullName
-        - debtorFiscalCode
+        - debtor
+        - payer
         - pspCompanyName
         - iud
       properties:
@@ -769,14 +769,10 @@ components:
           type: string
         debtPositionDescription:
           type: string
-        debtorFullName:
-          type: string
-        debtorFiscalCode:
-          type: string
-        payerFullName:
-          type: string
-        payerFiscalCode:
-          type: string
+        debtor:
+          $ref: "#/components/schemas/PersonDTO"
+        payer:
+          $ref: "#/components/schemas/PersonDTO"
         paymentDateTime:
           type: string
           format: date-time
@@ -785,6 +781,16 @@ components:
         iud:
           type: string
         iur:
+          type: string
+    PersonDTO:
+      required:
+        - fullName
+        - fiscalCode
+      type: object
+      properties:
+        fiscalCode:
+          type: string
+        fullName:
           type: string
     PagedIngestionFlowFile:
       type: object

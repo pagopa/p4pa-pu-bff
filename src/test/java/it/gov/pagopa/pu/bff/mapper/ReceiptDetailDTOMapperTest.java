@@ -3,16 +3,25 @@ package it.gov.pagopa.pu.bff.mapper;
 import it.gov.pagopa.pu.bff.dto.generated.ReceiptDetailDTO;
 import it.gov.pagopa.pu.bff.util.TestUtils;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mockito;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import uk.co.jemos.podam.api.PodamFactory;
 
 @ExtendWith(MockitoExtension.class)
 class ReceiptDetailDTOMapperTest {
-
+  @Spy
+  private PersonDTOMapper personDTOMapperSpy;
   private final PodamFactory podamFactory = TestUtils.getPodamFactory();
-  private final ReceiptDetailDTOMapper mapper = new ReceiptDetailDTOMapper();
+  private ReceiptDetailDTOMapper mapper;
+
+  @BeforeEach
+  void setUp() {
+    mapper = new ReceiptDetailDTOMapper(personDTOMapperSpy);
+  }
 
   @Test
   void givenPopulatedReceiptDetailWhenMapToReceiptDetailDTOThenCorrectMapping() {
@@ -22,27 +31,13 @@ class ReceiptDetailDTOMapperTest {
 
     Assertions.assertNotNull(result);
     TestUtils.reflectionEqualsByName(receiptDetailDTO, result, "debtor", "payer");
-    Assertions.assertEquals(receiptDetailDTO.getDebtor().getFullName(),result.getDebtorFullName());
-    Assertions.assertEquals(receiptDetailDTO.getDebtor().getFiscalCode(),result.getDebtorFiscalCode());
-    Assertions.assertEquals(receiptDetailDTO.getPayer().getFullName(),result.getPayerFullName());
-    Assertions.assertEquals(receiptDetailDTO.getPayer().getFiscalCode(),result.getPayerFiscalCode());
+    TestUtils.reflectionEqualsByName(receiptDetailDTO.getDebtor(), result.getDebtor());
+    TestUtils.reflectionEqualsByName(receiptDetailDTO.getPayer(), result.getPayer());
     TestUtils.checkNotNullFields(result);
-  }
-
-  @Test
-  void givenNoPayerWhenMapToReceiptDetailDTOThenResultWithNoPayer() {
-    it.gov.pagopa.pu.debtpositions.dto.generated.ReceiptDetailDTO receiptDetailDTO = podamFactory.manufacturePojo(it.gov.pagopa.pu.debtpositions.dto.generated.ReceiptDetailDTO.class);
-    receiptDetailDTO.setPayer(null);
-
-    ReceiptDetailDTO result = mapper.mapToReceiptDetailDTO(receiptDetailDTO);
-
-    Assertions.assertNotNull(result);
-    TestUtils.reflectionEqualsByName(receiptDetailDTO, result, "debtor", "payer");
-    Assertions.assertEquals(receiptDetailDTO.getDebtor().getFullName(),result.getDebtorFullName());
-    Assertions.assertEquals(receiptDetailDTO.getDebtor().getFiscalCode(),result.getDebtorFiscalCode());
-    Assertions.assertNull(result.getPayerFullName());
-    Assertions.assertNull(result.getPayerFiscalCode());
-    TestUtils.checkNotNullFields(result,"payerFullName","payerFiscalCode");
+    TestUtils.checkNotNullFields(result.getDebtor());
+    TestUtils.checkNotNullFields(result.getPayer());
+    Mockito.verify(personDTOMapperSpy).mapToPersonDTO(receiptDetailDTO.getDebtor());
+    Mockito.verify(personDTOMapperSpy).mapToPersonDTO(receiptDetailDTO.getPayer());
   }
 
   @Test
@@ -50,6 +45,7 @@ class ReceiptDetailDTOMapperTest {
     ReceiptDetailDTO result = mapper.mapToReceiptDetailDTO(null);
 
     Assertions.assertNull(result);
+    Mockito.verifyNoInteractions(personDTOMapperSpy);
   }
 
 }

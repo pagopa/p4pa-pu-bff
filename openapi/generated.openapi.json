@@ -1421,8 +1421,20 @@
           }
         }
       },
+      "PersonDTO" : {
+        "required" : [ "fiscalCode", "fullName" ],
+        "type" : "object",
+        "properties" : {
+          "fiscalCode" : {
+            "type" : "string"
+          },
+          "fullName" : {
+            "type" : "string"
+          }
+        }
+      },
       "ReceiptDetailDTO" : {
-        "required" : [ "debtPositionDescription", "debtorFiscalCode", "debtorFullName", "iud", "paymentAmountCents", "pspCompanyName", "receiptId", "remittanceInformation" ],
+        "required" : [ "debtPositionDescription", "debtor", "iud", "payer", "paymentAmountCents", "pspCompanyName", "receiptId", "remittanceInformation" ],
         "type" : "object",
         "properties" : {
           "receiptId" : {
@@ -1442,17 +1454,11 @@
           "debtPositionDescription" : {
             "type" : "string"
           },
-          "debtorFullName" : {
-            "type" : "string"
+          "debtor" : {
+            "$ref" : "#/components/schemas/PersonDTO"
           },
-          "debtorFiscalCode" : {
-            "type" : "string"
-          },
-          "payerFullName" : {
-            "type" : "string"
-          },
-          "payerFiscalCode" : {
-            "type" : "string"
+          "payer" : {
+            "$ref" : "#/components/schemas/PersonDTO"
           },
           "paymentDateTime" : {
             "type" : "string",

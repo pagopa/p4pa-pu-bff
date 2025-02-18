@@ -221,7 +221,7 @@
                   "    });\r",
                   "})\r",
                   "\r",
-                  "pm.collectionVariables.set(\"organizationId\", jsonResponse[0]?.organizationId);"
+                  "pm.collectionVariables.set(\"organizationId\",  jsonResponse[0]?.organizationId);"
                 ],
                 "type": "text/javascript",
                 "packages": {}
@@ -882,8 +882,12 @@
                   "    pm.expect(jsonResponse).to.have.property(\"paymentAmountCents\").and.to.not.be.null;",
                   "    pm.expect(jsonResponse).to.have.property(\"remittanceInformation\").and.to.not.be.null;",
                   "    pm.expect(jsonResponse).to.have.property(\"debtPositionDescription\").and.to.not.be.null;",
-                  "    pm.expect(jsonResponse).to.have.property(\"debtorFullName\").and.to.not.be.null;",
-                  "    pm.expect(jsonResponse).to.have.property(\"debtorFiscalCode\").and.to.not.be.null;",
+                  "    pm.expect(jsonResponse).to.have.property(\"debtor\").and.to.not.be.null;",
+                  "    pm.expect(jsonResponse.debtor).to.have.property(\"fullName\").and.to.not.be.null;",
+                  "    pm.expect(jsonResponse.debtor).to.have.property(\"fiscalCode\").and.to.not.be.null;",
+                  "    pm.expect(jsonResponse).to.have.property(\"payer\").and.to.not.be.null;",
+                  "    pm.expect(jsonResponse.payer).to.have.property(\"fullName\").and.to.not.be.null;",
+                  "    pm.expect(jsonResponse.payer).to.have.property(\"fiscalCode\").and.to.not.be.null;",
                   "    pm.expect(jsonResponse).to.have.property(\"pspCompanyName\").and.to.not.be.null;",
                   "    pm.expect(jsonResponse).to.have.property(\"iud\").and.to.not.be.null;",
                   "});",

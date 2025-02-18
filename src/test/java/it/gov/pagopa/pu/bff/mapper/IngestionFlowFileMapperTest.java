@@ -125,7 +125,7 @@ class IngestionFlowFileMapperTest {
       result.getContent().get(3),
       otherUserInfo.getFamilyName() + " " +otherUserInfo.getName(),
       0L,
-      it.gov.pagopa.pu.bff.dto.generated.IngestionFlowFile.StatusEnum.ERROR, "totalRows");
+      StatusEnum.ERROR, "totalRows");
     Mockito.verify(authzServiceMock, Mockito.times(3)).getUserInfoFromMappedExternaUserId(otherOperatorExternalId,accessToken);
     Mockito.verifyNoMoreInteractions(authzServiceMock);
   }

@@ -55,7 +55,7 @@ public class ExportFileMapper {
       .creationDate(exportFile.getCreationDate())
       .totalRows(exportFile.getNumTotalRows())
       .operator(UserUtils.getOperator(exportFile.getOperatorExternalId(), userInfo,
-        authzClient.getUserInfoFromMappedExternalUserId(
+        authzClient.getUserInfoFromMappedExternaUserId(
           exportFile.getOperatorExternalId(), accessToken)))
       .status(StatusEnum.valueOf(exportFile.getStatus().toString()))
       .build();

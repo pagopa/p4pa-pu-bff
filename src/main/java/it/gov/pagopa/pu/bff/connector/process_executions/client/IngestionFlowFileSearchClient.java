@@ -29,7 +29,7 @@ public class IngestionFlowFileSearchClient {
           FlowFileTypeEnum::toString).toList(),
         DateUtils.toLocalDateTime(ingestionFlowFileFilters.getCreationDateFrom()),
         DateUtils.toLocalDateTime(ingestionFlowFileFilters.getCreationDateTo()),
-        ingestionFlowFileFilters.getStatus(),
+        ingestionFlowFileFilters.getStatus().name(),
         ingestionFlowFileFilters.getFileName(),
         operatorExternalId,
         PageUtils.getPageNumber(pageable),

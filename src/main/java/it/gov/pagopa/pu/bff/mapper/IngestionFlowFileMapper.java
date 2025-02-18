@@ -48,7 +48,7 @@ public class IngestionFlowFileMapper {
       .fileName(ingestionFlowFile.getFileName())
       .creationDate(ingestionFlowFile.getCreationDate())
       .operator(UserUtils.getOperator(ingestionFlowFile.getOperatorExternalId(), userInfo,
-        authzClient.getUserInfoFromMappedExternalUserId(
+        authzService.getUserInfoFromMappedExternaUserId(
           ingestionFlowFile.getOperatorExternalId(), accessToken)))
       .totalRows(ingestionFlowFile.getNumTotalRows())
       .correctlyImportedRows(ingestionFlowFile.getNumCorrectlyImportedRows())

@@ -19,11 +19,11 @@
     "name" : "IngestionFlowFiles",
     "description" : "the IngestionFlowFiles API"
   }, {
-    "name" : "DebtPositionTypeOrgs",
-    "description" : "the DebtPositionTypeOrgs API"
-  }, {
     "name" : "ExportFiles",
     "description" : "the ExportFiles API"
+  }, {
+    "name" : "DebtPositionTypeOrgs",
+    "description" : "the DebtPositionTypeOrgs API"
   }, {
     "name" : "Taxonomy",
     "description" : "the Taxonomy API"

@@ -362,6 +362,45 @@ paths:
         '500':
           description: Internal Server Error
       x-spring-paginated: true
+  /receipts/{organizationId}/{receiptId}:
+    get:
+      tags:
+        - Receipts
+      summary: "Retrieve a specific receipt"
+      operationId: getReceiptDetail
+      parameters:
+        - name: organizationId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: receiptId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: The unique identifier of the receipt
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReceiptDetailDTO'
+        '404':
+          description: Not Found - Receipt not found
+        '401':
+          description: Unauthorized - Missing or invalid token
+        '403':
+          description: Forbidden - Access denied
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDTO'
   /debt-position-types/{id}:
     get:
       tags:
@@ -706,6 +745,52 @@ components:
         number:
           type: integer
           format: int64
+    ReceiptDetailDTO:
+      type: object
+      required:
+        - receiptId
+        - paymentAmountCents
+        - remittanceInformation
+        - debtPositionDescription
+        - debtor
+        - pspCompanyName
+        - iud
+      properties:
+        receiptId:
+          type: integer
+          format: int64
+        iuv:
+          type: string
+        paymentAmountCents:
+          type: integer
+          format: int64
+        remittanceInformation:
+          type: string
+        debtPositionDescription:
+          type: string
+        debtor:
+          $ref: "#/components/schemas/PersonDTO"
+        payer:
+          $ref: "#/components/schemas/PersonDTO"
+        paymentDateTime:
+          type: string
+          format: date-time
+        pspCompanyName:
+          type: string
+        iud:
+          type: string
+        iur:
+          type: string
+    PersonDTO:
+      required:
+        - fullName
+        - fiscalCode
+      type: object
+      properties:
+        fiscalCode:
+          type: string
+        fullName:
+          type: string
     PagedIngestionFlowFile:
       type: object
       required:

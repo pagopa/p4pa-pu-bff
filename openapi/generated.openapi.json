@@ -606,6 +606,86 @@
         } ]
       }
     },
+    "/bff/receipts/{organizationId}/{receiptId}" : {
+      "get" : {
+        "tags" : [ "Receipts" ],
+        "summary" : "Retrieve a specific receipt",
+        "operationId" : "getReceiptDetail",
+        "parameters" : [ {
+          "name" : "organizationId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }, {
+          "name" : "receiptId",
+          "in" : "path",
+          "description" : "The unique identifier of the receipt",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ReceiptDetailDTO"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Not Found - Receipt not found",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ReceiptDetailDTO"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Unauthorized - Missing or invalid token",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ReceiptDetailDTO"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Forbidden - Access denied",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ReceiptDetailDTO"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal Server Error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorDTO"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "BearerAuth" : [ ]
+        } ]
+      }
+    },
     "/bff/organizations" : {
       "get" : {
         "tags" : [ "Organizations" ],
@@ -1341,6 +1421,75 @@
           }
         }
       },
+      "PersonDTO" : {
+        "required" : [ "fiscalCode", "fullName" ],
+        "type" : "object",
+        "properties" : {
+          "fiscalCode" : {
+            "type" : "string"
+          },
+          "fullName" : {
+            "type" : "string"
+          }
+        }
+      },
+      "ReceiptDetailDTO" : {
+        "required" : [ "debtPositionDescription", "debtor", "iud", "paymentAmountCents", "pspCompanyName", "receiptId", "remittanceInformation" ],
+        "type" : "object",
+        "properties" : {
+          "receiptId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "iuv" : {
+            "type" : "string"
+          },
+          "paymentAmountCents" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "remittanceInformation" : {
+            "type" : "string"
+          },
+          "debtPositionDescription" : {
+            "type" : "string"
+          },
+          "debtor" : {
+            "$ref" : "#/components/schemas/PersonDTO"
+          },
+          "payer" : {
+            "$ref" : "#/components/schemas/PersonDTO"
+          },
+          "paymentDateTime" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "pspCompanyName" : {
+            "type" : "string"
+          },
+          "iud" : {
+            "type" : "string"
+          },
+          "iur" : {
+            "type" : "string"
+          }
+        }
+      },
+      "ErrorDTO" : {
+        "required" : [ "description", "title" ],
+        "type" : "object",
+        "properties" : {
+          "title" : {
+            "type" : "string",
+            "description" : "The title describing the error",
+            "enum" : [ "NOT_FOUND", "BAD_REQUEST", "GENERIC_ERROR" ]
+          },
+          "description" : {
+            "type" : "string",
+            "description" : "Description of the error"
+          }
+        }
+      },
       "OrganizationDTO" : {
         "required" : [ "ipaCode", "operatorRole", "orgFiscalCode", "orgName", "organizationId" ],
         "type" : "object",
@@ -1369,21 +1518,6 @@
           },
           "orgFiscalCode" : {
             "type" : "string"
-          }
-        }
-      },
-      "ErrorDTO" : {
-        "required" : [ "description", "title" ],
-        "type" : "object",
-        "properties" : {
-          "title" : {
-            "type" : "string",
-            "description" : "The title describing the error",
-            "enum" : [ "NOT_FOUND", "BAD_REQUEST", "GENERIC_ERROR" ]
-          },
-          "description" : {
-            "type" : "string",
-            "description" : "Description of the error"
           }
         }
       },

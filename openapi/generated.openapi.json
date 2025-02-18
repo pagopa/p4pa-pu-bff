@@ -1434,7 +1434,7 @@
         }
       },
       "ReceiptDetailDTO" : {
-        "required" : [ "debtPositionDescription", "debtor", "iud", "payer", "paymentAmountCents", "pspCompanyName", "receiptId", "remittanceInformation" ],
+        "required" : [ "debtPositionDescription", "debtor", "iud", "paymentAmountCents", "pspCompanyName", "receiptId", "remittanceInformation" ],
         "type" : "object",
         "properties" : {
           "receiptId" : {

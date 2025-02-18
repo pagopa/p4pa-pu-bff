@@ -12,31 +12,32 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class ExportFileSearchClient {
 
-    private final ProcessExecutionsApisHolder processExecutionsApisHolder;
+  private final ProcessExecutionsApisHolder processExecutionsApisHolder;
 
-    public ExportFileSearchClient(
-      ProcessExecutionsApisHolder processExecutionsApisHolder) {
-        this.processExecutionsApisHolder = processExecutionsApisHolder;
-    }
+  public ExportFileSearchClient(
+    ProcessExecutionsApisHolder processExecutionsApisHolder) {
+    this.processExecutionsApisHolder = processExecutionsApisHolder;
+  }
 
-  public PagedModelExportFile getExportFiles(ExportFileFiltersDTO exportFileFilters, String operatorExternalId, Pageable pageable, String accessToken) {
-    try {
-      return processExecutionsApisHolder.getExportFileSearchControllerApi(accessToken)
-        .crudExportFilesFindByOrganizationIDFlowTypeCreateDate(
-          String.valueOf(exportFileFilters.getOrganizationId()),
-          exportFileFilters.getFlowFileType().toString(),
-          exportFileFilters.getCreationDate().getFrom(),
-          exportFileFilters.getCreationDate().getTo(),
-          exportFileFilters.getStatus().name(),
-          exportFileFilters.getFileName(),
-          operatorExternalId,
-          PageUtils.getPageNumber(pageable),
-          PageUtils.getPageSize(pageable),
-          PageUtils.getSortList(pageable));
-    } catch (Exception e) {
-      log.error("Unexpected error while retrieving ingestion flow files", e);
-      throw e;
-    }
+  public PagedModelExportFile getExportFiles(
+    ExportFileFiltersDTO exportFileFilters, String operatorExternalId,
+    Pageable pageable, String accessToken) {
+    String status = exportFileFilters.getStatus() != null ?
+      exportFileFilters.getStatus().name()
+      : "";
+    return processExecutionsApisHolder.getExportFileSearchControllerApi(
+        accessToken)
+      .crudExportFilesFindByOrganizationIDFlowTypeCreateDate(
+        String.valueOf(exportFileFilters.getOrganizationId()),
+        exportFileFilters.getFlowFileType().toString(),
+        exportFileFilters.getCreationDate().getFrom(),
+        exportFileFilters.getCreationDate().getTo(),
+        status,
+        exportFileFilters.getFileName(),
+        operatorExternalId,
+        PageUtils.getPageNumber(pageable),
+        PageUtils.getPageSize(pageable),
+        PageUtils.getSortList(pageable));
   }
 
 }

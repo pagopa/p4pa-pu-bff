@@ -21,21 +21,27 @@ public class IngestionFlowFileSearchClient {
     this.processExecutionsApisHolder = processExecutionsApisHolder;
   }
 
-  public PagedModelIngestionFlowFile getIngestionFlowFiles(IngestionFlowFileFiltersDTO ingestionFlowFileFilters, String operatorExternalId, Pageable pageable, String accessToken) {
-    return processExecutionsApisHolder.getIngestionFlowFileSearchControllerApi(accessToken)
+  public PagedModelIngestionFlowFile getIngestionFlowFiles(
+    IngestionFlowFileFiltersDTO ingestionFlowFileFilters,
+    String operatorExternalId, Pageable pageable, String accessToken) {
+    String status = ingestionFlowFileFilters.getStatus() != null ?
+      ingestionFlowFileFilters.getStatus().name()
+      : "";
+    return processExecutionsApisHolder.getIngestionFlowFileSearchControllerApi(
+        accessToken)
       .crudIngestionFlowFilesFindByOrganizationIDFlowTypeCreateDate(
         String.valueOf(ingestionFlowFileFilters.getOrganizationId()),
         ingestionFlowFileFilters.getFlowFileType().stream().map(
           FlowFileTypeEnum::toString).toList(),
-        DateUtils.toLocalDateTime(ingestionFlowFileFilters.getCreationDateFrom()),
+        DateUtils.toLocalDateTime(
+          ingestionFlowFileFilters.getCreationDateFrom()),
         DateUtils.toLocalDateTime(ingestionFlowFileFilters.getCreationDateTo()),
-        ingestionFlowFileFilters.getStatus().name(),
+        status,
         ingestionFlowFileFilters.getFileName(),
         operatorExternalId,
         PageUtils.getPageNumber(pageable),
         PageUtils.getPageSize(pageable),
         PageUtils.getSortList(pageable));
   }
-
 
 }

@@ -122,7 +122,8 @@ tasks.register("dependenciesBuild") {
     "openApiGenerateP4PAAUTH",
     "openApiGenerateORGANIZATION",
     "openApiGenerateDEBTPOSITIONS",
-    "openApiGeneratePROCESSEXECUTIONS"
+    "openApiGeneratePROCESSEXECUTIONS",
+    "openApiGenerateCLASSIFICATION"
   )
 }
 
@@ -151,7 +152,8 @@ tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>("ope
     "FlowFileType" to "it.gov.pagopa.pu.processexecutions.dto.generated.IngestionFlowFile.FlowFileTypeEnum",
     "ReceiptView" to "it.gov.pagopa.pu.debtpositions.dto.generated.ReceiptView",
     "ReceiptOriginType" to "it.gov.pagopa.pu.debtpositions.dto.generated.ReceiptView.ReceiptOriginEnum",
-    "DebtPositionTypeOrg" to "it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrg"
+    "DebtPositionTypeOrg" to "it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrg",
+    "PaymentsReportingView" to "it.gov.pagopa.pu.classification.dto.generated.PaymentsReportingView"
   ))
   configOptions.set(mapOf(
     "dateLibrary" to "java8",
@@ -256,6 +258,33 @@ tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>("ope
   outputDir.set("$projectDir/build/generated")
   apiPackage.set("it.gov.pagopa.pu.processexecutions.controller.generated")
   modelPackage.set("it.gov.pagopa.pu.processexecutions.dto.generated")
+  typeMappings.set(mapOf(
+    "LocalDateTime" to "java.time.LocalDateTime"
+  ))
+  configOptions.set(mapOf(
+    "swaggerAnnotations" to "false",
+    "openApiNullable" to "false",
+    "dateLibrary" to "java8",
+    "useSpringBoot3" to "true",
+    "useJakartaEe" to "true",
+    "serializationLibrary" to "jackson",
+    "generateSupportingFiles" to "true",
+    "generateConstructorWithAllArgs" to "true",
+    "generatedConstructorWithRequiredArgs" to "true",
+    "additionalModelTypeAnnotations" to "@lombok.experimental.SuperBuilder(toBuilder = true)"
+  ))
+  library.set("resttemplate")
+}
+
+tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>("openApiGenerateCLASSIFICATION") {
+  group = "openapi"
+  description = "description"
+
+  generatorName.set("java")
+  remoteInputSpec.set("https://raw.githubusercontent.com/pagopa/p4pa-classification/refs/heads/$targetEnv/openapi/generated.openapi.json")
+  outputDir.set("$projectDir/build/generated")
+  apiPackage.set("it.gov.pagopa.pu.classification.controller.generated")
+  modelPackage.set("it.gov.pagopa.pu.classification.dto.generated")
   typeMappings.set(mapOf(
     "LocalDateTime" to "java.time.LocalDateTime"
   ))

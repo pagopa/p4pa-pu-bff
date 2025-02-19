@@ -100,6 +100,11 @@ rest:
     max-attempts: "\${PROCESS_EXECUTIONS_MAX_ATTEMPTS:3}" # It's counting also the first attempt
     wait-time-millis: "\${PROCESS_EXECUTIONS_WAIT_TIME_MILLIS:500}"
     print-body-when-error: "\${PROCESS_EXECUTIONS_PRINT_BODY_WHEN_ERROR:true}"
+  classification:
+    base-url: "\${CLASSIFICATION_BASE_URL:}"
+    max-attempts: "\${CLASSIFICATION_MAX_ATTEMPTS:3}" # It's counting also the first attempt
+    wait-time-millis: "\${CLASSIFICATION_WAIT_TIME_MILLIS:500}"
+    print-body-when-error: "\${CLASSIFICATION_PRINT_BODY_WHEN_ERROR:true}"
 
 cache:
   organization:

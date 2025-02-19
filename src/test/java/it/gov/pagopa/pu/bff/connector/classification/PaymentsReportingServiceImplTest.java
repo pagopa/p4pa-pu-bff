@@ -1,7 +1,5 @@
 package it.gov.pagopa.pu.bff.connector.classification;
 
-import it.gov.pagopa.pu.bff.connector.classification.PaymentsReportingService;
-import it.gov.pagopa.pu.bff.connector.classification.PaymentsReportingServiceImpl;
 import it.gov.pagopa.pu.bff.connector.classification.client.PaymentsReportingClient;
 import it.gov.pagopa.pu.bff.dto.LocalDateIntervalFilter;
 import it.gov.pagopa.pu.classification.dto.generated.PagedModelPaymentsReportingView;

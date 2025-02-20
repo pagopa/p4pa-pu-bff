@@ -1,14 +1,20 @@
 package it.gov.pagopa.pu.bff.service;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.connector.debt_position.ReceiptService;
 import it.gov.pagopa.pu.bff.dto.OffsetDateTimeIntervalFilter;
 import it.gov.pagopa.pu.bff.dto.ReceiptViewFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedReceiptView;
+import it.gov.pagopa.pu.bff.dto.generated.ReceiptDetailDTO;
+import it.gov.pagopa.pu.bff.mapper.ReceiptDetailDTOMapper;
 import it.gov.pagopa.pu.bff.mapper.ReceiptViewMapper;
 import it.gov.pagopa.pu.bff.service.receipt.ReceiptRetrieverServiceImpl;
 import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelReceiptView;
 import it.gov.pagopa.pu.debtpositions.dto.generated.ReceiptView;
+import java.time.OffsetDateTime;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -21,11 +27,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.authorization.AuthorizationDeniedException;
 
-import java.time.OffsetDateTime;
-
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertSame;
-
 @ExtendWith(MockitoExtension.class)
 class ReceiptRetrieverServiceImplTest {
 
@@ -34,6 +35,8 @@ class ReceiptRetrieverServiceImplTest {
 
   @Mock
   private ReceiptViewMapper receiptViewMapperMock;
+  @Mock
+  private ReceiptDetailDTOMapper receiptDetailDTOMapperMock;
 
   private ReceiptRetrieverServiceImpl receiptViewService;
 
@@ -41,7 +44,7 @@ class ReceiptRetrieverServiceImplTest {
 
   @BeforeEach
   void setUp() {
-    receiptViewService = new ReceiptRetrieverServiceImpl(receiptServiceMock, receiptViewMapperMock);
+    receiptViewService = new ReceiptRetrieverServiceImpl(receiptServiceMock, receiptViewMapperMock, receiptDetailDTOMapperMock);
   }
 
   @Test
@@ -107,6 +110,56 @@ class ReceiptRetrieverServiceImplTest {
     Mockito.verifyNoInteractions(receiptServiceMock, receiptViewMapperMock);
   }
 
+
+  @Test
+  void givenValidUserWhenGetReceiptDetailThenOk() {
+    UserInfo loggedUser = new UserInfo();
+    loggedUser.setMappedExternalUserId("mappedExternalUserId");
+
+    Long organizationId = 1L;
+    Long receiptId = 2L;
+    it.gov.pagopa.pu.debtpositions.dto.generated.ReceiptDetailDTO receiptDetailDTO = new it.gov.pagopa.pu.debtpositions.dto.generated.ReceiptDetailDTO();
+    ReceiptDetailDTO expectedResult = new ReceiptDetailDTO();
+
+    try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
+      authorizationServiceMockedStatic.when(() -> AuthorizationService.isUserEnabledToOrganizationId(organizationId, loggedUser))
+        .thenReturn(true);
+      Mockito.when(receiptServiceMock.getReceiptDetail(receiptId,loggedUser.getMappedExternalUserId(),accessToken))
+        .thenReturn(receiptDetailDTO);
+      Mockito.when(receiptDetailDTOMapperMock.mapToReceiptDetailDTO(receiptDetailDTO))
+        .thenReturn(expectedResult);
+
+      ReceiptDetailDTO result = receiptViewService.getReceiptDetail(organizationId,receiptId,loggedUser,accessToken);
+
+      assertNotNull(result);
+      assertSame(expectedResult, result);
+
+      authorizationServiceMockedStatic.verify(() -> AuthorizationService.isUserEnabledToOrganizationId(organizationId, loggedUser));
+      Mockito.verify(receiptServiceMock).getReceiptDetail(receiptId,
+        loggedUser.getMappedExternalUserId(),accessToken);
+      Mockito.verify(receiptDetailDTOMapperMock).mapToReceiptDetailDTO(receiptDetailDTO);
+    }
+  }
+
+  @Test
+  void givenInvalidUserWhenGetReceiptDetailThenOk() {
+    UserInfo loggedUser = new UserInfo();
+    loggedUser.setMappedExternalUserId("mappedExternalUserId");
+
+    Long organizationId = 1L;
+    Long receiptId = 2L;
+
+    try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
+      authorizationServiceMockedStatic.when(() -> AuthorizationService.isUserEnabledToOrganizationId(organizationId, loggedUser))
+        .thenThrow(new AuthorizationDeniedException("Access denied"));
+
+      Assertions.assertThrows(AuthorizationDeniedException.class, () ->
+        receiptViewService.getReceiptDetail(organizationId,receiptId,loggedUser,accessToken));
+
+      authorizationServiceMockedStatic.verify(() -> AuthorizationService.isUserEnabledToOrganizationId(organizationId, loggedUser));
+      Mockito.verifyNoInteractions(receiptServiceMock,receiptDetailDTOMapperMock);
+    }
+  }
 }
 
 

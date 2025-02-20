@@ -1,8 +1,12 @@
 package it.gov.pagopa.pu.bff.connector.debt_position;
 
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.mockito.Mockito.when;
+
 import it.gov.pagopa.pu.bff.connector.debt_position.client.ReceiptClient;
 import it.gov.pagopa.pu.bff.dto.ReceiptViewFiltersDTO;
 import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelReceiptView;
+import it.gov.pagopa.pu.debtpositions.dto.generated.ReceiptDetailDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -10,9 +14,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Pageable;
-
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class ReceiptServiceTest {
@@ -38,6 +39,21 @@ class ReceiptServiceTest {
       .thenReturn(expectedResult);
 
     PagedModelReceiptView result = service.getReceipts(filtersDTO, pageable, accessToken);
+
+    assertSame(expectedResult, result);
+  }
+
+  @Test
+  void whenGetReceiptDetailThenInvokeClient() {
+    String accessToken = "ACCESSTOKEN";
+    Long receiptId = 1L;
+    String operatorExternalUserId = "operatorExternalUserId";
+    ReceiptDetailDTO expectedResult = new ReceiptDetailDTO();
+
+    when(client.getReceiptDetail(receiptId,operatorExternalUserId,accessToken))
+      .thenReturn(expectedResult);
+
+    ReceiptDetailDTO result = service.getReceiptDetail(receiptId, operatorExternalUserId, accessToken);
 
     assertSame(expectedResult, result);
   }

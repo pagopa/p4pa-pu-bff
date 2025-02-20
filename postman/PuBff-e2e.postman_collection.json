@@ -1,10 +1,10 @@
 {
 	"info": {
-		"_postman_id": "e02c4e6c-ae64-4c0c-9d65-5bf467386a83",
+		"_postman_id": "1ae9fba5-86f8-4bdc-8668-dc06d9d3cc3f",
 		"name": "PU-BFF",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "15747968",
-		"_collection_link": "https://warped-astronaut-141685.postman.co/workspace/P4PA~9a8b7dd5-97b6-4dd0-b3f5-95f25fd0b455/collection/15747968-e02c4e6c-ae64-4c0c-9d65-5bf467386a83?action=share&source=collection_link&creator=15747968"
+		"_exporter_id": "29647564",
+		"_collection_link": "https://galactic-eclipse-948669.postman.co/workspace/New-Team-Workspace~be56c5f1-de0c-4252-95d0-ee80f35e2474/collection/29647564-1ae9fba5-86f8-4bdc-8668-dc06d9d3cc3f?action=share&source=collection_link&creator=29647564"
 	},
 	"item": [
 		{
@@ -220,7 +220,9 @@
 									"        pm.expect(item).to.have.property(\"operatorRole\").and.to.not.be.null;\r",
 									"        pm.expect(item).to.have.property(\"orgFiscalCode\").and.to.not.be.null;\r",
 									"    });\r",
-									"})"
+									"})\r",
+									"\r",
+									"pm.collectionVariables.set(\"organizationId\",  jsonResponse[0]?.organizationId);"
 								],
 								"type": "text/javascript",
 								"packages": {}
@@ -788,6 +790,238 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "03_getReceipts",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"let response = pm.response.json();\r",
+									"let receiptId = response.content[0]?.receiptId;\r",
+									"\r",
+									" pm.collectionVariables.set(\"receiptId\", receiptId);\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{bearerToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{puBffBaseUrl}}/bff/receipts?organizationId={{organizationId}}&receiptOrigin=RECEIPT_FILE",
+							"host": [
+								"{{puBffBaseUrl}}"
+							],
+							"path": [
+								"bff",
+								"receipts"
+							],
+							"query": [
+								{
+									"key": "organizationId",
+									"value": "{{organizationId}}"
+								},
+								{
+									"key": "receiptOrigin",
+									"value": "RECEIPT_FILE"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "03_getReceiptDetail",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let jsonResponse = pm.response.json();",
+									"pm.test(\"[receipt getReceiptDetail], expected httpStatus: 200\", () => {",
+									"    pm.response.to.have.status(200);",
+									"})",
+									"pm.test(\"[receipt getReceiptDetail] - getReceiptDetail\", () => {",
+									"    pm.expect(jsonResponse).to.have.property(\"receiptId\").and.to.not.be.null;",
+									"    pm.expect(jsonResponse).to.have.property(\"paymentAmountCents\").and.to.not.be.null;",
+									"    pm.expect(jsonResponse).to.have.property(\"remittanceInformation\").and.to.not.be.null;",
+									"    pm.expect(jsonResponse).to.have.property(\"debtPositionDescription\").and.to.not.be.null;",
+									"    pm.expect(jsonResponse).to.have.property(\"debtor\").and.to.not.be.null;",
+									"    pm.expect(jsonResponse.debtor).to.have.property(\"fullName\").and.to.not.be.null;",
+									"    pm.expect(jsonResponse.debtor).to.have.property(\"fiscalCode\").and.to.not.be.null;",
+									"    pm.expect(jsonResponse).to.have.property(\"pspCompanyName\").and.to.not.be.null;",
+									"    pm.expect(jsonResponse).to.have.property(\"iud\").and.to.not.be.null;",
+									"});",
+									"",
+									"",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{bearerToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{puBffBaseUrl}}/bff/receipts/:organizationId/:receiptId",
+							"host": [
+								"{{puBffBaseUrl}}"
+							],
+							"path": [
+								"bff",
+								"receipts",
+								":organizationId",
+								":receiptId"
+							],
+							"variable": [
+								{
+									"key": "organizationId",
+									"value": "{{organizationId}}"
+								},
+								{
+									"key": "receiptId",
+									"value": "{{receiptId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "04_Classification",
+			"item": [
+				{
+					"name": "04_getPaymentsReporting",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let jsonResponse = pm.response.json();\r",
+									"pm.test(\"[receipt getPaymentsReporting], expected httpStatus: 200\", () => {\r",
+									"    pm.response.to.have.status(200);\r",
+									"})\r",
+									"pm.test(\"[PaymentsReporting getPaymentsReporting] - getPaymentsReporting\", () => {\r",
+									"    pm.expect(jsonResponse).to.have.property(\"content\").and.to.be.an(\"array\");\r",
+									"    pm.expect(jsonResponse).to.have.property(\"size\").and.to.be.a(\"number\");\r",
+									"    pm.expect(jsonResponse).to.have.property(\"totalElements\").and.to.be.a(\"number\");\r",
+									"    pm.expect(jsonResponse).to.have.property(\"totalPages\").and.to.be.a(\"number\");\r",
+									"    pm.expect(jsonResponse).to.have.property(\"number\").and.to.be.a(\"number\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{puBffBaseUrl}}/bff/payments-reporting/organization/:organizationId",
+							"host": [
+								"{{puBffBaseUrl}}"
+							],
+							"path": [
+								"bff",
+								"payments-reporting",
+								"organization",
+								":organizationId"
+							],
+							"variable": [
+								{
+									"key": "organizationId",
+									"value": "{{organizationId}}"
+								}
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		}
@@ -883,6 +1117,14 @@
 		},
 		{
 			"key": "debtPositionTypeId",
+			"value": ""
+		},
+		{
+			"key": "organizationId",
+			"value": ""
+		},
+		{
+			"key": "receiptId",
 			"value": ""
 		}
 	]

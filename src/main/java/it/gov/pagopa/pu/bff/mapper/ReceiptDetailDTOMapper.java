@@ -21,7 +21,7 @@ public class ReceiptDetailDTOMapper {
       .iuv(receiptDetailDTO.getIuv())
       .paymentAmountCents(receiptDetailDTO.getPaymentAmountCents())
       .remittanceInformation(receiptDetailDTO.getRemittanceInformation())
-      .debtPositionDescription(receiptDetailDTO.getDebtPositionDescription())
+      .debtPositionTypeOrgDescription(receiptDetailDTO.getDebtPositionTypeOrgDescription())
       .debtor(personDTOMapper.mapToPersonDTO(receiptDetailDTO.getDebtor()))
       .payer(personDTOMapper.mapToPersonDTO(receiptDetailDTO.getPayer()))
       .paymentDateTime(receiptDetailDTO.getPaymentDateTime())

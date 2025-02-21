@@ -864,7 +864,7 @@ components:
         - receiptId
         - paymentAmountCents
         - remittanceInformation
-        - debtPositionDescription
+        - debtPositionTypeOrgDescription
         - debtor
         - pspCompanyName
         - iud
@@ -879,7 +879,7 @@ components:
           format: int64
         remittanceInformation:
           type: string
-        debtPositionDescription:
+        debtPositionTypeOrgDescription:
           type: string
         debtor:
           $ref: "#/components/schemas/PersonDTO"

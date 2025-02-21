@@ -60,7 +60,7 @@ class DebtPositionRetrieverServiceImplTest {
       authorizationServiceMockedStatic.when(() -> AuthorizationService.isUserEnabledToOrganizationId(debtPositionViewFiltersDTO.getOrganizationId(), loggedUser))
         .thenReturn(true);
 
-      Mockito.when(debtPositionServiceMock.getDebtPositionViews(debtPositionViewFiltersDTO,debtPositionOrigins,"mappedExternalUserId", pageRequest,
+      Mockito.when(debtPositionServiceMock.getDebtPositionViews(debtPositionViewFiltersDTO,debtPositionOrigins,loggedUser.getMappedExternalUserId(), pageRequest,
           accessToken))
         .thenReturn(pagedModelDebtPositionView);
       Mockito.when(debtPositionViewMapperMock.mapToPagedDebtPositionView(pagedModelDebtPositionView))
@@ -74,7 +74,7 @@ class DebtPositionRetrieverServiceImplTest {
 
       authorizationServiceMockedStatic.verify(() -> AuthorizationService.isUserEnabledToOrganizationId(
         debtPositionViewFiltersDTO.getOrganizationId(), loggedUser));
-      Mockito.verify(debtPositionServiceMock).getDebtPositionViews(debtPositionViewFiltersDTO,debtPositionOrigins,"mappedExternalUserId", pageRequest,
+      Mockito.verify(debtPositionServiceMock).getDebtPositionViews(debtPositionViewFiltersDTO,debtPositionOrigins,loggedUser.getMappedExternalUserId(), pageRequest,
         accessToken);
       Mockito.verify(debtPositionViewMapperMock).mapToPagedDebtPositionView(pagedModelDebtPositionView);
     }
@@ -83,7 +83,6 @@ class DebtPositionRetrieverServiceImplTest {
   @Test
   void givenInvalidUserWhenGetDebtPositionViewsThenAuthorizationDeniedException() {
     UserInfo loggedUser = new UserInfo();
-    loggedUser.setUserId("user-123");
     PageRequest pageRequest = PageRequest.of(0, 10);
 
     DebtPositionViewFiltersDTO debtPositionViewFiltersDTO = podamFactory.manufacturePojo(

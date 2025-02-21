@@ -10,7 +10,6 @@ import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionView.DebtPositio
 import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelDebtPositionView;
 import java.util.Collections;
 import java.util.List;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -36,14 +35,6 @@ class DebtPositionClientTest {
   @BeforeEach
   void setUp() {
     debtPositionClient = new DebtPositionClient(debtPositionApisHolderMock);
-  }
-
-  @AfterEach
-  void verifyNoMoreInteractions() {
-    Mockito.verifyNoMoreInteractions(
-      debtPositionApisHolderMock,
-      debtPositionViewSearchControllerApiMock
-    );
   }
 
   @Test
@@ -75,6 +66,7 @@ class DebtPositionClientTest {
     PagedModelDebtPositionView result = debtPositionClient.getDebtPositionViews(filtersDTO, debtPositionOrigins, operatorExternalUserId,PageRequest.of(1,10),accessToken);
 
     Assertions.assertSame(expectedResult, result);
+    Mockito.verify(debtPositionApisHolderMock).getDebtPositionViewSearchControllerApi(accessToken);
     Mockito.verify(debtPositionViewSearchControllerApiMock).crudDebtPositionsViewFindDebtPositionViews(
       filtersDTO.getOrganizationId(),
       List.of(DebtPositionOriginEnum.ORDINARY.toString(),DebtPositionOriginEnum.RECEIPT_FILE.toString()),

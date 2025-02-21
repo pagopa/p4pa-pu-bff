@@ -22,9 +22,6 @@ public class ExportFileSearchClient {
   public PagedModelExportFile getExportFiles(
     ExportFileFiltersDTO exportFileFilters, String operatorExternalId,
     Pageable pageable, String accessToken) {
-    String status = exportFileFilters.getStatus() != null ?
-      exportFileFilters.getStatus().name()
-      : "";
     return processExecutionsApisHolder.getExportFileSearchControllerApi(
         accessToken)
       .crudExportFilesFindByOrganizationIDFlowTypeCreateDate(
@@ -32,7 +29,9 @@ public class ExportFileSearchClient {
         exportFileFilters.getFlowFileType().toString(),
         exportFileFilters.getCreationDate().getFrom(),
         exportFileFilters.getCreationDate().getTo(),
-        status,
+        exportFileFilters.getStatus() != null ?
+          exportFileFilters.getStatus().name()
+          : null,
         exportFileFilters.getFileName(),
         operatorExternalId,
         PageUtils.getPageNumber(pageable),

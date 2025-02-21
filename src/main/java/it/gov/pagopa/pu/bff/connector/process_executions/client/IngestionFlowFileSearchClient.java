@@ -24,9 +24,6 @@ public class IngestionFlowFileSearchClient {
   public PagedModelIngestionFlowFile getIngestionFlowFiles(
     IngestionFlowFileFiltersDTO ingestionFlowFileFilters,
     String operatorExternalId, Pageable pageable, String accessToken) {
-    String status = ingestionFlowFileFilters.getStatus() != null ?
-      ingestionFlowFileFilters.getStatus().name()
-      : "";
     return processExecutionsApisHolder.getIngestionFlowFileSearchControllerApi(
         accessToken)
       .crudIngestionFlowFilesFindByOrganizationIDFlowTypeCreateDate(
@@ -36,7 +33,9 @@ public class IngestionFlowFileSearchClient {
         DateUtils.toLocalDateTime(
           ingestionFlowFileFilters.getCreationDateFrom()),
         DateUtils.toLocalDateTime(ingestionFlowFileFilters.getCreationDateTo()),
-        status,
+        ingestionFlowFileFilters.getStatus() != null ?
+          ingestionFlowFileFilters.getStatus().name()
+          : null,
         ingestionFlowFileFilters.getFileName(),
         operatorExternalId,
         PageUtils.getPageNumber(pageable),

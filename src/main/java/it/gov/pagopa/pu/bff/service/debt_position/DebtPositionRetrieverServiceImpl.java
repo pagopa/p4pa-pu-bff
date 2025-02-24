@@ -16,6 +16,11 @@ public class DebtPositionRetrieverServiceImpl implements DebtPositionRetrieverSe
 
   private final DebtPositionService debtPositionService;
   private final DebtPositionViewMapper debtPositionViewMapper;
+  private static final List<String> debtPositionOriginFilterList = List.of(
+    DebtPositionOriginEnum.ORDINARY.toString(),
+    DebtPositionOriginEnum.ORDINARY_SIL.toString(),
+    DebtPositionOriginEnum.SPONTANEOUS.toString()
+  );
 
   public DebtPositionRetrieverServiceImpl(DebtPositionService debtPositionService,
     DebtPositionViewMapper debtPositionViewMapper) {
@@ -29,17 +34,11 @@ public class DebtPositionRetrieverServiceImpl implements DebtPositionRetrieverSe
     return debtPositionViewMapper.mapToPagedDebtPositionView(
       debtPositionService.getDebtPositionViews(
         filtersDTO,
-        buildDebtPositionOriginFilterList(),
+        debtPositionOriginFilterList,
         loggedUser.getMappedExternalUserId(),
         pageable,
         accessToken)
     );
-  }
-
-  private static List<String> buildDebtPositionOriginFilterList() {
-    return List.of(DebtPositionOriginEnum.ORDINARY.toString(),
-      DebtPositionOriginEnum.ORDINARY_SIL.toString(),
-      DebtPositionOriginEnum.SPONTANEOUS.toString());
   }
 
 }

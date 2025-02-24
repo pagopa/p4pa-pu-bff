@@ -4,9 +4,12 @@ import it.gov.pagopa.pu.bff.connector.BaseApiHolderTest;
 import it.gov.pagopa.pu.debtpositions.dto.generated.CollectionModelDebtPositionTypeOrg;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionType;
 import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelDebtPositionTypeWithCount;
+import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelDebtPositionView;
 import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelReceiptView;
 import it.gov.pagopa.pu.debtpositions.dto.generated.ReceiptDetailDTO;
+import java.time.LocalDateTime;
 import java.util.Collections;
+import java.util.List;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -80,6 +83,22 @@ class DebtPositionApisHolderTest extends BaseApiHolderTest {
       accessToken -> debtPositionApisHolder.getReceiptApi(accessToken)
         .getReceiptDetail(1L,"operatorExternalUserId"),
       ReceiptDetailDTO.class, debtPositionApisHolder::unload);
+  }
+
+  @Test
+  void whenGetDebtPositionViewSearchControllerApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
+    assertAuthenticationShouldBeSetInThreadSafeMode(
+      accessToken -> debtPositionApisHolder.getDebtPositionViewSearchControllerApi(accessToken)
+        .crudDebtPositionsViewFindDebtPositionViews(
+          1L,
+          List.of("debtPositionOrigin"),
+          "operatorExternalUserId",
+          LocalDateTime.now(),
+          LocalDateTime.now(),
+      "fiscalCode",
+      1L,
+          "status",0,10,Collections.emptyList()),
+      PagedModelDebtPositionView.class, debtPositionApisHolder::unload);
   }
 
 }

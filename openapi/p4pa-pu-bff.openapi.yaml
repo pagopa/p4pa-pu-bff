@@ -570,6 +570,58 @@ paths:
         '404':
           description: Not Found
       x-spring-paginated: true
+  /organization/{organizationId}/debt-positions:
+    get:
+      tags:
+        - DebtPositions
+      summary: "Retrieve a page of DebtPositionView"
+      operationId: getDebtPositionViews
+      parameters:
+        - name: organizationId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: creationDateFrom
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date-time
+        - name: creationDateTo
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date-time
+        - name: fiscalCode
+          in: query
+          schema:
+            type: string
+        - name: debtPositionTypeOrgId
+          in: query
+          schema:
+            type: integer
+            format: int64
+        - name: status
+          in: query
+          schema:
+            type: 'DebtPositionViewStatus'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PagedDebtPositionView'
+        '401':
+          description: Unauthorized - Missing or invalid token
+        '403':
+          description: Forbidden - Access denied
+        '500':
+          description: Internal Server Error
+      x-spring-paginated: true
 security:
   - BearerAuth: [ ]
 components:
@@ -864,7 +916,7 @@ components:
         - receiptId
         - paymentAmountCents
         - remittanceInformation
-        - debtPositionDescription
+        - debtPositionTypeOrgDescription
         - debtor
         - pspCompanyName
         - iud
@@ -879,7 +931,7 @@ components:
           format: int64
         remittanceInformation:
           type: string
-        debtPositionDescription:
+        debtPositionTypeOrgDescription:
           type: string
         debtor:
           $ref: "#/components/schemas/PersonDTO"
@@ -1008,3 +1060,28 @@ components:
           type: string
         status:
           type: 'ExportFileStatus'
+    PagedDebtPositionView:
+      type: object
+      required:
+        - content
+        - size
+        - totalElements
+        - totalPages
+        - number
+      properties:
+        content:
+          type: array
+          items:
+            type: 'DebtPositionView'
+        size:
+          type: integer
+          format: int64
+        totalElements:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer
+          format: int64
+        number:
+          type: integer
+          format: int64

@@ -6,6 +6,7 @@ import it.gov.pagopa.pu.debtpositions.controller.BaseApi;
 import it.gov.pagopa.pu.debtpositions.controller.generated.DebtPositionTypeEntityControllerApi;
 import it.gov.pagopa.pu.debtpositions.controller.generated.DebtPositionTypeOrgSearchControllerApi;
 import it.gov.pagopa.pu.debtpositions.controller.generated.DebtPositionTypeWithCountSearchControllerApi;
+import it.gov.pagopa.pu.debtpositions.controller.generated.DebtPositionViewSearchControllerApi;
 import it.gov.pagopa.pu.debtpositions.controller.generated.ReceiptApi;
 import it.gov.pagopa.pu.debtpositions.controller.generated.ReceiptViewSearchControllerApi;
 import jakarta.annotation.PreDestroy;
@@ -21,6 +22,7 @@ public class DebtPositionApisHolder {
   private final DebtPositionTypeOrgSearchControllerApi debtPositionTypeOrgSearchControllerApi;
   private final ReceiptViewSearchControllerApi receiptViewSearchControllerApi;
   private final ReceiptApi receiptApi;
+  private final DebtPositionViewSearchControllerApi debtPositionViewSearchControllerApi;
   private final ThreadLocal<String> bearerTokenHolder = new ThreadLocal<>();
 
   public DebtPositionApisHolder(
@@ -42,6 +44,7 @@ public class DebtPositionApisHolder {
     this.debtPositionTypeOrgSearchControllerApi = new DebtPositionTypeOrgSearchControllerApi(apiClient);
     this.receiptViewSearchControllerApi = new ReceiptViewSearchControllerApi(apiClient);
     this.receiptApi = new ReceiptApi(apiClient);
+    this.debtPositionViewSearchControllerApi = new DebtPositionViewSearchControllerApi(apiClient);
   }
 
   @PreDestroy
@@ -76,6 +79,13 @@ public class DebtPositionApisHolder {
    */
   public ReceiptApi getReceiptApi(String accessToken) {
     return getApi(accessToken, receiptApi);
+  }
+
+  /**
+   * It will return a {@link DebtPositionViewSearchControllerApi} instrumented with the provided accessToken. Use null if auth is not required
+   */
+  public DebtPositionViewSearchControllerApi getDebtPositionViewSearchControllerApi(String accessToken) {
+    return getApi(accessToken, debtPositionViewSearchControllerApi);
   }
 
   private <T extends BaseApi> T getApi(String accessToken, T api) {

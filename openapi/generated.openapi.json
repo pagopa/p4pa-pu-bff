@@ -1,5 +1,5 @@
 {
-  "openapi" : "3.0.1",
+  "openapi" : "3.1.0",
   "info" : {
     "title" : "p4pa-pu-bff",
     "description" : "Api and Models",
@@ -539,9 +539,9 @@
           "description" : "Zero-based page index (0..N)",
           "required" : false,
           "schema" : {
-            "minimum" : 0,
             "type" : "integer",
-            "default" : 0
+            "default" : 0,
+            "minimum" : 0
           }
         }, {
           "name" : "size",
@@ -549,9 +549,9 @@
           "description" : "The size of the page to be returned",
           "required" : false,
           "schema" : {
-            "minimum" : 1,
             "type" : "integer",
-            "default" : 20
+            "default" : 20,
+            "minimum" : 1
           }
         }, {
           "name" : "sort",
@@ -741,9 +741,9 @@
           "description" : "Zero-based page index (0..N)",
           "required" : false,
           "schema" : {
-            "minimum" : 0,
             "type" : "integer",
-            "default" : 0
+            "default" : 0,
+            "minimum" : 0
           }
         }, {
           "name" : "size",
@@ -751,9 +751,9 @@
           "description" : "The size of the page to be returned",
           "required" : false,
           "schema" : {
-            "minimum" : 1,
             "type" : "integer",
-            "default" : 20
+            "default" : 20,
+            "minimum" : 1
           }
         }, {
           "name" : "sort",
@@ -933,9 +933,9 @@
           "description" : "Zero-based page index (0..N)",
           "required" : false,
           "schema" : {
-            "minimum" : 0,
             "type" : "integer",
-            "default" : 0
+            "default" : 0,
+            "minimum" : 0
           }
         }, {
           "name" : "size",
@@ -943,9 +943,9 @@
           "description" : "The size of the page to be returned",
           "required" : false,
           "schema" : {
-            "minimum" : 1,
             "type" : "integer",
-            "default" : 20
+            "default" : 20,
+            "minimum" : 1
           }
         }, {
           "name" : "sort",
@@ -1065,9 +1065,9 @@
           "description" : "Zero-based page index (0..N)",
           "required" : false,
           "schema" : {
-            "minimum" : 0,
             "type" : "integer",
-            "default" : 0
+            "default" : 0,
+            "minimum" : 0
           }
         }, {
           "name" : "size",
@@ -1075,9 +1075,9 @@
           "description" : "The size of the page to be returned",
           "required" : false,
           "schema" : {
-            "minimum" : 1,
             "type" : "integer",
-            "default" : 20
+            "default" : 20,
+            "minimum" : 1
           }
         }, {
           "name" : "sort",
@@ -1208,9 +1208,9 @@
           "description" : "Zero-based page index (0..N)",
           "required" : false,
           "schema" : {
-            "minimum" : 0,
             "type" : "integer",
-            "default" : 0
+            "default" : 0,
+            "minimum" : 0
           }
         }, {
           "name" : "size",
@@ -1218,9 +1218,9 @@
           "description" : "The size of the page to be returned",
           "required" : false,
           "schema" : {
-            "minimum" : 1,
             "type" : "integer",
-            "default" : 20
+            "default" : 20,
+            "minimum" : 1
           }
         }, {
           "name" : "sort",
@@ -1616,7 +1616,6 @@
         }
       },
       "PagedReceiptView" : {
-        "required" : [ "content", "number", "size", "totalElements", "totalPages" ],
         "type" : "object",
         "properties" : {
           "content" : {
@@ -1641,7 +1640,8 @@
             "type" : "integer",
             "format" : "int64"
           }
-        }
+        },
+        "required" : [ "content", "number", "size", "totalElements", "totalPages" ]
       },
       "ReceiptView" : {
         "type" : "object",
@@ -1681,7 +1681,6 @@
         }
       },
       "PersonDTO" : {
-        "required" : [ "fiscalCode", "fullName" ],
         "type" : "object",
         "properties" : {
           "fiscalCode" : {
@@ -1690,10 +1689,10 @@
           "fullName" : {
             "type" : "string"
           }
-        }
+        },
+        "required" : [ "fiscalCode", "fullName" ]
       },
       "ReceiptDetailDTO" : {
-        "required" : [ "debtPositionTypeOrgDescription", "debtor", "iud", "paymentAmountCents", "pspCompanyName", "receiptId", "remittanceInformation" ],
         "type" : "object",
         "properties" : {
           "receiptId" : {
@@ -1732,10 +1731,10 @@
           "iur" : {
             "type" : "string"
           }
-        }
+        },
+        "required" : [ "debtPositionTypeOrgDescription", "debtor", "iud", "paymentAmountCents", "pspCompanyName", "receiptId", "remittanceInformation" ]
       },
       "ErrorDTO" : {
-        "required" : [ "description", "title" ],
         "type" : "object",
         "properties" : {
           "title" : {
@@ -1747,10 +1746,10 @@
             "type" : "string",
             "description" : "Description of the error"
           }
-        }
+        },
+        "required" : [ "description", "title" ]
       },
       "PagedPaymentsReportingView" : {
-        "required" : [ "content", "number", "size", "totalElements", "totalPages" ],
         "type" : "object",
         "properties" : {
           "content" : {
@@ -1775,7 +1774,8 @@
             "type" : "integer",
             "format" : "int64"
           }
-        }
+        },
+        "required" : [ "content", "number", "size", "totalElements", "totalPages" ]
       },
       "PaymentsReportingView" : {
         "type" : "object",
@@ -1819,13 +1819,12 @@
         }
       },
       "OrganizationDTO" : {
-        "required" : [ "ipaCode", "operatorRole", "orgFiscalCode", "orgName", "organizationId" ],
         "type" : "object",
         "properties" : {
           "organizationId" : {
             "type" : "integer",
-            "description" : "Organization ID",
-            "format" : "int64"
+            "format" : "int64",
+            "description" : "Organization ID"
           },
           "ipaCode" : {
             "type" : "string",
@@ -1847,7 +1846,8 @@
           "orgFiscalCode" : {
             "type" : "string"
           }
-        }
+        },
+        "required" : [ "ipaCode", "operatorRole", "orgFiscalCode", "orgName", "organizationId" ]
       },
       "DebtPositionView" : {
         "type" : "object",
@@ -1891,7 +1891,6 @@
         }
       },
       "PagedDebtPositionView" : {
-        "required" : [ "content", "number", "size", "totalElements", "totalPages" ],
         "type" : "object",
         "properties" : {
           "content" : {
@@ -1916,10 +1915,10 @@
             "type" : "integer",
             "format" : "int64"
           }
-        }
+        },
+        "required" : [ "content", "number", "size", "totalElements", "totalPages" ]
       },
       "IngestionFlowFile" : {
-        "required" : [ "creationDate", "fileName", "ingestionFlowFileId", "operator", "status" ],
         "type" : "object",
         "properties" : {
           "ingestionFlowFileId" : {
@@ -1952,10 +1951,10 @@
             "type" : "string",
             "enum" : [ "UPLOADED", "PROCESSING", "COMPLETED", "ERROR" ]
           }
-        }
+        },
+        "required" : [ "creationDate", "fileName", "ingestionFlowFileId", "operator", "status" ]
       },
       "PagedIngestionFlowFile" : {
-        "required" : [ "content", "number", "size", "totalElements", "totalPages" ],
         "type" : "object",
         "properties" : {
           "content" : {
@@ -1980,7 +1979,8 @@
             "type" : "integer",
             "format" : "int64"
           }
-        }
+        },
+        "required" : [ "content", "number", "size", "totalElements", "totalPages" ]
       },
       "DebtPositionType" : {
         "type" : "object",
@@ -2046,7 +2046,6 @@
         }
       },
       "DebtPositionTypeWithCount" : {
-        "required" : [ "activeOrganizations", "code", "debtPositionTypeId", "description", "updateDate" ],
         "type" : "object",
         "properties" : {
           "debtPositionTypeId" : {
@@ -2067,10 +2066,10 @@
             "type" : "integer",
             "format" : "int32"
           }
-        }
+        },
+        "required" : [ "activeOrganizations", "code", "debtPositionTypeId", "description", "updateDate" ]
       },
       "PagedDebtPositionTypeWithCount" : {
-        "required" : [ "content", "number", "size", "totalElements", "totalPages" ],
         "type" : "object",
         "properties" : {
           "content" : {
@@ -2095,7 +2094,8 @@
             "type" : "integer",
             "format" : "int64"
           }
-        }
+        },
+        "required" : [ "content", "number", "size", "totalElements", "totalPages" ]
       },
       "DebtPositionTypeOrg" : {
         "type" : "object",
@@ -2214,7 +2214,6 @@
         }
       },
       "ConfigFE" : {
-        "required" : [ "brokerFiscalCode", "brokerId", "canManageUsers", "footerAccessibilityUrl", "footerDescText", "footerGDPRUrl", "footerPrivacyInfoUrl", "footerTermsCondUrl", "headerAssistanceUrl", "logoFooterImg" ],
         "type" : "object",
         "properties" : {
           "headerAssistanceUrl" : {
@@ -2256,7 +2255,8 @@
           "brokerFiscalCode" : {
             "type" : "string"
           }
-        }
+        },
+        "required" : [ "brokerFiscalCode", "brokerId", "canManageUsers", "footerAccessibilityUrl", "footerDescText", "footerGDPRUrl", "footerPrivacyInfoUrl", "footerTermsCondUrl", "headerAssistanceUrl", "logoFooterImg" ]
       }
     },
     "securitySchemes" : {

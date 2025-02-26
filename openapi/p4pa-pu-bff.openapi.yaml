@@ -297,6 +297,58 @@ paths:
           description: Forbidden - Access denied
         '500':
           description: Internal Server Error
+  /organization/{organizationId}/installments:
+    get:
+      tags:
+        - Installments
+      summary: "Retrieve a paged list of installment based on filters"
+      operationId: getInstallments
+      parameters:
+        - name: organizationId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: dueDateFrom
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date-time
+        - name: dueDateTo
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date-time
+        - name: iuv
+          in: query
+          schema:
+            type: string
+        - name: fiscalCode
+          in: query
+          schema:
+            type: string
+        - name: debtPositionTypeOrgId
+          in: query
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PagedInstallmentView'
+        '401':
+          description: Unauthorized - Missing or invalid token
+        '403':
+          description: Forbidden - Access denied
+        '500':
+          description: Internal Server Error
+      x-spring-paginated: true
   /payments-reporting/organization/{organizationId}:
     get:
       tags:
@@ -873,6 +925,31 @@ components:
           type: array
           items:
             type: 'ReceiptView'
+        size:
+          type: integer
+          format: int64
+        totalElements:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer
+          format: int64
+        number:
+          type: integer
+          format: int64
+    PagedInstallmentView:
+      type: object
+      required:
+        - content
+        - size
+        - totalElements
+        - totalPages
+        - number
+      properties:
+        content:
+          type: array
+          items:
+            type: 'InstallmentView'
         size:
           type: integer
           format: int64

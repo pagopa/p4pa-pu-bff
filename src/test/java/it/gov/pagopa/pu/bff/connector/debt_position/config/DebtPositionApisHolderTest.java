@@ -1,15 +1,7 @@
 package it.gov.pagopa.pu.bff.connector.debt_position.config;
 
 import it.gov.pagopa.pu.bff.connector.BaseApiHolderTest;
-import it.gov.pagopa.pu.debtpositions.dto.generated.CollectionModelDebtPositionTypeOrg;
-import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionType;
-import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelDebtPositionTypeWithCount;
-import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelDebtPositionView;
-import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelReceiptView;
-import it.gov.pagopa.pu.debtpositions.dto.generated.ReceiptDetailDTO;
-import java.time.LocalDateTime;
-import java.util.Collections;
-import java.util.List;
+import it.gov.pagopa.pu.debtpositions.dto.generated.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,6 +11,11 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.web.util.DefaultUriBuilderFactory;
+
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.util.Collections;
+import java.util.List;
 
 @ExtendWith(MockitoExtension.class)
 class DebtPositionApisHolderTest extends BaseApiHolderTest {
@@ -81,8 +78,16 @@ class DebtPositionApisHolderTest extends BaseApiHolderTest {
   void whenGetReceiptApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
     assertAuthenticationShouldBeSetInThreadSafeMode(
       accessToken -> debtPositionApisHolder.getReceiptApi(accessToken)
-        .getReceiptDetail(1L,"operatorExternalUserId"),
+        .getReceiptDetail(1L, "operatorExternalUserId"),
       ReceiptDetailDTO.class, debtPositionApisHolder::unload);
+  }
+
+  @Test
+  void whenGetInstallmentApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
+    assertAuthenticationShouldBeSetInThreadSafeMode(
+      accessToken -> debtPositionApisHolder.getInstallmentViewSearchControllerApi(accessToken)
+        .crudInstallmentViewsFindInstallmentsByFilters(1L, "operatorExternalUserId", OffsetDateTime.now().minusDays(30), OffsetDateTime.now(), "iuv", "fiscalCode", 2L, 0, 10, Collections.emptyList()),
+      PagedModelInstallmentView.class, debtPositionApisHolder::unload);
   }
 
   @Test
@@ -95,9 +100,9 @@ class DebtPositionApisHolderTest extends BaseApiHolderTest {
           "operatorExternalUserId",
           LocalDateTime.now(),
           LocalDateTime.now(),
-      "fiscalCode",
-      1L,
-          "status",0,10,Collections.emptyList()),
+          "fiscalCode",
+          1L,
+          "status", 0, 10, Collections.emptyList()),
       PagedModelDebtPositionView.class, debtPositionApisHolder::unload);
   }
 

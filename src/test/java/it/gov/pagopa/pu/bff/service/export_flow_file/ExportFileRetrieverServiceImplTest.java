@@ -1,7 +1,7 @@
 package it.gov.pagopa.pu.bff.service.export_flow_file;
 
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
-import it.gov.pagopa.pu.bff.connector.process_executions.client.ExportFileSearchClient;
+import it.gov.pagopa.pu.bff.connector.process_executions.ExportFileService;
 import it.gov.pagopa.pu.bff.dto.ExportFileFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.OffsetDateTimeIntervalFilter;
 import it.gov.pagopa.pu.bff.dto.generated.PagedExportFile;
@@ -9,6 +9,8 @@ import it.gov.pagopa.pu.bff.mapper.ExportFileMapper;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
 import it.gov.pagopa.pu.processexecutions.dto.generated.ExportFile.FlowFileTypeEnum;
 import it.gov.pagopa.pu.processexecutions.dto.generated.ExportFile.StatusEnum;
+import it.gov.pagopa.pu.processexecutions.dto.generated.ExportFileFilter;
+import it.gov.pagopa.pu.processexecutions.dto.generated.ExportFileRequestDTO;
 import it.gov.pagopa.pu.processexecutions.dto.generated.PagedModelExportFile;
 import java.time.OffsetDateTime;
 import org.junit.jupiter.api.Assertions;
@@ -21,18 +23,18 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-class ExportFileServiceImplTest {
+class ExportFileRetrieverServiceImplTest {
   @Mock
-  private ExportFileSearchClient exportFileSearchClientMock;
+  private ExportFileService exportFileServiceMock;
   @Mock
   private ExportFileMapper exportFileMapperMock;
 
-  private ExportFileService exportFileService;
+  private ExportFileRetrieverService exportFileRetrieverService;
 
   @BeforeEach
   void setUp() {
-    exportFileService = new ExportFileServiceImpl(
-      exportFileSearchClientMock, exportFileMapperMock);
+    exportFileRetrieverService = new ExportFileRetrieverServiceImpl(
+      exportFileServiceMock, exportFileMapperMock);
   }
 
   @Test
@@ -55,26 +57,26 @@ class ExportFileServiceImplTest {
       AuthorizationService.class)) {
       authorizationServiceMockedStatic.when(()->AuthorizationService.isAdminRole(organizationId, userInfo))
         .thenReturn(true);
-      Mockito.when(exportFileSearchClientMock.getExportFiles(
+      Mockito.when(exportFileServiceMock.getExportFiles(
           exportFileFilters, null, null, accessToken))
         .thenReturn(pagedModelExportFile);
       Mockito.when(exportFileMapperMock.mapToPagedExportFile(
           pagedModelExportFile, userInfo, accessToken))
         .thenReturn(expectedResult);
 
-      PagedExportFile result = exportFileService.getExportFiles(
+      PagedExportFile result = exportFileRetrieverService.getExportFiles(
         exportFileFilters, null, userInfo, accessToken);
 
       Assertions.assertNotNull(result);
       Assertions.assertEquals(expectedResult, result);
       authorizationServiceMockedStatic.verify(()->AuthorizationService.isAdminRole(organizationId, userInfo));
-      Mockito.verifyNoMoreInteractions(exportFileSearchClientMock,
+      Mockito.verifyNoMoreInteractions(exportFileServiceMock,
         exportFileMapperMock);
     }
   }
 
   @Test
-  void givenNoAdminUserWhenGetIngestionFlowFilesThenOk(){
+  void givenNoAdminUserWhenGetExportFilesThenOk(){
     String accessToken="ACCESSTOKEN";
     long organizationId = 1L;
     FlowFileTypeEnum flowFileType = FlowFileTypeEnum.CLASSIFICATIONS;
@@ -94,19 +96,35 @@ class ExportFileServiceImplTest {
     try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
       authorizationServiceMockedStatic.when(()->AuthorizationService.isAdminRole(organizationId, userInfo))
         .thenReturn(false);
-      Mockito.when(exportFileSearchClientMock.getExportFiles(exportFileFilters,operatorExternalId,null,accessToken))
+      Mockito.when(exportFileServiceMock.getExportFiles(exportFileFilters,operatorExternalId,null,accessToken))
         .thenReturn(pagedModelExportFile);
       Mockito.when(exportFileMapperMock.mapToPagedExportFile(pagedModelExportFile,userInfo,accessToken))
         .thenReturn(expectedResult);
 
-      PagedExportFile result = exportFileService.getExportFiles(
+      PagedExportFile result = exportFileRetrieverService.getExportFiles(
         exportFileFilters, null, userInfo, accessToken);
 
       Assertions.assertNotNull(result);
       Assertions.assertEquals(expectedResult,result);
       authorizationServiceMockedStatic.verify(()->AuthorizationService.isAdminRole(organizationId, userInfo));
-      Mockito.verifyNoMoreInteractions(exportFileSearchClientMock,
+      Mockito.verifyNoMoreInteractions(exportFileServiceMock,
         exportFileMapperMock);
     }
+  }
+
+  @Test
+  void whenCreateExportFileThenOk() {
+    ExportFileRequestDTO requestDTO = ExportFileRequestDTO.builder()
+      .organizationId(1L)
+      .flowFileType(ExportFileRequestDTO.FlowFileTypeEnum.CLASSIFICATIONS)
+      .filterFields(ExportFileFilter.builder()
+        .iuv("iuv")
+        .build())
+      .build();
+    String accessToken = "ACCESSTOKEN";
+
+    exportFileRetrieverService.createExportFile(requestDTO, accessToken);
+
+    Mockito.verify(exportFileServiceMock).createExportFile(requestDTO, accessToken);
   }
 }

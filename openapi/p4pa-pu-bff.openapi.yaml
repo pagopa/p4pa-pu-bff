@@ -674,6 +674,21 @@ paths:
         '500':
           description: Internal Server Error
       x-spring-paginated: true
+  /export-flow-files:
+    post:
+      summary: create-export-file
+      tags:
+        - ExportFiles
+      operationId: createExportFile
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: 'ExportFileRequestDTO'
+        required: true
+      responses:
+        '201':
+          description: OK
 security:
   - BearerAuth: [ ]
 components:

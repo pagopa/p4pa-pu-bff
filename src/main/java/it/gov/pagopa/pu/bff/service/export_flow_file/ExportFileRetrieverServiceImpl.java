@@ -1,25 +1,27 @@
 package it.gov.pagopa.pu.bff.service.export_flow_file;
 
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
-import it.gov.pagopa.pu.bff.connector.process_executions.client.ExportFileSearchClient;
+import it.gov.pagopa.pu.bff.connector.process_executions.ExportFileService;
 import it.gov.pagopa.pu.bff.dto.ExportFileFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedExportFile;
 import it.gov.pagopa.pu.bff.mapper.ExportFileMapper;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
+import it.gov.pagopa.pu.processexecutions.dto.generated.ExportFileRequestDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service
-public class ExportFileServiceImpl implements ExportFileService {
-  private final ExportFileSearchClient exportFileSearchClient;
+public class ExportFileRetrieverServiceImpl implements
+  ExportFileRetrieverService {
+  private final ExportFileService exportFileService;
   private final ExportFileMapper exportFileMapper;
 
-  public ExportFileServiceImpl(
-    ExportFileSearchClient exportFileSearchClient,
+  public ExportFileRetrieverServiceImpl(
+    ExportFileService exportFileService,
     ExportFileMapper exportFileMapper) {
-    this.exportFileSearchClient = exportFileSearchClient;
+    this.exportFileService = exportFileService;
     this.exportFileMapper = exportFileMapper;
   }
 
@@ -34,8 +36,13 @@ public class ExportFileServiceImpl implements ExportFileService {
     }
 
     return exportFileMapper.mapToPagedExportFile(
-      exportFileSearchClient.getExportFiles(
+      exportFileService.getExportFiles(
           exportFileFiltersDTO, operatorExternalUserId, pageable, accessToken),
       loggedUser,accessToken);
+  }
+
+  @Override
+  public void createExportFile(ExportFileRequestDTO requestDTO, String accessToken) {
+    exportFileService.createExportFile(requestDTO, accessToken);
   }
 }

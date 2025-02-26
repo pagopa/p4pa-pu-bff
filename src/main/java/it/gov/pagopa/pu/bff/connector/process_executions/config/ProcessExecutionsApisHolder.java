@@ -4,7 +4,6 @@ import it.gov.pagopa.pu.bff.config.RestTemplateConfig;
 import it.gov.pagopa.pu.processexecutions.controller.ApiClient;
 import it.gov.pagopa.pu.processexecutions.controller.BaseApi;
 import it.gov.pagopa.pu.processexecutions.controller.generated.ExportFileControllerApi;
-import it.gov.pagopa.pu.processexecutions.controller.generated.ExportFileEntityControllerApi;
 import it.gov.pagopa.pu.processexecutions.controller.generated.ExportFileSearchControllerApi;
 import it.gov.pagopa.pu.processexecutions.controller.generated.IngestionFlowFileSearchControllerApi;
 import jakarta.annotation.PreDestroy;

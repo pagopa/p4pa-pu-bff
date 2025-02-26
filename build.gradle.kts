@@ -1,6 +1,6 @@
 plugins {
   java
-  id("org.springframework.boot") version "3.4.1"
+  id("org.springframework.boot") version "3.4.3"
   id("io.spring.dependency-management") version "1.1.7"
   jacoco
   id("org.sonarqube") version "6.0.1.5171"
@@ -29,12 +29,12 @@ repositories {
   mavenCentral()
 }
 
-val springDocOpenApiVersion = "2.7.0"
+val springDocOpenApiVersion = "2.8.5"
 val openApiToolsVersion = "0.2.6"
-val micrometerVersion = "1.4.1"
+val micrometerVersion = "1.4.3"
 val caffeineVersion = "3.2.0"
 
-val wiremockVersion = "3.10.0"
+val wiremockVersion = "3.12.0"
 val wiremockSpringBootVersion = "2.1.3"
 val podamVersion = "8.0.2.RELEASE"
 
@@ -156,7 +156,10 @@ tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>("ope
     "ReceiptView" to "it.gov.pagopa.pu.debtpositions.dto.generated.ReceiptView",
     "ReceiptOriginType" to "it.gov.pagopa.pu.debtpositions.dto.generated.ReceiptView.ReceiptOriginEnum",
     "DebtPositionTypeOrg" to "it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrg",
-    "PaymentsReportingView" to "it.gov.pagopa.pu.classification.dto.generated.PaymentsReportingView"
+    "InstallmentView" to "it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentView",
+    "PaymentsReportingView" to "it.gov.pagopa.pu.classification.dto.generated.PaymentsReportingView",
+    "DebtPositionView" to "it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionView",
+    "DebtPositionViewStatus" to "it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionView.StatusEnum"
   ))
   configOptions.set(mapOf(
     "dateLibrary" to "java8",

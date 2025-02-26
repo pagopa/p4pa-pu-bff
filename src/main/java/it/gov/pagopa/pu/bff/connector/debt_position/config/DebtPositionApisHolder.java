@@ -3,11 +3,7 @@ package it.gov.pagopa.pu.bff.connector.debt_position.config;
 import it.gov.pagopa.pu.bff.config.RestTemplateConfig;
 import it.gov.pagopa.pu.debtpositions.controller.ApiClient;
 import it.gov.pagopa.pu.debtpositions.controller.BaseApi;
-import it.gov.pagopa.pu.debtpositions.controller.generated.DebtPositionTypeEntityControllerApi;
-import it.gov.pagopa.pu.debtpositions.controller.generated.DebtPositionTypeOrgSearchControllerApi;
-import it.gov.pagopa.pu.debtpositions.controller.generated.DebtPositionTypeWithCountSearchControllerApi;
-import it.gov.pagopa.pu.debtpositions.controller.generated.ReceiptApi;
-import it.gov.pagopa.pu.debtpositions.controller.generated.ReceiptViewSearchControllerApi;
+import it.gov.pagopa.pu.debtpositions.controller.generated.*;
 import jakarta.annotation.PreDestroy;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.stereotype.Service;
@@ -20,7 +16,9 @@ public class DebtPositionApisHolder {
   private final DebtPositionTypeWithCountSearchControllerApi debtPositionTypeWithCountSearchControllerApi;
   private final DebtPositionTypeOrgSearchControllerApi debtPositionTypeOrgSearchControllerApi;
   private final ReceiptViewSearchControllerApi receiptViewSearchControllerApi;
+  private final InstallmentViewSearchControllerApi installmentViewSearchControllerApi;
   private final ReceiptApi receiptApi;
+  private final DebtPositionViewSearchControllerApi debtPositionViewSearchControllerApi;
   private final ThreadLocal<String> bearerTokenHolder = new ThreadLocal<>();
 
   public DebtPositionApisHolder(
@@ -41,7 +39,9 @@ public class DebtPositionApisHolder {
     this.debtPositionTypeWithCountSearchControllerApi = new DebtPositionTypeWithCountSearchControllerApi(apiClient);
     this.debtPositionTypeOrgSearchControllerApi = new DebtPositionTypeOrgSearchControllerApi(apiClient);
     this.receiptViewSearchControllerApi = new ReceiptViewSearchControllerApi(apiClient);
+    this.installmentViewSearchControllerApi = new InstallmentViewSearchControllerApi(apiClient);
     this.receiptApi = new ReceiptApi(apiClient);
+    this.debtPositionViewSearchControllerApi = new DebtPositionViewSearchControllerApi(apiClient);
   }
 
   @PreDestroy
@@ -71,11 +71,22 @@ public class DebtPositionApisHolder {
     return getApi(accessToken, receiptViewSearchControllerApi);
   }
 
+  public InstallmentViewSearchControllerApi getInstallmentViewSearchControllerApi(String accessToken) {
+    return getApi(accessToken, installmentViewSearchControllerApi);
+  }
+
   /**
    * It will return a {@link ReceiptApi} instrumented with the provided accessToken. Use null if auth is not required
    */
   public ReceiptApi getReceiptApi(String accessToken) {
     return getApi(accessToken, receiptApi);
+  }
+
+  /**
+   * It will return a {@link DebtPositionViewSearchControllerApi} instrumented with the provided accessToken. Use null if auth is not required
+   */
+  public DebtPositionViewSearchControllerApi getDebtPositionViewSearchControllerApi(String accessToken) {
+    return getApi(accessToken, debtPositionViewSearchControllerApi);
   }
 
   private <T extends BaseApi> T getApi(String accessToken, T api) {

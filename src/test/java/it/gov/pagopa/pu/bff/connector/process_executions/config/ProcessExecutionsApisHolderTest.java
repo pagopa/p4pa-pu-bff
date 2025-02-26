@@ -1,7 +1,11 @@
 package it.gov.pagopa.pu.bff.connector.process_executions.config;
 
 import it.gov.pagopa.pu.bff.connector.BaseApiHolderTest;
+import it.gov.pagopa.pu.processexecutions.dto.generated.PagedModelExportFile;
 import it.gov.pagopa.pu.processexecutions.dto.generated.PagedModelIngestionFlowFile;
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.util.List;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -11,9 +15,6 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.web.util.DefaultUriBuilderFactory;
-
-import java.time.LocalDateTime;
-import java.util.List;
 
 @ExtendWith(MockitoExtension.class)
 class ProcessExecutionsApisHolderTest extends BaseApiHolderTest {
@@ -48,6 +49,17 @@ class ProcessExecutionsApisHolderTest extends BaseApiHolderTest {
           List.of("flowFileType"),
           LocalDateTime.now(),LocalDateTime.now(),"status","fileName","operatorExternalId",0,0,null),
       PagedModelIngestionFlowFile.class,
+      processExecutionsApisHolder::unload
+    );
+  }
+
+  @Test
+  void whenGetExportFileSearchControllerApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
+    assertAuthenticationShouldBeSetInThreadSafeMode(
+      accessToken -> processExecutionsApisHolder.getExportFileSearchControllerApi(accessToken)
+        .crudExportFilesFindByOrganizationIDFlowTypeCreateDate(String.valueOf(123L), "flowFileType",
+          OffsetDateTime.now(),OffsetDateTime.now(),"status","fileName","operatorExternalId",0,0,null),
+      PagedModelExportFile.class,
       processExecutionsApisHolder::unload
     );
   }

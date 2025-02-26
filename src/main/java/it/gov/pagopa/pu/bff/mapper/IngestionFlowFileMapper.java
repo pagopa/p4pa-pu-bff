@@ -3,8 +3,9 @@ package it.gov.pagopa.pu.bff.mapper;
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.connector.auth.AuthzService;
 import it.gov.pagopa.pu.bff.dto.generated.IngestionFlowFile;
-import it.gov.pagopa.pu.bff.dto.generated.IngestionFlowFile.StatusEnum;
 import it.gov.pagopa.pu.bff.dto.generated.PagedIngestionFlowFile;
+import it.gov.pagopa.pu.bff.util.UserUtils;
+import it.gov.pagopa.pu.processexecutions.dto.generated.IngestionFlowFile.StatusEnum;
 import it.gov.pagopa.pu.processexecutions.dto.generated.PagedModelIngestionFlowFile;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
@@ -40,12 +41,15 @@ public class IngestionFlowFileMapper {
   }
 
   private IngestionFlowFile mapToIngestionFlowFile(
-    it.gov.pagopa.pu.processexecutions.dto.generated.IngestionFlowFile ingestionFlowFile, UserInfo userInfo, String accessToken) {
+    it.gov.pagopa.pu.processexecutions.dto.generated.IngestionFlowFile ingestionFlowFile,
+    UserInfo userInfo, String accessToken) {
     return IngestionFlowFile.builder()
       .ingestionFlowFileId(ingestionFlowFile.getIngestionFlowFileId())
       .fileName(ingestionFlowFile.getFileName())
       .creationDate(ingestionFlowFile.getCreationDate())
-      .operator(getOperator(ingestionFlowFile, userInfo, accessToken))
+      .operator(UserUtils.getOperator(ingestionFlowFile.getOperatorExternalId(), userInfo,
+        authzService.getUserInfoFromMappedExternaUserId(
+          ingestionFlowFile.getOperatorExternalId(), accessToken)))
       .totalRows(ingestionFlowFile.getNumTotalRows())
       .correctlyImportedRows(ingestionFlowFile.getNumCorrectlyImportedRows())
       .discardedRows(getDiscardedRows(ingestionFlowFile))
@@ -59,20 +63,5 @@ public class IngestionFlowFileMapper {
     Long correctlyImportedRows = ingestionFlowFile.getNumCorrectlyImportedRows()!=null?ingestionFlowFile.getNumCorrectlyImportedRows():0L;
     return Math.max(totalRows
       - correctlyImportedRows,0);
-  }
-
-  private String getOperator(
-    it.gov.pagopa.pu.processexecutions.dto.generated.IngestionFlowFile ingestionFlowFile, UserInfo userInfo, String accessToken) {
-    if(!ingestionFlowFile.getOperatorExternalId().equals(userInfo.getMappedExternalUserId())){
-      UserInfo userInfoFromMappedExternaUserId = authzService.getUserInfoFromMappedExternaUserId(
-        ingestionFlowFile.getOperatorExternalId(), accessToken);
-      return userInfoFromMappedExternaUserId!=null?getOperatorString(userInfoFromMappedExternaUserId):ingestionFlowFile.getOperatorExternalId();
-    }else{
-      return getOperatorString(userInfo);
-    }
-  }
-
-  private static String getOperatorString(UserInfo userInfo) {
-    return String.format("%s %s",userInfo.getFamilyName(), userInfo.getName());
   }
 }

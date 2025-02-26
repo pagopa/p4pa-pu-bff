@@ -1,11 +1,12 @@
 package it.gov.pagopa.pu.bff.controller;
 
-import it.gov.pagopa.pu.bff.dto.IngestionFlowFileFiltersDTO;
-import it.gov.pagopa.pu.bff.dto.generated.IngestionFlowFile;
-import it.gov.pagopa.pu.bff.dto.generated.PagedIngestionFlowFile;
-import it.gov.pagopa.pu.bff.service.ingestion_flow_file.IngestionFlowFileRetrieverService;
-import it.gov.pagopa.pu.processexecutions.dto.generated.IngestionFlowFile.FlowFileTypeEnum;
-import it.gov.pagopa.pu.processexecutions.dto.generated.IngestionFlowFile.StatusEnum;
+import it.gov.pagopa.pu.bff.dto.ExportFileFiltersDTO;
+import it.gov.pagopa.pu.bff.dto.OffsetDateTimeIntervalFilter;
+import it.gov.pagopa.pu.bff.dto.generated.ExportFile;
+import it.gov.pagopa.pu.bff.dto.generated.PagedExportFile;
+import it.gov.pagopa.pu.bff.service.export_flow_file.ExportFileService;
+import it.gov.pagopa.pu.processexecutions.dto.generated.ExportFile.FlowFileTypeEnum;
+import it.gov.pagopa.pu.processexecutions.dto.generated.ExportFile.StatusEnum;
 import java.time.OffsetDateTime;
 import java.util.List;
 import org.junit.jupiter.api.Assertions;
@@ -25,13 +26,13 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 @ExtendWith(MockitoExtension.class)
-class IngestionFlowFileControllerTest {
+class ExportFileControllerTest {
 
   @Mock
-  private IngestionFlowFileRetrieverService ingestionFlowFileRetrieverServiceMock;
+  private ExportFileService exportFileServiceMock;
 
   @InjectMocks
-  private IngestionFlowFileController ingestionFlowFileController;
+  private ExportFileController exportFileController;
 
   @BeforeEach
   void setUp() {
@@ -42,25 +43,23 @@ class IngestionFlowFileControllerTest {
   }
 
   @Test
-  void givenCorrectRequestWhenGetIngestionFlowFilesThenOk() {
+  void givenCorrectRequestWhenGetExportFilesThenOk() {
     long organizationId = 1L;
-    List<FlowFileTypeEnum> flowFileTypes = List.of(FlowFileTypeEnum.TREASURY_OPI,FlowFileTypeEnum.PAYMENTS_REPORTING);
+    FlowFileTypeEnum flowFileType = FlowFileTypeEnum.CLASSIFICATIONS;
     OffsetDateTime creationDateFrom = OffsetDateTime.now().minusDays(10);
     OffsetDateTime creationDateTo = OffsetDateTime.now().plusDays(10);
     StatusEnum status = StatusEnum.COMPLETED;
     String fileName = "filename";
-    IngestionFlowFileFiltersDTO expectedFilter = new IngestionFlowFileFiltersDTO(
-      organizationId, flowFileTypes, creationDateFrom, creationDateTo, status,
+    ExportFileFiltersDTO expectedFilter = new ExportFileFiltersDTO(
+      organizationId, flowFileType, new OffsetDateTimeIntervalFilter(creationDateFrom, creationDateTo), status,
       fileName);
-    PagedIngestionFlowFile expectedResult = new PagedIngestionFlowFile();
-    expectedResult.setContent(List.of(IngestionFlowFile.builder()
-      .ingestionFlowFileId(1L)
+    PagedExportFile expectedResult = new PagedExportFile();
+    expectedResult.setContent(List.of(ExportFile.builder()
+      .exportFileId(1L)
       .fileName("fileName")
       .creationDate(OffsetDateTime.now())
       .operator("operator")
       .totalRows(10L)
-      .correctlyImportedRows(8L)
-      .discardedRows(2L)
       .status(StatusEnum.COMPLETED)
       .build()));
     expectedResult.setSize(10L);
@@ -68,14 +67,14 @@ class IngestionFlowFileControllerTest {
     expectedResult.setTotalPages(0L);
     expectedResult.setNumber(0L);
 
-    Mockito.when(ingestionFlowFileRetrieverServiceMock.getIngestionFlowFiles(
+    Mockito.when(exportFileServiceMock.getExportFiles(
         Mockito.eq(expectedFilter),
         Mockito.argThat(p->p.getPageNumber()==0 && p.getPageSize()==10 && p.getSort().isUnsorted()),
         Mockito.any(), Mockito.anyString()))
       .thenReturn(expectedResult);
 
-    ResponseEntity<PagedIngestionFlowFile> response = ingestionFlowFileController.getIngestionFlowFiles(organizationId,
-      flowFileTypes,creationDateFrom,creationDateTo,status,fileName,
+    ResponseEntity<PagedExportFile> response = exportFileController.getExportFiles(organizationId,
+      flowFileType,creationDateFrom,creationDateTo,status,fileName,
       PageRequest.of(0,10));
 
     Assertions.assertEquals(HttpStatus.OK,response.getStatusCode());

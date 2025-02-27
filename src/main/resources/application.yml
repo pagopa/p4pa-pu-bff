@@ -114,5 +114,5 @@ cache:
     size: "\${CACHE_TAXONOMY_SIZE:100}"
     expire-in: "\${CACHE_TAXONOMY_MINUTES:60}"
   broker:
-    size: "\${CACHE_BROKER_MAXIMUM_SIZE:100}"
+    size: "\${CACHE_BROKER_SIZE:100}"
     expire-in: "\${CACHE_BROKER_MINUTES:60}"

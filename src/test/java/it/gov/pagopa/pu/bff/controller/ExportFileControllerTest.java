@@ -1,10 +1,12 @@
 package it.gov.pagopa.pu.bff.controller;
 
+import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.dto.ExportFileFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.OffsetDateTimeIntervalFilter;
 import it.gov.pagopa.pu.bff.dto.generated.ExportFile;
 import it.gov.pagopa.pu.bff.dto.generated.PagedExportFile;
 import it.gov.pagopa.pu.bff.service.export_flow_file.ExportFileRetrieverService;
+import it.gov.pagopa.pu.bff.util.TestUtils;
 import it.gov.pagopa.pu.processexecutions.dto.generated.ExportFile.FlowFileTypeEnum;
 import it.gov.pagopa.pu.processexecutions.dto.generated.ExportFile.StatusEnum;
 import it.gov.pagopa.pu.processexecutions.dto.generated.ExportFileFilter;
@@ -93,11 +95,13 @@ class ExportFileControllerTest {
         .iuv("iuv")
         .build())
       .build();
+    TestUtils.addSampleUserIntoSecurityContext();
 
     ResponseEntity<Void> response = exportFileController.createExportFile(requestDTO);
 
     Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
-    Mockito.verify(exportFileRetrieverServiceMock).createExportFile(Mockito.eq(requestDTO), Mockito.anyString());
+    Mockito.verify(exportFileRetrieverServiceMock).createExportFile(Mockito.eq(requestDTO), Mockito.any(
+      UserInfo.class), Mockito.anyString());
   }
 }
 

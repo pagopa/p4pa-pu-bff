@@ -1,19 +1,14 @@
 package it.gov.pagopa.pu.bff.connector.process_executions.client;
 
 import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import it.gov.pagopa.pu.bff.connector.process_executions.config.ProcessExecutionsApisHolder;
 import it.gov.pagopa.pu.bff.dto.ExportFileFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.OffsetDateTimeIntervalFilter;
-import it.gov.pagopa.pu.processexecutions.controller.generated.ExportFileControllerApi;
 import it.gov.pagopa.pu.processexecutions.controller.generated.ExportFileSearchControllerApi;
 import it.gov.pagopa.pu.processexecutions.dto.generated.ExportFile.FlowFileTypeEnum;
 import it.gov.pagopa.pu.processexecutions.dto.generated.ExportFile.StatusEnum;
-import it.gov.pagopa.pu.processexecutions.dto.generated.ExportFileFilter;
-import it.gov.pagopa.pu.processexecutions.dto.generated.ExportFileRequestDTO;
 import it.gov.pagopa.pu.processexecutions.dto.generated.PagedModelExportFile;
 import java.time.OffsetDateTime;
 import java.util.Collections;

@@ -1,5 +1,6 @@
 package it.gov.pagopa.pu.bff.connector.process_executions.client;
 
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -7,9 +8,15 @@ import it.gov.pagopa.pu.bff.connector.process_executions.config.ProcessExecution
 import it.gov.pagopa.pu.processexecutions.controller.generated.ExportFileControllerApi;
 import it.gov.pagopa.pu.processexecutions.dto.generated.ExportFileFilter;
 import it.gov.pagopa.pu.processexecutions.dto.generated.ExportFileRequestDTO;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 
+@ExtendWith(MockitoExtension.class)
 class ExportFileClientTest {
 
   @Mock
@@ -19,6 +26,15 @@ class ExportFileClientTest {
 
   private ExportFileClient exportFileClient;
 
+  @BeforeEach
+  void setUp() {
+    exportFileClient = new ExportFileClient(processExecutionsApisHolderMock);
+  }
+
+  @AfterEach
+  void verifyNoMoreInteractions() {
+    Mockito.verifyNoMoreInteractions(processExecutionsApisHolderMock);
+  }
 
   @Test
   void whenCreateExportFileThenOk() {
@@ -33,10 +49,9 @@ class ExportFileClientTest {
 
     when(processExecutionsApisHolderMock.getExportFileControllerApi(accessToken))
       .thenReturn(exportFileControllerApiMock);
+    doAnswer(i -> i.getArgument(0)).when(exportFileControllerApiMock).createExportFile(requestDTO);
 
     exportFileClient.createExportFile(requestDTO, accessToken);
-
-    verify(exportFileControllerApiMock).createExportFile(requestDTO);
   }
 
 

@@ -20,25 +20,6 @@ public class ExportFileClient {
     this.processExecutionsApisHolder = processExecutionsApisHolder;
   }
 
-  public PagedModelExportFile getExportFiles(
-    ExportFileFiltersDTO exportFileFilters, String operatorExternalId,
-    Pageable pageable, String accessToken) {
-    return processExecutionsApisHolder.getExportFileSearchControllerApi(
-        accessToken)
-      .crudExportFilesFindByOrganizationIDFlowTypeCreateDate(
-        String.valueOf(exportFileFilters.getOrganizationId()),
-        exportFileFilters.getFlowFileType().toString(),
-        exportFileFilters.getCreationDate().getFrom(),
-        exportFileFilters.getCreationDate().getTo(),
-        exportFileFilters.getStatus() != null ?
-          exportFileFilters.getStatus().name()
-          : null,
-        exportFileFilters.getFileName(),
-        operatorExternalId,
-        PageUtils.getPageNumber(pageable),
-        PageUtils.getPageSize(pageable),
-        PageUtils.getSortList(pageable));
-  }
 
   public void createExportFile(ExportFileRequestDTO requestDTO, String accessToken) {
     processExecutionsApisHolder.getExportFileControllerApi(accessToken)

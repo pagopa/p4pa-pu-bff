@@ -53,7 +53,7 @@ public class ProcessExecutionsApisHolder {
         return getApi(accessToken, exportFileSearchControllerApi);
     }
 
-    /** It will return a {@link ExportFileSearchControllerApi} instrumented with the provided accessToken. Use null if auth is not required */
+    /** It will return a {@link ExportFileControllerApi} instrumented with the provided accessToken. Use null if auth is not required */
     public ExportFileControllerApi getExportFileControllerApi(String accessToken) {
       return getApi(accessToken, exportFileControllerApi);
     }

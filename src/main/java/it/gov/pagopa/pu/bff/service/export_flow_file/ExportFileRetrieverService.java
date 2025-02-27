@@ -10,5 +10,5 @@ public interface ExportFileRetrieverService {
 
   PagedExportFile getExportFiles(ExportFileFiltersDTO exportFileFiltersDTO, Pageable pageable, UserInfo loggedUser, String accessToken);
 
-  void createExportFile(ExportFileRequestDTO requestDTO, String accessToken);
+  void createExportFile(ExportFileRequestDTO requestDTO, UserInfo user, String accessToken);
 }

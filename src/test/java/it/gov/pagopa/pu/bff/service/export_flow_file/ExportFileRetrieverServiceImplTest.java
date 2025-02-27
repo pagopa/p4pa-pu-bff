@@ -7,6 +7,8 @@ import it.gov.pagopa.pu.bff.dto.OffsetDateTimeIntervalFilter;
 import it.gov.pagopa.pu.bff.dto.generated.PagedExportFile;
 import it.gov.pagopa.pu.bff.mapper.ExportFileMapper;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
+import it.gov.pagopa.pu.bff.util.TestUtils;
+import it.gov.pagopa.pu.bff.util.UserUtils;
 import it.gov.pagopa.pu.processexecutions.dto.generated.ExportFile.FlowFileTypeEnum;
 import it.gov.pagopa.pu.processexecutions.dto.generated.ExportFile.StatusEnum;
 import it.gov.pagopa.pu.processexecutions.dto.generated.ExportFileFilter;
@@ -122,8 +124,9 @@ class ExportFileRetrieverServiceImplTest {
         .build())
       .build();
     String accessToken = "ACCESSTOKEN";
+    UserInfo user = TestUtils.getSampleUser();
 
-    exportFileRetrieverService.createExportFile(requestDTO, accessToken);
+    exportFileRetrieverService.createExportFile(requestDTO, user, accessToken);
 
     Mockito.verify(exportFileServiceMock).createExportFile(requestDTO, accessToken);
   }

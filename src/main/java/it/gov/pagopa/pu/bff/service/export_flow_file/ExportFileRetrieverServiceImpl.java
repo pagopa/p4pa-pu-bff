@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class ExportFileRetrieverServiceImpl implements
   ExportFileRetrieverService {
+
   private final ExportFileService exportFileService;
   private final ExportFileMapper exportFileMapper;
 
@@ -30,19 +31,22 @@ public class ExportFileRetrieverServiceImpl implements
     ExportFileFiltersDTO exportFileFiltersDTO, Pageable pageable,
     UserInfo loggedUser, String accessToken) {
     String operatorExternalUserId = null;
-    if(!AuthorizationService.isAdminRole(
-        exportFileFiltersDTO.getOrganizationId(), loggedUser)){
+    if (!AuthorizationService.isAdminRole(
+      exportFileFiltersDTO.getOrganizationId(), loggedUser)) {
       operatorExternalUserId = loggedUser.getMappedExternalUserId();
     }
 
     return exportFileMapper.mapToPagedExportFile(
       exportFileService.getExportFiles(
-          exportFileFiltersDTO, operatorExternalUserId, pageable, accessToken),
-      loggedUser,accessToken);
+        exportFileFiltersDTO, operatorExternalUserId, pageable, accessToken),
+      loggedUser, accessToken);
   }
 
   @Override
-  public void createExportFile(ExportFileRequestDTO requestDTO, String accessToken) {
+  public void createExportFile(ExportFileRequestDTO requestDTO,
+    UserInfo loggedUser, String accessToken) {
+    AuthorizationService.isUserEnabledToOrganizationId(
+      requestDTO.getOrganizationId(), loggedUser);
     exportFileService.createExportFile(requestDTO, accessToken);
   }
 }

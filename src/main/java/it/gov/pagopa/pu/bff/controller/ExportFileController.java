@@ -50,7 +50,7 @@ public class ExportFileController implements ExportFilesApi {
       "User requested export file having organizationId {} and flowFileType {}",
       requestDTO.getOrganizationId(), requestDTO.getFlowFileType());
 
-    exportFileRetrieverService.createExportFile(requestDTO, SecurityUtils.getAccessToken());
+    exportFileRetrieverService.createExportFile(requestDTO, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken());
 
     return ResponseEntity.ok().build();
   }

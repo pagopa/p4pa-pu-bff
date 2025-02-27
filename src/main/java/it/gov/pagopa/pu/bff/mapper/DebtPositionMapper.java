@@ -11,13 +11,10 @@ import org.springframework.util.CollectionUtils;
 public class DebtPositionMapper {
 
   private final PersonDTOMapper personDTOMapper;
-  private final PaymentOptionMapper paymentOptionMapper;
   private static final String MULTI_DEBTOR_NAME = "CO-OBBLIGATO";
 
-  public DebtPositionMapper(PersonDTOMapper personDTOMapper,
-    PaymentOptionMapper paymentOptionMapper) {
+  public DebtPositionMapper(PersonDTOMapper personDTOMapper) {
     this.personDTOMapper = personDTOMapper;
-    this.paymentOptionMapper = paymentOptionMapper;
   }
 
   public DebtPositionDetailDTO mapToDebtPositionDetailDTO(DebtPositionDTO debtPosition, DebtPositionTypeOrg debtPositionTypeOrg){
@@ -26,8 +23,7 @@ public class DebtPositionMapper {
       		.debtPositionTypeOrgCode(debtPositionTypeOrg!=null?debtPositionTypeOrg.getCode():null)
       		.iupd(debtPosition.getIupdOrg())
       		.status(debtPosition.getStatus())
-      		.paymentOptions(debtPosition.getPaymentOptions().stream()
-            .map(paymentOptionMapper::mapToPaymentOptionDTO).toList())
+      		.paymentOptions(debtPosition.getPaymentOptions())
       		.build();
       debtPositionDetailDTO.setDebtor(buildDebtor(debtPosition));
       return debtPositionDetailDTO;

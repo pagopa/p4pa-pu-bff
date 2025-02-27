@@ -11,7 +11,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -21,14 +20,12 @@ import uk.co.jemos.podam.api.PodamFactory;
 class DebtPositionMapperTest {
   @Spy
   private PersonDTOMapper personDTOMapperSpy;
-  @Mock
-  private PaymentOptionMapper paymentOptionMapperMock;
   private DebtPositionMapper mapper;
   private final PodamFactory podamFactory = TestUtils.getPodamFactory();
 
   @BeforeEach
   void setUp() {
-    mapper = new DebtPositionMapper(personDTOMapperSpy, paymentOptionMapperMock);
+    mapper = new DebtPositionMapper(personDTOMapperSpy);
   }
 
   @Test
@@ -39,9 +36,6 @@ class DebtPositionMapperTest {
     debtPositionDTO.setPaymentOptions(List.of(paymentOption));
     DebtPositionTypeOrg debtPositionTypeOrg = podamFactory.manufacturePojo(DebtPositionTypeOrg.class);
 
-    Mockito.when(paymentOptionMapperMock.mapToPaymentOptionDTO(paymentOption)).thenReturn(
-      new it.gov.pagopa.pu.bff.dto.generated.PaymentOptionDTO());
-
     DebtPositionDetailDTO result = mapper.mapToDebtPositionDetailDTO(debtPositionDTO,debtPositionTypeOrg);
 
     Assertions.assertNotNull(result);
@@ -49,7 +43,6 @@ class DebtPositionMapperTest {
     TestUtils.checkNotNullFields(result.getDebtor());
     verifyDebtPositionDetailDTO(result,debtPositionDTO,debtPositionTypeOrg);
     Mockito.verify(personDTOMapperSpy).mapToPersonDTO(debtPositionDTO.getPaymentOptions().getFirst().getInstallments().getFirst().getDebtor());
-    Mockito.verify(paymentOptionMapperMock).mapToPaymentOptionDTO(paymentOption);
   }
 
   @Test
@@ -59,9 +52,6 @@ class DebtPositionMapperTest {
     debtPositionDTO.setMultiDebtor(false);
     debtPositionDTO.setPaymentOptions(List.of(paymentOption,paymentOption));
 
-    Mockito.when(paymentOptionMapperMock.mapToPaymentOptionDTO(paymentOption)).thenReturn(
-      new it.gov.pagopa.pu.bff.dto.generated.PaymentOptionDTO());
-
     DebtPositionDetailDTO result = mapper.mapToDebtPositionDetailDTO(debtPositionDTO,null);
 
     Assertions.assertNotNull(result);
@@ -69,7 +59,6 @@ class DebtPositionMapperTest {
     TestUtils.checkNotNullFields(result.getDebtor());
     verifyDebtPositionDetailDTO(result,debtPositionDTO,null);
     Mockito.verify(personDTOMapperSpy).mapToPersonDTO(debtPositionDTO.getPaymentOptions().getFirst().getInstallments().getFirst().getDebtor());
-    Mockito.verify(paymentOptionMapperMock,Mockito.times(2)).mapToPaymentOptionDTO(paymentOption);
   }
 
   @Test
@@ -80,16 +69,12 @@ class DebtPositionMapperTest {
     debtPositionDTO.setPaymentOptions(List.of(paymentOption,paymentOption));
     DebtPositionTypeOrg debtPositionTypeOrg = podamFactory.manufacturePojo(DebtPositionTypeOrg.class);
 
-    Mockito.when(paymentOptionMapperMock.mapToPaymentOptionDTO(paymentOption)).thenReturn(
-      new it.gov.pagopa.pu.bff.dto.generated.PaymentOptionDTO());
-
     DebtPositionDetailDTO result = mapper.mapToDebtPositionDetailDTO(debtPositionDTO,debtPositionTypeOrg);
 
     Assertions.assertNotNull(result);
     TestUtils.checkNotNullFields(result);
     TestUtils.checkNotNullFields(result.getDebtor(), "fiscalCode");
     verifyDebtPositionDetailDTO(result,debtPositionDTO,debtPositionTypeOrg);
-    Mockito.verify(paymentOptionMapperMock,Mockito.times(2)).mapToPaymentOptionDTO(paymentOption);
     Mockito.verifyNoInteractions(personDTOMapperSpy);
   }
 
@@ -102,8 +87,7 @@ class DebtPositionMapperTest {
       Assertions.assertNull(result.getDebtPositionTypeOrgCode());
       Assertions.assertNull(result.getDebtPositionTypeOrgDescription());
     }
-    TestUtils.reflectionEqualsByName(debtPositionDTO,result, "paymentOptions");
-    Assertions.assertEquals(debtPositionDTO.getPaymentOptions().size(),result.getPaymentOptions().size());
+    TestUtils.reflectionEqualsByName(debtPositionDTO,result);
     verifyDebtor(result.getDebtor(),debtPositionDTO);
   }
 

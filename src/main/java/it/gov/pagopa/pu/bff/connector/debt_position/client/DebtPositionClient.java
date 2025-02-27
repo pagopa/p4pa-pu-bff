@@ -4,11 +4,13 @@ import it.gov.pagopa.pu.bff.connector.debt_position.config.DebtPositionApisHolde
 import it.gov.pagopa.pu.bff.dto.DebtPositionViewFiltersDTO;
 import it.gov.pagopa.pu.bff.util.DateUtils;
 import it.gov.pagopa.pu.bff.util.PageUtils;
+import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionDTO;
 import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelDebtPositionView;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 
 @Service
 @Slf4j
@@ -35,6 +37,17 @@ public class DebtPositionClient {
         PageUtils.getPageSize(pageable),
         PageUtils.getSortList(pageable)
       );
+  }
+
+  public DebtPositionDTO getDebtPosition(Long debtPositionId,
+    String accessToken) {
+    try {
+      return debtPositionApisHolder.getDebtPositionApi(accessToken)
+        .getDebtPosition(debtPositionId);
+    } catch (HttpClientErrorException.NotFound e) {
+      log.warn("DebtPosition with debtPositionId {} not found", debtPositionId);
+      return null;
+    }
   }
 }
 

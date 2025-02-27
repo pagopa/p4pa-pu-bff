@@ -5,7 +5,9 @@ import static org.mockito.Mockito.when;
 import it.gov.pagopa.pu.bff.connector.debt_position.config.DebtPositionApisHolder;
 import it.gov.pagopa.pu.bff.dto.DebtPositionViewFiltersDTO;
 import it.gov.pagopa.pu.bff.util.TestUtils;
+import it.gov.pagopa.pu.debtpositions.controller.generated.DebtPositionApi;
 import it.gov.pagopa.pu.debtpositions.controller.generated.DebtPositionViewSearchControllerApi;
+import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionDTO;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionView.DebtPositionOriginEnum;
 import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelDebtPositionView;
 import java.util.Collections;
@@ -18,6 +20,8 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.client.HttpClientErrorException;
 import uk.co.jemos.podam.api.PodamFactory;
 
 @ExtendWith(MockitoExtension.class)
@@ -27,6 +31,8 @@ class DebtPositionClientTest {
   private DebtPositionApisHolder debtPositionApisHolderMock;
   @Mock
   private DebtPositionViewSearchControllerApi debtPositionViewSearchControllerApiMock;
+  @Mock
+  private DebtPositionApi debtPositionApiMock;
 
   private DebtPositionClient debtPositionClient;
 
@@ -80,5 +86,39 @@ class DebtPositionClientTest {
       10,
       Collections.emptyList()
     );
+  }
+
+  @Test
+  void givenExistingDebtPositionWhenGetDebtPositionThenInvokeWithAccessToken() {
+    Long debtPositionId = 1L;
+    String accessToken = "ACCESSTOKEN";
+    DebtPositionDTO expectedResult = new DebtPositionDTO();
+
+    when(debtPositionApisHolderMock.getDebtPositionApi(accessToken))
+      .thenReturn(debtPositionApiMock);
+    when(debtPositionApiMock.getDebtPosition(debtPositionId))
+      .thenReturn(expectedResult);
+
+    DebtPositionDTO result = debtPositionClient.getDebtPosition(debtPositionId,accessToken);
+
+    Assertions.assertSame(expectedResult, result);
+    Mockito.verifyNoMoreInteractions(debtPositionApiMock,debtPositionApisHolderMock);
+  }
+
+  @Test
+  void givenNoDebtPositionWhenGetDebtPositionThenReturnNull() {
+    Long debtPositionId = 1L;
+    String accessToken = "ACCESSTOKEN";
+
+    when(debtPositionApisHolderMock.getDebtPositionApi(accessToken))
+      .thenReturn(debtPositionApiMock);
+    when(debtPositionApiMock.getDebtPosition(debtPositionId))
+      .thenThrow(
+        HttpClientErrorException.create(HttpStatus.NOT_FOUND, "NotFound", null, null, null));
+
+    DebtPositionDTO result = debtPositionClient.getDebtPosition(debtPositionId,accessToken);
+
+    Assertions.assertNull(result);
+    Mockito.verifyNoMoreInteractions(debtPositionApiMock,debtPositionApisHolderMock);
   }
 }

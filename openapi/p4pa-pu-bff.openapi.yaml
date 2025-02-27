@@ -674,6 +674,40 @@ paths:
         '500':
           description: Internal Server Error
       x-spring-paginated: true
+  /organization/{organizationId}/debt-positions/{debtPositionId}:
+    get:
+      tags:
+        - DebtPositions
+      summary: "Retrieve a specific DebtPosition"
+      operationId: getDebtPositionDetail
+      parameters:
+        - name: organizationId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: debtPositionId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DebtPositionDetailDTO'
+        '401':
+          description: Unauthorized - Missing or invalid token
+        '403':
+          description: Forbidden - Access denied
+        '404':
+          description: Not Found - DebtPosition not found
+        '500':
+          description: Internal Server Error
 security:
   - BearerAuth: [ ]
 components:
@@ -1162,3 +1196,78 @@ components:
         number:
           type: integer
           format: int64
+    DebtPositionDetailDTO:
+      type: object
+      required:
+        - debtor
+        - debtPositionTypeOrgDescription
+        - debtPositionTypeOrgCode
+        - status
+        - paymentOptions
+      properties:
+        debtor:
+          $ref: '#/components/schemas/PersonDTO'
+        debtPositionTypeOrgDescription:
+          type: string
+        debtPositionTypeOrgCode:
+          type: string
+        iupd:
+          type: string
+        status:
+          type: 'DebtPositionStatus'
+        paymentOptions:
+          type: array
+          items:
+            $ref: "#/components/schemas/PaymentOptionDTO"
+    PaymentOptionDTO:
+      type: object
+      required:
+        - installments
+        - paymentOptionType
+        - totalAmountCents
+      properties:
+        paymentOptionId:
+          type: integer
+          format: int64
+        totalAmountCents:
+          type: integer
+          format: int64
+        status:
+          type: 'PaymentOptionStatus'
+        description:
+          type: string
+        paymentOptionType:
+          type: 'PaymentOptionType'
+        paymentOptionIndex:
+          type: integer
+          format: int32
+        installments:
+          type: array
+          items:
+            $ref: "#/components/schemas/InstallmentDTO"
+    InstallmentDTO:
+      type: object
+      required:
+        - amountCents
+        - debtor
+        - remittanceInformation
+        - transfers
+      properties:
+        installmentId:
+          type: integer
+          format: int64
+        paymentOptionId:
+          type: integer
+          format: int64
+        status:
+          type: 'InstallmentStatus'
+        iuv:
+          type: string
+        dueDate:
+          type: string
+          format: date-time
+        amountCents:
+          type: integer
+          format: int64
+        remittanceInformation:
+          type: string

@@ -5,6 +5,7 @@ import static org.mockito.Mockito.when;
 
 import it.gov.pagopa.pu.bff.connector.debt_position.client.DebtPositionClient;
 import it.gov.pagopa.pu.bff.dto.DebtPositionViewFiltersDTO;
+import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionDTO;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionView.DebtPositionOriginEnum;
 import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelDebtPositionView;
 import java.util.List;
@@ -41,6 +42,20 @@ class DebtPositionServiceTest {
       .thenReturn(expectedResult);
 
     PagedModelDebtPositionView result = service.getDebtPositionViews(filtersDTO, debtPositionOrigins, operatorExternalUserId, pageable, accessToken);
+
+    assertSame(expectedResult, result);
+  }
+
+  @Test
+  void whenGetDebtPositionThenInvokeClient() {
+    Long debtPositionId = 1L;
+    String accessToken = "ACCESSTOKEN";
+    DebtPositionDTO expectedResult = new DebtPositionDTO();
+
+    when(clientMock.getDebtPosition(debtPositionId,accessToken))
+      .thenReturn(expectedResult);
+
+    DebtPositionDTO result = service.getDebtPosition(debtPositionId, accessToken);
 
     assertSame(expectedResult, result);
   }

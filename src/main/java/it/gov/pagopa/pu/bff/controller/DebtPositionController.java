@@ -2,6 +2,7 @@ package it.gov.pagopa.pu.bff.controller;
 
 import it.gov.pagopa.pu.bff.controller.generated.DebtPositionsApi;
 import it.gov.pagopa.pu.bff.dto.DebtPositionViewFiltersDTO;
+import it.gov.pagopa.pu.bff.dto.generated.DebtPositionDetailDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedDebtPositionView;
 import it.gov.pagopa.pu.bff.security.SecurityUtils;
 import it.gov.pagopa.pu.bff.service.debt_position.DebtPositionRetrieverService;
@@ -43,5 +44,13 @@ public class DebtPositionController implements DebtPositionsApi {
           status),
       pageable, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken())
     );
+  }
+
+  @Override
+  public ResponseEntity<DebtPositionDetailDTO> getDebtPositionDetail(
+    Long organizationId,
+    Long debtPositionId) {
+    log.info("User requested getDebtPositionDetail having organizationId {} and debtPositionId {} ", organizationId, debtPositionId);
+    return ResponseEntity.ofNullable(debtPositionRetrieverService.getDebtPositionDetail(debtPositionId,organizationId,SecurityUtils.getLoggedUser(),SecurityUtils.getAccessToken()));
   }
 }

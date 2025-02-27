@@ -116,3 +116,6 @@ cache:
   broker:
     size: "\${CACHE_BROKER_MAXIMUM_SIZE:100}"
     expire-in: "\${CACHE_BROKER_MINUTES:60}"
+  debtPositionTypeOrg:
+    size: "\${CACHE_DEBT_POSITION_TYPE_ORG_MAXIMUM_SIZE:100}"
+    expire-in: "\${CACHE_DEBT_POSITION_TYPE_ORG_MINUTES:60}"

@@ -2,6 +2,7 @@ package it.gov.pagopa.pu.bff.config;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
+import java.util.concurrent.TimeUnit;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,8 +14,6 @@ import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.caffeine.CaffeineCacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import java.util.concurrent.TimeUnit;
 
 @Configuration
 @ConfigurationProperties(prefix = "cache")
@@ -29,6 +28,8 @@ public class CacheConfig {
     private CacheConfigurationProperties taxonomy;
     @NestedConfigurationProperty
     private CacheConfigurationProperties broker;
+    @NestedConfigurationProperty
+    private CacheConfigurationProperties debtPositionTypeOrg;
 
     @Data
     @NoArgsConstructor
@@ -43,7 +44,8 @@ public class CacheConfig {
         CaffeineCacheManager cacheManager = new CaffeineCacheManager();
         cacheManager.registerCustomCache(Fields.organization, buildCache(organization));
         cacheManager.registerCustomCache(Fields.taxonomy, buildCache(taxonomy));
-      cacheManager.registerCustomCache(Fields.broker, buildCache(broker));
+        cacheManager.registerCustomCache(Fields.broker, buildCache(broker));
+        cacheManager.registerCustomCache(Fields.debtPositionTypeOrg, buildCache(debtPositionTypeOrg));
         return cacheManager;
     }
 

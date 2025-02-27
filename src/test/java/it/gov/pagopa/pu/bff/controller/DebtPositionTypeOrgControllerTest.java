@@ -1,8 +1,10 @@
 package it.gov.pagopa.pu.bff.controller;
 
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
-import it.gov.pagopa.pu.bff.service.debt_position_type_org.DebtPositionTypeOrgService;
+import it.gov.pagopa.pu.bff.service.debt_position_type_org.DebtPositionTypeOrgRetrieverService;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrg;
+import java.util.Collections;
+import java.util.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,14 +20,11 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import java.util.Collections;
-import java.util.List;
-
 @ExtendWith(MockitoExtension.class)
 class DebtPositionTypeOrgControllerTest {
 
   @Mock
-  private DebtPositionTypeOrgService debtPositionTypeOrgServiceMock;
+  private DebtPositionTypeOrgRetrieverService debtPositionTypeOrgRetrieverServiceMock;
 
   @InjectMocks
   private DebtPositionTypeOrgController debtPositionTypeOrgController;
@@ -47,7 +46,7 @@ class DebtPositionTypeOrgControllerTest {
     long organizationId = 1L;
     List<DebtPositionTypeOrg> expectedResult = List.of(new DebtPositionTypeOrg());
 
-    Mockito.when(debtPositionTypeOrgServiceMock.getDebtPositionTypeOrgs(
+    Mockito.when(debtPositionTypeOrgRetrieverServiceMock.getDebtPositionTypeOrgs(
       organizationId,
       userInfo.getMappedExternalUserId(),
       userInfo,
@@ -66,7 +65,7 @@ class DebtPositionTypeOrgControllerTest {
     long organizationId = 1L;
     List<DebtPositionTypeOrg> emptyResult = Collections.emptyList();
 
-    Mockito.when(debtPositionTypeOrgServiceMock.getDebtPositionTypeOrgs(
+    Mockito.when(debtPositionTypeOrgRetrieverServiceMock.getDebtPositionTypeOrgs(
       organizationId,
       userInfo.getMappedExternalUserId(),
       userInfo,

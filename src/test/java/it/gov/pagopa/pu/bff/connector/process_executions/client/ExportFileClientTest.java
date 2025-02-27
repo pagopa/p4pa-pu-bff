@@ -1,7 +1,6 @@
 package it.gov.pagopa.pu.bff.connector.process_executions.client;
 
 import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import it.gov.pagopa.pu.bff.connector.process_executions.config.ProcessExecutionsApisHolder;

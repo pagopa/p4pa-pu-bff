@@ -1,6 +1,6 @@
 package it.gov.pagopa.pu.bff.connector.process_executions.client;
 
-import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import it.gov.pagopa.pu.bff.connector.process_executions.config.ProcessExecutionsApisHolder;
@@ -48,9 +48,10 @@ class ExportFileClientTest {
 
     when(processExecutionsApisHolderMock.getExportFileControllerApi(accessToken))
       .thenReturn(exportFileControllerApiMock);
-    doAnswer(i -> i.getArgument(0)).when(exportFileControllerApiMock).createExportFile(requestDTO);
 
     exportFileClient.createExportFile(requestDTO, accessToken);
+
+    verify(exportFileControllerApiMock).createExportFile(requestDTO);
   }
 
 

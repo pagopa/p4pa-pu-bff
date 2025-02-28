@@ -492,7 +492,7 @@
           "required" : true,
           "schema" : {
             "type" : "string",
-            "enum" : [ "RECEIPT_PAGOPA", "RECEIPT_FILE" ]
+            "enum" : [ "RECEIPT_PAGOPA", "RECEIPT_FILE", "PAYMENTS_REPORTING" ]
           }
         }, {
           "name" : "iuv",
@@ -1001,6 +1001,86 @@
               "application/json" : {
                 "schema" : {
                   "$ref" : "#/components/schemas/PagedInstallmentView"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "BearerAuth" : [ ]
+        } ]
+      }
+    },
+    "/bff/organization/{organizationId}/installments/{installmentId}" : {
+      "get" : {
+        "tags" : [ "Installments" ],
+        "summary" : "Retrieve a specific installment",
+        "operationId" : "getInstallmentDetail",
+        "parameters" : [ {
+          "name" : "organizationId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }, {
+          "name" : "installmentId",
+          "in" : "path",
+          "description" : "The unique identifier of the installment",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/InstallmentDetailDTO"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Not Found - Receipt not found",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/InstallmentDetailDTO"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Unauthorized - Missing or invalid token",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/InstallmentDetailDTO"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Forbidden - Access denied",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/InstallmentDetailDTO"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal Server Error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorDTO"
                 }
               }
             }
@@ -1990,7 +2070,7 @@
           },
           "receiptOrigin" : {
             "type" : "string",
-            "enum" : [ "RECEIPT_PAGOPA", "RECEIPT_FILE" ]
+            "enum" : [ "RECEIPT_PAGOPA", "RECEIPT_FILE", "PAYMENTS_REPORTING" ]
           },
           "iuv" : {
             "type" : "string"
@@ -2270,6 +2350,68 @@
           }
         },
         "required" : [ "content", "number", "size", "totalElements", "totalPages" ]
+      },
+      "InstallmentDetailDTO" : {
+        "type" : "object",
+        "properties" : {
+          "installmentId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "receiptId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "paymentOptionId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "status" : {
+            "type" : "string",
+            "enum" : [ "TO_SYNC", "REPORTED", "PAID", "CANCELLED", "INVALID", "EXPIRED", "UNPAID", "DRAFT" ]
+          },
+          "iuv" : {
+            "type" : "string"
+          },
+          "amountCents" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "dueDate" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "debtor" : {
+            "$ref" : "#/components/schemas/PersonDTO"
+          },
+          "debtPositionTypeOrgDescription" : {
+            "type" : "string"
+          },
+          "debtPositionDescription" : {
+            "type" : "string"
+          },
+          "debtPositionId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "paymentDateTime" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "payer" : {
+            "$ref" : "#/components/schemas/PersonDTO"
+          },
+          "pspCompanyName" : {
+            "type" : "string"
+          },
+          "iud" : {
+            "type" : "string"
+          },
+          "iur" : {
+            "type" : "string"
+          }
+        },
+        "required" : [ "amountCents", "debtPositionDescription", "debtPositionId", "debtPositionTypeOrgDescription", "debtor", "dueDate", "installmentId", "iuv", "status" ]
       },
       "DebtPositionView" : {
         "type" : "object",
@@ -2891,6 +3033,15 @@
           },
           "flagExternal" : {
             "type" : "boolean"
+          },
+          "serviceId" : {
+            "type" : "string"
+          },
+          "subject" : {
+            "type" : "string"
+          },
+          "markdown" : {
+            "type" : "string"
           },
           "_links" : {
             "type" : "object",

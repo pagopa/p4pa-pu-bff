@@ -3,15 +3,7 @@ package it.gov.pagopa.pu.bff.connector.debt_position.config;
 import it.gov.pagopa.pu.bff.config.RestTemplateConfig;
 import it.gov.pagopa.pu.debtpositions.controller.ApiClient;
 import it.gov.pagopa.pu.debtpositions.controller.BaseApi;
-import it.gov.pagopa.pu.debtpositions.controller.generated.DebtPositionApi;
-import it.gov.pagopa.pu.debtpositions.controller.generated.DebtPositionTypeEntityControllerApi;
-import it.gov.pagopa.pu.debtpositions.controller.generated.DebtPositionTypeOrgEntityControllerApi;
-import it.gov.pagopa.pu.debtpositions.controller.generated.DebtPositionTypeOrgSearchControllerApi;
-import it.gov.pagopa.pu.debtpositions.controller.generated.DebtPositionTypeWithCountSearchControllerApi;
-import it.gov.pagopa.pu.debtpositions.controller.generated.DebtPositionViewSearchControllerApi;
-import it.gov.pagopa.pu.debtpositions.controller.generated.InstallmentViewSearchControllerApi;
-import it.gov.pagopa.pu.debtpositions.controller.generated.ReceiptApi;
-import it.gov.pagopa.pu.debtpositions.controller.generated.ReceiptViewSearchControllerApi;
+import it.gov.pagopa.pu.debtpositions.controller.generated.*;
 import jakarta.annotation.PreDestroy;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.stereotype.Service;
@@ -26,6 +18,7 @@ public class DebtPositionApisHolder {
   private final ReceiptViewSearchControllerApi receiptViewSearchControllerApi;
   private final InstallmentViewSearchControllerApi installmentViewSearchControllerApi;
   private final ReceiptApi receiptApi;
+  private final InstallmentApi installmentApi;
   private final DebtPositionViewSearchControllerApi debtPositionViewSearchControllerApi;
   private final DebtPositionApi debtPositionApi;
   private final DebtPositionTypeOrgEntityControllerApi debtPositionTypeOrgEntityControllerApi;
@@ -51,6 +44,7 @@ public class DebtPositionApisHolder {
     this.receiptViewSearchControllerApi = new ReceiptViewSearchControllerApi(apiClient);
     this.installmentViewSearchControllerApi = new InstallmentViewSearchControllerApi(apiClient);
     this.receiptApi = new ReceiptApi(apiClient);
+    this.installmentApi = new InstallmentApi(apiClient);
     this.debtPositionViewSearchControllerApi = new DebtPositionViewSearchControllerApi(apiClient);
     this.debtPositionApi = new DebtPositionApi(apiClient);
     this.debtPositionTypeOrgEntityControllerApi = new DebtPositionTypeOrgEntityControllerApi(apiClient);
@@ -92,6 +86,13 @@ public class DebtPositionApisHolder {
    */
   public ReceiptApi getReceiptApi(String accessToken) {
     return getApi(accessToken, receiptApi);
+  }
+
+  /**
+   * It will return a {@link InstallmentApi} instrumented with the provided accessToken. Use null if auth is not required
+   */
+  public InstallmentApi getInstallmentApi(String accessToken) {
+    return getApi(accessToken, installmentApi);
   }
 
   /**

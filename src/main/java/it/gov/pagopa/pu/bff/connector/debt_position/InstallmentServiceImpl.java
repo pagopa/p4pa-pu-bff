@@ -2,6 +2,7 @@ package it.gov.pagopa.pu.bff.connector.debt_position;
 
 import it.gov.pagopa.pu.bff.connector.debt_position.client.InstallmentClient;
 import it.gov.pagopa.pu.bff.dto.InstallmentViewFiltersDTO;
+import it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentDetailDTO;
 import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelInstallmentView;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -20,4 +21,8 @@ public class InstallmentServiceImpl implements InstallmentService {
     return client.getInstallments(installmentViewFiltersDTO, pageable, accessToken);
   }
 
+  @Override
+  public InstallmentDetailDTO getInstallmentDetail(Long installmentId, String operatorExternalUserId, String accessToken) {
+    return client.getInstallmentDetail(installmentId, operatorExternalUserId, accessToken);
+  }
 }

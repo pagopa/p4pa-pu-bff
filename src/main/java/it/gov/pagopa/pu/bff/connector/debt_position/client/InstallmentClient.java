@@ -3,11 +3,15 @@ package it.gov.pagopa.pu.bff.connector.debt_position.client;
 import it.gov.pagopa.pu.bff.connector.debt_position.config.DebtPositionApisHolder;
 import it.gov.pagopa.pu.bff.dto.InstallmentViewFiltersDTO;
 import it.gov.pagopa.pu.bff.util.PageUtils;
+import it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentDetailDTO;
 import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelInstallmentView;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 
 @Service
+@Slf4j
 public class InstallmentClient {
 
   private final DebtPositionApisHolder debtPositionApisHolder;
@@ -29,6 +33,16 @@ public class InstallmentClient {
         PageUtils.getPageNumber(pageable),
         PageUtils.getPageSize(pageable),
         PageUtils.getSortList(pageable));
+  }
+
+  public InstallmentDetailDTO getInstallmentDetail(Long installmentId, String operatorExternalUserId, String accessToken) {
+    try {
+      return debtPositionApisHolder.getInstallmentApi(accessToken)
+        .getInstallmentDetail(installmentId, operatorExternalUserId);
+    } catch (HttpClientErrorException.NotFound e) {
+      log.warn("InstallmentDetail with installmentId {} and operatorExternalUserId {} not found", installmentId, operatorExternalUserId);
+      return null;
+    }
   }
 
 }

@@ -1,5 +1,8 @@
 package it.gov.pagopa.pu.bff.connector.organization;
 
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.mockito.Mockito.when;
+
 import it.gov.pagopa.pu.bff.connector.organization.client.BrokerEntityClient;
 import it.gov.pagopa.pu.organization.dto.generated.Broker;
 import org.junit.jupiter.api.BeforeEach;
@@ -9,11 +12,8 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.mockito.Mockito.when;
-
 @ExtendWith(MockitoExtension.class)
-class BrokerRetrieverServiceTest {
+class BrokerServiceTest {
 
   @Mock
   private BrokerEntityClient client;

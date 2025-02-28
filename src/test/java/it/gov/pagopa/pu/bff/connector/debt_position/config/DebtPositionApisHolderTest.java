@@ -1,7 +1,19 @@
 package it.gov.pagopa.pu.bff.connector.debt_position.config;
 
 import it.gov.pagopa.pu.bff.connector.BaseApiHolderTest;
-import it.gov.pagopa.pu.debtpositions.dto.generated.*;
+import it.gov.pagopa.pu.debtpositions.dto.generated.CollectionModelDebtPositionTypeOrg;
+import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionDTO;
+import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionType;
+import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrg;
+import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelDebtPositionTypeWithCount;
+import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelDebtPositionView;
+import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelInstallmentView;
+import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelReceiptView;
+import it.gov.pagopa.pu.debtpositions.dto.generated.ReceiptDetailDTO;
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.util.Collections;
+import java.util.List;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -11,11 +23,6 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.web.util.DefaultUriBuilderFactory;
-
-import java.time.LocalDateTime;
-import java.time.OffsetDateTime;
-import java.util.Collections;
-import java.util.List;
 
 @ExtendWith(MockitoExtension.class)
 class DebtPositionApisHolderTest extends BaseApiHolderTest {
@@ -106,5 +113,22 @@ class DebtPositionApisHolderTest extends BaseApiHolderTest {
       PagedModelDebtPositionView.class, debtPositionApisHolder::unload);
   }
 
+  @Test
+  void whenGetDebtPositionApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
+    assertAuthenticationShouldBeSetInThreadSafeMode(
+      accessToken -> debtPositionApisHolder.getDebtPositionApi(accessToken)
+        .getDebtPosition(
+          1L),
+      DebtPositionDTO.class, debtPositionApisHolder::unload);
+  }
+
+  @Test
+  void whenGetDebtPositionTypeOrgEntityControllerApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
+    assertAuthenticationShouldBeSetInThreadSafeMode(
+      accessToken -> debtPositionApisHolder.getDebtPositionTypeOrgEntityControllerApi(accessToken)
+        .crudGetDebtpositiontypeorg(
+          "1"),
+      DebtPositionTypeOrg.class, debtPositionApisHolder::unload);
+  }
 }
 

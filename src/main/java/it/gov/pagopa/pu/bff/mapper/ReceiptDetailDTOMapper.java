@@ -5,11 +5,6 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class ReceiptDetailDTOMapper {
-  private final PersonDTOMapper personDTOMapper;
-
-  public ReceiptDetailDTOMapper(PersonDTOMapper personDTOMapper) {
-    this.personDTOMapper = personDTOMapper;
-  }
 
   public ReceiptDetailDTO mapToReceiptDetailDTO(
     it.gov.pagopa.pu.debtpositions.dto.generated.ReceiptDetailDTO receiptDetailDTO) {
@@ -22,8 +17,8 @@ public class ReceiptDetailDTOMapper {
       .paymentAmountCents(receiptDetailDTO.getPaymentAmountCents())
       .remittanceInformation(receiptDetailDTO.getRemittanceInformation())
       .debtPositionTypeOrgDescription(receiptDetailDTO.getDebtPositionTypeOrgDescription())
-      .debtor(personDTOMapper.mapToPersonDTO(receiptDetailDTO.getDebtor()))
-      .payer(personDTOMapper.mapToPersonDTO(receiptDetailDTO.getPayer()))
+      .debtor(receiptDetailDTO.getDebtor())
+      .payer(receiptDetailDTO.getPayer())
       .paymentDateTime(receiptDetailDTO.getPaymentDateTime())
       .pspCompanyName(receiptDetailDTO.getPspCompanyName())
       .iud(receiptDetailDTO.getIud())

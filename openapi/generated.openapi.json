@@ -13,20 +13,11 @@
     "BearerAuth" : [ ]
   } ],
   "tags" : [ {
-    "name" : "DebtPositionTypes",
-    "description" : "the DebtPositionTypes API"
-  }, {
     "name" : "PaymentsReporting",
     "description" : "the PaymentsReporting API"
   }, {
     "name" : "IngestionFlowFiles",
     "description" : "the IngestionFlowFiles API"
-  }, {
-    "name" : "ExportFiles",
-    "description" : "the ExportFiles API"
-  }, {
-    "name" : "DebtPositionTypeOrgs",
-    "description" : "the DebtPositionTypeOrgs API"
   }, {
     "name" : "Installments",
     "description" : "the Installments API"
@@ -36,6 +27,15 @@
   }, {
     "name" : "Monitoring",
     "description" : "the Monitoring API"
+  }, {
+    "name" : "DebtPositionTypes",
+    "description" : "the DebtPositionTypes API"
+  }, {
+    "name" : "ExportFiles",
+    "description" : "the ExportFiles API"
+  }, {
+    "name" : "DebtPositionTypeOrgs",
+    "description" : "the DebtPositionTypeOrgs API"
   }, {
     "name" : "DebtPositions",
     "description" : "the DebtPositions API"
@@ -938,9 +938,9 @@
           "description" : "Zero-based page index (0..N)",
           "required" : false,
           "schema" : {
-            "minimum" : 0,
             "type" : "integer",
-            "default" : 0
+            "default" : 0,
+            "minimum" : 0
           }
         }, {
           "name" : "size",
@@ -948,9 +948,9 @@
           "description" : "The size of the page to be returned",
           "required" : false,
           "schema" : {
-            "minimum" : 1,
             "type" : "integer",
-            "default" : 20
+            "default" : 20,
+            "minimum" : 1
           }
         }, {
           "name" : "sort",
@@ -1142,6 +1142,85 @@
         } ]
       }
     },
+    "/bff/organization/{organizationId}/debt-positions/{debtPositionId}" : {
+      "get" : {
+        "tags" : [ "DebtPositions" ],
+        "summary" : "Retrieve a specific DebtPosition",
+        "operationId" : "getDebtPositionDetail",
+        "parameters" : [ {
+          "name" : "organizationId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }, {
+          "name" : "debtPositionId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/DebtPositionDetailDTO"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Unauthorized - Missing or invalid token",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/DebtPositionDetailDTO"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Forbidden - Access denied",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/DebtPositionDetailDTO"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Not Found - DebtPosition not found",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/DebtPositionDetailDTO"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal Server Error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/DebtPositionDetailDTO"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "BearerAuth" : [ ]
+        } ]
+      }
+    },
     "/bff/ingestion-flow-files/{organizationId}" : {
       "get" : {
         "tags" : [ "IngestionFlowFiles" ],
@@ -1312,9 +1391,9 @@
           "description" : "Zero-based page index (0..N)",
           "required" : false,
           "schema" : {
-            "minimum" : 0,
             "type" : "integer",
-            "default" : 0
+            "default" : 0,
+            "minimum" : 0
           }
         }, {
           "name" : "size",
@@ -1322,9 +1401,9 @@
           "description" : "The size of the page to be returned",
           "required" : false,
           "schema" : {
-            "minimum" : 1,
             "type" : "integer",
-            "default" : 20
+            "default" : 20,
+            "minimum" : 1
           }
         }, {
           "name" : "sort",
@@ -1930,14 +2009,38 @@
       "PersonDTO" : {
         "type" : "object",
         "properties" : {
+          "entityType" : {
+            "type" : "string",
+            "enum" : [ "F", "G" ]
+          },
           "fiscalCode" : {
             "type" : "string"
           },
           "fullName" : {
             "type" : "string"
+          },
+          "address" : {
+            "type" : "string"
+          },
+          "civic" : {
+            "type" : "string"
+          },
+          "postalCode" : {
+            "type" : "string"
+          },
+          "location" : {
+            "type" : "string"
+          },
+          "province" : {
+            "type" : "string"
+          },
+          "nation" : {
+            "type" : "string"
+          },
+          "email" : {
+            "type" : "string"
           }
-        },
-        "required" : [ "fiscalCode", "fullName" ]
+        }
       },
       "ReceiptDetailDTO" : {
         "type" : "object",
@@ -2141,7 +2244,6 @@
         }
       },
       "PagedInstallmentView" : {
-        "required" : [ "content", "number", "size", "totalElements", "totalPages" ],
         "type" : "object",
         "properties" : {
           "content" : {
@@ -2166,7 +2268,8 @@
             "type" : "integer",
             "format" : "int64"
           }
-        }
+        },
+        "required" : [ "content", "number", "size", "totalElements", "totalPages" ]
       },
       "DebtPositionView" : {
         "type" : "object",
@@ -2237,6 +2340,228 @@
         },
         "required" : [ "content", "number", "size", "totalElements", "totalPages" ]
       },
+      "DebtPositionDetailDTO" : {
+        "type" : "object",
+        "properties" : {
+          "debtor" : {
+            "$ref" : "#/components/schemas/PersonDTO"
+          },
+          "debtPositionTypeOrgDescription" : {
+            "type" : "string"
+          },
+          "debtPositionTypeOrgCode" : {
+            "type" : "string"
+          },
+          "iupd" : {
+            "type" : "string"
+          },
+          "status" : {
+            "type" : "string",
+            "enum" : [ "TO_SYNC", "REPORTED", "PAID", "PARTIALLY_PAID", "CANCELLED", "EXPIRED", "UNPAID", "DRAFT" ]
+          },
+          "paymentOptions" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/PaymentOptionDTO"
+            }
+          }
+        },
+        "required" : [ "debtPositionTypeOrgCode", "debtPositionTypeOrgDescription", "debtor", "paymentOptions", "status" ]
+      },
+      "InstallmentDTO" : {
+        "type" : "object",
+        "properties" : {
+          "installmentId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "paymentOptionId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "status" : {
+            "type" : "string",
+            "enum" : [ "TO_SYNC", "REPORTED", "PAID", "CANCELLED", "INVALID", "EXPIRED", "UNPAID", "DRAFT" ]
+          },
+          "syncStatus" : {
+            "$ref" : "#/components/schemas/InstallmentSyncStatus"
+          },
+          "iupdPagopa" : {
+            "type" : "string"
+          },
+          "iud" : {
+            "type" : "string"
+          },
+          "iuv" : {
+            "type" : "string"
+          },
+          "iur" : {
+            "type" : "string"
+          },
+          "iuf" : {
+            "type" : "string"
+          },
+          "nav" : {
+            "type" : "string"
+          },
+          "dueDate" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "paymentTypeCode" : {
+            "type" : "string"
+          },
+          "amountCents" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "remittanceInformation" : {
+            "type" : "string"
+          },
+          "balance" : {
+            "type" : "string"
+          },
+          "legacyPaymentMetadata" : {
+            "type" : "string"
+          },
+          "debtor" : {
+            "$ref" : "#/components/schemas/PersonDTO"
+          },
+          "transfers" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/TransferDTO"
+            }
+          },
+          "notificationDate" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "ingestionFlowFileId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "ingestionFlowFileLineNumber" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "receiptId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "creationDate" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "updateDate" : {
+            "type" : "string",
+            "format" : "date-time"
+          }
+        }
+      },
+      "InstallmentSyncStatus" : {
+        "type" : "object",
+        "properties" : {
+          "syncStatusFrom" : {
+            "type" : "string",
+            "enum" : [ "TO_SYNC", "REPORTED", "PAID", "CANCELLED", "INVALID", "EXPIRED", "UNPAID", "DRAFT" ]
+          },
+          "syncStatusTo" : {
+            "type" : "string",
+            "enum" : [ "TO_SYNC", "REPORTED", "PAID", "CANCELLED", "INVALID", "EXPIRED", "UNPAID", "DRAFT" ]
+          }
+        }
+      },
+      "PaymentOptionDTO" : {
+        "type" : "object",
+        "properties" : {
+          "paymentOptionId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "debtPositionId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "totalAmountCents" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "status" : {
+            "type" : "string",
+            "enum" : [ "TO_SYNC", "REPORTED", "PAID", "PARTIALLY_PAID", "CANCELLED", "INVALID", "EXPIRED", "UNPAID", "DRAFT" ]
+          },
+          "dueDate" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "description" : {
+            "type" : "string"
+          },
+          "paymentOptionType" : {
+            "type" : "string",
+            "enum" : [ "SINGLE_INSTALLMENT", "INSTALLMENTS", "DOWN_PAYMENT" ]
+          },
+          "paymentOptionIndex" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "installments" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/InstallmentDTO"
+            }
+          }
+        }
+      },
+      "TransferDTO" : {
+        "type" : "object",
+        "properties" : {
+          "transferId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "installmentId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "orgFiscalCode" : {
+            "type" : "string"
+          },
+          "orgName" : {
+            "type" : "string"
+          },
+          "amountCents" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "remittanceInformation" : {
+            "type" : "string"
+          },
+          "stampType" : {
+            "type" : "string"
+          },
+          "stampHashDocument" : {
+            "type" : "string"
+          },
+          "stampProvincialResidence" : {
+            "type" : "string"
+          },
+          "iban" : {
+            "type" : "string"
+          },
+          "postalIban" : {
+            "type" : "string"
+          },
+          "category" : {
+            "type" : "string"
+          },
+          "transferIndex" : {
+            "type" : "integer",
+            "format" : "int32"
+          }
+        }
+      },
       "IngestionFlowFile" : {
         "type" : "object",
         "properties" : {
@@ -2302,7 +2627,6 @@
         "required" : [ "content", "number", "size", "totalElements", "totalPages" ]
       },
       "ExportFile" : {
-        "required" : [ "creationDate", "exportFileId", "fileName", "operator", "status" ],
         "type" : "object",
         "properties" : {
           "exportFileId" : {
@@ -2327,10 +2651,10 @@
             "type" : "string",
             "enum" : [ "REQUESTED", "PROCESSING", "COMPLETED", "EXPIRED", "ERROR" ]
           }
-        }
+        },
+        "required" : [ "creationDate", "exportFileId", "fileName", "operator", "status" ]
       },
       "PagedExportFile" : {
-        "required" : [ "content", "number", "size", "totalElements", "totalPages" ],
         "type" : "object",
         "properties" : {
           "content" : {
@@ -2355,7 +2679,8 @@
             "type" : "integer",
             "format" : "int64"
           }
-        }
+        },
+        "required" : [ "content", "number", "size", "totalElements", "totalPages" ]
       },
       "DebtPositionType" : {
         "type" : "object",

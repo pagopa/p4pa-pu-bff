@@ -1,31 +1,29 @@
 package it.gov.pagopa.pu.bff.mapper;
 
 import it.gov.pagopa.pu.bff.dto.generated.DebtPositionDetailDTO;
-import it.gov.pagopa.pu.bff.dto.generated.PersonDTO;
 import it.gov.pagopa.pu.bff.util.TestUtils;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionDTO;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrg;
 import it.gov.pagopa.pu.debtpositions.dto.generated.PaymentOptionDTO;
+import it.gov.pagopa.pu.debtpositions.dto.generated.PersonDTO;
+import it.gov.pagopa.pu.debtpositions.dto.generated.PersonDTO.EntityTypeEnum;
 import java.util.List;
+import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mockito;
-import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import uk.co.jemos.podam.api.PodamFactory;
 
 @ExtendWith(MockitoExtension.class)
 class DebtPositionMapperTest {
-  @Spy
-  private PersonDTOMapper personDTOMapperSpy;
   private DebtPositionMapper mapper;
   private final PodamFactory podamFactory = TestUtils.getPodamFactory();
 
   @BeforeEach
   void setUp() {
-    mapper = new DebtPositionMapper(personDTOMapperSpy);
+    mapper = new DebtPositionMapper();
   }
 
   @Test
@@ -42,7 +40,6 @@ class DebtPositionMapperTest {
     TestUtils.checkNotNullFields(result);
     TestUtils.checkNotNullFields(result.getDebtor());
     verifyDebtPositionDetailDTO(result,debtPositionDTO,debtPositionTypeOrg);
-    Mockito.verify(personDTOMapperSpy).mapToPersonDTO(debtPositionDTO.getPaymentOptions().getFirst().getInstallments().getFirst().getDebtor());
   }
 
   @Test
@@ -58,7 +55,6 @@ class DebtPositionMapperTest {
     TestUtils.checkNotNullFields(result,"debtPositionTypeOrgCode", "debtPositionTypeOrgDescription");
     TestUtils.checkNotNullFields(result.getDebtor());
     verifyDebtPositionDetailDTO(result,debtPositionDTO,null);
-    Mockito.verify(personDTOMapperSpy).mapToPersonDTO(debtPositionDTO.getPaymentOptions().getFirst().getInstallments().getFirst().getDebtor());
   }
 
   @Test
@@ -73,9 +69,7 @@ class DebtPositionMapperTest {
 
     Assertions.assertNotNull(result);
     TestUtils.checkNotNullFields(result);
-    TestUtils.checkNotNullFields(result.getDebtor(), "fiscalCode");
     verifyDebtPositionDetailDTO(result,debtPositionDTO,debtPositionTypeOrg);
-    Mockito.verifyNoInteractions(personDTOMapperSpy);
   }
 
   private void verifyDebtPositionDetailDTO(DebtPositionDetailDTO result, DebtPositionDTO debtPositionDTO,
@@ -95,7 +89,8 @@ class DebtPositionMapperTest {
     DebtPositionDTO debtPositionDTO) {
     if(Boolean.TRUE.equals(debtPositionDTO.getMultiDebtor())){
       Assertions.assertEquals("CO-OBBLIGATO",debtor.getFullName());
-      Assertions.assertNull(debtor.getFiscalCode());
+      Assertions.assertTrue(StringUtils.isEmpty(debtor.getFiscalCode()));
+      Assertions.assertEquals(EntityTypeEnum.F,debtor.getEntityType());
     }else{
       TestUtils.reflectionEqualsByName(debtor,debtPositionDTO.getPaymentOptions().getFirst().getInstallments().getFirst().getDebtor());
     }

@@ -1,21 +1,16 @@
 package it.gov.pagopa.pu.bff.mapper;
 
 import it.gov.pagopa.pu.bff.dto.generated.DebtPositionDetailDTO;
-import it.gov.pagopa.pu.bff.dto.generated.PersonDTO;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionDTO;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrg;
+import it.gov.pagopa.pu.debtpositions.dto.generated.PersonDTO;
+import it.gov.pagopa.pu.debtpositions.dto.generated.PersonDTO.EntityTypeEnum;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
 @Component
 public class DebtPositionMapper {
-
-  private final PersonDTOMapper personDTOMapper;
   private static final String MULTI_DEBTOR_NAME = "CO-OBBLIGATO";
-
-  public DebtPositionMapper(PersonDTOMapper personDTOMapper) {
-    this.personDTOMapper = personDTOMapper;
-  }
 
   public DebtPositionDetailDTO mapToDebtPositionDetailDTO(DebtPositionDTO debtPosition, DebtPositionTypeOrg debtPositionTypeOrg){
       DebtPositionDetailDTO debtPositionDetailDTO = DebtPositionDetailDTO.builder()
@@ -29,15 +24,17 @@ public class DebtPositionMapper {
       return debtPositionDetailDTO;
   }
 
-  private PersonDTO buildDebtor(DebtPositionDTO debtPosition) {
+  private it.gov.pagopa.pu.debtpositions.dto.generated.PersonDTO buildDebtor(DebtPositionDTO debtPosition) {
     PersonDTO debtor = null;
     if(Boolean.TRUE.equals(debtPosition.getMultiDebtor())){
-      debtor = PersonDTO.builder()
+      debtor = it.gov.pagopa.pu.debtpositions.dto.generated.PersonDTO.builder()
         .fullName(MULTI_DEBTOR_NAME)
+        .entityType(EntityTypeEnum.F)
+        .fiscalCode("")
         .build();
     }else if(!CollectionUtils.isEmpty(debtPosition.getPaymentOptions())
       && !CollectionUtils.isEmpty(debtPosition.getPaymentOptions().getFirst().getInstallments())){
-      debtor = personDTOMapper.mapToPersonDTO(debtPosition.getPaymentOptions().getFirst().getInstallments().getFirst().getDebtor());
+      debtor = debtPosition.getPaymentOptions().getFirst().getInstallments().getFirst().getDebtor();
     }
     return debtor;
   }

@@ -1206,7 +1206,7 @@ components:
         - paymentOptions
       properties:
         debtor:
-          $ref: '#/components/schemas/PersonDTO'
+          type: 'DebtPositionPersonDTO'
         debtPositionTypeOrgDescription:
           type: string
         debtPositionTypeOrgCode:

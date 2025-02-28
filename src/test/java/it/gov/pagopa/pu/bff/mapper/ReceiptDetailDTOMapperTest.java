@@ -6,21 +6,17 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mockito;
-import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import uk.co.jemos.podam.api.PodamFactory;
 
 @ExtendWith(MockitoExtension.class)
 class ReceiptDetailDTOMapperTest {
-  @Spy
-  private PersonDTOMapper personDTOMapperSpy;
   private final PodamFactory podamFactory = TestUtils.getPodamFactory();
   private ReceiptDetailDTOMapper mapper;
 
   @BeforeEach
   void setUp() {
-    mapper = new ReceiptDetailDTOMapper(personDTOMapperSpy);
+    mapper = new ReceiptDetailDTOMapper();
   }
 
   @Test
@@ -36,8 +32,6 @@ class ReceiptDetailDTOMapperTest {
     TestUtils.checkNotNullFields(result);
     TestUtils.checkNotNullFields(result.getDebtor());
     TestUtils.checkNotNullFields(result.getPayer());
-    Mockito.verify(personDTOMapperSpy).mapToPersonDTO(receiptDetailDTO.getDebtor());
-    Mockito.verify(personDTOMapperSpy).mapToPersonDTO(receiptDetailDTO.getPayer());
   }
 
   @Test
@@ -45,7 +39,6 @@ class ReceiptDetailDTOMapperTest {
     ReceiptDetailDTO result = mapper.mapToReceiptDetailDTO(null);
 
     Assertions.assertNull(result);
-    Mockito.verifyNoInteractions(personDTOMapperSpy);
   }
 
 }

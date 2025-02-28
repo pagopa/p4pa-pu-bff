@@ -492,7 +492,7 @@
           "required" : true,
           "schema" : {
             "type" : "string",
-            "enum" : [ "RECEIPT_PAGOPA", "RECEIPT_FILE" ]
+            "enum" : [ "RECEIPT_PAGOPA", "RECEIPT_FILE", "PAYMENTS_REPORTING" ]
           }
         }, {
           "name" : "iuv",
@@ -1990,7 +1990,7 @@
           },
           "receiptOrigin" : {
             "type" : "string",
-            "enum" : [ "RECEIPT_PAGOPA", "RECEIPT_FILE" ]
+            "enum" : [ "RECEIPT_PAGOPA", "RECEIPT_FILE", "PAYMENTS_REPORTING" ]
           },
           "iuv" : {
             "type" : "string"
@@ -2406,7 +2406,7 @@
           },
           "dueDate" : {
             "type" : "string",
-            "format" : "date-time"
+            "format" : "date"
           },
           "paymentTypeCode" : {
             "type" : "string"
@@ -2493,7 +2493,7 @@
           },
           "dueDate" : {
             "type" : "string",
-            "format" : "date-time"
+            "format" : "date"
           },
           "description" : {
             "type" : "string"
@@ -2891,6 +2891,15 @@
           },
           "flagExternal" : {
             "type" : "boolean"
+          },
+          "serviceId" : {
+            "type" : "string"
+          },
+          "subject" : {
+            "type" : "string"
+          },
+          "markdown" : {
+            "type" : "string"
           },
           "_links" : {
             "type" : "object",

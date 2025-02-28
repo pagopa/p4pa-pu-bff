@@ -35,6 +35,21 @@ class InstallmentDetailDTOMapperTest {
   }
 
   @Test
+  void givenInstallmentDetailWithNullFieldsWhenMapToInstallmentDetailDTOThenCorrectStatusMapping() {
+    it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentDetailDTO installmentDetailDTO = podamFactory.manufacturePojo(it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentDetailDTO.class);
+    installmentDetailDTO.setPayer(null);
+    installmentDetailDTO.setPaymentDateTime(null);
+    installmentDetailDTO.setIud(null);
+    installmentDetailDTO.setIur(null);
+    installmentDetailDTO.setPspCompanyName(null);
+
+    InstallmentDetailDTO result = mapper.mapToInstallmentDetailDTO(installmentDetailDTO);
+
+    Assertions.assertNotNull(result);
+    Assertions.assertEquals(InstallmentDetailDTO.StatusEnum.fromValue(installmentDetailDTO.getStatus().getValue()), result.getStatus());
+  }
+
+  @Test
   void givenNoInstallmentDetailDTOThenNullResult() {
     InstallmentDetailDTO result = mapper.mapToInstallmentDetailDTO(null);
 

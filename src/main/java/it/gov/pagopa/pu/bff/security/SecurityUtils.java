@@ -1,10 +1,12 @@
 package it.gov.pagopa.pu.bff.security;
 
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
+import org.springframework.security.core.context.SecurityContextHolder;
+
+import java.net.URI;
 import java.util.Collections;
 import java.util.Set;
 import java.util.stream.Collectors;
-import org.springframework.security.core.context.SecurityContextHolder;
 
 public class SecurityUtils {
 
@@ -41,6 +43,12 @@ public class SecurityUtils {
 
   public static String getAccessToken(){
     return SecurityContextHolder.getContext().getAuthentication().getCredentials().toString();
+  }
+
+  public static String removePiiFromURI(URI uri){
+    return uri != null
+      ? uri.toString().replaceAll("=[^&]*", "=***")
+      : null;
   }
 
 }

@@ -17,9 +17,7 @@ public class InstallmentRetrieverServiceImpl implements InstallmentRetrieverServ
 
   private final InstallmentViewMapper installmentViewMapper;
   private final InstallmentService installmentService;
-  private final List<it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentDetailDTO.StatusEnum> statusList = List.of(
-    it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentDetailDTO.StatusEnum.PAID,
-    it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentDetailDTO.StatusEnum.REPORTED);
+  private final List<InstallmentDetailDTO.StatusEnum> statusList = List.of(InstallmentDetailDTO.StatusEnum.PAID, InstallmentDetailDTO.StatusEnum.REPORTED);
 
   public InstallmentRetrieverServiceImpl(
     InstallmentViewMapper installmentViewMapper,

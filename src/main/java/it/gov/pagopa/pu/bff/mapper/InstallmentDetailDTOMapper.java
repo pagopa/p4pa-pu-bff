@@ -3,37 +3,26 @@ package it.gov.pagopa.pu.bff.mapper;
 import it.gov.pagopa.pu.bff.dto.generated.InstallmentDetailDTO;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 public class InstallmentDetailDTOMapper {
+
+  private final List<it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentDetailDTO.StatusEnum> statusList = List.of(
+    it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentDetailDTO.StatusEnum.PAID,
+    it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentDetailDTO.StatusEnum.REPORTED);
 
   public InstallmentDetailDTO mapToInstallmentDetailDTO(
     it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentDetailDTO installmentDetailDTO) {
     if (installmentDetailDTO == null) {
       return null;
     }
-    InstallmentDetailDTO.StatusEnum status;
-    if (installmentDetailDTO.getPayer() == null &&
-      installmentDetailDTO.getPaymentDateTime() == null &&
-      installmentDetailDTO.getIud() == null &&
-      installmentDetailDTO.getIur() == null &&
-      installmentDetailDTO.getPspCompanyName() == null) {
-      status = switch (installmentDetailDTO.getStatus()) {
-        case UNPAID, EXPIRED, CANCELLED, INVALID, TO_SYNC, DRAFT ->
-          InstallmentDetailDTO.StatusEnum.fromValue(installmentDetailDTO.getStatus().getValue());
-        default -> InstallmentDetailDTO.StatusEnum.UNPAID;
-      };
-    } else {
-      status = switch (installmentDetailDTO.getStatus()) {
-        case PAID, REPORTED ->
-          InstallmentDetailDTO.StatusEnum.fromValue(installmentDetailDTO.getStatus().getValue());
-        default -> InstallmentDetailDTO.StatusEnum.PAID;
-      };
-    }
-    return InstallmentDetailDTO.builder()
+
+    InstallmentDetailDTO installmentDetail = InstallmentDetailDTO.builder()
       .installmentId(installmentDetailDTO.getInstallmentId())
       .receiptId(installmentDetailDTO.getReceiptId())
       .paymentOptionId(installmentDetailDTO.getPaymentOptionId())
-      .status(status)
+      .status(installmentDetailDTO.getStatus())
       .iuv(installmentDetailDTO.getIuv())
       .amountCents(installmentDetailDTO.getAmountCents())
       .dueDate(installmentDetailDTO.getDueDate())
@@ -41,12 +30,21 @@ public class InstallmentDetailDTOMapper {
       .debtPositionTypeOrgDescription(installmentDetailDTO.getDebtPositionTypeOrgDescription())
       .debtPositionDescription(installmentDetailDTO.getDebtPositionDescription())
       .debtPositionId(installmentDetailDTO.getDebtPositionId())
-      .paymentDateTime(installmentDetailDTO.getPaymentDateTime())
-      .payer(installmentDetailDTO.getPayer())
-      .pspCompanyName(installmentDetailDTO.getPspCompanyName())
-      .iud(installmentDetailDTO.getIud())
-      .iur(installmentDetailDTO.getIur())
       .build();
+
+    setPaymentInfo(installmentDetail, installmentDetailDTO);
+    return installmentDetail;
+  }
+
+  private void setPaymentInfo(InstallmentDetailDTO build,
+                              it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentDetailDTO installmentDetailDTO) {
+    if (statusList.contains(installmentDetailDTO.getStatus())) {
+      build.setPayer(installmentDetailDTO.getPayer());
+      build.setPaymentDateTime(installmentDetailDTO.getPaymentDateTime());
+      build.setIud(installmentDetailDTO.getIud());
+      build.setIur(installmentDetailDTO.getIur());
+      build.setPspCompanyName(installmentDetailDTO.getPspCompanyName());
+    }
   }
 
 }

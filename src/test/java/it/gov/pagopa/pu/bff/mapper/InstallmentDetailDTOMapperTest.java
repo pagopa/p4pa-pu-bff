@@ -1,18 +1,18 @@
 package it.gov.pagopa.pu.bff.mapper;
 
 import it.gov.pagopa.pu.bff.dto.generated.InstallmentDetailDTO;
-import org.junit.jupiter.api.Assertions;
+import it.gov.pagopa.pu.bff.util.TestUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
+import uk.co.jemos.podam.api.PodamFactory;
 
-import java.time.OffsetDateTime;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
 class InstallmentDetailDTOMapperTest {
+  private final PodamFactory podamFactory = TestUtils.getPodamFactory();
   private InstallmentDetailDTOMapper mapper;
 
   @BeforeEach
@@ -20,38 +20,45 @@ class InstallmentDetailDTOMapperTest {
     mapper = new InstallmentDetailDTOMapper();
   }
 
-  @Test
-  void givenNoInstallmentDetailDTOThenNullResult() {
-    InstallmentDetailDTO result = mapper.mapToInstallmentDetailDTO(null);
-
-    Assertions.assertNull(result);
-  }
 
   @Test
   void givenInstallmentDetailDTOWithNullFieldsWhenMapToInstallmentDetailDTOThenStatusUnpaid() {
-    it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentDetailDTO installmentDetailDTO = new it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentDetailDTO();
+    it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentDetailDTO installmentDetailDTO = podamFactory.manufacturePojo(it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentDetailDTO.class);
     installmentDetailDTO.setStatus(it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentDetailDTO.StatusEnum.UNPAID);
+    installmentDetailDTO.setPaymentDateTime(null);
+    installmentDetailDTO.setPayer(null);
+    installmentDetailDTO.setPspCompanyName(null);
+    installmentDetailDTO.setIur(null);
+    installmentDetailDTO.setIud(null);
 
     InstallmentDetailDTO result = mapper.mapToInstallmentDetailDTO(installmentDetailDTO);
 
-    Assertions.assertNotNull(result);
-    assertEquals(InstallmentDetailDTO.StatusEnum.UNPAID, result.getStatus());
+    assertNotNull(result);
+    assertEquals(it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentDetailDTO.StatusEnum.UNPAID, result.getStatus());
+    assertNull(result.getPaymentDateTime());
+    assertNull(result.getPayer());
+    assertNull(result.getPspCompanyName());
+    assertNull(result.getIur());
+    assertNull(result.getIud());
   }
 
   @Test
   void givenInstallmentDetailDTOWithNonNullFieldsWhenMapToInstallmentDetailDTOThenStatusPaid() {
-    it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentDetailDTO installmentDetailDTO = new it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentDetailDTO();
+    it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentDetailDTO installmentDetailDTO = podamFactory.manufacturePojo(it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentDetailDTO.class);
     installmentDetailDTO.setStatus(it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentDetailDTO.StatusEnum.PAID);
-    installmentDetailDTO.setPayer(new InstallmentDetailDTO().getPayer());
-    installmentDetailDTO.setPaymentDateTime(OffsetDateTime.parse("2025-02-28T16:00:00Z"));
-    installmentDetailDTO.setIud("someIud");
-    installmentDetailDTO.setIur("someIur");
-    installmentDetailDTO.setPspCompanyName("somePspCompanyName");
 
     InstallmentDetailDTO result = mapper.mapToInstallmentDetailDTO(installmentDetailDTO);
 
-    Assertions.assertNotNull(result);
-    assertEquals(InstallmentDetailDTO.StatusEnum.PAID, result.getStatus());
+    assertNotNull(result);
+    assertEquals(it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentDetailDTO.StatusEnum.PAID, result.getStatus());
+  }
+
+
+  @Test
+  void givenNoInstallmentDetailDTOThenNullResult() {
+    InstallmentDetailDTO result = mapper.mapToInstallmentDetailDTO(null);
+
+    assertNull(result);
   }
 
 }

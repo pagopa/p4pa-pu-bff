@@ -1083,16 +1083,7 @@ components:
           type: integer
           format: int64
         status:
-          type: string
-          enum:
-            - TO_SYNC
-            - REPORTED
-            - PAID
-            - CANCELLED
-            - INVALID
-            - EXPIRED
-            - UNPAID
-            - DRAFT
+          type: 'InstallmentStatus'
         iuv:
           type: string
         amountCents:
@@ -1100,7 +1091,7 @@ components:
           format: int64
         dueDate:
           type: string
-          format: date-time
+          format: date
         debtor:
           type: 'PersonDTO'
         debtPositionTypeOrgDescription:

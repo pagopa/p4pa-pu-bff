@@ -2410,8 +2410,7 @@
           "iur" : {
             "type" : "string"
           }
-        },
-        "required" : [ "amountCents", "debtPositionDescription", "debtPositionId", "debtPositionTypeOrgDescription", "debtor", "dueDate", "installmentId", "iuv", "status" ]
+        }
       },
       "DebtPositionView" : {
         "type" : "object",

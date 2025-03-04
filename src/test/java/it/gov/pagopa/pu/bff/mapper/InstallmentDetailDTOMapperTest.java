@@ -33,6 +33,8 @@ class InstallmentDetailDTOMapperTest {
 
     InstallmentDetailDTO result = mapper.mapToInstallmentDetailDTO(installmentDetailDTO);
 
+    TestUtils.checkNotNullFields(result, "paymentDateTime", "payer", "pspCompanyName", "iur", "iud");
+
     assertNotNull(result);
     assertEquals(it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentDetailDTO.StatusEnum.UNPAID, result.getStatus());
     assertNull(result.getPaymentDateTime());
@@ -40,6 +42,7 @@ class InstallmentDetailDTOMapperTest {
     assertNull(result.getPspCompanyName());
     assertNull(result.getIur());
     assertNull(result.getIud());
+    TestUtils.reflectionEqualsByName(installmentDetailDTO, result);
   }
 
   @Test
@@ -49,8 +52,11 @@ class InstallmentDetailDTOMapperTest {
 
     InstallmentDetailDTO result = mapper.mapToInstallmentDetailDTO(installmentDetailDTO);
 
+    TestUtils.checkNotNullFields(result);
+
     assertNotNull(result);
     assertEquals(it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentDetailDTO.StatusEnum.PAID, result.getStatus());
+    TestUtils.reflectionEqualsByName(installmentDetailDTO, result);
   }
 
 

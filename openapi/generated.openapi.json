@@ -2379,7 +2379,7 @@
           },
           "dueDate" : {
             "type" : "string",
-            "format" : "date-time"
+            "format" : "date"
           },
           "debtor" : {
             "$ref" : "#/components/schemas/PersonDTO"
@@ -3011,6 +3011,12 @@
           "flagNotifyIo" : {
             "type" : "boolean"
           },
+          "serviceId" : {
+            "type" : "string"
+          },
+          "ioTemplateSubject" : {
+            "type" : "string"
+          },
           "ioTemplateMessage" : {
             "type" : "string"
           },
@@ -3033,15 +3039,6 @@
           },
           "flagExternal" : {
             "type" : "boolean"
-          },
-          "serviceId" : {
-            "type" : "string"
-          },
-          "subject" : {
-            "type" : "string"
-          },
-          "markdown" : {
-            "type" : "string"
           },
           "_links" : {
             "type" : "object",

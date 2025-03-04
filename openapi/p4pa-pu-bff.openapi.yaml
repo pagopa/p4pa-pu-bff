@@ -489,7 +489,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/InstallmentDetailDTO'
+                type: 'InstallmentDetailDTO'
         '404':
           description: Not Found - Receipt not found
         '401':
@@ -1060,58 +1060,6 @@ components:
         number:
           type: integer
           format: int64
-    InstallmentDetailDTO:
-      type: object
-      required:
-        - installmentId
-        - status
-        - iuv
-        - amountCents
-        - dueDate
-        - debtor
-        - debtPositionTypeOrgDescription
-        - debtPositionDescription
-        - debtPositionId
-      properties:
-        installmentId:
-          type: integer
-          format: int64
-        receiptId:
-          type: integer
-          format: int64
-        paymentOptionId:
-          type: integer
-          format: int64
-        status:
-          type: 'InstallmentStatus'
-        iuv:
-          type: string
-        amountCents:
-          type: integer
-          format: int64
-        dueDate:
-          type: string
-          format: date
-        debtor:
-          type: 'PersonDTO'
-        debtPositionTypeOrgDescription:
-          type: string
-        debtPositionDescription:
-          type: string
-        debtPositionId:
-          type: integer
-          format: int64
-        paymentDateTime:
-          type: string
-          format: date-time
-        payer:
-          type: 'PersonDTO'
-        pspCompanyName:
-          type: string
-        iud:
-          type: string
-        iur:
-          type: string
     ReceiptDetailDTO:
       type: object
       required:

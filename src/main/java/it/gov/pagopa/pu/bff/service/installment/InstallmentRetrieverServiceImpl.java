@@ -3,28 +3,29 @@ package it.gov.pagopa.pu.bff.service.installment;
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.connector.debt_position.InstallmentService;
 import it.gov.pagopa.pu.bff.dto.InstallmentViewFiltersDTO;
-import it.gov.pagopa.pu.bff.dto.generated.InstallmentDetailDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedInstallmentView;
-import it.gov.pagopa.pu.bff.mapper.InstallmentDetailDTOMapper;
 import it.gov.pagopa.pu.bff.mapper.InstallmentViewMapper;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
+import it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentDetailDTO;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class InstallmentRetrieverServiceImpl implements InstallmentRetrieverService {
 
   private final InstallmentViewMapper installmentViewMapper;
   private final InstallmentService installmentService;
-  private final InstallmentDetailDTOMapper installmentDetailDTOMapper;
+  private final List<it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentDetailDTO.StatusEnum> statusList = List.of(
+    it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentDetailDTO.StatusEnum.PAID,
+    it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentDetailDTO.StatusEnum.REPORTED);
 
   public InstallmentRetrieverServiceImpl(
     InstallmentViewMapper installmentViewMapper,
-    InstallmentService installmentService,
-    InstallmentDetailDTOMapper installmentDetailDTOMapper) {
+    InstallmentService installmentService) {
     this.installmentViewMapper = installmentViewMapper;
     this.installmentService = installmentService;
-    this.installmentDetailDTOMapper = installmentDetailDTOMapper;
   }
 
   @Override
@@ -36,7 +37,19 @@ public class InstallmentRetrieverServiceImpl implements InstallmentRetrieverServ
   @Override
   public InstallmentDetailDTO getInstallmentDetail(Long organizationId, Long installmentId, UserInfo loggedUser, String accessToken) {
     AuthorizationService.isUserEnabledToOrganizationId(organizationId, loggedUser);
-    return installmentDetailDTOMapper.mapToInstallmentDetailDTO(installmentService.getInstallmentDetail(installmentId, loggedUser.getMappedExternalUserId(), accessToken));
+    InstallmentDetailDTO installmentDetailDTO = installmentService.getInstallmentDetail(installmentId, loggedUser.getMappedExternalUserId(), accessToken);
+    setPaymentInfo(installmentDetailDTO);
+    return installmentDetailDTO;
+  }
+
+  private void setPaymentInfo(InstallmentDetailDTO installmentDetailDTO) {
+    if (!statusList.contains(installmentDetailDTO.getStatus())) {
+      installmentDetailDTO.setPayer(null);
+      installmentDetailDTO.setPaymentDateTime(null);
+      installmentDetailDTO.setIud(null);
+      installmentDetailDTO.setIur(null);
+      installmentDetailDTO.setPspCompanyName(null);
+    }
   }
 
 }

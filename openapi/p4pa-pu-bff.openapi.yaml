@@ -242,7 +242,7 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/TaxonomyCodeDTO'
-  /debt-position-types/organization/{organizationId}:
+  /organization/{organizationId}/debt-position-types:
     get:
       tags:
         - DebtPositionTypes
@@ -269,7 +269,7 @@ paths:
         '500':
           description: Internal Server Error
       x-spring-paginated: true
-  /debt-position-type-orgs/organization/{organizationId}:
+  /organization/{organizationId}/debt-position-type-orgs:
     get:
       tags:
         - DebtPositionTypeOrgs
@@ -349,7 +349,7 @@ paths:
         '500':
           description: Internal Server Error
       x-spring-paginated: true
-  /payments-reporting/organization/{organizationId}:
+  /organization/{organizationId}/payments-reporting:
     get:
       tags:
         - PaymentsReporting
@@ -463,7 +463,7 @@ paths:
         '500':
           description: Internal Server Error
       x-spring-paginated: true
-  /receipts/{organizationId}/{receiptId}:
+  /organization/{organizationId}/receipts/{receiptId}:
     get:
       tags:
         - Receipts
@@ -530,7 +530,7 @@ paths:
           description: Forbidden - Access denied
         '500':
           description: Internal Server Error
-  /ingestion-flow-files/{organizationId}:
+  /organization/{organizationId}/ingestion-flow-files:
     get:
       tags:
         - IngestionFlowFiles
@@ -577,7 +577,7 @@ paths:
         '404':
           description: Not Found
       x-spring-paginated: true
-  /export-flow-files/{organizationId}:
+  /organization/{organizationId}/export-flow-files:
     get:
       tags:
         - ExportFiles

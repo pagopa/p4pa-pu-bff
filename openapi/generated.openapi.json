@@ -2121,7 +2121,7 @@
           "iuv" : {
             "type" : "string"
           },
-          "description" : {
+          "debtPositionTypeOrgDescription" : {
             "type" : "string"
           },
           "_links" : {

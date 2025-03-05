@@ -2,9 +2,16 @@ package it.gov.pagopa.pu.bff.controller;
 
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.dto.LocalDateIntervalFilter;
+import it.gov.pagopa.pu.bff.dto.generated.PagedPaymentsReporting;
 import it.gov.pagopa.pu.bff.dto.generated.PagedPaymentsReportingView;
 import it.gov.pagopa.pu.bff.service.payments_reporting.PaymentsReportingRetrieverService;
 import it.gov.pagopa.pu.classification.dto.generated.PaymentsReportingView;
+import java.time.LocalDate;
+import java.time.OffsetDateTime;
+import java.util.List;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,12 +27,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-
-import java.time.LocalDate;
-import java.time.OffsetDateTime;
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
 class PaymentsReportingControllerTest {
@@ -80,6 +81,30 @@ class PaymentsReportingControllerTest {
       .thenReturn(expectedResult);
 
     ResponseEntity<PagedPaymentsReportingView> response = paymentsReportingController.getPaymentsReporting(organizationId, iuf, regulationUniqueIdentifier, regulationDateFrom, regulationDateTo, pageable);
+
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertNotNull(response.getBody());
+    assertSame(expectedResult, response.getBody());
+  }
+
+  @Test
+  void givenCorrectRequestWhenGetPaymentsReportingDetailThenOk() {
+    long organizationId = 1L;
+    String iuf = "iuf";
+    String iuv = "iuv";
+    LocalDate payDateFrom = LocalDate.now().minusDays(10);
+    LocalDate payDateTo = LocalDate.now();
+    Pageable pageable = PageRequest.of(0, 10);
+
+    LocalDateIntervalFilter payDateFilter = new LocalDateIntervalFilter(payDateFrom,payDateTo);
+
+    PagedPaymentsReporting expectedResult = new PagedPaymentsReporting();
+
+    Mockito.when(paymentsReportingRetrieverServiceMock.getPaymentsReportingDetail(organizationId, iuf, iuv, payDateFilter,
+        pageable, userInfo, "fakeAccessToken"))
+      .thenReturn(expectedResult);
+
+    ResponseEntity<PagedPaymentsReporting> response = paymentsReportingController.getPaymentsReportingDetail(organizationId, iuf, iuv, payDateFrom, payDateTo, pageable);
 
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertNotNull(response.getBody());

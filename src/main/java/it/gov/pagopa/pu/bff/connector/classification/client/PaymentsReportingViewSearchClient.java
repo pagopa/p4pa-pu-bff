@@ -8,11 +8,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
-public class PaymentsReportingClient {
+public class PaymentsReportingViewSearchClient {
 
   private final ClassificationApisHolder classificationApisHolder;
 
-  public PaymentsReportingClient(ClassificationApisHolder classificationApisHolder) {
+  public PaymentsReportingViewSearchClient(ClassificationApisHolder classificationApisHolder) {
     this.classificationApisHolder = classificationApisHolder;
   }
 

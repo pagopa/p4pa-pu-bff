@@ -5,35 +5,33 @@ import it.gov.pagopa.pu.bff.dto.LocalDateIntervalFilter;
 import it.gov.pagopa.pu.bff.util.PageUtils;
 import it.gov.pagopa.pu.classification.controller.generated.PaymentsReportingViewSearchControllerApi;
 import it.gov.pagopa.pu.classification.dto.generated.PagedModelPaymentsReportingView;
+import java.time.LocalDate;
 import org.junit.jupiter.api.AfterEach;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
-import java.time.LocalDate;
-
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.mockito.Mockito.when;
-
 @ExtendWith(MockitoExtension.class)
-class PaymentsReportingClientTest {
+class PaymentsReportingViewSearchClientTest {
 
   @Mock
   private ClassificationApisHolder classificationApisHolderMock;
   @Mock
   private PaymentsReportingViewSearchControllerApi paymentsReportingViewSearchControllerApiMock;
 
-  private PaymentsReportingClient paymentsReportingClient;
+  private PaymentsReportingViewSearchClient paymentsReportingViewSearchClient;
 
   @BeforeEach
   void setUp() {
-    paymentsReportingClient = new PaymentsReportingClient(classificationApisHolderMock);
+    paymentsReportingViewSearchClient = new PaymentsReportingViewSearchClient(classificationApisHolderMock);
   }
 
   @AfterEach
@@ -71,7 +69,7 @@ class PaymentsReportingClientTest {
       PageUtils.getSortList(pageable)))
       .thenReturn(expectedResult);
 
-    PagedModelPaymentsReportingView result = paymentsReportingClient.getPaymentsReporting(organizationId, iuf, regulationUniqueIdentifier, regulationDateFilter, pageable, accessToken);
+    PagedModelPaymentsReportingView result = paymentsReportingViewSearchClient.getPaymentsReporting(organizationId, iuf, regulationUniqueIdentifier, regulationDateFilter, pageable, accessToken);
 
     assertSame(expectedResult, result);
   }

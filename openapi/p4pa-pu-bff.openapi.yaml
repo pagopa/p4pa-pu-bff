@@ -437,6 +437,55 @@ paths:
         '500':
           description: Internal Server Error
       x-spring-paginated: true
+  /organization/{organizationId}/payments-reporting/detail:
+    get:
+      tags:
+        - PaymentsReporting
+      summary: "Retrieve a page of payments reporting based on filters"
+      operationId: getPaymentsReportingDetail
+      parameters:
+        - name: organizationId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: iuf
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: iuv
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: payDateFrom
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date
+        - name: payDateTo
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PagedPaymentsReporting'
+        '401':
+          description: Unauthorized - Missing or invalid token
+        '403':
+          description: Forbidden - Access denied
+        '500':
+          description: Internal Server Error
+      x-spring-paginated: true
   /organization/{organizationId}/receipts:
     get:
       tags:
@@ -1248,3 +1297,28 @@ components:
           type: array
           items:
             type: 'PaymentOptionDTO'
+    PagedPaymentsReporting:
+      type: object
+      required:
+        - content
+        - size
+        - totalElements
+        - totalPages
+        - number
+      properties:
+        content:
+          type: array
+          items:
+            type: 'PaymentsReporting'
+        size:
+          type: integer
+          format: int64
+        totalElements:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer
+          format: int64
+        number:
+          type: integer
+          format: int64

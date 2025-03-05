@@ -349,6 +349,45 @@ paths:
         '500':
           description: Internal Server Error
       x-spring-paginated: true
+  /organization/{organizationId}/installments/{installmentId}:
+    get:
+      tags:
+        - Installments
+      summary: "Retrieve a specific installment"
+      operationId: getInstallmentDetail
+      parameters:
+        - name: organizationId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: installmentId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: The unique identifier of the installment
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: 'InstallmentDetailDTO'
+        '404':
+          description: Not Found - Receipt not found
+        '401':
+          description: Unauthorized - Missing or invalid token
+        '403':
+          description: Forbidden - Access denied
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDTO'
   /organization/{organizationId}/payments-reporting:
     get:
       tags:

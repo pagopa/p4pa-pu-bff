@@ -6,16 +6,22 @@ import it.gov.pagopa.pu.bff.dto.InstallmentViewFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedInstallmentView;
 import it.gov.pagopa.pu.bff.mapper.InstallmentViewMapper;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
+import it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentDetailDTO;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class InstallmentRetrieverServiceImpl implements InstallmentRetrieverService {
 
   private final InstallmentViewMapper installmentViewMapper;
   private final InstallmentService installmentService;
+  private final List<InstallmentDetailDTO.StatusEnum> statusList = List.of(InstallmentDetailDTO.StatusEnum.PAID, InstallmentDetailDTO.StatusEnum.REPORTED);
 
-  public InstallmentRetrieverServiceImpl(InstallmentViewMapper installmentViewMapper, InstallmentService installmentService) {
+  public InstallmentRetrieverServiceImpl(
+    InstallmentViewMapper installmentViewMapper,
+    InstallmentService installmentService) {
     this.installmentViewMapper = installmentViewMapper;
     this.installmentService = installmentService;
   }
@@ -24,6 +30,24 @@ public class InstallmentRetrieverServiceImpl implements InstallmentRetrieverServ
   public PagedInstallmentView getInstallments(InstallmentViewFiltersDTO installmentViewFiltersDTO, Pageable pageable, UserInfo loggedUser, String accessToken) {
     AuthorizationService.isUserEnabledToOrganizationId(installmentViewFiltersDTO.getOrganizationId(), loggedUser);
     return installmentViewMapper.mapToPagedInstallmentView(installmentService.getInstallments(installmentViewFiltersDTO, pageable, accessToken));
+  }
+
+  @Override
+  public InstallmentDetailDTO getInstallmentDetail(Long organizationId, Long installmentId, UserInfo loggedUser, String accessToken) {
+    AuthorizationService.isUserEnabledToOrganizationId(organizationId, loggedUser);
+    InstallmentDetailDTO installmentDetailDTO = installmentService.getInstallmentDetail(installmentId, loggedUser.getMappedExternalUserId(), accessToken);
+    setPaymentInfo(installmentDetailDTO);
+    return installmentDetailDTO;
+  }
+
+  private void setPaymentInfo(InstallmentDetailDTO installmentDetailDTO) {
+    if (!statusList.contains(installmentDetailDTO.getStatus())) {
+      installmentDetailDTO.setPayer(null);
+      installmentDetailDTO.setPaymentDateTime(null);
+      installmentDetailDTO.setIud(null);
+      installmentDetailDTO.setIur(null);
+      installmentDetailDTO.setPspCompanyName(null);
+    }
   }
 
 }

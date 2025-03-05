@@ -6,8 +6,11 @@ import it.gov.pagopa.pu.bff.dto.InstallmentViewFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedInstallmentView;
 import it.gov.pagopa.pu.bff.mapper.InstallmentViewMapper;
 import it.gov.pagopa.pu.bff.service.installment.InstallmentRetrieverServiceImpl;
+import it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentDetailDTO;
 import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelInstallmentView;
+import it.gov.pagopa.pu.debtpositions.dto.generated.PersonDTO;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,6 +21,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.authorization.AuthorizationDeniedException;
+
+import java.time.OffsetDateTime;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -94,6 +99,92 @@ class InstallmentRetrieverServiceImplTest {
         installmentRetrieverService.getInstallments(filtersDTO, pageable, loggedUser, accessToken));
 
       authorizationServiceMockedStatic.verify(() -> AuthorizationService.isUserEnabledToOrganizationId(filtersDTO.getOrganizationId(), loggedUser));
+    }
+  }
+
+  @Test
+  void givenValidUserWhenGetInstallmentDetailThenOk() {
+    UserInfo loggedUser = new UserInfo();
+    loggedUser.setMappedExternalUserId("mappedExternalUserId");
+
+    Long organizationId = 1L;
+    Long installmentId = 2L;
+    InstallmentDetailDTO installmentDetailDTO = new InstallmentDetailDTO();
+    installmentDetailDTO.setStatus(InstallmentDetailDTO.StatusEnum.PAID);
+    installmentDetailDTO.setPayer(new PersonDTO());
+    installmentDetailDTO.setPaymentDateTime(OffsetDateTime.now());
+    installmentDetailDTO.setIud("iud");
+    installmentDetailDTO.setIur("iur");
+    installmentDetailDTO.setPspCompanyName("pspCompanyName");
+
+    try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
+      authorizationServiceMockedStatic.when(() -> AuthorizationService.isUserEnabledToOrganizationId(organizationId, loggedUser))
+        .thenReturn(true);
+      Mockito.when(installmentServiceMock.getInstallmentDetail(installmentId, loggedUser.getMappedExternalUserId(), accessToken))
+        .thenReturn(installmentDetailDTO);
+
+      InstallmentDetailDTO result = installmentRetrieverService.getInstallmentDetail(organizationId, installmentId, loggedUser, accessToken);
+
+      assertNotNull(result);
+      assertSame(installmentDetailDTO, result);
+      assertNotNull(result.getPayer());
+      assertNotNull(result.getPaymentDateTime());
+      assertNotNull(result.getIud());
+      assertNotNull(result.getIur());
+      assertNotNull(result.getPspCompanyName());
+
+      authorizationServiceMockedStatic.verify(() -> AuthorizationService.isUserEnabledToOrganizationId(organizationId, loggedUser));
+      Mockito.verify(installmentServiceMock).getInstallmentDetail(installmentId, loggedUser.getMappedExternalUserId(), accessToken);
+    }
+  }
+
+  @Test
+  void givenInvalidUserWhenGetInstallmentDetailThenOk() {
+    UserInfo loggedUser = new UserInfo();
+    loggedUser.setMappedExternalUserId("mappedExternalUserId");
+
+    Long organizationId = 1L;
+    Long installmentId = 2L;
+
+    try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
+      authorizationServiceMockedStatic.when(() -> AuthorizationService.isUserEnabledToOrganizationId(organizationId, loggedUser))
+        .thenThrow(new AuthorizationDeniedException("Access denied"));
+
+      Assertions.assertThrows(AuthorizationDeniedException.class, () ->
+        installmentRetrieverService.getInstallmentDetail(organizationId, installmentId, loggedUser, accessToken));
+
+      authorizationServiceMockedStatic.verify(() -> AuthorizationService.isUserEnabledToOrganizationId(organizationId, loggedUser));
+      Mockito.verifyNoInteractions(installmentServiceMock);
+    }
+  }
+
+  @Test
+  void givenInstallmentWithNonPaidOrReportedStatusWhenGetInstallmentDetailThenFieldsAreNull() {
+    UserInfo loggedUser = new UserInfo();
+    loggedUser.setMappedExternalUserId("mappedExternalUserId");
+
+    Long organizationId = 1L;
+    Long installmentId = 2L;
+    InstallmentDetailDTO installmentDetailDTO = new InstallmentDetailDTO();
+    installmentDetailDTO.setStatus(InstallmentDetailDTO.StatusEnum.UNPAID);
+
+    try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
+      authorizationServiceMockedStatic.when(() -> AuthorizationService.isUserEnabledToOrganizationId(organizationId, loggedUser))
+        .thenReturn(true);
+      Mockito.when(installmentServiceMock.getInstallmentDetail(installmentId, loggedUser.getMappedExternalUserId(), accessToken))
+        .thenReturn(installmentDetailDTO);
+
+      InstallmentDetailDTO result = installmentRetrieverService.getInstallmentDetail(organizationId, installmentId, loggedUser, accessToken);
+
+      assertNotNull(result);
+      assertNull(result.getPayer());
+      assertNull(result.getPaymentDateTime());
+      assertNull(result.getIud());
+      assertNull(result.getIur());
+      assertNull(result.getPspCompanyName());
+
+      authorizationServiceMockedStatic.verify(() -> AuthorizationService.isUserEnabledToOrganizationId(organizationId, loggedUser));
+      Mockito.verify(installmentServiceMock).getInstallmentDetail(installmentId, loggedUser.getMappedExternalUserId(), accessToken);
     }
   }
 

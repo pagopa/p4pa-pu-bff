@@ -7,6 +7,7 @@ import it.gov.pagopa.pu.bff.dto.OffsetDateTimeIntervalFilter;
 import it.gov.pagopa.pu.bff.dto.generated.PagedInstallmentView;
 import it.gov.pagopa.pu.bff.security.SecurityUtils;
 import it.gov.pagopa.pu.bff.service.installment.InstallmentRetrieverService;
+import it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentDetailDTO;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
@@ -30,6 +31,11 @@ public class InstallmentController implements InstallmentsApi {
     return ResponseEntity.ok(installmentRetrieverService.getInstallments(
       new InstallmentViewFiltersDTO(
         organizationId, userInfo.getMappedExternalUserId(), paymentDateTimeFilter, iuv, fiscalCode, debtPositionTypeOrgId), pageable, userInfo, SecurityUtils.getAccessToken()));
+  }
+
+  @Override
+  public ResponseEntity<InstallmentDetailDTO> getInstallmentDetail(Long organizationId, Long installmentId) {
+    return ResponseEntity.ofNullable(installmentRetrieverService.getInstallmentDetail(organizationId, installmentId, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken()));
   }
 
 }

@@ -1,12 +1,16 @@
 package it.gov.pagopa.pu.bff.controller;
 
+import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.dto.ExportFileFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.OffsetDateTimeIntervalFilter;
 import it.gov.pagopa.pu.bff.dto.generated.ExportFile;
 import it.gov.pagopa.pu.bff.dto.generated.PagedExportFile;
-import it.gov.pagopa.pu.bff.service.export_flow_file.ExportFileService;
+import it.gov.pagopa.pu.bff.service.export_flow_file.ExportFileRetrieverService;
+import it.gov.pagopa.pu.bff.util.TestUtils;
 import it.gov.pagopa.pu.processexecutions.dto.generated.ExportFile.FlowFileTypeEnum;
 import it.gov.pagopa.pu.processexecutions.dto.generated.ExportFile.StatusEnum;
+import it.gov.pagopa.pu.processexecutions.dto.generated.ExportFileFilter;
+import it.gov.pagopa.pu.processexecutions.dto.generated.ExportFileRequestDTO;
 import java.time.OffsetDateTime;
 import java.util.List;
 import org.junit.jupiter.api.Assertions;
@@ -29,7 +33,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 class ExportFileControllerTest {
 
   @Mock
-  private ExportFileService exportFileServiceMock;
+  private ExportFileRetrieverService exportFileRetrieverServiceMock;
 
   @InjectMocks
   private ExportFileController exportFileController;
@@ -67,7 +71,7 @@ class ExportFileControllerTest {
     expectedResult.setTotalPages(0L);
     expectedResult.setNumber(0L);
 
-    Mockito.when(exportFileServiceMock.getExportFiles(
+    Mockito.when(exportFileRetrieverServiceMock.getExportFiles(
         Mockito.eq(expectedFilter),
         Mockito.argThat(p->p.getPageNumber()==0 && p.getPageSize()==10 && p.getSort().isUnsorted()),
         Mockito.any(), Mockito.anyString()))
@@ -80,6 +84,24 @@ class ExportFileControllerTest {
     Assertions.assertEquals(HttpStatus.OK,response.getStatusCode());
     Assertions.assertNotNull(response.getBody());
     Assertions.assertSame(expectedResult,response.getBody());
+  }
+
+  @Test
+  void givenCorrectRequestWhenCreateExportFileThenOk() {
+    ExportFileRequestDTO requestDTO = ExportFileRequestDTO.builder()
+      .organizationId(1L)
+      .flowFileType(ExportFileRequestDTO.FlowFileTypeEnum.CLASSIFICATIONS)
+      .filterFields(ExportFileFilter.builder()
+        .iuv("iuv")
+        .build())
+      .build();
+    TestUtils.addSampleUserIntoSecurityContext();
+
+    ResponseEntity<Void> response = exportFileController.createExportFile(requestDTO);
+
+    Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
+    Mockito.verify(exportFileRetrieverServiceMock).createExportFile(Mockito.eq(requestDTO), Mockito.any(
+      UserInfo.class), Mockito.anyString());
   }
 }
 

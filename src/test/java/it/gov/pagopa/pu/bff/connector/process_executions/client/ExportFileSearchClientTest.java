@@ -34,7 +34,8 @@ class ExportFileSearchClientTest {
   @Mock
   private ProcessExecutionsApisHolder processExecutionsApisHolderMock;
   @Mock
-  private ExportFileSearchControllerApi exportFileSearchControllerApi;
+  private ExportFileSearchControllerApi exportFileSearchControllerApiMock;
+
 
   private ExportFileSearchClient exportFileSearchClient;
 
@@ -49,7 +50,7 @@ class ExportFileSearchClientTest {
   }
 
   @Test
-  void whenGetIngestionFlowFilesThenInvokeWithAccessToken() {
+  void whenGetExportFilesThenInvokeWithAccessToken() {
     long organizationId = 1L;
     FlowFileTypeEnum flowFileType = FlowFileTypeEnum.CLASSIFICATIONS;
     OffsetDateTime creationDateFrom = OffsetDateTime.now().minusDays(10);
@@ -65,8 +66,8 @@ class ExportFileSearchClientTest {
     PagedModelExportFile expectedResult = new PagedModelExportFile();
 
     when(processExecutionsApisHolderMock.getExportFileSearchControllerApi(accessToken))
-      .thenReturn(exportFileSearchControllerApi);
-    when(exportFileSearchControllerApi.crudExportFilesFindByOrganizationIDFlowTypeCreateDate(
+      .thenReturn(exportFileSearchControllerApiMock);
+    when(exportFileSearchControllerApiMock.crudExportFilesFindByOrganizationIDFlowTypeCreateDate(
       String.valueOf(organizationId),flowFileType.toString(),creationDateFrom,
       creationDateTo,status.name(),fileName,operatorExternalId,0,10,sortList))
       .thenReturn(expectedResult);
@@ -79,7 +80,7 @@ class ExportFileSearchClientTest {
   }
 
   @Test
-  void givenUnpagedWhenGetIngestionFlowFilesThenInvokeWithAccessToken() {
+  void givenUnpagedWhenGetExportFilesThenInvokeWithAccessToken() {
     long organizationId = 1L;
     FlowFileTypeEnum flowFileType = FlowFileTypeEnum.CLASSIFICATIONS;
     OffsetDateTime creationDateFrom = OffsetDateTime.now().minusDays(10);
@@ -94,8 +95,8 @@ class ExportFileSearchClientTest {
     PagedModelExportFile expectedResult = new PagedModelExportFile();
 
     when(processExecutionsApisHolderMock.getExportFileSearchControllerApi(accessToken))
-      .thenReturn(exportFileSearchControllerApi);
-    when(exportFileSearchControllerApi.crudExportFilesFindByOrganizationIDFlowTypeCreateDate(
+      .thenReturn(exportFileSearchControllerApiMock);
+    when(exportFileSearchControllerApiMock.crudExportFilesFindByOrganizationIDFlowTypeCreateDate(
       String.valueOf(organizationId),flowFileType.toString(),creationDateFrom,
       creationDateTo,status.name(),fileName,operatorExternalId,0,null,Collections.emptyList()))
       .thenReturn(expectedResult);
@@ -107,7 +108,7 @@ class ExportFileSearchClientTest {
   }
 
   @Test
-  void givenGenericHttpExceptionWhenGetIngestionFlowFilesThenThrowIt() {
+  void givenGenericHttpExceptionWhenGetExportFilesThenThrowIt() {
     long organizationId = 1L;
     FlowFileTypeEnum flowFileType = FlowFileTypeEnum.CLASSIFICATIONS;
     OffsetDateTime creationDateFrom = OffsetDateTime.now().minusDays(10);
@@ -123,8 +124,8 @@ class ExportFileSearchClientTest {
     HttpClientErrorException expectedException = new HttpClientErrorException(HttpStatus.INTERNAL_SERVER_ERROR);
 
     when(processExecutionsApisHolderMock.getExportFileSearchControllerApi(accessToken))
-      .thenReturn(exportFileSearchControllerApi);
-    when(exportFileSearchControllerApi.crudExportFilesFindByOrganizationIDFlowTypeCreateDate(
+      .thenReturn(exportFileSearchControllerApiMock);
+    when(exportFileSearchControllerApiMock.crudExportFilesFindByOrganizationIDFlowTypeCreateDate(
       String.valueOf(organizationId),flowFileType.toString(),creationDateFrom,
       creationDateTo,status.name(),fileName,operatorExternalId,0,10,sortList))
       .thenThrow(expectedException);
@@ -139,7 +140,7 @@ class ExportFileSearchClientTest {
   }
 
   @Test
-  void givenGenericExceptionWhenGetIngestionFlowFilesThenThrowIt() {
+  void givenGenericExceptionWhenGetExportFilesThenThrowIt() {
     long organizationId = 1L;
     FlowFileTypeEnum flowFileType = FlowFileTypeEnum.CLASSIFICATIONS;
     OffsetDateTime creationDateFrom = OffsetDateTime.now().minusDays(10);
@@ -155,8 +156,8 @@ class ExportFileSearchClientTest {
     RuntimeException expectedException = new RuntimeException();
 
     when(processExecutionsApisHolderMock.getExportFileSearchControllerApi(accessToken))
-      .thenReturn(exportFileSearchControllerApi);
-    when(exportFileSearchControllerApi.crudExportFilesFindByOrganizationIDFlowTypeCreateDate(
+      .thenReturn(exportFileSearchControllerApiMock);
+    when(exportFileSearchControllerApiMock.crudExportFilesFindByOrganizationIDFlowTypeCreateDate(
       String.valueOf(organizationId),flowFileType.toString(),creationDateFrom,
       creationDateTo,status.name(),fileName,operatorExternalId,0,10,sortList))
       .thenThrow(expectedException);
@@ -169,5 +170,6 @@ class ExportFileSearchClientTest {
 
     Assertions.assertSame(expectedException, result);
   }
+
 }
 

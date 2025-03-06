@@ -1,6 +1,7 @@
 package it.gov.pagopa.pu.bff.connector.process_executions.config;
 
 import it.gov.pagopa.pu.bff.connector.BaseApiHolderTest;
+import it.gov.pagopa.pu.processexecutions.dto.generated.ExportFileRequestDTO;
 import it.gov.pagopa.pu.processexecutions.dto.generated.PagedModelExportFile;
 import it.gov.pagopa.pu.processexecutions.dto.generated.PagedModelIngestionFlowFile;
 import java.time.LocalDateTime;
@@ -60,6 +61,19 @@ class ProcessExecutionsApisHolderTest extends BaseApiHolderTest {
         .crudExportFilesFindByOrganizationIDFlowTypeCreateDate(String.valueOf(123L), "flowFileType",
           OffsetDateTime.now(),OffsetDateTime.now(),"status","fileName","operatorExternalId",0,0,null),
       PagedModelExportFile.class,
+      processExecutionsApisHolder::unload
+    );
+  }
+
+  @Test
+  void whenGetExportFileControllerApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
+    assertAuthenticationShouldBeSetInThreadSafeMode(
+      accessToken -> {
+        processExecutionsApisHolder.getExportFileControllerApi(accessToken)
+          .createExportFile(new ExportFileRequestDTO());
+        return null;
+      },
+      String.class,
       processExecutionsApisHolder::unload
     );
   }

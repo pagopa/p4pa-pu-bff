@@ -3,6 +3,7 @@ package it.gov.pagopa.pu.bff.connector.process_executions.config;
 import it.gov.pagopa.pu.bff.config.RestTemplateConfig;
 import it.gov.pagopa.pu.processexecutions.controller.ApiClient;
 import it.gov.pagopa.pu.processexecutions.controller.BaseApi;
+import it.gov.pagopa.pu.processexecutions.controller.generated.ExportFileControllerApi;
 import it.gov.pagopa.pu.processexecutions.controller.generated.ExportFileSearchControllerApi;
 import it.gov.pagopa.pu.processexecutions.controller.generated.IngestionFlowFileSearchControllerApi;
 import jakarta.annotation.PreDestroy;
@@ -15,13 +16,14 @@ public class ProcessExecutionsApisHolder {
 
     private final IngestionFlowFileSearchControllerApi ingestionFlowFileSearchControllerApi;
     private final ExportFileSearchControllerApi exportFileSearchControllerApi;
+    private final ExportFileControllerApi exportFileControllerApi;
     private final ThreadLocal<String> bearerTokenHolder = new ThreadLocal<>();
 
     public ProcessExecutionsApisHolder(
         ProcessExecutionsApiClientConfig clientConfig,
         RestTemplateBuilder restTemplateBuilder
     ) {
-        RestTemplate restTemplate = restTemplateBuilder.build();
+      RestTemplate restTemplate = restTemplateBuilder.build();
         ApiClient apiClient = new ApiClient(restTemplate);
         apiClient.setBasePath(clientConfig.getBaseUrl());
         apiClient.setBearerToken(bearerTokenHolder::get);
@@ -33,6 +35,7 @@ public class ProcessExecutionsApisHolder {
 
         this.ingestionFlowFileSearchControllerApi = new IngestionFlowFileSearchControllerApi(apiClient);
         this.exportFileSearchControllerApi = new ExportFileSearchControllerApi(apiClient);
+        this.exportFileControllerApi = new ExportFileControllerApi(apiClient);
     }
 
     @PreDestroy
@@ -48,6 +51,11 @@ public class ProcessExecutionsApisHolder {
     /** It will return a {@link ExportFileSearchControllerApi} instrumented with the provided accessToken. Use null if auth is not required */
     public ExportFileSearchControllerApi getExportFileSearchControllerApi(String accessToken){
         return getApi(accessToken, exportFileSearchControllerApi);
+    }
+
+    /** It will return a {@link ExportFileControllerApi} instrumented with the provided accessToken. Use null if auth is not required */
+    public ExportFileControllerApi getExportFileControllerApi(String accessToken) {
+      return getApi(accessToken, exportFileControllerApi);
     }
 
     private <T extends BaseApi> T getApi(String accessToken, T api) {

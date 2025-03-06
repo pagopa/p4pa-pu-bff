@@ -747,6 +747,21 @@ paths:
           description: Not Found - DebtPosition not found
         '500':
           description: Internal Server Error
+  /export-flow-files:
+    post:
+      summary: create-export-file
+      tags:
+        - ExportFiles
+      operationId: createExportFile
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: 'ExportFileRequestDTO'
+        required: true
+      responses:
+        '201':
+          description: OK
 security:
   - BearerAuth: [ ]
 components:

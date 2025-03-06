@@ -8,12 +8,13 @@ import it.gov.pagopa.pu.bff.dto.generated.PagedInstallmentView;
 import it.gov.pagopa.pu.bff.security.SecurityUtils;
 import it.gov.pagopa.pu.bff.service.installment.InstallmentRetrieverService;
 import it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentDetailDTO;
+import java.time.OffsetDateTime;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.time.OffsetDateTime;
-
+@Slf4j
 @RestController
 public class InstallmentController implements InstallmentsApi {
 
@@ -25,6 +26,7 @@ public class InstallmentController implements InstallmentsApi {
 
   @Override
   public ResponseEntity<PagedInstallmentView> getInstallments(Long organizationId, OffsetDateTime dueDateFrom, OffsetDateTime dueDateTo, String iuv, String fiscalCode, Long debtPositionTypeOrgId, Pageable pageable) {
+    log.info("User requested getInstallments having organizationId {}, dueDateFrom {} and dueDateTo {}", organizationId, dueDateFrom, dueDateTo);
     UserInfo userInfo = SecurityUtils.getLoggedUser();
     OffsetDateTimeIntervalFilter paymentDateTimeFilter = new OffsetDateTimeIntervalFilter(dueDateFrom, dueDateTo);
 
@@ -35,6 +37,7 @@ public class InstallmentController implements InstallmentsApi {
 
   @Override
   public ResponseEntity<InstallmentDetailDTO> getInstallmentDetail(Long organizationId, Long installmentId) {
+    log.info("User requested getInstallmentDetail having organizationId {} and installmentId {}", organizationId, installmentId);
     return ResponseEntity.ofNullable(installmentRetrieverService.getInstallmentDetail(organizationId, installmentId, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken()));
   }
 

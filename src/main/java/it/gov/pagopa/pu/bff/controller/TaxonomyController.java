@@ -26,6 +26,7 @@ public class TaxonomyController implements TaxonomyApi {
   @Override
   public ResponseEntity<List<TaxonomyCollectionReasonDTO>> getCollectionReason (
     String organizationType, String macroAreaCode, String serviceTypeCode) {
+    log.info("User requested getCollectionReason");
     return new ResponseEntity<>(taxonomyRetrieverService.getCollectionReason(
       organizationType,
       macroAreaCode, serviceTypeCode, SecurityUtils.getAccessToken()), HttpStatus.OK);
@@ -34,17 +35,20 @@ public class TaxonomyController implements TaxonomyApi {
   @Override
   public ResponseEntity<List<TaxonomyMacroAreaCodeDTO>> getMacroArea (
     String organizationType) {
+    log.info("User requested getMacroArea");
     return new ResponseEntity<>(taxonomyRetrieverService.getMacroArea(organizationType,SecurityUtils.getAccessToken()), HttpStatus.OK);
   }
 
   @Override
   public ResponseEntity<List<TaxonomyOrganizationTypeDTO>> getOrganizationTypes () {
+    log.info("User requested getOrganizationTypes");
     return new ResponseEntity<>(taxonomyRetrieverService.getOrganizationTypes(SecurityUtils.getAccessToken()), HttpStatus.OK);
   }
 
   @Override
   public ResponseEntity<List<TaxonomyServiceTypeCodeDTO>> getServiceType (
     String organizationType, String macroAreaCode) {
+    log.info("User requested getServiceType");
     return new ResponseEntity<>(taxonomyRetrieverService.getServiceType(organizationType, macroAreaCode,SecurityUtils.getAccessToken()), HttpStatus.OK);
   }
 
@@ -52,6 +56,7 @@ public class TaxonomyController implements TaxonomyApi {
   public ResponseEntity<List<TaxonomyCodeDTO>> getTaxonomyCode (
     String organizationType,
     String macroAreaCode, String serviceTypeCode, String collectionReason) {
+    log.info("User requested getTaxonomyCode");
     return new ResponseEntity<>(taxonomyRetrieverService.getTaxonomyCode(organizationType, macroAreaCode,
       serviceTypeCode,
       collectionReason,SecurityUtils.getAccessToken()), HttpStatus.OK);

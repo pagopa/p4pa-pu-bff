@@ -242,7 +242,7 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/TaxonomyCodeDTO'
-  /debt-position-types/organization/{organizationId}:
+  /organization/{organizationId}/debt-position-types:
     get:
       tags:
         - DebtPositionTypes
@@ -269,7 +269,7 @@ paths:
         '500':
           description: Internal Server Error
       x-spring-paginated: true
-  /debt-position-type-orgs/organization/{organizationId}:
+  /organization/{organizationId}/debt-position-type-orgs:
     get:
       tags:
         - DebtPositionTypeOrgs
@@ -349,7 +349,46 @@ paths:
         '500':
           description: Internal Server Error
       x-spring-paginated: true
-  /payments-reporting/organization/{organizationId}:
+  /organization/{organizationId}/installments/{installmentId}:
+    get:
+      tags:
+        - Installments
+      summary: "Retrieve a specific installment"
+      operationId: getInstallmentDetail
+      parameters:
+        - name: organizationId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: installmentId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: The unique identifier of the installment
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: 'InstallmentDetailDTO'
+        '404':
+          description: Not Found - Receipt not found
+        '401':
+          description: Unauthorized - Missing or invalid token
+        '403':
+          description: Forbidden - Access denied
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDTO'
+  /organization/{organizationId}/payments-reporting:
     get:
       tags:
         - PaymentsReporting
@@ -398,7 +437,7 @@ paths:
         '500':
           description: Internal Server Error
       x-spring-paginated: true
-  /receipts:
+  /organization/{organizationId}/receipts:
     get:
       tags:
         - Receipts
@@ -406,7 +445,7 @@ paths:
       operationId: getReceipts
       parameters:
         - name: organizationId
-          in: query
+          in: path
           required: true
           schema:
             type: integer
@@ -463,7 +502,7 @@ paths:
         '500':
           description: Internal Server Error
       x-spring-paginated: true
-  /receipts/{organizationId}/{receiptId}:
+  /organization/{organizationId}/receipts/{receiptId}:
     get:
       tags:
         - Receipts
@@ -530,7 +569,7 @@ paths:
           description: Forbidden - Access denied
         '500':
           description: Internal Server Error
-  /ingestion-flow-files/{organizationId}:
+  /organization/{organizationId}/ingestion-flow-files:
     get:
       tags:
         - IngestionFlowFiles
@@ -577,7 +616,7 @@ paths:
         '404':
           description: Not Found
       x-spring-paginated: true
-  /export-flow-files/{organizationId}:
+  /organization/{organizationId}/export-flow-files:
     get:
       tags:
         - ExportFiles
@@ -674,6 +713,40 @@ paths:
         '500':
           description: Internal Server Error
       x-spring-paginated: true
+  /organization/{organizationId}/debt-positions/{debtPositionId}:
+    get:
+      tags:
+        - DebtPositions
+      summary: "Retrieve a specific DebtPosition"
+      operationId: getDebtPositionDetail
+      parameters:
+        - name: organizationId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: debtPositionId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DebtPositionDetailDTO'
+        '401':
+          description: Unauthorized - Missing or invalid token
+        '403':
+          description: Forbidden - Access denied
+        '404':
+          description: Not Found - DebtPosition not found
+        '500':
+          description: Internal Server Error
   /export-flow-files:
     post:
       summary: create-export-file
@@ -1026,9 +1099,9 @@ components:
         debtPositionTypeOrgDescription:
           type: string
         debtor:
-          $ref: "#/components/schemas/PersonDTO"
+          type: 'PersonDTO'
         payer:
-          $ref: "#/components/schemas/PersonDTO"
+         type: 'PersonDTO'
         paymentDateTime:
           type: string
           format: date-time
@@ -1037,16 +1110,6 @@ components:
         iud:
           type: string
         iur:
-          type: string
-    PersonDTO:
-      required:
-        - fullName
-        - fiscalCode
-      type: object
-      properties:
-        fiscalCode:
-          type: string
-        fullName:
           type: string
     PagedIngestionFlowFile:
       type: object
@@ -1177,3 +1240,26 @@ components:
         number:
           type: integer
           format: int64
+    DebtPositionDetailDTO:
+      type: object
+      required:
+        - debtor
+        - debtPositionTypeOrgDescription
+        - debtPositionTypeOrgCode
+        - status
+        - paymentOptions
+      properties:
+        debtor:
+          type: 'PersonDTO'
+        debtPositionTypeOrgDescription:
+          type: string
+        debtPositionTypeOrgCode:
+          type: string
+        iupd:
+          type: string
+        status:
+          type: 'DebtPositionStatus'
+        paymentOptions:
+          type: array
+          items:
+            type: 'PaymentOptionDTO'

@@ -2,6 +2,7 @@ package it.gov.pagopa.pu.bff.connector.debt_position;
 
 import it.gov.pagopa.pu.bff.connector.debt_position.client.InstallmentClient;
 import it.gov.pagopa.pu.bff.dto.InstallmentViewFiltersDTO;
+import it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentDetailDTO;
 import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelInstallmentView;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -41,4 +42,20 @@ class InstallmentServiceImplTest {
 
     assertSame(expectedResult, result);
   }
+
+  @Test
+  void whenGetInstallmentDetailThenInvokeClient() {
+    String accessToken = "ACCESSTOKEN";
+    Long installmentId = 1L;
+    String operatorExternalUserId = "operatorExternalUserId";
+    InstallmentDetailDTO expectedResult = new InstallmentDetailDTO();
+
+    when(client.getInstallmentDetail(installmentId, operatorExternalUserId, accessToken))
+      .thenReturn(expectedResult);
+
+    InstallmentDetailDTO result = service.getInstallmentDetail(installmentId, operatorExternalUserId, accessToken);
+
+    assertSame(expectedResult, result);
+  }
+
 }

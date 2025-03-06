@@ -85,6 +85,14 @@ class DebtPositionApisHolderTest extends BaseApiHolderTest {
   @Test
   void whenGetInstallmentApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
     assertAuthenticationShouldBeSetInThreadSafeMode(
+      accessToken -> debtPositionApisHolder.getInstallmentApi(accessToken)
+        .getInstallmentDetail(1L, "operatorExternalUserId"),
+      InstallmentDetailDTO.class, debtPositionApisHolder::unload);
+  }
+
+  @Test
+  void whenGetInstallmentViewSearchControllerApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
+    assertAuthenticationShouldBeSetInThreadSafeMode(
       accessToken -> debtPositionApisHolder.getInstallmentViewSearchControllerApi(accessToken)
         .crudInstallmentViewsFindInstallmentsByFilters(1L, "operatorExternalUserId", OffsetDateTime.now().minusDays(30), OffsetDateTime.now(), "iuv", "fiscalCode", 2L, 0, 10, Collections.emptyList()),
       PagedModelInstallmentView.class, debtPositionApisHolder::unload);
@@ -106,5 +114,22 @@ class DebtPositionApisHolderTest extends BaseApiHolderTest {
       PagedModelDebtPositionView.class, debtPositionApisHolder::unload);
   }
 
+  @Test
+  void whenGetDebtPositionApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
+    assertAuthenticationShouldBeSetInThreadSafeMode(
+      accessToken -> debtPositionApisHolder.getDebtPositionApi(accessToken)
+        .getDebtPosition(
+          1L),
+      DebtPositionDTO.class, debtPositionApisHolder::unload);
+  }
+
+  @Test
+  void whenGetDebtPositionTypeOrgEntityControllerApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
+    assertAuthenticationShouldBeSetInThreadSafeMode(
+      accessToken -> debtPositionApisHolder.getDebtPositionTypeOrgEntityControllerApi(accessToken)
+        .crudGetDebtpositiontypeorg(
+          "1"),
+      DebtPositionTypeOrg.class, debtPositionApisHolder::unload);
+  }
 }
 

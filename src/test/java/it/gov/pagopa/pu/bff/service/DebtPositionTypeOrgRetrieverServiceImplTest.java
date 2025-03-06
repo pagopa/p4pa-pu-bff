@@ -1,11 +1,17 @@
 package it.gov.pagopa.pu.bff.service;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
-import it.gov.pagopa.pu.bff.connector.debt_position.client.DebtPositionTypeOrgClient;
-import it.gov.pagopa.pu.bff.service.debt_position_type_org.DebtPositionTypeOrgServiceImpl;
+import it.gov.pagopa.pu.bff.connector.debt_position.DebtPositionTypeOrgService;
+import it.gov.pagopa.pu.bff.service.debt_position_type_org.DebtPositionTypeOrgRetrieverServiceImpl;
 import it.gov.pagopa.pu.debtpositions.dto.generated.CollectionModelDebtPositionTypeOrg;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrg;
 import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelDebtPositionTypeOrgEmbedded;
+import java.util.List;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,28 +23,24 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.authorization.AuthorizationDeniedException;
 
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
-
 @ExtendWith(MockitoExtension.class)
-class DebtPositionTypeOrgServiceImplTest {
+class DebtPositionTypeOrgRetrieverServiceImplTest {
 
   @Mock
-  private DebtPositionTypeOrgClient debtPositionTypeOrgClientMock;
+  private DebtPositionTypeOrgService debtPositionTypeOrgServiceMock;
 
-  private DebtPositionTypeOrgServiceImpl debtPositionTypeOrgService;
+  private DebtPositionTypeOrgRetrieverServiceImpl debtPositionTypeOrgService;
 
   private final String accessToken = "TOKEN";
 
   @BeforeEach
   void setUp() {
-    debtPositionTypeOrgService = new DebtPositionTypeOrgServiceImpl(debtPositionTypeOrgClientMock);
+    debtPositionTypeOrgService = new DebtPositionTypeOrgRetrieverServiceImpl(debtPositionTypeOrgServiceMock);
   }
 
   @AfterEach
   void verifyNoMoreInteractions() {
-    Mockito.verifyNoMoreInteractions(debtPositionTypeOrgClientMock);
+    Mockito.verifyNoMoreInteractions(debtPositionTypeOrgServiceMock);
   }
 
   @Test
@@ -58,7 +60,7 @@ class DebtPositionTypeOrgServiceImplTest {
       authorizationServiceMockedStatic.when(() -> AuthorizationService.isUserEnabledToOrganizationId(organizationId, loggedUser))
         .thenReturn(true);
 
-      Mockito.when(debtPositionTypeOrgClientMock.getDebtPositionTypeOrgs(organizationId, operatorExternalUserId, accessToken))
+      Mockito.when(debtPositionTypeOrgServiceMock.getDebtPositionTypeOrgs(organizationId, operatorExternalUserId, accessToken))
         .thenReturn(collectionModel);
 
       List<DebtPositionTypeOrg> result = debtPositionTypeOrgService.getDebtPositionTypeOrgs(organizationId, operatorExternalUserId, loggedUser, accessToken);
@@ -68,7 +70,7 @@ class DebtPositionTypeOrgServiceImplTest {
       assertSame(debtPositionTypeOrg, result.get(0));
 
       authorizationServiceMockedStatic.verify(() -> AuthorizationService.isUserEnabledToOrganizationId(organizationId, loggedUser));
-      Mockito.verify(debtPositionTypeOrgClientMock).getDebtPositionTypeOrgs(organizationId, operatorExternalUserId, accessToken);
+      Mockito.verify(debtPositionTypeOrgServiceMock).getDebtPositionTypeOrgs(organizationId, operatorExternalUserId, accessToken);
     }
   }
 
@@ -85,7 +87,7 @@ class DebtPositionTypeOrgServiceImplTest {
       authorizationServiceMockedStatic.when(() -> AuthorizationService.isUserEnabledToOrganizationId(organizationId, loggedUser))
         .thenReturn(true);
 
-      Mockito.when(debtPositionTypeOrgClientMock.getDebtPositionTypeOrgs(organizationId, operatorExternalUserId, accessToken))
+      Mockito.when(debtPositionTypeOrgServiceMock.getDebtPositionTypeOrgs(organizationId, operatorExternalUserId, accessToken))
         .thenReturn(emptyCollectionModel);
 
       List<DebtPositionTypeOrg> result = debtPositionTypeOrgService.getDebtPositionTypeOrgs(organizationId, operatorExternalUserId, loggedUser, accessToken);
@@ -94,7 +96,7 @@ class DebtPositionTypeOrgServiceImplTest {
       assertTrue(result.isEmpty());
 
       authorizationServiceMockedStatic.verify(() -> AuthorizationService.isUserEnabledToOrganizationId(organizationId, loggedUser));
-      Mockito.verify(debtPositionTypeOrgClientMock).getDebtPositionTypeOrgs(organizationId, operatorExternalUserId, accessToken);
+      Mockito.verify(debtPositionTypeOrgServiceMock).getDebtPositionTypeOrgs(organizationId, operatorExternalUserId, accessToken);
     }
   }
 

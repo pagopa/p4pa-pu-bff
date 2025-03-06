@@ -1,5 +1,6 @@
 package it.gov.pagopa.pu.bff.controller;
 
+import it.gov.pagopa.pu.bff.dto.generated.DebtPositionDetailDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedDebtPositionView;
 import it.gov.pagopa.pu.bff.service.debt_position.DebtPositionRetrieverService;
 import it.gov.pagopa.pu.bff.util.TestUtils;
@@ -77,5 +78,46 @@ class DebtPositionControllerTest {
     Assertions.assertEquals(HttpStatus.OK,response.getStatusCode());
     Assertions.assertNotNull(response.getBody());
     Assertions.assertSame(expectedResult,response.getBody());
+  }
+
+  @Test
+  void givenExistingDebtPositionWhenGetDebtPositionDetailThenOk() {
+    long organizationId = 1L;
+    Long debtPositionId = 2L;
+
+    DebtPositionDetailDTO expectedResult = podamFactory.manufacturePojo(DebtPositionDetailDTO.class);
+
+    Mockito.when(debtPositionRetrieverServiceMock.getDebtPositionDetail(
+        Mockito.same(debtPositionId),
+        Mockito.same(organizationId),
+        Mockito.any(), Mockito.anyString()))
+      .thenReturn(expectedResult);
+
+    ResponseEntity<DebtPositionDetailDTO> response = debtPositionController.getDebtPositionDetail(
+      organizationId,
+      debtPositionId);
+
+    Assertions.assertEquals(HttpStatus.OK,response.getStatusCode());
+    Assertions.assertNotNull(response.getBody());
+    Assertions.assertSame(expectedResult,response.getBody());
+  }
+
+  @Test
+  void givenNoDebtPositionWhenGetDebtPositionDetailThenNotFound() {
+    long organizationId = 1L;
+    Long debtPositionId = 2L;
+
+    Mockito.when(debtPositionRetrieverServiceMock.getDebtPositionDetail(
+        Mockito.same(debtPositionId),
+        Mockito.same(organizationId),
+        Mockito.any(), Mockito.anyString()))
+      .thenReturn(null);
+
+    ResponseEntity<DebtPositionDetailDTO> response = debtPositionController.getDebtPositionDetail(
+      organizationId,
+      debtPositionId);
+
+    Assertions.assertEquals(HttpStatus.NOT_FOUND,response.getStatusCode());
+    Assertions.assertNull(response.getBody());
   }
 }

@@ -18,7 +18,10 @@ public class DebtPositionApisHolder {
   private final ReceiptViewSearchControllerApi receiptViewSearchControllerApi;
   private final InstallmentViewSearchControllerApi installmentViewSearchControllerApi;
   private final ReceiptApi receiptApi;
+  private final InstallmentApi installmentApi;
   private final DebtPositionViewSearchControllerApi debtPositionViewSearchControllerApi;
+  private final DebtPositionApi debtPositionApi;
+  private final DebtPositionTypeOrgEntityControllerApi debtPositionTypeOrgEntityControllerApi;
   private final ThreadLocal<String> bearerTokenHolder = new ThreadLocal<>();
 
   public DebtPositionApisHolder(
@@ -41,7 +44,10 @@ public class DebtPositionApisHolder {
     this.receiptViewSearchControllerApi = new ReceiptViewSearchControllerApi(apiClient);
     this.installmentViewSearchControllerApi = new InstallmentViewSearchControllerApi(apiClient);
     this.receiptApi = new ReceiptApi(apiClient);
+    this.installmentApi = new InstallmentApi(apiClient);
     this.debtPositionViewSearchControllerApi = new DebtPositionViewSearchControllerApi(apiClient);
+    this.debtPositionApi = new DebtPositionApi(apiClient);
+    this.debtPositionTypeOrgEntityControllerApi = new DebtPositionTypeOrgEntityControllerApi(apiClient);
   }
 
   @PreDestroy
@@ -83,10 +89,31 @@ public class DebtPositionApisHolder {
   }
 
   /**
+   * It will return a {@link InstallmentApi} instrumented with the provided accessToken. Use null if auth is not required
+   */
+  public InstallmentApi getInstallmentApi(String accessToken) {
+    return getApi(accessToken, installmentApi);
+  }
+
+  /**
    * It will return a {@link DebtPositionViewSearchControllerApi} instrumented with the provided accessToken. Use null if auth is not required
    */
   public DebtPositionViewSearchControllerApi getDebtPositionViewSearchControllerApi(String accessToken) {
     return getApi(accessToken, debtPositionViewSearchControllerApi);
+  }
+
+  /**
+   * It will return a {@link DebtPositionApi} instrumented with the provided accessToken. Use null if auth is not required
+   */
+  public DebtPositionApi getDebtPositionApi(String accessToken) {
+    return getApi(accessToken, debtPositionApi);
+  }
+
+  /**
+   * It will return a {@link DebtPositionTypeOrgEntityControllerApi} instrumented with the provided accessToken. Use null if auth is not required
+   */
+  public DebtPositionTypeOrgEntityControllerApi getDebtPositionTypeOrgEntityControllerApi(String accessToken) {
+    return getApi(accessToken, debtPositionTypeOrgEntityControllerApi);
   }
 
   private <T extends BaseApi> T getApi(String accessToken, T api) {

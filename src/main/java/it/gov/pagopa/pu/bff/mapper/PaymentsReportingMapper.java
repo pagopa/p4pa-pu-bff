@@ -1,6 +1,6 @@
 package it.gov.pagopa.pu.bff.mapper;
 
-import it.gov.pagopa.pu.bff.dto.generated.PagedPaymentsReporting;
+import it.gov.pagopa.pu.bff.dto.generated.PagedPaymentsReportingRow;
 import it.gov.pagopa.pu.classification.dto.generated.PagedModelPaymentsReporting;
 import java.util.Collections;
 import org.springframework.stereotype.Component;
@@ -9,9 +9,9 @@ import org.springframework.util.CollectionUtils;
 @Component
 public class PaymentsReportingMapper {
 
-  public PagedPaymentsReporting mapToPagedPaymentsReporting(
+  public PagedPaymentsReportingRow mapToPagedPaymentsReporting(
     PagedModelPaymentsReporting pagedModel) {
-    PagedPaymentsReporting pagedPaymentsReporting = new PagedPaymentsReporting();
+    PagedPaymentsReportingRow pagedPaymentsReporting = new PagedPaymentsReportingRow();
     if (pagedModel != null) {
       if (pagedModel.getEmbedded() != null && !CollectionUtils.isEmpty(
         pagedModel.getEmbedded().getPaymentsReportings())) {

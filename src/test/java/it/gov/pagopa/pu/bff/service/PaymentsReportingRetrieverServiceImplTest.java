@@ -3,7 +3,7 @@ package it.gov.pagopa.pu.bff.service;
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.connector.classification.PaymentsReportingService;
 import it.gov.pagopa.pu.bff.dto.LocalDateIntervalFilter;
-import it.gov.pagopa.pu.bff.dto.generated.PagedPaymentsReporting;
+import it.gov.pagopa.pu.bff.dto.generated.PagedPaymentsReportingRow;
 import it.gov.pagopa.pu.bff.dto.generated.PagedPaymentsReportingView;
 import it.gov.pagopa.pu.bff.mapper.PaymentsReportingMapper;
 import it.gov.pagopa.pu.bff.mapper.PaymentsReportingViewMapper;
@@ -127,7 +127,7 @@ class PaymentsReportingRetrieverServiceImplTest {
     Pageable pageable = PageRequest.of(0, 10);
 
     PagedModelPaymentsReporting pagedModelPaymentsReporting = new PagedModelPaymentsReporting();
-    PagedPaymentsReporting expectedResult = new PagedPaymentsReporting();
+    PagedPaymentsReportingRow expectedResult = new PagedPaymentsReportingRow();
 
     try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
       authorizationServiceMockedStatic.when(() -> AuthorizationService.isUserEnabledToOrganizationId(organizationId, loggedUser))
@@ -139,7 +139,7 @@ class PaymentsReportingRetrieverServiceImplTest {
       when(paymentsReportingMapperMock.mapToPagedPaymentsReporting(pagedModelPaymentsReporting))
         .thenReturn(expectedResult);
 
-      PagedPaymentsReporting result = paymentsReportingRetrieverService.getPaymentsReportingDetail(organizationId, iuf, iuv, payDateFilter, pageable, loggedUser, accessToken);
+      PagedPaymentsReportingRow result = paymentsReportingRetrieverService.getPaymentsReportingDetail(organizationId, iuf, iuv, payDateFilter, pageable, loggedUser, accessToken);
 
       assertNotNull(result);
       assertSame(expectedResult, result);

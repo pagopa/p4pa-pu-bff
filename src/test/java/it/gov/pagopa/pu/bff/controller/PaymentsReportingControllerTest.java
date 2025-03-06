@@ -2,7 +2,7 @@ package it.gov.pagopa.pu.bff.controller;
 
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.dto.LocalDateIntervalFilter;
-import it.gov.pagopa.pu.bff.dto.generated.PagedPaymentsReporting;
+import it.gov.pagopa.pu.bff.dto.generated.PagedPaymentsReportingRow;
 import it.gov.pagopa.pu.bff.dto.generated.PagedPaymentsReportingView;
 import it.gov.pagopa.pu.bff.service.payments_reporting.PaymentsReportingRetrieverService;
 import it.gov.pagopa.pu.classification.dto.generated.PaymentsReportingView;
@@ -98,13 +98,13 @@ class PaymentsReportingControllerTest {
 
     LocalDateIntervalFilter payDateFilter = new LocalDateIntervalFilter(payDateFrom,payDateTo);
 
-    PagedPaymentsReporting expectedResult = new PagedPaymentsReporting();
+    PagedPaymentsReportingRow expectedResult = new PagedPaymentsReportingRow();
 
     Mockito.when(paymentsReportingRetrieverServiceMock.getPaymentsReportingDetail(organizationId, iuf, iuv, payDateFilter,
         pageable, userInfo, "fakeAccessToken"))
       .thenReturn(expectedResult);
 
-    ResponseEntity<PagedPaymentsReporting> response = paymentsReportingController.getPaymentsReportingDetail(organizationId, iuf, iuv, payDateFrom, payDateTo, pageable);
+    ResponseEntity<PagedPaymentsReportingRow> response = paymentsReportingController.getPaymentsReportingRows(organizationId, iuf, iuv, payDateFrom, payDateTo, pageable);
 
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertNotNull(response.getBody());

@@ -1,6 +1,6 @@
 package it.gov.pagopa.pu.bff.mapper;
 
-import it.gov.pagopa.pu.bff.dto.generated.PagedPaymentsReporting;
+import it.gov.pagopa.pu.bff.dto.generated.PagedPaymentsReportingRow;
 import it.gov.pagopa.pu.bff.util.TestUtils;
 import it.gov.pagopa.pu.classification.dto.generated.PagedModelPaymentsReporting;
 import java.util.Collections;
@@ -24,7 +24,7 @@ class PaymentsReportingMapperTest {
   void givenPopulatedPagedModelWhenMapToPagedPaymentsReportingThenCorrectMapping() {
     PagedModelPaymentsReporting pagedModelPaymentsReporting = podamFactory.manufacturePojo(PagedModelPaymentsReporting.class);
 
-    PagedPaymentsReporting result = mapper.mapToPagedPaymentsReporting(pagedModelPaymentsReporting);
+    PagedPaymentsReportingRow result = mapper.mapToPagedPaymentsReporting(pagedModelPaymentsReporting);
 
     assertNotNull(result);
     assertEquals(pagedModelPaymentsReporting.getPage().getNumber(), result.getNumber());
@@ -40,7 +40,7 @@ class PaymentsReportingMapperTest {
     PagedModelPaymentsReporting pagedModelPaymentsReporting = podamFactory.manufacturePojo(PagedModelPaymentsReporting.class);
     pagedModelPaymentsReporting.getEmbedded().setPaymentsReportings(Collections.emptyList());
 
-    PagedPaymentsReporting result = mapper.mapToPagedPaymentsReporting(pagedModelPaymentsReporting);
+    PagedPaymentsReportingRow result = mapper.mapToPagedPaymentsReporting(pagedModelPaymentsReporting);
 
     assertNotNull(result);
     assertEquals(pagedModelPaymentsReporting.getPage().getNumber(), result.getNumber());
@@ -55,7 +55,7 @@ class PaymentsReportingMapperTest {
     PagedModelPaymentsReporting pagedModelPaymentsReporting = podamFactory.manufacturePojo(PagedModelPaymentsReporting.class);
     pagedModelPaymentsReporting.setPage(null);
 
-    PagedPaymentsReporting result = mapper.mapToPagedPaymentsReporting(pagedModelPaymentsReporting);
+    PagedPaymentsReportingRow result = mapper.mapToPagedPaymentsReporting(pagedModelPaymentsReporting);
 
     assertNotNull(result);
     assertNull(result.getNumber());

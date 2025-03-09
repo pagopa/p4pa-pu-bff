@@ -1,7 +1,6 @@
 package it.gov.pagopa.pu.bff.connector.debt_position.config;
 
 import it.gov.pagopa.pu.bff.connector.BaseApiHolderTest;
-import it.gov.pagopa.pu.debtpositions.dto.generated.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -10,6 +9,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.web.util.DefaultUriBuilderFactory;
 
 import java.time.LocalDateTime;
@@ -47,7 +47,8 @@ class DebtPositionApisHolderTest extends BaseApiHolderTest {
     assertAuthenticationShouldBeSetInThreadSafeMode(
       accessToken -> debtPositionApisHolder.getDebtPositionTypeControllerApi(accessToken)
         .crudGetDebtpositiontype(String.valueOf(123L)),
-      DebtPositionType.class, debtPositionApisHolder::unload);
+      new ParameterizedTypeReference<>() {},
+      debtPositionApisHolder::unload);
   }
 
   @Test
@@ -55,7 +56,8 @@ class DebtPositionApisHolderTest extends BaseApiHolderTest {
     assertAuthenticationShouldBeSetInThreadSafeMode(
       accessToken -> debtPositionApisHolder.getDebtPositionTypeWithCountSearchControllerApi(accessToken)
         .crudDebtPositionTypesWithCountFindByBrokerId(1L, 0, 0, Collections.emptyList()),
-      PagedModelDebtPositionTypeWithCount.class, debtPositionApisHolder::unload);
+      new ParameterizedTypeReference<>() {},
+      debtPositionApisHolder::unload);
   }
 
   @Test
@@ -63,7 +65,8 @@ class DebtPositionApisHolderTest extends BaseApiHolderTest {
     assertAuthenticationShouldBeSetInThreadSafeMode(
       accessToken -> debtPositionApisHolder.getReceiptViewSearchControllerApi(accessToken)
         .crudReceiptsViewFindReceiptsByFilters("1", "origin", "operator", "iuv", "iur", "iud", 1L, null, null, 0, 10, Collections.emptyList()),
-      PagedModelReceiptView.class, debtPositionApisHolder::unload);
+      new ParameterizedTypeReference<>() {},
+      debtPositionApisHolder::unload);
   }
 
   @Test
@@ -71,7 +74,7 @@ class DebtPositionApisHolderTest extends BaseApiHolderTest {
     assertAuthenticationShouldBeSetInThreadSafeMode(
       accessToken -> debtPositionApisHolder.getDebtPositionTypeOrgSearchControllerApi(accessToken)
         .crudDebtPositionTypeOrgsFindDebtPositionTypeOrgs("1", "operator123"),
-      CollectionModelDebtPositionTypeOrg.class, debtPositionApisHolder::unload);
+      new ParameterizedTypeReference<>() {}, debtPositionApisHolder::unload);
   }
 
   @Test
@@ -79,7 +82,8 @@ class DebtPositionApisHolderTest extends BaseApiHolderTest {
     assertAuthenticationShouldBeSetInThreadSafeMode(
       accessToken -> debtPositionApisHolder.getReceiptApi(accessToken)
         .getReceiptDetail(1L, "operatorExternalUserId"),
-      ReceiptDetailDTO.class, debtPositionApisHolder::unload);
+      new ParameterizedTypeReference<>() {},
+      debtPositionApisHolder::unload);
   }
 
   @Test
@@ -87,7 +91,7 @@ class DebtPositionApisHolderTest extends BaseApiHolderTest {
     assertAuthenticationShouldBeSetInThreadSafeMode(
       accessToken -> debtPositionApisHolder.getInstallmentApi(accessToken)
         .getInstallmentDetail(1L, "operatorExternalUserId"),
-      InstallmentDetailDTO.class, debtPositionApisHolder::unload);
+      new ParameterizedTypeReference<>() {}, debtPositionApisHolder::unload);
   }
 
   @Test
@@ -95,7 +99,7 @@ class DebtPositionApisHolderTest extends BaseApiHolderTest {
     assertAuthenticationShouldBeSetInThreadSafeMode(
       accessToken -> debtPositionApisHolder.getInstallmentViewSearchControllerApi(accessToken)
         .crudInstallmentViewsFindInstallmentsByFilters(1L, "operatorExternalUserId", OffsetDateTime.now().minusDays(30), OffsetDateTime.now(), "iuv", "fiscalCode", 2L, 0, 10, Collections.emptyList()),
-      PagedModelInstallmentView.class, debtPositionApisHolder::unload);
+      new ParameterizedTypeReference<>() {}, debtPositionApisHolder::unload);
   }
 
   @Test
@@ -111,7 +115,8 @@ class DebtPositionApisHolderTest extends BaseApiHolderTest {
           "fiscalCode",
           1L,
           "status", 0, 10, Collections.emptyList()),
-      PagedModelDebtPositionView.class, debtPositionApisHolder::unload);
+      new ParameterizedTypeReference<>() {},
+      debtPositionApisHolder::unload);
   }
 
   @Test
@@ -120,7 +125,8 @@ class DebtPositionApisHolderTest extends BaseApiHolderTest {
       accessToken -> debtPositionApisHolder.getDebtPositionApi(accessToken)
         .getDebtPosition(
           1L),
-      DebtPositionDTO.class, debtPositionApisHolder::unload);
+      new ParameterizedTypeReference<>() {},
+      debtPositionApisHolder::unload);
   }
 
   @Test
@@ -129,7 +135,8 @@ class DebtPositionApisHolderTest extends BaseApiHolderTest {
       accessToken -> debtPositionApisHolder.getDebtPositionTypeOrgEntityControllerApi(accessToken)
         .crudGetDebtpositiontypeorg(
           "1"),
-      DebtPositionTypeOrg.class, debtPositionApisHolder::unload);
+      new ParameterizedTypeReference<>() {},
+      debtPositionApisHolder::unload);
   }
 }
 

@@ -1,9 +1,6 @@
 package it.gov.pagopa.pu.bff.connector.classification.config;
 
 import it.gov.pagopa.pu.bff.connector.BaseApiHolderTest;
-import it.gov.pagopa.pu.classification.dto.generated.PagedModelPaymentsReporting;
-import it.gov.pagopa.pu.classification.dto.generated.PagedModelPaymentsReportingView;
-import java.util.Collections;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -12,7 +9,10 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.web.util.DefaultUriBuilderFactory;
+
+import java.util.Collections;
 
 @ExtendWith(MockitoExtension.class)
 class ClassificationApisHolderTest extends BaseApiHolderTest {
@@ -44,7 +44,8 @@ class ClassificationApisHolderTest extends BaseApiHolderTest {
     assertAuthenticationShouldBeSetInThreadSafeMode(
       accessToken -> classificationApisHolder.getPaymentsReportingViewSearchControllerApi(accessToken)
         .crudPaymentsReportingViewFindDistinctByIufAndRegulationUniqueIdentifier("1", "IUF123", "RUI123", null, null, 0, 10, Collections.emptyList()),
-      PagedModelPaymentsReportingView.class, classificationApisHolder::unload);
+      new ParameterizedTypeReference<>() {},
+      classificationApisHolder::unload);
   }
 
   @Test
@@ -52,6 +53,7 @@ class ClassificationApisHolderTest extends BaseApiHolderTest {
     assertAuthenticationShouldBeSetInThreadSafeMode(
       accessToken -> classificationApisHolder.getPaymentsReportingSearchControllerApi(accessToken)
         .crudPaymentsReportingFindPaymentsReportingByFilters(1L, "IUF123", "iuv", null, null, 0, 10, Collections.emptyList()),
-      PagedModelPaymentsReporting.class, classificationApisHolder::unload);
+      new ParameterizedTypeReference<>() {},
+      classificationApisHolder::unload);
   }
 }

@@ -1,7 +1,6 @@
 package it.gov.pagopa.pu.bff.connector.organization.config;
 
 import it.gov.pagopa.pu.bff.connector.BaseApiHolderTest;
-import it.gov.pagopa.pu.organization.dto.generated.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -10,6 +9,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.web.util.DefaultUriBuilderFactory;
 
 @ExtendWith(MockitoExtension.class)
@@ -42,7 +42,7 @@ class OrganizationApiHolderTest extends BaseApiHolderTest {
     assertAuthenticationShouldBeSetInThreadSafeMode(
       accessToken -> organizationApisHolder.getOrganizationSearchControllerApi(accessToken)
         .crudOrganizationsFindByIpaCode("IPACODE"),
-      Organization.class,
+      new ParameterizedTypeReference<>() {},
       organizationApisHolder::unload);
   }
 
@@ -51,7 +51,7 @@ class OrganizationApiHolderTest extends BaseApiHolderTest {
     assertAuthenticationShouldBeSetInThreadSafeMode(
       accessToken -> organizationApisHolder.getBrokerEntityControllerApi(accessToken)
         .crudGetBroker("BROKERID"),
-      Broker.class,
+      new ParameterizedTypeReference<>() {},
       organizationApisHolder::unload);
   }
 
@@ -60,7 +60,7 @@ class OrganizationApiHolderTest extends BaseApiHolderTest {
     assertAuthenticationShouldBeSetInThreadSafeMode(
       accessToken -> organizationApisHolder.getTaxonomyEntityControllerApi(accessToken)
         .crudTaxonomiesCollectionReasonFindCollectionReasons(null,null,null),
-      CollectionModelTaxonomyCollectionReasonDTO.class,
+      new ParameterizedTypeReference<>() {},
       organizationApisHolder::unload);
   }
 
@@ -69,7 +69,7 @@ class OrganizationApiHolderTest extends BaseApiHolderTest {
     assertAuthenticationShouldBeSetInThreadSafeMode(
       accessToken -> organizationApisHolder.getMacroArea(accessToken)
         .crudTaxonomiesMacroAreaFindMacroAreaCodes(null),
-      CollectionModelTaxonomyMacroAreaCodeDTO.class,
+      new ParameterizedTypeReference<>() {},
       organizationApisHolder::unload);
   }
 
@@ -78,7 +78,7 @@ class OrganizationApiHolderTest extends BaseApiHolderTest {
     assertAuthenticationShouldBeSetInThreadSafeMode(
       accessToken -> organizationApisHolder.getOrganizationTypes(accessToken)
         .crudTaxonomiesOrganizationTypesFindOrganizationTypes(),
-      CollectionModelTaxonomyOrganizationTypeDTO.class,
+      new ParameterizedTypeReference<>() {},
       organizationApisHolder::unload);
   }
 
@@ -87,7 +87,7 @@ class OrganizationApiHolderTest extends BaseApiHolderTest {
     assertAuthenticationShouldBeSetInThreadSafeMode(
       accessToken -> organizationApisHolder.getServiceType(accessToken)
         .crudTaxonomiesServiceTypeFindServiceTypeCodes(null,null),
-      CollectionModelTaxonomyServiceTypeCodeDTO.class,
+      new ParameterizedTypeReference<>() {},
       organizationApisHolder::unload);
   }
 
@@ -96,7 +96,7 @@ class OrganizationApiHolderTest extends BaseApiHolderTest {
     assertAuthenticationShouldBeSetInThreadSafeMode(
       accessToken -> organizationApisHolder.getTaxonomyCode(accessToken)
         .crudTaxonomiesTaxonomyCodeFindTaxonomyCodes(null,null,null,null),
-      CollectionModelTaxonomyCodeDTO.class,
+      new ParameterizedTypeReference<>() {},
       organizationApisHolder::unload);
   }
 

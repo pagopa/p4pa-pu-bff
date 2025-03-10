@@ -1,12 +1,28 @@
 package it.gov.pagopa.pu.bff.service;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.when;
+
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.connector.classification.PaymentsReportingService;
 import it.gov.pagopa.pu.bff.dto.LocalDateIntervalFilter;
 import it.gov.pagopa.pu.bff.dto.generated.PagedPaymentsReportingView;
+import it.gov.pagopa.pu.bff.dto.generated.PaymentsReportingDetailDTO;
+import it.gov.pagopa.pu.bff.dto.generated.ReceiptDetailDTO;
+import it.gov.pagopa.pu.bff.mapper.PaymentsReportingDTOMapper;
 import it.gov.pagopa.pu.bff.mapper.PaymentsReportingViewMapper;
+import it.gov.pagopa.pu.bff.service.installment.InstallmentRetrieverService;
 import it.gov.pagopa.pu.bff.service.payments_reporting.PaymentsReportingRetrieverServiceImpl;
+import it.gov.pagopa.pu.bff.service.receipt.ReceiptRetrieverService;
 import it.gov.pagopa.pu.classification.dto.generated.PagedModelPaymentsReportingView;
+import it.gov.pagopa.pu.classification.dto.generated.PaymentsReporting;
+import it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentNoPII;
+import it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentNoPII.DebtorEntityTypeEnum;
+import it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentNoPII.StatusEnum;
+import java.time.LocalDate;
+import java.time.OffsetDateTime;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,17 +35,17 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.authorization.AuthorizationDeniedException;
 
-import java.time.LocalDate;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.when;
-
 @ExtendWith(MockitoExtension.class)
 class PaymentsReportingRetrieverServiceImplTest {
 
   @Mock
   private PaymentsReportingService paymentsReportingServiceMock;
-
+  @Mock
+  private InstallmentRetrieverService installmentRetrieverServiceMock;
+  @Mock
+  private ReceiptRetrieverService receiptRetrieverServiceMock;
+  @Mock
+  private PaymentsReportingDTOMapper paymentsReportingDTOMapperMock;
   @Mock
   private PaymentsReportingViewMapper paymentsReportingViewMapperMock;
 
@@ -39,12 +55,16 @@ class PaymentsReportingRetrieverServiceImplTest {
 
   @BeforeEach
   void setUp() {
-    paymentsReportingRetrieverService = new PaymentsReportingRetrieverServiceImpl(paymentsReportingServiceMock, paymentsReportingViewMapperMock);
+    paymentsReportingRetrieverService = new PaymentsReportingRetrieverServiceImpl(
+      paymentsReportingServiceMock,
+      installmentRetrieverServiceMock, receiptRetrieverServiceMock,
+      paymentsReportingDTOMapperMock, paymentsReportingViewMapperMock);
   }
 
   @AfterEach
   void verifyNoMoreInteractions() {
-    Mockito.verifyNoMoreInteractions(paymentsReportingServiceMock, paymentsReportingViewMapperMock);
+    Mockito.verifyNoMoreInteractions(paymentsReportingServiceMock,
+      paymentsReportingViewMapperMock);
   }
 
   @Test
@@ -57,28 +77,40 @@ class PaymentsReportingRetrieverServiceImplTest {
     String regulationUniqueIdentifier = "RUI123";
     LocalDate regulationDateFrom = LocalDate.now().minusDays(10);
     LocalDate regulationDateTo = LocalDate.now();
-    LocalDateIntervalFilter regulationDateFilter = new LocalDateIntervalFilter(regulationDateFrom, regulationDateTo);
+    LocalDateIntervalFilter regulationDateFilter = new LocalDateIntervalFilter(
+      regulationDateFrom, regulationDateTo);
     Pageable pageable = PageRequest.of(0, 10);
 
     PagedModelPaymentsReportingView pagedModelPaymentsReportingView = new PagedModelPaymentsReportingView();
     PagedPaymentsReportingView expectedPagedPaymentsReportingView = new PagedPaymentsReportingView();
 
-    try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
-      authorizationServiceMockedStatic.when(() -> AuthorizationService.isUserEnabledToOrganizationId(organizationId, loggedUser))
+    try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(
+      AuthorizationService.class)) {
+      authorizationServiceMockedStatic.when(
+          () -> AuthorizationService.isUserEnabledToOrganizationId(organizationId,
+            loggedUser))
         .thenReturn(true);
 
-      when(paymentsReportingServiceMock.getPaymentsReporting(organizationId, iuf, regulationUniqueIdentifier, regulationDateFilter, pageable, accessToken))
+      when(
+        paymentsReportingServiceMock.getPaymentsReporting(organizationId, iuf,
+          regulationUniqueIdentifier, regulationDateFilter, pageable,
+          accessToken))
         .thenReturn(pagedModelPaymentsReportingView);
 
-      when(paymentsReportingViewMapperMock.mapToPagedPaymentsReporting(pagedModelPaymentsReportingView))
+      when(paymentsReportingViewMapperMock.mapToPagedPaymentsReporting(
+        pagedModelPaymentsReportingView))
         .thenReturn(expectedPagedPaymentsReportingView);
 
-      PagedPaymentsReportingView result = paymentsReportingRetrieverService.getPaymentsReporting(organizationId, iuf, regulationUniqueIdentifier, regulationDateFilter, pageable, loggedUser, accessToken);
+      PagedPaymentsReportingView result = paymentsReportingRetrieverService.getPaymentsReporting(
+        organizationId, iuf, regulationUniqueIdentifier, regulationDateFilter,
+        pageable, loggedUser, accessToken);
 
       assertNotNull(result);
       assertSame(expectedPagedPaymentsReportingView, result);
 
-      authorizationServiceMockedStatic.verify(() -> AuthorizationService.isUserEnabledToOrganizationId(organizationId, loggedUser));
+      authorizationServiceMockedStatic.verify(
+        () -> AuthorizationService.isUserEnabledToOrganizationId(organizationId,
+          loggedUser));
     }
   }
 
@@ -92,17 +124,112 @@ class PaymentsReportingRetrieverServiceImplTest {
     String regulationUniqueIdentifier = "RUI123";
     LocalDate regulationDateFrom = LocalDate.now().minusDays(10);
     LocalDate regulationDateTo = LocalDate.now();
-    LocalDateIntervalFilter regulationDateFilter = new LocalDateIntervalFilter(regulationDateFrom, regulationDateTo);
+    LocalDateIntervalFilter regulationDateFilter = new LocalDateIntervalFilter(
+      regulationDateFrom, regulationDateTo);
     Pageable pageable = PageRequest.of(0, 10);
 
-    try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
-      authorizationServiceMockedStatic.when(() -> AuthorizationService.isUserEnabledToOrganizationId(organizationId, loggedUser))
+    try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(
+      AuthorizationService.class)) {
+      authorizationServiceMockedStatic.when(
+          () -> AuthorizationService.isUserEnabledToOrganizationId(organizationId,
+            loggedUser))
         .thenThrow(new AuthorizationDeniedException("Access denied"));
 
       assertThrows(AuthorizationDeniedException.class, () ->
-        paymentsReportingRetrieverService.getPaymentsReporting(organizationId, iuf, regulationUniqueIdentifier, regulationDateFilter, pageable, loggedUser, accessToken));
+        paymentsReportingRetrieverService.getPaymentsReporting(organizationId,
+          iuf, regulationUniqueIdentifier, regulationDateFilter, pageable,
+          loggedUser, accessToken));
 
-      authorizationServiceMockedStatic.verify(() -> AuthorizationService.isUserEnabledToOrganizationId(organizationId, loggedUser));
+      authorizationServiceMockedStatic.verify(
+        () -> AuthorizationService.isUserEnabledToOrganizationId(organizationId,
+          loggedUser));
+    }
+  }
+
+  @Test
+  void givenValidUserWhenGetPaymentsReportingDetailThenOk() {
+    UserInfo loggedUser = new UserInfo();
+    loggedUser.setUserId("user-123");
+
+    long organizationId = 1L;
+    String paymentsReportingId = "PAYREP1";
+
+    String iuv = "IUV123";
+    String iur = "IUR123";
+    int transferIndex = 1;
+    long receiptId = 1L;
+    PaymentsReporting paymentsReporting = PaymentsReporting.builder()
+      .paymentsReportingId(paymentsReportingId)
+      .organizationId(organizationId)
+      .iuv(iuv)
+      .iur(iur)
+      .transferIndex(transferIndex)
+      // fields required non-null but not useful to this test
+      .ingestionFlowFileId(1L)
+      .pspIdentifier("PSPID")
+      .iuf("IUF123")
+      .flowDateTime(OffsetDateTime.now())
+      .regulationDate(LocalDate.now())
+      .regulationUniqueIdentifier("REG123")
+      .senderPspCode("SENDERCODE")
+      .senderPspName("SENDERNAME")
+      .senderPspType("SENDERTYPE")
+      .receiverOrganizationCode("RECEIVERCODE")
+      .receiverOrganizationName("RECEIVERNAME")
+      .receiverOrganizationType("RECEIVERTYPE")
+      .totalPayments(1000L)
+      .totalAmountCents(1000L)
+      .amountPaidCents(1000L)
+      .paymentOutcomeCode("OUTCOMECODE")
+      .payDate(LocalDate.now())
+      .acquiringDate(LocalDate.now())
+      .build();
+    InstallmentNoPII installmentNoPII = InstallmentNoPII.builder()
+      .receiptId(receiptId)
+      // fields required non-null but not useful to this test
+      .paymentOptionId(1L)
+      .status(StatusEnum.REPORTED)
+      .iud("IUD123")
+      .paymentTypeCode("TYPECODE")
+      .amountCents(1000L)
+      .remittanceInformation("REMITTANCEINFO")
+      .personalDataId(1L)
+      .debtorEntityType(DebtorEntityTypeEnum.F)
+      .debtorFiscalCodeHash(new byte[0])
+      .build();
+    ReceiptDetailDTO receiptDetailDTO = new ReceiptDetailDTO();
+    PaymentsReportingDetailDTO expectedResult = new PaymentsReportingDetailDTO();
+
+    try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(
+      AuthorizationService.class)) {
+      authorizationServiceMockedStatic.when(
+          () -> AuthorizationService.isUserEnabledToOrganizationId(organizationId,
+            loggedUser))
+        .thenReturn(true);
+
+      when(
+        paymentsReportingServiceMock.getPaymentsReportingDetail(organizationId, paymentsReportingId, accessToken))
+        .thenReturn(paymentsReporting);
+
+      when(installmentRetrieverServiceMock.getInstallmentFromTransferSemanticKey(organizationId, iuv, iur,
+        String.valueOf(transferIndex), loggedUser, accessToken))
+        .thenReturn(installmentNoPII);
+
+      when(receiptRetrieverServiceMock.getReceiptDetail(organizationId, receiptId, loggedUser, accessToken))
+        .thenReturn(receiptDetailDTO);
+
+      when(paymentsReportingDTOMapperMock.mapToPaymentsReportingDetailDTO(paymentsReporting, receiptDetailDTO))
+        .thenReturn(expectedResult);
+
+      PaymentsReportingDetailDTO result = paymentsReportingRetrieverService.getPaymentsReportingDetail(
+        organizationId, paymentsReportingId, loggedUser, accessToken);
+
+      assertNotNull(result);
+      assertSame(expectedResult, result);
+
+      authorizationServiceMockedStatic.verify(
+        () -> AuthorizationService.isUserEnabledToOrganizationId(organizationId,
+          loggedUser));
     }
   }
 }

@@ -7,6 +7,7 @@ import it.gov.pagopa.pu.bff.dto.generated.PagedInstallmentView;
 import it.gov.pagopa.pu.bff.mapper.InstallmentViewMapper;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
 import it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentDetailDTO;
+import it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentNoPII;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -39,6 +40,15 @@ public class InstallmentRetrieverServiceImpl implements InstallmentRetrieverServ
     setPaymentInfo(installmentDetailDTO);
     return installmentDetailDTO;
   }
+
+  @Override
+  public InstallmentNoPII getInstallmentFromTransferSemanticKey(
+    Long organizationId, String iuv, String iur, String transferIndex, UserInfo loggedUser, String accessToken) {
+    AuthorizationService.isUserEnabledToOrganizationId(organizationId, loggedUser);
+    return installmentService.getInstallmentFromTransferSemanticKey(organizationId, iuv, iur, transferIndex,
+      loggedUser.getMappedExternalUserId(), accessToken);
+  }
+
 
   private void setPaymentInfo(InstallmentDetailDTO installmentDetailDTO) {
     if (!statusList.contains(installmentDetailDTO.getStatus())) {

@@ -164,7 +164,8 @@ tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>("ope
     "DebtPositionStatus" to "it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionDTO.StatusEnum",
     "PaymentOptionDTO" to "it.gov.pagopa.pu.debtpositions.dto.generated.PaymentOptionDTO",
     "PersonDTO" to "it.gov.pagopa.pu.debtpositions.dto.generated.PersonDTO",
-    "InstallmentDetailDTO" to "it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentDetailDTO"
+    "InstallmentDetailDTO" to "it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentDetailDTO",
+    "InstallmentStatus" to "it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentDetailDTO.StatusEnum"
   ))
   configOptions.set(mapOf(
     "dateLibrary" to "java8",

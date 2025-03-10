@@ -15,10 +15,11 @@ public class DebtPositionApisHolder {
   private final DebtPositionTypeEntityControllerApi debtPositionTypeEntityControllerApi;
   private final DebtPositionTypeWithCountSearchControllerApi debtPositionTypeWithCountSearchControllerApi;
   private final DebtPositionTypeOrgSearchControllerApi debtPositionTypeOrgSearchControllerApi;
-  private final ReceiptViewSearchControllerApi receiptViewSearchControllerApi;
   private final InstallmentViewSearchControllerApi installmentViewSearchControllerApi;
-  private final ReceiptApi receiptApi;
   private final InstallmentApi installmentApi;
+  private final InstallmentNoPiiSearchControllerApi installmentNoPiiSearchControllerApi;
+  private final ReceiptViewSearchControllerApi receiptViewSearchControllerApi;
+  private final ReceiptApi receiptApi;
   private final DebtPositionViewSearchControllerApi debtPositionViewSearchControllerApi;
   private final DebtPositionApi debtPositionApi;
   private final DebtPositionTypeOrgEntityControllerApi debtPositionTypeOrgEntityControllerApi;
@@ -41,10 +42,11 @@ public class DebtPositionApisHolder {
     this.debtPositionTypeEntityControllerApi = new DebtPositionTypeEntityControllerApi(apiClient);
     this.debtPositionTypeWithCountSearchControllerApi = new DebtPositionTypeWithCountSearchControllerApi(apiClient);
     this.debtPositionTypeOrgSearchControllerApi = new DebtPositionTypeOrgSearchControllerApi(apiClient);
-    this.receiptViewSearchControllerApi = new ReceiptViewSearchControllerApi(apiClient);
     this.installmentViewSearchControllerApi = new InstallmentViewSearchControllerApi(apiClient);
-    this.receiptApi = new ReceiptApi(apiClient);
     this.installmentApi = new InstallmentApi(apiClient);
+    this.installmentNoPiiSearchControllerApi = new InstallmentNoPiiSearchControllerApi(apiClient);
+    this.receiptViewSearchControllerApi = new ReceiptViewSearchControllerApi(apiClient);
+    this.receiptApi = new ReceiptApi(apiClient);
     this.debtPositionViewSearchControllerApi = new DebtPositionViewSearchControllerApi(apiClient);
     this.debtPositionApi = new DebtPositionApi(apiClient);
     this.debtPositionTypeOrgEntityControllerApi = new DebtPositionTypeOrgEntityControllerApi(apiClient);
@@ -73,19 +75,12 @@ public class DebtPositionApisHolder {
     return getApi(accessToken, debtPositionTypeOrgSearchControllerApi);
   }
 
-  public ReceiptViewSearchControllerApi getReceiptViewSearchControllerApi(String accessToken) {
-    return getApi(accessToken, receiptViewSearchControllerApi);
-  }
-
   public InstallmentViewSearchControllerApi getInstallmentViewSearchControllerApi(String accessToken) {
     return getApi(accessToken, installmentViewSearchControllerApi);
   }
 
-  /**
-   * It will return a {@link ReceiptApi} instrumented with the provided accessToken. Use null if auth is not required
-   */
-  public ReceiptApi getReceiptApi(String accessToken) {
-    return getApi(accessToken, receiptApi);
+  public InstallmentNoPiiSearchControllerApi getInstallmentNoPiiSearchControllerApi(String accessToken) {
+    return getApi(accessToken, installmentNoPiiSearchControllerApi);
   }
 
   /**
@@ -93,6 +88,17 @@ public class DebtPositionApisHolder {
    */
   public InstallmentApi getInstallmentApi(String accessToken) {
     return getApi(accessToken, installmentApi);
+  }
+
+  public ReceiptViewSearchControllerApi getReceiptViewSearchControllerApi(String accessToken) {
+    return getApi(accessToken, receiptViewSearchControllerApi);
+  }
+
+  /**
+   * It will return a {@link ReceiptApi} instrumented with the provided accessToken. Use null if auth is not required
+   */
+  public ReceiptApi getReceiptApi(String accessToken) {
+    return getApi(accessToken, receiptApi);
   }
 
   /**

@@ -69,7 +69,7 @@ class PaymentsReportingSearchClientTest {
       PageUtils.getSortList(pageable)))
       .thenReturn(expectedResult);
 
-    PagedModelPaymentsReporting result = paymentsReportingSearchClient.getPaymentsReportingDetail(organizationId, iuf, iuv, payDateFilter, pageable, accessToken);
+    PagedModelPaymentsReporting result = paymentsReportingSearchClient.getPaymentsReportingRows(organizationId, iuf, iuv, payDateFilter, pageable, accessToken);
 
     assertSame(expectedResult, result);
   }

@@ -7,7 +7,6 @@ import it.gov.pagopa.pu.bff.dto.generated.PagedPaymentsReportingRow;
 import it.gov.pagopa.pu.bff.dto.generated.PagedPaymentsReportingView;
 import it.gov.pagopa.pu.bff.dto.generated.PaymentsReportingDetailDTO;
 import it.gov.pagopa.pu.bff.dto.generated.ReceiptDetailDTO;
-import it.gov.pagopa.pu.bff.mapper.PaymentsReportingDTOMapper;
 import it.gov.pagopa.pu.bff.mapper.PaymentsReportingMapper;
 import it.gov.pagopa.pu.bff.mapper.PaymentsReportingViewMapper;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
@@ -19,55 +18,72 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
-public class PaymentsReportingRetrieverServiceImpl implements PaymentsReportingRetrieverService {
+public class PaymentsReportingRetrieverServiceImpl implements
+  PaymentsReportingRetrieverService {
 
   private final PaymentsReportingService paymentsReportingService;
   private final InstallmentRetrieverService installmentRetrieverService;
   private final ReceiptRetrieverService receiptRetrieverService;
-  private final PaymentsReportingDTOMapper paymentsReportingDTOMapper;
   private final PaymentsReportingViewMapper paymentsReportingViewMapper;
   private final PaymentsReportingMapper paymentsReportingMapper;
 
-  public PaymentsReportingRetrieverServiceImpl(PaymentsReportingService paymentsReportingService,
-                                               PaymentsReportingViewMapper paymentsReportingViewMapper,
-    PaymentsReportingMapper paymentsReportingMapper,
+  public PaymentsReportingRetrieverServiceImpl(
+    PaymentsReportingService paymentsReportingService,
     InstallmentRetrieverService installmentRetrieverService,
     ReceiptRetrieverService receiptRetrieverService,
-    PaymentsReportingDTOMapper paymentsReportingDTOMapper) {
+    PaymentsReportingViewMapper paymentsReportingViewMapper,
+    PaymentsReportingMapper paymentsReportingMapper) {
     this.paymentsReportingService = paymentsReportingService;
     this.installmentRetrieverService = installmentRetrieverService;
     this.receiptRetrieverService = receiptRetrieverService;
-    this.paymentsReportingDTOMapper = paymentsReportingDTOMapper;
     this.paymentsReportingViewMapper = paymentsReportingViewMapper;
     this.paymentsReportingMapper = paymentsReportingMapper;
   }
 
   @Override
-  public PagedPaymentsReportingView getPaymentsReporting(Long organizationId, String iuf, String regulationUniqueIdentifier, LocalDateIntervalFilter regulationDateFilter, Pageable pageable, UserInfo loggedUser, String accessToken) {
-    AuthorizationService.isUserEnabledToOrganizationId(organizationId, loggedUser);
+  public PagedPaymentsReportingView getPaymentsReporting(Long organizationId,
+    String iuf, String regulationUniqueIdentifier,
+    LocalDateIntervalFilter regulationDateFilter, Pageable pageable,
+    UserInfo loggedUser, String accessToken) {
+    AuthorizationService.isUserEnabledToOrganizationId(organizationId,
+      loggedUser);
 
     return paymentsReportingViewMapper.mapToPagedPaymentsReporting(
-      paymentsReportingService.getPaymentsReporting(organizationId, iuf, regulationUniqueIdentifier, regulationDateFilter, pageable, accessToken));
+      paymentsReportingService.getPaymentsReporting(organizationId, iuf,
+        regulationUniqueIdentifier, regulationDateFilter, pageable,
+        accessToken));
   }
 
   @Override
-  public PagedPaymentsReportingRow getPaymentsReportingDetail(Long organizationId, String iuf, String iuv, LocalDateIntervalFilter payDateFilter, Pageable pageable, UserInfo loggedUser, String accessToken) {
-    AuthorizationService.isUserEnabledToOrganizationId(organizationId, loggedUser);
+  public PagedPaymentsReportingRow getPaymentsReportingRows(Long organizationId,
+    String iuf, String iuv, LocalDateIntervalFilter payDateFilter,
+    Pageable pageable, UserInfo loggedUser, String accessToken) {
+    AuthorizationService.isUserEnabledToOrganizationId(organizationId,
+      loggedUser);
 
     return paymentsReportingMapper.mapToPagedPaymentsReporting(
-      paymentsReportingService.getPaymentsReportingDetail(organizationId, iuf, iuv, payDateFilter, pageable, accessToken));
+      paymentsReportingService.getPaymentsReportingRows(organizationId, iuf,
+        iuv, payDateFilter, pageable, accessToken));
   }
 
   @Override
-  public PaymentsReportingDetailDTO getPaymentsReportingDetail(Long organizationId, String paymentsReportingId, UserInfo loggedUser, String accessToken) {
-    AuthorizationService.isUserEnabledToOrganizationId(organizationId, loggedUser);
+  public PaymentsReportingDetailDTO getPaymentsReportingDetail(
+    Long organizationId, String paymentsReportingId, UserInfo loggedUser,
+    String accessToken) {
+    AuthorizationService.isUserEnabledToOrganizationId(organizationId,
+      loggedUser);
 
-    PaymentsReporting paymentsReporting = paymentsReportingService.getPaymentsReportingDetail(organizationId, paymentsReportingId, accessToken);
-    InstallmentNoPII installment = installmentRetrieverService.getInstallmentFromTransferSemanticKey(organizationId, paymentsReporting.getIuv(), paymentsReporting.getIur(),
-      String.valueOf(paymentsReporting.getTransferIndex()), loggedUser, accessToken);
-    ReceiptDetailDTO receiptDetailDTO = receiptRetrieverService.getReceiptDetail(organizationId, installment.getReceiptId(), loggedUser, accessToken);
+    PaymentsReporting paymentsReporting = paymentsReportingService.getPaymentsReportingDetail(
+      organizationId, paymentsReportingId, accessToken);
+    InstallmentNoPII installment = installmentRetrieverService.getInstallmentFromTransferSemanticKey(
+      organizationId, paymentsReporting.getIuv(), paymentsReporting.getIur(),
+      String.valueOf(paymentsReporting.getTransferIndex()), loggedUser,
+      accessToken);
+    ReceiptDetailDTO receiptDetailDTO = receiptRetrieverService.getReceiptDetail(
+      organizationId, installment.getReceiptId(), loggedUser, accessToken);
 
-    return paymentsReportingDTOMapper.mapToPaymentsReportingDetailDTO(paymentsReporting, receiptDetailDTO);
+    return paymentsReportingMapper.mapToPaymentsReportingDetailDTO(
+      paymentsReporting, receiptDetailDTO);
   }
 
 }

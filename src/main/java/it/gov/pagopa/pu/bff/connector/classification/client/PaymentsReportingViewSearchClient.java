@@ -4,7 +4,6 @@ import it.gov.pagopa.pu.bff.connector.classification.config.ClassificationApisHo
 import it.gov.pagopa.pu.bff.dto.LocalDateIntervalFilter;
 import it.gov.pagopa.pu.bff.util.PageUtils;
 import it.gov.pagopa.pu.classification.dto.generated.PagedModelPaymentsReportingView;
-import it.gov.pagopa.pu.classification.dto.generated.PaymentsReporting;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -29,11 +28,6 @@ public class PaymentsReportingViewSearchClient {
         PageUtils.getPageNumber(pageable),
         PageUtils.getPageSize(pageable),
         PageUtils.getSortList(pageable));
-  }
-
-  public PaymentsReporting getPaymentsReportingDetail(Long organizationId, String paymentsReportingId, String accessToken) {
-    return classificationApisHolder.getPaymentsReportingSearchControllerApi(accessToken)
-      .crudPaymentsReportingFindByOrganizationIdAndPaymentsReportingId(organizationId, paymentsReportingId);
   }
 
 }

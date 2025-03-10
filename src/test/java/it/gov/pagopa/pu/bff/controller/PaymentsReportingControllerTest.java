@@ -102,7 +102,7 @@ class PaymentsReportingControllerTest {
 
     PagedPaymentsReportingRow expectedResult = new PagedPaymentsReportingRow();
 
-    Mockito.when(paymentsReportingRetrieverServiceMock.getPaymentsReportingDetail(organizationId, iuf, iuv, payDateFilter,
+    Mockito.when(paymentsReportingRetrieverServiceMock.getPaymentsReportingRows(organizationId, iuf, iuv, payDateFilter,
         pageable, userInfo, "fakeAccessToken"))
       .thenReturn(expectedResult);
 

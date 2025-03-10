@@ -39,10 +39,11 @@ public class PaymentsReportingController implements PaymentsReportingApi {
     Pageable pageable) {
     log.info("User requested getPaymentsReportingRows having organizationId {} and iuf {}", organizationId, iuf);
     return ResponseEntity.ok(
-      paymentsReportingRetrieverService.getPaymentsReportingDetail(
+      paymentsReportingRetrieverService.getPaymentsReportingRows(
         organizationId, iuf, iuv, new LocalDateIntervalFilter(payDateFrom,payDateTo),
         pageable, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken()));
   }
+
   @Override
   public ResponseEntity<PaymentsReportingDetailDTO> getPaymentsReportingDetail(Long organizationId, String paymentsReportingId) {
     return ResponseEntity.ok(paymentsReportingRetrieverService.getPaymentsReportingDetail(

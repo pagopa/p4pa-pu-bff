@@ -12,7 +12,6 @@ import it.gov.pagopa.pu.bff.dto.generated.PagedPaymentsReportingRow;
 import it.gov.pagopa.pu.bff.dto.generated.PagedPaymentsReportingView;
 import it.gov.pagopa.pu.bff.dto.generated.PaymentsReportingDetailDTO;
 import it.gov.pagopa.pu.bff.dto.generated.ReceiptDetailDTO;
-import it.gov.pagopa.pu.bff.mapper.PaymentsReportingDTOMapper;
 import it.gov.pagopa.pu.bff.mapper.PaymentsReportingMapper;
 import it.gov.pagopa.pu.bff.mapper.PaymentsReportingViewMapper;
 import it.gov.pagopa.pu.bff.service.installment.InstallmentRetrieverService;
@@ -26,18 +25,13 @@ import it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentNoPII.DebtorEntit
 import it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentNoPII.StatusEnum;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
-import java.time.LocalDate;
 import org.junit.jupiter.api.AfterEach;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
-import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -53,8 +47,6 @@ class PaymentsReportingRetrieverServiceImplTest {
   @Mock
   private ReceiptRetrieverService receiptRetrieverServiceMock;
   @Mock
-  private PaymentsReportingDTOMapper paymentsReportingDTOMapperMock;
-  @Mock
   private PaymentsReportingViewMapper paymentsReportingViewMapperMock;
   @Mock
   private PaymentsReportingMapper paymentsReportingMapperMock;
@@ -65,14 +57,17 @@ class PaymentsReportingRetrieverServiceImplTest {
 
   @BeforeEach
   void setUp() {
-    paymentsReportingRetrieverService = new PaymentsReportingRetrieverServiceImpl(paymentsReportingServiceMock, paymentsReportingViewMapperMock,
-      paymentsReportingMapperMock, installmentRetrieverServiceMock, receiptRetrieverServiceMock,
-      paymentsReportingDTOMapperMock);
+    paymentsReportingRetrieverService = new PaymentsReportingRetrieverServiceImpl(
+      paymentsReportingServiceMock, installmentRetrieverServiceMock,
+      receiptRetrieverServiceMock, paymentsReportingViewMapperMock,
+      paymentsReportingMapperMock);
   }
 
   @AfterEach
   void verifyNoMoreInteractions() {
-    Mockito.verifyNoMoreInteractions(paymentsReportingServiceMock, paymentsReportingViewMapperMock,
+    Mockito.verifyNoMoreInteractions(paymentsReportingServiceMock,
+      installmentRetrieverServiceMock, receiptRetrieverServiceMock,
+      paymentsReportingViewMapperMock,
       paymentsReportingMapperMock);
   }
 
@@ -156,7 +151,7 @@ class PaymentsReportingRetrieverServiceImplTest {
   }
 
   @Test
-  void givenValidUserWhenGetPaymentsReportingDetailThenOk() {
+  void givenValidUserWhenGetPaymentsReportingRowsThenOk() {
     UserInfo loggedUser = new UserInfo();
     loggedUser.setUserId("user-123");
 
@@ -175,13 +170,13 @@ class PaymentsReportingRetrieverServiceImplTest {
       authorizationServiceMockedStatic.when(() -> AuthorizationService.isUserEnabledToOrganizationId(organizationId, loggedUser))
         .thenReturn(true);
 
-      when(paymentsReportingServiceMock.getPaymentsReportingDetail(organizationId, iuf, iuv, payDateFilter, pageable, accessToken))
+      when(paymentsReportingServiceMock.getPaymentsReportingRows(organizationId, iuf, iuv, payDateFilter, pageable, accessToken))
         .thenReturn(pagedModelPaymentsReporting);
 
       when(paymentsReportingMapperMock.mapToPagedPaymentsReporting(pagedModelPaymentsReporting))
         .thenReturn(expectedResult);
 
-      PagedPaymentsReportingRow result = paymentsReportingRetrieverService.getPaymentsReportingDetail(organizationId, iuf, iuv, payDateFilter, pageable, loggedUser, accessToken);
+      PagedPaymentsReportingRow result = paymentsReportingRetrieverService.getPaymentsReportingRows(organizationId, iuf, iuv, payDateFilter, pageable, loggedUser, accessToken);
 
       assertNotNull(result);
       assertSame(expectedResult, result);
@@ -191,7 +186,7 @@ class PaymentsReportingRetrieverServiceImplTest {
   }
 
   @Test
-  void givenInvalidUserWhenGetPaymentsReportingDetailThenAuthorizationDeniedException() {
+  void givenInvalidUserWhenGetPaymentsReportingRowsThenAuthorizationDeniedException() {
     UserInfo loggedUser = new UserInfo();
     loggedUser.setUserId("user-123");
 
@@ -208,7 +203,7 @@ class PaymentsReportingRetrieverServiceImplTest {
         .thenThrow(new AuthorizationDeniedException("Access denied"));
 
       assertThrows(AuthorizationDeniedException.class, () ->
-        paymentsReportingRetrieverService.getPaymentsReportingDetail(organizationId, iuf, iuv, payDateFilter, pageable, loggedUser, accessToken));
+        paymentsReportingRetrieverService.getPaymentsReportingRows(organizationId, iuf, iuv, payDateFilter, pageable, loggedUser, accessToken));
 
       authorizationServiceMockedStatic.verify(() -> AuthorizationService.isUserEnabledToOrganizationId(organizationId, loggedUser));
     }
@@ -286,7 +281,7 @@ class PaymentsReportingRetrieverServiceImplTest {
       when(receiptRetrieverServiceMock.getReceiptDetail(organizationId, receiptId, loggedUser, accessToken))
         .thenReturn(receiptDetailDTO);
 
-      when(paymentsReportingDTOMapperMock.mapToPaymentsReportingDetailDTO(paymentsReporting, receiptDetailDTO))
+      when(paymentsReportingMapperMock.mapToPaymentsReportingDetailDTO(paymentsReporting, receiptDetailDTO))
         .thenReturn(expectedResult);
 
       PaymentsReportingDetailDTO result = paymentsReportingRetrieverService.getPaymentsReportingDetail(

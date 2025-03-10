@@ -52,7 +52,7 @@ class PaymentsReportingServiceImplTest {
   }
 
   @Test
-  void whenGetPaymentsReportingDetailThenInvokeClient() {
+  void whenGetPaymentsReportingRowsThenInvokeClient() {
     Long organizationId = 1L;
     String iuf = "IUF123";
     String iuv = "RUI123";
@@ -61,10 +61,10 @@ class PaymentsReportingServiceImplTest {
     String accessToken = "ACCESSTOKEN";
     PagedModelPaymentsReporting expectedResult = new PagedModelPaymentsReporting();
 
-    when(paymentsReportingSearchClientMock.getPaymentsReportingDetail(organizationId, iuf, iuv, payDateFilter, pageable, accessToken))
+    when(paymentsReportingSearchClientMock.getPaymentsReportingRows(organizationId, iuf, iuv, payDateFilter, pageable, accessToken))
       .thenReturn(expectedResult);
 
-    PagedModelPaymentsReporting result = service.getPaymentsReportingDetail(organizationId, iuf, iuv, payDateFilter, pageable, accessToken);
+    PagedModelPaymentsReporting result = service.getPaymentsReportingRows(organizationId, iuf, iuv, payDateFilter, pageable, accessToken);
 
     assertSame(expectedResult, result);
   }

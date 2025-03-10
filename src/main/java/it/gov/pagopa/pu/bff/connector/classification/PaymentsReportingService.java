@@ -8,11 +8,16 @@ import org.springframework.data.domain.Pageable;
 
 public interface PaymentsReportingService {
 
-  PagedModelPaymentsReportingView getPaymentsReporting(Long organizationId, String iuf, String regulationUniqueIdentifier, LocalDateIntervalFilter regulationDateFilter,
-                                                       Pageable pageable, String accessToken);
-  PagedModelPaymentsReporting getPaymentsReportingDetail(Long organizationId, String iuf, String iuv, LocalDateIntervalFilter payDateFilter,
+  PagedModelPaymentsReportingView getPaymentsReporting(Long organizationId,
+    String iuf, String regulationUniqueIdentifier,
+    LocalDateIntervalFilter regulationDateFilter,
     Pageable pageable, String accessToken);
 
-  PaymentsReporting getPaymentsReportingDetail(Long organizationId, String paymentsReportingId, String accessToken);
+  PagedModelPaymentsReporting getPaymentsReportingRows(Long organizationId,
+    String iuf, String iuv, LocalDateIntervalFilter payDateFilter,
+    Pageable pageable, String accessToken);
+
+  PaymentsReporting getPaymentsReportingDetail(Long organizationId,
+    String paymentsReportingId, String accessToken);
 
 }

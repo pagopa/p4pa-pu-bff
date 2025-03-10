@@ -2,8 +2,8 @@ package it.gov.pagopa.pu.bff.controller;
 
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.security.SecurityUtils;
-import it.gov.pagopa.pu.bff.service.debt_position_type_org.DebtPositionTypeOrgRetrieverService;
-import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrg;
+import it.gov.pagopa.pu.bff.service.transfer.TransferRetrieverService;
+import it.gov.pagopa.pu.debtpositions.dto.generated.TransferResponse;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -22,13 +22,13 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import java.util.List;
 
 @ExtendWith(MockitoExtension.class)
-class DebtPositionTypeOrgControllerTest {
+class TransferControllerTest {
 
   @Mock
-  private DebtPositionTypeOrgRetrieverService debtPositionTypeOrgRetrieverServiceMock;
+  private TransferRetrieverService transferRetrieverServiceMock;
 
   @InjectMocks
-  private DebtPositionTypeOrgController debtPositionTypeOrgController;
+  private TransferController transferController;
 
   @BeforeEach
   void setUp() {
@@ -41,17 +41,19 @@ class DebtPositionTypeOrgControllerTest {
   }
 
   @Test
-  void givenCorrectRequestWhenGetDebtPositionTypeOrgsThenOk() {
+  void givenCorrectRequestWhenGetTransfersThenOk() {
     long organizationId = 1L;
-    List<DebtPositionTypeOrg> expectedResult = List.of(new DebtPositionTypeOrg());
+    long installmentId = 1L;
+    List<TransferResponse> expectedResult = List.of(new TransferResponse());
 
-    Mockito.when(debtPositionTypeOrgRetrieverServiceMock.getDebtPositionTypeOrgs(
+    Mockito.when(transferRetrieverServiceMock.getTransfers(
       organizationId,
+      installmentId,
       SecurityUtils.getLoggedUser(),
       SecurityUtils.getAccessToken()
     )).thenReturn(expectedResult);
 
-    ResponseEntity<List<DebtPositionTypeOrg>> response = debtPositionTypeOrgController.getDebtPositionTypeOrgs(organizationId);
+    ResponseEntity<List<TransferResponse>> response = transferController.getTransfers(organizationId, installmentId);
 
     Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
     Assertions.assertNotNull(response.getBody());
@@ -59,5 +61,3 @@ class DebtPositionTypeOrgControllerTest {
   }
 
 }
-
-

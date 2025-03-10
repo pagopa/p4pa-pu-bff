@@ -437,12 +437,12 @@ paths:
         '500':
           description: Internal Server Error
       x-spring-paginated: true
-  /organization/{organizationId}/payments-reporting/{paymentsReportingId}:
+  /organization/{organizationId}/payments-reporting/{iuf}/rows:
     get:
       tags:
         - PaymentsReporting
-      summary: "Retrieve a specific payments reporting"
-      operationId: getPaymentsReportingDetail
+      summary: "Retrieve a page of payments reporting rows based on filters"
+      operationId: getPaymentsReportingRows
       parameters:
         - name: organizationId
           in: path
@@ -450,31 +450,42 @@ paths:
           schema:
             type: integer
             format: int64
-        - name: paymentsReportingId
+        - name: iuf
           in: path
           required: true
           schema:
             type: string
-          description: The unique identifier of the payments reporting
+        - name: iuv
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: payDateFrom
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date
+        - name: payDateTo
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date
       responses:
         '200':
           description: OK
           content:
             application/json:
               schema:
-                type: 'PaymentsReportingDetailDTO'
-        '404':
-          description: Not Found - Receipt not found
+                $ref: '#/components/schemas/PagedPaymentsReportingRow'
         '401':
           description: Unauthorized - Missing or invalid token
         '403':
           description: Forbidden - Access denied
         '500':
           description: Internal Server Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorDTO'
+      x-spring-paginated: true
   /organization/{organizationId}/receipts:
     get:
       tags:
@@ -809,41 +820,6 @@ components:
       scheme: bearer
       bearerFormat: JWT
   schemas:
-    PaymentsReportingDetailDTO:
-      type: object
-      required:
-        - paymentsReportingId
-        - paymentAmountCents
-        - remittanceInformation
-        - debtPositionTypeOrgDescription
-        - debtor
-        - pspCompanyName
-        - iud
-      properties:
-        paymentsReportingId:
-          type: string
-        iuv:
-          type: string
-        paymentAmountCents:
-          type: integer
-          format: int64
-        remittanceInformation:
-          type: string
-        debtPositionTypeOrgDescription:
-          type: string
-        paymentDateTime:
-          type: string
-          format: date-time
-        debtor:
-          type: 'PersonDTO'
-        pspCompanyName:
-          type: string
-        iud:
-          type: string
-        iur:
-          type: string
-        status:
-          type: 'InstallmentStatus'
     TaxonomyCodeDTO:
       type: object
       properties:
@@ -1336,3 +1312,28 @@ components:
           type: array
           items:
             type: 'PaymentOptionDTO'
+    PagedPaymentsReportingRow:
+      type: object
+      required:
+        - content
+        - size
+        - totalElements
+        - totalPages
+        - number
+      properties:
+        content:
+          type: array
+          items:
+            type: 'PaymentsReporting'
+        size:
+          type: integer
+          format: int64
+        totalElements:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer
+          format: int64
+        number:
+          type: integer
+          format: int64

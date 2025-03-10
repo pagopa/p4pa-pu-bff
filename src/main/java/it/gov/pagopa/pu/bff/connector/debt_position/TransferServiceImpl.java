@@ -1,15 +1,15 @@
 package it.gov.pagopa.pu.bff.connector.debt_position;
 
-import it.gov.pagopa.pu.bff.connector.debt_position.client.TransferClient;
+import it.gov.pagopa.pu.bff.connector.debt_position.client.TransferSearchClient;
 import it.gov.pagopa.pu.debtpositions.dto.generated.CollectionModelTransfer;
 import org.springframework.stereotype.Service;
 
 @Service
 public class TransferServiceImpl implements TransferService {
 
-  private final TransferClient client;
+  private final TransferSearchClient client;
 
-  public TransferServiceImpl(TransferClient client) {
+  public TransferServiceImpl(TransferSearchClient client) {
     this.client = client;
   }
 

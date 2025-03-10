@@ -1,6 +1,6 @@
 package it.gov.pagopa.pu.bff.connector.debt_position;
 
-import it.gov.pagopa.pu.bff.connector.debt_position.client.TransferClient;
+import it.gov.pagopa.pu.bff.connector.debt_position.client.TransferSearchClient;
 import it.gov.pagopa.pu.debtpositions.dto.generated.CollectionModelTransfer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,7 +16,7 @@ import static org.mockito.Mockito.when;
 class TransferServiceImplTest {
 
   @Mock
-  private TransferClient client;
+  private TransferSearchClient client;
 
   private TransferService service;
 

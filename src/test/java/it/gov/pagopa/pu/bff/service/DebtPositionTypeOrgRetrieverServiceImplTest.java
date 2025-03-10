@@ -45,6 +45,7 @@ class DebtPositionTypeOrgRetrieverServiceImplTest {
   void givenValidUserWhenGetDebtPositionTypeOrgsThenOk() {
     UserInfo loggedUser = new UserInfo();
     loggedUser.setUserId("user-123");
+    loggedUser.setMappedExternalUserId("mappedExternalUserId");
 
     long organizationId = 1L;
     DebtPositionTypeOrg debtPositionTypeOrg = new DebtPositionTypeOrg();
@@ -65,6 +66,7 @@ class DebtPositionTypeOrgRetrieverServiceImplTest {
       assertNotNull(result);
       assertFalse(result.isEmpty());
       assertSame(debtPositionTypeOrg, result.get(0));
+      assertEquals(embedded.getDebtPositionTypeOrgs().size(), result.size());
 
       authorizationServiceMockedStatic.verify(() -> AuthorizationService.isUserEnabledToOrganizationId(organizationId, loggedUser));
       Mockito.verify(debtPositionTypeOrgServiceMock).getDebtPositionTypeOrgs(organizationId, loggedUser.getMappedExternalUserId(), accessToken);
@@ -76,6 +78,7 @@ class DebtPositionTypeOrgRetrieverServiceImplTest {
   void givenEmptyResultWhenGetDebtPositionTypeOrgsThenEmptyList() {
     UserInfo loggedUser = new UserInfo();
     loggedUser.setUserId("user-123");
+    loggedUser.setMappedExternalUserId("mappedExternalUserId");
 
     long organizationId = 1L;
     CollectionModelDebtPositionTypeOrg emptyCollectionModel = new CollectionModelDebtPositionTypeOrg();
@@ -102,6 +105,7 @@ class DebtPositionTypeOrgRetrieverServiceImplTest {
   void givenInvalidUserWhenGetDebtPositionTypeOrgsThenAuthorizationDeniedException() {
     UserInfo loggedUser = new UserInfo();
     loggedUser.setUserId("user-123");
+    loggedUser.setMappedExternalUserId("mappedExternalUserId");
 
     long organizationId = 1L;
 

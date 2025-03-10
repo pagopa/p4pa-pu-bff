@@ -5,11 +5,11 @@ import it.gov.pagopa.pu.debtpositions.dto.generated.CollectionModelTransfer;
 import org.springframework.stereotype.Service;
 
 @Service
-public class TransferClient {
+public class TransferSearchClient {
 
   private final DebtPositionApisHolder debtPositionApisHolder;
 
-  public TransferClient(DebtPositionApisHolder debtPositionApisHolder) {
+  public TransferSearchClient(DebtPositionApisHolder debtPositionApisHolder) {
     this.debtPositionApisHolder = debtPositionApisHolder;
   }
 

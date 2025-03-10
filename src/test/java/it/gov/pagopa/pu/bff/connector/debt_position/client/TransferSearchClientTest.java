@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class TransferClientTest {
+class TransferSearchClientTest {
 
   @Mock
   private DebtPositionApisHolder debtPositionApisHolderMock;
@@ -23,11 +23,11 @@ class TransferClientTest {
   @Mock
   private TransferSearchControllerApi transferSearchControllerApiMock;
 
-  private TransferClient transferClient;
+  private TransferSearchClient transferSearchClient;
 
   @BeforeEach
   void setUp() {
-    transferClient = new TransferClient(debtPositionApisHolderMock);
+    transferSearchClient = new TransferSearchClient(debtPositionApisHolderMock);
   }
 
   @AfterEach
@@ -50,7 +50,7 @@ class TransferClientTest {
       String.valueOf(installmentId), operatorExternalUserId))
       .thenReturn(expectedResult);
 
-    CollectionModelTransfer result = transferClient.getTransfers(installmentId, operatorExternalUserId, accessToken);
+    CollectionModelTransfer result = transferSearchClient.getTransfers(installmentId, operatorExternalUserId, accessToken);
 
     assertSame(expectedResult, result);
   }

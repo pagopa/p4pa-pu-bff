@@ -1,0 +1,31 @@
+package it.gov.pagopa.pu.bff.mapper;
+
+import it.gov.pagopa.pu.bff.dto.generated.PagedPaymentsReportingRow;
+import it.gov.pagopa.pu.classification.dto.generated.PagedModelPaymentsReporting;
+import java.util.Collections;
+import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
+
+@Component
+public class PaymentsReportingMapper {
+
+  public PagedPaymentsReportingRow mapToPagedPaymentsReporting(
+    PagedModelPaymentsReporting pagedModel) {
+    PagedPaymentsReportingRow pagedPaymentsReporting = new PagedPaymentsReportingRow();
+    if (pagedModel != null) {
+      if (pagedModel.getEmbedded() != null && !CollectionUtils.isEmpty(
+        pagedModel.getEmbedded().getPaymentsReportings())) {
+        pagedPaymentsReporting.setContent(pagedModel.getEmbedded().getPaymentsReportings());
+      } else {
+        pagedPaymentsReporting.setContent(Collections.emptyList());
+      }
+      if (pagedModel.getPage() != null) {
+        pagedPaymentsReporting.setTotalPages(pagedModel.getPage().getTotalPages());
+        pagedPaymentsReporting.setSize(pagedModel.getPage().getSize());
+        pagedPaymentsReporting.setNumber(pagedModel.getPage().getNumber());
+        pagedPaymentsReporting.setTotalElements(pagedModel.getPage().getTotalElements());
+      }
+    }
+    return pagedPaymentsReporting;
+  }
+}

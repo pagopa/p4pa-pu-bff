@@ -2,11 +2,6 @@ package it.gov.pagopa.pu.bff.connector.process_executions.config;
 
 import it.gov.pagopa.pu.bff.connector.BaseApiHolderTest;
 import it.gov.pagopa.pu.processexecutions.dto.generated.ExportFileRequestDTO;
-import it.gov.pagopa.pu.processexecutions.dto.generated.PagedModelExportFile;
-import it.gov.pagopa.pu.processexecutions.dto.generated.PagedModelIngestionFlowFile;
-import java.time.LocalDateTime;
-import java.time.OffsetDateTime;
-import java.util.List;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,7 +10,12 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.web.util.DefaultUriBuilderFactory;
+
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.util.List;
 
 @ExtendWith(MockitoExtension.class)
 class ProcessExecutionsApisHolderTest extends BaseApiHolderTest {
@@ -49,7 +49,7 @@ class ProcessExecutionsApisHolderTest extends BaseApiHolderTest {
         .crudIngestionFlowFilesFindByOrganizationIDFlowTypeCreateDate(String.valueOf(123L),
           List.of("flowFileType"),
           LocalDateTime.now(),LocalDateTime.now(),"status","fileName","operatorExternalId",0,0,null),
-      PagedModelIngestionFlowFile.class,
+      new ParameterizedTypeReference<>() {},
       processExecutionsApisHolder::unload
     );
   }
@@ -60,7 +60,7 @@ class ProcessExecutionsApisHolderTest extends BaseApiHolderTest {
       accessToken -> processExecutionsApisHolder.getExportFileSearchControllerApi(accessToken)
         .crudExportFilesFindByOrganizationIDFlowTypeCreateDate(String.valueOf(123L), "flowFileType",
           OffsetDateTime.now(),OffsetDateTime.now(),"status","fileName","operatorExternalId",0,0,null),
-      PagedModelExportFile.class,
+      new ParameterizedTypeReference<>() {},
       processExecutionsApisHolder::unload
     );
   }
@@ -71,9 +71,9 @@ class ProcessExecutionsApisHolderTest extends BaseApiHolderTest {
       accessToken -> {
         processExecutionsApisHolder.getExportFileControllerApi(accessToken)
           .createExportFile(new ExportFileRequestDTO());
-        return null;
+        return voidMock;
       },
-      String.class,
+      new ParameterizedTypeReference<>() {},
       processExecutionsApisHolder::unload
     );
   }

@@ -45,7 +45,7 @@ public class ExportFileRetrieverServiceImpl implements
   @Override
   public void createExportFile(ExportFileRequestDTO requestDTO,
     UserInfo loggedUser, String accessToken) {
-    AuthorizationService.isUserEnabledToOrganizationId(
+    AuthorizationService.validateUserForOrganizationId(
       requestDTO.getOrganizationId(), loggedUser);
     exportFileService.createExportFile(requestDTO, accessToken);
   }

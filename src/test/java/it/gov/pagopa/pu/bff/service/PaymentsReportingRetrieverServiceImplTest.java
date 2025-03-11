@@ -93,7 +93,7 @@ class PaymentsReportingRetrieverServiceImplTest {
     try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(
       AuthorizationService.class)) {
       authorizationServiceMockedStatic.when(
-          () -> AuthorizationService.isUserEnabledToOrganizationId(organizationId,
+          () -> AuthorizationService.validateUserForOrganizationId(organizationId,
             loggedUser))
         .thenReturn(true);
 
@@ -115,7 +115,7 @@ class PaymentsReportingRetrieverServiceImplTest {
       assertSame(expectedPagedPaymentsReportingView, result);
 
       authorizationServiceMockedStatic.verify(
-        () -> AuthorizationService.isUserEnabledToOrganizationId(organizationId,
+        () -> AuthorizationService.validateUserForOrganizationId(organizationId,
           loggedUser));
     }
   }
@@ -137,7 +137,7 @@ class PaymentsReportingRetrieverServiceImplTest {
     try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(
       AuthorizationService.class)) {
       authorizationServiceMockedStatic.when(
-          () -> AuthorizationService.isUserEnabledToOrganizationId(organizationId,
+          () -> AuthorizationService.validateUserForOrganizationId(organizationId,
             loggedUser))
         .thenThrow(new AuthorizationDeniedException("Access denied"));
 
@@ -147,7 +147,7 @@ class PaymentsReportingRetrieverServiceImplTest {
           loggedUser, accessToken));
 
       authorizationServiceMockedStatic.verify(
-        () -> AuthorizationService.isUserEnabledToOrganizationId(organizationId,
+        () -> AuthorizationService.validateUserForOrganizationId(organizationId,
           loggedUser));
     }
   }
@@ -162,28 +162,37 @@ class PaymentsReportingRetrieverServiceImplTest {
     String iuv = "iuv";
     LocalDate payDateFrom = LocalDate.now().minusDays(10);
     LocalDate payDateTo = LocalDate.now();
-    LocalDateIntervalFilter payDateFilter = new LocalDateIntervalFilter(payDateFrom, payDateTo);
+    LocalDateIntervalFilter payDateFilter = new LocalDateIntervalFilter(
+      payDateFrom, payDateTo);
     Pageable pageable = PageRequest.of(0, 10);
 
     PagedModelPaymentsReporting pagedModelPaymentsReporting = new PagedModelPaymentsReporting();
     PagedPaymentsReportingRow expectedResult = new PagedPaymentsReportingRow();
 
-    try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
-      authorizationServiceMockedStatic.when(() -> AuthorizationService.isUserEnabledToOrganizationId(organizationId, loggedUser))
-        .thenReturn(true);
+    try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(
+      AuthorizationService.class)) {
+      authorizationServiceMockedStatic.when(
+        () -> AuthorizationService.validateUserForOrganizationId(organizationId,
+          loggedUser)).thenAnswer(a -> null);
 
-      when(paymentsReportingServiceMock.getPaymentsReportingRows(organizationId, iuf, iuv, payDateFilter, pageable, accessToken))
+      when(paymentsReportingServiceMock.getPaymentsReportingRows(organizationId,
+        iuf, iuv, payDateFilter, pageable, accessToken))
         .thenReturn(pagedModelPaymentsReporting);
 
-      when(paymentsReportingMapperMock.mapToPagedPaymentsReporting(pagedModelPaymentsReporting))
+      when(paymentsReportingMapperMock.mapToPagedPaymentsReporting(
+        pagedModelPaymentsReporting))
         .thenReturn(expectedResult);
 
-      PagedPaymentsReportingRow result = paymentsReportingRetrieverService.getPaymentsReportingRows(organizationId, iuf, iuv, payDateFilter, pageable, loggedUser, accessToken);
+      PagedPaymentsReportingRow result = paymentsReportingRetrieverService.getPaymentsReportingRows(
+        organizationId, iuf, iuv, payDateFilter, pageable, loggedUser,
+        accessToken);
 
       assertNotNull(result);
       assertSame(expectedResult, result);
 
-      authorizationServiceMockedStatic.verify(() -> AuthorizationService.isUserEnabledToOrganizationId(organizationId, loggedUser));
+      authorizationServiceMockedStatic.verify(
+        () -> AuthorizationService.validateUserForOrganizationId(organizationId,
+          loggedUser));
     }
   }
 
@@ -197,17 +206,25 @@ class PaymentsReportingRetrieverServiceImplTest {
     String iuv = "iuv";
     LocalDate payDateFrom = LocalDate.now().minusDays(10);
     LocalDate payDateTo = LocalDate.now();
-    LocalDateIntervalFilter payDateFilter = new LocalDateIntervalFilter(payDateFrom, payDateTo);
+    LocalDateIntervalFilter payDateFilter = new LocalDateIntervalFilter(
+      payDateFrom, payDateTo);
     Pageable pageable = PageRequest.of(0, 10);
 
-    try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
-      authorizationServiceMockedStatic.when(() -> AuthorizationService.isUserEnabledToOrganizationId(organizationId, loggedUser))
+    try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(
+      AuthorizationService.class)) {
+      authorizationServiceMockedStatic.when(
+          () -> AuthorizationService.validateUserForOrganizationId(organizationId,
+            loggedUser))
         .thenThrow(new AuthorizationDeniedException("Access denied"));
 
       assertThrows(AuthorizationDeniedException.class, () ->
-        paymentsReportingRetrieverService.getPaymentsReportingRows(organizationId, iuf, iuv, payDateFilter, pageable, loggedUser, accessToken));
+        paymentsReportingRetrieverService.getPaymentsReportingRows(
+          organizationId, iuf, iuv, payDateFilter, pageable, loggedUser,
+          accessToken));
 
-      authorizationServiceMockedStatic.verify(() -> AuthorizationService.isUserEnabledToOrganizationId(organizationId, loggedUser));
+      authorizationServiceMockedStatic.verify(
+        () -> AuthorizationService.validateUserForOrganizationId(organizationId,
+          loggedUser));
     }
   }
 
@@ -268,22 +285,28 @@ class PaymentsReportingRetrieverServiceImplTest {
     try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(
       AuthorizationService.class)) {
       authorizationServiceMockedStatic.when(
-          () -> AuthorizationService.isUserEnabledToOrganizationId(organizationId,
+          () -> AuthorizationService.validateUserForOrganizationId(organizationId,
             loggedUser))
         .thenReturn(true);
 
       when(
-        paymentsReportingServiceMock.getPaymentsReportingDetail(organizationId, paymentsReportingId, accessToken))
+        paymentsReportingServiceMock.getPaymentsReportingDetail(organizationId,
+          paymentsReportingId, accessToken))
         .thenReturn(paymentsReporting);
 
-      when(installmentRetrieverServiceMock.getInstallmentFromTransferSemanticKey(organizationId, iuv, iur,
-        String.valueOf(transferIndex), loggedUser, accessToken))
+      when(
+        installmentRetrieverServiceMock.getInstallmentFromTransferSemanticKey(
+          organizationId, iuv, iur,
+          String.valueOf(transferIndex), loggedUser, accessToken))
         .thenReturn(installmentNoPII);
 
-      when(receiptRetrieverServiceMock.getReceiptDetail(organizationId, receiptId, loggedUser, accessToken))
+      when(
+        receiptRetrieverServiceMock.getReceiptDetail(organizationId, receiptId,
+          loggedUser, accessToken))
         .thenReturn(receiptDetailDTO);
 
-      when(paymentsReportingMapperMock.mapToPaymentsReportingDetailDTO(paymentsReporting, receiptDetailDTO))
+      when(paymentsReportingMapperMock.mapToPaymentsReportingDetailDTO(
+        paymentsReporting, receiptDetailDTO))
         .thenReturn(expectedResult);
 
       PaymentsReportingDetailDTO result = paymentsReportingRetrieverService.getPaymentsReportingDetail(
@@ -293,7 +316,7 @@ class PaymentsReportingRetrieverServiceImplTest {
       assertSame(expectedResult, result);
 
       authorizationServiceMockedStatic.verify(
-        () -> AuthorizationService.isUserEnabledToOrganizationId(organizationId,
+        () -> AuthorizationService.validateUserForOrganizationId(organizationId,
           loggedUser));
     }
   }
@@ -339,7 +362,7 @@ class PaymentsReportingRetrieverServiceImplTest {
     try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(
       AuthorizationService.class)) {
       authorizationServiceMockedStatic.when(
-          () -> AuthorizationService.isUserEnabledToOrganizationId(organizationId,
+          () -> AuthorizationService.validateUserForOrganizationId(organizationId,
             loggedUser))
         .thenReturn(true);
 
@@ -354,7 +377,8 @@ class PaymentsReportingRetrieverServiceImplTest {
           String.valueOf(transferIndex), loggedUser, accessToken))
         .thenReturn(null);
 
-      when(paymentsReportingMapperMock.mapToPaymentsReportingDetailDTO(paymentsReporting, null))
+      when(paymentsReportingMapperMock.mapToPaymentsReportingDetailDTO(
+        paymentsReporting, null))
         .thenReturn(new PaymentsReportingDetailDTO());
 
       PaymentsReportingDetailDTO result = paymentsReportingRetrieverService.getPaymentsReportingDetail(
@@ -366,7 +390,7 @@ class PaymentsReportingRetrieverServiceImplTest {
           UserInfo.class), Mockito.anyString());
 
       authorizationServiceMockedStatic.verify(
-        () -> AuthorizationService.isUserEnabledToOrganizationId(organizationId,
+        () -> AuthorizationService.validateUserForOrganizationId(organizationId,
           loggedUser));
     }
   }
@@ -382,12 +406,13 @@ class PaymentsReportingRetrieverServiceImplTest {
     try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(
       AuthorizationService.class)) {
       authorizationServiceMockedStatic.when(
-          () -> AuthorizationService.isUserEnabledToOrganizationId(organizationId,
+          () -> AuthorizationService.validateUserForOrganizationId(organizationId,
             loggedUser))
         .thenReturn(true);
 
       when(
-        paymentsReportingServiceMock.getPaymentsReportingDetail(organizationId, paymentsReportingId, accessToken))
+        paymentsReportingServiceMock.getPaymentsReportingDetail(organizationId,
+          paymentsReportingId, accessToken))
         .thenReturn(null);
 
       PaymentsReportingDetailDTO result = paymentsReportingRetrieverService.getPaymentsReportingDetail(
@@ -396,7 +421,7 @@ class PaymentsReportingRetrieverServiceImplTest {
       assertNull(result);
 
       authorizationServiceMockedStatic.verify(
-        () -> AuthorizationService.isUserEnabledToOrganizationId(organizationId,
+        () -> AuthorizationService.validateUserForOrganizationId(organizationId,
           loggedUser));
     }
   }

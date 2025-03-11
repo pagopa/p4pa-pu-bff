@@ -45,7 +45,7 @@ public class PaymentsReportingRetrieverServiceImpl implements
     String iuf, String regulationUniqueIdentifier,
     LocalDateIntervalFilter regulationDateFilter, Pageable pageable,
     UserInfo loggedUser, String accessToken) {
-    AuthorizationService.isUserEnabledToOrganizationId(organizationId,
+    AuthorizationService.validateUserForOrganizationId(organizationId,
       loggedUser);
 
     return paymentsReportingViewMapper.mapToPagedPaymentsReporting(
@@ -58,7 +58,7 @@ public class PaymentsReportingRetrieverServiceImpl implements
   public PagedPaymentsReportingRow getPaymentsReportingRows(Long organizationId,
     String iuf, String iuv, LocalDateIntervalFilter payDateFilter,
     Pageable pageable, UserInfo loggedUser, String accessToken) {
-    AuthorizationService.isUserEnabledToOrganizationId(organizationId,
+    AuthorizationService.validateUserForOrganizationId(organizationId,
       loggedUser);
 
     return paymentsReportingMapper.mapToPagedPaymentsReporting(
@@ -70,7 +70,7 @@ public class PaymentsReportingRetrieverServiceImpl implements
   public PaymentsReportingDetailDTO getPaymentsReportingDetail(
     Long organizationId, String paymentsReportingId, UserInfo loggedUser,
     String accessToken) {
-    AuthorizationService.isUserEnabledToOrganizationId(organizationId,
+    AuthorizationService.validateUserForOrganizationId(organizationId,
       loggedUser);
 
     PaymentsReporting paymentsReporting = paymentsReportingService.getPaymentsReportingDetail(
@@ -85,7 +85,8 @@ public class PaymentsReportingRetrieverServiceImpl implements
       String.valueOf(paymentsReporting.getTransferIndex()), loggedUser,
       accessToken);
     ReceiptDetailDTO receiptDetailDTO = installment != null ?
-      receiptRetrieverService.getReceiptDetail(organizationId, installment.getReceiptId(), loggedUser, accessToken)
+      receiptRetrieverService.getReceiptDetail(organizationId,
+        installment.getReceiptId(), loggedUser, accessToken)
       : null;
 
     return paymentsReportingMapper.mapToPaymentsReportingDetailDTO(

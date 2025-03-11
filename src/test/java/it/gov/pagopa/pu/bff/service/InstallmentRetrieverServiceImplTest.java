@@ -67,8 +67,7 @@ class InstallmentRetrieverServiceImplTest {
     PagedInstallmentView expectedPagedInstallmentView = new PagedInstallmentView();
 
     try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
-      authorizationServiceMockedStatic.when(() -> AuthorizationService.isUserEnabledToOrganizationId(filtersDTO.getOrganizationId(), loggedUser))
-        .thenReturn(true);
+      authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(filtersDTO.getOrganizationId(), loggedUser)).thenAnswer(a->null);
 
       Mockito.when(installmentServiceMock.getInstallments(filtersDTO, pageable, accessToken))
         .thenReturn(pagedModelInstallmentView);
@@ -81,7 +80,7 @@ class InstallmentRetrieverServiceImplTest {
       assertNotNull(result);
       assertSame(expectedPagedInstallmentView, result);
 
-      authorizationServiceMockedStatic.verify(() -> AuthorizationService.isUserEnabledToOrganizationId(filtersDTO.getOrganizationId(), loggedUser));
+      authorizationServiceMockedStatic.verify(() -> AuthorizationService.validateUserForOrganizationId(filtersDTO.getOrganizationId(), loggedUser));
     }
   }
 
@@ -95,13 +94,13 @@ class InstallmentRetrieverServiceImplTest {
     Pageable pageable = PageRequest.of(0, 10);
 
     try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
-      authorizationServiceMockedStatic.when(() -> AuthorizationService.isUserEnabledToOrganizationId(filtersDTO.getOrganizationId(), loggedUser))
+      authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(filtersDTO.getOrganizationId(), loggedUser))
         .thenThrow(new AuthorizationDeniedException("Access denied"));
 
       assertThrows(AuthorizationDeniedException.class, () ->
         installmentRetrieverService.getInstallments(filtersDTO, pageable, loggedUser, accessToken));
 
-      authorizationServiceMockedStatic.verify(() -> AuthorizationService.isUserEnabledToOrganizationId(filtersDTO.getOrganizationId(), loggedUser));
+      authorizationServiceMockedStatic.verify(() -> AuthorizationService.validateUserForOrganizationId(filtersDTO.getOrganizationId(), loggedUser));
     }
   }
 
@@ -121,8 +120,8 @@ class InstallmentRetrieverServiceImplTest {
     installmentDetailDTO.setPspCompanyName("pspCompanyName");
 
     try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
-      authorizationServiceMockedStatic.when(() -> AuthorizationService.isUserEnabledToOrganizationId(organizationId, loggedUser))
-        .thenReturn(true);
+      authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)).thenAnswer(a->null);
+
       Mockito.when(installmentServiceMock.getInstallmentDetail(installmentId, loggedUser.getMappedExternalUserId(), accessToken))
         .thenReturn(installmentDetailDTO);
 
@@ -136,7 +135,7 @@ class InstallmentRetrieverServiceImplTest {
       assertNotNull(result.getIur());
       assertNotNull(result.getPspCompanyName());
 
-      authorizationServiceMockedStatic.verify(() -> AuthorizationService.isUserEnabledToOrganizationId(organizationId, loggedUser));
+      authorizationServiceMockedStatic.verify(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser));
       Mockito.verify(installmentServiceMock).getInstallmentDetail(installmentId, loggedUser.getMappedExternalUserId(), accessToken);
     }
   }
@@ -150,13 +149,13 @@ class InstallmentRetrieverServiceImplTest {
     Long installmentId = 2L;
 
     try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
-      authorizationServiceMockedStatic.when(() -> AuthorizationService.isUserEnabledToOrganizationId(organizationId, loggedUser))
+      authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser))
         .thenThrow(new AuthorizationDeniedException("Access denied"));
 
       Assertions.assertThrows(AuthorizationDeniedException.class, () ->
         installmentRetrieverService.getInstallmentDetail(organizationId, installmentId, loggedUser, accessToken));
 
-      authorizationServiceMockedStatic.verify(() -> AuthorizationService.isUserEnabledToOrganizationId(organizationId, loggedUser));
+      authorizationServiceMockedStatic.verify(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser));
       Mockito.verifyNoInteractions(installmentServiceMock);
     }
   }
@@ -172,8 +171,8 @@ class InstallmentRetrieverServiceImplTest {
     installmentDetailDTO.setStatus(InstallmentDetailDTO.StatusEnum.UNPAID);
 
     try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
-      authorizationServiceMockedStatic.when(() -> AuthorizationService.isUserEnabledToOrganizationId(organizationId, loggedUser))
-        .thenReturn(true);
+      authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)).thenAnswer(a->null);
+
       Mockito.when(installmentServiceMock.getInstallmentDetail(installmentId, loggedUser.getMappedExternalUserId(), accessToken))
         .thenReturn(installmentDetailDTO);
 
@@ -186,7 +185,7 @@ class InstallmentRetrieverServiceImplTest {
       assertNull(result.getIur());
       assertNull(result.getPspCompanyName());
 
-      authorizationServiceMockedStatic.verify(() -> AuthorizationService.isUserEnabledToOrganizationId(organizationId, loggedUser));
+      authorizationServiceMockedStatic.verify(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser));
       Mockito.verify(installmentServiceMock).getInstallmentDetail(installmentId, loggedUser.getMappedExternalUserId(), accessToken);
     }
   }

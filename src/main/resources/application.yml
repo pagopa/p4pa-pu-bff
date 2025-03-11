@@ -76,9 +76,14 @@ app:
     footerAccessibilityUrl: "\${BROKER_FE_DEFAULT_CONFIG_FOOTER_ACCESSIBILITY_URL:https://form.agid.gov.it/view/c299ac76-6d08-4c34-9957-00519dde4ea9}"
 
 rest:
-  default-timeout:
-    connect-millis: "\${DEFAULT_REST_CONNECT_TIMEOUT_MILLIS:120000}"
-    read-millis: "\${DEFAULT_REST_READ_TIMEOUT_MILLIS:120000}"
+  defaults:
+    connection-pool:
+      size: "\${DEFAULT_REST_CONNECTION_POOL_SIZE:10}"
+      size-per-route: "\${DEFAULT_REST_CONNECTION_POOL_SIZE_PER_ROUTE:5}"
+      time-to-live-minutes: "\${DEFAULT_REST_CONNECTION_POOL_TIME_TO_LIVE_MINUTES:10}"
+    timeout:
+      connect-millis: "\${DEFAULT_REST_TIMEOUT_CONNECT_MILLIS:120000}"
+      read-millis: "\${DEFAULT_REST_TIMEOUT_READ_MILLIS:120000}"
   auth:
     base-url: "\${AUTH_SERVER_BASE_URL:}/payhub"
     max-attempts: "\${AUTH_MAX_ATTEMPTS:3}" # It's counting also the first attempt

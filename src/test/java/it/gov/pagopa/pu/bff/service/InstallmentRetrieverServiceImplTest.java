@@ -202,8 +202,8 @@ class InstallmentRetrieverServiceImplTest {
     InstallmentNoPII installmentNoPII = new InstallmentNoPII();
 
     try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
-      authorizationServiceMockedStatic.when(() -> AuthorizationService.isUserEnabledToOrganizationId(organizationId, loggedUser))
-        .thenReturn(true);
+      authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser))
+        .thenAnswer(a->null);
       Mockito.when(installmentServiceMock.getInstallmentFromTransferSemanticKey(organizationId, iuv, iur, transferIndex, loggedUser.getMappedExternalUserId(), accessToken))
         .thenReturn(installmentNoPII);
 
@@ -212,7 +212,7 @@ class InstallmentRetrieverServiceImplTest {
       assertNotNull(result);
       assertSame(installmentNoPII, result);
 
-      authorizationServiceMockedStatic.verify(() -> AuthorizationService.isUserEnabledToOrganizationId(organizationId, loggedUser));
+      authorizationServiceMockedStatic.verify(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser));
       Mockito.verify(installmentServiceMock).getInstallmentFromTransferSemanticKey(organizationId, iuv, iur, transferIndex, loggedUser.getMappedExternalUserId(), accessToken);
     }
   }
@@ -228,13 +228,13 @@ class InstallmentRetrieverServiceImplTest {
     String transferIndex = "transferIndex";
 
     try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
-      authorizationServiceMockedStatic.when(() -> AuthorizationService.isUserEnabledToOrganizationId(organizationId, loggedUser))
+      authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser))
         .thenThrow(new AuthorizationDeniedException("Access denied"));
 
       Assertions.assertThrows(AuthorizationDeniedException.class, () ->
         installmentRetrieverService.getInstallmentFromTransferSemanticKey(organizationId, iuv, iur, transferIndex, loggedUser, accessToken));
 
-      authorizationServiceMockedStatic.verify(() -> AuthorizationService.isUserEnabledToOrganizationId(organizationId, loggedUser));
+      authorizationServiceMockedStatic.verify(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser));
       Mockito.verifyNoInteractions(installmentServiceMock);
     }
   }

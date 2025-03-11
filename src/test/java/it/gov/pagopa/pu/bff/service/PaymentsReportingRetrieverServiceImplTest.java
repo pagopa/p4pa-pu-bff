@@ -95,7 +95,7 @@ class PaymentsReportingRetrieverServiceImplTest {
       authorizationServiceMockedStatic.when(
           () -> AuthorizationService.validateUserForOrganizationId(organizationId,
             loggedUser))
-        .thenReturn(true);
+        .thenAnswer(a->null);
 
       when(
         paymentsReportingServiceMock.getPaymentsReporting(organizationId, iuf,
@@ -287,7 +287,7 @@ class PaymentsReportingRetrieverServiceImplTest {
       authorizationServiceMockedStatic.when(
           () -> AuthorizationService.validateUserForOrganizationId(organizationId,
             loggedUser))
-        .thenReturn(true);
+        .thenAnswer(a->null);
 
       when(
         paymentsReportingServiceMock.getPaymentsReportingDetail(organizationId,
@@ -364,7 +364,7 @@ class PaymentsReportingRetrieverServiceImplTest {
       authorizationServiceMockedStatic.when(
           () -> AuthorizationService.validateUserForOrganizationId(organizationId,
             loggedUser))
-        .thenReturn(true);
+        .thenAnswer(a->null);
 
       when(
         paymentsReportingServiceMock.getPaymentsReportingDetail(organizationId,
@@ -408,7 +408,7 @@ class PaymentsReportingRetrieverServiceImplTest {
       authorizationServiceMockedStatic.when(
           () -> AuthorizationService.validateUserForOrganizationId(organizationId,
             loggedUser))
-        .thenReturn(true);
+        .thenAnswer(a->null);
 
       when(
         paymentsReportingServiceMock.getPaymentsReportingDetail(organizationId,

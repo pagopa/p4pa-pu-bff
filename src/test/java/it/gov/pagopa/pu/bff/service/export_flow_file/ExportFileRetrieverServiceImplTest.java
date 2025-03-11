@@ -1,6 +1,7 @@
 package it.gov.pagopa.pu.bff.service.export_flow_file;
 
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
+import it.gov.pagopa.pu.auth.dto.generated.UserOrganizationRoles;
 import it.gov.pagopa.pu.bff.connector.process_executions.ExportFileService;
 import it.gov.pagopa.pu.bff.dto.ExportFileFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.OffsetDateTimeIntervalFilter;
@@ -14,6 +15,8 @@ import it.gov.pagopa.pu.processexecutions.dto.generated.ExportFileFilter;
 import it.gov.pagopa.pu.processexecutions.dto.generated.ExportFileRequestDTO;
 import it.gov.pagopa.pu.processexecutions.dto.generated.PagedModelExportFile;
 import java.time.OffsetDateTime;
+import java.util.List;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -124,6 +127,11 @@ class ExportFileRetrieverServiceImplTest {
       .build();
     String accessToken = "ACCESSTOKEN";
     UserInfo user = TestUtils.getSampleUser();
+
+    UserOrganizationRoles userOrgRole = new UserOrganizationRoles();
+    userOrgRole.setRoles(List.of("ROLE_USER"));
+    userOrgRole.setOrganizationId(1L);
+    user.setOrganizations(List.of(userOrgRole));
 
     exportFileRetrieverService.createExportFile(requestDTO, user, accessToken);
 

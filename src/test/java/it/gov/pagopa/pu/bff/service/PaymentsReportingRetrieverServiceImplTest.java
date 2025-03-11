@@ -71,8 +71,7 @@ class PaymentsReportingRetrieverServiceImplTest {
     PagedPaymentsReportingView expectedPagedPaymentsReportingView = new PagedPaymentsReportingView();
 
     try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
-      authorizationServiceMockedStatic.when(() -> AuthorizationService.isUserEnabledToOrganizationId(organizationId, loggedUser))
-        .thenReturn(true);
+      authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)).thenAnswer(a->null);
 
       when(paymentsReportingServiceMock.getPaymentsReporting(organizationId, iuf, regulationUniqueIdentifier, regulationDateFilter, pageable, accessToken))
         .thenReturn(pagedModelPaymentsReportingView);
@@ -85,7 +84,7 @@ class PaymentsReportingRetrieverServiceImplTest {
       assertNotNull(result);
       assertSame(expectedPagedPaymentsReportingView, result);
 
-      authorizationServiceMockedStatic.verify(() -> AuthorizationService.isUserEnabledToOrganizationId(organizationId, loggedUser));
+      authorizationServiceMockedStatic.verify(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser));
     }
   }
 
@@ -103,13 +102,13 @@ class PaymentsReportingRetrieverServiceImplTest {
     Pageable pageable = PageRequest.of(0, 10);
 
     try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
-      authorizationServiceMockedStatic.when(() -> AuthorizationService.isUserEnabledToOrganizationId(organizationId, loggedUser))
+      authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser))
         .thenThrow(new AuthorizationDeniedException("Access denied"));
 
       assertThrows(AuthorizationDeniedException.class, () ->
         paymentsReportingRetrieverService.getPaymentsReporting(organizationId, iuf, regulationUniqueIdentifier, regulationDateFilter, pageable, loggedUser, accessToken));
 
-      authorizationServiceMockedStatic.verify(() -> AuthorizationService.isUserEnabledToOrganizationId(organizationId, loggedUser));
+      authorizationServiceMockedStatic.verify(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser));
     }
   }
 
@@ -130,8 +129,7 @@ class PaymentsReportingRetrieverServiceImplTest {
     PagedPaymentsReportingRow expectedResult = new PagedPaymentsReportingRow();
 
     try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
-      authorizationServiceMockedStatic.when(() -> AuthorizationService.isUserEnabledToOrganizationId(organizationId, loggedUser))
-        .thenReturn(true);
+      authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)).thenAnswer(a->null);
 
       when(paymentsReportingServiceMock.getPaymentsReportingDetail(organizationId, iuf, iuv, payDateFilter, pageable, accessToken))
         .thenReturn(pagedModelPaymentsReporting);
@@ -144,7 +142,7 @@ class PaymentsReportingRetrieverServiceImplTest {
       assertNotNull(result);
       assertSame(expectedResult, result);
 
-      authorizationServiceMockedStatic.verify(() -> AuthorizationService.isUserEnabledToOrganizationId(organizationId, loggedUser));
+      authorizationServiceMockedStatic.verify(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser));
     }
   }
 
@@ -162,13 +160,13 @@ class PaymentsReportingRetrieverServiceImplTest {
     Pageable pageable = PageRequest.of(0, 10);
 
     try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
-      authorizationServiceMockedStatic.when(() -> AuthorizationService.isUserEnabledToOrganizationId(organizationId, loggedUser))
+      authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser))
         .thenThrow(new AuthorizationDeniedException("Access denied"));
 
       assertThrows(AuthorizationDeniedException.class, () ->
         paymentsReportingRetrieverService.getPaymentsReportingDetail(organizationId, iuf, iuv, payDateFilter, pageable, loggedUser, accessToken));
 
-      authorizationServiceMockedStatic.verify(() -> AuthorizationService.isUserEnabledToOrganizationId(organizationId, loggedUser));
+      authorizationServiceMockedStatic.verify(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser));
     }
   }
 }

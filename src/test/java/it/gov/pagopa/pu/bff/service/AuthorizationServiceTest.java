@@ -145,7 +145,7 @@ class AuthorizationServiceTest {
   }
 
   @Test
-  void givenUserEnabledToOrganizationIdWhenIsUserEnabledThenTrue() {
+  void givenUserEnabledToOrganizationIdWhenIsUserEnabledThenOk() {
     UserOrganizationRoles userOrgRole = new UserOrganizationRoles();
     userOrgRole.setRoles(List.of("TEST"));
     userOrgRole.setOrganizationId(1L);
@@ -153,13 +153,11 @@ class AuthorizationServiceTest {
     UserInfo userInfo = new UserInfo();
     userInfo.setOrganizations(List.of(userOrgRole));
 
-    boolean isEnabled = AuthorizationService.isUserEnabledToOrganizationId(1L, userInfo);
-
-    Assertions.assertTrue(isEnabled);
+    Assertions.assertDoesNotThrow(() -> AuthorizationService.validateUserForOrganizationId(1L, userInfo));
   }
 
   @Test
-  void givenUserNotEnabledToOrganizationIdWhenIsUserEnabledThenFalse() {
+  void givenUserNotEnabledToOrganizationIdWhenIsUserEnabledThenUnauthorized() {
     UserOrganizationRoles userOrgRole = new UserOrganizationRoles();
     userOrgRole.setRoles(List.of("TEST"));
     userOrgRole.setOrganizationId(1L);
@@ -167,13 +165,11 @@ class AuthorizationServiceTest {
     UserInfo userInfo = new UserInfo();
     userInfo.setOrganizations(List.of(userOrgRole));
 
-    boolean isEnabled = AuthorizationService.isUserEnabledToOrganizationId(2L, userInfo);
-
-    Assertions.assertFalse(isEnabled);
+    Assertions.assertThrows(AuthorizationDeniedException.class, () -> AuthorizationService.validateUserForOrganizationId(2L, userInfo));
   }
 
   @Test
-  void givenUserWithEmptyRolesWhenIsUserEnabledThenFalse() {
+  void givenUserWithEmptyRolesWhenIsUserEnabledThenUnauthorized() {
     UserOrganizationRoles userOrgRole = new UserOrganizationRoles();
     userOrgRole.setRoles(List.of());
     userOrgRole.setOrganizationId(1L);
@@ -181,13 +177,11 @@ class AuthorizationServiceTest {
     UserInfo userInfo = new UserInfo();
     userInfo.setOrganizations(List.of(userOrgRole));
 
-    boolean isEnabled = AuthorizationService.isUserEnabledToOrganizationId(1L, userInfo);
-
-    Assertions.assertFalse(isEnabled);
+    Assertions.assertThrows(AuthorizationDeniedException.class, () -> AuthorizationService.validateUserForOrganizationId(1L, userInfo));
   }
 
   @Test
-  void givenUserWithNullRolesWhenIsUserEnabledThenFalse() {
+  void givenUserWithNullRolesWhenIsUserEnabledThenUnauthorized() {
     UserOrganizationRoles userOrgRole = new UserOrganizationRoles();
     userOrgRole.setRoles(null);
     userOrgRole.setOrganizationId(1L);
@@ -195,9 +189,7 @@ class AuthorizationServiceTest {
     UserInfo userInfo = new UserInfo();
     userInfo.setOrganizations(List.of(userOrgRole));
 
-    boolean isEnabled = AuthorizationService.isUserEnabledToOrganizationId(1L, userInfo);
-
-    Assertions.assertFalse(isEnabled);
+    Assertions.assertThrows(AuthorizationDeniedException.class, () -> AuthorizationService.validateUserForOrganizationId(1L, userInfo));
   }
 
 }

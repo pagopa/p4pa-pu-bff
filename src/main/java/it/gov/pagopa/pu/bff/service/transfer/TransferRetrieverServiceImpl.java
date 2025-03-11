@@ -21,7 +21,7 @@ public class TransferRetrieverServiceImpl implements TransferRetrieverService {
 
   @Override
   public List<TransferResponse> getTransfers(Long organizationId, Long installmentId, UserInfo loggedUser, String accessToken) {
-    AuthorizationService.isUserEnabledToOrganizationId(organizationId, loggedUser);
+    AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser);
     CollectionModelTransfer collection = transferService.getTransfers(installmentId, loggedUser.getMappedExternalUserId(), accessToken);
 
     if (collection == null || collection.getEmbedded() ==  null || collection.getEmbedded().getTransfers() == null){

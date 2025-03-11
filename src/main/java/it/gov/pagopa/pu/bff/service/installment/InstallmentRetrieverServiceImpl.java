@@ -28,13 +28,13 @@ public class InstallmentRetrieverServiceImpl implements InstallmentRetrieverServ
 
   @Override
   public PagedInstallmentView getInstallments(InstallmentViewFiltersDTO installmentViewFiltersDTO, Pageable pageable, UserInfo loggedUser, String accessToken) {
-    AuthorizationService.isUserEnabledToOrganizationId(installmentViewFiltersDTO.getOrganizationId(), loggedUser);
+    AuthorizationService.validateUserForOrganizationId(installmentViewFiltersDTO.getOrganizationId(), loggedUser);
     return installmentViewMapper.mapToPagedInstallmentView(installmentService.getInstallments(installmentViewFiltersDTO, pageable, accessToken));
   }
 
   @Override
   public InstallmentDetailDTO getInstallmentDetail(Long organizationId, Long installmentId, UserInfo loggedUser, String accessToken) {
-    AuthorizationService.isUserEnabledToOrganizationId(organizationId, loggedUser);
+    AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser);
     InstallmentDetailDTO installmentDetailDTO = installmentService.getInstallmentDetail(installmentId, loggedUser.getMappedExternalUserId(), accessToken);
     setPaymentInfo(installmentDetailDTO);
     return installmentDetailDTO;

@@ -56,8 +56,7 @@ class TransferRetrieverServiceImplTest {
     collectionModel.setEmbedded(embedded);
 
     try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
-      authorizationServiceMockedStatic.when(() -> AuthorizationService.isUserEnabledToOrganizationId(organizationId, loggedUser))
-        .thenReturn(true);
+      authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)).thenAnswer(a->null);
 
       Mockito.when(transferServiceMock.getTransfers(installmentId, loggedUser.getMappedExternalUserId(), accessToken))
         .thenReturn(collectionModel);
@@ -68,7 +67,7 @@ class TransferRetrieverServiceImplTest {
       assertFalse(result.isEmpty());
       assertSame(transferResponse, result.get(0));
 
-      authorizationServiceMockedStatic.verify(() -> AuthorizationService.isUserEnabledToOrganizationId(organizationId, loggedUser));
+      authorizationServiceMockedStatic.verify(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser));
       Mockito.verify(transferServiceMock).getTransfers(installmentId, loggedUser.getMappedExternalUserId(), accessToken);
     }
   }
@@ -83,8 +82,7 @@ class TransferRetrieverServiceImplTest {
     CollectionModelTransfer emptyCollectionModel = new CollectionModelTransfer();
 
     try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
-      authorizationServiceMockedStatic.when(() -> AuthorizationService.isUserEnabledToOrganizationId(organizationId, loggedUser))
-        .thenReturn(true);
+      authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)).thenAnswer(a->null);
 
       Mockito.when(transferServiceMock.getTransfers(installmentId, loggedUser.getMappedExternalUserId(), accessToken))
         .thenReturn(emptyCollectionModel);
@@ -94,7 +92,7 @@ class TransferRetrieverServiceImplTest {
       assertNotNull(result);
       assertTrue(result.isEmpty());
 
-      authorizationServiceMockedStatic.verify(() -> AuthorizationService.isUserEnabledToOrganizationId(organizationId, loggedUser));
+      authorizationServiceMockedStatic.verify(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser));
       Mockito.verify(transferServiceMock).getTransfers(installmentId, loggedUser.getMappedExternalUserId(), accessToken);
     }
   }
@@ -108,13 +106,13 @@ class TransferRetrieverServiceImplTest {
     long installmentId = 1L;
 
     try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
-      authorizationServiceMockedStatic.when(() -> AuthorizationService.isUserEnabledToOrganizationId(organizationId, loggedUser))
+      authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser))
         .thenThrow(new AuthorizationDeniedException("Access denied"));
 
       Assertions.assertThrows(AuthorizationDeniedException.class, () ->
         transferRetrieverService.getTransfers(organizationId, installmentId, loggedUser, accessToken));
 
-      authorizationServiceMockedStatic.verify(() -> AuthorizationService.isUserEnabledToOrganizationId(organizationId, loggedUser));
+      authorizationServiceMockedStatic.verify(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser));
     }
   }
 }

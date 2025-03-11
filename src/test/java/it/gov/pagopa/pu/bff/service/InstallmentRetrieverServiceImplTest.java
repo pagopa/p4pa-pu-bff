@@ -227,7 +227,6 @@ class InstallmentRetrieverServiceImplTest {
     String iuv = "iuv";
     String iur = "iur";
     String transferIndex = "transferIndex";
-    InstallmentNoPII installmentNoPII = new InstallmentNoPII();
 
     try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
       authorizationServiceMockedStatic.when(() -> AuthorizationService.isUserEnabledToOrganizationId(organizationId, loggedUser))

@@ -51,8 +51,7 @@ public class AuthorizationService {
   public void validateAdminRole(Long organizationId, UserInfo loggedUser) {
     boolean roleAdmin = isAdminRole(organizationId, loggedUser);
     if (!roleAdmin) {
-      log.debug("Unauthorized user. [organizationId:{}]", organizationId);
-      throw new AuthorizationDeniedException("Access denied on organizationId " + organizationId + " to user " + loggedUser.getMappedExternalUserId());
+      handleUnauthorizedUser(organizationId, loggedUser);
     }
   }
 
@@ -63,8 +62,15 @@ public class AuthorizationService {
       .isPresent();
   }
 
-  public static boolean isUserEnabledToOrganizationId(Long organizationId, UserInfo loggedUser) {
-    return getUserOrganizationRoles(organizationId, loggedUser).isPresent();
+  public static void validateUserForOrganizationId(Long organizationId, UserInfo loggedUser) {
+    if (getUserOrganizationRoles(organizationId, loggedUser).isEmpty()) {
+      handleUnauthorizedUser(organizationId, loggedUser);
+    }
+  }
+
+  private static void handleUnauthorizedUser(Long organizationId, UserInfo loggedUser) {
+    log.debug("Unauthorized user. [organizationId:{}]", organizationId);
+    throw new AuthorizationDeniedException("Access denied on organizationId " + organizationId + " to user " + loggedUser.getMappedExternalUserId());
   }
 
   private static Optional<UserOrganizationRoles> getUserOrganizationRoles(Long organizationId, UserInfo loggedUser) {

@@ -40,7 +40,7 @@ public class DebtPositionRetrieverServiceImpl implements DebtPositionRetrieverSe
 
   public PagedDebtPositionView getDebtPositionViews(
     DebtPositionViewFiltersDTO filtersDTO, Pageable pageable, UserInfo loggedUser, String accessToken) {
-    AuthorizationService.isUserEnabledToOrganizationId(filtersDTO.getOrganizationId(), loggedUser);
+    AuthorizationService.validateUserForOrganizationId(filtersDTO.getOrganizationId(), loggedUser);
     return debtPositionViewMapper.mapToPagedDebtPositionView(
       debtPositionService.getDebtPositionViews(
         filtersDTO,
@@ -55,7 +55,7 @@ public class DebtPositionRetrieverServiceImpl implements DebtPositionRetrieverSe
   public DebtPositionDetailDTO getDebtPositionDetail(Long debtPositionId,
     Long organizationId,
     UserInfo loggedUser, String accessToken) {
-    AuthorizationService.isUserEnabledToOrganizationId(organizationId,loggedUser);
+    AuthorizationService.validateUserForOrganizationId(organizationId,loggedUser);
     DebtPositionDTO debtPosition = debtPositionService.getDebtPosition(debtPositionId, accessToken);
     if(debtPosition!=null){
       return debtPositionMapper.mapToDebtPositionDetailDTO(

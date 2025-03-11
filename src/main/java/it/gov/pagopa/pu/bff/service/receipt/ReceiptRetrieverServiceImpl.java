@@ -26,7 +26,7 @@ public class ReceiptRetrieverServiceImpl implements ReceiptRetrieverService {
 
   @Override
   public PagedReceiptView getReceipts(ReceiptViewFiltersDTO receiptViewFiltersDTO, Pageable pageable, UserInfo loggedUser, String accessToken) {
-    AuthorizationService.isUserEnabledToOrganizationId(receiptViewFiltersDTO.getOrganizationId(), loggedUser);
+    AuthorizationService.validateUserForOrganizationId(receiptViewFiltersDTO.getOrganizationId(), loggedUser);
     return receiptViewMapper.mapToPagedReceiptView(receiptService.getReceipts(receiptViewFiltersDTO, pageable, accessToken));
   }
 
@@ -34,7 +34,7 @@ public class ReceiptRetrieverServiceImpl implements ReceiptRetrieverService {
   public ReceiptDetailDTO getReceiptDetail(Long organizationId, Long receiptId,
     UserInfo loggedUser,
     String accessToken) {
-    AuthorizationService.isUserEnabledToOrganizationId(organizationId, loggedUser);
+    AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser);
     return receiptDetailDTOMapper.mapToReceiptDetailDTO(receiptService.getReceiptDetail(receiptId,
       loggedUser.getMappedExternalUserId(), accessToken));
   }

@@ -28,7 +28,7 @@ public class PaymentsReportingRetrieverServiceImpl implements PaymentsReportingR
 
   @Override
   public PagedPaymentsReportingView getPaymentsReporting(Long organizationId, String iuf, String regulationUniqueIdentifier, LocalDateIntervalFilter regulationDateFilter, Pageable pageable, UserInfo loggedUser, String accessToken) {
-    AuthorizationService.isUserEnabledToOrganizationId(organizationId, loggedUser);
+    AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser);
 
     return paymentsReportingViewMapper.mapToPagedPaymentsReporting(
       paymentsReportingService.getPaymentsReporting(organizationId, iuf, regulationUniqueIdentifier, regulationDateFilter, pageable, accessToken));
@@ -36,7 +36,7 @@ public class PaymentsReportingRetrieverServiceImpl implements PaymentsReportingR
 
   @Override
   public PagedPaymentsReportingRow getPaymentsReportingDetail(Long organizationId, String iuf, String iuv, LocalDateIntervalFilter payDateFilter, Pageable pageable, UserInfo loggedUser, String accessToken) {
-    AuthorizationService.isUserEnabledToOrganizationId(organizationId, loggedUser);
+    AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser);
 
     return paymentsReportingMapper.mapToPagedPaymentsReporting(
       paymentsReportingService.getPaymentsReportingDetail(organizationId, iuf, iuv, payDateFilter, pageable, accessToken));

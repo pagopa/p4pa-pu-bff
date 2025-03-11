@@ -360,6 +360,7 @@ class PaymentsReportingRetrieverServiceImplTest {
       PaymentsReportingDetailDTO result = paymentsReportingRetrieverService.getPaymentsReportingDetail(
         organizationId, paymentsReportingId, loggedUser, accessToken);
 
+      assertNotNull(result);
       Mockito.verify(receiptRetrieverServiceMock, never())
         .getReceiptDetail(Mockito.anyLong(), Mockito.anyLong(), Mockito.any(
           UserInfo.class), Mockito.anyString());

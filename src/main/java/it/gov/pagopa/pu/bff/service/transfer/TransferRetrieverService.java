@@ -1,0 +1,10 @@
+package it.gov.pagopa.pu.bff.service.transfer;
+
+import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
+import it.gov.pagopa.pu.debtpositions.dto.generated.TransferResponse;
+
+import java.util.List;
+
+public interface TransferRetrieverService {
+  List<TransferResponse> getTransfers(Long organizationId, Long installmentId, UserInfo loggedUser, String accessToken);
+}

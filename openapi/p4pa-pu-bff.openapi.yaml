@@ -297,6 +297,40 @@ paths:
           description: Forbidden - Access denied
         '500':
           description: Internal Server Error
+  /organization/{organizationId}/transfers:
+    get:
+      tags:
+        - Transfers
+      summary: "Retrieve a list of transfers"
+      operationId: getTransfers
+      parameters:
+        - name: organizationId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: installmentId
+          in: query
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: 'Transfer'
+        '401':
+          description: Unauthorized - Missing or invalid token
+        '403':
+          description: Forbidden - Access denied
+        '500':
+          description: Internal Server Error
   /organization/{organizationId}/installments:
     get:
       tags:

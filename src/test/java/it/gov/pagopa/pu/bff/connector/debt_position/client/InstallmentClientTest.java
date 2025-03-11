@@ -150,7 +150,6 @@ class InstallmentClientTest {
     String transferIndex = "transferIndex";
     String operatorExternalUserId = "operatorExternalUserId";
     String accessToken = "ACCESSTOKEN";
-    InstallmentNoPII expectedResult = new InstallmentNoPII();
 
     when(debtPositionApisHolderMock.getInstallmentNoPiiSearchControllerApi(accessToken))
       .thenReturn(installmentNoPiiSearchControllerApi);

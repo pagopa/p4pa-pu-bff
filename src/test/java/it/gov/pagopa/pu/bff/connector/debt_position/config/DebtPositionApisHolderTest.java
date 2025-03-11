@@ -47,7 +47,8 @@ class DebtPositionApisHolderTest extends BaseApiHolderTest {
     assertAuthenticationShouldBeSetInThreadSafeMode(
       accessToken -> debtPositionApisHolder.getDebtPositionTypeControllerApi(accessToken)
         .crudGetDebtpositiontype(String.valueOf(123L)),
-      new ParameterizedTypeReference<>() {},
+      new ParameterizedTypeReference<>() {
+      },
       debtPositionApisHolder::unload);
   }
 
@@ -56,7 +57,8 @@ class DebtPositionApisHolderTest extends BaseApiHolderTest {
     assertAuthenticationShouldBeSetInThreadSafeMode(
       accessToken -> debtPositionApisHolder.getDebtPositionTypeWithCountSearchControllerApi(accessToken)
         .crudDebtPositionTypesWithCountFindByBrokerId(1L, 0, 0, Collections.emptyList()),
-      new ParameterizedTypeReference<>() {},
+      new ParameterizedTypeReference<>() {
+      },
       debtPositionApisHolder::unload);
   }
 
@@ -65,7 +67,8 @@ class DebtPositionApisHolderTest extends BaseApiHolderTest {
     assertAuthenticationShouldBeSetInThreadSafeMode(
       accessToken -> debtPositionApisHolder.getReceiptViewSearchControllerApi(accessToken)
         .crudReceiptsViewFindReceiptsByFilters("1", "origin", "operator", "iuv", "iur", "iud", 1L, null, null, 0, 10, Collections.emptyList()),
-      new ParameterizedTypeReference<>() {},
+      new ParameterizedTypeReference<>() {
+      },
       debtPositionApisHolder::unload);
   }
 
@@ -74,7 +77,17 @@ class DebtPositionApisHolderTest extends BaseApiHolderTest {
     assertAuthenticationShouldBeSetInThreadSafeMode(
       accessToken -> debtPositionApisHolder.getDebtPositionTypeOrgSearchControllerApi(accessToken)
         .crudDebtPositionTypeOrgsFindDebtPositionTypeOrgs("1", "operator123"),
-      new ParameterizedTypeReference<>() {}, debtPositionApisHolder::unload);
+      new ParameterizedTypeReference<>() {
+      }, debtPositionApisHolder::unload);
+  }
+
+  @Test
+  void whenGetTransferSearchControllerApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
+    assertAuthenticationShouldBeSetInThreadSafeMode(
+      accessToken -> debtPositionApisHolder.getTransferSearchControllerApi(accessToken)
+        .crudTransfersFindAuthorizedByInstallmentId("1", "operatorExternalUserId"),
+      new ParameterizedTypeReference<>() {
+      }, debtPositionApisHolder::unload);
   }
 
   @Test
@@ -82,7 +95,8 @@ class DebtPositionApisHolderTest extends BaseApiHolderTest {
     assertAuthenticationShouldBeSetInThreadSafeMode(
       accessToken -> debtPositionApisHolder.getReceiptApi(accessToken)
         .getReceiptDetail(1L, "operatorExternalUserId"),
-      new ParameterizedTypeReference<>() {},
+      new ParameterizedTypeReference<>() {
+      },
       debtPositionApisHolder::unload);
   }
 
@@ -91,7 +105,8 @@ class DebtPositionApisHolderTest extends BaseApiHolderTest {
     assertAuthenticationShouldBeSetInThreadSafeMode(
       accessToken -> debtPositionApisHolder.getInstallmentApi(accessToken)
         .getInstallmentDetail(1L, "operatorExternalUserId"),
-      new ParameterizedTypeReference<>() {}, debtPositionApisHolder::unload);
+      new ParameterizedTypeReference<>() {
+      }, debtPositionApisHolder::unload);
   }
 
   @Test
@@ -111,7 +126,8 @@ class DebtPositionApisHolderTest extends BaseApiHolderTest {
     assertAuthenticationShouldBeSetInThreadSafeMode(
       accessToken -> debtPositionApisHolder.getInstallmentViewSearchControllerApi(accessToken)
         .crudInstallmentViewsFindInstallmentsByFilters(1L, "operatorExternalUserId", OffsetDateTime.now().minusDays(30), OffsetDateTime.now(), "iuv", "fiscalCode", 2L, 0, 10, Collections.emptyList()),
-      new ParameterizedTypeReference<>() {}, debtPositionApisHolder::unload);
+      new ParameterizedTypeReference<>() {
+      }, debtPositionApisHolder::unload);
   }
 
   @Test
@@ -127,7 +143,8 @@ class DebtPositionApisHolderTest extends BaseApiHolderTest {
           "fiscalCode",
           1L,
           "status", 0, 10, Collections.emptyList()),
-      new ParameterizedTypeReference<>() {},
+      new ParameterizedTypeReference<>() {
+      },
       debtPositionApisHolder::unload);
   }
 
@@ -137,7 +154,8 @@ class DebtPositionApisHolderTest extends BaseApiHolderTest {
       accessToken -> debtPositionApisHolder.getDebtPositionApi(accessToken)
         .getDebtPosition(
           1L),
-      new ParameterizedTypeReference<>() {},
+      new ParameterizedTypeReference<>() {
+      },
       debtPositionApisHolder::unload);
   }
 
@@ -147,7 +165,8 @@ class DebtPositionApisHolderTest extends BaseApiHolderTest {
       accessToken -> debtPositionApisHolder.getDebtPositionTypeOrgEntityControllerApi(accessToken)
         .crudGetDebtpositiontypeorg(
           "1"),
-      new ParameterizedTypeReference<>() {},
+      new ParameterizedTypeReference<>() {
+      },
       debtPositionApisHolder::unload);
   }
 }

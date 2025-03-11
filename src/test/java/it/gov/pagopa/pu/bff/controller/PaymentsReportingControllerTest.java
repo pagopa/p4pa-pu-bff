@@ -116,16 +116,17 @@ class PaymentsReportingControllerTest {
   @Test
   void givenCorrectRequestWhenGetPaymentsReportingDetailThenOk() {
     long organizationId = 1L;
+    String iuf = "iuf";
     String paymentsReportingId = "PAYREP1";
 
     PaymentsReportingDetailDTO expectedResult = PaymentsReportingDetailDTO.builder()
       .paymentsReportingId(paymentsReportingId)
       .build();
 
-    Mockito.when(paymentsReportingRetrieverServiceMock.getPaymentsReportingDetail(organizationId, paymentsReportingId, userInfo, "fakeAccessToken"))
+    Mockito.when(paymentsReportingRetrieverServiceMock.getPaymentsReportingDetail(organizationId, iuf, paymentsReportingId, userInfo, "fakeAccessToken"))
       .thenReturn(expectedResult);
 
-    ResponseEntity<PaymentsReportingDetailDTO> response = paymentsReportingController.getPaymentsReportingDetail(organizationId, paymentsReportingId);
+    ResponseEntity<PaymentsReportingDetailDTO> response = paymentsReportingController.getPaymentsReportingDetail(organizationId, iuf, paymentsReportingId);
 
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertNotNull(response.getBody());

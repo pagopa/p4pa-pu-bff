@@ -520,8 +520,7 @@ paths:
         '500':
           description: Internal Server Error
       x-spring-paginated: true
-
-  /organization/{organizationId}/payments-reporting/{paymentsReportingId}:
+  /organization/{organizationId}/payments-reporting/{iuf}/rows/{paymentsReportingId}:
     get:
       tags:
         - PaymentsReporting
@@ -534,6 +533,11 @@ paths:
           schema:
             type: integer
             format: int64
+        - name: iuf
+          in: path
+          required: true
+          schema:
+            type: string
         - name: paymentsReportingId
           in: path
           required: true
@@ -548,7 +552,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/PaymentsReportingDetailDTO'
         '404':
-          description: Not Found - Receipt not found
+          description: Not Found - Payments Reporting not found
         '401':
           description: Unauthorized - Missing or invalid token
         '403':

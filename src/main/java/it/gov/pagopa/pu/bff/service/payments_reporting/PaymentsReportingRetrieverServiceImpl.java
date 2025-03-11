@@ -68,7 +68,7 @@ public class PaymentsReportingRetrieverServiceImpl implements
 
   @Override
   public PaymentsReportingDetailDTO getPaymentsReportingDetail(
-    Long organizationId, String paymentsReportingId, UserInfo loggedUser,
+    Long organizationId, String iuf, String paymentsReportingId, UserInfo loggedUser,
     String accessToken) {
     AuthorizationService.validateUserForOrganizationId(organizationId,
       loggedUser);
@@ -76,7 +76,7 @@ public class PaymentsReportingRetrieverServiceImpl implements
     PaymentsReporting paymentsReporting = paymentsReportingService.getPaymentsReportingDetail(
       organizationId, paymentsReportingId, accessToken);
 
-    if (paymentsReporting == null) {
+    if (paymentsReporting == null || !iuf.equals(paymentsReporting.getIuf())) {
       return null;
     }
 

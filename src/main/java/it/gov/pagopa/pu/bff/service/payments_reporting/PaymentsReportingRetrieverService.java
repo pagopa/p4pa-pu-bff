@@ -14,6 +14,6 @@ public interface PaymentsReportingRetrieverService {
 
   PagedPaymentsReportingRow getPaymentsReportingRows(Long organizationId, String iuf, String iuv, LocalDateIntervalFilter payDateFilter, Pageable pageable, UserInfo loggedUser, String accessToken);
 
-  PaymentsReportingDetailDTO getPaymentsReportingDetail(Long organizationId, String paymentsReportingId, UserInfo loggedUser, String accessToken);
+  PaymentsReportingDetailDTO getPaymentsReportingDetail(Long organizationId, String iuf, String paymentsReportingId, UserInfo loggedUser, String accessToken);
 
 }

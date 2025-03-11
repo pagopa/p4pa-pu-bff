@@ -234,6 +234,7 @@ class PaymentsReportingRetrieverServiceImplTest {
     loggedUser.setUserId("user-123");
 
     long organizationId = 1L;
+    String iuf = "iuf";
     String paymentsReportingId = "PAYREP1";
 
     String iuv = "IUV123";
@@ -249,7 +250,7 @@ class PaymentsReportingRetrieverServiceImplTest {
       // fields required non-null but not useful to this test
       .ingestionFlowFileId(1L)
       .pspIdentifier("PSPID")
-      .iuf("IUF123")
+      .iuf(iuf)
       .flowDateTime(OffsetDateTime.now())
       .regulationDate(LocalDate.now())
       .regulationUniqueIdentifier("REG123")
@@ -310,7 +311,7 @@ class PaymentsReportingRetrieverServiceImplTest {
         .thenReturn(expectedResult);
 
       PaymentsReportingDetailDTO result = paymentsReportingRetrieverService.getPaymentsReportingDetail(
-        organizationId, paymentsReportingId, loggedUser, accessToken);
+        organizationId, iuf, paymentsReportingId, loggedUser, accessToken);
 
       assertNotNull(result);
       assertSame(expectedResult, result);
@@ -326,7 +327,8 @@ class PaymentsReportingRetrieverServiceImplTest {
     UserInfo loggedUser = new UserInfo();
     loggedUser.setUserId("user-123");
 
-    long organizationId = 1L;
+    Long organizationId = 1L;
+    String iuf = "iuf";
     String paymentsReportingId = "PAYREP1";
 
     String iuv = "IUV123";
@@ -338,10 +340,10 @@ class PaymentsReportingRetrieverServiceImplTest {
       .iuv(iuv)
       .iur(iur)
       .transferIndex(transferIndex)
+      .iuf(iuf)
       // fields required non-null but not useful to this test
       .ingestionFlowFileId(1L)
       .pspIdentifier("PSPID")
-      .iuf("IUF123")
       .flowDateTime(OffsetDateTime.now())
       .regulationDate(LocalDate.now())
       .regulationUniqueIdentifier("REG123")
@@ -382,7 +384,7 @@ class PaymentsReportingRetrieverServiceImplTest {
         .thenReturn(new PaymentsReportingDetailDTO());
 
       PaymentsReportingDetailDTO result = paymentsReportingRetrieverService.getPaymentsReportingDetail(
-        organizationId, paymentsReportingId, loggedUser, accessToken);
+        organizationId, iuf, paymentsReportingId, loggedUser, accessToken);
 
       assertNotNull(result);
       Mockito.verify(receiptRetrieverServiceMock, never())
@@ -396,11 +398,70 @@ class PaymentsReportingRetrieverServiceImplTest {
   }
 
   @Test
+  void givenNonMatchingIufWhenGetPaymentsReportingDetailThenReturnNull() {
+    UserInfo loggedUser = new UserInfo();
+    loggedUser.setUserId("user-123");
+
+    Long organizationId = 1L;
+    String iuf = "iuf";
+    String paymentsReportingId = "PAYREP1";
+    PaymentsReporting paymentsReporting = PaymentsReporting.builder()
+      .paymentsReportingId(paymentsReportingId)
+      .organizationId(organizationId)
+      .iuv("iuv")
+      .iur("iur")
+      .transferIndex(1)
+      .iuf("differentIuf")
+      // fields required non-null but not useful to this test
+      .ingestionFlowFileId(1L)
+      .pspIdentifier("PSPID")
+      .flowDateTime(OffsetDateTime.now())
+      .regulationDate(LocalDate.now())
+      .regulationUniqueIdentifier("REG123")
+      .senderPspCode("SENDERCODE")
+      .senderPspName("SENDERNAME")
+      .senderPspType("SENDERTYPE")
+      .receiverOrganizationCode("RECEIVERCODE")
+      .receiverOrganizationName("RECEIVERNAME")
+      .receiverOrganizationType("RECEIVERTYPE")
+      .totalPayments(1000L)
+      .totalAmountCents(1000L)
+      .amountPaidCents(1000L)
+      .paymentOutcomeCode("OUTCOMECODE")
+      .payDate(LocalDate.now())
+      .acquiringDate(LocalDate.now())
+      .build();
+
+    try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(
+      AuthorizationService.class)) {
+      authorizationServiceMockedStatic.when(
+          () -> AuthorizationService.validateUserForOrganizationId(organizationId,
+            loggedUser))
+        .thenAnswer(a->null);
+
+      when(
+        paymentsReportingServiceMock.getPaymentsReportingDetail(organizationId,
+          paymentsReportingId, accessToken))
+        .thenReturn(paymentsReporting);
+
+      PaymentsReportingDetailDTO result = paymentsReportingRetrieverService.getPaymentsReportingDetail(
+        organizationId, iuf, paymentsReportingId, loggedUser, accessToken);
+
+      assertNull(result);
+
+      authorizationServiceMockedStatic.verify(
+        () -> AuthorizationService.validateUserForOrganizationId(organizationId,
+          loggedUser));
+    }
+  }
+
+  @Test
   void givenNullPaymentsReportingWhenGetPaymentsReportingDetailThenReturnNull() {
     UserInfo loggedUser = new UserInfo();
     loggedUser.setUserId("user-123");
 
-    long organizationId = 1L;
+    Long organizationId = 1L;
+    String iuf = "iuf";
     String paymentsReportingId = "PAYREP1";
 
     try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(
@@ -416,7 +477,7 @@ class PaymentsReportingRetrieverServiceImplTest {
         .thenReturn(null);
 
       PaymentsReportingDetailDTO result = paymentsReportingRetrieverService.getPaymentsReportingDetail(
-        organizationId, paymentsReportingId, loggedUser, accessToken);
+        organizationId, iuf, paymentsReportingId, loggedUser, accessToken);
 
       assertNull(result);
 

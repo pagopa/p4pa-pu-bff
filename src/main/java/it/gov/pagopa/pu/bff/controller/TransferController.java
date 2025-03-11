@@ -22,7 +22,7 @@ public class TransferController implements TransfersApi {
 
   @Override
   public ResponseEntity<List<TransferResponse>> getTransfers(Long organizationId, Long installmentId) {
-    log.info("User requested getTransfers having organizationId {}", organizationId);
+    log.info("User requested getTransfers having organizationId {} and installmentId {}", organizationId, installmentId);
     return ResponseEntity.ok(transferRetrieverService.getTransfers(
       organizationId, installmentId, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken()));
   }

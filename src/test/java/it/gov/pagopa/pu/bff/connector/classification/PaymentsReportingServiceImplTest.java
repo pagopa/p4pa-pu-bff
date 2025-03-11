@@ -1,18 +1,20 @@
 package it.gov.pagopa.pu.bff.connector.classification;
 
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.mockito.Mockito.when;
+
 import it.gov.pagopa.pu.bff.connector.classification.client.PaymentsReportingSearchClient;
 import it.gov.pagopa.pu.bff.connector.classification.client.PaymentsReportingViewSearchClient;
 import it.gov.pagopa.pu.bff.dto.LocalDateIntervalFilter;
 import it.gov.pagopa.pu.classification.dto.generated.PagedModelPaymentsReporting;
 import it.gov.pagopa.pu.classification.dto.generated.PagedModelPaymentsReportingView;
+import it.gov.pagopa.pu.classification.dto.generated.PaymentsReporting;
 import java.time.LocalDate;
-import static org.junit.jupiter.api.Assertions.assertSame;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Pageable;
 
@@ -65,6 +67,21 @@ class PaymentsReportingServiceImplTest {
       .thenReturn(expectedResult);
 
     PagedModelPaymentsReporting result = service.getPaymentsReportingRows(organizationId, iuf, iuv, payDateFilter, pageable, accessToken);
+
+    assertSame(expectedResult, result);
+  }
+
+  @Test
+  void whenGetPaymentsReportingDetailThenInvokeClient() {
+    Long organizationId = 1L;
+    String paymentsReportingId = "PAYREP123";
+    String accessToken = "ACCESSTOKEN";
+    PaymentsReporting expectedResult = new PaymentsReporting();
+
+    when(paymentsReportingSearchClientMock.getPaymentsReportingDetail(organizationId, paymentsReportingId, accessToken))
+      .thenReturn(expectedResult);
+
+    PaymentsReporting result = service.getPaymentsReportingDetail(organizationId, paymentsReportingId, accessToken);
 
     assertSame(expectedResult, result);
   }

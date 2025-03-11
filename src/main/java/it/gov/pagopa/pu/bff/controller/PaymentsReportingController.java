@@ -46,7 +46,8 @@ public class PaymentsReportingController implements PaymentsReportingApi {
 
   @Override
   public ResponseEntity<PaymentsReportingDetailDTO> getPaymentsReportingDetail(Long organizationId, String paymentsReportingId) {
-    return ResponseEntity.ok(paymentsReportingRetrieverService.getPaymentsReportingDetail(
+    log.info("User requested getPaymentsReportingDetail having organizationId {} and paymentsReportingId {}", organizationId, paymentsReportingId);
+    return ResponseEntity.ofNullable(paymentsReportingRetrieverService.getPaymentsReportingDetail(
       organizationId, paymentsReportingId, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken()));
   }
 

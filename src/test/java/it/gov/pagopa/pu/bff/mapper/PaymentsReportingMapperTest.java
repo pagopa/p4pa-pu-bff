@@ -157,4 +157,64 @@ class PaymentsReportingMapperTest {
     assertEquals(expected, result);
   }
 
+  @Test
+  void givenPaymentsReportingAndNullReceiptDTOThenPartialMapping() {
+    PaymentsReporting paymentsReporting = PaymentsReporting.builder()
+      .paymentsReportingId("PAYREP123")
+      .organizationId(1L)
+      .iuv("IUV123")
+      .iur("IUR123")
+      .transferIndex(1)
+      .ingestionFlowFileId(1L)
+      .pspIdentifier("PSPID")
+      .iuf("IUF123")
+      .flowDateTime(OffsetDateTime.now())
+      .regulationDate(LocalDate.now())
+      .regulationUniqueIdentifier("REG123")
+      .senderPspCode("SENDERCODE")
+      .senderPspName("SENDERNAME")
+      .senderPspType("SENDERTYPE")
+      .receiverOrganizationCode("RECEIVERCODE")
+      .receiverOrganizationName("RECEIVERNAME")
+      .receiverOrganizationType("RECEIVERTYPE")
+      .totalPayments(1000L)
+      .totalAmountCents(1000L)
+      .amountPaidCents(1000L)
+      .paymentOutcomeCode("OUTCOMECODE")
+      .payDate(LocalDate.now())
+      .acquiringDate(LocalDate.now())
+      .build();
+
+    PaymentsReportingDetailDTO expected = PaymentsReportingDetailDTO.builder()
+      .paymentsReportingId(paymentsReporting.getPaymentsReportingId())
+      .iuv(paymentsReporting.getIuv())
+      .iur(paymentsReporting.getIur())
+      .status(StatusEnum.REPORTED)
+      .build();
+
+    PaymentsReportingDetailDTO result = mapper.mapToPaymentsReportingDetailDTO(paymentsReporting, null);
+
+    assertNotNull(result);
+    assertEquals(expected, result);
+  }
+
+  @Test
+  void givenNullPaymentsReportingThenReturnNull() {
+    ReceiptDetailDTO receiptDetailDTO = ReceiptDetailDTO.builder()
+      .debtor(
+        PersonDTO.builder().fiscalCode("ABCDEF00B00F205A").fullName("DEBTOR")
+          .entityType(EntityTypeEnum.F).build())
+      .paymentDateTime(OffsetDateTime.now())
+      .iud("IUD123")
+      .debtPositionTypeOrgDescription("DESCRIPTION")
+      .pspCompanyName("COMPANY")
+      .remittanceInformation("REMITTANCEINFO")
+      .paymentAmountCents(1000L)
+      .build();
+
+    PaymentsReportingDetailDTO result = mapper.mapToPaymentsReportingDetailDTO(null, receiptDetailDTO);
+
+    assertNull(result);
+  }
+
 }

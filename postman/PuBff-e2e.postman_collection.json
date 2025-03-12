@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "373cd762-d44b-4e62-853f-60589f9575ca",
+		"_postman_id": "55c86eb8-a98d-45da-bbdf-3bb7dd73b644",
 		"name": "PU-BFF",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "28798913"
@@ -844,22 +844,26 @@
 							}
 						],
 						"url": {
-							"raw": "{{puBffBaseUrl}}/bff/receipts?organizationId={{organizationId}}&receiptOrigin=RECEIPT_FILE",
+							"raw": "{{puBffBaseUrl}}/bff/organization/:organizationId/receipts?receiptOrigin=RECEIPT_FILE",
 							"host": [
 								"{{puBffBaseUrl}}"
 							],
 							"path": [
 								"bff",
+								"organization",
+								":organizationId",
 								"receipts"
 							],
 							"query": [
 								{
-									"key": "organizationId",
-									"value": "{{organizationId}}"
-								},
-								{
 									"key": "receiptOrigin",
 									"value": "RECEIPT_FILE"
+								}
+							],
+							"variable": [
+								{
+									"key": "organizationId",
+									"value": "{{organizationId}}"
 								}
 							]
 						}
@@ -881,7 +885,7 @@
 									"    pm.expect(jsonResponse).to.have.property(\"receiptId\").and.to.not.be.null;",
 									"    pm.expect(jsonResponse).to.have.property(\"paymentAmountCents\").and.to.not.be.null;",
 									"    pm.expect(jsonResponse).to.have.property(\"remittanceInformation\").and.to.not.be.null;",
-									"    pm.expect(jsonResponse).to.have.property(\"debtPositionDescription\").and.to.not.be.null;",
+									"    pm.expect(jsonResponse).to.have.property(\"debtPositionTypeOrgDescription\").and.to.not.be.null;",
 									"    pm.expect(jsonResponse).to.have.property(\"debtor\").and.to.not.be.null;",
 									"    pm.expect(jsonResponse.debtor).to.have.property(\"fullName\").and.to.not.be.null;",
 									"    pm.expect(jsonResponse.debtor).to.have.property(\"fiscalCode\").and.to.not.be.null;",
@@ -926,14 +930,15 @@
 							}
 						],
 						"url": {
-							"raw": "{{puBffBaseUrl}}/bff/receipts/:organizationId/:receiptId",
+							"raw": "{{puBffBaseUrl}}/bff/organization/:organizationId/receipts/:receiptId",
 							"host": [
 								"{{puBffBaseUrl}}"
 							],
 							"path": [
 								"bff",
-								"receipts",
+								"organization",
 								":organizationId",
+								"receipts",
 								":receiptId"
 							],
 							"variable": [
@@ -1050,16 +1055,6 @@
 								"type": "text/javascript",
 								"packages": {}
 							}
-						},
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									""
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
 						}
 					],
 					"request": {
@@ -1094,76 +1089,7 @@
 							"variable": [
 								{
 									"key": "organizationId",
-									"value": "3"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "04_getPaymentsReportingRows",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									""
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						},
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									""
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						}
-					],
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{accessToken}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [
-							{
-								"key": "accept",
-								"value": "application/json"
-							}
-						],
-						"url": {
-							"raw": "{{puBffBaseUrl}}/bff/organization/:organizationId/payments-reporting/:iuf/rows",
-							"host": [
-								"{{puBffBaseUrl}}"
-							],
-							"path": [
-								"bff",
-								"organization",
-								":organizationId",
-								"payments-reporting",
-								":iuf",
-								"rows"
-							],
-							"variable": [
-								{
-									"key": "organizationId",
-									"value": "3"
-								},
-								{
-									"key": "iuf",
-									"value": "2024-03-19UNCRITMM-1iv6iotaa3td2"
+									"value": "{{organizationId}}"
 								}
 							]
 						}
@@ -1247,37 +1173,6 @@
 								{
 									"key": "paymentsReportingId",
 									"value": "2024-03-19UNCRITMM-1iv6iotaa3td2_RF84013300000022786060000_1_3"
-								}
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "Process_Executions",
-			"item": [
-				{
-					"name": "getExportFiles",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{puBffBaseUrl}}/bff/organization/:organizationId/export-flow-files",
-							"host": [
-								"{{puBffBaseUrl}}"
-							],
-							"path": [
-								"bff",
-								"organization",
-								":organizationId",
-								"export-flow-files"
-							],
-							"variable": [
-								{
-									"key": "organizationId",
-									"value": "1"
 								}
 							]
 						}

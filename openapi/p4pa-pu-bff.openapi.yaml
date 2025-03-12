@@ -1418,18 +1418,15 @@ components:
       type: object
       required:
         - paymentsReportingId
-        - paymentAmountCents
-        - remittanceInformation
-        - debtPositionTypeOrgDescription
-        - debtor
-        - pspCompanyName
-        - iud
+        - iuv
+        - iur
+        - amountPaidCents
       properties:
         paymentsReportingId:
           type: string
         iuv:
           type: string
-        paymentAmountCents:
+        amountPaidCents:
           type: integer
           format: int64
         remittanceInformation:

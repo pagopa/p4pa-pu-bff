@@ -1,10 +1,10 @@
 package it.gov.pagopa.pu.bff.service;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.when;
 
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
@@ -22,6 +22,7 @@ import it.gov.pagopa.pu.bff.service.receipt.ReceiptRetrieverService;
 import it.gov.pagopa.pu.classification.dto.generated.PagedModelPaymentsReporting;
 import it.gov.pagopa.pu.classification.dto.generated.PagedModelPaymentsReportingView;
 import it.gov.pagopa.pu.classification.dto.generated.PaymentsReporting;
+import it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentDetailDTO;
 import it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentNoPII;
 import it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentNoPII.DebtorEntityTypeEnum;
 import it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentNoPII.StatusEnum;
@@ -281,7 +282,19 @@ class PaymentsReportingRetrieverServiceImplTest {
       .debtorFiscalCodeHash(new byte[0])
       .build();
     ReceiptDetailDTO receiptDetailDTO = new ReceiptDetailDTO();
-    PaymentsReportingDetailDTO expectedResult = new PaymentsReportingDetailDTO();
+    PaymentsReportingDetailDTO expectedResult = PaymentsReportingDetailDTO.builder()
+      .paymentsReportingId(paymentsReporting.getPaymentsReportingId())
+      .iuv(paymentsReporting.getIuv())
+      .iur(paymentsReporting.getIur())
+      .amountPaidCents(paymentsReporting.getAmountPaidCents())
+      .status(InstallmentDetailDTO.StatusEnum.REPORTED)
+      .iud(receiptDetailDTO.getIud())
+      .debtPositionTypeOrgDescription(receiptDetailDTO.getDebtPositionTypeOrgDescription())
+      .paymentDateTime(receiptDetailDTO.getPaymentDateTime())
+      .pspCompanyName(receiptDetailDTO.getPspCompanyName())
+      .remittanceInformation(receiptDetailDTO.getRemittanceInformation())
+      .debtor(receiptDetailDTO.getDebtor())
+      .build();
 
     try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(
       AuthorizationService.class)) {
@@ -314,7 +327,7 @@ class PaymentsReportingRetrieverServiceImplTest {
         organizationId, iuf, paymentsReportingId, loggedUser, accessToken);
 
       assertNotNull(result);
-      assertSame(expectedResult, result);
+      assertEquals(expectedResult, result);
 
       authorizationServiceMockedStatic.verify(
         () -> AuthorizationService.validateUserForOrganizationId(organizationId,
@@ -361,6 +374,14 @@ class PaymentsReportingRetrieverServiceImplTest {
       .acquiringDate(LocalDate.now())
       .build();
 
+    PaymentsReportingDetailDTO expectedResult = PaymentsReportingDetailDTO.builder()
+      .paymentsReportingId(paymentsReporting.getPaymentsReportingId())
+      .iuv(paymentsReporting.getIuv())
+      .iur(paymentsReporting.getIur())
+      .amountPaidCents(paymentsReporting.getAmountPaidCents())
+      .status(InstallmentDetailDTO.StatusEnum.REPORTED)
+      .build();
+
     try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(
       AuthorizationService.class)) {
       authorizationServiceMockedStatic.when(
@@ -381,15 +402,14 @@ class PaymentsReportingRetrieverServiceImplTest {
 
       when(paymentsReportingMapperMock.mapToPaymentsReportingDetailDTO(
         paymentsReporting, null))
-        .thenReturn(new PaymentsReportingDetailDTO());
+        .thenReturn(expectedResult);
 
       PaymentsReportingDetailDTO result = paymentsReportingRetrieverService.getPaymentsReportingDetail(
         organizationId, iuf, paymentsReportingId, loggedUser, accessToken);
 
       assertNotNull(result);
-      Mockito.verify(receiptRetrieverServiceMock, never())
-        .getReceiptDetail(Mockito.anyLong(), Mockito.anyLong(), Mockito.any(
-          UserInfo.class), Mockito.anyString());
+      assertEquals(expectedResult, result);
+      Mockito.verifyNoInteractions(receiptRetrieverServiceMock);
 
       authorizationServiceMockedStatic.verify(
         () -> AuthorizationService.validateUserForOrganizationId(organizationId,
@@ -448,6 +468,7 @@ class PaymentsReportingRetrieverServiceImplTest {
         organizationId, iuf, paymentsReportingId, loggedUser, accessToken);
 
       assertNull(result);
+      Mockito.verifyNoInteractions(installmentRetrieverServiceMock, receiptRetrieverServiceMock);
 
       authorizationServiceMockedStatic.verify(
         () -> AuthorizationService.validateUserForOrganizationId(organizationId,

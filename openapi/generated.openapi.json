@@ -2880,7 +2880,7 @@
           "iuv" : {
             "type" : "string"
           },
-          "paymentAmountCents" : {
+          "amountPaidCents" : {
             "type" : "integer",
             "format" : "int64"
           },
@@ -2911,7 +2911,7 @@
             "enum" : [ "TO_SYNC", "REPORTED", "PAID", "CANCELLED", "INVALID", "EXPIRED", "UNPAID", "UNPAYABLE", "DRAFT" ]
           }
         },
-        "required" : [ "debtPositionTypeOrgDescription", "debtor", "iud", "paymentAmountCents", "paymentsReportingId", "pspCompanyName", "remittanceInformation" ]
+        "required" : [ "amountPaidCents", "iur", "iuv", "paymentsReportingId" ]
       },
       "InstallmentView" : {
         "type" : "object",

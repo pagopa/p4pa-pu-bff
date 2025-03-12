@@ -1111,7 +1111,7 @@
 									"    pm.expect(jsonResponse).to.have.property(\"paymentsReportingId\").and.to.be.a(\"string\");\r",
 									"    pm.expect(jsonResponse).to.have.property(\"iuv\").and.to.be.a(\"string\");\r",
 									"    pm.expect(jsonResponse).to.have.property(\"iur\").and.to.be.a(\"string\");\r",
-									"    pm.expect(jsonResponse).to.have.property(\"status\").and.to.be.a(\"string\").and.to.eql(\"REPORTED\");\r",
+									"    pm.expect(jsonResponse).to.have.property(\"amountPaidCents\").and.to.be.a(\"number\");\r",
 									"});"
 								],
 								"type": "text/javascript",

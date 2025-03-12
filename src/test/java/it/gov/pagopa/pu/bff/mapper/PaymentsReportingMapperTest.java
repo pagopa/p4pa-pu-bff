@@ -138,6 +138,7 @@ class PaymentsReportingMapperTest {
       .paymentsReportingId(paymentsReporting.getPaymentsReportingId())
       .iuv(paymentsReporting.getIuv())
       .iur(paymentsReporting.getIur())
+      .amountPaidCents(paymentsReporting.getAmountPaidCents())
       .debtor(receiptDetailDTO.getDebtor())
       .paymentDateTime(receiptDetailDTO.getPaymentDateTime())
       .iud(receiptDetailDTO.getIud())
@@ -145,7 +146,6 @@ class PaymentsReportingMapperTest {
         receiptDetailDTO.getDebtPositionTypeOrgDescription())
       .pspCompanyName(receiptDetailDTO.getPspCompanyName())
       .remittanceInformation(receiptDetailDTO.getRemittanceInformation())
-      .paymentAmountCents(receiptDetailDTO.getPaymentAmountCents())
       .status(StatusEnum.REPORTED)
       .build();
 
@@ -189,10 +189,12 @@ class PaymentsReportingMapperTest {
       .paymentsReportingId(paymentsReporting.getPaymentsReportingId())
       .iuv(paymentsReporting.getIuv())
       .iur(paymentsReporting.getIur())
+      .amountPaidCents(paymentsReporting.getAmountPaidCents())
       .status(StatusEnum.REPORTED)
       .build();
 
-    PaymentsReportingDetailDTO result = mapper.mapToPaymentsReportingDetailDTO(paymentsReporting, null);
+    PaymentsReportingDetailDTO result = mapper.mapToPaymentsReportingDetailDTO(
+      paymentsReporting, null);
 
     assertNotNull(result);
     assertEquals(expected, result);
@@ -212,7 +214,8 @@ class PaymentsReportingMapperTest {
       .paymentAmountCents(1000L)
       .build();
 
-    PaymentsReportingDetailDTO result = mapper.mapToPaymentsReportingDetailDTO(null, receiptDetailDTO);
+    PaymentsReportingDetailDTO result = mapper.mapToPaymentsReportingDetailDTO(
+      null, receiptDetailDTO);
 
     assertNull(result);
   }

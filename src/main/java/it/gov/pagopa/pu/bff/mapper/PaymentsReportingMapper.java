@@ -46,17 +46,18 @@ public class PaymentsReportingMapper {
       .paymentsReportingId(paymentsReporting.getPaymentsReportingId())
       .iuv(paymentsReporting.getIuv())
       .iur(paymentsReporting.getIur())
+      .amountPaidCents(paymentsReporting.getAmountPaidCents())
       .status(StatusEnum.REPORTED)
       .build();
 
     if (receiptDetailDTO != null) {
-        dto.setIud(receiptDetailDTO.getIud());
-        dto.setDebtPositionTypeOrgDescription(receiptDetailDTO.getDebtPositionTypeOrgDescription());
-        dto.setPaymentAmountCents(receiptDetailDTO.getPaymentAmountCents());
-        dto.setPaymentDateTime(receiptDetailDTO.getPaymentDateTime());
-        dto.setPspCompanyName(receiptDetailDTO.getPspCompanyName());
-        dto.setRemittanceInformation(receiptDetailDTO.getRemittanceInformation());
-        dto.setDebtor(receiptDetailDTO.getDebtor());
+      dto.setIud(receiptDetailDTO.getIud());
+      dto.setDebtPositionTypeOrgDescription(
+        receiptDetailDTO.getDebtPositionTypeOrgDescription());
+      dto.setPaymentDateTime(receiptDetailDTO.getPaymentDateTime());
+      dto.setPspCompanyName(receiptDetailDTO.getPspCompanyName());
+      dto.setRemittanceInformation(receiptDetailDTO.getRemittanceInformation());
+      dto.setDebtor(receiptDetailDTO.getDebtor());
     }
 
     return dto;

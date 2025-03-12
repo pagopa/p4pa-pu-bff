@@ -110,6 +110,18 @@ class DebtPositionApisHolderTest extends BaseApiHolderTest {
   }
 
   @Test
+  void whenGetInstallmentNoPiiSearchControllerApiThenAuthenticationShouldBeSetInThreadSafeMode()
+    throws InterruptedException {
+    assertAuthenticationShouldBeSetInThreadSafeMode(
+      accessToken -> debtPositionApisHolder.getInstallmentNoPiiSearchControllerApi(
+          accessToken)
+        .crudInstallmentsFindAuthorizedByTransferSemanticKey(1L, "iuv", "iur",
+          "transferIndex", "operatorExternalUserId"),
+      new ParameterizedTypeReference<>() {
+      }, debtPositionApisHolder::unload);
+  }
+
+  @Test
   void whenGetInstallmentViewSearchControllerApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
     assertAuthenticationShouldBeSetInThreadSafeMode(
       accessToken -> debtPositionApisHolder.getInstallmentViewSearchControllerApi(accessToken)

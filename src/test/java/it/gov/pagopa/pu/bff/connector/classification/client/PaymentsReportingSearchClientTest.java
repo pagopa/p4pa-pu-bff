@@ -1,23 +1,28 @@
 package it.gov.pagopa.pu.bff.connector.classification.client;
 
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.mockito.Mockito.when;
+
 import it.gov.pagopa.pu.bff.connector.classification.config.ClassificationApisHolder;
 import it.gov.pagopa.pu.bff.dto.LocalDateIntervalFilter;
 import it.gov.pagopa.pu.bff.util.PageUtils;
 import it.gov.pagopa.pu.classification.controller.generated.PaymentsReportingSearchControllerApi;
 import it.gov.pagopa.pu.classification.dto.generated.PagedModelPaymentsReporting;
+import it.gov.pagopa.pu.classification.dto.generated.PaymentsReporting;
 import java.time.LocalDate;
 import org.junit.jupiter.api.AfterEach;
-import static org.junit.jupiter.api.Assertions.assertSame;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.client.HttpClientErrorException;
 
 @ExtendWith(MockitoExtension.class)
 class PaymentsReportingSearchClientTest {
@@ -69,8 +74,47 @@ class PaymentsReportingSearchClientTest {
       PageUtils.getSortList(pageable)))
       .thenReturn(expectedResult);
 
-    PagedModelPaymentsReporting result = paymentsReportingSearchClient.getPaymentsReportingDetail(organizationId, iuf, iuv, payDateFilter, pageable, accessToken);
+    PagedModelPaymentsReporting result = paymentsReportingSearchClient.getPaymentsReportingRows(organizationId, iuf, iuv, payDateFilter, pageable, accessToken);
 
     assertSame(expectedResult, result);
+  }
+
+  @Test
+  void whenGetPaymentsReportingDetailThenInvokeWithAccessToken() {
+    String accessToken = "ACCESSTOKEN";
+    PaymentsReporting expectedResult = new PaymentsReporting();
+
+    Long organizationId = 1L;
+    String paymentsReportingId = "PAYREP123";
+
+    when(classificationApisHolderMock.getPaymentsReportingSearchControllerApi(accessToken))
+      .thenReturn(paymentsReportingSearchControllerApiMock);
+
+    when(paymentsReportingSearchControllerApiMock.crudPaymentsReportingFindByOrganizationIdAndPaymentsReportingId(
+      organizationId, paymentsReportingId))
+      .thenReturn(expectedResult);
+
+    PaymentsReporting result = paymentsReportingSearchClient.getPaymentsReportingDetail(organizationId, paymentsReportingId, accessToken);
+
+    assertSame(expectedResult, result);
+  }
+
+
+  @Test
+  void givenNoPaymentsReportingWhenGetDebtPositionPaymentsReportingDetailThenReturnNull() {
+    Long organizationId = 1L;
+    String paymentsReportingId = "PAYREP123";
+    String accessToken = "ACCESSTOKEN";
+
+    when(classificationApisHolderMock.getPaymentsReportingSearchControllerApi(accessToken))
+      .thenReturn(paymentsReportingSearchControllerApiMock);
+    when(paymentsReportingSearchControllerApiMock.crudPaymentsReportingFindByOrganizationIdAndPaymentsReportingId(organizationId, paymentsReportingId))
+      .thenThrow(
+        HttpClientErrorException.create(HttpStatus.NOT_FOUND, "NotFound", null, null, null));
+
+    PaymentsReporting result = paymentsReportingSearchClient.getPaymentsReportingDetail(organizationId, paymentsReportingId,accessToken);
+
+    Assertions.assertNull(result);
+    Mockito.verifyNoMoreInteractions(classificationApisHolderMock,paymentsReportingSearchControllerApiMock);
   }
 }

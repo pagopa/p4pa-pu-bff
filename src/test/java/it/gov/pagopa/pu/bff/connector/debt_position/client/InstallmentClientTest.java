@@ -1,13 +1,19 @@
 package it.gov.pagopa.pu.bff.connector.debt_position.client;
 
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.mockito.Mockito.when;
+
 import it.gov.pagopa.pu.bff.connector.debt_position.config.DebtPositionApisHolder;
 import it.gov.pagopa.pu.bff.dto.InstallmentViewFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.OffsetDateTimeIntervalFilter;
 import it.gov.pagopa.pu.bff.util.PageUtils;
 import it.gov.pagopa.pu.debtpositions.controller.generated.InstallmentApi;
+import it.gov.pagopa.pu.debtpositions.controller.generated.InstallmentNoPiiSearchControllerApi;
 import it.gov.pagopa.pu.debtpositions.controller.generated.InstallmentViewSearchControllerApi;
 import it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentDetailDTO;
+import it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentNoPII;
 import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelInstallmentView;
+import java.time.OffsetDateTime;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -22,11 +28,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.client.HttpClientErrorException;
 
-import java.time.OffsetDateTime;
-
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.mockito.Mockito.when;
-
 @ExtendWith(MockitoExtension.class)
 class InstallmentClientTest {
 
@@ -34,6 +35,8 @@ class InstallmentClientTest {
   private DebtPositionApisHolder debtPositionApisHolderMock;
   @Mock
   private InstallmentViewSearchControllerApi installmentViewSearchControllerApiMock;
+  @Mock
+  private InstallmentNoPiiSearchControllerApi installmentNoPiiSearchControllerApi;
   @Mock
   private InstallmentApi installmentApiMock;
 
@@ -115,6 +118,45 @@ class InstallmentClientTest {
       .thenThrow(HttpClientErrorException.create(HttpStatus.NOT_FOUND, "NotFound", null, null, null));
 
     InstallmentDetailDTO result = installmentClient.getInstallmentDetail(installmentId, operatorExternalUserId, accessToken);
+
+    Assertions.assertNull(result);
+  }
+
+  @Test
+  void whenGetInstallmentFromTransferSemanticKeyThenInvokeWithAccessToken() {
+    Long organizationId = 1L;
+    String iuv = "iuv";
+    String iur = "iur";
+    String transferIndex = "transferIndex";
+    String operatorExternalUserId = "operatorExternalUserId";
+    String accessToken = "ACCESSTOKEN";
+    InstallmentNoPII expectedResult = new InstallmentNoPII();
+
+    when(debtPositionApisHolderMock.getInstallmentNoPiiSearchControllerApi(accessToken))
+      .thenReturn(installmentNoPiiSearchControllerApi);
+    when(installmentNoPiiSearchControllerApi.crudInstallmentsFindAuthorizedByTransferSemanticKey(organizationId, iuv, iur, transferIndex, operatorExternalUserId))
+      .thenReturn(expectedResult);
+
+    InstallmentNoPII result = installmentClient.getInstallmentFromTransferSemanticKey(organizationId, iuv, iur, transferIndex, operatorExternalUserId, accessToken);
+
+    assertSame(expectedResult, result);
+  }
+
+  @Test
+  void givenExceptionWhenGetInstallmentFromTransferSemanticKeyThenReturnNull() {
+    Long organizationId = 1L;
+    String iuv = "iuv";
+    String iur = "iur";
+    String transferIndex = "transferIndex";
+    String operatorExternalUserId = "operatorExternalUserId";
+    String accessToken = "ACCESSTOKEN";
+
+    when(debtPositionApisHolderMock.getInstallmentNoPiiSearchControllerApi(accessToken))
+      .thenReturn(installmentNoPiiSearchControllerApi);
+    when(installmentNoPiiSearchControllerApi.crudInstallmentsFindAuthorizedByTransferSemanticKey(organizationId, iuv, iur, transferIndex, operatorExternalUserId))
+      .thenThrow(HttpClientErrorException.create(HttpStatus.NOT_FOUND, "NotFound", null, null, null));
+
+    InstallmentNoPII result = installmentClient.getInstallmentFromTransferSemanticKey(organizationId, iuv, iur, transferIndex, operatorExternalUserId, accessToken);
 
     Assertions.assertNull(result);
   }

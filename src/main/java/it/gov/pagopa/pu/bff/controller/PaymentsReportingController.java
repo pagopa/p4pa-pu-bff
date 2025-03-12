@@ -4,6 +4,7 @@ import it.gov.pagopa.pu.bff.controller.generated.PaymentsReportingApi;
 import it.gov.pagopa.pu.bff.dto.LocalDateIntervalFilter;
 import it.gov.pagopa.pu.bff.dto.generated.PagedPaymentsReportingRow;
 import it.gov.pagopa.pu.bff.dto.generated.PagedPaymentsReportingView;
+import it.gov.pagopa.pu.bff.dto.generated.PaymentsReportingDetailDTO;
 import it.gov.pagopa.pu.bff.security.SecurityUtils;
 import it.gov.pagopa.pu.bff.service.payments_reporting.PaymentsReportingRetrieverService;
 import java.time.LocalDate;
@@ -38,8 +39,16 @@ public class PaymentsReportingController implements PaymentsReportingApi {
     Pageable pageable) {
     log.info("User requested getPaymentsReportingRows having organizationId {} and iuf {}", organizationId, iuf);
     return ResponseEntity.ok(
-      paymentsReportingRetrieverService.getPaymentsReportingDetail(
+      paymentsReportingRetrieverService.getPaymentsReportingRows(
         organizationId, iuf, iuv, new LocalDateIntervalFilter(payDateFrom,payDateTo),
         pageable, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken()));
   }
+
+  @Override
+  public ResponseEntity<PaymentsReportingDetailDTO> getPaymentsReportingDetail(Long organizationId, String iuf, String paymentsReportingId) {
+    log.info("User requested getPaymentsReportingDetail having organizationId {} and paymentsReportingId {}", organizationId, paymentsReportingId);
+    return ResponseEntity.ofNullable(paymentsReportingRetrieverService.getPaymentsReportingDetail(
+      organizationId, iuf, paymentsReportingId, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken()));
+  }
+
 }

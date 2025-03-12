@@ -520,6 +520,49 @@ paths:
         '500':
           description: Internal Server Error
       x-spring-paginated: true
+  /organization/{organizationId}/payments-reporting/{iuf}/rows/{paymentsReportingId}:
+    get:
+      tags:
+        - PaymentsReporting
+      summary: "Retrieve a specific payments reporting"
+      operationId: getPaymentsReportingDetail
+      parameters:
+        - name: organizationId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: iuf
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: paymentsReportingId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The unique identifier of the payments reporting
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentsReportingDetailDTO'
+        '404':
+          description: Not Found - Payments Reporting not found
+        '401':
+          description: Unauthorized - Missing or invalid token
+        '403':
+          description: Forbidden - Access denied
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDTO'
   /organization/{organizationId}/receipts:
     get:
       tags:
@@ -1371,3 +1414,35 @@ components:
         number:
           type: integer
           format: int64
+    PaymentsReportingDetailDTO:
+      type: object
+      required:
+        - paymentsReportingId
+        - iuv
+        - iur
+        - amountPaidCents
+      properties:
+        paymentsReportingId:
+          type: string
+        iuv:
+          type: string
+        amountPaidCents:
+          type: integer
+          format: int64
+        remittanceInformation:
+          type: string
+        debtPositionTypeOrgDescription:
+          type: string
+        paymentDateTime:
+          type: string
+          format: date-time
+        debtor:
+          type: 'PersonDTO'
+        pspCompanyName:
+          type: string
+        iud:
+          type: string
+        iur:
+          type: string
+        status:
+          type: 'InstallmentStatus'

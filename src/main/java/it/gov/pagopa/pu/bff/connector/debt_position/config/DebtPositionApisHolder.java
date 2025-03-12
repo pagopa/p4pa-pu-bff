@@ -3,7 +3,18 @@ package it.gov.pagopa.pu.bff.connector.debt_position.config;
 import it.gov.pagopa.pu.bff.config.RestTemplateConfig;
 import it.gov.pagopa.pu.debtpositions.controller.ApiClient;
 import it.gov.pagopa.pu.debtpositions.controller.BaseApi;
-import it.gov.pagopa.pu.debtpositions.controller.generated.*;
+import it.gov.pagopa.pu.debtpositions.controller.generated.DebtPositionApi;
+import it.gov.pagopa.pu.debtpositions.controller.generated.DebtPositionTypeEntityControllerApi;
+import it.gov.pagopa.pu.debtpositions.controller.generated.DebtPositionTypeOrgEntityControllerApi;
+import it.gov.pagopa.pu.debtpositions.controller.generated.DebtPositionTypeOrgSearchControllerApi;
+import it.gov.pagopa.pu.debtpositions.controller.generated.DebtPositionTypeWithCountSearchControllerApi;
+import it.gov.pagopa.pu.debtpositions.controller.generated.DebtPositionViewSearchControllerApi;
+import it.gov.pagopa.pu.debtpositions.controller.generated.InstallmentApi;
+import it.gov.pagopa.pu.debtpositions.controller.generated.InstallmentNoPiiSearchControllerApi;
+import it.gov.pagopa.pu.debtpositions.controller.generated.InstallmentViewSearchControllerApi;
+import it.gov.pagopa.pu.debtpositions.controller.generated.ReceiptApi;
+import it.gov.pagopa.pu.debtpositions.controller.generated.ReceiptViewSearchControllerApi;
+import it.gov.pagopa.pu.debtpositions.controller.generated.TransferSearchControllerApi;
 import jakarta.annotation.PreDestroy;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.stereotype.Service;
@@ -15,11 +26,12 @@ public class DebtPositionApisHolder {
   private final DebtPositionTypeEntityControllerApi debtPositionTypeEntityControllerApi;
   private final DebtPositionTypeWithCountSearchControllerApi debtPositionTypeWithCountSearchControllerApi;
   private final DebtPositionTypeOrgSearchControllerApi debtPositionTypeOrgSearchControllerApi;
-  private final ReceiptViewSearchControllerApi receiptViewSearchControllerApi;
+  private final InstallmentApi installmentApi;
   private final InstallmentViewSearchControllerApi installmentViewSearchControllerApi;
+  private final InstallmentNoPiiSearchControllerApi installmentNoPiiSearchControllerApi;
+  private final ReceiptViewSearchControllerApi receiptViewSearchControllerApi;
   private final TransferSearchControllerApi transferSearchControllerApi;
   private final ReceiptApi receiptApi;
-  private final InstallmentApi installmentApi;
   private final DebtPositionViewSearchControllerApi debtPositionViewSearchControllerApi;
   private final DebtPositionApi debtPositionApi;
   private final DebtPositionTypeOrgEntityControllerApi debtPositionTypeOrgEntityControllerApi;
@@ -42,11 +54,12 @@ public class DebtPositionApisHolder {
     this.debtPositionTypeEntityControllerApi = new DebtPositionTypeEntityControllerApi(apiClient);
     this.debtPositionTypeWithCountSearchControllerApi = new DebtPositionTypeWithCountSearchControllerApi(apiClient);
     this.debtPositionTypeOrgSearchControllerApi = new DebtPositionTypeOrgSearchControllerApi(apiClient);
-    this.receiptViewSearchControllerApi = new ReceiptViewSearchControllerApi(apiClient);
     this.installmentViewSearchControllerApi = new InstallmentViewSearchControllerApi(apiClient);
+    this.installmentApi = new InstallmentApi(apiClient);
+    this.installmentNoPiiSearchControllerApi = new InstallmentNoPiiSearchControllerApi(apiClient);
+    this.receiptViewSearchControllerApi = new ReceiptViewSearchControllerApi(apiClient);
     this.transferSearchControllerApi = new TransferSearchControllerApi(apiClient);
     this.receiptApi = new ReceiptApi(apiClient);
-    this.installmentApi = new InstallmentApi(apiClient);
     this.debtPositionViewSearchControllerApi = new DebtPositionViewSearchControllerApi(apiClient);
     this.debtPositionApi = new DebtPositionApi(apiClient);
     this.debtPositionTypeOrgEntityControllerApi = new DebtPositionTypeOrgEntityControllerApi(apiClient);
@@ -79,19 +92,12 @@ public class DebtPositionApisHolder {
     return getApi(accessToken, transferSearchControllerApi);
   }
 
-  public ReceiptViewSearchControllerApi getReceiptViewSearchControllerApi(String accessToken) {
-    return getApi(accessToken, receiptViewSearchControllerApi);
-  }
-
   public InstallmentViewSearchControllerApi getInstallmentViewSearchControllerApi(String accessToken) {
     return getApi(accessToken, installmentViewSearchControllerApi);
   }
 
-  /**
-   * It will return a {@link ReceiptApi} instrumented with the provided accessToken. Use null if auth is not required
-   */
-  public ReceiptApi getReceiptApi(String accessToken) {
-    return getApi(accessToken, receiptApi);
+  public InstallmentNoPiiSearchControllerApi getInstallmentNoPiiSearchControllerApi(String accessToken) {
+    return getApi(accessToken, installmentNoPiiSearchControllerApi);
   }
 
   /**
@@ -99,6 +105,17 @@ public class DebtPositionApisHolder {
    */
   public InstallmentApi getInstallmentApi(String accessToken) {
     return getApi(accessToken, installmentApi);
+  }
+
+  public ReceiptViewSearchControllerApi getReceiptViewSearchControllerApi(String accessToken) {
+    return getApi(accessToken, receiptViewSearchControllerApi);
+  }
+
+  /**
+   * It will return a {@link ReceiptApi} instrumented with the provided accessToken. Use null if auth is not required
+   */
+  public ReceiptApi getReceiptApi(String accessToken) {
+    return getApi(accessToken, receiptApi);
   }
 
   /**

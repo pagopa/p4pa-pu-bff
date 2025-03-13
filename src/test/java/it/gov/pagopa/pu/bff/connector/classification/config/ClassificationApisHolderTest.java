@@ -12,6 +12,7 @@ import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.web.util.DefaultUriBuilderFactory;
 
+import java.time.LocalDate;
 import java.util.Collections;
 
 @ExtendWith(MockitoExtension.class)
@@ -44,7 +45,8 @@ class ClassificationApisHolderTest extends BaseApiHolderTest {
     assertAuthenticationShouldBeSetInThreadSafeMode(
       accessToken -> classificationApisHolder.getPaymentsReportingViewSearchControllerApi(accessToken)
         .crudPaymentsReportingViewFindDistinctByIufAndRegulationUniqueIdentifier("1", "IUF123", "RUI123", null, null, 0, 10, Collections.emptyList()),
-      new ParameterizedTypeReference<>() {},
+      new ParameterizedTypeReference<>() {
+      },
       classificationApisHolder::unload);
   }
 
@@ -53,7 +55,18 @@ class ClassificationApisHolderTest extends BaseApiHolderTest {
     assertAuthenticationShouldBeSetInThreadSafeMode(
       accessToken -> classificationApisHolder.getPaymentsReportingSearchControllerApi(accessToken)
         .crudPaymentsReportingFindPaymentsReportingByFilters(1L, "IUF123", "iuv", null, null, 0, 10, Collections.emptyList()),
-      new ParameterizedTypeReference<>() {},
+      new ParameterizedTypeReference<>() {
+      },
+      classificationApisHolder::unload);
+  }
+
+  @Test
+  void whenGetTreasuryViewSearchControllerApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
+    assertAuthenticationShouldBeSetInThreadSafeMode(
+      accessToken -> classificationApisHolder.getTreasuryViewSearchControllerApi(accessToken)
+        .crudTreasuriesViewFindTreasuriesByFilters(1L, "iuv123", "iuf123", 100L, LocalDate.now().minusDays(10), "prov123", "code123", "lastName", LocalDate.now().minusDays(5), "doc123", 0, 10, Collections.emptyList()),
+      new ParameterizedTypeReference<>() {
+      },
       classificationApisHolder::unload);
   }
 }

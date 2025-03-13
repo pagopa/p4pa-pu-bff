@@ -1,9 +1,10 @@
 {
 	"info": {
-		"_postman_id": "55c86eb8-a98d-45da-bbdf-3bb7dd73b644",
+		"_postman_id": "c288384c-0be5-459c-98b4-5e33b73db845",
 		"name": "PU-BFF",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "28798913"
+		"_exporter_id": "29647564",
+		"_collection_link": "https://galactic-eclipse-948669.postman.co/workspace/New-Team-Workspace~be56c5f1-de0c-4252-95d0-ee80f35e2474/collection/29647564-c288384c-0be5-459c-98b4-5e33b73db845?action=share&source=collection_link&creator=29647564"
 	},
 	"item": [
 		{
@@ -1173,6 +1174,69 @@
 								{
 									"key": "paymentsReportingId",
 									"value": "2024-03-19UNCRITMM-1iv6iotaa3td2_RF84013300000022786060000_1_3"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "04_getTreasuries",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let jsonResponse = pm.response.json();\r",
+									"pm.test(\"[getTreasuries], expected httpStatus: 200\", () => {\r",
+									"    pm.response.to.have.status(200);\r",
+									"})\r",
+									"pm.test(\"[Treasury getTreasuries] - getTreasuries\", () => {\r",
+									"    pm.expect(jsonResponse).to.have.property(\"content\").and.to.be.an(\"array\");\r",
+									"    pm.expect(jsonResponse).to.have.property(\"size\").and.to.be.a(\"number\");\r",
+									"    pm.expect(jsonResponse).to.have.property(\"totalElements\").and.to.be.a(\"number\");\r",
+									"    pm.expect(jsonResponse).to.have.property(\"totalPages\").and.to.be.a(\"number\");\r",
+									"    pm.expect(jsonResponse).to.have.property(\"number\").and.to.be.a(\"number\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{puBffBaseUrl}}/bff/organization/:organizationId/treasuries",
+							"host": [
+								"{{puBffBaseUrl}}"
+							],
+							"path": [
+								"bff",
+								"organization",
+								":organizationId",
+								"treasuries"
+							],
+							"variable": [
+								{
+									"key": "organizationId",
+									"value": "{{organizationId}}"
 								}
 							]
 						}

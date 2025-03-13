@@ -422,6 +422,81 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorDTO'
+  /organization/{organizationId}/treasuries:
+    get:
+      tags:
+        - Treasuries
+      summary: "Retrieve a paged list of treasuries based on filters"
+      operationId: getTreasuries
+      parameters:
+        - name: organizationId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: iuv
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: iuf
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: billAmountCents
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int64
+        - name: billDate
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date
+        - name: provisionalCode
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: billCode
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: pspLastName
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: regionValueDate
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date
+        - name: documentCode
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PagedTreasuryView'
+        '401':
+          description: Unauthorized - Missing or invalid token
+        '403':
+          description: Forbidden - Access denied
+        '500':
+          description: Internal Server Error
+      x-spring-paginated: true
   /organization/{organizationId}/payments-reporting:
     get:
       tags:
@@ -1164,6 +1239,31 @@ components:
           type: array
           items:
             type: 'InstallmentView'
+        size:
+          type: integer
+          format: int64
+        totalElements:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer
+          format: int64
+        number:
+          type: integer
+          format: int64
+    PagedTreasuryView:
+      type: object
+      required:
+        - content
+        - size
+        - totalElements
+        - totalPages
+        - number
+      properties:
+        content:
+          type: array
+          items:
+            type: 'TreasuryView'
         size:
           type: integer
           format: int64

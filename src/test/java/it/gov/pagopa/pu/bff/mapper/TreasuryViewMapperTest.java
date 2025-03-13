@@ -1,16 +1,15 @@
 package it.gov.pagopa.pu.bff.mapper;
 
 import it.gov.pagopa.pu.bff.dto.generated.PagedTreasuryView;
-import it.gov.pagopa.pu.classification.dto.generated.PageMetadata;
+import it.gov.pagopa.pu.bff.util.TestUtils;
 import it.gov.pagopa.pu.classification.dto.generated.PagedModelTreasuryView;
-import it.gov.pagopa.pu.classification.dto.generated.PagedModelTreasuryViewEmbedded;
-import it.gov.pagopa.pu.classification.dto.generated.TreasuryView;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.util.CollectionUtils;
+import uk.co.jemos.podam.api.PodamFactory;
 
-import java.util.List;
+import java.util.Collections;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -18,65 +17,42 @@ import static org.junit.jupiter.api.Assertions.*;
 class TreasuryViewMapperTest {
 
   private final TreasuryViewMapper mapper = new TreasuryViewMapper();
+  private final PodamFactory podamFactory = TestUtils.getPodamFactory();
 
   @Test
   void givenPopulatedPagedModelWhenMapToPagedTreasuryThenCorrectMapping() {
-    PagedModelTreasuryView pagedModel = new PagedModelTreasuryView();
-    PagedModelTreasuryViewEmbedded embedded = new PagedModelTreasuryViewEmbedded();
-    TreasuryView treasuryView = new TreasuryView();
-    treasuryView.setTreasuryId("1");
-
-    embedded.setTreasuryViews(List.of(treasuryView));
-    pagedModel.setEmbedded(embedded);
-
-    PageMetadata page = new PageMetadata();
-    page.setSize(10L);
-    page.setTotalElements(1L);
-    page.setTotalPages(1L);
-    page.setNumber(1L);
-    pagedModel.setPage(page);
+    PagedModelTreasuryView pagedModel = podamFactory.manufacturePojo(PagedModelTreasuryView.class);
 
     PagedTreasuryView result = mapper.mapToPagedTreasury(pagedModel);
 
     assertNotNull(result);
-    assertEquals(1L, result.getNumber());
-    assertEquals(1L, result.getTotalElements());
-    assertEquals(1L, result.getTotalPages());
-    assertEquals(10L, result.getSize());
+    assertEquals(pagedModel.getPage().getNumber(), result.getNumber());
+    assertEquals(pagedModel.getPage().getTotalElements(), result.getTotalElements());
+    assertEquals(pagedModel.getPage().getTotalPages(), result.getTotalPages());
+    assertEquals(pagedModel.getPage().getSize(), result.getSize());
     assertFalse(CollectionUtils.isEmpty(result.getContent()));
-    assertEquals(1, result.getContent().size());
-    assertEquals(treasuryView.getTreasuryId(), result.getContent().get(0).getTreasuryId());
+    assertEquals(pagedModel.getEmbedded().getTreasuryViews(), result.getContent());
   }
 
   @Test
   void givenNoContentWhenMapToPagedTreasuryThenPartialMapping() {
-    PagedModelTreasuryView pagedModel = new PagedModelTreasuryView();
-    PageMetadata page = new PageMetadata();
-    page.setSize(10L);
-    page.setTotalElements(1L);
-    page.setTotalPages(1L);
-    page.setNumber(1L);
-    pagedModel.setPage(page);
+    PagedModelTreasuryView pagedModel = podamFactory.manufacturePojo(PagedModelTreasuryView.class);
+    pagedModel.getEmbedded().setTreasuryViews(Collections.emptyList());
 
     PagedTreasuryView result = mapper.mapToPagedTreasury(pagedModel);
 
     assertNotNull(result);
-    assertEquals(1L, result.getNumber());
-    assertEquals(1L, result.getTotalElements());
-    assertEquals(1L, result.getTotalPages());
-    assertEquals(10L, result.getSize());
+    assertEquals(pagedModel.getPage().getNumber(), result.getNumber());
+    assertEquals(pagedModel.getPage().getTotalElements(), result.getTotalElements());
+    assertEquals(pagedModel.getPage().getTotalPages(), result.getTotalPages());
+    assertEquals(pagedModel.getPage().getSize(), result.getSize());
     assertTrue(CollectionUtils.isEmpty(result.getContent()));
   }
 
   @Test
   void givenNoPageWhenMapToPagedTreasuryThenPartialMapping() {
-    PagedModelTreasuryView pagedModel = new PagedModelTreasuryView();
-    PagedModelTreasuryViewEmbedded embedded = new PagedModelTreasuryViewEmbedded();
-    TreasuryView treasuryView = new TreasuryView();
-    treasuryView.setTreasuryId("1");
-
-    embedded.setTreasuryViews(List.of(treasuryView));
-    pagedModel.setEmbedded(embedded);
+    PagedModelTreasuryView pagedModel = podamFactory.manufacturePojo(PagedModelTreasuryView.class);
+    pagedModel.setPage(null);
 
     PagedTreasuryView result = mapper.mapToPagedTreasury(pagedModel);
 
@@ -86,7 +62,6 @@ class TreasuryViewMapperTest {
     assertNull(result.getTotalPages());
     assertNull(result.getSize());
     assertFalse(CollectionUtils.isEmpty(result.getContent()));
-    assertEquals(1, result.getContent().size());
-    assertEquals(treasuryView.getTreasuryId(), result.getContent().get(0).getTreasuryId());
+    assertEquals(pagedModel.getEmbedded().getTreasuryViews(), result.getContent());
   }
 }

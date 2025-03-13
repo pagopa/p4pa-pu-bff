@@ -5,6 +5,7 @@ import it.gov.pagopa.pu.classification.controller.ApiClient;
 import it.gov.pagopa.pu.classification.controller.BaseApi;
 import it.gov.pagopa.pu.classification.controller.generated.PaymentsReportingSearchControllerApi;
 import it.gov.pagopa.pu.classification.controller.generated.PaymentsReportingViewSearchControllerApi;
+import it.gov.pagopa.pu.classification.controller.generated.TreasuryViewSearchControllerApi;
 import jakarta.annotation.PreDestroy;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.stereotype.Service;
@@ -15,6 +16,7 @@ public class ClassificationApisHolder {
 
   private final PaymentsReportingViewSearchControllerApi paymentsReportingViewSearchControllerApi;
   private final PaymentsReportingSearchControllerApi paymentsReportingSearchControllerApi;
+  private final TreasuryViewSearchControllerApi treasuryViewSearchControllerApi;
   private final ThreadLocal<String> bearerTokenHolder = new ThreadLocal<>();
 
   public ClassificationApisHolder(ClassificationApiClientConfig clientConfig,
@@ -31,6 +33,7 @@ public class ClassificationApisHolder {
 
     this.paymentsReportingViewSearchControllerApi = new PaymentsReportingViewSearchControllerApi(apiClient);
     this.paymentsReportingSearchControllerApi = new PaymentsReportingSearchControllerApi(apiClient);
+    this.treasuryViewSearchControllerApi = new TreasuryViewSearchControllerApi(apiClient);
   }
 
   @PreDestroy
@@ -44,6 +47,10 @@ public class ClassificationApisHolder {
 
   public PaymentsReportingSearchControllerApi getPaymentsReportingSearchControllerApi(String accessToken) {
     return getApi(accessToken, paymentsReportingSearchControllerApi);
+  }
+
+  public TreasuryViewSearchControllerApi getTreasuryViewSearchControllerApi(String accessToken) {
+    return getApi(accessToken, treasuryViewSearchControllerApi);
   }
 
   private <T extends BaseApi> T getApi(String accessToken, T api) {

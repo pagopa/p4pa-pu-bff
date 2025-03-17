@@ -3,14 +3,18 @@ package it.gov.pagopa.pu.bff.controller;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
+import it.gov.pagopa.pu.bff.dto.generated.DebtPositionTypeDetailDTO;
 import it.gov.pagopa.pu.bff.dto.generated.DebtPositionTypeWithCount;
 import it.gov.pagopa.pu.bff.dto.generated.PagedDebtPositionTypeWithCount;
 import it.gov.pagopa.pu.bff.service.debt_position.DebtPositionTypeRetrieverService;
+import it.gov.pagopa.pu.organization.dto.generated.Taxonomy;
 import java.time.OffsetDateTime;
 import java.util.List;
 
@@ -108,7 +112,7 @@ class DebtPositionTypeControllerTest {
 
     Mockito.when(debtPositionTypeRetrieverServiceMock.getDebtPositionTypeWithCount(Mockito.eq(organizationId),
         Mockito.argThat(p->p.getPageNumber()==0 && p.getPageSize()==10 && p.getSort().isUnsorted()),
-        Mockito.any(), Mockito.anyString()))
+        Mockito.any(), anyString()))
       .thenReturn(expectedResult);
 
     ResponseEntity<PagedDebtPositionTypeWithCount> response = debtPositionTypeController.getDebtPositionTypeWithCount(organizationId,
@@ -117,6 +121,52 @@ class DebtPositionTypeControllerTest {
     Assertions.assertEquals(HttpStatus.OK,response.getStatusCode());
     Assertions.assertNotNull(response.getBody());
     Assertions.assertSame(expectedResult,response.getBody());
+  }
+
+  @Test
+  void whenGetDebtPositionTypeDetailThenOk() {
+    Taxonomy taxonomy = Taxonomy.builder()
+      .organizationType("organizationType")
+      .organizationTypeDescription("orgTypeDesc")
+      .macroAreaCode("macroAreaCode")
+      .macroAreaName("macroAreaName")
+      .macroAreaDescription("macroAreaDesc")
+      .serviceTypeCode("serviceTypeCode")
+      .serviceType("serviceType")
+      .serviceTypeDescription("serviceTypeDesc")
+      .collectionReason("collectionReason")
+      .startDateValidity(OffsetDateTime.now())
+      .endDateOfValidity(OffsetDateTime.now())
+      .taxonomyCode(debtPositionTypeDTO.getTaxonomyCode())
+      .build();
+
+    DebtPositionTypeDetailDTO expectedResult = DebtPositionTypeDetailDTO.builder()
+      .debtPositionTypeId(debtPositionTypeDTO.getDebtPositionTypeId())
+      .code(debtPositionTypeDTO.getCode())
+      .description(debtPositionTypeDTO.getDescription())
+      .organizationTypeDescription(taxonomy.getOrganizationTypeDescription())
+      .macroAreaName(taxonomy.getMacroAreaName())
+      .serviceType(taxonomy.getServiceType())
+      .collectionReason(taxonomy.getCollectionReason())
+      .taxonomyCode(debtPositionTypeDTO.getTaxonomyCode())
+      .flagAnonymousFiscalCode(debtPositionTypeDTO.getFlagAnonymousFiscalCode())
+      .flagMandatoryDueDate(debtPositionTypeDTO.getFlagMandatoryDueDate())
+      .flagNotifyIo(debtPositionTypeDTO.getFlagNotifyIo())
+      .ioTemplateMessage(debtPositionTypeDTO.getIoTemplateMessage())
+      .build();
+
+    Mockito.when(
+      debtPositionTypeRetrieverServiceMock.getDebtPositionTypeDetail(anyLong(),
+        Mockito.eq(debtPositionTypeDTO.getDebtPositionTypeId()), any(
+          UserInfo.class), anyString()))
+      .thenReturn(expectedResult);
+
+    ResponseEntity<DebtPositionTypeDetailDTO> response = debtPositionTypeController.getDebtPositionTypeDetail(1L,
+      debtPositionTypeDTO.getDebtPositionTypeId());
+
+    Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
+    Assertions.assertNotNull(response.getBody());
+    Assertions.assertEquals(expectedResult, response.getBody());
   }
 }
 

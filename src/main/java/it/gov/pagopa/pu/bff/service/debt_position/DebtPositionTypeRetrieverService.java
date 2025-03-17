@@ -1,5 +1,6 @@
 package it.gov.pagopa.pu.bff.service.debt_position;
 
+import it.gov.pagopa.pu.bff.dto.generated.DebtPositionTypeDetailDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedDebtPositionTypeWithCount;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionType;
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
@@ -12,4 +13,6 @@ public interface DebtPositionTypeRetrieverService {
   PagedDebtPositionTypeWithCount getDebtPositionTypeWithCount(
     Long organizationId, Pageable pageable,
     UserInfo loggedUser, String accessToken);
+
+  DebtPositionTypeDetailDTO getDebtPositionTypeDetail(Long organizationId, Long debtPositionTypeId, UserInfo loggedUser, String accessToken);
 }

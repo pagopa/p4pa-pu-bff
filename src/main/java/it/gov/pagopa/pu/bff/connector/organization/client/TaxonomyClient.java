@@ -1,7 +1,12 @@
 package it.gov.pagopa.pu.bff.connector.organization.client;
 
 import it.gov.pagopa.pu.bff.connector.organization.config.OrganizationApisHolder;
-import it.gov.pagopa.pu.organization.dto.generated.*;
+import it.gov.pagopa.pu.organization.dto.generated.CollectionModelTaxonomyCodeDTO;
+import it.gov.pagopa.pu.organization.dto.generated.CollectionModelTaxonomyCollectionReasonDTO;
+import it.gov.pagopa.pu.organization.dto.generated.CollectionModelTaxonomyMacroAreaCodeDTO;
+import it.gov.pagopa.pu.organization.dto.generated.CollectionModelTaxonomyOrganizationTypeDTO;
+import it.gov.pagopa.pu.organization.dto.generated.CollectionModelTaxonomyServiceTypeCodeDTO;
+import it.gov.pagopa.pu.organization.dto.generated.Taxonomy;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -12,6 +17,11 @@ public class TaxonomyClient {
 
   public TaxonomyClient(OrganizationApisHolder organizationApisHolder) {
     this.organizationApisHolder = organizationApisHolder;
+  }
+
+  public Taxonomy getTaxonomyByTaxonomyCode(String taxonomyCode, String accessToken) {
+    return organizationApisHolder.getTaxonomySearchControllerApi(accessToken)
+      .crudTaxonomiesFindByTaxonomyCode(taxonomyCode);
   }
 
   public CollectionModelTaxonomyCollectionReasonDTO getCollectionReason(

@@ -4,6 +4,8 @@ import it.gov.pagopa.pu.organization.dto.generated.*;
 
 public interface TaxonomyService {
 
+  Taxonomy getTaxonomyByTaxonomyCode(String taxonomyCode, String accessToken);
+
   CollectionModelTaxonomyCollectionReasonDTO getCollectionReason(String organizationType, String macroAreaCode, String serviceTypeCode, String accessToken);
 
   CollectionModelTaxonomyMacroAreaCodeDTO getMacroArea(String organizationType, String accessToken);

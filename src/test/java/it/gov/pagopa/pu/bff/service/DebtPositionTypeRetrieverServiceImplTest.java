@@ -1,10 +1,21 @@
 package it.gov.pagopa.pu.bff.service;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.connector.debt_position.DebtPositionTypeService;
 import it.gov.pagopa.pu.bff.dto.generated.PagedDebtPositionTypeWithCount;
+import it.gov.pagopa.pu.bff.mapper.DebtPositionTypeMapper;
 import it.gov.pagopa.pu.bff.mapper.DebtPositionTypeWithCountMapper;
 import it.gov.pagopa.pu.bff.service.debt_position.DebtPositionTypeRetrieverServiceImpl;
+import it.gov.pagopa.pu.bff.service.taxonomy.TaxonomyRetrieverService;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionType;
 import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelDebtPositionTypeWithCount;
 import org.junit.jupiter.api.Assertions;
@@ -17,10 +28,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.authorization.AuthorizationDeniedException;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
-
 @ExtendWith(MockitoExtension.class)
 class DebtPositionTypeRetrieverServiceImplTest {
 
@@ -31,6 +38,10 @@ class DebtPositionTypeRetrieverServiceImplTest {
   private AuthorizationService authorizationServiceMock;
   @Mock
   private DebtPositionTypeWithCountMapper debtPositionTypeWithCountMapperMock;
+  @Mock
+  private TaxonomyRetrieverService taxonomyRetrieverServiceMock;
+  @Mock
+  private DebtPositionTypeMapper debtPositionTypeMapperMock;
 
   private DebtPositionTypeRetrieverServiceImpl debtPositionTypeService;
 
@@ -55,7 +66,7 @@ class DebtPositionTypeRetrieverServiceImplTest {
     debtPositionType.setFlagNotifyIo(true);
     debtPositionType.setIoTemplateMessage("Test IO Template Message");
 
-    debtPositionTypeService = new DebtPositionTypeRetrieverServiceImpl(debtPositionTypeServiceMock, debtPositionTypeWithCountMapperMock, authorizationServiceMock);
+    debtPositionTypeService = new DebtPositionTypeRetrieverServiceImpl(debtPositionTypeServiceMock, debtPositionTypeWithCountMapperMock, taxonomyRetrieverServiceMock, authorizationServiceMock, debtPositionTypeMapperMock);
   }
 
   @Test
@@ -90,7 +101,6 @@ class DebtPositionTypeRetrieverServiceImplTest {
 
     assertNull(result);
   }
-
 
   @Test
   void givenValidUserWhenGetDebtPositionTypeWithCountThenOK() {

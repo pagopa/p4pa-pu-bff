@@ -69,4 +69,15 @@ class ClassificationApisHolderTest extends BaseApiHolderTest {
       },
       classificationApisHolder::unload);
   }
+
+  @Test
+  void whenGetTreasurySearchControllerApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
+    assertAuthenticationShouldBeSetInThreadSafeMode(
+      accessToken -> classificationApisHolder.getTreasurySearchControllerApi(accessToken)
+        .crudTreasuryFindByOrganizationIdAndTreasuryId(1L, "111"),
+      new ParameterizedTypeReference<>() {
+      },
+      classificationApisHolder::unload);
+  }
+
 }

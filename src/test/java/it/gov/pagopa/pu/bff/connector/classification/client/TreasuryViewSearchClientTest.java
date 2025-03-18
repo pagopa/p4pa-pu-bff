@@ -28,7 +28,6 @@ class TreasuryViewSearchClientTest {
   private ClassificationApisHolder classificationApisHolderMock;
   @Mock
   private TreasuryViewSearchControllerApi treasuryViewSearchControllerApiMock;
-
   private TreasuryViewSearchClient treasuryViewSearchClient;
 
   @BeforeEach
@@ -87,4 +86,5 @@ class TreasuryViewSearchClientTest {
 
     assertSame(expectedResult, result);
   }
+
 }

@@ -179,5 +179,20 @@ class DebtPositionTypeControllerTest {
     Assertions.assertNotNull(response.getBody());
     Assertions.assertEquals(expectedResult, response.getBody());
   }
+
+  @Test
+  void givenNullResultWhenGetDebtPositionTypeDetailThenNotFound() {
+    Mockito.when(
+        debtPositionTypeRetrieverServiceMock.getDebtPositionTypeDetail(anyLong(),
+          Mockito.eq(debtPositionTypeDTO.getDebtPositionTypeId()), any(),
+          anyString()))
+      .thenReturn(null);
+
+    ResponseEntity<DebtPositionTypeDetailDTO> response = debtPositionTypeController.getDebtPositionTypeDetail(
+      1L,
+      debtPositionTypeDTO.getDebtPositionTypeId());
+
+    Assertions.assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+  }
 }
 

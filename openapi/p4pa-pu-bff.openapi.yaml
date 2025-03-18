@@ -300,6 +300,8 @@ paths:
           description: Unauthorized - Missing or invalid token
         '403':
           description: Forbidden - Access denied
+        '404':
+          description: Not Found - Debt Position Type not found
         '500':
           description: Internal Server Error
   /organization/{organizationId}/debt-position-type-orgs:
@@ -1596,6 +1598,7 @@ components:
           format: int64
         code:
           type: string
+          maxLength: 255
         description:
           type: string
           readOnly: true

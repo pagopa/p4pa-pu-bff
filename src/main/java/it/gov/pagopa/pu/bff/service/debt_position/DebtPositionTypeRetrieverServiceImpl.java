@@ -15,7 +15,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
-public class DebtPositionTypeRetrieverServiceImpl implements DebtPositionTypeRetrieverService {
+public class DebtPositionTypeRetrieverServiceImpl implements
+  DebtPositionTypeRetrieverService {
 
   private final AuthorizationService authorizationService;
   private final DebtPositionTypeService debtPositionTypeService;
@@ -23,10 +24,11 @@ public class DebtPositionTypeRetrieverServiceImpl implements DebtPositionTypeRet
   private final TaxonomyRetrieverService taxonomyRetrieverService;
   private final DebtPositionTypeMapper debtPositionTypeMapper;
 
-  public DebtPositionTypeRetrieverServiceImpl(DebtPositionTypeService debtPositionTypeService,
-                                              DebtPositionTypeWithCountMapper debtPositionTypeWithCountMapper,
+  public DebtPositionTypeRetrieverServiceImpl(
+    DebtPositionTypeService debtPositionTypeService,
+    DebtPositionTypeWithCountMapper debtPositionTypeWithCountMapper,
     TaxonomyRetrieverService taxonomyRetrieverService,
-                                              AuthorizationService authorizationService,
+    AuthorizationService authorizationService,
     DebtPositionTypeMapper debtPositionTypeMapper) {
     this.authorizationService = authorizationService;
     this.debtPositionTypeService = debtPositionTypeService;
@@ -43,7 +45,7 @@ public class DebtPositionTypeRetrieverServiceImpl implements DebtPositionTypeRet
   public PagedDebtPositionTypeWithCount getDebtPositionTypeWithCount(
     Long organizationId, Pageable pageable,
     UserInfo loggedUser, String accessToken) {
-    authorizationService.validateAdminRole(organizationId,loggedUser);
+    authorizationService.validateAdminRole(organizationId, loggedUser);
     return debtPositionTypeWithCountMapper.mapToPagedDebtPositionWithCount(
       debtPositionTypeService.getDebtPositionTypeWithCount(
         loggedUser.getBrokerId(),
@@ -57,6 +59,7 @@ public class DebtPositionTypeRetrieverServiceImpl implements DebtPositionTypeRet
     Long organizationId, Long debtPositionTypeId, UserInfo loggedUser,
     String accessToken) {
     authorizationService.validateAdminRole(organizationId, loggedUser);
+    // TODO: check if user is broker's admin else 403
 
     DebtPositionType debtPositionType = getDebtPositionTypeById(accessToken,
       debtPositionTypeId);
@@ -72,6 +75,7 @@ public class DebtPositionTypeRetrieverServiceImpl implements DebtPositionTypeRet
       return null;
     }
 
-    return debtPositionTypeMapper.mapToDebtPositionTypeDetailDTO(debtPositionType, taxonomy);
+    return debtPositionTypeMapper.mapToDebtPositionTypeDetailDTO(
+      debtPositionType, taxonomy);
   }
 }

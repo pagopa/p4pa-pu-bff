@@ -41,7 +41,7 @@ public class DebtPositionTypeController implements DebtPositionTypesApi {
   public ResponseEntity<DebtPositionTypeDetailDTO> getDebtPositionTypeDetail(
     Long organizationId, Long debtPositionTypeId) {
     log.info(
-      "User requested getDebtPositionDetail having organizationId {} and ID {}",
+      "User requested getDebtPositionTypeDetail having organizationId {} and ID {}",
       organizationId, debtPositionTypeId);
     return ResponseEntity.ofNullable(
       debtPositionTypeRetrieverService.getDebtPositionTypeDetail(organizationId,

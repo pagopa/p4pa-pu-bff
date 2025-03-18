@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "55c86eb8-a98d-45da-bbdf-3bb7dd73b644",
+		"_postman_id": "750b5a51-f36a-489e-9a4f-80a1ecb23823",
 		"name": "PU-BFF",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "28798913"
@@ -863,7 +863,7 @@
 							"variable": [
 								{
 									"key": "organizationId",
-									"value": "3"
+									"value": "{{organizationId}}"
 								}
 							]
 						}
@@ -944,11 +944,11 @@
 							"variable": [
 								{
 									"key": "organizationId",
-									"value": "3"
+									"value": "{{organizationId}}"
 								},
 								{
 									"key": "receiptId",
-									"value": "188"
+									"value": "{{receiptId}}"
 								}
 							]
 						}
@@ -1133,21 +1133,7 @@
 									"    pm.expect(jsonResponse).to.have.property(\"totalElements\").and.to.be.a(\"number\");\r",
 									"    pm.expect(jsonResponse).to.have.property(\"totalPages\").and.to.be.a(\"number\");\r",
 									"    pm.expect(jsonResponse).to.have.property(\"number\").and.to.be.a(\"number\");\r",
-									"});\r",
-									"\r",
-									"let response = pm.response.json();\r",
-									"let iuf = response.content[0]?.iuf;\r",
-									"pm.collectionVariables.set(\"iuf\", iuf);"
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						},
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									""
+									"});"
 								],
 								"type": "text/javascript",
 								"packages": {}
@@ -1186,89 +1172,7 @@
 							"variable": [
 								{
 									"key": "organizationId",
-									"value": "3"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "04_getPaymentsReportingRows",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"let jsonResponse = pm.response.json();\r",
-									"pm.test(\"[receipt getPaymentsReportingDetail], expected httpStatus: 200\", () => {\r",
-									"    pm.response.to.have.status(200);\r",
-									"})\r",
-									"pm.test(\"[PaymentsReporting getPaymentsReportingDetail] - getPaymentsReportingDetail\", () => {\r",
-									"    pm.expect(jsonResponse).to.have.property(\"paymentsReportingId\").and.to.be.a(\"string\");\r",
-									"    pm.expect(jsonResponse).to.have.property(\"iuv\").and.to.be.a(\"string\");\r",
-									"    pm.expect(jsonResponse).to.have.property(\"iur\").and.to.be.a(\"string\");\r",
-									"    pm.expect(jsonResponse).to.have.property(\"amountPaidCents\").and.to.be.a(\"number\");\r",
-									"});\r",
-									"\r",
-									"let response = pm.response.json();\r",
-									"let paymentsReportingId = response.content[0]?.paymentsReportingId;\r",
-									"pm.collectionVariables.set(\"paymentsReportingId\", paymentsReportingId);"
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						},
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									""
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						}
-					],
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{accessToken}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [
-							{
-								"key": "accept",
-								"value": "application/json"
-							}
-						],
-						"url": {
-							"raw": "{{puBffBaseUrl}}/bff/organization/:organizationId/payments-reporting/:iuf/rows",
-							"host": [
-								"{{puBffBaseUrl}}"
-							],
-							"path": [
-								"bff",
-								"organization",
-								":organizationId",
-								"payments-reporting",
-								":iuf",
-								"rows"
-							],
-							"variable": [
-								{
-									"key": "organizationId",
-									"value": "3"
-								},
-								{
-									"key": "iuf",
-									"value": "{{iuf}}"
+									"value": "{{organizationId}}"
 								}
 							]
 						}
@@ -1347,11 +1251,74 @@
 								},
 								{
 									"key": "iuf",
-									"value": "{{iuf}}"
+									"value": "2024-03-19UNCRITMM-1iv6iotaa3td2"
 								},
 								{
 									"key": "paymentsReportingId",
-									"value": "{{paymentsReportingId}}"
+									"value": "2024-03-19UNCRITMM-1iv6iotaa3td2_RF84013300000022786060000_1_3"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "04_getTreasuries",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let jsonResponse = pm.response.json();\r",
+									"pm.test(\"[getTreasuries], expected httpStatus: 200\", () => {\r",
+									"    pm.response.to.have.status(200);\r",
+									"})\r",
+									"pm.test(\"[Treasury getTreasuries] - getTreasuries\", () => {\r",
+									"    pm.expect(jsonResponse).to.have.property(\"content\").and.to.be.an(\"array\");\r",
+									"    pm.expect(jsonResponse).to.have.property(\"size\").and.to.be.a(\"number\");\r",
+									"    pm.expect(jsonResponse).to.have.property(\"totalElements\").and.to.be.a(\"number\");\r",
+									"    pm.expect(jsonResponse).to.have.property(\"totalPages\").and.to.be.a(\"number\");\r",
+									"    pm.expect(jsonResponse).to.have.property(\"number\").and.to.be.a(\"number\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{puBffBaseUrl}}/bff/organization/:organizationId/treasuries",
+							"host": [
+								"{{puBffBaseUrl}}"
+							],
+							"path": [
+								"bff",
+								"organization",
+								":organizationId",
+								"treasuries"
+							],
+							"variable": [
+								{
+									"key": "organizationId",
+									"value": "{{organizationId}}"
 								}
 							]
 						}
@@ -1460,14 +1427,6 @@
 		},
 		{
 			"key": "receiptId",
-			"value": ""
-		},
-		{
-			"key": "iuf",
-			"value": ""
-		},
-		{
-			"key": "paymentsReportingId",
 			"value": ""
 		}
 	]

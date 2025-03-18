@@ -23,6 +23,7 @@ import it.gov.pagopa.pu.organization.dto.generated.CollectionModelTaxonomyOrgani
 import it.gov.pagopa.pu.organization.dto.generated.CollectionModelTaxonomyOrganizationTypeDTOEmbedded;
 import it.gov.pagopa.pu.organization.dto.generated.CollectionModelTaxonomyServiceTypeCodeDTO;
 import it.gov.pagopa.pu.organization.dto.generated.CollectionModelTaxonomyServiceTypeCodeDTOEmbedded;
+import it.gov.pagopa.pu.organization.dto.generated.Taxonomy;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -48,6 +49,19 @@ class TaxonomyRetrieverServiceImplTest {
 
   @InjectMocks
   private TaxonomyRetrieverServiceImpl taxonomyService;
+
+  @Test
+  void testGetByTaxonomyCode() {
+    Taxonomy taxonomy = new Taxonomy();
+
+    Mockito.when(taxonomyServiceMock.getTaxonomyByTaxonomyCode(Mockito.anyString(), Mockito.anyString()))
+      .thenReturn(taxonomy);
+
+    Taxonomy result = taxonomyService.getTaxonomyByTaxonomyCode("TAX", "token");
+
+    // Assert the result
+    assertEquals(taxonomy, result);
+  }
 
   @Test
   void testGetTaxonomyCode() {

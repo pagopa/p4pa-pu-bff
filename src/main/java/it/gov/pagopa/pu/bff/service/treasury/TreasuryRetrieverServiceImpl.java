@@ -6,6 +6,7 @@ import it.gov.pagopa.pu.bff.dto.TreasuryViewFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedTreasuryView;
 import it.gov.pagopa.pu.bff.mapper.TreasuryViewMapper;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
+import it.gov.pagopa.pu.classification.dto.generated.Treasury;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -26,6 +27,13 @@ public class TreasuryRetrieverServiceImpl implements TreasuryRetrieverService {
 
     return treasuryViewMapper.mapToPagedTreasury(
       treasuryService.getTreasuries(treasuryViewFiltersDTO, pageable, accessToken));
+  }
+
+  @Override
+  public Treasury getTreasuryDetail(Long organizationId, String treasuryId, UserInfo loggedUser, String accessToken) {
+    AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser);
+
+    return treasuryService.getTreasuryDetail(organizationId, treasuryId, accessToken);
   }
 
 }

@@ -164,6 +164,7 @@ tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>("ope
     "InstallmentView" to "it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentView",
     "PaymentsReportingView" to "it.gov.pagopa.pu.classification.dto.generated.PaymentsReportingView",
     "TreasuryView" to "it.gov.pagopa.pu.classification.dto.generated.TreasuryView",
+    "Treasury" to "it.gov.pagopa.pu.classification.dto.generated.Treasury",
     "DebtPositionView" to "it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionView",
     "DebtPositionViewStatus" to "it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionView.StatusEnum",
     "DebtPositionStatus" to "it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionDTO.StatusEnum",

@@ -5,6 +5,7 @@ import it.gov.pagopa.pu.bff.dto.TreasuryViewFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedTreasuryView;
 import it.gov.pagopa.pu.bff.security.SecurityUtils;
 import it.gov.pagopa.pu.bff.service.treasury.TreasuryRetrieverService;
+import it.gov.pagopa.pu.classification.dto.generated.Treasury;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -31,4 +32,11 @@ public class TreasuryController implements TreasuriesApi {
       pageable, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken()));
   }
 
+  @Override
+  public ResponseEntity<Treasury> getTreasuryDetail(Long organizationId, String treasuryId) {
+    log.info("User requested getTreasuryDetail having organizationId {} and treasuryId {}", organizationId, treasuryId);
+
+    return ResponseEntity.ofNullable(treasuryRetrieverService.getTreasuryDetail(
+      organizationId, treasuryId, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken()));
+  }
 }

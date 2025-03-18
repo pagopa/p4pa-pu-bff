@@ -422,6 +422,39 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorDTO'
+  /organization/{organizationId}/treasuries/{treasuryId}:
+    get:
+      tags:
+        - Treasuries
+      summary: "Retrieve a specific treasury"
+      operationId: getTreasuryDetail
+      parameters:
+        - name: organizationId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: treasuryId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: 'Treasury'
+        '404':
+          description: Not Found - Receipt not found
+        '401':
+          description: Unauthorized - Missing or invalid token
+        '403':
+          description: Forbidden - Access denied
+        '500':
+          description: Internal Server Error
   /organization/{organizationId}/treasuries:
     get:
       tags:

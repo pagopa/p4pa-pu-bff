@@ -3,8 +3,10 @@ package it.gov.pagopa.pu.bff.connector.classification.client;
 import it.gov.pagopa.pu.bff.connector.classification.config.ClassificationApisHolder;
 import it.gov.pagopa.pu.bff.dto.TreasuryViewFiltersDTO;
 import it.gov.pagopa.pu.bff.util.PageUtils;
+import it.gov.pagopa.pu.classification.controller.generated.TreasurySearchControllerApi;
 import it.gov.pagopa.pu.classification.controller.generated.TreasuryViewSearchControllerApi;
 import it.gov.pagopa.pu.classification.dto.generated.PagedModelTreasuryView;
+import it.gov.pagopa.pu.classification.dto.generated.Treasury;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,25 +17,29 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.client.HttpClientErrorException;
 
 import java.time.LocalDate;
 
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class TreasuryViewSearchClientTest {
+class TreasuryClientTest {
 
   @Mock
   private ClassificationApisHolder classificationApisHolderMock;
   @Mock
   private TreasuryViewSearchControllerApi treasuryViewSearchControllerApiMock;
-
-  private TreasuryViewSearchClient treasuryViewSearchClient;
+  @Mock
+  private TreasurySearchControllerApi treasurySearchControllerApiMock;
+  private TreasuryClient treasuryClient;
 
   @BeforeEach
   void setUp() {
-    treasuryViewSearchClient = new TreasuryViewSearchClient(classificationApisHolderMock);
+    treasuryClient = new TreasuryClient(classificationApisHolderMock);
   }
 
   @AfterEach
@@ -83,8 +89,56 @@ class TreasuryViewSearchClientTest {
       PageUtils.getSortList(pageable)))
       .thenReturn(expectedResult);
 
-    PagedModelTreasuryView result = treasuryViewSearchClient.getTreasuries(filtersDTO, pageable, accessToken);
+    PagedModelTreasuryView result = treasuryClient.getTreasuries(filtersDTO, pageable, accessToken);
 
     assertSame(expectedResult, result);
   }
+
+  @Test
+  void whenGetTreasuryDetailThenInvokeWithAccessToken() {
+    String accessToken = "ACCESSTOKEN";
+    Long organizationId = 1L;
+    String treasuryId = "TREASURY123";
+    Treasury expectedTreasury = Treasury.builder()
+      .treasuryId(treasuryId)
+      .organizationId(organizationId)
+      .billYear("2025")
+      .billCode("BILL123")
+      .ingestionFlowFileId(100L)
+      .billAmountCents(1000L)
+      .billDate(LocalDate.now().minusDays(10))
+      .pspLastName("PSPLastName")
+      .build();
+
+    when(classificationApisHolderMock.getTreasurySearchControllerApi(accessToken))
+      .thenReturn(treasurySearchControllerApiMock);
+
+    when(treasurySearchControllerApiMock.crudTreasuryFindByOrganizationIdAndTreasuryId(
+      organizationId, treasuryId))
+      .thenReturn(expectedTreasury);
+
+    Treasury result = treasuryClient.getTreasuryDetail(organizationId, treasuryId, accessToken);
+
+    assertSame(expectedTreasury, result);
+  }
+
+  @Test
+  void whenGetTreasuryDetailNotFoundThenReturnNull() {
+    String accessToken = "ACCESSTOKEN";
+    Long organizationId = 1L;
+    String treasuryId = "TREASURY123";
+
+    when(classificationApisHolderMock.getTreasurySearchControllerApi(accessToken))
+      .thenReturn(treasurySearchControllerApiMock);
+
+    when(treasurySearchControllerApiMock.crudTreasuryFindByOrganizationIdAndTreasuryId(organizationId, treasuryId))
+      .thenThrow(HttpClientErrorException.create(HttpStatus.NOT_FOUND, "NotFound", null, null, null));
+
+    Treasury result = treasuryClient.getTreasuryDetail(organizationId, treasuryId, accessToken);
+
+    assertNull(result);
+    Mockito.verify(treasurySearchControllerApiMock).crudTreasuryFindByOrganizationIdAndTreasuryId(
+      organizationId, treasuryId);
+  }
+
 }

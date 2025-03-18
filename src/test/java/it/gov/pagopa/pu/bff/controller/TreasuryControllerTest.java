@@ -4,6 +4,7 @@ import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.dto.TreasuryViewFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedTreasuryView;
 import it.gov.pagopa.pu.bff.service.treasury.TreasuryRetrieverService;
+import it.gov.pagopa.pu.classification.dto.generated.Treasury;
 import it.gov.pagopa.pu.classification.dto.generated.TreasuryView;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -82,6 +83,45 @@ class TreasuryControllerTest {
     Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
     Assertions.assertNotNull(response.getBody());
     Assertions.assertSame(expectedResult, response.getBody());
+  }
+
+  @Test
+  void givenCorrectRequestWhenGetTreasuryDetailThenOk() {
+    long organizationId = 1L;
+    String treasuryId = "TREASURY123";
+    Treasury expectedTreasury = Treasury.builder()
+      .treasuryId(treasuryId)
+      .organizationId(organizationId)
+      .billAmountCents(1000L)
+      .billDate(LocalDate.now().minusDays(10))
+      .billYear("2025")
+      .billCode("123456789")
+      .ingestionFlowFileId(100L)
+      .pspLastName("PSPLastName")
+      .build();
+
+    Mockito.when(treasuryRetrieverServiceMock.getTreasuryDetail(Mockito.eq(organizationId), Mockito.eq(treasuryId), Mockito.any(), Mockito.anyString()))
+      .thenReturn(expectedTreasury);
+
+    ResponseEntity<Treasury> response = treasuryController.getTreasuryDetail(organizationId, treasuryId);
+
+    Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
+    Assertions.assertNotNull(response.getBody());
+    Assertions.assertSame(expectedTreasury, response.getBody());
+  }
+
+  @Test
+  void givenIncorrectRequestWhenGetTreasuryDetailThenNotFound() {
+    long organizationId = 1L;
+    String treasuryId = "INVALID_TREASURY_ID";
+
+    Mockito.when(treasuryRetrieverServiceMock.getTreasuryDetail(organizationId, treasuryId, userInfo, "fakeAccessToken"))
+      .thenReturn(null);
+
+    ResponseEntity<Treasury> response = treasuryController.getTreasuryDetail(organizationId, treasuryId);
+
+    Assertions.assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+    Assertions.assertNull(response.getBody());
   }
 
 }

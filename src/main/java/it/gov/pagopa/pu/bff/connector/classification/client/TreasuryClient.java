@@ -4,15 +4,19 @@ import it.gov.pagopa.pu.bff.connector.classification.config.ClassificationApisHo
 import it.gov.pagopa.pu.bff.dto.TreasuryViewFiltersDTO;
 import it.gov.pagopa.pu.bff.util.PageUtils;
 import it.gov.pagopa.pu.classification.dto.generated.PagedModelTreasuryView;
+import it.gov.pagopa.pu.classification.dto.generated.Treasury;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 
 @Service
-public class TreasuryViewSearchClient {
+@Slf4j
+public class TreasuryClient {
 
   private final ClassificationApisHolder classificationApisHolder;
 
-  public TreasuryViewSearchClient(ClassificationApisHolder classificationApisHolder) {
+  public TreasuryClient(ClassificationApisHolder classificationApisHolder) {
     this.classificationApisHolder = classificationApisHolder;
   }
 
@@ -32,6 +36,16 @@ public class TreasuryViewSearchClient {
         PageUtils.getPageNumber(pageable),
         PageUtils.getPageSize(pageable),
         PageUtils.getSortList(pageable));
+  }
+
+  public Treasury getTreasuryDetail(Long organizationId, String treasuryId, String accessToken) {
+    try {
+      return classificationApisHolder.getTreasurySearchControllerApi(accessToken)
+        .crudTreasuryFindByOrganizationIdAndTreasuryId(organizationId, treasuryId);
+    } catch (HttpClientErrorException.NotFound e) {
+      log.warn("TreasuryDetail with organizationId {} and treasuryId {} not found", organizationId, treasuryId);
+      return null;
+    }
   }
 
 }

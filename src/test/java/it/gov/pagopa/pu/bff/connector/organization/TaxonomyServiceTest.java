@@ -84,7 +84,7 @@ class TaxonomyServiceTest {
   @Test
   void testGetByTaxonomyCode() {
     Taxonomy expected = new Taxonomy();
-    when(client.getTaxonomyByTaxonomyCode(Mockito.anyString(), Mockito.same(accessToken)))
+    when(client.getTaxonomyByTaxonomyCode("TAX", accessToken))
       .thenReturn(expected);
     Taxonomy result = service.getTaxonomyByTaxonomyCode("TAX", accessToken);
     assertSame(expected, result);

@@ -54,7 +54,7 @@ class TaxonomyRetrieverServiceImplTest {
   void testGetByTaxonomyCode() {
     Taxonomy taxonomy = new Taxonomy();
 
-    Mockito.when(taxonomyServiceMock.getTaxonomyByTaxonomyCode(Mockito.anyString(), Mockito.anyString()))
+    Mockito.when(taxonomyServiceMock.getTaxonomyByTaxonomyCode("TAX", "token"))
       .thenReturn(taxonomy);
 
     Taxonomy result = taxonomyService.getTaxonomyByTaxonomyCode("TAX", "token");

@@ -63,7 +63,7 @@ class TaxonomyClientTest {
       .thenReturn(expectedResult);
 
     // When
-    Taxonomy result = taxonomyClient.getTaxonomyByTaxonomyCode(null, accessToken);
+    Taxonomy result = taxonomyClient.getTaxonomyByTaxonomyCode("TAX", accessToken);
 
     // Then
     Assertions.assertSame(expectedResult, result);

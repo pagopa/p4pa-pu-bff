@@ -4,13 +4,14 @@ import it.gov.pagopa.pu.auth.dto.generated.AccessToken;
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.auth.dto.generated.UserOrganizationRoles;
 import it.gov.pagopa.pu.bff.connector.auth.client.AuthnClient;
+import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
-
-import java.util.Optional;
+import org.springframework.web.client.HttpClientErrorException;
 
 @Service
 @Slf4j
@@ -46,6 +47,25 @@ public class AuthorizationService {
       subjectIssuer,
       SUBJECT_TOKEN_TYPE,
       null);
+  }
+
+  public void validateBrokerAdminRole(UserInfo loggedUser) {
+    String brokerFiscalCode = loggedUser.getBrokerFiscalCode();
+    boolean isBrokerAdmin = loggedUser.getOrganizations()
+      .stream()
+      .anyMatch(o ->
+        brokerFiscalCode.equals(o.getOrganizationFiscalCode()) &&
+          !CollectionUtils.isEmpty(o.getRoles()) &&
+          o.getRoles().contains(ROLE_ADMIN));
+
+    if (!isBrokerAdmin) {
+      log.debug(
+        "Broker is not an admin for this organization. [user brokerFiscalCode:{}]",
+        loggedUser.getBrokerFiscalCode());
+      throw new HttpClientErrorException(HttpStatus.FORBIDDEN,
+        "Access forbidden on broker to user "
+          + loggedUser.getMappedExternalUserId());
+    }
   }
 
   public void validateAdminRole(Long organizationId, UserInfo loggedUser) {

@@ -14,6 +14,7 @@ public class OrganizationApisHolder {
 
     private final OrganizationSearchControllerApi organizationSearchControllerApi;
     private final BrokerEntityControllerApi brokerEntityControllerApi;
+    private final TaxonomySearchControllerApi taxonomySearchControllerApi;
     private final TaxonomyCollectionReasonDtoSearchControllerApi taxonomyCollectionReasonDtoSearchControllerApi;
     private final TaxonomyMacroAreaCodeDtoSearchControllerApi taxonomyMacroAreaCodeDtoSearchControllerApi;
     private final TaxonomyOrganizationTypeDtoSearchControllerApi taxonomyOrganizationTypeDtoSearchControllerApi;
@@ -37,6 +38,7 @@ public class OrganizationApisHolder {
 
         this.organizationSearchControllerApi = new OrganizationSearchControllerApi(apiClient);
         this.brokerEntityControllerApi = new BrokerEntityControllerApi(apiClient);
+        this.taxonomySearchControllerApi = new TaxonomySearchControllerApi(apiClient);
         this.taxonomyCollectionReasonDtoSearchControllerApi = new TaxonomyCollectionReasonDtoSearchControllerApi(apiClient);
         this.taxonomyMacroAreaCodeDtoSearchControllerApi = new TaxonomyMacroAreaCodeDtoSearchControllerApi(apiClient);
         this.taxonomyOrganizationTypeDtoSearchControllerApi = new TaxonomyOrganizationTypeDtoSearchControllerApi(apiClient);
@@ -57,6 +59,10 @@ public class OrganizationApisHolder {
     /** It will return a {@link BrokerEntityControllerApi} instrumented with the provided accessToken. Use null if auth is not required */
     public BrokerEntityControllerApi getBrokerEntityControllerApi(String accessToken){
         return getApi(accessToken, brokerEntityControllerApi);
+    }
+
+    public TaxonomySearchControllerApi getTaxonomySearchControllerApi(String accessToken){
+      return getApi(accessToken,taxonomySearchControllerApi);
     }
 
     public TaxonomyCollectionReasonDtoSearchControllerApi getTaxonomyEntityControllerApi(String accessToken){

@@ -2172,6 +2172,86 @@
         } ]
       }
     },
+    "/bff/organization/{organizationId}/debt-position-types/{debtPositionTypeId}" : {
+      "get" : {
+        "tags" : [ "DebtPositionTypes" ],
+        "summary" : "Retrieve a detail of a DebtPositionType based on the organization's brokerId",
+        "operationId" : "getDebtPositionTypeDetail",
+        "parameters" : [ {
+          "name" : "organizationId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }, {
+          "name" : "debtPositionTypeId",
+          "in" : "path",
+          "description" : "The ID of the debt position type",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Ok",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/DebtPositionTypeDetailDTO"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Unauthorized - Missing or invalid token",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/DebtPositionTypeDetailDTO"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Forbidden - Access denied",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/DebtPositionTypeDetailDTO"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Not Found - Debt Position Type not found",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/DebtPositionTypeDetailDTO"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal Server Error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/DebtPositionTypeDetailDTO"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "BearerAuth" : [ ]
+        } ]
+      }
+    },
     "/bff/organization/{organizationId}/debt-position-type-orgs" : {
       "get" : {
         "tags" : [ "DebtPositionTypeOrgs" ],
@@ -3784,8 +3864,9 @@
             "type" : "string",
             "format" : "date"
           },
-          "paymentTypeCode" : {
-            "type" : "string"
+          "notificationFeeCents" : {
+            "type" : "integer",
+            "format" : "int64"
           },
           "amountCents" : {
             "type" : "integer",
@@ -3866,10 +3947,6 @@
           "status" : {
             "type" : "string",
             "enum" : [ "TO_SYNC", "REPORTED", "PAID", "PARTIALLY_PAID", "CANCELLED", "INVALID", "EXPIRED", "UNPAID", "UNPAYABLE", "DRAFT" ]
-          },
-          "dueDate" : {
-            "type" : "string",
-            "format" : "date"
           },
           "description" : {
             "type" : "string"
@@ -3989,6 +4066,57 @@
           }
         },
         "required" : [ "content", "number", "size", "totalElements", "totalPages" ]
+      },
+      "DebtPositionTypeDetailDTO" : {
+        "type" : "object",
+        "properties" : {
+          "debtPositionTypeId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "code" : {
+            "type" : "string",
+            "maxLength" : 255,
+            "minLength" : 0
+          },
+          "description" : {
+            "type" : "string",
+            "readOnly" : true
+          },
+          "organizationTypeDescription" : {
+            "type" : "string",
+            "readOnly" : true
+          },
+          "macroAreaName" : {
+            "type" : "string",
+            "readOnly" : true
+          },
+          "serviceType" : {
+            "type" : "string",
+            "readOnly" : true
+          },
+          "collectionReason" : {
+            "type" : "string",
+            "readOnly" : true
+          },
+          "taxonomyCode" : {
+            "type" : "string",
+            "readOnly" : true
+          },
+          "flagAnonymousFiscalCode" : {
+            "type" : "boolean"
+          },
+          "flagMandatoryDueDate" : {
+            "type" : "boolean"
+          },
+          "flagNotifyIo" : {
+            "type" : "boolean"
+          },
+          "ioTemplateMessage" : {
+            "type" : "string"
+          }
+        },
+        "required" : [ "code", "collectionReason", "debtPositionTypeId", "description", "macroAreaName", "organizationTypeDescription", "serviceType", "taxonomyCode" ]
       },
       "DebtPositionTypeOrg" : {
         "type" : "object",

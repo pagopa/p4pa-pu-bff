@@ -9,6 +9,7 @@ import it.gov.pagopa.pu.organization.dto.generated.CollectionModelTaxonomyCollec
 import it.gov.pagopa.pu.organization.dto.generated.CollectionModelTaxonomyMacroAreaCodeDTO;
 import it.gov.pagopa.pu.organization.dto.generated.CollectionModelTaxonomyOrganizationTypeDTO;
 import it.gov.pagopa.pu.organization.dto.generated.CollectionModelTaxonomyServiceTypeCodeDTO;
+import it.gov.pagopa.pu.organization.dto.generated.Taxonomy;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -77,6 +78,15 @@ class TaxonomyServiceTest {
     when(client.getTaxonomyCode(Mockito.same(organizationType), Mockito.same(macroAreaCode), Mockito.same(serviceTypeCode), Mockito.same(collectionReason), Mockito.same(accessToken)))
       .thenReturn(expected);
     CollectionModelTaxonomyCodeDTO result = service.getTaxonomyCode(organizationType, macroAreaCode, serviceTypeCode, collectionReason, accessToken);
+    assertSame(expected, result);
+  }
+
+  @Test
+  void testGetByTaxonomyCode() {
+    Taxonomy expected = new Taxonomy();
+    when(client.getTaxonomyByTaxonomyCode("TAX", accessToken))
+      .thenReturn(expected);
+    Taxonomy result = service.getTaxonomyByTaxonomyCode("TAX", accessToken);
     assertSame(expected, result);
   }
 }

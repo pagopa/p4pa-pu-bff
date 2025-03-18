@@ -5,9 +5,12 @@ import it.gov.pagopa.pu.bff.dto.generated.TaxonomyCollectionReasonDTO;
 import it.gov.pagopa.pu.bff.dto.generated.TaxonomyMacroAreaCodeDTO;
 import it.gov.pagopa.pu.bff.dto.generated.TaxonomyOrganizationTypeDTO;
 import it.gov.pagopa.pu.bff.dto.generated.TaxonomyServiceTypeCodeDTO;
+import it.gov.pagopa.pu.organization.dto.generated.Taxonomy;
 import java.util.List;
 
 public interface TaxonomyRetrieverService {
+
+  Taxonomy getTaxonomyByTaxonomyCode(String taxonomyCode, String accessToken);
 
   List<TaxonomyCollectionReasonDTO> getCollectionReason(String organizationType, String macroAreaCode, String serviceTypeCode,String accessToken);
 

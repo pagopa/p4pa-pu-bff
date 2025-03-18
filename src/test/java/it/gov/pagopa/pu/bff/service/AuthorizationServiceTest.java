@@ -15,8 +15,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.web.client.HttpClientErrorException;
 
 @ExtendWith(MockitoExtension.class)
 class AuthorizationServiceTest {
@@ -83,6 +85,23 @@ class AuthorizationServiceTest {
   }
 
   @Test
+  void whenValidateBrokerAdminRoleThenOK() {
+    String orgFiscalCode = "orgFiscalCode";
+
+    UserOrganizationRoles userAdminRole = new UserOrganizationRoles();
+    userAdminRole.setRoles(List.of("TEST","ROLE_ADMIN"));
+    userAdminRole.setOrganizationId(1L);
+    userAdminRole.setOrganizationFiscalCode(orgFiscalCode);
+    UserOrganizationRoles userTestRole = new UserOrganizationRoles();
+    userTestRole.setRoles(List.of("TEST"));
+    userTestRole.setOrganizationId(2L);
+    UserInfo userInfo = new UserInfo();
+    userInfo.setOrganizations(List.of(userAdminRole,userTestRole));
+    userInfo.setBrokerFiscalCode(orgFiscalCode);
+    authorizationService.validateBrokerAdminRole(userInfo);
+  }
+
+  @Test
   void givenAdminRoleWhenValidateAdminRoleThenOK() {
     UserOrganizationRoles userAdminRole = new UserOrganizationRoles();
     userAdminRole.setRoles(List.of("TEST","ROLE_ADMIN"));
@@ -93,6 +112,29 @@ class AuthorizationServiceTest {
     UserInfo userInfo = new UserInfo();
     userInfo.setOrganizations(List.of(userAdminRole,userTestRole));
     authorizationService.validateAdminRole(1L,userInfo);
+  }
+
+  @Test
+  void givenNoAdminRoleWhenValidateBrokerAdminRoleThenForbiddenException() {
+    String orgFiscalCode = "orgFiscalCode";
+
+    UserOrganizationRoles userAdminRole = new UserOrganizationRoles();
+    userAdminRole.setRoles(List.of("TEST", "ROLE_ADMIN"));
+    userAdminRole.setOrganizationId(1L);
+    UserOrganizationRoles userTestRole = new UserOrganizationRoles();
+    userTestRole.setRoles(List.of("TEST"));
+    userTestRole.setOrganizationId(2L);
+    userTestRole.setOrganizationFiscalCode(orgFiscalCode);
+    UserInfo userInfo = new UserInfo();
+    userInfo.setOrganizations(List.of(userAdminRole,userTestRole));
+    userInfo.setMappedExternalUserId("externalUserId");
+    userInfo.setBrokerFiscalCode(orgFiscalCode);
+
+    HttpClientErrorException result = Assertions.assertThrows(
+      HttpClientErrorException.class,
+      () -> authorizationService.validateBrokerAdminRole(userInfo));
+
+    Assertions.assertEquals(HttpStatus.FORBIDDEN, result.getStatusCode());
   }
 
   @Test

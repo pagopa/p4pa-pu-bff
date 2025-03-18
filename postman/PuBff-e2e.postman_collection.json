@@ -1,10 +1,9 @@
 {
 	"info": {
-		"_postman_id": "c288384c-0be5-459c-98b4-5e33b73db845",
+		"_postman_id": "750b5a51-f36a-489e-9a4f-80a1ecb23823",
 		"name": "PU-BFF",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "29647564",
-		"_collection_link": "https://galactic-eclipse-948669.postman.co/workspace/New-Team-Workspace~be56c5f1-de0c-4252-95d0-ee80f35e2474/collection/29647564-c288384c-0be5-459c-98b4-5e33b73db845?action=share&source=collection_link&creator=29647564"
+		"_exporter_id": "28798913"
 	},
 	"item": [
 		{
@@ -1023,6 +1022,85 @@
 								{
 									"key": "organizationId",
 									"value": "{{organizationId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "03_getDebtPositionTypeDetail",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let jsonResponse = pm.response.json();\r",
+									"\r",
+									"pm.test(\"[debt-position-type], expected httpStatus: 200\", () => {\r",
+									"    pm.response.to.have.status(200);\r",
+									"})\r",
+									"\r",
+									"pm.test(\"[debt-position-type] - get debtPositionTypeDetail\", () => {\r",
+									"    pm.expect(jsonResponse.debtPositionTypeId).not.null;\r",
+									"    pm.expect(jsonResponse.code).not.null;\r",
+									"    pm.expect(jsonResponse.description).not.null;\r",
+									"    pm.expect(jsonResponse.organizationTypeDescription).not.null;\r",
+									"    pm.expect(jsonResponse.macroAreaName).not.null;\r",
+									"    pm.expect(jsonResponse.serviceType).not.null;\r",
+									"    pm.expect(jsonResponse.collectionReason).not.null;\r",
+									"    pm.expect(jsonResponse.taxonomyCode).not.null;\r",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"let debtPositionTypeId = pm.collectionVariables.get(\"debtPositionTypeId\");\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{puBffBaseUrl}}/bff/organization/:organizationId/debt-position-types/:id",
+							"host": [
+								"{{puBffBaseUrl}}"
+							],
+							"path": [
+								"bff",
+								"organization",
+								":organizationId",
+								"debt-position-types",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "organizationId",
+									"value": "3"
+								},
+								{
+									"key": "id",
+									"value": "3"
 								}
 							]
 						}

@@ -19,6 +19,8 @@ class TaxonomyClientTest {
   private OrganizationApisHolder organizationApisHolder;
 
   @Mock
+  private TaxonomySearchControllerApi taxonomySearchControllerApiMock;
+  @Mock
   private TaxonomyCollectionReasonDtoSearchControllerApi taxonomyCollectionReasonDtoSearchControllerApiMock;
   @Mock
   private TaxonomyMacroAreaCodeDtoSearchControllerApi taxonomyMacroAreaCodeDtoSearchControllerApiMock;
@@ -40,12 +42,31 @@ class TaxonomyClientTest {
   void verifyNoMoreInteractions() {
     Mockito.verifyNoMoreInteractions(
       organizationApisHolder,
+      taxonomySearchControllerApiMock,
       taxonomyCollectionReasonDtoSearchControllerApiMock,
       taxonomyMacroAreaCodeDtoSearchControllerApiMock,
       taxonomyOrganizationTypeDtoSearchControllerApiMock,
       taxonomyServiceTypeCodeDtoSearchControllerApiMock,
       taxonomyCodeDtoSearchControllerApiMock
     );
+  }
+
+  @Test
+  void whenGetByTaxonomyCodeThenInvokeWithAccessToken() {
+    // Given
+    String accessToken = "ACCESSTOKEN";
+    Taxonomy expectedResult = new Taxonomy();
+
+    Mockito.when(organizationApisHolder.getTaxonomySearchControllerApi(accessToken))
+      .thenReturn(taxonomySearchControllerApiMock);
+    Mockito.when(taxonomySearchControllerApiMock.crudTaxonomiesFindByTaxonomyCode("TAX"))
+      .thenReturn(expectedResult);
+
+    // When
+    Taxonomy result = taxonomyClient.getTaxonomyByTaxonomyCode("TAX", accessToken);
+
+    // Then
+    Assertions.assertSame(expectedResult, result);
   }
 
   @Test

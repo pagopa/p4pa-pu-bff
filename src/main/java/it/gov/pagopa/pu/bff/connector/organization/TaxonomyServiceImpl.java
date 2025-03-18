@@ -17,6 +17,11 @@ public class TaxonomyServiceImpl implements TaxonomyService {
   }
 
   @Override
+  public Taxonomy getTaxonomyByTaxonomyCode(String taxonomyCode, String accessToken) {
+    return taxonomyClient.getTaxonomyByTaxonomyCode(taxonomyCode, accessToken);
+  }
+
+  @Override
   @Cacheable(key = "#organizationType + '-' + #macroAreaCode + '-' + #serviceTypeCode", unless = "#result == null")
   public CollectionModelTaxonomyCollectionReasonDTO getCollectionReason(String organizationType, String macroAreaCode, String serviceTypeCode, String accessToken) {
     return taxonomyClient.getCollectionReason(organizationType, macroAreaCode, serviceTypeCode, accessToken);

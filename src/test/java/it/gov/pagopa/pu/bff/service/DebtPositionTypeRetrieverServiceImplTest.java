@@ -1,12 +1,27 @@
 package it.gov.pagopa.pu.bff.service;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
+
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.connector.debt_position.DebtPositionTypeService;
+import it.gov.pagopa.pu.bff.dto.generated.DebtPositionTypeDetailDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedDebtPositionTypeWithCount;
+import it.gov.pagopa.pu.bff.mapper.DebtPositionTypeMapper;
 import it.gov.pagopa.pu.bff.mapper.DebtPositionTypeWithCountMapper;
 import it.gov.pagopa.pu.bff.service.debt_position.DebtPositionTypeRetrieverServiceImpl;
+import it.gov.pagopa.pu.bff.service.taxonomy.TaxonomyRetrieverService;
+import it.gov.pagopa.pu.bff.util.TestUtils;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionType;
 import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelDebtPositionTypeWithCount;
+import it.gov.pagopa.pu.organization.dto.generated.Taxonomy;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,11 +30,10 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authorization.AuthorizationDeniedException;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
+import org.springframework.web.client.HttpClientErrorException;
+import uk.co.jemos.podam.api.PodamFactory;
 
 @ExtendWith(MockitoExtension.class)
 class DebtPositionTypeRetrieverServiceImplTest {
@@ -31,12 +45,19 @@ class DebtPositionTypeRetrieverServiceImplTest {
   private AuthorizationService authorizationServiceMock;
   @Mock
   private DebtPositionTypeWithCountMapper debtPositionTypeWithCountMapperMock;
+  @Mock
+  private TaxonomyRetrieverService taxonomyRetrieverServiceMock;
+  @Mock
+  private DebtPositionTypeMapper debtPositionTypeMapperMock;
 
-  private DebtPositionTypeRetrieverServiceImpl debtPositionTypeService;
+  private DebtPositionTypeRetrieverServiceImpl debtPositionTypeRetrieverService;
 
   private DebtPositionType debtPositionType;
 
   private final String accessToken = "TOKEN";
+
+  private final PodamFactory podamFactory = TestUtils.getPodamFactory();
+
 
   @BeforeEach
   void setUp() {
@@ -55,7 +76,7 @@ class DebtPositionTypeRetrieverServiceImplTest {
     debtPositionType.setFlagNotifyIo(true);
     debtPositionType.setIoTemplateMessage("Test IO Template Message");
 
-    debtPositionTypeService = new DebtPositionTypeRetrieverServiceImpl(debtPositionTypeServiceMock, debtPositionTypeWithCountMapperMock, authorizationServiceMock);
+    debtPositionTypeRetrieverService = new DebtPositionTypeRetrieverServiceImpl(debtPositionTypeServiceMock, debtPositionTypeWithCountMapperMock, taxonomyRetrieverServiceMock, authorizationServiceMock, debtPositionTypeMapperMock);
   }
 
   @Test
@@ -63,7 +84,7 @@ class DebtPositionTypeRetrieverServiceImplTest {
     Mockito.when(debtPositionTypeServiceMock.getDebtPositionTypeById(anyLong(), any()))
       .thenReturn(debtPositionType);
 
-    DebtPositionType result = debtPositionTypeService.getDebtPositionTypeById(accessToken, 123L);
+    DebtPositionType result = debtPositionTypeRetrieverService.getDebtPositionTypeById(accessToken, 123L);
 
     assertNotNull(result);
     assertEquals(123L, result.getDebtPositionTypeId());
@@ -86,11 +107,10 @@ class DebtPositionTypeRetrieverServiceImplTest {
     Mockito.when(debtPositionTypeServiceMock.getDebtPositionTypeById(anyLong(), any()))
       .thenReturn(null);
 
-    DebtPositionType result = debtPositionTypeService.getDebtPositionTypeById(accessToken, 123L);
+    DebtPositionType result = debtPositionTypeRetrieverService.getDebtPositionTypeById(accessToken, 123L);
 
     assertNull(result);
   }
-
 
   @Test
   void givenValidUserWhenGetDebtPositionTypeWithCountThenOK() {
@@ -104,7 +124,7 @@ class DebtPositionTypeRetrieverServiceImplTest {
     Mockito.when(debtPositionTypeServiceMock.getDebtPositionTypeWithCount(brokerId, PageRequest.of(0,10),accessToken)).thenReturn(pagedModelDebtPositionTypeWithCount);
     Mockito.when(debtPositionTypeWithCountMapperMock.mapToPagedDebtPositionWithCount(pagedModelDebtPositionTypeWithCount)).thenReturn(pagedDebtPositionTypeWithCount);
 
-    PagedDebtPositionTypeWithCount result = debtPositionTypeService.getDebtPositionTypeWithCount(
+    PagedDebtPositionTypeWithCount result = debtPositionTypeRetrieverService.getDebtPositionTypeWithCount(
       1L, PageRequest.of(0,10),
       userInfo, accessToken);
 
@@ -124,11 +144,85 @@ class DebtPositionTypeRetrieverServiceImplTest {
     Mockito.doThrow(new AuthorizationDeniedException("")).when(authorizationServiceMock).validateAdminRole(1L,userInfo);
 
     Assertions.assertThrows(AuthorizationDeniedException.class,()->
-      debtPositionTypeService.getDebtPositionTypeWithCount(
+      debtPositionTypeRetrieverService.getDebtPositionTypeWithCount(
         1L, pageRequest, userInfo, accessToken));
 
     Mockito.verifyNoMoreInteractions(authorizationServiceMock);
     Mockito.verifyNoInteractions(debtPositionTypeServiceMock,debtPositionTypeWithCountMapperMock);
   }
+
+  @Test
+  void givenValidUserWhenGetDebtPositionTypeDetailThenOk() {
+    long brokerId = 456L;
+    UserInfo userInfo = new UserInfo();
+    userInfo.setBrokerId(brokerId);
+
+    Taxonomy taxonomy = podamFactory.manufacturePojo(Taxonomy.class);
+
+    DebtPositionTypeDetailDTO expectedResult = new DebtPositionTypeDetailDTO();
+
+    Mockito.doNothing().when(authorizationServiceMock).validateBrokerAdminRole(userInfo);
+    Mockito.when(debtPositionTypeServiceMock.getDebtPositionTypeById(anyLong(), anyString()))
+      .thenReturn(debtPositionType);
+    Mockito.when(taxonomyRetrieverServiceMock.getTaxonomyByTaxonomyCode(Mockito.eq(debtPositionType.getTaxonomyCode()), anyString()))
+      .thenReturn(taxonomy);
+    Mockito.when(debtPositionTypeMapperMock.mapToDebtPositionTypeDetailDTO(debtPositionType, taxonomy))
+      .thenReturn(expectedResult);
+
+    DebtPositionTypeDetailDTO result = debtPositionTypeRetrieverService.getDebtPositionTypeDetail(1L, debtPositionType.getDebtPositionTypeId(), userInfo, accessToken);
+
+    Assertions.assertNotNull(result);
+    Assertions.assertEquals(expectedResult, result);
+  }
+
+  @Test
+  void givenNotValidUserWhenGetDebtPositionTypeDetailThenHttpForbiddenException() {
+    UserInfo userInfo = new UserInfo();
+    Long debtPositionTypeId = debtPositionType.getDebtPositionTypeId();
+
+    Mockito.doThrow(new HttpClientErrorException(HttpStatus.FORBIDDEN, "Forbidden")).when(authorizationServiceMock).validateBrokerAdminRole(userInfo);
+
+    Assertions.assertThrows(HttpClientErrorException.class, () -> debtPositionTypeRetrieverService.getDebtPositionTypeDetail(1L, debtPositionTypeId, userInfo, accessToken));
+
+    Mockito.verifyNoMoreInteractions(authorizationServiceMock);
+    Mockito.verifyNoInteractions(taxonomyRetrieverServiceMock, debtPositionTypeMapperMock);
+  }
+
+
+  @Test
+  void givenNotMatchingBrokerIdWhenGetDebtPositionTypeDetailThenReturnNull() {
+    long brokerId = 1L;
+    UserInfo userInfo = new UserInfo();
+    userInfo.setBrokerId(brokerId);
+
+    Mockito.doNothing().when(authorizationServiceMock).validateBrokerAdminRole(userInfo);
+    Mockito.when(debtPositionTypeServiceMock.getDebtPositionTypeById(anyLong(), anyString()))
+      .thenReturn(debtPositionType);
+
+    DebtPositionTypeDetailDTO result = debtPositionTypeRetrieverService.getDebtPositionTypeDetail(1L, debtPositionType.getDebtPositionTypeId(), userInfo, accessToken);
+
+    Assertions.assertNull(result);
+    Mockito.verifyNoInteractions(taxonomyRetrieverServiceMock, debtPositionTypeMapperMock);
+  }
+
+
+  @Test
+  void givenEmptyTaxonomyWhenGetDebtPositionTypeDetailThenReturnNull() {
+    long brokerId = 456L;
+    UserInfo userInfo = new UserInfo();
+    userInfo.setBrokerId(brokerId);
+
+    Mockito.doNothing().when(authorizationServiceMock).validateBrokerAdminRole(userInfo);
+    Mockito.when(debtPositionTypeServiceMock.getDebtPositionTypeById(anyLong(), anyString()))
+      .thenReturn(debtPositionType);
+    Mockito.when(taxonomyRetrieverServiceMock.getTaxonomyByTaxonomyCode(Mockito.eq(debtPositionType.getTaxonomyCode()), anyString()))
+      .thenReturn(null);
+
+    DebtPositionTypeDetailDTO result = debtPositionTypeRetrieverService.getDebtPositionTypeDetail(1L, debtPositionType.getDebtPositionTypeId(), userInfo, accessToken);
+
+    Assertions.assertNull(result);
+    Mockito.verifyNoInteractions(debtPositionTypeMapperMock);
+  }
+
 }
 

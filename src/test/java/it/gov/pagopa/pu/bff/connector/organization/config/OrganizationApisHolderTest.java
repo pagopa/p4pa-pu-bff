@@ -13,7 +13,7 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.web.util.DefaultUriBuilderFactory;
 
 @ExtendWith(MockitoExtension.class)
-class OrganizationApiHolderTest extends BaseApiHolderTest {
+class OrganizationApisHolderTest extends BaseApiHolderTest {
   @Mock
   private RestTemplateBuilder restTemplateBuilderMock;
 
@@ -51,6 +51,15 @@ class OrganizationApiHolderTest extends BaseApiHolderTest {
     assertAuthenticationShouldBeSetInThreadSafeMode(
       accessToken -> organizationApisHolder.getBrokerEntityControllerApi(accessToken)
         .crudGetBroker("BROKERID"),
+      new ParameterizedTypeReference<>() {},
+      organizationApisHolder::unload);
+  }
+
+  @Test
+  void whenGetTaxonomySearchControllerApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
+    assertAuthenticationShouldBeSetInThreadSafeMode(
+      accessToken -> organizationApisHolder.getTaxonomySearchControllerApi(accessToken)
+        .crudTaxonomiesFindByTaxonomyCode(null),
       new ParameterizedTypeReference<>() {},
       organizationApisHolder::unload);
   }

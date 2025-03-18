@@ -11,6 +11,7 @@ import it.gov.pagopa.pu.bff.mapper.taxonomy.TaxonomyCollectionReasonMapper;
 import it.gov.pagopa.pu.bff.mapper.taxonomy.TaxonomyMacroAreaCodeMapper;
 import it.gov.pagopa.pu.bff.mapper.taxonomy.TaxonomyOrganizationTypeMapper;
 import it.gov.pagopa.pu.bff.mapper.taxonomy.TaxonomyServiceTypeCodeMapper;
+import it.gov.pagopa.pu.organization.dto.generated.Taxonomy;
 import java.util.List;
 import org.springframework.stereotype.Service;
 
@@ -36,6 +37,11 @@ public class TaxonomyRetrieverServiceImpl implements TaxonomyRetrieverService {
     this.taxonomyCollectionReasonMapper = taxonomyCollectionReasonMapper;
     this.taxonomyServiceTypeCodeMapper = taxonomyServiceTypeCodeMapper;
     this.taxonomyCodeMapper = taxonomyCodeMapper;
+  }
+
+  @Override
+  public Taxonomy getTaxonomyByTaxonomyCode(String taxonomyCode, String accessToken) {
+    return taxonomyService.getTaxonomyByTaxonomyCode(taxonomyCode, accessToken);
   }
 
   @Override

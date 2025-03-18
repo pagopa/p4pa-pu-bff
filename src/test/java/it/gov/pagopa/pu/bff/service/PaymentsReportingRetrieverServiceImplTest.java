@@ -274,7 +274,6 @@ class PaymentsReportingRetrieverServiceImplTest {
       .paymentOptionId(1L)
       .status(StatusEnum.REPORTED)
       .iud("IUD123")
-      .paymentTypeCode("TYPECODE")
       .amountCents(1000L)
       .remittanceInformation("REMITTANCEINFO")
       .personalDataId(1L)

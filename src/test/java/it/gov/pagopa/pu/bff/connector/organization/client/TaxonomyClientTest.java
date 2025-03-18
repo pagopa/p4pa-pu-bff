@@ -59,7 +59,7 @@ class TaxonomyClientTest {
 
     Mockito.when(organizationApisHolder.getTaxonomySearchControllerApi(accessToken))
       .thenReturn(taxonomySearchControllerApiMock);
-    Mockito.when(taxonomySearchControllerApiMock.crudTaxonomiesFindByTaxonomyCode(null))
+    Mockito.when(taxonomySearchControllerApiMock.crudTaxonomiesFindByTaxonomyCode("TAX"))
       .thenReturn(expectedResult);
 
     // When

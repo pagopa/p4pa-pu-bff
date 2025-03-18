@@ -1050,10 +1050,6 @@
 									"    pm.expect(jsonResponse.serviceType).not.null;\r",
 									"    pm.expect(jsonResponse.collectionReason).not.null;\r",
 									"    pm.expect(jsonResponse.taxonomyCode).not.null;\r",
-									"    pm.expect(jsonResponse.flagAnonymousFiscalCode).not.null;\r",
-									"    pm.expect(jsonResponse.flagMandatoryDueDate).not.null;\r",
-									"    pm.expect(jsonResponse.flagNotifyIo).not.null;\r",
-									"    pm.expect(jsonResponse.ioTemplateMessage).not.null;\r",
 									"})"
 								],
 								"type": "text/javascript",

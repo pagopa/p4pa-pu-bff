@@ -2457,6 +2457,13 @@
           },
           "billAmountCents" : {
             "type" : "string"
+          },
+          "paymentDate" : {
+            "$ref" : "#/components/schemas/LocalDateIntervalFilter"
+          },
+          "debtPositionTypeOrgId" : {
+            "type" : "integer",
+            "format" : "int64"
           }
         }
       },
@@ -2470,6 +2477,9 @@
           "flowFileType" : {
             "type" : "string",
             "enum" : [ "PAID", "CLASSIFICATIONS", "PAYMENTS_REPORTING" ]
+          },
+          "flowFileVersion" : {
+            "type" : "string"
           },
           "filterFields" : {
             "$ref" : "#/components/schemas/ExportFileFilter"

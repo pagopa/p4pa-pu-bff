@@ -56,7 +56,7 @@ public class DebtPositionTypeRetrieverServiceImpl implements DebtPositionTypeRet
   public DebtPositionTypeDetailDTO getDebtPositionTypeDetail(
     Long organizationId, Long debtPositionTypeId, UserInfo loggedUser,
     String accessToken) {
-    authorizationService.validateAdminRole(0L, loggedUser);
+    authorizationService.validateAdminRole(organizationId, loggedUser);
 
     DebtPositionType debtPositionType = getDebtPositionTypeById(accessToken,
       debtPositionTypeId);

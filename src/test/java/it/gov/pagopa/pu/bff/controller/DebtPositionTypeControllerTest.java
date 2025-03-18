@@ -9,16 +9,14 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.dto.generated.DebtPositionTypeDetailDTO;
 import it.gov.pagopa.pu.bff.dto.generated.DebtPositionTypeWithCount;
 import it.gov.pagopa.pu.bff.dto.generated.PagedDebtPositionTypeWithCount;
 import it.gov.pagopa.pu.bff.service.debt_position.DebtPositionTypeRetrieverService;
+import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionType;
 import it.gov.pagopa.pu.organization.dto.generated.Taxonomy;
 import java.time.OffsetDateTime;
 import java.util.List;
-
-import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionType;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -48,7 +46,8 @@ class DebtPositionTypeControllerTest {
 
   @BeforeEach
   void setUp() {
-    Authentication authentication = new UsernamePasswordAuthenticationToken("fakeUser", "fakeAccessToken");
+    Authentication authentication = new UsernamePasswordAuthenticationToken(
+      "fakeUser", "fakeAccessToken");
     SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
     securityContext.setAuthentication(authentication);
     SecurityContextHolder.setContext(securityContext);
@@ -72,26 +71,32 @@ class DebtPositionTypeControllerTest {
 
   @Test
   void testGetDebtPositionType() {
-    when(debtPositionTypeRetrieverServiceMock.getDebtPositionTypeById(any(), anyLong())).thenReturn(debtPositionTypeDTO);
+    when(debtPositionTypeRetrieverServiceMock.getDebtPositionTypeById(any(),
+      anyLong())).thenReturn(debtPositionTypeDTO);
 
-    ResponseEntity<DebtPositionType> response = debtPositionTypeController.getDebtPositionType("123");
+    ResponseEntity<DebtPositionType> response = debtPositionTypeController.getDebtPositionType(
+      "123");
 
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertEquals(123L, response.getBody().getDebtPositionTypeId());
     assertEquals(456L, response.getBody().getBrokerId());
     assertEquals("CODE001", response.getBody().getCode());
-    assertEquals("Test Debt Position Type", response.getBody().getDescription());
+    assertEquals("Test Debt Position Type",
+      response.getBody().getDescription());
     assertEquals("OrgType001", response.getBody().getOrgType());
     assertEquals("MacroArea001", response.getBody().getMacroArea());
     assertEquals("ServiceType001", response.getBody().getServiceType());
-    assertEquals("Collecting Reason 001", response.getBody().getCollectingReason());
+    assertEquals("Collecting Reason 001",
+      response.getBody().getCollectingReason());
     assertEquals("TaxonomyCode001", response.getBody().getTaxonomyCode());
     assertEquals(true, response.getBody().getFlagAnonymousFiscalCode());
     assertEquals(false, response.getBody().getFlagMandatoryDueDate());
     assertEquals(true, response.getBody().getFlagNotifyIo());
-    assertEquals("Test IO Template Message", response.getBody().getIoTemplateMessage());
+    assertEquals("Test IO Template Message",
+      response.getBody().getIoTemplateMessage());
 
-    verify(debtPositionTypeRetrieverServiceMock, times(1)).getDebtPositionTypeById(any(), eq(123L));
+    verify(debtPositionTypeRetrieverServiceMock,
+      times(1)).getDebtPositionTypeById(any(), eq(123L));
   }
 
   @Test
@@ -110,17 +115,22 @@ class DebtPositionTypeControllerTest {
     expectedResult.setTotalPages(0L);
     expectedResult.setNumber(0L);
 
-    Mockito.when(debtPositionTypeRetrieverServiceMock.getDebtPositionTypeWithCount(Mockito.eq(organizationId),
-        Mockito.argThat(p->p.getPageNumber()==0 && p.getPageSize()==10 && p.getSort().isUnsorted()),
-        Mockito.any(), anyString()))
+    Mockito.when(
+        debtPositionTypeRetrieverServiceMock.getDebtPositionTypeWithCount(
+          Mockito.eq(organizationId),
+          Mockito.argThat(
+            p -> p.getPageNumber() == 0 && p.getPageSize() == 10 && p.getSort()
+              .isUnsorted()),
+          Mockito.any(), anyString()))
       .thenReturn(expectedResult);
 
-    ResponseEntity<PagedDebtPositionTypeWithCount> response = debtPositionTypeController.getDebtPositionTypeWithCount(organizationId,
-      PageRequest.of(0,10));
+    ResponseEntity<PagedDebtPositionTypeWithCount> response = debtPositionTypeController.getDebtPositionTypeWithCount(
+      organizationId,
+      PageRequest.of(0, 10));
 
-    Assertions.assertEquals(HttpStatus.OK,response.getStatusCode());
+    Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
     Assertions.assertNotNull(response.getBody());
-    Assertions.assertSame(expectedResult,response.getBody());
+    Assertions.assertSame(expectedResult, response.getBody());
   }
 
   @Test
@@ -156,12 +166,13 @@ class DebtPositionTypeControllerTest {
       .build();
 
     Mockito.when(
-      debtPositionTypeRetrieverServiceMock.getDebtPositionTypeDetail(anyLong(),
-        Mockito.eq(debtPositionTypeDTO.getDebtPositionTypeId()), any(
-          UserInfo.class), anyString()))
+        debtPositionTypeRetrieverServiceMock.getDebtPositionTypeDetail(anyLong(),
+          Mockito.eq(debtPositionTypeDTO.getDebtPositionTypeId()), any(),
+          anyString()))
       .thenReturn(expectedResult);
 
-    ResponseEntity<DebtPositionTypeDetailDTO> response = debtPositionTypeController.getDebtPositionTypeDetail(1L,
+    ResponseEntity<DebtPositionTypeDetailDTO> response = debtPositionTypeController.getDebtPositionTypeDetail(
+      1L,
       debtPositionTypeDTO.getDebtPositionTypeId());
 
     Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());

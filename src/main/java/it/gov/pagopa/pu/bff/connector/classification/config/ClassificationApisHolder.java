@@ -5,6 +5,7 @@ import it.gov.pagopa.pu.classification.controller.ApiClient;
 import it.gov.pagopa.pu.classification.controller.BaseApi;
 import it.gov.pagopa.pu.classification.controller.generated.PaymentsReportingSearchControllerApi;
 import it.gov.pagopa.pu.classification.controller.generated.PaymentsReportingViewSearchControllerApi;
+import it.gov.pagopa.pu.classification.controller.generated.TreasurySearchControllerApi;
 import it.gov.pagopa.pu.classification.controller.generated.TreasuryViewSearchControllerApi;
 import jakarta.annotation.PreDestroy;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -17,6 +18,7 @@ public class ClassificationApisHolder {
   private final PaymentsReportingViewSearchControllerApi paymentsReportingViewSearchControllerApi;
   private final PaymentsReportingSearchControllerApi paymentsReportingSearchControllerApi;
   private final TreasuryViewSearchControllerApi treasuryViewSearchControllerApi;
+  private final TreasurySearchControllerApi treasurySearchControllerApi;
   private final ThreadLocal<String> bearerTokenHolder = new ThreadLocal<>();
 
   public ClassificationApisHolder(ClassificationApiClientConfig clientConfig,
@@ -34,6 +36,7 @@ public class ClassificationApisHolder {
     this.paymentsReportingViewSearchControllerApi = new PaymentsReportingViewSearchControllerApi(apiClient);
     this.paymentsReportingSearchControllerApi = new PaymentsReportingSearchControllerApi(apiClient);
     this.treasuryViewSearchControllerApi = new TreasuryViewSearchControllerApi(apiClient);
+    this.treasurySearchControllerApi = new TreasurySearchControllerApi(apiClient);
   }
 
   @PreDestroy
@@ -51,6 +54,10 @@ public class ClassificationApisHolder {
 
   public TreasuryViewSearchControllerApi getTreasuryViewSearchControllerApi(String accessToken) {
     return getApi(accessToken, treasuryViewSearchControllerApi);
+  }
+
+  public TreasurySearchControllerApi getTreasurySearchControllerApi(String accessToken) {
+    return getApi(accessToken, treasurySearchControllerApi);
   }
 
   private <T extends BaseApi> T getApi(String accessToken, T api) {

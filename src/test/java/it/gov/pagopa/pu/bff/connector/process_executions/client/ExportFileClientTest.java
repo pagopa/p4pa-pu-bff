@@ -40,6 +40,7 @@ class ExportFileClientTest {
     ExportFileRequestDTO requestDTO = ExportFileRequestDTO.builder()
       .organizationId(1L)
       .flowFileType(ExportFileRequestDTO.FlowFileTypeEnum.CLASSIFICATIONS)
+      .flowFileVersion("version1")
       .filterFields(ExportFileFilter.builder()
         .iuv("iuv")
         .build())

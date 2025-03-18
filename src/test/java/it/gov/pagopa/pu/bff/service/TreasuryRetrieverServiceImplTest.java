@@ -7,6 +7,7 @@ import it.gov.pagopa.pu.bff.dto.generated.PagedTreasuryView;
 import it.gov.pagopa.pu.bff.mapper.TreasuryViewMapper;
 import it.gov.pagopa.pu.bff.service.treasury.TreasuryRetrieverServiceImpl;
 import it.gov.pagopa.pu.classification.dto.generated.PagedModelTreasuryView;
+import it.gov.pagopa.pu.classification.dto.generated.Treasury;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -115,4 +116,60 @@ class TreasuryRetrieverServiceImplTest {
     }
     Mockito.verifyNoInteractions(treasuryServiceMock, treasuryViewMapperMock);
   }
+
+  @Test
+  void givenValidUserWhenGetTreasuryDetailThenOk() {
+    UserInfo loggedUser = new UserInfo();
+    loggedUser.setUserId("user-123");
+
+    long organizationId = 1L;
+    String treasuryId = "TREASURY123";
+    Treasury expectedTreasury = Treasury.builder()
+      .treasuryId(treasuryId)
+      .organizationId(organizationId)
+      .billYear("2025")
+      .billCode("BILL123")
+      .ingestionFlowFileId(100L)
+      .billAmountCents(1000L)
+      .billDate(LocalDate.now().minusDays(10))
+      .pspLastName("PSPLastName")
+      .build();
+
+    try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
+      authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)).thenAnswer(a -> null);
+
+      Mockito.when(treasuryServiceMock.getTreasuryDetail(Mockito.eq(organizationId), Mockito.eq(treasuryId), Mockito.anyString()))
+        .thenReturn(expectedTreasury);
+
+      Treasury result = treasuryRetrieverService.getTreasuryDetail(organizationId, treasuryId, loggedUser, accessToken);
+
+      assertNotNull(result);
+      assertSame(expectedTreasury, result);
+
+      authorizationServiceMockedStatic.verify(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser));
+      Mockito.verify(treasuryServiceMock).getTreasuryDetail(Mockito.eq(organizationId), Mockito.eq(treasuryId), Mockito.anyString());
+      Mockito.verifyNoMoreInteractions(treasuryServiceMock);
+    }
+  }
+
+  @Test
+  void givenInvalidUserWhenGetTreasuryDetailThenAuthorizationDeniedException() {
+    UserInfo loggedUser = new UserInfo();
+    loggedUser.setUserId("user-123");
+
+    long organizationId = 1L;
+    String treasuryId = "TREASURY123";
+
+    try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
+      authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser))
+        .thenThrow(new AuthorizationDeniedException("Access denied"));
+
+      Assertions.assertThrows(AuthorizationDeniedException.class, () ->
+        treasuryRetrieverService.getTreasuryDetail(organizationId, treasuryId, loggedUser, accessToken));
+
+      authorizationServiceMockedStatic.verify(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser));
+    }
+    Mockito.verifyNoInteractions(treasuryServiceMock);
+  }
+
 }

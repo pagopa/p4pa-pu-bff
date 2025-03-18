@@ -178,10 +178,11 @@ class DebtPositionTypeRetrieverServiceImplTest {
   @Test
   void givenNotValidUserWhenGetDebtPositionTypeDetailThenHttpForbiddenException() {
     UserInfo userInfo = new UserInfo();
+    Long debtPositionTypeId = debtPositionType.getDebtPositionTypeId();
 
     Mockito.doThrow(new HttpClientErrorException(HttpStatus.FORBIDDEN, "Forbidden")).when(authorizationServiceMock).validateBrokerAdminRole(userInfo);
 
-    Assertions.assertThrows(HttpClientErrorException.class, () -> debtPositionTypeRetrieverService.getDebtPositionTypeDetail(1L, debtPositionType.getDebtPositionTypeId(), userInfo, accessToken));
+    Assertions.assertThrows(HttpClientErrorException.class, () -> debtPositionTypeRetrieverService.getDebtPositionTypeDetail(1L, debtPositionTypeId, userInfo, accessToken));
 
     Mockito.verifyNoMoreInteractions(authorizationServiceMock);
     Mockito.verifyNoInteractions(taxonomyRetrieverServiceMock, debtPositionTypeMapperMock);

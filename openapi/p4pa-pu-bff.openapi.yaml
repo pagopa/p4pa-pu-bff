@@ -1598,16 +1598,22 @@ components:
           type: string
         description:
           type: string
+          readOnly: true
         organizationTypeDescription:
           type: string
+          readOnly: true
         macroAreaName:
           type: string
+          readOnly: true
         serviceType:
           type: string
+          readOnly: true
         collectionReason:
           type: string
+          readOnly: true
         taxonomyCode:
           type: string
+          readOnly: true
         flagAnonymousFiscalCode:
           type: boolean
         flagMandatoryDueDate:

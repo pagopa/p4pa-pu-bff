@@ -3840,22 +3840,28 @@
             "type" : "string"
           },
           "description" : {
-            "type" : "string"
+            "type" : "string",
+            "readOnly" : true
           },
           "organizationTypeDescription" : {
-            "type" : "string"
+            "type" : "string",
+            "readOnly" : true
           },
           "macroAreaName" : {
-            "type" : "string"
+            "type" : "string",
+            "readOnly" : true
           },
           "serviceType" : {
-            "type" : "string"
+            "type" : "string",
+            "readOnly" : true
           },
           "collectionReason" : {
-            "type" : "string"
+            "type" : "string",
+            "readOnly" : true
           },
           "taxonomyCode" : {
-            "type" : "string"
+            "type" : "string",
+            "readOnly" : true
           },
           "flagAnonymousFiscalCode" : {
             "type" : "boolean"

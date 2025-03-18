@@ -58,8 +58,7 @@ public class DebtPositionTypeRetrieverServiceImpl implements
   public DebtPositionTypeDetailDTO getDebtPositionTypeDetail(
     Long organizationId, Long debtPositionTypeId, UserInfo loggedUser,
     String accessToken) {
-    authorizationService.validateAdminRole(organizationId, loggedUser);
-    // TODO: check if user is broker's admin else 403
+    authorizationService.validateBrokerAdminRole(loggedUser);
 
     DebtPositionType debtPositionType = getDebtPositionTypeById(accessToken,
       debtPositionTypeId);

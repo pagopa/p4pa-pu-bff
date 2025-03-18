@@ -30,7 +30,9 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authorization.AuthorizationDeniedException;
+import org.springframework.web.client.HttpClientErrorException;
 import uk.co.jemos.podam.api.PodamFactory;
 
 @ExtendWith(MockitoExtension.class)
@@ -159,7 +161,7 @@ class DebtPositionTypeRetrieverServiceImplTest {
 
     DebtPositionTypeDetailDTO expectedResult = new DebtPositionTypeDetailDTO();
 
-    Mockito.doNothing().when(authorizationServiceMock).validateAdminRole(1L,userInfo);
+    Mockito.doNothing().when(authorizationServiceMock).validateBrokerAdminRole(userInfo);
     Mockito.when(debtPositionTypeServiceMock.getDebtPositionTypeById(anyLong(), anyString()))
       .thenReturn(debtPositionType);
     Mockito.when(taxonomyRetrieverServiceMock.getTaxonomyByTaxonomyCode(Mockito.eq(debtPositionType.getTaxonomyCode()), anyString()))
@@ -174,12 +176,12 @@ class DebtPositionTypeRetrieverServiceImplTest {
   }
 
   @Test
-  void givenNotValidUserWhenGetDebtPositionTypeDetailThenAuthorizationDeniedException() {
+  void givenNotValidUserWhenGetDebtPositionTypeDetailThenHttpForbiddenException() {
     UserInfo userInfo = new UserInfo();
 
-    Mockito.doThrow(new AuthorizationDeniedException("")).when(authorizationServiceMock).validateAdminRole(1L,userInfo);
+    Mockito.doThrow(new HttpClientErrorException(HttpStatus.FORBIDDEN, "Forbidden")).when(authorizationServiceMock).validateBrokerAdminRole(userInfo);
 
-    Assertions.assertThrows(AuthorizationDeniedException.class, () -> debtPositionTypeRetrieverService.getDebtPositionTypeDetail(1L, debtPositionType.getDebtPositionTypeId(), userInfo, accessToken));
+    Assertions.assertThrows(HttpClientErrorException.class, () -> debtPositionTypeRetrieverService.getDebtPositionTypeDetail(1L, debtPositionType.getDebtPositionTypeId(), userInfo, accessToken));
 
     Mockito.verifyNoMoreInteractions(authorizationServiceMock);
     Mockito.verifyNoInteractions(taxonomyRetrieverServiceMock, debtPositionTypeMapperMock);
@@ -192,7 +194,7 @@ class DebtPositionTypeRetrieverServiceImplTest {
     UserInfo userInfo = new UserInfo();
     userInfo.setBrokerId(brokerId);
 
-    Mockito.doNothing().when(authorizationServiceMock).validateAdminRole(1L,userInfo);
+    Mockito.doNothing().when(authorizationServiceMock).validateBrokerAdminRole(userInfo);
     Mockito.when(debtPositionTypeServiceMock.getDebtPositionTypeById(anyLong(), anyString()))
       .thenReturn(debtPositionType);
 
@@ -209,7 +211,7 @@ class DebtPositionTypeRetrieverServiceImplTest {
     UserInfo userInfo = new UserInfo();
     userInfo.setBrokerId(brokerId);
 
-    Mockito.doNothing().when(authorizationServiceMock).validateAdminRole(1L,userInfo);
+    Mockito.doNothing().when(authorizationServiceMock).validateBrokerAdminRole(userInfo);
     Mockito.when(debtPositionTypeServiceMock.getDebtPositionTypeById(anyLong(), anyString()))
       .thenReturn(debtPositionType);
     Mockito.when(taxonomyRetrieverServiceMock.getTaxonomyByTaxonomyCode(Mockito.eq(debtPositionType.getTaxonomyCode()), anyString()))

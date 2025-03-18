@@ -3847,7 +3847,9 @@
             "format" : "int64"
           },
           "code" : {
-            "type" : "string"
+            "type" : "string",
+            "maxLength" : 255,
+            "minLength" : 0
           },
           "description" : {
             "type" : "string",

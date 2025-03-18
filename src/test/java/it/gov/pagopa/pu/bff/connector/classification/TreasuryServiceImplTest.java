@@ -1,6 +1,7 @@
 package it.gov.pagopa.pu.bff.connector.classification;
 
-import it.gov.pagopa.pu.bff.connector.classification.client.TreasuryClient;
+import it.gov.pagopa.pu.bff.connector.classification.client.TreasurySearchClient;
+import it.gov.pagopa.pu.bff.connector.classification.client.TreasuryViewSearchClient;
 import it.gov.pagopa.pu.bff.dto.TreasuryViewFiltersDTO;
 import it.gov.pagopa.pu.classification.dto.generated.PagedModelTreasuryView;
 import it.gov.pagopa.pu.classification.dto.generated.Treasury;
@@ -21,13 +22,14 @@ import static org.mockito.Mockito.when;
 class TreasuryServiceTest {
 
   @Mock
-  private TreasuryClient treasuryClient;
-
+  private TreasuryViewSearchClient treasuryViewSearchClient;
+  @Mock
+  private TreasurySearchClient treasurySearchClient;
   private TreasuryService service;
 
   @BeforeEach
   void setUp() {
-    service = new TreasuryServiceImpl(treasuryClient);
+    service = new TreasuryServiceImpl(treasuryViewSearchClient, treasurySearchClient);
   }
 
   @Test
@@ -37,7 +39,7 @@ class TreasuryServiceTest {
     Pageable pageable = Mockito.mock(Pageable.class);
     PagedModelTreasuryView expectedResult = new PagedModelTreasuryView();
 
-    when(treasuryClient.getTreasuries(Mockito.same(filtersDTO), Mockito.same(pageable), Mockito.same(accessToken)))
+    when(treasuryViewSearchClient.getTreasuries(Mockito.same(filtersDTO), Mockito.same(pageable), Mockito.same(accessToken)))
       .thenReturn(expectedResult);
 
     PagedModelTreasuryView result = service.getTreasuries(filtersDTO, pageable, accessToken);
@@ -61,7 +63,7 @@ class TreasuryServiceTest {
       .pspLastName("PSPLastName")
       .build();
 
-    when(treasuryClient.getTreasuryDetail(Mockito.same(organizationId), Mockito.same(treasuryId), Mockito.same(accessToken)))
+    when(treasurySearchClient.getTreasuryDetail(Mockito.same(organizationId), Mockito.same(treasuryId), Mockito.same(accessToken)))
       .thenReturn(expectedTreasury);
 
     Treasury result = service.getTreasuryDetail(organizationId, treasuryId, accessToken);

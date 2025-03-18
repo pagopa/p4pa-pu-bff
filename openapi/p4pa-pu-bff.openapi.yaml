@@ -269,7 +269,7 @@ paths:
         '500':
           description: Internal Server Error
       x-spring-paginated: true
-  /organization/{organizationId}/debt-position-type/{debtPositionTypeId}:
+  /organization/{organizationId}/debt-position-types/{debtPositionTypeId}:
     get:
       tags:
         - DebtPositionTypes

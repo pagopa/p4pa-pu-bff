@@ -2094,7 +2094,7 @@
         } ]
       }
     },
-    "/bff/organization/{organizationId}/debt-position-type/{debtPositionTypeId}" : {
+    "/bff/organization/{organizationId}/debt-position-types/{debtPositionTypeId}" : {
       "get" : {
         "tags" : [ "DebtPositionTypes" ],
         "summary" : "Retrieve a detail of a DebtPositionType based on the organization's brokerId",

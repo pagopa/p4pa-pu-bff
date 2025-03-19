@@ -68,9 +68,14 @@ class InstallmentControllerTest {
     PagedInstallmentView expectedResult = new PagedInstallmentView();
     expectedResult.setContent(List.of(InstallmentView.builder()
       .installmentId(100L)
-      .amountCents(1000L)
-      .dueDate(OffsetDateTime.now())
+      .paymentOptionId(200L)
       .iuv(iuv)
+      .status(InstallmentView.StatusEnum.PAID)
+      .dueDate(OffsetDateTime.now())
+      .amountCents(1000L)
+      .remittanceInformation("Remittance Info")
+      .debtorFiscalCodeHash(new byte[]{1, 2, 3})
+      .debtPositionTypeOrgDescription("Description")
       .build()));
     expectedResult.setSize(10L);
     expectedResult.setTotalElements(1L);

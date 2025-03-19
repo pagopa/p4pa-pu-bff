@@ -70,6 +70,8 @@ class ReceiptControllerTest {
       .paymentDateTime(OffsetDateTime.now())
       .receiptOrigin(receiptOrigin)
       .iuv(iuv)
+      .installmentId(200L)
+      .debtPositionTypeOrgDescription("Description")
       .build()));
     expectedResult.setSize(10L);
     expectedResult.setTotalElements(1L);

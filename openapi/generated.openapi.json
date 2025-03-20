@@ -2499,7 +2499,8 @@
             "type" : "integer",
             "format" : "int32"
           }
-        }
+        },
+        "required" : [ "access_token", "expires_in", "token_type" ]
       },
       "ExportFileFilter" : {
         "type" : "object",
@@ -2572,7 +2573,8 @@
           "filterFields" : {
             "$ref" : "#/components/schemas/ExportFileFilter"
           }
-        }
+        },
+        "required" : [ "filterFields", "flowFileType", "flowFileVersion", "organizationId" ]
       },
       "LocalDateIntervalFilter" : {
         "type" : "object",
@@ -2866,7 +2868,8 @@
               "$ref" : "#/components/schemas/Link"
             }
           }
-        }
+        },
+        "required" : [ "billAmountCents", "billCode", "billDate", "billYear", "organizationId", "pspLastName", "treasuryId" ]
       },
       "Treasury" : {
         "type" : "object",
@@ -3019,7 +3022,8 @@
               "$ref" : "#/components/schemas/Link"
             }
           }
-        }
+        },
+        "required" : [ "billAmountCents", "billCode", "billDate", "billYear", "ingestionFlowFileId", "organizationId", "pspLastName" ]
       },
       "Stamp" : {
         "type" : "object",
@@ -3086,7 +3090,8 @@
             "type" : "integer",
             "format" : "int32"
           }
-        }
+        },
+        "required" : [ "amountCents", "category", "installmentId", "orgFiscalCode", "remittanceInformation", "transferIndex" ]
       },
       "PagedReceiptView" : {
         "type" : "object",
@@ -3151,7 +3156,8 @@
               "$ref" : "#/components/schemas/Link"
             }
           }
-        }
+        },
+        "required" : [ "debtPositionTypeOrgDescription", "installmentId", "paymentAmountCents", "receiptOrigin" ]
       },
       "PersonDTO" : {
         "type" : "object",
@@ -3187,7 +3193,8 @@
           "email" : {
             "type" : "string"
           }
-        }
+        },
+        "required" : [ "entityType", "fiscalCode", "fullName" ]
       },
       "ReceiptDetailDTO" : {
         "type" : "object",
@@ -3298,7 +3305,8 @@
               "$ref" : "#/components/schemas/Link"
             }
           }
-        }
+        },
+        "required" : [ "flowDateTime", "ingestionFlowFileId", "iuf", "organizationId", "regulationDate", "regulationUniqueIdentifier", "totalAmountCents", "totalPayments" ]
       },
       "PagedPaymentsReportingRow" : {
         "type" : "object",
@@ -3430,7 +3438,8 @@
               "$ref" : "#/components/schemas/Link"
             }
           }
-        }
+        },
+        "required" : [ "acquiringDate", "amountPaidCents", "flowDateTime", "ingestionFlowFileId", "iuf", "iur", "iuv", "organizationId", "payDate", "paymentOutcomeCode", "pspIdentifier", "regulationDate", "regulationUniqueIdentifier", "senderPspCode", "senderPspType", "totalAmountCents", "totalPayments", "transferIndex" ]
       },
       "PaymentsReportingDetailDTO" : {
         "type" : "object",
@@ -3516,7 +3525,8 @@
               "$ref" : "#/components/schemas/Link"
             }
           }
-        }
+        },
+        "required" : [ "amountCents", "debtPositionTypeOrgDescription", "debtorFiscalCodeHash", "paymentOptionId", "remittanceInformation", "status" ]
       },
       "PagedInstallmentView" : {
         "type" : "object",
@@ -3605,7 +3615,8 @@
           "iur" : {
             "type" : "string"
           }
-        }
+        },
+        "required" : [ "amountCents", "debtPositionDescription", "debtPositionId", "debtPositionTypeOrgDescription", "debtor", "dueDate", "installmentId", "iuv", "status" ]
       },
       "IngestionFlowFile" : {
         "type" : "object",
@@ -3766,7 +3777,8 @@
               "$ref" : "#/components/schemas/Link"
             }
           }
-        }
+        },
+        "required" : [ "debtPositionOrigin", "debtPositionTypeOrgDescription", "debtPositionTypeOrgId", "organizationId", "status" ]
       },
       "PagedDebtPositionView" : {
         "type" : "object",
@@ -3914,7 +3926,8 @@
             "type" : "string",
             "format" : "date-time"
           }
-        }
+        },
+        "required" : [ "amountCents", "debtor", "remittanceInformation", "transfers" ]
       },
       "InstallmentSyncStatus" : {
         "type" : "object",
@@ -3927,7 +3940,8 @@
             "type" : "string",
             "enum" : [ "TO_SYNC", "REPORTED", "PAID", "CANCELLED", "INVALID", "EXPIRED", "UNPAID", "UNPAYABLE", "DRAFT" ]
           }
-        }
+        },
+        "required" : [ "syncStatusFrom", "syncStatusTo" ]
       },
       "PaymentOptionDTO" : {
         "type" : "object",
@@ -3965,7 +3979,8 @@
               "$ref" : "#/components/schemas/InstallmentDTO"
             }
           }
-        }
+        },
+        "required" : [ "installments", "paymentOptionType", "totalAmountCents" ]
       },
       "TransferDTO" : {
         "type" : "object",
@@ -4013,7 +4028,8 @@
             "type" : "integer",
             "format" : "int32"
           }
-        }
+        },
+        "required" : [ "amountCents", "category", "orgFiscalCode", "orgName", "remittanceInformation", "transferIndex" ]
       },
       "DebtPositionTypeWithCount" : {
         "type" : "object",
@@ -4225,7 +4241,8 @@
               "$ref" : "#/components/schemas/Link"
             }
           }
-        }
+        },
+        "required" : [ "code", "debtPositionTypeId", "description", "iban", "organizationId" ]
       },
       "DebtPositionType" : {
         "type" : "object",
@@ -4288,7 +4305,8 @@
               "$ref" : "#/components/schemas/Link"
             }
           }
-        }
+        },
+        "required" : [ "brokerId", "code", "collectingReason", "description", "macroArea", "orgType", "serviceType", "taxonomyCode" ]
       },
       "ServiceStatus" : {
         "type" : "object",

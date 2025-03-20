@@ -66,9 +66,13 @@ class TreasuryControllerTest {
     PagedTreasuryView expectedResult = new PagedTreasuryView();
     expectedResult.setContent(List.of(TreasuryView.builder()
       .treasuryId("100")
-      .billAmountCents(1000L)
+      .organizationId(organizationId)
+      .billYear("2025")
+      .billCode(billCode)
+      .billAmountCents(billAmountCents)
       .billDate(billDate)
       .iuv(iuv)
+      .pspLastName(pspLastName)
       .build()));
     expectedResult.setSize(10L);
     expectedResult.setTotalElements(1L);

@@ -2868,7 +2868,8 @@
               "$ref" : "#/components/schemas/Link"
             }
           }
-        }
+        },
+        "required" : [ "billAmountCents", "billCode", "billDate", "billYear", "organizationId", "pspLastName", "treasuryId" ]
       },
       "Treasury" : {
         "type" : "object",
@@ -3304,7 +3305,8 @@
               "$ref" : "#/components/schemas/Link"
             }
           }
-        }
+        },
+        "required" : [ "flowDateTime", "ingestionFlowFileId", "iuf", "organizationId", "regulationDate", "regulationUniqueIdentifier", "totalAmountCents", "totalPayments" ]
       },
       "PagedPaymentsReportingRow" : {
         "type" : "object",

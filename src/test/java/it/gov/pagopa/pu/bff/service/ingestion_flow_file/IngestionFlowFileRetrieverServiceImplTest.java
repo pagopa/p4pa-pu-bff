@@ -7,7 +7,7 @@ import it.gov.pagopa.pu.bff.dto.generated.PagedIngestionFlowFile;
 import it.gov.pagopa.pu.bff.mapper.IngestionFlowFileMapper;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
 import it.gov.pagopa.pu.processexecutions.dto.generated.IngestionFlowFile.FlowFileTypeEnum;
-import it.gov.pagopa.pu.processexecutions.dto.generated.IngestionFlowFile.StatusEnum;
+import it.gov.pagopa.pu.processexecutions.dto.generated.IngestionFlowFileStatus;
 import it.gov.pagopa.pu.processexecutions.dto.generated.PagedModelIngestionFlowFile;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -42,7 +42,7 @@ class IngestionFlowFileRetrieverServiceImplTest {
     List<FlowFileTypeEnum> flowFileTypes = List.of(FlowFileTypeEnum.TREASURY_OPI);
     OffsetDateTime creationDateFrom = OffsetDateTime.now().minusDays(10);
     OffsetDateTime creationDateTo = OffsetDateTime.now().plusDays(10);
-    StatusEnum status = StatusEnum.COMPLETED;
+    IngestionFlowFileStatus status = IngestionFlowFileStatus.COMPLETED;
     String fileName = "filename";
     IngestionFlowFileFiltersDTO ingestionFlowFileFilters = new IngestionFlowFileFiltersDTO(
       organizationId, flowFileTypes, creationDateFrom, creationDateTo, status,
@@ -80,7 +80,7 @@ class IngestionFlowFileRetrieverServiceImplTest {
     List<FlowFileTypeEnum> flowFileTypes = List.of(FlowFileTypeEnum.TREASURY_OPI);
     OffsetDateTime creationDateFrom = OffsetDateTime.now().minusDays(10);
     OffsetDateTime creationDateTo = OffsetDateTime.now().plusDays(10);
-    StatusEnum status = StatusEnum.COMPLETED;
+    IngestionFlowFileStatus status = IngestionFlowFileStatus.COMPLETED;
     String fileName = "filename";
     IngestionFlowFileFiltersDTO ingestionFlowFileFilters = new IngestionFlowFileFiltersDTO(
       organizationId, flowFileTypes, creationDateFrom, creationDateTo, status,

@@ -1,14 +1,10 @@
 package it.gov.pagopa.pu.bff.connector.debt_position;
 
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.mockito.Mockito.when;
-
 import it.gov.pagopa.pu.bff.connector.debt_position.client.DebtPositionClient;
 import it.gov.pagopa.pu.bff.dto.DebtPositionViewFiltersDTO;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionDTO;
-import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionView.DebtPositionOriginEnum;
+import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionOrigin;
 import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelDebtPositionView;
-import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,6 +12,11 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Pageable;
+
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class DebtPositionServiceTest {
@@ -34,7 +35,7 @@ class DebtPositionServiceTest {
     DebtPositionViewFiltersDTO filtersDTO = new DebtPositionViewFiltersDTO();
     String accessToken = "ACCESSTOKEN";
     String operatorExternalUserId = "operatorExternalUserId";
-    List<String> debtPositionOrigins = List.of(DebtPositionOriginEnum.ORDINARY.toString(),DebtPositionOriginEnum.ORDINARY_SIL.toString(), DebtPositionOriginEnum.SPONTANEOUS.toString());
+    List<String> debtPositionOrigins = List.of(DebtPositionOrigin.ORDINARY.toString(),DebtPositionOrigin.ORDINARY_SIL.toString(), DebtPositionOrigin.SPONTANEOUS.toString());
     Pageable pageable = Mockito.mock(Pageable.class);
     PagedModelDebtPositionView expectedResult = new PagedModelDebtPositionView();
 

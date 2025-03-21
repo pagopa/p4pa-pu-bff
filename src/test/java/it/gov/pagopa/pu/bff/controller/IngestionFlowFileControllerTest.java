@@ -5,9 +5,10 @@ import it.gov.pagopa.pu.bff.dto.generated.IngestionFlowFile;
 import it.gov.pagopa.pu.bff.dto.generated.PagedIngestionFlowFile;
 import it.gov.pagopa.pu.bff.service.ingestion_flow_file.IngestionFlowFileRetrieverService;
 import it.gov.pagopa.pu.processexecutions.dto.generated.IngestionFlowFile.FlowFileTypeEnum;
-import it.gov.pagopa.pu.processexecutions.dto.generated.IngestionFlowFile.StatusEnum;
 import java.time.OffsetDateTime;
 import java.util.List;
+
+import it.gov.pagopa.pu.processexecutions.dto.generated.IngestionFlowFileStatus;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -47,7 +48,7 @@ class IngestionFlowFileControllerTest {
     List<FlowFileTypeEnum> flowFileTypes = List.of(FlowFileTypeEnum.TREASURY_OPI,FlowFileTypeEnum.PAYMENTS_REPORTING);
     OffsetDateTime creationDateFrom = OffsetDateTime.now().minusDays(10);
     OffsetDateTime creationDateTo = OffsetDateTime.now().plusDays(10);
-    StatusEnum status = StatusEnum.COMPLETED;
+    IngestionFlowFileStatus status = IngestionFlowFileStatus.COMPLETED;
     String fileName = "filename";
     IngestionFlowFileFiltersDTO expectedFilter = new IngestionFlowFileFiltersDTO(
       organizationId, flowFileTypes, creationDateFrom, creationDateTo, status,
@@ -61,7 +62,7 @@ class IngestionFlowFileControllerTest {
       .totalRows(10L)
       .correctlyImportedRows(8L)
       .discardedRows(2L)
-      .status(StatusEnum.COMPLETED)
+      .status(IngestionFlowFileStatus.COMPLETED)
       .build()));
     expectedResult.setSize(10L);
     expectedResult.setTotalElements(1L);

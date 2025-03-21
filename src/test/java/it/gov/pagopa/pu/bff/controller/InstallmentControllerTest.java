@@ -6,6 +6,7 @@ import it.gov.pagopa.pu.bff.dto.OffsetDateTimeIntervalFilter;
 import it.gov.pagopa.pu.bff.dto.generated.PagedInstallmentView;
 import it.gov.pagopa.pu.bff.service.installment.InstallmentRetrieverService;
 import it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentDetailDTO;
+import it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentStatus;
 import it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentView;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -70,7 +71,7 @@ class InstallmentControllerTest {
       .installmentId(100L)
       .paymentOptionId(200L)
       .iuv(iuv)
-      .status(InstallmentView.StatusEnum.PAID)
+      .status(InstallmentStatus.PAID)
       .dueDate(OffsetDateTime.now())
       .amountCents(1000L)
       .remittanceInformation("Remittance Info")

@@ -5,7 +5,6 @@ import it.gov.pagopa.pu.bff.connector.auth.AuthzService;
 import it.gov.pagopa.pu.bff.dto.generated.IngestionFlowFile;
 import it.gov.pagopa.pu.bff.dto.generated.PagedIngestionFlowFile;
 import it.gov.pagopa.pu.bff.util.UserUtils;
-import it.gov.pagopa.pu.processexecutions.dto.generated.IngestionFlowFile.StatusEnum;
 import it.gov.pagopa.pu.processexecutions.dto.generated.PagedModelIngestionFlowFile;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
@@ -53,7 +52,7 @@ public class IngestionFlowFileMapper {
       .totalRows(ingestionFlowFile.getNumTotalRows())
       .correctlyImportedRows(ingestionFlowFile.getNumCorrectlyImportedRows())
       .discardedRows(getDiscardedRows(ingestionFlowFile))
-      .status(StatusEnum.valueOf(ingestionFlowFile.getStatus().toString()))
+      .status(ingestionFlowFile.getStatus())
       .build();
   }
 

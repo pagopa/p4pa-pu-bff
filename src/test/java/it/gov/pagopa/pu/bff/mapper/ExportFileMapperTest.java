@@ -10,11 +10,8 @@ import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.connector.auth.client.AuthzClient;
 import it.gov.pagopa.pu.bff.dto.generated.PagedExportFile;
 import it.gov.pagopa.pu.bff.util.TestUtils;
-import it.gov.pagopa.pu.processexecutions.dto.generated.ExportFile;
-import it.gov.pagopa.pu.processexecutions.dto.generated.ExportFile.StatusEnum;
-import it.gov.pagopa.pu.processexecutions.dto.generated.PageMetadata;
-import it.gov.pagopa.pu.processexecutions.dto.generated.PagedModelExportFile;
-import it.gov.pagopa.pu.processexecutions.dto.generated.PagedModelExportFileEmbedded;
+import it.gov.pagopa.pu.processexecutions.dto.generated.*;
+
 import java.time.OffsetDateTime;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -58,14 +55,14 @@ class ExportFileMapperTest {
     exportFileMatchingOperator.setExportFileId(1L);
     exportFileMatchingOperator.setOperatorExternalId(operatorExternalId);
     exportFileMatchingOperator.setFileName("fileName");
-    exportFileMatchingOperator.setStatus(StatusEnum.COMPLETED);
+    exportFileMatchingOperator.setStatus(ExportFileStatus.COMPLETED);
     exportFileMatchingOperator.setNumTotalRows(10L);
     ExportFile flowFileWithNoTotalRows = new ExportFile();
     flowFileWithNoTotalRows.setCreationDate(OffsetDateTime.now());
     flowFileWithNoTotalRows.setExportFileId(3L);
     flowFileWithNoTotalRows.setFileName("fileName");
     flowFileWithNoTotalRows.setOperatorExternalId(otherOperatorExternalId);
-    flowFileWithNoTotalRows.setStatus(StatusEnum.ERROR);
+    flowFileWithNoTotalRows.setStatus(ExportFileStatus.ERROR);
     flowFileWithNoTotalRows.setNumTotalRows(null);
 
     embedded.setExportFiles(
@@ -98,12 +95,12 @@ class ExportFileMapperTest {
     checkExportFile(exportFileMatchingOperator,
       result.getContent().getFirst(),
       userInfo.getFamilyName() + " " + userInfo.getName(),
-      it.gov.pagopa.pu.processexecutions.dto.generated.ExportFile.StatusEnum.COMPLETED
+      ExportFileStatus.COMPLETED
     );
     checkExportFile(flowFileWithNoTotalRows,
       result.getContent().get(1),
       otherUserInfo.getFamilyName() + " " + otherUserInfo.getName(),
-      it.gov.pagopa.pu.processexecutions.dto.generated.ExportFile.StatusEnum.ERROR,
+      ExportFileStatus.ERROR,
       "totalRows");
     Mockito.verify(authzClientMock)
       .getUserInfoFromMappedExternaUserId(operatorExternalId, accessToken);
@@ -116,7 +113,7 @@ class ExportFileMapperTest {
     ExportFile expectedExportFile,
     it.gov.pagopa.pu.bff.dto.generated.ExportFile mappedIngestionFlowFile,
     String expectedOperator,
-    it.gov.pagopa.pu.processexecutions.dto.generated.ExportFile.StatusEnum expectedStatus,
+    ExportFileStatus expectedStatus,
     String... nullFields) {
     TestUtils.checkNotNullFields(mappedIngestionFlowFile, nullFields);
     assertEquals(expectedExportFile.getExportFileId(),
@@ -169,7 +166,7 @@ class ExportFileMapperTest {
     exportFileMatchingOperator.setExportFileId(1L);
     exportFileMatchingOperator.setOperatorExternalId(operatorExternalId);
     exportFileMatchingOperator.setFileName("fileName");
-    exportFileMatchingOperator.setStatus(StatusEnum.COMPLETED);
+    exportFileMatchingOperator.setStatus(ExportFileStatus.COMPLETED);
     exportFileMatchingOperator.setNumTotalRows(10L);
     embedded.setExportFiles(List.of(exportFileMatchingOperator));
     pagedModelExportFile.setEmbedded(embedded);
@@ -188,7 +185,7 @@ class ExportFileMapperTest {
     checkExportFile(exportFileMatchingOperator,
       result.getContent().getFirst(),
       userInfo.getFamilyName() + " " + userInfo.getName(),
-      it.gov.pagopa.pu.processexecutions.dto.generated.ExportFile.StatusEnum.COMPLETED
+      ExportFileStatus.COMPLETED
     );
   }
 }

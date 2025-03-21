@@ -1,8 +1,5 @@
 package it.gov.pagopa.pu.bff.service;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertSame;
-
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.connector.debt_position.ReceiptService;
 import it.gov.pagopa.pu.bff.dto.OffsetDateTimeIntervalFilter;
@@ -13,8 +10,7 @@ import it.gov.pagopa.pu.bff.mapper.ReceiptDetailDTOMapper;
 import it.gov.pagopa.pu.bff.mapper.ReceiptViewMapper;
 import it.gov.pagopa.pu.bff.service.receipt.ReceiptRetrieverServiceImpl;
 import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelReceiptView;
-import it.gov.pagopa.pu.debtpositions.dto.generated.ReceiptView;
-import java.time.OffsetDateTime;
+import it.gov.pagopa.pu.debtpositions.dto.generated.ReceiptOriginType;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -26,6 +22,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.authorization.AuthorizationDeniedException;
+
+import java.time.OffsetDateTime;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
 
 @ExtendWith(MockitoExtension.class)
 class ReceiptRetrieverServiceImplTest {
@@ -52,7 +53,7 @@ class ReceiptRetrieverServiceImplTest {
     UserInfo loggedUser = new UserInfo();
     loggedUser.setUserId("user-123");
 
-    ReceiptView.ReceiptOriginEnum receiptOrigin = ReceiptView.ReceiptOriginEnum.RECEIPT_PAGOPA;
+    ReceiptOriginType receiptOrigin = ReceiptOriginType.RECEIPT_PAGOPA;
     OffsetDateTime paymentDateTimeFrom = OffsetDateTime.now().minusDays(1);
     OffsetDateTime paymentDateTimeTo = OffsetDateTime.now();
     OffsetDateTimeIntervalFilter paymentDateTimeFilter = new OffsetDateTimeIntervalFilter(paymentDateTimeFrom, paymentDateTimeTo);
@@ -89,7 +90,7 @@ class ReceiptRetrieverServiceImplTest {
     UserInfo loggedUser = new UserInfo();
     loggedUser.setUserId("user-123");
 
-    ReceiptView.ReceiptOriginEnum receiptOrigin = ReceiptView.ReceiptOriginEnum.RECEIPT_PAGOPA;
+    ReceiptOriginType receiptOrigin = ReceiptOriginType.RECEIPT_PAGOPA;
     OffsetDateTime paymentDateTimeFrom = OffsetDateTime.now().minusDays(1);
     OffsetDateTime paymentDateTimeTo = OffsetDateTime.now();
     OffsetDateTimeIntervalFilter paymentDateTimeFilter = new OffsetDateTimeIntervalFilter(paymentDateTimeFrom, paymentDateTimeTo);

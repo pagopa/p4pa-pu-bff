@@ -1,28 +1,25 @@
 package it.gov.pagopa.pu.bff.mapper;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import it.gov.pagopa.pu.bff.dto.generated.PagedPaymentsReportingRow;
 import it.gov.pagopa.pu.bff.dto.generated.PaymentsReportingDetailDTO;
 import it.gov.pagopa.pu.bff.dto.generated.ReceiptDetailDTO;
 import it.gov.pagopa.pu.bff.util.TestUtils;
 import it.gov.pagopa.pu.classification.dto.generated.PagedModelPaymentsReporting;
 import it.gov.pagopa.pu.classification.dto.generated.PaymentsReporting;
-import it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentDetailDTO.StatusEnum;
+import it.gov.pagopa.pu.debtpositions.dto.generated.EntityTypeEnum;
+import it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentStatus;
 import it.gov.pagopa.pu.debtpositions.dto.generated.PersonDTO;
-import it.gov.pagopa.pu.debtpositions.dto.generated.PersonDTO.EntityTypeEnum;
-import java.time.LocalDate;
-import java.time.OffsetDateTime;
-import java.util.Collections;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.util.CollectionUtils;
 import uk.co.jemos.podam.api.PodamFactory;
+
+import java.time.LocalDate;
+import java.time.OffsetDateTime;
+import java.util.Collections;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
 class PaymentsReportingMapperTest {
@@ -146,7 +143,7 @@ class PaymentsReportingMapperTest {
         receiptDetailDTO.getDebtPositionTypeOrgDescription())
       .pspCompanyName(receiptDetailDTO.getPspCompanyName())
       .remittanceInformation(receiptDetailDTO.getRemittanceInformation())
-      .status(StatusEnum.REPORTED)
+      .status(InstallmentStatus.REPORTED)
       .build();
 
     PaymentsReportingDetailDTO result = mapper.mapToPaymentsReportingDetailDTO(
@@ -190,7 +187,7 @@ class PaymentsReportingMapperTest {
       .iuv(paymentsReporting.getIuv())
       .iur(paymentsReporting.getIur())
       .amountPaidCents(paymentsReporting.getAmountPaidCents())
-      .status(StatusEnum.REPORTED)
+      .status(InstallmentStatus.REPORTED)
       .build();
 
     PaymentsReportingDetailDTO result = mapper.mapToPaymentsReportingDetailDTO(

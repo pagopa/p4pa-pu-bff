@@ -8,6 +8,7 @@ import it.gov.pagopa.pu.bff.mapper.InstallmentViewMapper;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
 import it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentDetailDTO;
 import it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentNoPII;
+import it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentStatus;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -18,7 +19,7 @@ public class InstallmentRetrieverServiceImpl implements InstallmentRetrieverServ
 
   private final InstallmentViewMapper installmentViewMapper;
   private final InstallmentService installmentService;
-  private final List<InstallmentDetailDTO.StatusEnum> statusList = List.of(InstallmentDetailDTO.StatusEnum.PAID, InstallmentDetailDTO.StatusEnum.REPORTED);
+  private final List<InstallmentStatus> statusList = List.of(InstallmentStatus.PAID, InstallmentStatus.REPORTED);
 
   public InstallmentRetrieverServiceImpl(
     InstallmentViewMapper installmentViewMapper,

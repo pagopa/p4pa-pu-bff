@@ -33,9 +33,7 @@ public class IngestionFlowFileSearchClient {
         DateUtils.toLocalDateTime(
           ingestionFlowFileFilters.getCreationDateFrom()),
         DateUtils.toLocalDateTime(ingestionFlowFileFilters.getCreationDateTo()),
-        ingestionFlowFileFilters.getStatus() != null ?
-          ingestionFlowFileFilters.getStatus().name()
-          : null,
+        ingestionFlowFileFilters.getStatus(),
         ingestionFlowFileFilters.getFileName(),
         operatorExternalId,
         PageUtils.getPageNumber(pageable),

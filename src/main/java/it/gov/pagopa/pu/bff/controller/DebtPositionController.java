@@ -6,12 +6,13 @@ import it.gov.pagopa.pu.bff.dto.generated.DebtPositionDetailDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedDebtPositionView;
 import it.gov.pagopa.pu.bff.security.SecurityUtils;
 import it.gov.pagopa.pu.bff.service.debt_position.DebtPositionRetrieverService;
-import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionView.StatusEnum;
-import java.time.OffsetDateTime;
+import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionStatus;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.time.OffsetDateTime;
 
 
 @Slf4j
@@ -32,7 +33,7 @@ public class DebtPositionController implements DebtPositionsApi {
     OffsetDateTime creationDateTo,
     String fiscalCode,
     Long debtPositionTypeOrgId,
-    StatusEnum status,
+    DebtPositionStatus status,
     Pageable pageable) {
     log.info("User requested getDebtPositionViews having organizationId {} , creationDateFrom {} , creationDateTo {} ", organizationId, creationDateFrom, creationDateTo);
     return ResponseEntity.ok(debtPositionRetrieverService.getDebtPositionViews(

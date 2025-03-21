@@ -1,10 +1,11 @@
 package it.gov.pagopa.pu.bff.dto;
 
-import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionView.StatusEnum;
-import java.time.OffsetDateTime;
+import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.time.OffsetDateTime;
 
 @Data
 @AllArgsConstructor
@@ -15,5 +16,5 @@ public class DebtPositionViewFiltersDTO {
   private OffsetDateTime creationDateTo;
   private String fiscalCode;
   private Long debtPositionTypeOrgId;
-  private StatusEnum status;
+  private DebtPositionStatus status;
 }

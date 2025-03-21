@@ -1,22 +1,12 @@
 package it.gov.pagopa.pu.bff.service;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.connector.debt_position.InstallmentService;
 import it.gov.pagopa.pu.bff.dto.InstallmentViewFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedInstallmentView;
 import it.gov.pagopa.pu.bff.mapper.InstallmentViewMapper;
 import it.gov.pagopa.pu.bff.service.installment.InstallmentRetrieverServiceImpl;
-import it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentDetailDTO;
-import it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentNoPII;
-import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelInstallmentView;
-import it.gov.pagopa.pu.debtpositions.dto.generated.PersonDTO;
-import java.time.OffsetDateTime;
+import it.gov.pagopa.pu.debtpositions.dto.generated.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -29,6 +19,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.authorization.AuthorizationDeniedException;
+
+import java.time.OffsetDateTime;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 @ExtendWith(MockitoExtension.class)
 class InstallmentRetrieverServiceImplTest {
@@ -112,7 +107,7 @@ class InstallmentRetrieverServiceImplTest {
     Long organizationId = 1L;
     Long installmentId = 2L;
     InstallmentDetailDTO installmentDetailDTO = new InstallmentDetailDTO();
-    installmentDetailDTO.setStatus(InstallmentDetailDTO.StatusEnum.PAID);
+    installmentDetailDTO.setStatus(InstallmentStatus.PAID);
     installmentDetailDTO.setPayer(new PersonDTO());
     installmentDetailDTO.setPaymentDateTime(OffsetDateTime.now());
     installmentDetailDTO.setIud("iud");
@@ -168,7 +163,7 @@ class InstallmentRetrieverServiceImplTest {
     Long organizationId = 1L;
     Long installmentId = 2L;
     InstallmentDetailDTO installmentDetailDTO = new InstallmentDetailDTO();
-    installmentDetailDTO.setStatus(InstallmentDetailDTO.StatusEnum.UNPAID);
+    installmentDetailDTO.setStatus(InstallmentStatus.UNPAID);
 
     try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
       authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)).thenAnswer(a->null);

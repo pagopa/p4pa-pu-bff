@@ -3,8 +3,8 @@ package it.gov.pagopa.pu.bff.mapper;
 import it.gov.pagopa.pu.bff.dto.generated.DebtPositionDetailDTO;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionDTO;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrg;
+import it.gov.pagopa.pu.debtpositions.dto.generated.EntityTypeEnum;
 import it.gov.pagopa.pu.debtpositions.dto.generated.PersonDTO;
-import it.gov.pagopa.pu.debtpositions.dto.generated.PersonDTO.EntityTypeEnum;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 

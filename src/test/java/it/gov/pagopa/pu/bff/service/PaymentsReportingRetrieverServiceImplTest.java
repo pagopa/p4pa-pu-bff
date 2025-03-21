@@ -1,12 +1,5 @@
 package it.gov.pagopa.pu.bff.service;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.when;
-
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.connector.classification.PaymentsReportingService;
 import it.gov.pagopa.pu.bff.dto.LocalDateIntervalFilter;
@@ -22,12 +15,9 @@ import it.gov.pagopa.pu.bff.service.receipt.ReceiptRetrieverService;
 import it.gov.pagopa.pu.classification.dto.generated.PagedModelPaymentsReporting;
 import it.gov.pagopa.pu.classification.dto.generated.PagedModelPaymentsReportingView;
 import it.gov.pagopa.pu.classification.dto.generated.PaymentsReporting;
-import it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentDetailDTO;
 import it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentNoPII;
-import it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentNoPII.DebtorEntityTypeEnum;
-import it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentNoPII.StatusEnum;
-import java.time.LocalDate;
-import java.time.OffsetDateTime;
+import it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentStatus;
+import it.gov.pagopa.pu.debtpositions.dto.generated.PersonEntityType;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -39,6 +29,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.authorization.AuthorizationDeniedException;
+
+import java.time.LocalDate;
+import java.time.OffsetDateTime;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class PaymentsReportingRetrieverServiceImplTest {
@@ -272,12 +268,12 @@ class PaymentsReportingRetrieverServiceImplTest {
       .receiptId(receiptId)
       // fields required non-null but not useful to this test
       .paymentOptionId(1L)
-      .status(StatusEnum.REPORTED)
+      .status(InstallmentStatus.REPORTED)
       .iud("IUD123")
       .amountCents(1000L)
       .remittanceInformation("REMITTANCEINFO")
       .personalDataId(1L)
-      .debtorEntityType(DebtorEntityTypeEnum.F)
+      .debtorEntityType(PersonEntityType.F)
       .debtorFiscalCodeHash(new byte[0])
       .build();
     ReceiptDetailDTO receiptDetailDTO = new ReceiptDetailDTO();
@@ -286,7 +282,7 @@ class PaymentsReportingRetrieverServiceImplTest {
       .iuv(paymentsReporting.getIuv())
       .iur(paymentsReporting.getIur())
       .amountPaidCents(paymentsReporting.getAmountPaidCents())
-      .status(InstallmentDetailDTO.StatusEnum.REPORTED)
+      .status(InstallmentStatus.REPORTED)
       .iud(receiptDetailDTO.getIud())
       .debtPositionTypeOrgDescription(receiptDetailDTO.getDebtPositionTypeOrgDescription())
       .paymentDateTime(receiptDetailDTO.getPaymentDateTime())
@@ -378,7 +374,7 @@ class PaymentsReportingRetrieverServiceImplTest {
       .iuv(paymentsReporting.getIuv())
       .iur(paymentsReporting.getIur())
       .amountPaidCents(paymentsReporting.getAmountPaidCents())
-      .status(InstallmentDetailDTO.StatusEnum.REPORTED)
+      .status(InstallmentStatus.REPORTED)
       .build();
 
     try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(

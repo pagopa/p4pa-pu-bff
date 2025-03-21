@@ -1,8 +1,5 @@
 package it.gov.pagopa.pu.bff.connector.debt_position.client;
 
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.mockito.Mockito.when;
-
 import it.gov.pagopa.pu.bff.connector.debt_position.config.DebtPositionApisHolder;
 import it.gov.pagopa.pu.bff.dto.OffsetDateTimeIntervalFilter;
 import it.gov.pagopa.pu.bff.dto.ReceiptViewFiltersDTO;
@@ -11,8 +8,7 @@ import it.gov.pagopa.pu.debtpositions.controller.generated.ReceiptApi;
 import it.gov.pagopa.pu.debtpositions.controller.generated.ReceiptViewSearchControllerApi;
 import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelReceiptView;
 import it.gov.pagopa.pu.debtpositions.dto.generated.ReceiptDetailDTO;
-import it.gov.pagopa.pu.debtpositions.dto.generated.ReceiptView;
-import java.time.OffsetDateTime;
+import it.gov.pagopa.pu.debtpositions.dto.generated.ReceiptOriginType;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,6 +22,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.client.HttpClientErrorException;
+
+import java.time.OffsetDateTime;
+
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class ReceiptClientTest {
@@ -57,7 +58,7 @@ class ReceiptClientTest {
     String accessToken = "ACCESSTOKEN";
     PagedModelReceiptView expectedResult = new PagedModelReceiptView();
 
-    ReceiptView.ReceiptOriginEnum receiptOrigin = ReceiptView.ReceiptOriginEnum.RECEIPT_PAGOPA;
+    ReceiptOriginType receiptOrigin = ReceiptOriginType.RECEIPT_PAGOPA;
     String iuv = "iuv123";
     String iur = "iur123";
     String iud = "iud123";

@@ -7,13 +7,14 @@ import it.gov.pagopa.pu.bff.dto.generated.PagedExportFile;
 import it.gov.pagopa.pu.bff.security.SecurityUtils;
 import it.gov.pagopa.pu.bff.service.export_flow_file.ExportFileRetrieverService;
 import it.gov.pagopa.pu.processexecutions.dto.generated.ExportFile.FlowFileTypeEnum;
-import it.gov.pagopa.pu.processexecutions.dto.generated.ExportFile.StatusEnum;
 import it.gov.pagopa.pu.processexecutions.dto.generated.ExportFileRequestDTO;
-import java.time.OffsetDateTime;
+import it.gov.pagopa.pu.processexecutions.dto.generated.ExportFileStatus;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.time.OffsetDateTime;
 
 
 @Slf4j
@@ -31,7 +32,7 @@ public class ExportFileController implements ExportFilesApi {
   public ResponseEntity<PagedExportFile> getExportFiles(
     Long organizationId,
     FlowFileTypeEnum flowFileType, OffsetDateTime creationDateFrom,
-    OffsetDateTime creationDateTo, StatusEnum status, String fileName,
+    OffsetDateTime creationDateTo, ExportFileStatus status, String fileName,
     Pageable pageable) {
     log.info(
       "User requested getExportFiles having organizationId {} and flowFileType {}",

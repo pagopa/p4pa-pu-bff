@@ -8,7 +8,7 @@ import it.gov.pagopa.pu.bff.util.TestUtils;
 import it.gov.pagopa.pu.debtpositions.controller.generated.DebtPositionApi;
 import it.gov.pagopa.pu.debtpositions.controller.generated.DebtPositionViewSearchControllerApi;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionDTO;
-import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionView.DebtPositionOriginEnum;
+import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionOrigin;
 import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelDebtPositionView;
 import java.util.Collections;
 import java.util.List;
@@ -49,20 +49,20 @@ class DebtPositionClientTest {
       DebtPositionViewFiltersDTO.class);
     String operatorExternalUserId = "operatorExternalUserId";
     String accessToken = "ACCESSTOKEN";
-    List<String> debtPositionOrigins = List.of(DebtPositionOriginEnum.ORDINARY.toString(),DebtPositionOriginEnum.RECEIPT_FILE.toString());
+    List<String> debtPositionOrigins = List.of(DebtPositionOrigin.ORDINARY.toString(),DebtPositionOrigin.RECEIPT_FILE.toString());
     PagedModelDebtPositionView expectedResult = new PagedModelDebtPositionView();
 
     when(debtPositionApisHolderMock.getDebtPositionViewSearchControllerApi(accessToken))
       .thenReturn(debtPositionViewSearchControllerApiMock);
     when(debtPositionViewSearchControllerApiMock.crudDebtPositionsViewFindDebtPositionViews(
       filtersDTO.getOrganizationId(),
-      List.of(DebtPositionOriginEnum.ORDINARY.toString(),DebtPositionOriginEnum.RECEIPT_FILE.toString()),
+      List.of(DebtPositionOrigin.ORDINARY.toString(),DebtPositionOrigin.RECEIPT_FILE.toString()),
       operatorExternalUserId,
       filtersDTO.getCreationDateFrom().toLocalDateTime(),
       filtersDTO.getCreationDateTo().toLocalDateTime(),
       filtersDTO.getFiscalCode(),
       filtersDTO.getDebtPositionTypeOrgId(),
-      filtersDTO.getStatus().toString(),
+      filtersDTO.getStatus(),
       1,
       10,
       Collections.emptyList()
@@ -75,13 +75,13 @@ class DebtPositionClientTest {
     Mockito.verify(debtPositionApisHolderMock).getDebtPositionViewSearchControllerApi(accessToken);
     Mockito.verify(debtPositionViewSearchControllerApiMock).crudDebtPositionsViewFindDebtPositionViews(
       filtersDTO.getOrganizationId(),
-      List.of(DebtPositionOriginEnum.ORDINARY.toString(),DebtPositionOriginEnum.RECEIPT_FILE.toString()),
+      List.of(DebtPositionOrigin.ORDINARY.getValue(),DebtPositionOrigin.RECEIPT_FILE.getValue()),
       operatorExternalUserId,
       filtersDTO.getCreationDateFrom().toLocalDateTime(),
       filtersDTO.getCreationDateTo().toLocalDateTime(),
       filtersDTO.getFiscalCode(),
       filtersDTO.getDebtPositionTypeOrgId(),
-      filtersDTO.getStatus().toString(),
+      filtersDTO.getStatus(),
       1,
       10,
       Collections.emptyList()

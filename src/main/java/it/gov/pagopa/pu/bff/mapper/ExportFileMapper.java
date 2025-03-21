@@ -5,11 +5,11 @@ import it.gov.pagopa.pu.bff.connector.auth.client.AuthzClient;
 import it.gov.pagopa.pu.bff.dto.generated.ExportFile;
 import it.gov.pagopa.pu.bff.dto.generated.PagedExportFile;
 import it.gov.pagopa.pu.bff.util.UserUtils;
-import it.gov.pagopa.pu.processexecutions.dto.generated.ExportFile.StatusEnum;
 import it.gov.pagopa.pu.processexecutions.dto.generated.PagedModelExportFile;
-import java.util.Collections;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
+
+import java.util.Collections;
 
 @Component
 public class ExportFileMapper {
@@ -57,7 +57,7 @@ public class ExportFileMapper {
       .operator(UserUtils.getOperator(exportFile.getOperatorExternalId(), userInfo,
         authzClient.getUserInfoFromMappedExternaUserId(
           exportFile.getOperatorExternalId(), accessToken)))
-      .status(StatusEnum.valueOf(exportFile.getStatus().toString()))
+      .status(exportFile.getStatus())
       .build();
   }
 

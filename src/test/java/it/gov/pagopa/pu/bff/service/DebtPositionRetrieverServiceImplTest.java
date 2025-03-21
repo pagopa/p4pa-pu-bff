@@ -16,8 +16,8 @@ import it.gov.pagopa.pu.bff.service.debt_position.DebtPositionRetrieverService;
 import it.gov.pagopa.pu.bff.service.debt_position.DebtPositionRetrieverServiceImpl;
 import it.gov.pagopa.pu.bff.util.TestUtils;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionDTO;
+import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionOrigin;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrg;
-import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionView.DebtPositionOriginEnum;
 import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelDebtPositionView;
 import java.util.List;
 import org.junit.jupiter.api.Assertions;
@@ -57,7 +57,7 @@ class DebtPositionRetrieverServiceImplTest {
     UserInfo loggedUser = new UserInfo();
     loggedUser.setMappedExternalUserId("mappedExternalUserId");
     PageRequest pageRequest = PageRequest.of(0, 10);
-    List<String> debtPositionOrigins = List.of(DebtPositionOriginEnum.ORDINARY.toString(),DebtPositionOriginEnum.ORDINARY_SIL.toString(), DebtPositionOriginEnum.SPONTANEOUS.toString());
+    List<String> debtPositionOrigins = List.of(DebtPositionOrigin.ORDINARY.toString(),DebtPositionOrigin.ORDINARY_SIL.toString(), DebtPositionOrigin.SPONTANEOUS.toString());
 
     DebtPositionViewFiltersDTO debtPositionViewFiltersDTO = podamFactory.manufacturePojo(
       DebtPositionViewFiltersDTO.class);

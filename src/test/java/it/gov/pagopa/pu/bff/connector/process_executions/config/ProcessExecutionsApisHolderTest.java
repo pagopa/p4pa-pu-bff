@@ -2,6 +2,8 @@ package it.gov.pagopa.pu.bff.connector.process_executions.config;
 
 import it.gov.pagopa.pu.bff.connector.BaseApiHolderTest;
 import it.gov.pagopa.pu.processexecutions.dto.generated.ExportFileRequestDTO;
+import it.gov.pagopa.pu.processexecutions.dto.generated.ExportFileStatus;
+import it.gov.pagopa.pu.processexecutions.dto.generated.IngestionFlowFileStatus;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -48,7 +50,7 @@ class ProcessExecutionsApisHolderTest extends BaseApiHolderTest {
       accessToken -> processExecutionsApisHolder.getIngestionFlowFileSearchControllerApi(accessToken)
         .crudIngestionFlowFilesFindByOrganizationIDFlowTypeCreateDate(String.valueOf(123L),
           List.of("flowFileType"),
-          LocalDateTime.now(),LocalDateTime.now(),"status","fileName","operatorExternalId",0,0,null),
+          LocalDateTime.now(),LocalDateTime.now(), IngestionFlowFileStatus.PROCESSING,"fileName","operatorExternalId",0,0,null),
       new ParameterizedTypeReference<>() {},
       processExecutionsApisHolder::unload
     );
@@ -59,7 +61,7 @@ class ProcessExecutionsApisHolderTest extends BaseApiHolderTest {
     assertAuthenticationShouldBeSetInThreadSafeMode(
       accessToken -> processExecutionsApisHolder.getExportFileSearchControllerApi(accessToken)
         .crudExportFilesFindByOrganizationIDFlowTypeCreateDate(String.valueOf(123L), "flowFileType",
-          OffsetDateTime.now(),OffsetDateTime.now(),"status","fileName","operatorExternalId",0,0,null),
+          OffsetDateTime.now(),OffsetDateTime.now(),"operatorExternalId", ExportFileStatus.PROCESSING,"fileName",0,0,null),
       new ParameterizedTypeReference<>() {},
       processExecutionsApisHolder::unload
     );

@@ -967,7 +967,7 @@ paths:
         - name: status
           in: query
           schema:
-            type: 'DebtPositionViewStatus'
+            type: 'DebtPositionStatus'
       responses:
         '200':
           description: OK

@@ -8,11 +8,12 @@ import it.gov.pagopa.pu.bff.dto.generated.PagedExportFile;
 import it.gov.pagopa.pu.bff.service.export_flow_file.ExportFileRetrieverService;
 import it.gov.pagopa.pu.bff.util.TestUtils;
 import it.gov.pagopa.pu.processexecutions.dto.generated.ExportFile.FlowFileTypeEnum;
-import it.gov.pagopa.pu.processexecutions.dto.generated.ExportFile.StatusEnum;
 import it.gov.pagopa.pu.processexecutions.dto.generated.ExportFileFilter;
 import it.gov.pagopa.pu.processexecutions.dto.generated.ExportFileRequestDTO;
 import java.time.OffsetDateTime;
 import java.util.List;
+
+import it.gov.pagopa.pu.processexecutions.dto.generated.ExportFileStatus;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -52,7 +53,7 @@ class ExportFileControllerTest {
     FlowFileTypeEnum flowFileType = FlowFileTypeEnum.CLASSIFICATIONS;
     OffsetDateTime creationDateFrom = OffsetDateTime.now().minusDays(10);
     OffsetDateTime creationDateTo = OffsetDateTime.now().plusDays(10);
-    StatusEnum status = StatusEnum.COMPLETED;
+    ExportFileStatus status = ExportFileStatus.COMPLETED;
     String fileName = "filename";
     ExportFileFiltersDTO expectedFilter = new ExportFileFiltersDTO(
       organizationId, flowFileType, new OffsetDateTimeIntervalFilter(creationDateFrom, creationDateTo), status,
@@ -64,7 +65,7 @@ class ExportFileControllerTest {
       .creationDate(OffsetDateTime.now())
       .operator("operator")
       .totalRows(10L)
-      .status(StatusEnum.COMPLETED)
+      .status(ExportFileStatus.COMPLETED)
       .build()));
     expectedResult.setSize(10L);
     expectedResult.setTotalElements(1L);

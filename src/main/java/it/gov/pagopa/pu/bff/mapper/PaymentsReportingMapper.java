@@ -5,10 +5,11 @@ import it.gov.pagopa.pu.bff.dto.generated.PaymentsReportingDetailDTO;
 import it.gov.pagopa.pu.bff.dto.generated.ReceiptDetailDTO;
 import it.gov.pagopa.pu.classification.dto.generated.PagedModelPaymentsReporting;
 import it.gov.pagopa.pu.classification.dto.generated.PaymentsReporting;
-import it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentDetailDTO.StatusEnum;
-import java.util.Collections;
+import it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
+
+import java.util.Collections;
 
 @Component
 public class PaymentsReportingMapper {
@@ -47,7 +48,7 @@ public class PaymentsReportingMapper {
       .iuv(paymentsReporting.getIuv())
       .iur(paymentsReporting.getIur())
       .amountPaidCents(paymentsReporting.getAmountPaidCents())
-      .status(StatusEnum.REPORTED)
+      .status(InstallmentStatus.REPORTED)
       .build();
 
     if (receiptDetailDTO != null) {

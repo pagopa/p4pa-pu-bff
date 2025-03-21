@@ -4,8 +4,9 @@ import it.gov.pagopa.pu.bff.dto.generated.DebtPositionDetailDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedDebtPositionView;
 import it.gov.pagopa.pu.bff.service.debt_position.DebtPositionRetrieverService;
 import it.gov.pagopa.pu.bff.util.TestUtils;
-import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionView.StatusEnum;
 import java.time.OffsetDateTime;
+
+import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionStatus;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -49,7 +50,7 @@ class DebtPositionControllerTest {
     OffsetDateTime creationDateTo = OffsetDateTime.now();
     String fiscalCode = "fiscalCode";
     Long debtPositionTypeOrgId = 2L;
-    StatusEnum status = StatusEnum.REPORTED;
+    DebtPositionStatus status = DebtPositionStatus.REPORTED;
 
     PagedDebtPositionView expectedResult = podamFactory.manufacturePojo(PagedDebtPositionView.class);
 

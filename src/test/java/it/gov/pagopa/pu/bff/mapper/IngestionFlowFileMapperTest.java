@@ -4,11 +4,7 @@ import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.connector.auth.AuthzService;
 import it.gov.pagopa.pu.bff.dto.generated.PagedIngestionFlowFile;
 import it.gov.pagopa.pu.bff.util.TestUtils;
-import it.gov.pagopa.pu.processexecutions.dto.generated.IngestionFlowFile;
-import it.gov.pagopa.pu.processexecutions.dto.generated.IngestionFlowFile.StatusEnum;
-import it.gov.pagopa.pu.processexecutions.dto.generated.PageMetadata;
-import it.gov.pagopa.pu.processexecutions.dto.generated.PagedModelIngestionFlowFile;
-import it.gov.pagopa.pu.processexecutions.dto.generated.PagedModelIngestionFlowFileEmbedded;
+import it.gov.pagopa.pu.processexecutions.dto.generated.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -54,7 +50,7 @@ class IngestionFlowFileMapperTest {
     ingestionFlowFileMatchingOperator.setIngestionFlowFileId(1L);
     ingestionFlowFileMatchingOperator.setOperatorExternalId(operatorExternalId);
     ingestionFlowFileMatchingOperator.setFileName("fileName");
-    ingestionFlowFileMatchingOperator.setStatus(StatusEnum.COMPLETED);
+    ingestionFlowFileMatchingOperator.setStatus(IngestionFlowFileStatus.COMPLETED);
     ingestionFlowFileMatchingOperator.setNumTotalRows(10L);
     ingestionFlowFileMatchingOperator.setNumCorrectlyImportedRows(8L);
     IngestionFlowFile flowFileWithNoCorrectlyImportedRows = new IngestionFlowFile();
@@ -62,7 +58,7 @@ class IngestionFlowFileMapperTest {
     flowFileWithNoCorrectlyImportedRows.setIngestionFlowFileId(2L);
     flowFileWithNoCorrectlyImportedRows.setOperatorExternalId(otherOperatorExternalId);
     flowFileWithNoCorrectlyImportedRows.setFileName("fileName");
-    flowFileWithNoCorrectlyImportedRows.setStatus(StatusEnum.UPLOADED);
+    flowFileWithNoCorrectlyImportedRows.setStatus(IngestionFlowFileStatus.UPLOADED);
     flowFileWithNoCorrectlyImportedRows.setNumTotalRows(10L);
     flowFileWithNoCorrectlyImportedRows.setNumCorrectlyImportedRows(null);
     IngestionFlowFile flowFileWithNoTotalAndCorrectlyImportedRows = new IngestionFlowFile();
@@ -70,7 +66,7 @@ class IngestionFlowFileMapperTest {
     flowFileWithNoTotalAndCorrectlyImportedRows.setIngestionFlowFileId(3L);
     flowFileWithNoTotalAndCorrectlyImportedRows.setOperatorExternalId(otherOperatorExternalId);
     flowFileWithNoTotalAndCorrectlyImportedRows.setFileName("fileName");
-    flowFileWithNoTotalAndCorrectlyImportedRows.setStatus(StatusEnum.PROCESSING);
+    flowFileWithNoTotalAndCorrectlyImportedRows.setStatus(IngestionFlowFileStatus.PROCESSING);
     flowFileWithNoTotalAndCorrectlyImportedRows.setNumTotalRows(null);
     flowFileWithNoTotalAndCorrectlyImportedRows.setNumCorrectlyImportedRows(null);
     IngestionFlowFile flowFileWithNoTotalRows = new IngestionFlowFile();
@@ -78,7 +74,7 @@ class IngestionFlowFileMapperTest {
     flowFileWithNoTotalRows.setIngestionFlowFileId(3L);
     flowFileWithNoTotalRows.setFileName("fileName");
     flowFileWithNoTotalRows.setOperatorExternalId(otherOperatorExternalId);
-    flowFileWithNoTotalRows.setStatus(StatusEnum.ERROR);
+    flowFileWithNoTotalRows.setStatus(IngestionFlowFileStatus.ERROR);
     flowFileWithNoTotalRows.setNumTotalRows(null);
     flowFileWithNoTotalRows.setNumCorrectlyImportedRows(8L);
 
@@ -110,28 +106,28 @@ class IngestionFlowFileMapperTest {
       result.getContent().getFirst(),
       userInfo.getFamilyName() + " " +userInfo.getName(),
       2L,
-      it.gov.pagopa.pu.processexecutions.dto.generated.IngestionFlowFile.StatusEnum.COMPLETED);
+      IngestionFlowFileStatus.COMPLETED);
     checkIngestionFlowFile(flowFileWithNoCorrectlyImportedRows,
       result.getContent().get(1),
       otherUserInfo.getFamilyName() + " " +otherUserInfo.getName(),
       10L,
-      it.gov.pagopa.pu.processexecutions.dto.generated.IngestionFlowFile.StatusEnum.UPLOADED, "correctlyImportedRows");
+      IngestionFlowFileStatus.UPLOADED, "correctlyImportedRows");
     checkIngestionFlowFile(flowFileWithNoTotalAndCorrectlyImportedRows,
       result.getContent().get(2),
       otherUserInfo.getFamilyName() + " " +otherUserInfo.getName(),
       0L,
-      it.gov.pagopa.pu.processexecutions.dto.generated.IngestionFlowFile.StatusEnum.PROCESSING, "correctlyImportedRows","totalRows");
+      IngestionFlowFileStatus.PROCESSING, "correctlyImportedRows","totalRows");
     checkIngestionFlowFile(flowFileWithNoTotalRows,
       result.getContent().get(3),
       otherUserInfo.getFamilyName() + " " +otherUserInfo.getName(),
       0L,
-      StatusEnum.ERROR, "totalRows");
+      IngestionFlowFileStatus.ERROR, "totalRows");
     Mockito.verify(authzServiceMock, Mockito.times(3)).getUserInfoFromMappedExternaUserId(otherOperatorExternalId,accessToken);
     Mockito.verifyNoMoreInteractions(authzServiceMock);
   }
 
   private void checkIngestionFlowFile(
-    IngestionFlowFile expectedIngestionFlowFile, it.gov.pagopa.pu.bff.dto.generated.IngestionFlowFile mappedIngestionFlowFile, String expectedOperator, Long expectedDiscardedRows, it.gov.pagopa.pu.processexecutions.dto.generated.IngestionFlowFile.StatusEnum expectedStatus, String... nullFields){
+    IngestionFlowFile expectedIngestionFlowFile, it.gov.pagopa.pu.bff.dto.generated.IngestionFlowFile mappedIngestionFlowFile, String expectedOperator, Long expectedDiscardedRows, IngestionFlowFileStatus expectedStatus, String... nullFields){
     TestUtils.checkNotNullFields(mappedIngestionFlowFile, nullFields);
     assertEquals(expectedIngestionFlowFile.getIngestionFlowFileId(), mappedIngestionFlowFile.getIngestionFlowFileId());
     assertEquals(expectedIngestionFlowFile.getFileName(), mappedIngestionFlowFile.getFileName());
@@ -181,7 +177,7 @@ class IngestionFlowFileMapperTest {
     ingestionFlowFileMatchingOperator.setIngestionFlowFileId(1L);
     ingestionFlowFileMatchingOperator.setOperatorExternalId(operatorExternalId);
     ingestionFlowFileMatchingOperator.setFileName("fileName");
-    ingestionFlowFileMatchingOperator.setStatus(StatusEnum.COMPLETED);
+    ingestionFlowFileMatchingOperator.setStatus(IngestionFlowFileStatus.COMPLETED);
     ingestionFlowFileMatchingOperator.setNumTotalRows(10L);
     ingestionFlowFileMatchingOperator.setNumCorrectlyImportedRows(8L);
     embedded.setIngestionFlowFiles(List.of(ingestionFlowFileMatchingOperator));
@@ -202,6 +198,6 @@ class IngestionFlowFileMapperTest {
       result.getContent().getFirst(),
       userInfo.getFamilyName() + " " +userInfo.getName(),
       2L,
-      it.gov.pagopa.pu.processexecutions.dto.generated.IngestionFlowFile.StatusEnum.COMPLETED);
+      IngestionFlowFileStatus.COMPLETED);
   }
 }

@@ -6,11 +6,12 @@ import it.gov.pagopa.pu.bff.util.DateUtils;
 import it.gov.pagopa.pu.bff.util.PageUtils;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionDTO;
 import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelDebtPositionView;
-import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
+
+import java.util.List;
 
 @Service
 @Slf4j
@@ -32,7 +33,7 @@ public class DebtPositionClient {
         DateUtils.toLocalDateTime(filtersDTO.getCreationDateTo()),
         filtersDTO.getFiscalCode(),
         filtersDTO.getDebtPositionTypeOrgId(),
-        filtersDTO.getStatus()!=null?filtersDTO.getStatus().toString():null,
+        filtersDTO.getStatus(),
         PageUtils.getPageNumber(pageable),
         PageUtils.getPageSize(pageable),
         PageUtils.getSortList(pageable)

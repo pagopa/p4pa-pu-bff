@@ -1,6 +1,6 @@
 package it.gov.pagopa.pu.bff.dto;
 
-import it.gov.pagopa.pu.debtpositions.dto.generated.ReceiptView;
+import it.gov.pagopa.pu.debtpositions.dto.generated.ReceiptOriginType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 public class ReceiptViewFiltersDTO {
 
   private Long organizationId;
-  private ReceiptView.ReceiptOriginEnum receiptOrigin;
+  private ReceiptOriginType receiptOrigin;
   private String operatorExternalUserId;
   private String iuv;
   private String iur;

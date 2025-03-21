@@ -1,6 +1,7 @@
 package it.gov.pagopa.pu.bff.connector.debt_position.config;
 
 import it.gov.pagopa.pu.bff.connector.BaseApiHolderTest;
+import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionStatus;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -142,7 +143,7 @@ class DebtPositionApisHolderTest extends BaseApiHolderTest {
           LocalDateTime.now(),
           "fiscalCode",
           1L,
-          "status", 0, 10, Collections.emptyList()),
+          DebtPositionStatus.PAID, 0, 10, Collections.emptyList()),
       new ParameterizedTypeReference<>() {
       },
       debtPositionApisHolder::unload);

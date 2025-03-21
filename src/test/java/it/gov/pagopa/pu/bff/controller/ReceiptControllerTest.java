@@ -6,6 +6,7 @@ import it.gov.pagopa.pu.bff.dto.ReceiptViewFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedReceiptView;
 import it.gov.pagopa.pu.bff.dto.generated.ReceiptDetailDTO;
 import it.gov.pagopa.pu.bff.service.receipt.ReceiptRetrieverService;
+import it.gov.pagopa.pu.debtpositions.dto.generated.ReceiptOriginType;
 import it.gov.pagopa.pu.debtpositions.dto.generated.ReceiptView;
 import java.time.OffsetDateTime;
 import java.util.List;
@@ -50,7 +51,7 @@ class ReceiptControllerTest {
   @Test
   void givenCorrectRequestWhenGetReceiptsThenOk() {
     long organizationId = 1L;
-    ReceiptView.ReceiptOriginEnum receiptOrigin = ReceiptView.ReceiptOriginEnum.RECEIPT_PAGOPA;
+    ReceiptOriginType receiptOrigin = ReceiptOriginType.RECEIPT_PAGOPA;
     String iuv = "IUV123";
     String iur = "IUR123";
     String iud = "IUD123";

@@ -10,10 +10,11 @@ import it.gov.pagopa.pu.bff.mapper.DebtPositionMapper;
 import it.gov.pagopa.pu.bff.mapper.DebtPositionViewMapper;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionDTO;
-import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionView.DebtPositionOriginEnum;
-import java.util.List;
+import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionOrigin;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class DebtPositionRetrieverServiceImpl implements DebtPositionRetrieverService {
@@ -23,9 +24,9 @@ public class DebtPositionRetrieverServiceImpl implements DebtPositionRetrieverSe
   private final DebtPositionViewMapper debtPositionViewMapper;
   private final DebtPositionMapper debtPositionMapper;
   private static final List<String> debtPositionOriginFilterList = List.of(
-    DebtPositionOriginEnum.ORDINARY.toString(),
-    DebtPositionOriginEnum.ORDINARY_SIL.toString(),
-    DebtPositionOriginEnum.SPONTANEOUS.toString()
+    DebtPositionOrigin.ORDINARY.toString(),
+    DebtPositionOrigin.ORDINARY_SIL.toString(),
+    DebtPositionOrigin.SPONTANEOUS.toString()
   );
 
   public DebtPositionRetrieverServiceImpl(DebtPositionService debtPositionService,

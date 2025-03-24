@@ -1,5 +1,10 @@
 package it.gov.pagopa.pu.bff.connector.auth.client;
 
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import it.gov.pagopa.pu.auth.controller.generated.AuthnApi;
 import it.gov.pagopa.pu.auth.dto.generated.AccessToken;
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
@@ -11,10 +16,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class AuthnClientTest {
@@ -53,7 +54,6 @@ class AuthnClientTest {
     assertSame(expectedResult, result);
   }
 
-
   @Test
   void whenPostTokenThenInvokeAuthnApi() {
     String clientId = "clientId";
@@ -80,4 +80,16 @@ class AuthnClientTest {
     verify(authnApiMock).postToken(clientId, grantType, scope, subjectToken, subjectIssuer, subjectTokenType, clientSecret);
   }
 
+  @Test
+  void whenLogoutThenInvokeAuthnApi() {
+    String clientId = "clientId";
+    String accessToken = "accessToken";
+
+    when(authApisHolderMock.getAuthnApi(null)).thenReturn(authnApiMock);
+    doNothing().when(authnApiMock).logout(clientId, accessToken);
+
+    authnClient.logout(clientId, accessToken);
+
+    Mockito.verifyNoMoreInteractions(authnApiMock);
+  }
 }

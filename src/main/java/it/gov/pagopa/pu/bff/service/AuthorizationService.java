@@ -99,4 +99,7 @@ public class AuthorizationService {
       .findFirst();
   }
 
+  public void logout(String accessToken) {
+    authClientImpl.logout(CLIENT_ID,accessToken);
+  }
 }

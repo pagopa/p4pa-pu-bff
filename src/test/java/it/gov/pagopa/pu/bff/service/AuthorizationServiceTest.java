@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authorization.AuthorizationDeniedException;
@@ -234,6 +235,16 @@ class AuthorizationServiceTest {
     Assertions.assertThrows(AuthorizationDeniedException.class, () -> AuthorizationService.validateUserForOrganizationId(1L, userInfo));
   }
 
+  @Test
+  void whenLogoutThenOk(){
+    String accessToken = "accessToken";
+
+    Mockito.doNothing().when(authClientImplMock).logout(AuthorizationService.CLIENT_ID,accessToken);
+
+    authorizationService.logout(accessToken);
+
+    Mockito.verifyNoMoreInteractions(authClientImplMock);
+  }
 }
 
 

@@ -52,11 +52,11 @@
     "name" : "Treasuries",
     "description" : "the Treasuries API"
   }, {
-    "name" : "Organizations",
-    "description" : "the Organizations API"
-  }, {
     "name" : "Authentication",
     "description" : "the Authentication API"
+  }, {
+    "name" : "Organizations",
+    "description" : "the Organizations API"
   } ],
   "paths" : {
     "/bff/token" : {
@@ -145,6 +145,20 @@
         },
         "responses" : {
           "201" : {
+            "description" : "OK"
+          }
+        },
+        "security" : [ {
+          "BearerAuth" : [ ]
+        } ]
+      }
+    },
+    "/bff/auth/revoke" : {
+      "post" : {
+        "tags" : [ "Authentication" ],
+        "operationId" : "logout",
+        "responses" : {
+          "200" : {
             "description" : "OK"
           }
         },
@@ -2482,6 +2496,57 @@
           "BearerAuth" : [ ]
         } ]
       }
+    },
+    "/bff/auth/userinfo" : {
+      "get" : {
+        "tags" : [ "Authentication" ],
+        "operationId" : "getUserInfo",
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/UserInfo"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Forbidden",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/UserInfo"
+                }
+              }
+            }
+          },
+          "429" : {
+            "description" : "Too Many Requests",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/UserInfo"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal Server Error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/UserInfo"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "BearerAuth" : [ ]
+        } ]
+      }
     }
   },
   "components" : {
@@ -3967,7 +4032,7 @@
           },
           "paymentOptionType" : {
             "type" : "string",
-            "enum" : [ "SINGLE_INSTALLMENT", "INSTALLMENTS", "DOWN_PAYMENT" ]
+            "enum" : [ "SINGLE_INSTALLMENT", "REDUCED_SINGLE_INSTALLMENT", "INSTALLMENTS", "DOWN_PAYMENT" ]
           },
           "paymentOptionIndex" : {
             "type" : "integer",
@@ -4365,6 +4430,80 @@
           }
         },
         "required" : [ "brokerFiscalCode", "brokerId", "canManageUsers", "footerAccessibilityUrl", "footerDescText", "footerGDPRUrl", "footerPrivacyInfoUrl", "footerTermsCondUrl", "headerAssistanceUrl", "logoFooterImg" ]
+      },
+      "UserInfo" : {
+        "type" : "object",
+        "properties" : {
+          "userId" : {
+            "type" : "string"
+          },
+          "mappedExternalUserId" : {
+            "type" : "string"
+          },
+          "fiscalCode" : {
+            "type" : "string"
+          },
+          "familyName" : {
+            "type" : "string"
+          },
+          "name" : {
+            "type" : "string"
+          },
+          "issuer" : {
+            "type" : "string"
+          },
+          "organizationAccess" : {
+            "type" : "string"
+          },
+          "organizations" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/UserOrganizationRoles"
+            }
+          },
+          "brokerId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "brokerFiscalCode" : {
+            "type" : "string"
+          },
+          "canManageUsers" : {
+            "type" : "boolean"
+          },
+          "systemUser" : {
+            "type" : "boolean"
+          }
+        },
+        "required" : [ "canManageUsers", "familyName", "fiscalCode", "issuer", "mappedExternalUserId", "name", "organizations", "userId" ]
+      },
+      "UserOrganizationRoles" : {
+        "type" : "object",
+        "properties" : {
+          "operatorId" : {
+            "type" : "string"
+          },
+          "organizationId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "organizationIpaCode" : {
+            "type" : "string"
+          },
+          "organizationFiscalCode" : {
+            "type" : "string"
+          },
+          "email" : {
+            "type" : "string"
+          },
+          "roles" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          }
+        },
+        "required" : [ "operatorId", "organizationFiscalCode", "organizationId", "organizationIpaCode", "roles" ]
       }
     },
     "securitySchemes" : {

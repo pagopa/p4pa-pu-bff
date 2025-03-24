@@ -106,10 +106,6 @@ paths:
       responses:
         '200':
           description: OK
-        '400':
-          description: Invalid request
-        '401':
-          description: Invalid client_id
   /core-health:
     get:
       tags:

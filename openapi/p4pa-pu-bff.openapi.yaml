@@ -80,6 +80,36 @@ paths:
           description: Too many requests
         '500':
           description: Internal Server Error
+  /auth/userinfo:
+    get:
+      tags:
+        - Authentication
+      operationId: getUserInfo
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: 'UserInfo'
+        '403':
+          description: Forbidden
+        '429':
+          description: Too Many Requests
+        '500':
+          description: Internal Server Error
+  /auth/revoke:
+    post:
+      tags:
+        - Authentication
+      operationId: logout
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Invalid request
+        '401':
+          description: Invalid client_id
   /core-health:
     get:
       tags:

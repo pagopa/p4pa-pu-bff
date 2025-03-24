@@ -26,4 +26,8 @@ public class AuthnClient {
       .postToken(clientId, grantType, scope, subjectToken, subjectIssuer, subjectTokenType, clientSecret);
   }
 
+  public void logout(String clientId, String accessToken) {
+    authApisHolder.getAuthnApi(null)
+      .logout(clientId,accessToken);
+  }
 }

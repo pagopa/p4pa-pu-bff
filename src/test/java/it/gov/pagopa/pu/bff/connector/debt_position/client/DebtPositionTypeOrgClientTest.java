@@ -1,17 +1,10 @@
 package it.gov.pagopa.pu.bff.connector.debt_position.client;
 
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.mockito.Mockito.when;
-
 import it.gov.pagopa.pu.bff.connector.debt_position.config.DebtPositionApisHolder;
-import it.gov.pagopa.pu.bff.util.PageUtils;
 import it.gov.pagopa.pu.debtpositions.controller.generated.DebtPositionTypeOrgEntityControllerApi;
 import it.gov.pagopa.pu.debtpositions.controller.generated.DebtPositionTypeOrgSearchControllerApi;
-import it.gov.pagopa.pu.debtpositions.controller.generated.DebtPositionTypeOrgWithCountSearchControllerApi;
 import it.gov.pagopa.pu.debtpositions.dto.generated.CollectionModelDebtPositionTypeOrg;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrg;
-import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelDebtPositionTypeOrgWithCount;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,10 +12,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.client.HttpClientErrorException;
+
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class DebtPositionTypeOrgClientTest {
@@ -33,9 +28,6 @@ class DebtPositionTypeOrgClientTest {
   private DebtPositionTypeOrgSearchControllerApi debtPositionTypeOrgSearchControllerApiMock;
   @Mock
   private DebtPositionTypeOrgEntityControllerApi debtPositionTypeOrgEntityControllerApiMock;
-  @Mock
-  private DebtPositionTypeOrgWithCountSearchControllerApi debtPositionTypeOrgWithCountSearchControllerApiMock;
-
   private DebtPositionTypeOrgClient debtPositionTypeOrgClient;
 
   @BeforeEach
@@ -45,7 +37,7 @@ class DebtPositionTypeOrgClientTest {
 
   @AfterEach
   void verifyNoMoreInteractions() {
-    Mockito.verifyNoMoreInteractions(debtPositionApisHolderMock, debtPositionTypeOrgSearchControllerApiMock, debtPositionTypeOrgEntityControllerApiMock, debtPositionTypeOrgWithCountSearchControllerApiMock);
+    Mockito.verifyNoMoreInteractions(debtPositionApisHolderMock, debtPositionTypeOrgSearchControllerApiMock, debtPositionTypeOrgEntityControllerApiMock);
   }
 
   @Test
@@ -99,48 +91,6 @@ class DebtPositionTypeOrgClientTest {
         HttpClientErrorException.create(HttpStatus.NOT_FOUND, "NotFound", null, null, null));
 
     DebtPositionTypeOrg result = debtPositionTypeOrgClient.getDebtPositionTypeOrg(debtPositionTypeOrgId, accessToken);
-
-    assertNull( result);
-  }
-
-  @Test
-  void whenGetDebtPositionTypeOrgWithCountThenInvokeWithAccessToken() {
-    Long organizationId = 1L;
-    String code = "code";
-    String description = "description";
-    Pageable pageable = PageRequest.of(0, 10);
-    String accessToken = "ACCESSTOKEN";
-    PagedModelDebtPositionTypeOrgWithCount expectedResult = new PagedModelDebtPositionTypeOrgWithCount();
-
-    when(debtPositionApisHolderMock.getDebtPositionTypeOrgWithCountSearchControllerApi(accessToken))
-      .thenReturn(debtPositionTypeOrgWithCountSearchControllerApiMock);
-
-    when(debtPositionTypeOrgWithCountSearchControllerApiMock.crudDebtPositionTypeOrgsWithCountFindByCodeAndDescription(
-      organizationId, code, description, PageUtils.getPageNumber(pageable), PageUtils.getPageSize(pageable), PageUtils.getSortList(pageable)))
-      .thenReturn(expectedResult);
-
-    PagedModelDebtPositionTypeOrgWithCount result = debtPositionTypeOrgClient.getDebtPositionTypeOrgWithCount(organizationId, code, description, pageable, accessToken);
-
-    assertSame(expectedResult, result);
-  }
-
-  @Test
-  void givenNoDebtPositionTypeOrgWithCountWhenGetDebtPositionTypeOrgWithCountThenReturnNull() {
-    Long organizationId = 1L;
-    String code = "code";
-    String description = "description";
-    Pageable pageable = PageRequest.of(0, 10);
-    String accessToken = "ACCESSTOKEN";
-
-    when(debtPositionApisHolderMock.getDebtPositionTypeOrgWithCountSearchControllerApi(accessToken))
-      .thenReturn(debtPositionTypeOrgWithCountSearchControllerApiMock);
-
-    when(debtPositionTypeOrgWithCountSearchControllerApiMock.crudDebtPositionTypeOrgsWithCountFindByCodeAndDescription(
-      organizationId, code, description, PageUtils.getPageNumber(pageable), PageUtils.getPageSize(pageable), PageUtils.getSortList(pageable)))
-      .thenThrow(
-        HttpClientErrorException.create(HttpStatus.NOT_FOUND, "NotFound", null, null, null));
-
-    PagedModelDebtPositionTypeOrgWithCount result = debtPositionTypeOrgClient.getDebtPositionTypeOrgWithCount(organizationId, code, description, pageable, accessToken);
 
     assertNull(result);
   }

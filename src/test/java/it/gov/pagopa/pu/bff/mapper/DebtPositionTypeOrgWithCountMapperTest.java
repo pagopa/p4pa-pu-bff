@@ -86,4 +86,16 @@ class DebtPositionTypeOrgWithCountMapperTest {
     assertTrue(CollectionUtils.isEmpty(result.getContent()));
   }
 
+  @Test
+  void givenNullPagedModelWhenMapToPagedDebtPositionTypeOrgWithCountThenEmptyResult() {
+    PagedDebtPositionTypeOrgWithCount result = mapper.mapToPagedDebtPositionTypeOrgWithCount(null);
+
+    assertNotNull(result);
+    assertNull(result.getNumber());
+    assertNull(result.getTotalElements());
+    assertNull(result.getTotalPages());
+    assertNull(result.getSize());
+    assertTrue(CollectionUtils.isEmpty(result.getContent()));
+  }
+
 }

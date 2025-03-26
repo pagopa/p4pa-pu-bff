@@ -159,5 +159,25 @@ class DebtPositionTypeOrgRetrieverServiceImplTest {
     Mockito.verify(debtPositionTypeOrgWithCountMapperMock).mapToPagedDebtPositionTypeOrgWithCount(pagedModelDebtPositionTypeOrgWithCount);
   }
 
+  @Test
+  void givenNonAdminWhenGetDebtPositionTypeOrgWithCountThenUnauthorized() {
+    UserInfo loggedUser = new UserInfo();
+    loggedUser.setUserId("user-456"); // Non-admin user
+
+    long organizationId = 1L;
+    String code = "code";
+    String description = "description";
+    Pageable pageable = PageRequest.of(0, 10);
+
+    Mockito.doThrow(new AuthorizationDeniedException("Access denied on organizationId " + organizationId + " to user " + loggedUser.getMappedExternalUserId()))
+      .when(authorizationServiceMock).validateAdminRole(organizationId, loggedUser);
+
+    assertThrows(AuthorizationDeniedException.class, () -> debtPositionTypeOrgService.getDebtPositionTypeOrgWithCount(organizationId, code, description, pageable, loggedUser, accessToken));
+
+    Mockito.verify(authorizationServiceMock).validateAdminRole(organizationId, loggedUser);
+    Mockito.verify(debtPositionTypeOrgServiceMock, Mockito.never()).getDebtPositionTypeOrgWithCount(organizationId, code, description, pageable, accessToken);
+    Mockito.verify(debtPositionTypeOrgWithCountMapperMock, Mockito.never()).mapToPagedDebtPositionTypeOrgWithCount(Mockito.any());
+  }
+
 }
 

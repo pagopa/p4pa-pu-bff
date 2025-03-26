@@ -10,6 +10,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.util.CollectionUtils;
 
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -60,4 +61,29 @@ class DebtPositionTypeOrgWithCountMapperTest {
     assertNull(result.getSize());
     assertTrue(CollectionUtils.isEmpty(result.getContent()));
   }
+
+  @Test
+  void givenPagedModelWithEmptyEmbeddedWhenMapToPagedDebtPositionTypeOrgWithCountThenEmptyContent() {
+    PagedModelDebtPositionTypeOrgWithCount pagedModel = new PagedModelDebtPositionTypeOrgWithCount();
+    PagedModelDebtPositionTypeOrgWithCountEmbedded embedded = new PagedModelDebtPositionTypeOrgWithCountEmbedded();
+    embedded.setDebtPositionTypeOrgWithCounts(Collections.emptyList());
+    pagedModel.setEmbedded(embedded);
+
+    PageMetadata page = new PageMetadata();
+    page.setSize(10L);
+    page.setTotalElements(0L);
+    page.setTotalPages(0L);
+    page.setNumber(0L);
+    pagedModel.setPage(page);
+
+    PagedDebtPositionTypeOrgWithCount result = mapper.mapToPagedDebtPositionTypeOrgWithCount(pagedModel);
+
+    assertNotNull(result);
+    assertEquals(0L, result.getNumber());
+    assertEquals(0L, result.getTotalElements());
+    assertEquals(0L, result.getTotalPages());
+    assertEquals(10L, result.getSize());
+    assertTrue(CollectionUtils.isEmpty(result.getContent()));
+  }
+
 }

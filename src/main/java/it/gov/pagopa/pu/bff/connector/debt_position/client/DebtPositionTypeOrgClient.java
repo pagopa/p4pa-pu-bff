@@ -1,9 +1,12 @@
 package it.gov.pagopa.pu.bff.connector.debt_position.client;
 
 import it.gov.pagopa.pu.bff.connector.debt_position.config.DebtPositionApisHolder;
+import it.gov.pagopa.pu.bff.util.PageUtils;
 import it.gov.pagopa.pu.debtpositions.dto.generated.CollectionModelDebtPositionTypeOrg;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrg;
+import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelDebtPositionTypeOrgWithCount;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 
@@ -23,8 +26,8 @@ public class DebtPositionTypeOrgClient {
   }
 
   public DebtPositionTypeOrg getDebtPositionTypeOrg(Long debtPositionTypeOrgId,
-    String accessToken) {
-    try{
+                                                    String accessToken) {
+    try {
       return debtPositionApisHolder.getDebtPositionTypeOrgEntityControllerApi(accessToken)
         .crudGetDebtpositiontypeorg(String.valueOf(debtPositionTypeOrgId));
     } catch (HttpClientErrorException.NotFound e) {
@@ -32,5 +35,22 @@ public class DebtPositionTypeOrgClient {
       return null;
     }
   }
+
+  public PagedModelDebtPositionTypeOrgWithCount getDebtPositionTypeOrgWithCount(Long organizationId, String code, String description, Pageable pageable, String accessToken) {
+    try {
+      return debtPositionApisHolder.getDebtPositionTypeOrgWithCountSearchControllerApi(accessToken)
+        .crudDebtPositionTypeOrgsWithCountFindByCodeAndDescription(
+          organizationId,
+          code,
+          description,
+          PageUtils.getPageNumber(pageable),
+          PageUtils.getPageSize(pageable),
+          PageUtils.getSortList(pageable));
+    } catch (HttpClientErrorException.NotFound e) {
+      log.warn("DebtPositionTypeOrg with organizationId {} not found", organizationId);
+      return null;
+    }
+  }
+
 }
 

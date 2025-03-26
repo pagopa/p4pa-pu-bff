@@ -64,6 +64,16 @@ class DebtPositionApisHolderTest extends BaseApiHolderTest {
   }
 
   @Test
+  void whenGetDebtPositionTypeOrgWithCountSearchControllerApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
+    assertAuthenticationShouldBeSetInThreadSafeMode(
+      accessToken -> debtPositionApisHolder.getDebtPositionTypeOrgWithCountSearchControllerApi(accessToken)
+        .crudDebtPositionTypeOrgsWithCountFindByCodeAndDescription(1L, "code", "description", 0, 10, Collections.emptyList()),
+      new ParameterizedTypeReference<>() {
+      },
+      debtPositionApisHolder::unload);
+  }
+
+  @Test
   void whenGetReceiptViewSearchControllerApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
     assertAuthenticationShouldBeSetInThreadSafeMode(
       accessToken -> debtPositionApisHolder.getReceiptViewSearchControllerApi(accessToken)

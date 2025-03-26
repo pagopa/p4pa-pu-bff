@@ -6,12 +6,15 @@ import static org.mockito.Mockito.when;
 import it.gov.pagopa.pu.bff.connector.debt_position.client.DebtPositionTypeOrgClient;
 import it.gov.pagopa.pu.debtpositions.dto.generated.CollectionModelDebtPositionTypeOrg;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrg;
+import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelDebtPositionTypeOrgWithCount;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 @ExtendWith(MockitoExtension.class)
 class DebtPositionTypeOrgServiceTest {
@@ -54,4 +57,22 @@ class DebtPositionTypeOrgServiceTest {
 
     assertSame(expectedResult, result);
   }
+
+  @Test
+  void whenGetDebtPositionTypeOrgWithCountThenInvokeClient() {
+    Long organizationId = 1L;
+    String code = "code";
+    String description = "description";
+    Pageable pageable = PageRequest.of(0, 10);
+    String accessToken = "ACCESSTOKEN";
+    PagedModelDebtPositionTypeOrgWithCount expectedResult = new PagedModelDebtPositionTypeOrgWithCount();
+
+    when(client.getDebtPositionTypeOrgWithCount(Mockito.same(organizationId), Mockito.same(code), Mockito.same(description), Mockito.same(pageable), Mockito.same(accessToken)))
+      .thenReturn(expectedResult);
+
+    PagedModelDebtPositionTypeOrgWithCount result = service.getDebtPositionTypeOrgWithCount(organizationId, code, description, pageable, accessToken);
+
+    assertSame(expectedResult, result);
+  }
+
 }

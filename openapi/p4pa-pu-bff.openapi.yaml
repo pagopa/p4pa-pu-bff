@@ -268,6 +268,43 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/TaxonomyCodeDTO'
+  /organization/{organizationId}/debt-position-type-orgs-with-count:
+    get:
+      tags:
+        - DebtPositionTypeOrgs
+      summary: "Retrieve a paged list of DebtPositionTypeOrgWithCount"
+      operationId: getDebtPositionTypeOrgWithCount
+      parameters:
+        - name: organizationId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: code
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: description
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PagedDebtPositionTypeOrgWithCount'
+        '401':
+          description: Unauthorized - Missing or invalid token
+        '403':
+          description: Forbidden - Access denied
+        '500':
+          description: Internal Server Error
+      x-spring-paginated: true
   /organization/{organizationId}/debt-position-types:
     get:
       tags:
@@ -1248,6 +1285,31 @@ components:
         description:
           type: string
           description: Description of the error
+    PagedDebtPositionTypeOrgWithCount:
+      type: object
+      required:
+        - content
+        - size
+        - totalElements
+        - totalPages
+        - number
+      properties:
+        content:
+          type: array
+          items:
+            type: 'DebtPositionTypeOrgWithCount'
+        size:
+          type: integer
+          format: int64
+        totalElements:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer
+          format: int64
+        number:
+          type: integer
+          format: int64
     PagedDebtPositionTypeWithCount:
       type: object
       required:

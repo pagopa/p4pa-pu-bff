@@ -1,9 +1,5 @@
 package it.gov.pagopa.pu.bff.connector.debt_position.client;
 
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.mockito.Mockito.when;
-
 import it.gov.pagopa.pu.bff.connector.debt_position.config.DebtPositionApisHolder;
 import it.gov.pagopa.pu.debtpositions.controller.generated.DebtPositionTypeOrgEntityControllerApi;
 import it.gov.pagopa.pu.debtpositions.controller.generated.DebtPositionTypeOrgSearchControllerApi;
@@ -19,17 +15,19 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.client.HttpClientErrorException;
 
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.mockito.Mockito.when;
+
 @ExtendWith(MockitoExtension.class)
 class DebtPositionTypeOrgClientTest {
 
   @Mock
   private DebtPositionApisHolder debtPositionApisHolderMock;
-
   @Mock
   private DebtPositionTypeOrgSearchControllerApi debtPositionTypeOrgSearchControllerApiMock;
   @Mock
   private DebtPositionTypeOrgEntityControllerApi debtPositionTypeOrgEntityControllerApiMock;
-
   private DebtPositionTypeOrgClient debtPositionTypeOrgClient;
 
   @BeforeEach
@@ -94,7 +92,7 @@ class DebtPositionTypeOrgClientTest {
 
     DebtPositionTypeOrg result = debtPositionTypeOrgClient.getDebtPositionTypeOrg(debtPositionTypeOrgId, accessToken);
 
-    assertNull( result);
+    assertNull(result);
   }
 
 }

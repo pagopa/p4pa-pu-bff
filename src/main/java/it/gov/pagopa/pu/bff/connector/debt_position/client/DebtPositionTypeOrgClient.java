@@ -23,8 +23,8 @@ public class DebtPositionTypeOrgClient {
   }
 
   public DebtPositionTypeOrg getDebtPositionTypeOrg(Long debtPositionTypeOrgId,
-    String accessToken) {
-    try{
+                                                    String accessToken) {
+    try {
       return debtPositionApisHolder.getDebtPositionTypeOrgEntityControllerApi(accessToken)
         .crudGetDebtpositiontypeorg(String.valueOf(debtPositionTypeOrgId));
     } catch (HttpClientErrorException.NotFound e) {
@@ -32,5 +32,6 @@ public class DebtPositionTypeOrgClient {
       return null;
     }
   }
+
 }
 

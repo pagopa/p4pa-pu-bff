@@ -1,6 +1,7 @@
 package it.gov.pagopa.pu.bff.controller;
 
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
+import it.gov.pagopa.pu.bff.dto.generated.PagedDebtPositionTypeOrgWithCount;
 import it.gov.pagopa.pu.bff.security.SecurityUtils;
 import it.gov.pagopa.pu.bff.service.debt_position_type_org.DebtPositionTypeOrgRetrieverService;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrg;
@@ -12,6 +13,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -52,6 +55,31 @@ class DebtPositionTypeOrgControllerTest {
     )).thenReturn(expectedResult);
 
     ResponseEntity<List<DebtPositionTypeOrg>> response = debtPositionTypeOrgController.getDebtPositionTypeOrgs(organizationId);
+
+    Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
+    Assertions.assertNotNull(response.getBody());
+    Assertions.assertSame(expectedResult, response.getBody());
+  }
+
+  @Test
+  void givenCorrectRequestWhenGetDebtPositionTypeOrgWithCountThenOk() {
+    long organizationId = 1L;
+    String code = "testCode";
+    String description = "testDescription";
+    Pageable pageable = PageRequest.of(0, 10);
+    PagedDebtPositionTypeOrgWithCount expectedResult = new PagedDebtPositionTypeOrgWithCount();
+
+    Mockito.when(debtPositionTypeOrgRetrieverServiceMock.getDebtPositionTypeOrgWithCount(
+      organizationId,
+      code,
+      description,
+      pageable,
+      SecurityUtils.getLoggedUser(),
+      SecurityUtils.getAccessToken()
+    )).thenReturn(expectedResult);
+
+    ResponseEntity<PagedDebtPositionTypeOrgWithCount> response = debtPositionTypeOrgController.getDebtPositionTypeOrgWithCount(
+      organizationId, code, description, pageable);
 
     Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
     Assertions.assertNotNull(response.getBody());

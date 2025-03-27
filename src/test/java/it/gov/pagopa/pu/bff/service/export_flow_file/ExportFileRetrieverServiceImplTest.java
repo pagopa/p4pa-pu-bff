@@ -45,13 +45,13 @@ class ExportFileRetrieverServiceImplTest {
   void givenAdminUserWhenGetExportFilesThenOk() {
     String accessToken = "ACCESSTOKEN";
     long organizationId = 1L;
-    ExportFileTypeEnum flowFileType = ExportFileTypeEnum.CLASSIFICATIONS;
+    ExportFileTypeEnum exportFileType = ExportFileTypeEnum.CLASSIFICATIONS;
     OffsetDateTime creationDateFrom = OffsetDateTime.now().minusDays(10);
     OffsetDateTime creationDateTo = OffsetDateTime.now().plusDays(10);
     ExportFileStatus status = ExportFileStatus.COMPLETED;
     String fileName = "filename";
     ExportFileFiltersDTO exportFileFilters = new ExportFileFiltersDTO(
-      organizationId, flowFileType, new OffsetDateTimeIntervalFilter(creationDateFrom, creationDateTo), status,
+      organizationId, exportFileType, new OffsetDateTimeIntervalFilter(creationDateFrom, creationDateTo), status,
       fileName);
     UserInfo userInfo = new UserInfo();
     PagedModelExportFile pagedModelExportFile = new PagedModelExportFile();
@@ -83,13 +83,13 @@ class ExportFileRetrieverServiceImplTest {
   void givenNoAdminUserWhenGetExportFilesThenOk(){
     String accessToken="ACCESSTOKEN";
     long organizationId = 1L;
-    ExportFileTypeEnum flowFileType = ExportFileTypeEnum.CLASSIFICATIONS;
+    ExportFileTypeEnum exportFileType = ExportFileTypeEnum.CLASSIFICATIONS;
     OffsetDateTime creationDateFrom = OffsetDateTime.now().minusDays(10);
     OffsetDateTime creationDateTo = OffsetDateTime.now().plusDays(10);
     ExportFileStatus status = ExportFileStatus.COMPLETED;
     String fileName = "filename";
     ExportFileFiltersDTO exportFileFilters = new ExportFileFiltersDTO(
-      organizationId, flowFileType, new OffsetDateTimeIntervalFilter(creationDateFrom, creationDateTo), status,
+      organizationId, exportFileType, new OffsetDateTimeIntervalFilter(creationDateFrom, creationDateTo), status,
       fileName);
     String operatorExternalId = "operatorExternalId";
     UserInfo userInfo = new UserInfo();
@@ -120,8 +120,8 @@ class ExportFileRetrieverServiceImplTest {
   void whenCreateExportFileThenOk() {
     ExportFileRequestDTO requestDTO = ExportFileRequestDTO.builder()
       .organizationId(1L)
-      .flowFileType(ExportFileRequestDTO.FlowFileTypeEnum.CLASSIFICATIONS)
-      .flowFileVersion("version1")
+      .exportFileType(ExportFileRequestDTO.ExportFileTypeEnum.CLASSIFICATIONS)
+      .fileVersion("version1")
       .filterFields(ExportFileFilter.builder()
         .iuv("iuv")
         .build())

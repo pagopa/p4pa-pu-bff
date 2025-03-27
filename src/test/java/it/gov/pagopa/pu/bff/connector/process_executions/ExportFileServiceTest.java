@@ -52,8 +52,8 @@ class ExportFileServiceTest {
   void whenCreateExportFileThenInvokeClient() {
     ExportFileRequestDTO requestDTO = ExportFileRequestDTO.builder()
       .organizationId(1L)
-      .flowFileType(ExportFileRequestDTO.FlowFileTypeEnum.CLASSIFICATIONS)
-      .flowFileVersion("version1")
+      .exportFileType(ExportFileRequestDTO.ExportFileTypeEnum.CLASSIFICATIONS)
+      .fileVersion("version1")
       .filterFields(ExportFileFilter.builder()
         .iuv("iuv")
         .build())

@@ -1674,7 +1674,7 @@
             "format" : "int64"
           }
         }, {
-          "name" : "flowFileTypes",
+          "name" : "ingestionFlowFileTypes",
           "in" : "query",
           "required" : true,
           "schema" : {
@@ -1787,7 +1787,7 @@
             "format" : "int64"
           }
         }, {
-          "name" : "flowFileType",
+          "name" : "exportFileType",
           "in" : "query",
           "required" : true,
           "schema" : {
@@ -2734,18 +2734,18 @@
             "type" : "integer",
             "format" : "int64"
           },
-          "flowFileType" : {
+          "exportFileType" : {
             "type" : "string",
             "enum" : [ "PAID", "CLASSIFICATIONS", "PAYMENTS_REPORTING" ]
           },
-          "flowFileVersion" : {
+          "fileVersion" : {
             "type" : "string"
           },
           "filterFields" : {
             "$ref" : "#/components/schemas/ExportFileFilter"
           }
         },
-        "required" : [ "filterFields", "flowFileType", "flowFileVersion", "organizationId" ]
+        "required" : [ "exportFileType", "fileVersion", "filterFields", "organizationId" ]
       },
       "LocalDateIntervalFilter" : {
         "type" : "object",

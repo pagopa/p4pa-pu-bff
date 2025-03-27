@@ -14,7 +14,7 @@ import java.util.List;
 @NoArgsConstructor
 public class IngestionFlowFileFiltersDTO {
   private Long organizationId;
-  private List<IngestionFlowFileTypeEnum> flowFileType;
+  private List<IngestionFlowFileTypeEnum> ingestionFlowFileType;
   private OffsetDateTime creationDateFrom;
   private OffsetDateTime creationDateTo;
   private IngestionFlowFileStatus status;

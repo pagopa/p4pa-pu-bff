@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ExportFileFiltersDTO {
   private Long organizationId;
-  private ExportFile.ExportFileTypeEnum flowFileType;
+  private ExportFile.ExportFileTypeEnum exportFileType;
   private OffsetDateTimeIntervalFilter creationDate;
   private ExportFileStatus status;
   private String fileName;

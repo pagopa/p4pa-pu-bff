@@ -913,7 +913,7 @@ paths:
           schema:
             type: integer
             format: int64
-        - name: flowFileTypes
+        - name: ingestionFlowFileTypes
           in: query
           required: true
           schema:
@@ -960,7 +960,7 @@ paths:
           schema:
             type: integer
             format: int64
-        - name: flowFileType
+        - name: exportFileType
           in: query
           required: true
           schema:

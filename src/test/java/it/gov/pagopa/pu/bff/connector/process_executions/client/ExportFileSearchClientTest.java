@@ -52,14 +52,14 @@ class ExportFileSearchClientTest {
   @Test
   void whenGetExportFilesThenInvokeWithAccessToken() {
     long organizationId = 1L;
-    ExportFileTypeEnum flowFileType = ExportFileTypeEnum.CLASSIFICATIONS;
+    ExportFileTypeEnum exportFileType = ExportFileTypeEnum.CLASSIFICATIONS;
     OffsetDateTime creationDateFrom = OffsetDateTime.now().minusDays(10);
     OffsetDateTime creationDateTo = OffsetDateTime.now().plusDays(10);
     ExportFileStatus status = ExportFileStatus.COMPLETED;
     String fileName = "filename";
     String operatorExternalId = "operatorExternalId";
     ExportFileFiltersDTO exportFileFilters = new ExportFileFiltersDTO(
-      organizationId, flowFileType, new OffsetDateTimeIntervalFilter(creationDateFrom, creationDateTo), status,
+      organizationId, exportFileType, new OffsetDateTimeIntervalFilter(creationDateFrom, creationDateTo), status,
       fileName);
     List<String> sortList = List.of("sort1,ASC","sort2,DESC");
     String accessToken = "ACCESSTOKEN";
@@ -68,7 +68,7 @@ class ExportFileSearchClientTest {
     when(processExecutionsApisHolderMock.getExportFileSearchControllerApi(accessToken))
       .thenReturn(exportFileSearchControllerApiMock);
     when(exportFileSearchControllerApiMock.crudExportFilesFindByOrganizationIDFlowTypeCreateDate(
-      String.valueOf(organizationId),flowFileType.toString(),creationDateFrom,
+      String.valueOf(organizationId),exportFileType.toString(),creationDateFrom,
       creationDateTo,operatorExternalId, status,fileName,0,10,sortList))
       .thenReturn(expectedResult);
 
@@ -82,14 +82,14 @@ class ExportFileSearchClientTest {
   @Test
   void givenUnpagedWhenGetExportFilesThenInvokeWithAccessToken() {
     long organizationId = 1L;
-    ExportFileTypeEnum flowFileType = ExportFileTypeEnum.CLASSIFICATIONS;
+    ExportFileTypeEnum exportFileType = ExportFileTypeEnum.CLASSIFICATIONS;
     OffsetDateTime creationDateFrom = OffsetDateTime.now().minusDays(10);
     OffsetDateTime creationDateTo = OffsetDateTime.now().plusDays(10);
     ExportFileStatus status = ExportFileStatus.COMPLETED;
     String fileName = "filename";
     String operatorExternalId = "operatorExternalId";
     ExportFileFiltersDTO exportFileFilters = new ExportFileFiltersDTO(
-      organizationId, flowFileType, new OffsetDateTimeIntervalFilter(creationDateFrom, creationDateTo), status,
+      organizationId, exportFileType, new OffsetDateTimeIntervalFilter(creationDateFrom, creationDateTo), status,
       fileName);
     String accessToken = "ACCESSTOKEN";
     PagedModelExportFile expectedResult = new PagedModelExportFile();
@@ -97,7 +97,7 @@ class ExportFileSearchClientTest {
     when(processExecutionsApisHolderMock.getExportFileSearchControllerApi(accessToken))
       .thenReturn(exportFileSearchControllerApiMock);
     when(exportFileSearchControllerApiMock.crudExportFilesFindByOrganizationIDFlowTypeCreateDate(
-      String.valueOf(organizationId),flowFileType.toString(),creationDateFrom,
+      String.valueOf(organizationId),exportFileType.toString(),creationDateFrom,
       creationDateTo,operatorExternalId,status,fileName,0,null,Collections.emptyList()))
       .thenReturn(expectedResult);
 
@@ -110,14 +110,14 @@ class ExportFileSearchClientTest {
   @Test
   void givenGenericHttpExceptionWhenGetExportFilesThenThrowIt() {
     long organizationId = 1L;
-    ExportFileTypeEnum flowFileType = ExportFileTypeEnum.CLASSIFICATIONS;
+    ExportFileTypeEnum exportFileType = ExportFileTypeEnum.CLASSIFICATIONS;
     OffsetDateTime creationDateFrom = OffsetDateTime.now().minusDays(10);
     OffsetDateTime creationDateTo = OffsetDateTime.now().plusDays(10);
     ExportFileStatus status = ExportFileStatus.COMPLETED;
     String fileName = "filename";
     String operatorExternalId = "operatorExternalId";
     ExportFileFiltersDTO exportFileFilters = new ExportFileFiltersDTO(
-      organizationId, flowFileType, new OffsetDateTimeIntervalFilter(creationDateFrom, creationDateTo), status,
+      organizationId, exportFileType, new OffsetDateTimeIntervalFilter(creationDateFrom, creationDateTo), status,
       fileName);
     List<String> sortList = List.of("sort1,ASC","sort2,DESC");
     String accessToken = "ACCESSTOKEN";
@@ -126,7 +126,7 @@ class ExportFileSearchClientTest {
     when(processExecutionsApisHolderMock.getExportFileSearchControllerApi(accessToken))
       .thenReturn(exportFileSearchControllerApiMock);
     when(exportFileSearchControllerApiMock.crudExportFilesFindByOrganizationIDFlowTypeCreateDate(
-      String.valueOf(organizationId),flowFileType.toString(),creationDateFrom,
+      String.valueOf(organizationId),exportFileType.toString(),creationDateFrom,
       creationDateTo,operatorExternalId,status,fileName,0,10,sortList))
       .thenThrow(expectedException);
 
@@ -142,14 +142,14 @@ class ExportFileSearchClientTest {
   @Test
   void givenGenericExceptionWhenGetExportFilesThenThrowIt() {
     long organizationId = 1L;
-    ExportFileTypeEnum flowFileType = ExportFileTypeEnum.CLASSIFICATIONS;
+    ExportFileTypeEnum exportFileType = ExportFileTypeEnum.CLASSIFICATIONS;
     OffsetDateTime creationDateFrom = OffsetDateTime.now().minusDays(10);
     OffsetDateTime creationDateTo = OffsetDateTime.now().plusDays(10);
     ExportFileStatus status = ExportFileStatus.COMPLETED;
     String fileName = "filename";
     String operatorExternalId = "operatorExternalId";
     ExportFileFiltersDTO exportFileFilters = new ExportFileFiltersDTO(
-      organizationId, flowFileType, new OffsetDateTimeIntervalFilter(creationDateFrom, creationDateTo), status,
+      organizationId, exportFileType, new OffsetDateTimeIntervalFilter(creationDateFrom, creationDateTo), status,
       fileName);
     List<String> sortList = List.of("sort1,ASC","sort2,DESC");
     String accessToken = "ACCESSTOKEN";
@@ -158,7 +158,7 @@ class ExportFileSearchClientTest {
     when(processExecutionsApisHolderMock.getExportFileSearchControllerApi(accessToken))
       .thenReturn(exportFileSearchControllerApiMock);
     when(exportFileSearchControllerApiMock.crudExportFilesFindByOrganizationIDFlowTypeCreateDate(
-      String.valueOf(organizationId),flowFileType.toString(),creationDateFrom,
+      String.valueOf(organizationId),exportFileType.toString(),creationDateFrom,
       creationDateTo,operatorExternalId,status,fileName,0,10,sortList))
       .thenThrow(expectedException);
 

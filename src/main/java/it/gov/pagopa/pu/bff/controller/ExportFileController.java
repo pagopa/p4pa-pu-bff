@@ -31,14 +31,14 @@ public class ExportFileController implements ExportFilesApi {
   @Override
   public ResponseEntity<PagedExportFile> getExportFiles(
     Long organizationId,
-    ExportFileTypeEnum flowFileType, OffsetDateTime creationDateFrom,
+    ExportFileTypeEnum exportFileType, OffsetDateTime creationDateFrom,
     OffsetDateTime creationDateTo, ExportFileStatus status, String fileName,
     Pageable pageable) {
     log.info(
-      "User requested getExportFiles having organizationId {} and flowFileType {}",
-      organizationId, flowFileType);
+      "User requested getExportFiles having organizationId {} and exportFileType {}",
+      organizationId, exportFileType);
     return ResponseEntity.ok(exportFileRetrieverService.getExportFiles(
-      new ExportFileFiltersDTO(organizationId, flowFileType,
+      new ExportFileFiltersDTO(organizationId, exportFileType,
         new OffsetDateTimeIntervalFilter(creationDateFrom, creationDateTo),
         status, fileName), pageable, SecurityUtils.getLoggedUser(),
       SecurityUtils.getAccessToken()));
@@ -48,8 +48,8 @@ public class ExportFileController implements ExportFilesApi {
   public ResponseEntity<Void> createExportFile(
     ExportFileRequestDTO requestDTO) {
     log.info(
-      "User requested export file having organizationId {} and flowFileType {}",
-      requestDTO.getOrganizationId(), requestDTO.getFlowFileType());
+      "User requested export file having organizationId {} and exportFileType {}",
+      requestDTO.getOrganizationId(), requestDTO.getExportFileType());
 
     exportFileRetrieverService.createExportFile(requestDTO, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken());
 

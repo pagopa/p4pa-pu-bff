@@ -39,13 +39,13 @@ class IngestionFlowFileRetrieverServiceImplTest {
   void givenAdminUserWhenGetIngestionFlowFilesThenOk() {
     String accessToken = "ACCESSTOKEN";
     long organizationId = 1L;
-    List<IngestionFlowFileTypeEnum> flowFileTypes = List.of(IngestionFlowFileTypeEnum.TREASURY_OPI);
+    List<IngestionFlowFileTypeEnum> ingestionFlowFileTypes = List.of(IngestionFlowFileTypeEnum.TREASURY_OPI);
     OffsetDateTime creationDateFrom = OffsetDateTime.now().minusDays(10);
     OffsetDateTime creationDateTo = OffsetDateTime.now().plusDays(10);
     IngestionFlowFileStatus status = IngestionFlowFileStatus.COMPLETED;
     String fileName = "filename";
     IngestionFlowFileFiltersDTO ingestionFlowFileFilters = new IngestionFlowFileFiltersDTO(
-      organizationId, flowFileTypes, creationDateFrom, creationDateTo, status,
+      organizationId, ingestionFlowFileTypes, creationDateFrom, creationDateTo, status,
       fileName);
     UserInfo userInfo = new UserInfo();
     PagedModelIngestionFlowFile pagedModelIngestionFlowFile = new PagedModelIngestionFlowFile();
@@ -77,13 +77,13 @@ class IngestionFlowFileRetrieverServiceImplTest {
   void givenNoAdminUserWhenGetIngestionFlowFilesThenOk(){
     String accessToken="ACCESSTOKEN";
     long organizationId = 1L;
-    List<IngestionFlowFileTypeEnum> flowFileTypes = List.of(IngestionFlowFileTypeEnum.TREASURY_OPI);
+    List<IngestionFlowFileTypeEnum> ingestionFlowFileTypes = List.of(IngestionFlowFileTypeEnum.TREASURY_OPI);
     OffsetDateTime creationDateFrom = OffsetDateTime.now().minusDays(10);
     OffsetDateTime creationDateTo = OffsetDateTime.now().plusDays(10);
     IngestionFlowFileStatus status = IngestionFlowFileStatus.COMPLETED;
     String fileName = "filename";
     IngestionFlowFileFiltersDTO ingestionFlowFileFilters = new IngestionFlowFileFiltersDTO(
-      organizationId, flowFileTypes, creationDateFrom, creationDateTo, status,
+      organizationId, ingestionFlowFileTypes, creationDateFrom, creationDateTo, status,
       fileName);
     String operatorExternalId = "operatorExternalId";
     UserInfo userInfo = new UserInfo();

@@ -50,13 +50,13 @@ class ExportFileControllerTest {
   @Test
   void givenCorrectRequestWhenGetExportFilesThenOk() {
     long organizationId = 1L;
-    ExportFileTypeEnum flowFileType = ExportFileTypeEnum.CLASSIFICATIONS;
+    ExportFileTypeEnum exportFileType = ExportFileTypeEnum.CLASSIFICATIONS;
     OffsetDateTime creationDateFrom = OffsetDateTime.now().minusDays(10);
     OffsetDateTime creationDateTo = OffsetDateTime.now().plusDays(10);
     ExportFileStatus status = ExportFileStatus.COMPLETED;
     String fileName = "filename";
     ExportFileFiltersDTO expectedFilter = new ExportFileFiltersDTO(
-      organizationId, flowFileType, new OffsetDateTimeIntervalFilter(creationDateFrom, creationDateTo), status,
+      organizationId, exportFileType, new OffsetDateTimeIntervalFilter(creationDateFrom, creationDateTo), status,
       fileName);
     PagedExportFile expectedResult = new PagedExportFile();
     expectedResult.setContent(List.of(ExportFile.builder()
@@ -79,7 +79,7 @@ class ExportFileControllerTest {
       .thenReturn(expectedResult);
 
     ResponseEntity<PagedExportFile> response = exportFileController.getExportFiles(organizationId,
-      flowFileType,creationDateFrom,creationDateTo,status,fileName,
+      exportFileType,creationDateFrom,creationDateTo,status,fileName,
       PageRequest.of(0,10));
 
     Assertions.assertEquals(HttpStatus.OK,response.getStatusCode());
@@ -91,8 +91,8 @@ class ExportFileControllerTest {
   void givenCorrectRequestWhenCreateExportFileThenOk() {
     ExportFileRequestDTO requestDTO = ExportFileRequestDTO.builder()
       .organizationId(1L)
-      .flowFileType(ExportFileRequestDTO.FlowFileTypeEnum.CLASSIFICATIONS)
-      .flowFileVersion("version1")
+      .exportFileType(ExportFileRequestDTO.ExportFileTypeEnum.CLASSIFICATIONS)
+      .fileVersion("version1")
       .filterFields(ExportFileFilter.builder()
         .iuv("iuv")
         .build())

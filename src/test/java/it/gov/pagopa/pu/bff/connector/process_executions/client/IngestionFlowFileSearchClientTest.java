@@ -51,14 +51,14 @@ class IngestionFlowFileSearchClientTest {
   @Test
   void whenGetIngestionFlowFilesThenInvokeWithAccessToken() {
     long organizationId = 1L;
-    List<IngestionFlowFileTypeEnum> flowFileTypes = List.of(IngestionFlowFileTypeEnum.TREASURY_OPI,IngestionFlowFileTypeEnum.PAYMENTS_REPORTING);
+    List<IngestionFlowFileTypeEnum> ingestionFlowFileTypes = List.of(IngestionFlowFileTypeEnum.TREASURY_OPI,IngestionFlowFileTypeEnum.PAYMENTS_REPORTING);
     OffsetDateTime creationDateFrom = OffsetDateTime.now().minusDays(10);
     OffsetDateTime creationDateTo = OffsetDateTime.now().plusDays(10);
     IngestionFlowFileStatus status = IngestionFlowFileStatus.COMPLETED;
     String fileName = "filename";
     String operatorExternalId = "operatorExternalId";
     IngestionFlowFileFiltersDTO ingestionFlowFileFilters = new IngestionFlowFileFiltersDTO(
-      organizationId, flowFileTypes, creationDateFrom, creationDateTo, status,
+      organizationId, ingestionFlowFileTypes, creationDateFrom, creationDateTo, status,
       fileName);
     List<String> sortList = List.of("sort1,ASC","sort2,DESC");
     String accessToken = "ACCESSTOKEN";
@@ -81,14 +81,14 @@ class IngestionFlowFileSearchClientTest {
   @Test
   void givenUnpagedWhenGetIngestionFlowFilesThenInvokeWithAccessToken() {
     long organizationId = 1L;
-    IngestionFlowFileTypeEnum flowFileType = IngestionFlowFileTypeEnum.TREASURY_OPI;
+    IngestionFlowFileTypeEnum ingestionFlowFileTypes = IngestionFlowFileTypeEnum.TREASURY_OPI;
     OffsetDateTime creationDateFrom = OffsetDateTime.now().minusDays(10);
     OffsetDateTime creationDateTo = OffsetDateTime.now().plusDays(10);
     IngestionFlowFileStatus status = IngestionFlowFileStatus.COMPLETED;
     String fileName = "filename";
     String operatorExternalId = "operatorExternalId";
     IngestionFlowFileFiltersDTO ingestionFlowFileFilters = new IngestionFlowFileFiltersDTO(
-      organizationId, List.of(flowFileType), creationDateFrom, creationDateTo, status,
+      organizationId, List.of(ingestionFlowFileTypes), creationDateFrom, creationDateTo, status,
       fileName);
     String accessToken = "ACCESSTOKEN";
     PagedModelIngestionFlowFile expectedResult = new PagedModelIngestionFlowFile();
@@ -96,7 +96,7 @@ class IngestionFlowFileSearchClientTest {
     when(processExecutionsApisHolderMock.getIngestionFlowFileSearchControllerApi(accessToken))
       .thenReturn(ingestionFlowFileSearchControllerApiMock);
     when(ingestionFlowFileSearchControllerApiMock.crudIngestionFlowFilesFindByOrganizationIDFlowTypeCreateDate(
-      String.valueOf(organizationId),List.of(flowFileType.toString()),creationDateFrom.toLocalDateTime(),
+      String.valueOf(organizationId),List.of(ingestionFlowFileTypes.toString()),creationDateFrom.toLocalDateTime(),
       creationDateTo.toLocalDateTime(),status,fileName,operatorExternalId,0,null,Collections.emptyList()))
       .thenReturn(expectedResult);
 

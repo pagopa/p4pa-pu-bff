@@ -914,8 +914,7 @@
           "in" : "query",
           "required" : true,
           "schema" : {
-            "type" : "string",
-            "enum" : [ "RECEIPT_PAGOPA", "RECEIPT_FILE", "PAYMENTS_REPORTING" ]
+            "$ref" : "#/components/schemas/ReceiptOriginType"
           }
         }, {
           "name" : "iuv",
@@ -1680,8 +1679,7 @@
           "schema" : {
             "type" : "array",
             "items" : {
-              "type" : "string",
-              "enum" : [ "RECEIPT", "RECEIPT_PAGOPA", "PAYMENTS_REPORTING", "PAYMENTS_REPORTING_PAGOPA", "TREASURY_OPI", "TREASURY_CSV", "TREASURY_XLS", "TREASURY_POSTE", "DP_INSTALLMENTS" ]
+              "$ref" : "#/components/schemas/IngestionFlowFileTypeEnum"
             }
           }
         }, {
@@ -1705,8 +1703,7 @@
           "in" : "query",
           "required" : false,
           "schema" : {
-            "type" : "string",
-            "enum" : [ "UPLOADED", "PROCESSING", "COMPLETED", "ERROR" ]
+            "$ref" : "#/components/schemas/IngestionFlowFileStatus"
           }
         }, {
           "name" : "fileName",
@@ -1791,8 +1788,7 @@
           "in" : "query",
           "required" : true,
           "schema" : {
-            "type" : "string",
-            "enum" : [ "PAID", "CLASSIFICATIONS", "PAYMENTS_REPORTING" ]
+            "$ref" : "#/components/schemas/ExportFileTypeEnum"
           }
         }, {
           "name" : "creationDateFrom",
@@ -1815,8 +1811,7 @@
           "in" : "query",
           "required" : false,
           "schema" : {
-            "type" : "string",
-            "enum" : [ "REQUESTED", "PROCESSING", "COMPLETED", "EXPIRED", "ERROR" ]
+            "$ref" : "#/components/schemas/ExportFileStatus"
           }
         }, {
           "name" : "fileName",
@@ -1933,8 +1928,7 @@
           "in" : "query",
           "required" : false,
           "schema" : {
-            "type" : "string",
-            "enum" : [ "TO_SYNC", "REPORTED", "PAID", "PARTIALLY_PAID", "CANCELLED", "EXPIRED", "UNPAID", "DRAFT" ]
+            "$ref" : "#/components/schemas/DebtPositionStatus"
           }
         }, {
           "name" : "page",
@@ -2735,8 +2729,7 @@
             "format" : "int64"
           },
           "exportFileType" : {
-            "type" : "string",
-            "enum" : [ "PAID", "CLASSIFICATIONS", "PAYMENTS_REPORTING" ]
+            "$ref" : "#/components/schemas/ExportFileTypeEnum"
           },
           "fileVersion" : {
             "type" : "string"
@@ -2746,6 +2739,10 @@
           }
         },
         "required" : [ "exportFileType", "fileVersion", "filterFields", "organizationId" ]
+      },
+      "ExportFileTypeEnum" : {
+        "type" : "string",
+        "enum" : [ "PAID", "CLASSIFICATIONS", "PAYMENTS_REPORTING" ]
       },
       "LocalDateIntervalFilter" : {
         "type" : "object",
@@ -2887,6 +2884,10 @@
           }
         }
       },
+      "OperatorRoleEnum" : {
+        "type" : "string",
+        "enum" : [ "ROLE_ADMIN", "ROLE_OPER" ]
+      },
       "OrganizationDTO" : {
         "type" : "object",
         "properties" : {
@@ -2904,9 +2905,8 @@
             "description" : "Organization name"
           },
           "operatorRole" : {
-            "type" : "string",
-            "description" : "Operator role",
-            "enum" : [ "ROLE_ADMIN", "ROLE_OPER" ]
+            "$ref" : "#/components/schemas/OperatorRoleEnum",
+            "description" : "Operator role"
           },
           "orgLogo" : {
             "type" : "string",
@@ -2922,9 +2922,8 @@
         "type" : "object",
         "properties" : {
           "title" : {
-            "type" : "string",
-            "description" : "The title describing the error",
-            "enum" : [ "NOT_FOUND", "BAD_REQUEST", "GENERIC_ERROR" ]
+            "$ref" : "#/components/schemas/TitleEnum",
+            "description" : "The title describing the error"
           },
           "description" : {
             "type" : "string",
@@ -2932,6 +2931,10 @@
           }
         },
         "required" : [ "description", "title" ]
+      },
+      "TitleEnum" : {
+        "type" : "string",
+        "enum" : [ "NOT_FOUND", "BAD_REQUEST", "GENERIC_ERROR" ]
       },
       "Link" : {
         "type" : "object",
@@ -3292,6 +3295,10 @@
         },
         "required" : [ "content", "number", "size", "totalElements", "totalPages" ]
       },
+      "ReceiptOriginType" : {
+        "type" : "string",
+        "enum" : [ "RECEIPT_PAGOPA", "RECEIPT_FILE", "PAYMENTS_REPORTING" ]
+      },
       "ReceiptView" : {
         "type" : "object",
         "properties" : {
@@ -3312,8 +3319,7 @@
             "format" : "int64"
           },
           "receiptOrigin" : {
-            "type" : "string",
-            "enum" : [ "RECEIPT_PAGOPA", "RECEIPT_FILE", "PAYMENTS_REPORTING" ]
+            "$ref" : "#/components/schemas/ReceiptOriginType"
           },
           "iuv" : {
             "type" : "string"
@@ -3330,12 +3336,15 @@
         },
         "required" : [ "debtPositionTypeOrgDescription", "installmentId", "paymentAmountCents", "receiptOrigin" ]
       },
+      "EntityTypeEnum" : {
+        "type" : "string",
+        "enum" : [ "F", "G" ]
+      },
       "PersonDTO" : {
         "type" : "object",
         "properties" : {
           "entityType" : {
-            "type" : "string",
-            "enum" : [ "F", "G" ]
+            "$ref" : "#/components/schemas/EntityTypeEnum"
           },
           "fiscalCode" : {
             "type" : "string"
@@ -3612,6 +3621,10 @@
         },
         "required" : [ "acquiringDate", "amountPaidCents", "flowDateTime", "ingestionFlowFileId", "iuf", "iur", "iuv", "organizationId", "payDate", "paymentOutcomeCode", "pspIdentifier", "regulationDate", "regulationUniqueIdentifier", "senderPspCode", "senderPspType", "totalAmountCents", "totalPayments", "transferIndex" ]
       },
+      "InstallmentStatus" : {
+        "type" : "string",
+        "enum" : [ "TO_SYNC", "REPORTED", "PAID", "CANCELLED", "INVALID", "EXPIRED", "UNPAID", "UNPAYABLE", "DRAFT" ]
+      },
       "PaymentsReportingDetailDTO" : {
         "type" : "object",
         "properties" : {
@@ -3648,8 +3661,7 @@
             "type" : "string"
           },
           "status" : {
-            "type" : "string",
-            "enum" : [ "TO_SYNC", "REPORTED", "PAID", "CANCELLED", "INVALID", "EXPIRED", "UNPAID", "UNPAYABLE", "DRAFT" ]
+            "$ref" : "#/components/schemas/InstallmentStatus"
           }
         },
         "required" : [ "amountPaidCents", "iur", "iuv", "paymentsReportingId" ]
@@ -3669,8 +3681,7 @@
             "type" : "string"
           },
           "status" : {
-            "type" : "string",
-            "enum" : [ "TO_SYNC", "REPORTED", "PAID", "CANCELLED", "INVALID", "EXPIRED", "UNPAID", "UNPAYABLE", "DRAFT" ]
+            "$ref" : "#/components/schemas/InstallmentStatus"
           },
           "dueDate" : {
             "type" : "string",
@@ -3743,8 +3754,7 @@
             "format" : "int64"
           },
           "status" : {
-            "type" : "string",
-            "enum" : [ "TO_SYNC", "REPORTED", "PAID", "CANCELLED", "INVALID", "EXPIRED", "UNPAID", "UNPAYABLE", "DRAFT" ]
+            "$ref" : "#/components/schemas/InstallmentStatus"
           },
           "iuv" : {
             "type" : "string"
@@ -3819,11 +3829,14 @@
             "format" : "int64"
           },
           "status" : {
-            "type" : "string",
-            "enum" : [ "UPLOADED", "PROCESSING", "COMPLETED", "ERROR" ]
+            "$ref" : "#/components/schemas/IngestionFlowFileStatus"
           }
         },
         "required" : [ "creationDate", "fileName", "ingestionFlowFileId", "operator", "status" ]
+      },
+      "IngestionFlowFileStatus" : {
+        "type" : "string",
+        "enum" : [ "UPLOADED", "PROCESSING", "COMPLETED", "ERROR" ]
       },
       "PagedIngestionFlowFile" : {
         "type" : "object",
@@ -3853,6 +3866,10 @@
         },
         "required" : [ "content", "number", "size", "totalElements", "totalPages" ]
       },
+      "IngestionFlowFileTypeEnum" : {
+        "type" : "string",
+        "enum" : [ "RECEIPT", "RECEIPT_PAGOPA", "PAYMENTS_REPORTING", "PAYMENTS_REPORTING_PAGOPA", "TREASURY_OPI", "TREASURY_CSV", "TREASURY_XLS", "TREASURY_POSTE", "DP_INSTALLMENTS" ]
+      },
       "ExportFile" : {
         "type" : "object",
         "properties" : {
@@ -3875,11 +3892,14 @@
             "type" : "string"
           },
           "status" : {
-            "type" : "string",
-            "enum" : [ "REQUESTED", "PROCESSING", "COMPLETED", "EXPIRED", "ERROR" ]
+            "$ref" : "#/components/schemas/ExportFileStatus"
           }
         },
         "required" : [ "creationDate", "exportFileId", "fileName", "operator", "status" ]
+      },
+      "ExportFileStatus" : {
+        "type" : "string",
+        "enum" : [ "REQUESTED", "PROCESSING", "COMPLETED", "EXPIRED", "ERROR" ]
       },
       "PagedExportFile" : {
         "type" : "object",
@@ -3909,6 +3929,14 @@
         },
         "required" : [ "content", "number", "size", "totalElements", "totalPages" ]
       },
+      "DebtPositionOrigin" : {
+        "type" : "string",
+        "enum" : [ "ORDINARY", "ORDINARY_SIL", "SPONTANEOUS", "SECONDARY_ORG", "RECEIPT_FILE", "RECEIPT_PAGOPA", "REPORTING_PAGOPA" ]
+      },
+      "DebtPositionStatus" : {
+        "type" : "string",
+        "enum" : [ "TO_SYNC", "REPORTED", "PAID", "PARTIALLY_PAID", "CANCELLED", "EXPIRED", "UNPAID", "DRAFT" ]
+      },
       "DebtPositionView" : {
         "type" : "object",
         "properties" : {
@@ -3927,12 +3955,10 @@
             "format" : "date-time"
           },
           "status" : {
-            "type" : "string",
-            "enum" : [ "TO_SYNC", "REPORTED", "PAID", "PARTIALLY_PAID", "CANCELLED", "EXPIRED", "UNPAID", "DRAFT" ]
+            "$ref" : "#/components/schemas/DebtPositionStatus"
           },
           "debtPositionOrigin" : {
-            "type" : "string",
-            "enum" : [ "ORDINARY", "ORDINARY_SIL", "SPONTANEOUS", "SECONDARY_ORG", "RECEIPT_FILE", "RECEIPT_PAGOPA", "REPORTING_PAGOPA" ]
+            "$ref" : "#/components/schemas/DebtPositionOrigin"
           },
           "debtPositionTypeOrgId" : {
             "type" : "integer",
@@ -3995,8 +4021,7 @@
             "type" : "string"
           },
           "status" : {
-            "type" : "string",
-            "enum" : [ "TO_SYNC", "REPORTED", "PAID", "PARTIALLY_PAID", "CANCELLED", "EXPIRED", "UNPAID", "DRAFT" ]
+            "$ref" : "#/components/schemas/DebtPositionStatus"
           },
           "paymentOptions" : {
             "type" : "array",
@@ -4019,8 +4044,7 @@
             "format" : "int64"
           },
           "status" : {
-            "type" : "string",
-            "enum" : [ "TO_SYNC", "REPORTED", "PAID", "CANCELLED", "INVALID", "EXPIRED", "UNPAID", "UNPAYABLE", "DRAFT" ]
+            "$ref" : "#/components/schemas/InstallmentStatus"
           },
           "syncStatus" : {
             "$ref" : "#/components/schemas/InstallmentSyncStatus"
@@ -4104,12 +4128,10 @@
         "type" : "object",
         "properties" : {
           "syncStatusFrom" : {
-            "type" : "string",
-            "enum" : [ "TO_SYNC", "REPORTED", "PAID", "CANCELLED", "INVALID", "EXPIRED", "UNPAID", "UNPAYABLE", "DRAFT" ]
+            "$ref" : "#/components/schemas/InstallmentStatus"
           },
           "syncStatusTo" : {
-            "type" : "string",
-            "enum" : [ "TO_SYNC", "REPORTED", "PAID", "CANCELLED", "INVALID", "EXPIRED", "UNPAID", "UNPAYABLE", "DRAFT" ]
+            "$ref" : "#/components/schemas/InstallmentStatus"
           }
         },
         "required" : [ "syncStatusFrom", "syncStatusTo" ]
@@ -4130,15 +4152,13 @@
             "format" : "int64"
           },
           "status" : {
-            "type" : "string",
-            "enum" : [ "TO_SYNC", "REPORTED", "PAID", "PARTIALLY_PAID", "CANCELLED", "INVALID", "EXPIRED", "UNPAID", "UNPAYABLE", "DRAFT" ]
+            "$ref" : "#/components/schemas/PaymentOptionStatus"
           },
           "description" : {
             "type" : "string"
           },
           "paymentOptionType" : {
-            "type" : "string",
-            "enum" : [ "SINGLE_INSTALLMENT", "REDUCED_SINGLE_INSTALLMENT", "INSTALLMENTS", "DOWN_PAYMENT" ]
+            "$ref" : "#/components/schemas/PaymentOptionTypeEnum"
           },
           "paymentOptionIndex" : {
             "type" : "integer",
@@ -4152,6 +4172,14 @@
           }
         },
         "required" : [ "installments", "paymentOptionType", "totalAmountCents" ]
+      },
+      "PaymentOptionStatus" : {
+        "type" : "string",
+        "enum" : [ "TO_SYNC", "REPORTED", "PAID", "PARTIALLY_PAID", "CANCELLED", "INVALID", "EXPIRED", "UNPAID", "UNPAYABLE", "DRAFT" ]
+      },
+      "PaymentOptionTypeEnum" : {
+        "type" : "string",
+        "enum" : [ "SINGLE_INSTALLMENT", "REDUCED_SINGLE_INSTALLMENT", "INSTALLMENTS", "DOWN_PAYMENT" ]
       },
       "TransferDTO" : {
         "type" : "object",

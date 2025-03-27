@@ -4,7 +4,7 @@ import it.gov.pagopa.pu.bff.dto.IngestionFlowFileFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.generated.IngestionFlowFile;
 import it.gov.pagopa.pu.bff.dto.generated.PagedIngestionFlowFile;
 import it.gov.pagopa.pu.bff.service.ingestion_flow_file.IngestionFlowFileRetrieverService;
-import it.gov.pagopa.pu.processexecutions.dto.generated.IngestionFlowFile.FlowFileTypeEnum;
+import it.gov.pagopa.pu.processexecutions.dto.generated.IngestionFlowFile.IngestionFlowFileTypeEnum;
 import java.time.OffsetDateTime;
 import java.util.List;
 
@@ -45,7 +45,7 @@ class IngestionFlowFileControllerTest {
   @Test
   void givenCorrectRequestWhenGetIngestionFlowFilesThenOk() {
     long organizationId = 1L;
-    List<FlowFileTypeEnum> flowFileTypes = List.of(FlowFileTypeEnum.TREASURY_OPI,FlowFileTypeEnum.PAYMENTS_REPORTING);
+    List<IngestionFlowFileTypeEnum> flowFileTypes = List.of(IngestionFlowFileTypeEnum.TREASURY_OPI,IngestionFlowFileTypeEnum.PAYMENTS_REPORTING);
     OffsetDateTime creationDateFrom = OffsetDateTime.now().minusDays(10);
     OffsetDateTime creationDateTo = OffsetDateTime.now().plusDays(10);
     IngestionFlowFileStatus status = IngestionFlowFileStatus.COMPLETED;

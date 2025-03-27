@@ -3,7 +3,7 @@ package it.gov.pagopa.pu.bff.connector.process_executions.client;
 import it.gov.pagopa.pu.bff.connector.process_executions.config.ProcessExecutionsApisHolder;
 import it.gov.pagopa.pu.bff.dto.IngestionFlowFileFiltersDTO;
 import it.gov.pagopa.pu.processexecutions.controller.generated.IngestionFlowFileSearchControllerApi;
-import it.gov.pagopa.pu.processexecutions.dto.generated.IngestionFlowFile.FlowFileTypeEnum;
+import it.gov.pagopa.pu.processexecutions.dto.generated.IngestionFlowFile.IngestionFlowFileTypeEnum;
 import it.gov.pagopa.pu.processexecutions.dto.generated.IngestionFlowFileStatus;
 import it.gov.pagopa.pu.processexecutions.dto.generated.PagedModelIngestionFlowFile;
 import org.junit.jupiter.api.AfterEach;
@@ -51,7 +51,7 @@ class IngestionFlowFileSearchClientTest {
   @Test
   void whenGetIngestionFlowFilesThenInvokeWithAccessToken() {
     long organizationId = 1L;
-    List<FlowFileTypeEnum> flowFileTypes = List.of(FlowFileTypeEnum.TREASURY_OPI,FlowFileTypeEnum.PAYMENTS_REPORTING);
+    List<IngestionFlowFileTypeEnum> flowFileTypes = List.of(IngestionFlowFileTypeEnum.TREASURY_OPI,IngestionFlowFileTypeEnum.PAYMENTS_REPORTING);
     OffsetDateTime creationDateFrom = OffsetDateTime.now().minusDays(10);
     OffsetDateTime creationDateTo = OffsetDateTime.now().plusDays(10);
     IngestionFlowFileStatus status = IngestionFlowFileStatus.COMPLETED;
@@ -67,7 +67,7 @@ class IngestionFlowFileSearchClientTest {
     when(processExecutionsApisHolderMock.getIngestionFlowFileSearchControllerApi(accessToken))
       .thenReturn(ingestionFlowFileSearchControllerApiMock);
     when(ingestionFlowFileSearchControllerApiMock.crudIngestionFlowFilesFindByOrganizationIDFlowTypeCreateDate(
-      String.valueOf(organizationId),List.of(FlowFileTypeEnum.TREASURY_OPI.toString(),FlowFileTypeEnum.PAYMENTS_REPORTING.toString()),creationDateFrom.toLocalDateTime(),
+      String.valueOf(organizationId),List.of(IngestionFlowFileTypeEnum.TREASURY_OPI.toString(),IngestionFlowFileTypeEnum.PAYMENTS_REPORTING.toString()),creationDateFrom.toLocalDateTime(),
       creationDateTo.toLocalDateTime(),status,fileName,operatorExternalId,0,10,sortList))
       .thenReturn(expectedResult);
 
@@ -81,7 +81,7 @@ class IngestionFlowFileSearchClientTest {
   @Test
   void givenUnpagedWhenGetIngestionFlowFilesThenInvokeWithAccessToken() {
     long organizationId = 1L;
-    FlowFileTypeEnum flowFileType = FlowFileTypeEnum.TREASURY_OPI;
+    IngestionFlowFileTypeEnum flowFileType = IngestionFlowFileTypeEnum.TREASURY_OPI;
     OffsetDateTime creationDateFrom = OffsetDateTime.now().minusDays(10);
     OffsetDateTime creationDateTo = OffsetDateTime.now().plusDays(10);
     IngestionFlowFileStatus status = IngestionFlowFileStatus.COMPLETED;

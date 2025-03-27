@@ -7,7 +7,7 @@ import it.gov.pagopa.pu.bff.connector.process_executions.config.ProcessExecution
 import it.gov.pagopa.pu.bff.dto.ExportFileFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.OffsetDateTimeIntervalFilter;
 import it.gov.pagopa.pu.processexecutions.controller.generated.ExportFileSearchControllerApi;
-import it.gov.pagopa.pu.processexecutions.dto.generated.ExportFile.FlowFileTypeEnum;
+import it.gov.pagopa.pu.processexecutions.dto.generated.ExportFile.ExportFileTypeEnum;
 import it.gov.pagopa.pu.processexecutions.dto.generated.ExportFileStatus;
 import it.gov.pagopa.pu.processexecutions.dto.generated.PagedModelExportFile;
 import java.time.OffsetDateTime;
@@ -52,7 +52,7 @@ class ExportFileSearchClientTest {
   @Test
   void whenGetExportFilesThenInvokeWithAccessToken() {
     long organizationId = 1L;
-    FlowFileTypeEnum flowFileType = FlowFileTypeEnum.CLASSIFICATIONS;
+    ExportFileTypeEnum flowFileType = ExportFileTypeEnum.CLASSIFICATIONS;
     OffsetDateTime creationDateFrom = OffsetDateTime.now().minusDays(10);
     OffsetDateTime creationDateTo = OffsetDateTime.now().plusDays(10);
     ExportFileStatus status = ExportFileStatus.COMPLETED;
@@ -82,7 +82,7 @@ class ExportFileSearchClientTest {
   @Test
   void givenUnpagedWhenGetExportFilesThenInvokeWithAccessToken() {
     long organizationId = 1L;
-    FlowFileTypeEnum flowFileType = FlowFileTypeEnum.CLASSIFICATIONS;
+    ExportFileTypeEnum flowFileType = ExportFileTypeEnum.CLASSIFICATIONS;
     OffsetDateTime creationDateFrom = OffsetDateTime.now().minusDays(10);
     OffsetDateTime creationDateTo = OffsetDateTime.now().plusDays(10);
     ExportFileStatus status = ExportFileStatus.COMPLETED;
@@ -110,7 +110,7 @@ class ExportFileSearchClientTest {
   @Test
   void givenGenericHttpExceptionWhenGetExportFilesThenThrowIt() {
     long organizationId = 1L;
-    FlowFileTypeEnum flowFileType = FlowFileTypeEnum.CLASSIFICATIONS;
+    ExportFileTypeEnum flowFileType = ExportFileTypeEnum.CLASSIFICATIONS;
     OffsetDateTime creationDateFrom = OffsetDateTime.now().minusDays(10);
     OffsetDateTime creationDateTo = OffsetDateTime.now().plusDays(10);
     ExportFileStatus status = ExportFileStatus.COMPLETED;
@@ -142,7 +142,7 @@ class ExportFileSearchClientTest {
   @Test
   void givenGenericExceptionWhenGetExportFilesThenThrowIt() {
     long organizationId = 1L;
-    FlowFileTypeEnum flowFileType = FlowFileTypeEnum.CLASSIFICATIONS;
+    ExportFileTypeEnum flowFileType = ExportFileTypeEnum.CLASSIFICATIONS;
     OffsetDateTime creationDateFrom = OffsetDateTime.now().minusDays(10);
     OffsetDateTime creationDateTo = OffsetDateTime.now().plusDays(10);
     ExportFileStatus status = ExportFileStatus.COMPLETED;

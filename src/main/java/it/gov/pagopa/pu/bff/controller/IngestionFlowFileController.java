@@ -5,7 +5,7 @@ import it.gov.pagopa.pu.bff.dto.IngestionFlowFileFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedIngestionFlowFile;
 import it.gov.pagopa.pu.bff.security.SecurityUtils;
 import it.gov.pagopa.pu.bff.service.ingestion_flow_file.IngestionFlowFileRetrieverService;
-import it.gov.pagopa.pu.processexecutions.dto.generated.IngestionFlowFile.FlowFileTypeEnum;
+import it.gov.pagopa.pu.processexecutions.dto.generated.IngestionFlowFile.IngestionFlowFileTypeEnum;
 import it.gov.pagopa.pu.processexecutions.dto.generated.IngestionFlowFileStatus;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -30,7 +30,7 @@ public class IngestionFlowFileController implements IngestionFlowFilesApi {
   @Override
   public ResponseEntity<PagedIngestionFlowFile> getIngestionFlowFiles(
     Long organizationId,
-    List<FlowFileTypeEnum> flowFileTypes, OffsetDateTime creationDateFrom,
+    List<IngestionFlowFileTypeEnum> flowFileTypes, OffsetDateTime creationDateFrom,
     OffsetDateTime creationDateTo, IngestionFlowFileStatus status, String fileName,
     Pageable pageable) {
     log.info("User requested getIngestionFlowFiles having organizationId {} and flowFileType {}", organizationId, flowFileTypes);

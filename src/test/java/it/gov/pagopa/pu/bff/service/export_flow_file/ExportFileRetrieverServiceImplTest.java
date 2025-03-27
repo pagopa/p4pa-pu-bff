@@ -9,7 +9,7 @@ import it.gov.pagopa.pu.bff.dto.generated.PagedExportFile;
 import it.gov.pagopa.pu.bff.mapper.ExportFileMapper;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
 import it.gov.pagopa.pu.bff.util.TestUtils;
-import it.gov.pagopa.pu.processexecutions.dto.generated.ExportFile.FlowFileTypeEnum;
+import it.gov.pagopa.pu.processexecutions.dto.generated.ExportFile.ExportFileTypeEnum;
 import it.gov.pagopa.pu.processexecutions.dto.generated.ExportFileFilter;
 import it.gov.pagopa.pu.processexecutions.dto.generated.ExportFileRequestDTO;
 import it.gov.pagopa.pu.processexecutions.dto.generated.ExportFileStatus;
@@ -45,7 +45,7 @@ class ExportFileRetrieverServiceImplTest {
   void givenAdminUserWhenGetExportFilesThenOk() {
     String accessToken = "ACCESSTOKEN";
     long organizationId = 1L;
-    FlowFileTypeEnum flowFileType = FlowFileTypeEnum.CLASSIFICATIONS;
+    ExportFileTypeEnum flowFileType = ExportFileTypeEnum.CLASSIFICATIONS;
     OffsetDateTime creationDateFrom = OffsetDateTime.now().minusDays(10);
     OffsetDateTime creationDateTo = OffsetDateTime.now().plusDays(10);
     ExportFileStatus status = ExportFileStatus.COMPLETED;
@@ -83,7 +83,7 @@ class ExportFileRetrieverServiceImplTest {
   void givenNoAdminUserWhenGetExportFilesThenOk(){
     String accessToken="ACCESSTOKEN";
     long organizationId = 1L;
-    FlowFileTypeEnum flowFileType = FlowFileTypeEnum.CLASSIFICATIONS;
+    ExportFileTypeEnum flowFileType = ExportFileTypeEnum.CLASSIFICATIONS;
     OffsetDateTime creationDateFrom = OffsetDateTime.now().minusDays(10);
     OffsetDateTime creationDateTo = OffsetDateTime.now().plusDays(10);
     ExportFileStatus status = ExportFileStatus.COMPLETED;

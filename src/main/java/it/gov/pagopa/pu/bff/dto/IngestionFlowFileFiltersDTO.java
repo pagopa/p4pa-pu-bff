@@ -1,6 +1,6 @@
 package it.gov.pagopa.pu.bff.dto;
 
-import it.gov.pagopa.pu.processexecutions.dto.generated.IngestionFlowFile.FlowFileTypeEnum;
+import it.gov.pagopa.pu.processexecutions.dto.generated.IngestionFlowFile.IngestionFlowFileTypeEnum;
 import it.gov.pagopa.pu.processexecutions.dto.generated.IngestionFlowFileStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -14,7 +14,7 @@ import java.util.List;
 @NoArgsConstructor
 public class IngestionFlowFileFiltersDTO {
   private Long organizationId;
-  private List<FlowFileTypeEnum> flowFileType;
+  private List<IngestionFlowFileTypeEnum> flowFileType;
   private OffsetDateTime creationDateFrom;
   private OffsetDateTime creationDateTo;
   private IngestionFlowFileStatus status;

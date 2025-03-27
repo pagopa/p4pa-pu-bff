@@ -6,7 +6,7 @@ import it.gov.pagopa.pu.bff.dto.OffsetDateTimeIntervalFilter;
 import it.gov.pagopa.pu.bff.dto.generated.PagedExportFile;
 import it.gov.pagopa.pu.bff.security.SecurityUtils;
 import it.gov.pagopa.pu.bff.service.export_flow_file.ExportFileRetrieverService;
-import it.gov.pagopa.pu.processexecutions.dto.generated.ExportFile.FlowFileTypeEnum;
+import it.gov.pagopa.pu.processexecutions.dto.generated.ExportFile.ExportFileTypeEnum;
 import it.gov.pagopa.pu.processexecutions.dto.generated.ExportFileRequestDTO;
 import it.gov.pagopa.pu.processexecutions.dto.generated.ExportFileStatus;
 import lombok.extern.slf4j.Slf4j;
@@ -31,7 +31,7 @@ public class ExportFileController implements ExportFilesApi {
   @Override
   public ResponseEntity<PagedExportFile> getExportFiles(
     Long organizationId,
-    FlowFileTypeEnum flowFileType, OffsetDateTime creationDateFrom,
+    ExportFileTypeEnum flowFileType, OffsetDateTime creationDateFrom,
     OffsetDateTime creationDateTo, ExportFileStatus status, String fileName,
     Pageable pageable) {
     log.info(

@@ -4,7 +4,7 @@ import it.gov.pagopa.pu.bff.connector.process_executions.config.ProcessExecution
 import it.gov.pagopa.pu.bff.dto.IngestionFlowFileFiltersDTO;
 import it.gov.pagopa.pu.bff.util.DateUtils;
 import it.gov.pagopa.pu.bff.util.PageUtils;
-import it.gov.pagopa.pu.processexecutions.dto.generated.IngestionFlowFile.FlowFileTypeEnum;
+import it.gov.pagopa.pu.processexecutions.dto.generated.IngestionFlowFile.IngestionFlowFileTypeEnum;
 import it.gov.pagopa.pu.processexecutions.dto.generated.PagedModelIngestionFlowFile;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -29,7 +29,7 @@ public class IngestionFlowFileSearchClient {
       .crudIngestionFlowFilesFindByOrganizationIDFlowTypeCreateDate(
         String.valueOf(ingestionFlowFileFilters.getOrganizationId()),
         ingestionFlowFileFilters.getFlowFileType().stream().map(
-          FlowFileTypeEnum::toString).toList(),
+          IngestionFlowFileTypeEnum::toString).toList(),
         DateUtils.toLocalDateTime(
           ingestionFlowFileFilters.getCreationDateFrom()),
         DateUtils.toLocalDateTime(ingestionFlowFileFilters.getCreationDateTo()),

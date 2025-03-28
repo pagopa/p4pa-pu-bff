@@ -24,9 +24,7 @@ public class DebtPositionTypeOrgServiceImpl implements DebtPositionTypeOrgServic
   }
 
   @Override
-  public CollectionModelDebtPositionTypeOrg getDebtPositionTypeOrgs(
-    Long organizationId,
-    String operatorExternalUserId, String accessToken) {
+  public CollectionModelDebtPositionTypeOrg getDebtPositionTypeOrgs(Long organizationId, String operatorExternalUserId, String accessToken) {
     return debtPositionTypeOrgClient.getDebtPositionTypeOrgs(organizationId, operatorExternalUserId, accessToken);
   }
 

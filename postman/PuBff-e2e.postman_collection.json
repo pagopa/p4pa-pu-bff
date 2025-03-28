@@ -1,9 +1,10 @@
 {
 	"info": {
-		"_postman_id": "750b5a51-f36a-489e-9a4f-80a1ecb23823",
+		"_postman_id": "19d5c949-21b0-4817-8a1b-819248c1fd11",
 		"name": "PU-BFF",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "28798913"
+		"_exporter_id": "29647564",
+		"_collection_link": "https://galactic-eclipse-948669.postman.co/workspace/New-Team-Workspace~be56c5f1-de0c-4252-95d0-ee80f35e2474/collection/29647564-19d5c949-21b0-4817-8a1b-819248c1fd11?action=share&source=collection_link&creator=29647564"
 	},
 	"item": [
 		{
@@ -1106,6 +1107,79 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "03_getDebtPositionTypeOrgById",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let jsonResponse = pm.response.json();\r",
+									"\r",
+									"pm.test(\"[DebtPositionTypeOrg getDebtPositionTypeOrgById], expected httpStatus: 200\", () => {\r",
+									"    pm.response.to.have.status(200);\r",
+									"})\r",
+									"\r",
+									"pm.test(\"[DebtPositionTypeOrg getDebtPositionTypeOrgById] - getDebtPositionTypeOrgById\", () => {\r",
+									"    pm.expect(jsonResponse).to.have.property(\"code\").and.to.not.be.null;\r",
+									"    pm.expect(jsonResponse).to.have.property(\"debtPositionTypeOrgId\").and.to.not.be.null;\r",
+									"    pm.expect(jsonResponse).to.have.property(\"debtPositionTypeId\").and.to.not.be.null;\r",
+									"    pm.expect(jsonResponse).to.have.property(\"description\").and.to.not.be.null;\r",
+									"    pm.expect(jsonResponse).to.have.property(\"iban\").and.to.not.be.null;\r",
+									"    pm.expect(jsonResponse).to.have.property(\"organizationId\").and.to.not.be.null;\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/bff/organization/:organizationId/debt-position-type-orgs/:debtPositionTypeOrgId",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"bff",
+								"organization",
+								":organizationId",
+								"debt-position-type-orgs",
+								":debtPositionTypeOrgId"
+							],
+							"variable": [
+								{
+									"key": "organizationId",
+									"value": "{{organizationId}}"
+								},
+								{
+									"key": "debtPositionTypeOrgId",
+									"value": "{{debtPositionTypeOrgId}}"
+								}
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -1424,6 +1498,11 @@
 		{
 			"key": "receiptId",
 			"value": ""
+		},
+		{
+			"key": "debtPositionTypeOrgId",
+			"value": "",
+			"type": "string"
 		}
 	]
 }

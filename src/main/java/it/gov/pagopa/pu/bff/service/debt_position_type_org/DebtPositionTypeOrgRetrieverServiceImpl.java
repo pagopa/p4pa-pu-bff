@@ -14,8 +14,7 @@ import java.util.Collections;
 import java.util.List;
 
 @Service
-public class DebtPositionTypeOrgRetrieverServiceImpl implements
-  DebtPositionTypeOrgRetrieverService {
+public class DebtPositionTypeOrgRetrieverServiceImpl implements DebtPositionTypeOrgRetrieverService {
 
   private final DebtPositionTypeOrgService debtPositionTypeOrgService;
   private final DebtPositionTypeOrgWithCountMapper debtPositionTypeOrgWithCountMapper;
@@ -27,6 +26,12 @@ public class DebtPositionTypeOrgRetrieverServiceImpl implements
     this.debtPositionTypeOrgService = debtPositionTypeOrgService;
     this.debtPositionTypeOrgWithCountMapper = debtPositionTypeOrgWithCountMapper;
     this.authorizationService = authorizationService;
+  }
+
+  @Override
+  public DebtPositionTypeOrg getDebtPositionTypeOrgById(Long organizationId, Long debtPositionTypeOrgId, UserInfo loggedUser, String accessToken) {
+    AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser);
+    return debtPositionTypeOrgService.getDebtPositionTypeOrg(debtPositionTypeOrgId, accessToken);
   }
 
   @Override

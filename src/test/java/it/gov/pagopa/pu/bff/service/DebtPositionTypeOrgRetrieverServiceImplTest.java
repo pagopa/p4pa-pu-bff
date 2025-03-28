@@ -95,6 +95,7 @@ class DebtPositionTypeOrgRetrieverServiceImplTest {
         debtPositionTypeOrgService.getDebtPositionTypeOrgById(organizationId, debtPositionTypeOrgId, loggedUser, accessToken));
 
       authorizationServiceMockedStatic.verify(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser));
+      Mockito.verifyNoInteractions(debtPositionTypeOrgServiceMock);
     }
   }
 

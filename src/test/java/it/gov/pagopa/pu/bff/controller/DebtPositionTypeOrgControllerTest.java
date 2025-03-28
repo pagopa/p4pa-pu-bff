@@ -64,6 +64,24 @@ class DebtPositionTypeOrgControllerTest {
   }
 
   @Test
+  void givenNonExistentDebtPositionTypeOrgWhenGetDebtPositionTypeOrgByIdThenNotFound() {
+    long organizationId = 1L;
+    long debtPositionTypeOrgId = 999L;
+
+    Mockito.when(debtPositionTypeOrgRetrieverServiceMock.getDebtPositionTypeOrgById(
+      organizationId,
+      debtPositionTypeOrgId,
+      SecurityUtils.getLoggedUser(),
+      SecurityUtils.getAccessToken()
+    )).thenReturn(null);
+
+    ResponseEntity<DebtPositionTypeOrg> response = debtPositionTypeOrgController.getDebtPositionTypeOrgById(organizationId, debtPositionTypeOrgId);
+
+    Assertions.assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+    Assertions.assertNull(response.getBody());
+  }
+
+  @Test
   void givenCorrectRequestWhenGetDebtPositionTypeOrgsThenOk() {
     long organizationId = 1L;
     List<DebtPositionTypeOrg> expectedResult = List.of(new DebtPositionTypeOrg());

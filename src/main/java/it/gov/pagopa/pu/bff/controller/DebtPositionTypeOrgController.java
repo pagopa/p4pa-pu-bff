@@ -7,6 +7,7 @@ import it.gov.pagopa.pu.bff.service.debt_position_type_org.DebtPositionTypeOrgRe
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrg;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -26,7 +27,11 @@ public class DebtPositionTypeOrgController implements DebtPositionTypeOrgsApi {
   @Override
   public ResponseEntity<DebtPositionTypeOrg> getDebtPositionTypeOrgById(Long organizationId, Long debtPositionTypeOrgId) {
     log.info("User requested getDebtPositionTypeOrgById having organizationId {} and debtPositionTypeOrgId {}", organizationId, debtPositionTypeOrgId);
-    return ResponseEntity.ok(debtPositionTypeOrgRetrieverService.getDebtPositionTypeOrgById(organizationId, debtPositionTypeOrgId, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken()));
+    DebtPositionTypeOrg result = debtPositionTypeOrgRetrieverService.getDebtPositionTypeOrgById(organizationId, debtPositionTypeOrgId, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken());
+    if (result == null) {
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    }
+    return ResponseEntity.ok(result);
   }
 
   @Override

@@ -1154,12 +1154,10 @@
 							}
 						],
 						"url": {
-							"raw": "http://localhost:8080/bff/organization/:organizationId/debt-position-type-orgs/:debtPositionTypeOrgId",
-							"protocol": "http",
+							"raw": "{{puBffBaseUrl}}/bff/organization/:organizationId/debt-position-type-orgs/:debtPositionTypeOrgId",
 							"host": [
-								"localhost"
+								"{{puBffBaseUrl}}"
 							],
-							"port": "8080",
 							"path": [
 								"bff",
 								"organization",

@@ -1,0 +1,109 @@
+package it.gov.pagopa.pu.bff.controller;
+
+import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
+import it.gov.pagopa.pu.bff.dto.ExportFileFiltersDTO;
+import it.gov.pagopa.pu.bff.dto.OffsetDateTimeIntervalFilter;
+import it.gov.pagopa.pu.bff.dto.generated.ExportFile;
+import it.gov.pagopa.pu.bff.dto.generated.PagedExportFile;
+import it.gov.pagopa.pu.bff.service.export_flow_file.ExportFileRetrieverService;
+import it.gov.pagopa.pu.bff.util.TestUtils;
+import it.gov.pagopa.pu.processexecutions.dto.generated.ExportFile.ExportFileTypeEnum;
+import it.gov.pagopa.pu.processexecutions.dto.generated.ExportFileFilter;
+import it.gov.pagopa.pu.processexecutions.dto.generated.ExportFileRequestDTO;
+import it.gov.pagopa.pu.processexecutions.dto.generated.ExportFileStatus;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+
+import java.time.OffsetDateTime;
+import java.util.List;
+
+@ExtendWith(MockitoExtension.class)
+class ExportFileControllerTest {
+
+  @Mock
+  private ExportFileRetrieverService exportFileRetrieverServiceMock;
+
+  @InjectMocks
+  private ExportFileController exportFileController;
+
+  @BeforeEach
+  void setUp() {
+    Authentication authentication = new UsernamePasswordAuthenticationToken("fakeUser", "fakeAccessToken");
+    SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
+    securityContext.setAuthentication(authentication);
+    SecurityContextHolder.setContext(securityContext);
+  }
+
+  @Test
+  void givenCorrectRequestWhenGetExportFilesThenOk() {
+    long organizationId = 1L;
+    ExportFileTypeEnum exportFileType = ExportFileTypeEnum.CLASSIFICATIONS;
+    OffsetDateTime creationDateFrom = OffsetDateTime.now().minusDays(10);
+    OffsetDateTime creationDateTo = OffsetDateTime.now().plusDays(10);
+    ExportFileStatus status = ExportFileStatus.COMPLETED;
+    String fileName = "filename";
+    ExportFileFiltersDTO expectedFilter = new ExportFileFiltersDTO(
+      organizationId, exportFileType, new OffsetDateTimeIntervalFilter(creationDateFrom, creationDateTo), status,
+      fileName);
+    PagedExportFile expectedResult = new PagedExportFile();
+    expectedResult.setContent(List.of(ExportFile.builder()
+      .exportFileId(1L)
+      .fileName("fileName")
+      .creationDate(OffsetDateTime.now())
+      .operator("operator")
+      .totalRows(10L)
+      .status(ExportFileStatus.COMPLETED)
+      .build()));
+    expectedResult.setSize(10L);
+    expectedResult.setTotalElements(1L);
+    expectedResult.setTotalPages(0L);
+    expectedResult.setNumber(0L);
+
+    Mockito.when(exportFileRetrieverServiceMock.getExportFiles(
+        Mockito.eq(expectedFilter),
+        Mockito.argThat(p->p.getPageNumber()==0 && p.getPageSize()==10 && p.getSort().isUnsorted()),
+        Mockito.any(), Mockito.anyString()))
+      .thenReturn(expectedResult);
+
+    ResponseEntity<PagedExportFile> response = exportFileController.getExportFiles(organizationId,
+      exportFileType,creationDateFrom,creationDateTo,status,fileName,
+      PageRequest.of(0,10));
+
+    Assertions.assertEquals(HttpStatus.OK,response.getStatusCode());
+    Assertions.assertNotNull(response.getBody());
+    Assertions.assertSame(expectedResult,response.getBody());
+  }
+
+  @Test
+  void givenCorrectRequestWhenCreateExportFileThenOk() {
+    ExportFileRequestDTO requestDTO = ExportFileRequestDTO.builder()
+      .organizationId(1L)
+      .exportFileType(ExportFileRequestDTO.ExportFileTypeEnum.CLASSIFICATIONS)
+      .fileVersion("version1")
+      .filterFields(ExportFileFilter.builder()
+        .iuv("iuv")
+        .build())
+      .build();
+    TestUtils.addSampleUserIntoSecurityContext();
+
+    ResponseEntity<Void> response = exportFileController.createExportFile(requestDTO);
+
+    Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
+    Mockito.verify(exportFileRetrieverServiceMock).createExportFile(Mockito.eq(requestDTO), Mockito.any(
+      UserInfo.class), Mockito.anyString());
+  }
+}
+

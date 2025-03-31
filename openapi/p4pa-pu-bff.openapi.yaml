@@ -1,0 +1,1866 @@
+openapi: 3.0.1
+info:
+  title: API Documentation
+  description: OpenAPI documentation
+  version: 1.0.0
+servers:
+  - url: "http://localhost:8080/bff"
+    description: Generated server url
+paths:
+  /organizations:
+    get:
+      tags:
+        - Organizations
+      summary: "Retrieve the list of organizations"
+      operationId: getOrganizations
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/OrganizationDTO'
+        '401':
+          description: Unauthorized - Missing or invalid token
+        '403':
+          description: Forbidden - Access denied
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDTO'
+  /brokers/config:
+    get:
+      tags:
+        - Brokers
+      summary: "Retrieve application information for FE"
+      operationId: getBrokerConfig
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConfigFE'
+        '401':
+          description: Unauthorized - Missing or invalid token
+        '403':
+          description: Forbidden - Access denied
+        '500':
+          description: Internal Server Error
+  /token:
+    post:
+      tags:
+        - Authentication
+      summary: "Generate an access token"
+      operationId: postToken
+      security: [ ]
+      parameters:
+        - name: idToken
+          in: query
+          required: true
+          schema:
+            type: string
+          description: ID token from the client
+      responses:
+        '200':
+          description: Access Token generated successfully
+          content:
+            application/json:
+              schema:
+                type: 'AccessToken'
+        '400':
+          description: Invalid request
+        '401':
+          description: Authentication failed
+        '429':
+          description: Too many requests
+        '500':
+          description: Internal Server Error
+  /auth/userinfo:
+    get:
+      tags:
+        - Authentication
+      operationId: getUserInfo
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: 'UserInfo'
+        '403':
+          description: Forbidden
+        '429':
+          description: Too Many Requests
+        '500':
+          description: Internal Server Error
+  /auth/revoke:
+    post:
+      tags:
+        - Authentication
+      operationId: logout
+      responses:
+        '200':
+          description: OK
+  /core-health:
+    get:
+      tags:
+        - Monitoring
+      operationId: getHealthStatus
+      security: [ ]
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ServiceStatus'
+        '503':
+          description: Service is unavailable
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ServiceStatus'
+  /taxonomy/getOrganizationTypes:
+    get:
+      tags:
+        - Taxonomy
+      summary: "Retrieve distinct organization types for FE"
+      operationId: getOrganizationTypes
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TaxonomyOrganizationTypeDTO'
+        '401':
+          description: Unauthorized - Missing or invalid token
+        '403':
+          description: Forbidden - Access denied
+        '500':
+          description: Internal Server Error
+  /taxonomy/getMacroArea:
+    get:
+      tags:
+        - Taxonomy
+      operationId: getMacroArea
+      parameters:
+        - name: organizationType
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TaxonomyMacroAreaCodeDTO'
+        '401':
+          description: Unauthorized - Missing or invalid token
+        '403':
+          description: Forbidden - Access denied
+        '500':
+          description: Internal Server Error
+  /taxonomy/getServiceType:
+    get:
+      tags:
+        - Taxonomy
+      operationId: getServiceType
+      parameters:
+        - name: organizationType
+          in: query
+          schema:
+            type: string
+        - name: macroAreaCode
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TaxonomyServiceTypeCodeDTO'
+        '401':
+          description: Unauthorized - Missing or invalid token
+        '403':
+          description: Forbidden - Access denied
+        '500':
+          description: Internal Server Error
+  /taxonomy/getCollectionReason:
+    get:
+      tags:
+        - Taxonomy
+      operationId: getCollectionReason
+      parameters:
+        - name: organizationType
+          in: query
+          schema:
+            type: string
+        - name: macroAreaCode
+          in: query
+          schema:
+            type: string
+        - name: serviceTypeCode
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TaxonomyCollectionReasonDTO'
+        '401':
+          description: Unauthorized - Missing or invalid token
+        '403':
+          description: Forbidden - Access denied
+        '500':
+          description: Internal Server Error
+  /taxonomy/getTaxonomyCode:
+    get:
+      tags:
+        - Taxonomy
+      operationId: getTaxonomyCode
+      parameters:
+        - name: organizationType
+          in: query
+          schema:
+            type: string
+        - name: macroAreaCode
+          in: query
+          schema:
+            type: string
+        - name: serviceTypeCode
+          in: query
+          schema:
+            type: string
+        - name: collectionReason
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TaxonomyCodeDTO'
+  /debt-position-types:
+    post:
+      tags:
+        - DebtPositionTypes
+      description: create a DebtPositionType
+      operationId: createDebtPositionType
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: 'DebtPositionTypeRequestBody'
+        required: true
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: 'DebtPositionTypeResponseBody'
+        '401':
+          description: Unauthorized - Missing or invalid token
+        '403':
+          description: Forbidden - Access denied
+        '500':
+          description: Internal Server Error
+  /debt-position-types/{debtPositionTypeId}:
+    patch:
+      tags:
+        - DebtPositionTypes
+      description: Patch a DebtPositionType
+      operationId: patchDebtPositionType
+      parameters:
+        - name: debtPositionTypeId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DebtPositionTypePatchRequestBody'
+        required: true
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/hal+json:
+              schema:
+                type: 'DebtPositionTypeResponseBody'
+        '401':
+          description: Unauthorized - Missing or invalid token
+        '403':
+          description: Forbidden - Access denied
+        '404':
+          description: Not Found - Debt Position Type not found
+        '500':
+          description: Internal Server Error
+  /organization/{organizationId}/debt-position-type-orgs-with-count:
+    get:
+      tags:
+        - DebtPositionTypeOrgs
+      summary: "Retrieve a paged list of DebtPositionTypeOrgWithCount"
+      operationId: getDebtPositionTypeOrgWithCount
+      parameters:
+        - name: organizationId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: code
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: description
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PagedDebtPositionTypeOrgWithCount'
+        '401':
+          description: Unauthorized - Missing or invalid token
+        '403':
+          description: Forbidden - Access denied
+        '500':
+          description: Internal Server Error
+      x-spring-paginated: true
+  /organization/{organizationId}/debt-position-types:
+    get:
+      tags:
+        - DebtPositionTypes
+      summary: "Retrieve a page of DebtPositionTypeWithCount based on the organization's brokerId"
+      operationId: getDebtPositionTypeWithCount
+      parameters:
+        - name: organizationId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PagedDebtPositionTypeWithCount'
+        '401':
+          description: Unauthorized - Missing or invalid token
+        '403':
+          description: Forbidden - Access denied
+        '500':
+          description: Internal Server Error
+      x-spring-paginated: true
+  /organization/{organizationId}/debt-position-types/{debtPositionTypeId}:
+    get:
+      tags:
+        - DebtPositionTypes
+      summary: "Retrieve a detail of a DebtPositionType based on the organization's brokerId"
+      operationId: getDebtPositionTypeDetail
+      parameters:
+        - name: organizationId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: debtPositionTypeId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: The ID of the debt position type
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DebtPositionTypeDetailDTO"
+        '401':
+          description: Unauthorized - Missing or invalid token
+        '403':
+          description: Forbidden - Access denied
+        '404':
+          description: Not Found - Debt Position Type not found
+        '500':
+          description: Internal Server Error
+  /organization/{organizationId}/debt-position-type-orgs/{debtPositionTypeOrgId}:
+    get:
+      tags:
+        - DebtPositionTypeOrgs
+      summary: "Retrieve a specific DebtPositionTypeOrg based on its ID"
+      operationId: getDebtPositionTypeOrgById
+      parameters:
+        - name: organizationId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: debtPositionTypeOrgId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                  type: 'DebtPositionTypeOrg'
+        '401':
+          description: Unauthorized - Missing or invalid token
+        '403':
+          description: Forbidden - Access denied
+        '404':
+          description: Not Found - DebtPositionTypeOrg Not Found
+        '500':
+          description: Internal Server Error
+  /organization/{organizationId}/debt-position-type-orgs:
+    get:
+      tags:
+        - DebtPositionTypeOrgs
+      summary: "Retrieve a list of DebtPositionTypeOrg"
+      operationId: getDebtPositionTypeOrgs
+      parameters:
+        - name: organizationId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: 'DebtPositionTypeOrg'
+        '401':
+          description: Unauthorized - Missing or invalid token
+        '403':
+          description: Forbidden - Access denied
+        '500':
+          description: Internal Server Error
+  /organization/{organizationId}/transfers:
+    get:
+      tags:
+        - Transfers
+      summary: "Retrieve a list of transfers"
+      operationId: getTransfers
+      parameters:
+        - name: organizationId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: installmentId
+          in: query
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: 'Transfer'
+        '401':
+          description: Unauthorized - Missing or invalid token
+        '403':
+          description: Forbidden - Access denied
+        '500':
+          description: Internal Server Error
+  /organization/{organizationId}/installments:
+    get:
+      tags:
+        - Installments
+      summary: "Retrieve a paged list of installment based on filters"
+      operationId: getInstallments
+      parameters:
+        - name: organizationId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: dueDateFrom
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date-time
+        - name: dueDateTo
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date-time
+        - name: iuv
+          in: query
+          schema:
+            type: string
+        - name: fiscalCode
+          in: query
+          schema:
+            type: string
+        - name: debtPositionTypeOrgId
+          in: query
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PagedInstallmentView'
+        '401':
+          description: Unauthorized - Missing or invalid token
+        '403':
+          description: Forbidden - Access denied
+        '500':
+          description: Internal Server Error
+      x-spring-paginated: true
+  /organization/{organizationId}/installments/{installmentId}:
+    get:
+      tags:
+        - Installments
+      summary: "Retrieve a specific installment"
+      operationId: getInstallmentDetail
+      parameters:
+        - name: organizationId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: installmentId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: The unique identifier of the installment
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: 'InstallmentDetailDTO'
+        '404':
+          description: Not Found - Installment Not Found
+        '401':
+          description: Unauthorized - Missing or invalid token
+        '403':
+          description: Forbidden - Access denied
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDTO'
+  /organization/{organizationId}/treasuries/{treasuryId}:
+    get:
+      tags:
+        - Treasuries
+      summary: "Retrieve a specific treasury"
+      operationId: getTreasuryDetail
+      parameters:
+        - name: organizationId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: treasuryId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: 'Treasury'
+        '404':
+          description: Not Found - Treasury Not Found
+        '401':
+          description: Unauthorized - Missing or invalid token
+        '403':
+          description: Forbidden - Access denied
+        '500':
+          description: Internal Server Error
+  /organization/{organizationId}/treasuries:
+    get:
+      tags:
+        - Treasuries
+      summary: "Retrieve a paged list of treasuries based on filters"
+      operationId: getTreasuries
+      parameters:
+        - name: organizationId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: iuv
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: iuf
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: billAmountCents
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int64
+        - name: billDate
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date
+        - name: provisionalCode
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: billCode
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: pspLastName
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: regionValueDate
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date
+        - name: documentCode
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PagedTreasuryView'
+        '401':
+          description: Unauthorized - Missing or invalid token
+        '403':
+          description: Forbidden - Access denied
+        '500':
+          description: Internal Server Error
+      x-spring-paginated: true
+  /organization/{organizationId}/payments-reporting:
+    get:
+      tags:
+        - PaymentsReporting
+      summary: "Retrieve a paged list of payments reporting based on filters"
+      operationId: getPaymentsReporting
+      parameters:
+        - name: organizationId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: iuf
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: regulationUniqueIdentifier
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: regulationDateFrom
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date
+        - name: regulationDateTo
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PagedPaymentsReportingView'
+        '401':
+          description: Unauthorized - Missing or invalid token
+        '403':
+          description: Forbidden - Access denied
+        '500':
+          description: Internal Server Error
+      x-spring-paginated: true
+  /organization/{organizationId}/payments-reporting/{iuf}/rows:
+    get:
+      tags:
+        - PaymentsReporting
+      summary: "Retrieve a page of payments reporting rows based on filters"
+      operationId: getPaymentsReportingRows
+      parameters:
+        - name: organizationId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: iuf
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: iuv
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: payDateFrom
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date
+        - name: payDateTo
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PagedPaymentsReportingRow'
+        '401':
+          description: Unauthorized - Missing or invalid token
+        '403':
+          description: Forbidden - Access denied
+        '500':
+          description: Internal Server Error
+      x-spring-paginated: true
+  /organization/{organizationId}/payments-reporting/{iuf}/rows/{paymentsReportingId}:
+    get:
+      tags:
+        - PaymentsReporting
+      summary: "Retrieve a specific payments reporting"
+      operationId: getPaymentsReportingDetail
+      parameters:
+        - name: organizationId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: iuf
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: paymentsReportingId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The unique identifier of the payments reporting
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentsReportingDetailDTO'
+        '404':
+          description: Not Found - Payments Reporting not found
+        '401':
+          description: Unauthorized - Missing or invalid token
+        '403':
+          description: Forbidden - Access denied
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDTO'
+  /organization/{organizationId}/receipts:
+    get:
+      tags:
+        - Receipts
+      summary: "Retrieve a page of receipts based on filters"
+      operationId: getReceipts
+      parameters:
+        - name: organizationId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: receiptOrigin
+          in: query
+          required: true
+          schema:
+            type: 'ReceiptOriginType'
+        - name: iuv
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: iur
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: iud
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: debtPositionTypeOrgId
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int64
+        - name: paymentDateTimeFrom
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date-time
+        - name: paymentDateTimeTo
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date-time
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PagedReceiptView'
+        '401':
+          description: Unauthorized - Missing or invalid token
+        '403':
+          description: Forbidden - Access denied
+        '500':
+          description: Internal Server Error
+      x-spring-paginated: true
+  /organization/{organizationId}/receipts/{receiptId}:
+    get:
+      tags:
+        - Receipts
+      summary: "Retrieve a specific receipt"
+      operationId: getReceiptDetail
+      parameters:
+        - name: organizationId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: receiptId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: The unique identifier of the receipt
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReceiptDetailDTO'
+        '404':
+          description: Not Found - Receipt not found
+        '401':
+          description: Unauthorized - Missing or invalid token
+        '403':
+          description: Forbidden - Access denied
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDTO'
+  /debt-position-types/{id}:
+    get:
+      tags:
+        - DebtPositionTypes
+      summary: "Retrieve a specific debt position type"
+      operationId: getDebtPositionType
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The unique identifier of the debt position type
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: 'DebtPositionType'
+        '404':
+          description: Not Found - Debt position type not found
+        '401':
+          description: Unauthorized - Missing or invalid token
+        '403':
+          description: Forbidden - Access denied
+        '500':
+          description: Internal Server Error
+  /organization/{organizationId}/ingestion-flow-files:
+    get:
+      tags:
+        - IngestionFlowFiles
+      operationId: getIngestionFlowFiles
+      parameters:
+        - name: organizationId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: ingestionFlowFileTypes
+          in: query
+          required: true
+          schema:
+            type: array
+            items:
+              type: 'IngestionFlowFileType'
+        - name: creationDateFrom
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: creationDateTo
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: status
+          in: query
+          schema:
+            type: 'IngestionFlowFileStatus'
+        - name: fileName
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/hal+json:
+              schema:
+                $ref: '#/components/schemas/PagedIngestionFlowFile'
+        '404':
+          description: Not Found
+      x-spring-paginated: true
+  /organization/{organizationId}/export-flow-files:
+    get:
+      tags:
+        - ExportFiles
+      operationId: getExportFiles
+      parameters:
+        - name: organizationId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: exportFileType
+          in: query
+          required: true
+          schema:
+            type: 'ExportFileType'
+        - name: creationDateFrom
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: creationDateTo
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: status
+          in: query
+          schema:
+            type: 'ExportFileStatus'
+        - name: fileName
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/hal+json:
+              schema:
+                $ref: '#/components/schemas/PagedExportFile'
+        '404':
+          description: Not Found
+      x-spring-paginated: true
+  /organization/{organizationId}/debt-positions:
+    get:
+      tags:
+        - DebtPositions
+      summary: "Retrieve a page of DebtPositionView"
+      operationId: getDebtPositionViews
+      parameters:
+        - name: organizationId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: creationDateFrom
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date-time
+        - name: creationDateTo
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date-time
+        - name: fiscalCode
+          in: query
+          schema:
+            type: string
+        - name: debtPositionTypeOrgId
+          in: query
+          schema:
+            type: integer
+            format: int64
+        - name: status
+          in: query
+          schema:
+            type: 'DebtPositionStatus'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PagedDebtPositionView'
+        '401':
+          description: Unauthorized - Missing or invalid token
+        '403':
+          description: Forbidden - Access denied
+        '500':
+          description: Internal Server Error
+      x-spring-paginated: true
+  /organization/{organizationId}/debt-positions/{debtPositionId}:
+    get:
+      tags:
+        - DebtPositions
+      summary: "Retrieve a specific DebtPosition"
+      operationId: getDebtPositionDetail
+      parameters:
+        - name: organizationId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: debtPositionId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DebtPositionDetailDTO'
+        '401':
+          description: Unauthorized - Missing or invalid token
+        '403':
+          description: Forbidden - Access denied
+        '404':
+          description: Not Found - DebtPosition not found
+        '500':
+          description: Internal Server Error
+  /export-flow-files:
+    post:
+      summary: create-export-file
+      tags:
+        - ExportFiles
+      operationId: createExportFile
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: 'ExportFileRequestDTO'
+        required: true
+      responses:
+        '201':
+          description: OK
+security:
+  - BearerAuth: [ ]
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    TaxonomyCodeDTO:
+      type: object
+      properties:
+        organizationType:
+          type: string
+        organizationTypeDescription:
+          type: string
+        macroAreaCode:
+          type: string
+        macroAreaName:
+          type: string
+        macroAreaDescription:
+          type: string
+        serviceTypeCode:
+          type: string
+        serviceType:
+          type: string
+        serviceTypeDescription:
+          type: string
+        collectionReason:
+          type: string
+        taxonomyCode:
+          type: string
+    TaxonomyCollectionReasonDTO:
+      type: object
+      properties:
+        organizationType:
+          type: string
+        organizationTypeDescription:
+          type: string
+        macroAreaCode:
+          type: string
+        macroAreaName:
+          type: string
+        macroAreaDescription:
+          type: string
+        serviceTypeCode:
+          type: string
+        serviceType:
+          type: string
+        serviceTypeDescription:
+          type: string
+        collectionReason:
+          type: string
+    TaxonomyServiceTypeCodeDTO:
+      type: object
+      properties:
+        organizationType:
+          type: string
+        organizationTypeDescription:
+          type: string
+        macroAreaCode:
+          type: string
+        macroAreaName:
+          type: string
+        macroAreaDescription:
+          type: string
+        serviceTypeCode:
+          type: string
+        serviceType:
+          type: string
+        serviceTypeDescription:
+          type: string
+    TaxonomyMacroAreaCodeDTO:
+      type: object
+      properties:
+        organizationType:
+          type: string
+        organizationTypeDescription:
+          type: string
+        macroAreaCode:
+          type: string
+        macroAreaName:
+          type: string
+        macroAreaDescription:
+          type: string
+    TaxonomyOrganizationTypeDTO:
+      type: object
+      properties:
+        organizationType:
+          type: string
+        organizationTypeDescription:
+          type: string
+    OrganizationDTO:
+      type: object
+      required:
+        - organizationId
+        - ipaCode
+        - orgName
+        - operatorRole
+        - orgFiscalCode
+      properties:
+        organizationId:
+          type: integer
+          format: int64
+          description: Organization ID
+        ipaCode:
+          type: string
+          description: IPA code of the organization
+        orgName:
+          type: string
+          description: Organization name
+        operatorRole:
+          type: string
+          enum:
+            - ROLE_ADMIN
+            - ROLE_OPER
+          description: Operator role
+        orgLogo:
+          type: string
+          format: base64
+          description: Base64 encoded logo of the organization
+        orgFiscalCode:
+          type: string
+    ConfigFE:
+      type: object
+      required:
+        - headerAssistanceUrl
+        - logoFooterImg
+        - footerDescText
+        - footerPrivacyInfoUrl
+        - footerGDPRUrl
+        - footerTermsCondUrl
+        - footerAccessibilityUrl
+        - brokerId
+        - canManageUsers
+        - brokerFiscalCode
+      properties:
+        headerAssistanceUrl:
+          type: string
+          description: URL for header assistance
+        logoFooterImg:
+          type: string
+          description: URL for footer logo image
+        footerDescText:
+          type: string
+          description: Description text for the footer
+        footerPrivacyInfoUrl:
+          type: string
+          description: URL for privacy information in the footer
+        footerGDPRUrl:
+          type: string
+          description: URL for GDPR information in the footer
+        footerTermsCondUrl:
+          type: string
+          description: URL for terms and conditions in the footer
+        footerAccessibilityUrl:
+          type: string
+          description: URL for accessibility information in the footer
+        brokerId:
+          type: string
+          description: Broker ID
+        canManageUsers:
+          type: boolean
+          description: Indicates if the user can manage other users
+        brokerFiscalCode:
+          type: string
+    ServiceStatus:
+      type: object
+      properties:
+        serviceName:
+          type: string
+          description: Service Name
+        statusMessage:
+          type: string
+          description: Service status
+    ErrorDTO:
+      type: object
+      required:
+        - title
+        - description
+      properties:
+        title:
+          type: string
+          description: The title describing the error
+          enum:
+            - NOT_FOUND
+            - BAD_REQUEST
+            - GENERIC_ERROR
+            - FORBIDDEN
+        description:
+          type: string
+          description: Description of the error
+    PagedDebtPositionTypeOrgWithCount:
+      type: object
+      required:
+        - content
+        - size
+        - totalElements
+        - totalPages
+        - number
+      properties:
+        content:
+          type: array
+          items:
+            type: 'DebtPositionTypeOrgWithCount'
+        size:
+          type: integer
+          format: int64
+        totalElements:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer
+          format: int64
+        number:
+          type: integer
+          format: int64
+    PagedDebtPositionTypeWithCount:
+      type: object
+      required:
+        - content
+        - size
+        - totalElements
+        - totalPages
+        - number
+      properties:
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/DebtPositionTypeWithCount'
+        size:
+          type: integer
+          format: int64
+        totalElements:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer
+          format: int64
+        number:
+          type: integer
+          format: int64
+    DebtPositionTypeWithCount:
+      type: object
+      required:
+        - debtPositionTypeId
+        - code
+        - description
+        - updateDate
+        - activeOrganizations
+      properties:
+        debtPositionTypeId:
+          type: integer
+          format: int64
+        code:
+          type: string
+        description:
+          type: string
+        updateDate:
+          type: string
+          format: date-time
+        activeOrganizations:
+          type: integer
+          format: int32
+    PagedReceiptView:
+      type: object
+      required:
+        - content
+        - size
+        - totalElements
+        - totalPages
+        - number
+      properties:
+        content:
+          type: array
+          items:
+            type: 'ReceiptView'
+        size:
+          type: integer
+          format: int64
+        totalElements:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer
+          format: int64
+        number:
+          type: integer
+          format: int64
+    PagedInstallmentView:
+      type: object
+      required:
+        - content
+        - size
+        - totalElements
+        - totalPages
+        - number
+      properties:
+        content:
+          type: array
+          items:
+            type: 'InstallmentView'
+        size:
+          type: integer
+          format: int64
+        totalElements:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer
+          format: int64
+        number:
+          type: integer
+          format: int64
+    PagedTreasuryView:
+      type: object
+      required:
+        - content
+        - size
+        - totalElements
+        - totalPages
+        - number
+      properties:
+        content:
+          type: array
+          items:
+            type: 'TreasuryView'
+        size:
+          type: integer
+          format: int64
+        totalElements:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer
+          format: int64
+        number:
+          type: integer
+          format: int64
+    PagedPaymentsReportingView:
+      type: object
+      required:
+        - content
+        - size
+        - totalElements
+        - totalPages
+        - number
+      properties:
+        content:
+          type: array
+          items:
+            type: 'PaymentsReportingView'
+        size:
+          type: integer
+          format: int64
+        totalElements:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer
+          format: int64
+        number:
+          type: integer
+          format: int64
+    ReceiptDetailDTO:
+      type: object
+      required:
+        - receiptId
+        - paymentAmountCents
+        - remittanceInformation
+        - debtPositionTypeOrgDescription
+        - debtor
+        - pspCompanyName
+        - iud
+      properties:
+        receiptId:
+          type: integer
+          format: int64
+        iuv:
+          type: string
+        paymentAmountCents:
+          type: integer
+          format: int64
+        remittanceInformation:
+          type: string
+        debtPositionTypeOrgDescription:
+          type: string
+        debtor:
+          type: 'PersonDTO'
+        payer:
+         type: 'PersonDTO'
+        paymentDateTime:
+          type: string
+          format: date-time
+        pspCompanyName:
+          type: string
+        iud:
+          type: string
+        iur:
+          type: string
+    PagedIngestionFlowFile:
+      type: object
+      required:
+        - content
+        - size
+        - totalElements
+        - totalPages
+        - number
+      properties:
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/IngestionFlowFile'
+        size:
+          type: integer
+          format: int64
+        totalElements:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer
+          format: int64
+        number:
+          type: integer
+          format: int64
+    IngestionFlowFile:
+      required:
+        - ingestionFlowFileId
+        - fileName
+        - creationDate
+        - operator
+        - status
+      type: object
+      properties:
+        ingestionFlowFileId:
+          type: integer
+          format: int64
+        fileName:
+          type: string
+        creationDate:
+          type: string
+          format: date-time
+        operator:
+          type: string
+        totalRows:
+          type: integer
+          format: int64
+        correctlyImportedRows:
+          type: integer
+          format: int64
+        discardedRows:
+          type: integer
+          format: int64
+        status:
+          type: 'IngestionFlowFileStatus'
+    PagedExportFile:
+      type: object
+      required:
+        - content
+        - size
+        - totalElements
+        - totalPages
+        - number
+      properties:
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/ExportFile'
+        size:
+          type: integer
+          format: int64
+        totalElements:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer
+          format: int64
+        number:
+          type: integer
+          format: int64
+    ExportFile:
+      required:
+        - exportFileId
+        - fileName
+        - creationDate
+        - operator
+        - status
+      type: object
+      properties:
+        exportFileId:
+          type: integer
+          format: int64
+        fileName:
+          type: string
+        creationDate:
+          type: string
+          format: date-time
+        totalRows:
+          type: integer
+          format: int64
+        operator:
+          type: string
+        status:
+          type: 'ExportFileStatus'
+    PagedDebtPositionView:
+      type: object
+      required:
+        - content
+        - size
+        - totalElements
+        - totalPages
+        - number
+      properties:
+        content:
+          type: array
+          items:
+            type: 'DebtPositionView'
+        size:
+          type: integer
+          format: int64
+        totalElements:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer
+          format: int64
+        number:
+          type: integer
+          format: int64
+    DebtPositionDetailDTO:
+      type: object
+      required:
+        - debtor
+        - debtPositionTypeOrgDescription
+        - debtPositionTypeOrgCode
+        - status
+        - paymentOptions
+      properties:
+        debtor:
+          type: 'PersonDTO'
+        debtPositionTypeOrgDescription:
+          type: string
+        debtPositionTypeOrgCode:
+          type: string
+        iupd:
+          type: string
+        status:
+          type: 'DebtPositionStatus'
+        paymentOptions:
+          type: array
+          items:
+            type: 'PaymentOptionDTO'
+    PagedPaymentsReportingRow:
+      type: object
+      required:
+        - content
+        - size
+        - totalElements
+        - totalPages
+        - number
+      properties:
+        content:
+          type: array
+          items:
+            type: 'PaymentsReporting'
+        size:
+          type: integer
+          format: int64
+        totalElements:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer
+          format: int64
+        number:
+          type: integer
+          format: int64
+    PaymentsReportingDetailDTO:
+      type: object
+      required:
+        - paymentsReportingId
+        - iuv
+        - iur
+        - amountPaidCents
+      properties:
+        paymentsReportingId:
+          type: string
+        iuv:
+          type: string
+        amountPaidCents:
+          type: integer
+          format: int64
+        remittanceInformation:
+          type: string
+        debtPositionTypeOrgDescription:
+          type: string
+        paymentDateTime:
+          type: string
+          format: date-time
+        debtor:
+          type: 'PersonDTO'
+        pspCompanyName:
+          type: string
+        iud:
+          type: string
+        iur:
+          type: string
+        status:
+          type: 'InstallmentStatus'
+    DebtPositionTypeDetailDTO:
+      required:
+        - debtPositionTypeId
+        - code
+        - description
+        - organizationTypeDescription
+        - macroAreaName
+        - serviceType
+        - collectionReason
+        - taxonomyCode
+      type: object
+      properties:
+        debtPositionTypeId:
+          type: integer
+          format: int64
+        code:
+          type: string
+          maxLength: 255
+        description:
+          type: string
+          readOnly: true
+        organizationTypeDescription:
+          type: string
+          readOnly: true
+        macroAreaName:
+          type: string
+          readOnly: true
+        serviceType:
+          type: string
+          readOnly: true
+        collectionReason:
+          type: string
+          readOnly: true
+        taxonomyCode:
+          type: string
+          readOnly: true
+        flagAnonymousFiscalCode:
+          type: boolean
+        flagMandatoryDueDate:
+          type: boolean
+        flagNotifyIo:
+          type: boolean
+        ioTemplateMessage:
+          type: string
+    DebtPositionTypePatchRequestBody:
+      type: object
+      properties:
+        brokerId:
+          type: integer
+          format: int64
+        code:
+          type: string
+        orgType:
+          type: string
+        macroArea:
+          type: string
+        serviceType:
+          type: string
+        collectingReason:
+          type: string
+        flagAnonymousFiscalCode:
+          type: boolean
+        flagMandatoryDueDate:
+          type: boolean
+        flagNotifyIo:
+          type: boolean
+        ioTemplateMessage:
+          type: string

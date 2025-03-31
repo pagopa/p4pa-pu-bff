@@ -64,12 +64,16 @@ class ClassificationApisHolderTest extends BaseApiHolderTest {
   void whenGetTreasuryViewSearchControllerApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
     assertAuthenticationShouldBeSetInThreadSafeMode(
       accessToken -> classificationApisHolder.getTreasuryViewSearchControllerApi(accessToken)
-        .crudTreasuriesViewFindTreasuriesByFilters(1L, "iuv123", "iuf123", 100L, LocalDate.now().minusDays(10), "prov123", "code123", "lastName", LocalDate.now().minusDays(5), "doc123", 0, 10, Collections.emptyList()),
-      new ParameterizedTypeReference<>() {
-      },
-      classificationApisHolder::unload);
+        .crudTreasuriesViewFindTreasuriesByFilters(
+          1L, "iuv123", "iuf123", 100L, LocalDate.now().minusDays(10),
+          LocalDate.now().minusDays(5), "prov123", "provAe123", "code123",
+          "2025", "lastName", LocalDate.now().minusDays(5), LocalDate.now(),
+          "doc123", "2025", 0, 10, Collections.emptyList()
+        ),
+      new ParameterizedTypeReference<>() {},
+      classificationApisHolder::unload
+    );
   }
-
   @Test
   void whenGetTreasurySearchControllerApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
     assertAuthenticationShouldBeSetInThreadSafeMode(

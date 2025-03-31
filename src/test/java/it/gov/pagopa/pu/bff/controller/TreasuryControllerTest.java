@@ -1,6 +1,7 @@
 package it.gov.pagopa.pu.bff.controller;
 
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
+import it.gov.pagopa.pu.bff.dto.LocalDateIntervalFilter;
 import it.gov.pagopa.pu.bff.dto.TreasuryViewFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedTreasuryView;
 import it.gov.pagopa.pu.bff.service.treasury.TreasuryRetrieverService;
@@ -53,24 +54,34 @@ class TreasuryControllerTest {
     String iuv = "IUV123";
     String iuf = "IUF123";
     long billAmountCents = 1000L;
-    LocalDate billDate = LocalDate.now().minusDays(10);
+    LocalDate billDateFrom = LocalDate.now().minusDays(20);
+    LocalDate billDateTo = LocalDate.now().minusDays(10);
     String provisionalCode = "PROV123";
+    String provisionalAe = "PROVAE123";
     String billCode = "BILL123";
+    String billYear = "2025";
     String pspLastName = "PSPLastName";
-    LocalDate regionValueDate = LocalDate.now().minusDays(5);
+    LocalDate regionValueDateFrom = LocalDate.now().minusDays(10);
+    LocalDate regionValueDateTo = LocalDate.now().minusDays(5);
     String documentCode = "DOC123";
+    String documentYear = "2025";
     Pageable pageable = PageRequest.of(0, 10);
 
-    TreasuryViewFiltersDTO filtersDTO = new TreasuryViewFiltersDTO(organizationId, iuv, iuf, billAmountCents, billDate, provisionalCode, billCode, pspLastName, regionValueDate, documentCode);
+    LocalDateIntervalFilter billDateFilter = new LocalDateIntervalFilter(billDateFrom, billDateTo);
+    LocalDateIntervalFilter regionValueDateFilter = new LocalDateIntervalFilter(regionValueDateFrom, regionValueDateTo);
+
+    TreasuryViewFiltersDTO filtersDTO = new TreasuryViewFiltersDTO(
+      organizationId, iuv, iuf, billAmountCents, billDateFilter, provisionalCode, provisionalAe, billCode, billYear, pspLastName, regionValueDateFilter, documentCode, documentYear
+    );
 
     PagedTreasuryView expectedResult = new PagedTreasuryView();
     expectedResult.setContent(List.of(TreasuryView.builder()
       .treasuryId("100")
       .organizationId(organizationId)
-      .billYear("2025")
+      .billYear(billYear)
       .billCode(billCode)
       .billAmountCents(billAmountCents)
-      .billDate(billDate)
+      .billDate(billDateTo)
       .iuv(iuv)
       .pspLastName(pspLastName)
       .build()));
@@ -82,7 +93,9 @@ class TreasuryControllerTest {
     Mockito.when(treasuryRetrieverServiceMock.getTreasuries(filtersDTO, pageable, userInfo, "fakeAccessToken"))
       .thenReturn(expectedResult);
 
-    ResponseEntity<PagedTreasuryView> response = treasuryController.getTreasuries(organizationId, iuv, iuf, billAmountCents, billDate, provisionalCode, billCode, pspLastName, regionValueDate, documentCode, pageable);
+    ResponseEntity<PagedTreasuryView> response = treasuryController.getTreasuries(
+      organizationId, iuv, iuf, billAmountCents, billDateFrom, billDateTo, provisionalCode, provisionalAe, billCode, billYear, pspLastName, regionValueDateFrom, regionValueDateTo, documentCode, documentYear, pageable
+    );
 
     Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
     Assertions.assertNotNull(response.getBody());

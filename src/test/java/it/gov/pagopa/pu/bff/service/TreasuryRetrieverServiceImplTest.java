@@ -2,6 +2,7 @@ package it.gov.pagopa.pu.bff.service;
 
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.connector.classification.TreasuryService;
+import it.gov.pagopa.pu.bff.dto.LocalDateIntervalFilter;
 import it.gov.pagopa.pu.bff.dto.TreasuryViewFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedTreasuryView;
 import it.gov.pagopa.pu.bff.mapper.TreasuryViewMapper;
@@ -22,8 +23,7 @@ import org.springframework.security.authorization.AuthorizationDeniedException;
 
 import java.time.LocalDate;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
 class TreasuryRetrieverServiceImplTest {
@@ -52,15 +52,20 @@ class TreasuryRetrieverServiceImplTest {
     String iuv = "IUV123";
     String iuf = "IUF123";
     long billAmountCents = 1000L;
-    LocalDate billDate = LocalDate.now().minusDays(10);
+    LocalDate billDateFrom = LocalDate.now().minusDays(10);
+    LocalDate billDateTo = LocalDate.now();
     String provisionalCode = "PROV123";
     String billCode = "BILL123";
     String pspLastName = "PSPLastName";
-    LocalDate regionValueDate = LocalDate.now().minusDays(5);
+    LocalDate regionValueDateFrom = LocalDate.now().minusDays(5);
+    LocalDate regionValueDateTo = LocalDate.now();
     String documentCode = "DOC123";
     Pageable pageable = PageRequest.of(0, 10);
 
-    TreasuryViewFiltersDTO filtersDTO = new TreasuryViewFiltersDTO(organizationId, iuv, iuf, billAmountCents, billDate, provisionalCode, billCode, pspLastName, regionValueDate, documentCode);
+    LocalDateIntervalFilter billDateFilter = new LocalDateIntervalFilter(billDateFrom, billDateTo);
+    LocalDateIntervalFilter regionValueDateFilter = new LocalDateIntervalFilter(regionValueDateFrom, regionValueDateTo);
+
+    TreasuryViewFiltersDTO filtersDTO = new TreasuryViewFiltersDTO(organizationId, iuv, iuf, billAmountCents, billDateFilter, provisionalCode, null, billCode, null, pspLastName, regionValueDateFilter, documentCode, null);
 
     PagedModelTreasuryView pagedModelTreasuryView = new PagedModelTreasuryView();
     PagedTreasuryView expectedPagedTreasuryView = new PagedTreasuryView();
@@ -87,6 +92,45 @@ class TreasuryRetrieverServiceImplTest {
   }
 
   @Test
+  void whenBillDateFilterIsInvalidThenThrowException() {
+    UserInfo loggedUser = new UserInfo();
+    loggedUser.setUserId("user-123");
+
+    long organizationId = 1L;
+    String iuv = "IUV123";
+    String iuf = "IUF123";
+    long billAmountCents = 1000L;
+    LocalDate billDateFrom = LocalDate.now().minusDays(10);
+    LocalDate billDateTo = null; // Invalid case
+    String provisionalCode = "PROV123";
+    String provisionalAe = "PROVAE123";
+    String billCode = "BILL123";
+    String billYear = "2025";
+    String pspLastName = "PSPLastName";
+    LocalDate regionValueDateFrom = LocalDate.now().minusDays(5);
+    LocalDate regionValueDateTo = LocalDate.now();
+    String documentCode = "DOC123";
+    String documentYear = "2025";
+    Pageable pageable = PageRequest.of(0, 10);
+
+    LocalDateIntervalFilter billDateFilter = new LocalDateIntervalFilter(billDateFrom, billDateTo);
+    LocalDateIntervalFilter regionValueDateFilter = new LocalDateIntervalFilter(regionValueDateFrom, regionValueDateTo);
+
+    TreasuryViewFiltersDTO filtersDTO = new TreasuryViewFiltersDTO(
+      organizationId, iuv, iuf, billAmountCents, billDateFilter, provisionalCode, provisionalAe, billCode, billYear, pspLastName, regionValueDateFilter, documentCode, documentYear
+    );
+
+    Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+      treasuryRetrieverService.getTreasuries(filtersDTO, pageable, loggedUser, accessToken);
+    });
+
+    String expectedMessage = "Both billDateFrom and billDateTo must be set or both must be null";
+    String actualMessage = exception.getMessage();
+
+    assertTrue(actualMessage.contains(expectedMessage));
+  }
+
+  @Test
   void givenInvalidUserWhenGetTreasuriesThenAuthorizationDeniedException() {
     UserInfo loggedUser = new UserInfo();
     loggedUser.setUserId("user-123");
@@ -95,15 +139,20 @@ class TreasuryRetrieverServiceImplTest {
     String iuv = "IUV123";
     String iuf = "IUF123";
     long billAmountCents = 1000L;
-    LocalDate billDate = LocalDate.now().minusDays(10);
+    LocalDate billDateFrom = LocalDate.now().minusDays(10);
+    LocalDate billDateTo = LocalDate.now();
     String provisionalCode = "PROV123";
     String billCode = "BILL123";
     String pspLastName = "PSPLastName";
-    LocalDate regionValueDate = LocalDate.now().minusDays(5);
+    LocalDate regionValueDateFrom = LocalDate.now().minusDays(5);
+    LocalDate regionValueDateTo = LocalDate.now();
     String documentCode = "DOC123";
     Pageable pageable = PageRequest.of(0, 10);
 
-    TreasuryViewFiltersDTO filtersDTO = new TreasuryViewFiltersDTO(organizationId, iuv, iuf, billAmountCents, billDate, provisionalCode, billCode, pspLastName, regionValueDate, documentCode);
+    LocalDateIntervalFilter billDateFilter = new LocalDateIntervalFilter(billDateFrom, billDateTo);
+    LocalDateIntervalFilter regionValueDateFilter = new LocalDateIntervalFilter(regionValueDateFrom, regionValueDateTo);
+
+    TreasuryViewFiltersDTO filtersDTO = new TreasuryViewFiltersDTO(organizationId, iuv, iuf, billAmountCents, billDateFilter, provisionalCode, null, billCode, null, pspLastName, regionValueDateFilter, documentCode, null);
 
     try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
       authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(filtersDTO.getOrganizationId(), loggedUser))

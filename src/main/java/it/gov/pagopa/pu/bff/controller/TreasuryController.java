@@ -1,6 +1,7 @@
 package it.gov.pagopa.pu.bff.controller;
 
 import it.gov.pagopa.pu.bff.controller.generated.TreasuriesApi;
+import it.gov.pagopa.pu.bff.dto.LocalDateIntervalFilter;
 import it.gov.pagopa.pu.bff.dto.TreasuryViewFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedTreasuryView;
 import it.gov.pagopa.pu.bff.security.SecurityUtils;
@@ -24,11 +25,13 @@ public class TreasuryController implements TreasuriesApi {
   }
 
   @Override
-  public ResponseEntity<PagedTreasuryView> getTreasuries(Long organizationId, String iuv, String iuf, Long billAmountCents, LocalDate billDate, String provisionalCode, String billCode, String pspLastName, LocalDate regionValueDate, String documentCode, Pageable pageable) {
+  public ResponseEntity<PagedTreasuryView> getTreasuries(Long organizationId, String iuv, String iuf, Long billAmountCents, LocalDate billDateFrom, LocalDate billDateTo, String provisionalCode, String provisionalAe, String billCode, String billYear, String pspLastName, LocalDate regionValueDateFrom, LocalDate regionValueDateTo, String documentCode, String documentYear, Pageable pageable) {
     log.info("User requested getTreasuries having organizationId {}", organizationId);
+    LocalDateIntervalFilter billDateFilter = new LocalDateIntervalFilter(billDateFrom, billDateTo);
+    LocalDateIntervalFilter regionValueDateFilter = new LocalDateIntervalFilter(regionValueDateFrom, regionValueDateTo);
 
     return ResponseEntity.ok(treasuryRetrieverService.getTreasuries(
-      new TreasuryViewFiltersDTO(organizationId, iuv, iuf, billAmountCents, billDate, provisionalCode, billCode, pspLastName, regionValueDate, documentCode),
+      new TreasuryViewFiltersDTO(organizationId, iuv, iuf, billAmountCents, billDateFilter, provisionalCode, provisionalAe, billCode, billYear, pspLastName, regionValueDateFilter, documentCode, documentYear),
       pageable, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken()));
   }
 

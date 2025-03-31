@@ -675,7 +675,13 @@ paths:
           schema:
             type: integer
             format: int64
-        - name: billDate
+        - name: billDateFrom
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date
+        - name: billDateTo
           in: query
           required: false
           schema:
@@ -686,7 +692,17 @@ paths:
           required: false
           schema:
             type: string
+        - name: provisionalAe
+          in: query
+          required: false
+          schema:
+            type: string
         - name: billCode
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: billYear
           in: query
           required: false
           schema:
@@ -696,13 +712,24 @@ paths:
           required: false
           schema:
             type: string
-        - name: regionValueDate
+        - name: regionValueDateFrom
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date
+        - name: regionValueDateTo
           in: query
           required: false
           schema:
             type: string
             format: date
         - name: documentCode
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: documentYear
           in: query
           required: false
           schema:

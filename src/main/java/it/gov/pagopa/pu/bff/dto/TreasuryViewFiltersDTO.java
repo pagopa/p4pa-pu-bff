@@ -4,8 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -15,11 +13,14 @@ public class TreasuryViewFiltersDTO {
   private String iuv;
   private String iuf;
   private Long billAmountCents;
-  private LocalDate billDate;
+  private LocalDateIntervalFilter billDateFilter;
   private String provisionalCode;
+  private String provisionalAe;
   private String billCode;
+  private String billYear;
   private String pspLastName;
-  private LocalDate regionValueDate;
+  private LocalDateIntervalFilter regionValueDateFilter;
   private String documentCode;
+  private String documentYear;
 
 }

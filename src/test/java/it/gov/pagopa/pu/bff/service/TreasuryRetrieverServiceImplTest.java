@@ -120,14 +120,51 @@ class TreasuryRetrieverServiceImplTest {
       organizationId, iuv, iuf, billAmountCents, billDateFilter, provisionalCode, provisionalAe, billCode, billYear, pspLastName, regionValueDateFilter, documentCode, documentYear
     );
 
-    Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-      treasuryRetrieverService.getTreasuries(filtersDTO, pageable, loggedUser, accessToken);
-    });
+    Exception exception = assertThrows(IllegalArgumentException.class, () -> treasuryRetrieverService.getTreasuries(filtersDTO, pageable, loggedUser, accessToken));
 
     String expectedMessage = "Both billDateFrom and billDateTo must be set or both must be null";
     String actualMessage = exception.getMessage();
 
     assertTrue(actualMessage.contains(expectedMessage));
+  }
+
+  @Test
+  void whenBillDateFilterIsInvalidThenThrowExceptionAndNoOtherInteractions() {
+    UserInfo loggedUser = new UserInfo();
+    loggedUser.setUserId("user-123");
+
+    long organizationId = 1L;
+    String iuv = "IUV123";
+    String iuf = "IUF123";
+    long billAmountCents = 1000L;
+    LocalDate billDateFrom = LocalDate.now().minusDays(10);
+    LocalDate billDateTo = null;
+    String provisionalCode = "PROV123";
+    String provisionalAe = "PROVAE123";
+    String billCode = "BILL123";
+    String billYear = "2025";
+    String pspLastName = "PSPLastName";
+    LocalDate regionValueDateFrom = LocalDate.now().minusDays(5);
+    LocalDate regionValueDateTo = LocalDate.now();
+    String documentCode = "DOC123";
+    String documentYear = "2025";
+    Pageable pageable = PageRequest.of(0, 10);
+
+    LocalDateIntervalFilter billDateFilter = new LocalDateIntervalFilter(billDateFrom, billDateTo);
+    LocalDateIntervalFilter regionValueDateFilter = new LocalDateIntervalFilter(regionValueDateFrom, regionValueDateTo);
+
+    TreasuryViewFiltersDTO filtersDTO = new TreasuryViewFiltersDTO(
+      organizationId, iuv, iuf, billAmountCents, billDateFilter, provisionalCode, provisionalAe, billCode, billYear, pspLastName, regionValueDateFilter, documentCode, documentYear
+    );
+
+    Exception exception = assertThrows(IllegalArgumentException.class, () -> treasuryRetrieverService.getTreasuries(filtersDTO, pageable, loggedUser, accessToken));
+
+    String expectedMessage = "Both billDateFrom and billDateTo must be set or both must be null";
+    String actualMessage = exception.getMessage();
+
+    assertTrue(actualMessage.contains(expectedMessage));
+
+    Mockito.verifyNoInteractions(treasuryServiceMock, treasuryViewMapperMock);
   }
 
   @Test

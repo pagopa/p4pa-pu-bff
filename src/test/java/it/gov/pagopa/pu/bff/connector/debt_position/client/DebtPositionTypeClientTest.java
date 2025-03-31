@@ -1,10 +1,16 @@
 package it.gov.pagopa.pu.bff.connector.debt_position.client;
 
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.mockito.Mockito.when;
+
 import it.gov.pagopa.pu.bff.connector.debt_position.config.DebtPositionApisHolder;
 import it.gov.pagopa.pu.debtpositions.controller.generated.DebtPositionTypeEntityControllerApi;
 import it.gov.pagopa.pu.debtpositions.controller.generated.DebtPositionTypeWithCountSearchControllerApi;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionType;
+import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeRequestBody;
 import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelDebtPositionTypeWithCount;
+import java.util.Collections;
+import java.util.List;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,12 +25,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.client.HttpClientErrorException;
-
-import java.util.Collections;
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class DebtPositionTypeClientTest {
@@ -138,6 +138,61 @@ class DebtPositionTypeClientTest {
     PagedModelDebtPositionTypeWithCount result = debtPositionTypeClient.getDebtPositionTypeWithCount(
       brokerId,PageRequest.of(0,10,
         Sort.by(List.of(Order.asc("sort1"),Order.desc("sort2")))), accessToken);
+
+    Assertions.assertNull(result);
+  }
+
+  @Test
+  void whenCreateDebtPositionTypeThenInvokeWithAccessToken() {
+    String accessToken = "ACCESSTOKEN";
+    DebtPositionTypeRequestBody debtPositionTypeRequestBody = new DebtPositionTypeRequestBody();
+    DebtPositionType expectedResult = new DebtPositionType();
+
+    when(debtPositionApisHolderMock.getDebtPositionTypeControllerApi(accessToken))
+      .thenReturn(debtPositionTypeEntityControllerApiMock);
+    when(debtPositionTypeEntityControllerApiMock.crudCreateDebtpositiontype(
+      debtPositionTypeRequestBody))
+      .thenReturn(expectedResult);
+
+    DebtPositionType result = debtPositionTypeClient.createDebtPositionType(
+      debtPositionTypeRequestBody, accessToken);
+
+    assertSame(expectedResult, result);
+  }
+
+  @Test
+  void whenPatchDebtPositionTypeThenInvokeWithAccessToken() {
+    String accessToken = "ACCESSTOKEN";
+    Long debtPositionTypeId = 1L;
+    DebtPositionTypeRequestBody debtPositionTypeRequestBody = new DebtPositionTypeRequestBody();
+    DebtPositionType expectedResult = new DebtPositionType();
+
+    when(debtPositionApisHolderMock.getDebtPositionTypeControllerApi(accessToken))
+      .thenReturn(debtPositionTypeEntityControllerApiMock);
+    when(debtPositionTypeEntityControllerApiMock.crudPatchDebtpositiontype(
+      debtPositionTypeId.toString(),debtPositionTypeRequestBody))
+      .thenReturn(expectedResult);
+
+    DebtPositionType result = debtPositionTypeClient.patchDebtPositionType(
+      debtPositionTypeId,debtPositionTypeRequestBody, accessToken);
+
+    assertSame(expectedResult, result);
+  }
+
+  @Test
+  void givenNoExistentDebtPositionTypeWhenPatchDebtPositionTypeThenNull() {
+    String accessToken = "ACCESSTOKEN";
+    Long debtPositionTypeId = 1L;
+    DebtPositionTypeRequestBody debtPositionTypeRequestBody = new DebtPositionTypeRequestBody();
+
+    when(debtPositionApisHolderMock.getDebtPositionTypeControllerApi(accessToken))
+      .thenReturn(debtPositionTypeEntityControllerApiMock);
+    when(debtPositionTypeEntityControllerApiMock.crudPatchDebtpositiontype(
+      debtPositionTypeId.toString(),debtPositionTypeRequestBody))
+      .thenThrow(HttpClientErrorException.create(HttpStatus.NOT_FOUND, "NotFound", null, null, null));
+
+    DebtPositionType result = debtPositionTypeClient.patchDebtPositionType(
+      debtPositionTypeId,debtPositionTypeRequestBody,accessToken);
 
     Assertions.assertNull(result);
   }

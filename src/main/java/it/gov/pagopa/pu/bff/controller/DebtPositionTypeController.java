@@ -2,10 +2,12 @@ package it.gov.pagopa.pu.bff.controller;
 
 import it.gov.pagopa.pu.bff.controller.generated.DebtPositionTypesApi;
 import it.gov.pagopa.pu.bff.dto.generated.DebtPositionTypeDetailDTO;
+import it.gov.pagopa.pu.bff.dto.generated.DebtPositionTypePatchRequestBody;
 import it.gov.pagopa.pu.bff.dto.generated.PagedDebtPositionTypeWithCount;
 import it.gov.pagopa.pu.bff.security.SecurityUtils;
 import it.gov.pagopa.pu.bff.service.debt_position.DebtPositionTypeRetrieverService;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionType;
+import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeRequestBody;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -47,5 +49,22 @@ public class DebtPositionTypeController implements DebtPositionTypesApi {
       debtPositionTypeRetrieverService.getDebtPositionTypeDetail(organizationId,
         debtPositionTypeId, SecurityUtils.getLoggedUser(),
         SecurityUtils.getAccessToken()));
+  }
+
+  @Override
+  public ResponseEntity<DebtPositionType> createDebtPositionType(
+    DebtPositionTypeRequestBody body) {
+    log.info("User requested createDebtPositionType()");
+    return new ResponseEntity<>(debtPositionTypeRetrieverService.createDebtPositionType(
+      body,SecurityUtils.getLoggedUser(),SecurityUtils.getAccessToken()),HttpStatus.CREATED);
+  }
+
+  @Override
+  public ResponseEntity<DebtPositionType> patchDebtPositionType(
+    Long debtPositionTypeId,
+    DebtPositionTypePatchRequestBody debtPositionTypePatchRequestBody) {
+    log.info("User requested patchDebtPositionType having debtPositionTypeId {}", debtPositionTypeId);
+    return ResponseEntity.ofNullable(debtPositionTypeRetrieverService.patchDebtPositionType(
+      debtPositionTypeId,debtPositionTypePatchRequestBody,SecurityUtils.getLoggedUser(),SecurityUtils.getAccessToken()));
   }
 }

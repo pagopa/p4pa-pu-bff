@@ -1,7 +1,9 @@
 package it.gov.pagopa.pu.bff.mapper;
 
 import it.gov.pagopa.pu.bff.dto.generated.DebtPositionTypeDetailDTO;
+import it.gov.pagopa.pu.bff.dto.generated.DebtPositionTypePatchRequestBody;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionType;
+import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeRequestBody;
 import it.gov.pagopa.pu.organization.dto.generated.Taxonomy;
 import org.springframework.stereotype.Service;
 
@@ -30,4 +32,19 @@ public class DebtPositionTypeMapper {
       .build();
   }
 
+  public DebtPositionTypeRequestBody mapToDebtPositionTypeRequestBody(
+    DebtPositionTypePatchRequestBody debtPositionTypePatchRequestBody){
+    DebtPositionTypeRequestBody debtPositionTypeRequestBody = new DebtPositionTypeRequestBody();
+    debtPositionTypeRequestBody.setBrokerId(debtPositionTypePatchRequestBody.getBrokerId());
+    debtPositionTypeRequestBody.setCode(debtPositionTypePatchRequestBody.getCode());
+    debtPositionTypeRequestBody.setOrgType(debtPositionTypePatchRequestBody.getOrgType());
+    debtPositionTypeRequestBody.setMacroArea(debtPositionTypePatchRequestBody.getMacroArea());
+    debtPositionTypeRequestBody.setServiceType(debtPositionTypePatchRequestBody.getServiceType());
+    debtPositionTypeRequestBody.setCollectingReason(debtPositionTypePatchRequestBody.getCollectingReason());
+    debtPositionTypeRequestBody.setFlagAnonymousFiscalCode(debtPositionTypePatchRequestBody.getFlagAnonymousFiscalCode());
+    debtPositionTypeRequestBody.setFlagMandatoryDueDate(debtPositionTypePatchRequestBody.getFlagMandatoryDueDate());
+    debtPositionTypeRequestBody.setFlagNotifyIo(debtPositionTypePatchRequestBody.getFlagNotifyIo());
+    debtPositionTypeRequestBody.setIoTemplateMessage(debtPositionTypePatchRequestBody.getIoTemplateMessage());
+    return debtPositionTypeRequestBody;
+  }
 }

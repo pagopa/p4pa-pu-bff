@@ -3,12 +3,14 @@ package it.gov.pagopa.pu.bff.service.debt_position;
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.connector.debt_position.DebtPositionTypeService;
 import it.gov.pagopa.pu.bff.dto.generated.DebtPositionTypeDetailDTO;
+import it.gov.pagopa.pu.bff.dto.generated.DebtPositionTypePatchRequestBody;
 import it.gov.pagopa.pu.bff.dto.generated.PagedDebtPositionTypeWithCount;
 import it.gov.pagopa.pu.bff.mapper.DebtPositionTypeMapper;
 import it.gov.pagopa.pu.bff.mapper.DebtPositionTypeWithCountMapper;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
 import it.gov.pagopa.pu.bff.service.taxonomy.TaxonomyRetrieverService;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionType;
+import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeRequestBody;
 import it.gov.pagopa.pu.organization.dto.generated.Taxonomy;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Pageable;
@@ -76,5 +78,28 @@ public class DebtPositionTypeRetrieverServiceImpl implements
 
     return debtPositionTypeMapper.mapToDebtPositionTypeDetailDTO(
       debtPositionType, taxonomy);
+  }
+
+  public DebtPositionType createDebtPositionType(
+    DebtPositionTypeRequestBody debtPositionType, UserInfo loggedUser, String accessToken){
+    authorizationService.validateBrokerAdminRole(loggedUser);
+    if(debtPositionType.getDebtPositionTypeId()!=null){
+      throw new IllegalArgumentException("DebtPositionTypeId must be null");
+    }
+    return debtPositionTypeService.createDebtPositionType(debtPositionType,accessToken);
+  }
+
+  @Override
+  public DebtPositionType patchDebtPositionType(
+    Long debtPositionTypeId,
+    DebtPositionTypePatchRequestBody debtPositionTypePatchRequestBody,
+    UserInfo loggedUser,
+    String accessToken) {
+    authorizationService.validateBrokerAdminRole(loggedUser);
+    return debtPositionTypeService.patchDebtPositionType(
+      debtPositionTypeId,
+      debtPositionTypeMapper.mapToDebtPositionTypeRequestBody(debtPositionTypePatchRequestBody),
+      accessToken);
+
   }
 }

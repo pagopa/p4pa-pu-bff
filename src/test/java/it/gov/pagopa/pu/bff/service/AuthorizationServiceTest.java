@@ -16,10 +16,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.test.util.ReflectionTestUtils;
-import org.springframework.web.client.HttpClientErrorException;
 
 @ExtendWith(MockitoExtension.class)
 class AuthorizationServiceTest {
@@ -131,11 +129,9 @@ class AuthorizationServiceTest {
     userInfo.setMappedExternalUserId("externalUserId");
     userInfo.setBrokerFiscalCode(orgFiscalCode);
 
-    HttpClientErrorException result = Assertions.assertThrows(
-      HttpClientErrorException.class,
+    Assertions.assertThrows(
+      AuthorizationDeniedException.class,
       () -> authorizationService.validateBrokerAdminRole(userInfo));
-
-    Assertions.assertEquals(HttpStatus.FORBIDDEN, result.getStatusCode());
   }
 
   @Test

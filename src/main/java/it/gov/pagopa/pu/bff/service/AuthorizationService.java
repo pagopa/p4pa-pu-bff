@@ -7,11 +7,9 @@ import it.gov.pagopa.pu.bff.connector.auth.client.AuthnClient;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
-import org.springframework.web.client.HttpClientErrorException;
 
 @Service
 @Slf4j
@@ -62,7 +60,7 @@ public class AuthorizationService {
       log.debug(
         "Broker is not an admin for this organization. [user brokerFiscalCode:{}]",
         loggedUser.getBrokerFiscalCode());
-      throw new HttpClientErrorException(HttpStatus.FORBIDDEN,
+      throw new AuthorizationDeniedException(
         "Access forbidden on broker to user "
           + loggedUser.getMappedExternalUserId());
     }

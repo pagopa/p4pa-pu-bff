@@ -3,6 +3,7 @@ package it.gov.pagopa.pu.bff.connector.debt_position.client;
 import it.gov.pagopa.pu.bff.connector.debt_position.config.DebtPositionApisHolder;
 import it.gov.pagopa.pu.bff.util.PageUtils;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionType;
+import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeRequestBody;
 import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelDebtPositionTypeWithCount;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -38,6 +39,23 @@ public class DebtPositionTypeClient {
           PageUtils.getSortList(pageable));
     } catch (HttpClientErrorException.NotFound e) {
       log.warn("DebtPositionType with brokerId {} not found", brokerId);
+      return null;
+    }
+  }
+
+  public DebtPositionType createDebtPositionType(
+    DebtPositionTypeRequestBody debtPositionType, String accessToken) {
+    return debtPositionApisHolder.getDebtPositionTypeControllerApi(accessToken)
+      .crudCreateDebtpositiontype(debtPositionType);
+  }
+
+  public DebtPositionType patchDebtPositionType(
+    Long debtPositionTypeId, DebtPositionTypeRequestBody debtPositionType, String accessToken) {
+    try{
+    return debtPositionApisHolder.getDebtPositionTypeControllerApi(accessToken)
+      .crudPatchDebtpositiontype(debtPositionTypeId.toString(),debtPositionType);
+    } catch (HttpClientErrorException.NotFound e) {
+      log.warn("DebtPositionType with debtPositionTypeId {} not found", debtPositionTypeId);
       return null;
     }
   }

@@ -268,6 +268,65 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/TaxonomyCodeDTO'
+  /debt-position-types:
+    post:
+      tags:
+        - DebtPositionTypes
+      description: create a DebtPositionType
+      operationId: createDebtPositionType
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: 'DebtPositionTypeRequestBody'
+        required: true
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: 'DebtPositionTypeResponseBody'
+        '401':
+          description: Unauthorized - Missing or invalid token
+        '403':
+          description: Forbidden - Access denied
+        '500':
+          description: Internal Server Error
+  /debt-position-types/{debtPositionTypeId}:
+    patch:
+      tags:
+        - DebtPositionTypes
+      description: Patch a DebtPositionType
+      operationId: patchDebtPositionType
+      parameters:
+        - name: debtPositionTypeId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DebtPositionTypePatchRequestBody'
+        required: true
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/hal+json:
+              schema:
+                type: 'DebtPositionTypeResponseBody'
+        '401':
+          description: Unauthorized - Missing or invalid token
+        '403':
+          description: Forbidden - Access denied
+        '404':
+          description: Not Found - Debt Position Type not found
+        '500':
+          description: Internal Server Error
   /organization/{organizationId}/debt-position-type-orgs-with-count:
     get:
       tags:
@@ -1316,6 +1375,7 @@ components:
             - NOT_FOUND
             - BAD_REQUEST
             - GENERIC_ERROR
+            - FORBIDDEN
         description:
           type: string
           description: Description of the error
@@ -1772,6 +1832,30 @@ components:
         taxonomyCode:
           type: string
           readOnly: true
+        flagAnonymousFiscalCode:
+          type: boolean
+        flagMandatoryDueDate:
+          type: boolean
+        flagNotifyIo:
+          type: boolean
+        ioTemplateMessage:
+          type: string
+    DebtPositionTypePatchRequestBody:
+      type: object
+      properties:
+        brokerId:
+          type: integer
+          format: int64
+        code:
+          type: string
+        orgType:
+          type: string
+        macroArea:
+          type: string
+        serviceType:
+          type: string
+        collectingReason:
+          type: string
         flagAnonymousFiscalCode:
           type: boolean
         flagMandatoryDueDate:

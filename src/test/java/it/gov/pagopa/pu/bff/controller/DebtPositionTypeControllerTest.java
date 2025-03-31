@@ -10,10 +10,12 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import it.gov.pagopa.pu.bff.dto.generated.DebtPositionTypeDetailDTO;
+import it.gov.pagopa.pu.bff.dto.generated.DebtPositionTypePatchRequestBody;
 import it.gov.pagopa.pu.bff.dto.generated.DebtPositionTypeWithCount;
 import it.gov.pagopa.pu.bff.dto.generated.PagedDebtPositionTypeWithCount;
 import it.gov.pagopa.pu.bff.service.debt_position.DebtPositionTypeRetrieverService;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionType;
+import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeRequestBody;
 import it.gov.pagopa.pu.organization.dto.generated.Taxonomy;
 import java.time.OffsetDateTime;
 import java.util.List;
@@ -193,6 +195,64 @@ class DebtPositionTypeControllerTest {
       debtPositionTypeDTO.getDebtPositionTypeId());
 
     Assertions.assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+  }
+
+  @Test
+  void whenCreateDebtPositionTypeThenOk() {
+    DebtPositionTypeRequestBody requestBody = new DebtPositionTypeRequestBody();
+    DebtPositionType expectedResult = new DebtPositionType();
+
+    Mockito.when(
+        debtPositionTypeRetrieverServiceMock.createDebtPositionType(
+          Mockito.eq(requestBody), any(),
+          anyString()))
+      .thenReturn(expectedResult);
+
+    ResponseEntity<DebtPositionType> response = debtPositionTypeController.createDebtPositionType(
+      requestBody);
+
+    Assertions.assertEquals(HttpStatus.CREATED, response.getStatusCode());
+    Assertions.assertNotNull(response.getBody());
+    Assertions.assertEquals(expectedResult, response.getBody());
+  }
+
+  @Test
+  void whenPatchDebtPositionTypeThenOk() {
+    Long debtPositionTypeId = 1L;
+    DebtPositionTypePatchRequestBody requestBody = new DebtPositionTypePatchRequestBody();
+    DebtPositionType expectedResult = new DebtPositionType();
+
+    Mockito.when(
+        debtPositionTypeRetrieverServiceMock.patchDebtPositionType(
+          Mockito.eq(debtPositionTypeId),Mockito.eq(requestBody), any(),
+          anyString()))
+      .thenReturn(expectedResult);
+
+    ResponseEntity<DebtPositionType> response = debtPositionTypeController.patchDebtPositionType(
+      debtPositionTypeId,
+      requestBody);
+
+    Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
+    Assertions.assertNotNull(response.getBody());
+    Assertions.assertEquals(expectedResult, response.getBody());
+  }
+
+  @Test
+  void givenNullResultWhenPatchDebtPositionTypeThenNotFound() {
+    Long debtPositionTypeId = 1L;
+    DebtPositionTypePatchRequestBody requestBody = new DebtPositionTypePatchRequestBody();
+    Mockito.when(
+        debtPositionTypeRetrieverServiceMock.patchDebtPositionType(eq(debtPositionTypeId),
+          Mockito.eq(requestBody), any(),
+          anyString()))
+      .thenReturn(null);
+
+    ResponseEntity<DebtPositionType> response = debtPositionTypeController.patchDebtPositionType(
+      debtPositionTypeId,
+      requestBody);
+
+    Assertions.assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+    Assertions.assertNull(response.getBody());
   }
 }
 

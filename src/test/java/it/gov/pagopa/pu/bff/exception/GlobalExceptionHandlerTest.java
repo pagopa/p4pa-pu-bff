@@ -1,5 +1,8 @@
 package it.gov.pagopa.pu.bff.exception;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doThrow;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import it.gov.pagopa.pu.bff.config.json.JsonConfig;
 import jakarta.servlet.ServletException;
@@ -7,6 +10,8 @@ import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
+import java.time.LocalDateTime;
+import java.util.Set;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -31,12 +37,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ServerErrorException;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter;
-
-import java.time.LocalDateTime;
-import java.util.Set;
-
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doThrow;
 
 @ExtendWith({SpringExtension.class})
 @WebMvcTest(value = {GlobalExceptionHandlerTest.TestController.class}, excludeAutoConfiguration = SecurityAutoConfiguration.class)
@@ -189,6 +189,16 @@ class GlobalExceptionHandlerTest {
         performRequest(DATA, MediaType.APPLICATION_JSON)
                 .andExpect(MockMvcResultMatchers.status().isBadRequest())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.title").value("BAD_REQUEST"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.description").value("Error"));
+    }
+
+    @Test
+    void handleAuthorizationDeniedException() throws Exception {
+        doThrow(new AuthorizationDeniedException("Error")).when(testControllerSpy).testEndpoint(DATA, BODY);
+
+        performRequest(DATA, MediaType.APPLICATION_JSON)
+                .andExpect(MockMvcResultMatchers.status().isForbidden())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.title").value("FORBIDDEN"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.description").value("Error"));
     }
 }

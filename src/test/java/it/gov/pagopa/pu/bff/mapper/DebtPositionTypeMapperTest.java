@@ -1,8 +1,10 @@
 package it.gov.pagopa.pu.bff.mapper;
 
 import it.gov.pagopa.pu.bff.dto.generated.DebtPositionTypeDetailDTO;
+import it.gov.pagopa.pu.bff.dto.generated.DebtPositionTypePatchRequestBody;
 import it.gov.pagopa.pu.bff.util.TestUtils;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionType;
+import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeRequestBody;
 import it.gov.pagopa.pu.organization.dto.generated.Taxonomy;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -59,5 +61,17 @@ class DebtPositionTypeMapperTest {
 
     //verify
     Assertions.assertNull(debtPositionTypeMapper.mapToDebtPositionTypeDetailDTO(debtPositionType, null));
+  }
+
+
+  @Test
+  void testMapToDebtPositionTypeRequestBody() {
+    DebtPositionTypePatchRequestBody debtPositionTypePatchRequestBody = podamFactory.manufacturePojo(DebtPositionTypePatchRequestBody.class);
+
+    DebtPositionTypeRequestBody result = debtPositionTypeMapper.mapToDebtPositionTypeRequestBody(debtPositionTypePatchRequestBody);
+
+    Assertions.assertNotNull(result);
+    TestUtils.checkNotNullFields(result,"creationDate","updateDate","updateOperatorExternalId","debtPositionTypeId","description","taxonomyCode");
+    TestUtils.reflectionEqualsByName(debtPositionTypePatchRequestBody,result);
   }
 }

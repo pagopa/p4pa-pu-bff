@@ -9,10 +9,12 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.connector.debt_position.DebtPositionTypeService;
 import it.gov.pagopa.pu.bff.dto.generated.DebtPositionTypeDetailDTO;
+import it.gov.pagopa.pu.bff.dto.generated.DebtPositionTypePatchRequestBody;
 import it.gov.pagopa.pu.bff.dto.generated.PagedDebtPositionTypeWithCount;
 import it.gov.pagopa.pu.bff.mapper.DebtPositionTypeMapper;
 import it.gov.pagopa.pu.bff.mapper.DebtPositionTypeWithCountMapper;
@@ -20,6 +22,7 @@ import it.gov.pagopa.pu.bff.service.debt_position.DebtPositionTypeRetrieverServi
 import it.gov.pagopa.pu.bff.service.taxonomy.TaxonomyRetrieverService;
 import it.gov.pagopa.pu.bff.util.TestUtils;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionType;
+import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeRequestBody;
 import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelDebtPositionTypeWithCount;
 import it.gov.pagopa.pu.organization.dto.generated.Taxonomy;
 import org.junit.jupiter.api.Assertions;
@@ -30,9 +33,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.authorization.AuthorizationDeniedException;
-import org.springframework.web.client.HttpClientErrorException;
 import uk.co.jemos.podam.api.PodamFactory;
 
 @ExtendWith(MockitoExtension.class)
@@ -176,13 +177,13 @@ class DebtPositionTypeRetrieverServiceImplTest {
   }
 
   @Test
-  void givenNotValidUserWhenGetDebtPositionTypeDetailThenHttpForbiddenException() {
+  void givenNotValidUserWhenGetDebtPositionTypeDetailThenAuthorizationDeniedException() {
     UserInfo userInfo = new UserInfo();
     Long debtPositionTypeId = debtPositionType.getDebtPositionTypeId();
 
-    Mockito.doThrow(new HttpClientErrorException(HttpStatus.FORBIDDEN, "Forbidden")).when(authorizationServiceMock).validateBrokerAdminRole(userInfo);
+    Mockito.doThrow(new AuthorizationDeniedException("AuthorizationDeniedException")).when(authorizationServiceMock).validateBrokerAdminRole(userInfo);
 
-    Assertions.assertThrows(HttpClientErrorException.class, () -> debtPositionTypeRetrieverService.getDebtPositionTypeDetail(1L, debtPositionTypeId, userInfo, accessToken));
+    Assertions.assertThrows(AuthorizationDeniedException.class, () -> debtPositionTypeRetrieverService.getDebtPositionTypeDetail(1L, debtPositionTypeId, userInfo, accessToken));
 
     Mockito.verifyNoMoreInteractions(authorizationServiceMock);
     Mockito.verifyNoInteractions(taxonomyRetrieverServiceMock, debtPositionTypeMapperMock);
@@ -224,5 +225,114 @@ class DebtPositionTypeRetrieverServiceImplTest {
     Mockito.verifyNoInteractions(debtPositionTypeMapperMock);
   }
 
+  @Test
+  void givenValidUserWhenCreateDebtPositionTypeThenOk() {
+    long brokerId = 456L;
+    UserInfo userInfo = new UserInfo();
+    userInfo.setBrokerId(brokerId);
+
+    DebtPositionTypeRequestBody debtPositionTypeRequestBody = podamFactory.manufacturePojo(
+      DebtPositionTypeRequestBody.class);
+    debtPositionTypeRequestBody.setDebtPositionTypeId(null);
+
+    Mockito.doNothing().when(authorizationServiceMock).validateBrokerAdminRole(userInfo);
+    Mockito.when(debtPositionTypeServiceMock.createDebtPositionType(eq(debtPositionTypeRequestBody), anyString()))
+      .thenReturn(debtPositionType);
+
+    DebtPositionType result = debtPositionTypeRetrieverService.createDebtPositionType(debtPositionTypeRequestBody, userInfo, accessToken);
+
+    Assertions.assertNotNull(result);
+    Assertions.assertEquals(debtPositionType, result);
+  }
+
+  @Test
+  void givenPopulatedIdWhenCreateDebtPositionTypeThenIllegalArgumentException() {
+    long brokerId = 456L;
+    UserInfo userInfo = new UserInfo();
+    userInfo.setBrokerId(brokerId);
+
+    DebtPositionTypeRequestBody debtPositionTypeRequestBody = podamFactory.manufacturePojo(
+      DebtPositionTypeRequestBody.class);
+
+    Mockito.doNothing().when(authorizationServiceMock).validateBrokerAdminRole(userInfo);
+
+    Assertions.assertThrows(IllegalArgumentException.class,()-> debtPositionTypeRetrieverService.createDebtPositionType(debtPositionTypeRequestBody, userInfo, accessToken));
+
+    Mockito.verifyNoInteractions(debtPositionTypeServiceMock);
+  }
+
+  @Test
+  void givenNotValidUserWhenCreateDebtPositionTypeThenAuthorizationDeniedException() {
+    UserInfo userInfo = new UserInfo();
+    DebtPositionTypeRequestBody debtPositionTypeRequestBody = podamFactory.manufacturePojo(
+      DebtPositionTypeRequestBody.class);
+
+    Mockito.doThrow(new AuthorizationDeniedException("AuthorizationDeniedException")).when(authorizationServiceMock).validateBrokerAdminRole(userInfo);
+
+    Assertions.assertThrows(AuthorizationDeniedException.class, () -> debtPositionTypeRetrieverService.createDebtPositionType(debtPositionTypeRequestBody, userInfo, accessToken));
+
+    Mockito.verifyNoMoreInteractions(authorizationServiceMock);
+    Mockito.verifyNoInteractions(debtPositionTypeServiceMock);
+  }
+
+  @Test
+  void givenValidUserWhenPatchDebtPositionTypeThenOk() {
+    long brokerId = 456L;
+    UserInfo userInfo = new UserInfo();
+    userInfo.setBrokerId(brokerId);
+
+    Long debtPositionTypeId = 1L;
+    DebtPositionTypePatchRequestBody debtPositionTypePatchRequestBody = podamFactory.manufacturePojo(
+      DebtPositionTypePatchRequestBody.class);
+    DebtPositionTypeRequestBody debtPositionTypeRequestBody = podamFactory.manufacturePojo(
+      DebtPositionTypeRequestBody.class);
+
+    Mockito.doNothing().when(authorizationServiceMock).validateBrokerAdminRole(userInfo);
+    Mockito.when(debtPositionTypeMapperMock.mapToDebtPositionTypeRequestBody(debtPositionTypePatchRequestBody)).thenReturn(debtPositionTypeRequestBody);
+    Mockito.when(debtPositionTypeServiceMock.patchDebtPositionType(eq(debtPositionTypeId),eq(debtPositionTypeRequestBody), anyString()))
+      .thenReturn(debtPositionType);
+
+    DebtPositionType result = debtPositionTypeRetrieverService.patchDebtPositionType(debtPositionTypeId,debtPositionTypePatchRequestBody, userInfo, accessToken);
+
+    Assertions.assertNotNull(result);
+    Assertions.assertEquals(debtPositionType, result);
+  }
+
+  @Test
+  void givenNotValidUserWhenPatchDebtPositionTypeThenAuthorizationDeniedException() {
+    UserInfo userInfo = new UserInfo();
+    Long debtPositionTypeId = 1L;
+    DebtPositionTypePatchRequestBody debtPositionTypePatchRequestBody = podamFactory.manufacturePojo(
+      DebtPositionTypePatchRequestBody.class);
+
+    Mockito.doThrow(new AuthorizationDeniedException("AuthorizationDeniedException")).when(authorizationServiceMock).validateBrokerAdminRole(userInfo);
+
+    Assertions.assertThrows(AuthorizationDeniedException.class, () -> debtPositionTypeRetrieverService.patchDebtPositionType(debtPositionTypeId,debtPositionTypePatchRequestBody, userInfo, accessToken));
+
+    Mockito.verifyNoMoreInteractions(authorizationServiceMock);
+    Mockito.verifyNoInteractions(debtPositionTypeMapperMock,debtPositionTypeServiceMock);
+  }
+
+  @Test
+  void givenNonExistentDebtPositionTypeWhenPatchDebtPositionTypeThenReturnNull() {
+    long brokerId = 1L;
+    UserInfo userInfo = new UserInfo();
+    userInfo.setBrokerId(brokerId);
+
+    Long debtPositionTypeId = 1L;
+    DebtPositionTypePatchRequestBody debtPositionTypePatchRequestBody = podamFactory.manufacturePojo(
+      DebtPositionTypePatchRequestBody.class);
+    DebtPositionTypeRequestBody debtPositionTypeRequestBody = podamFactory.manufacturePojo(
+      DebtPositionTypeRequestBody.class);
+
+    Mockito.doNothing().when(authorizationServiceMock).validateBrokerAdminRole(userInfo);
+    Mockito.when(debtPositionTypeMapperMock.mapToDebtPositionTypeRequestBody(debtPositionTypePatchRequestBody)).thenReturn(debtPositionTypeRequestBody);
+    Mockito.when(debtPositionTypeServiceMock.patchDebtPositionType(eq(debtPositionTypeId),eq(debtPositionTypeRequestBody), anyString()))
+      .thenReturn(null);
+
+    DebtPositionType result = debtPositionTypeRetrieverService.patchDebtPositionType(debtPositionTypeId,debtPositionTypePatchRequestBody, userInfo, accessToken);
+
+    Assertions.assertNull(result);
+  }
 }
 

@@ -153,6 +153,68 @@
         } ]
       }
     },
+    "/bff/debt-position-types" : {
+      "post" : {
+        "tags" : [ "DebtPositionTypes" ],
+        "description" : "create a DebtPositionType",
+        "operationId" : "createDebtPositionType",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/DebtPositionTypeRequestBody"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "201" : {
+            "description" : "Created",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/DebtPositionType"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Unauthorized - Missing or invalid token",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/DebtPositionType"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Forbidden - Access denied",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/DebtPositionType"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal Server Error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/DebtPositionType"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "BearerAuth" : [ ]
+        } ]
+      }
+    },
     "/bff/auth/revoke" : {
       "post" : {
         "tags" : [ "Authentication" ],
@@ -160,6 +222,87 @@
         "responses" : {
           "200" : {
             "description" : "OK"
+          }
+        },
+        "security" : [ {
+          "BearerAuth" : [ ]
+        } ]
+      }
+    },
+    "/bff/debt-position-types/{debtPositionTypeId}" : {
+      "patch" : {
+        "tags" : [ "DebtPositionTypes" ],
+        "description" : "Patch a DebtPositionType",
+        "operationId" : "patchDebtPositionType",
+        "parameters" : [ {
+          "name" : "debtPositionTypeId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/DebtPositionTypePatchRequestBody"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Ok",
+            "content" : {
+              "application/hal+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/DebtPositionType"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Unauthorized - Missing or invalid token",
+            "content" : {
+              "application/hal+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/DebtPositionType"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Forbidden - Access denied",
+            "content" : {
+              "application/hal+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/DebtPositionType"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Not Found - Debt Position Type not found",
+            "content" : {
+              "application/hal+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/DebtPositionType"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal Server Error",
+            "content" : {
+              "application/hal+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/DebtPositionType"
+                }
+              }
+            }
           }
         },
         "security" : [ {
@@ -2836,6 +2979,193 @@
           }
         }
       },
+      "DebtPositionType" : {
+        "type" : "object",
+        "properties" : {
+          "creationDate" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "updateDate" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "updateOperatorExternalId" : {
+            "type" : "string"
+          },
+          "debtPositionTypeId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "brokerId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "code" : {
+            "type" : "string"
+          },
+          "description" : {
+            "type" : "string"
+          },
+          "orgType" : {
+            "type" : "string"
+          },
+          "macroArea" : {
+            "type" : "string"
+          },
+          "serviceType" : {
+            "type" : "string"
+          },
+          "collectingReason" : {
+            "type" : "string"
+          },
+          "taxonomyCode" : {
+            "type" : "string"
+          },
+          "flagAnonymousFiscalCode" : {
+            "type" : "boolean"
+          },
+          "flagMandatoryDueDate" : {
+            "type" : "boolean"
+          },
+          "flagNotifyIo" : {
+            "type" : "boolean"
+          },
+          "ioTemplateMessage" : {
+            "type" : "string"
+          },
+          "_links" : {
+            "type" : "object",
+            "additionalProperties" : {
+              "$ref" : "#/components/schemas/Link"
+            }
+          }
+        },
+        "required" : [ "brokerId", "code", "collectingReason", "description", "macroArea", "orgType", "serviceType", "taxonomyCode" ]
+      },
+      "Link" : {
+        "type" : "object",
+        "properties" : {
+          "href" : {
+            "type" : "string"
+          },
+          "hreflang" : {
+            "type" : "string"
+          },
+          "title" : {
+            "type" : "string"
+          },
+          "type" : {
+            "type" : "string"
+          },
+          "deprecation" : {
+            "type" : "string"
+          },
+          "profile" : {
+            "type" : "string"
+          },
+          "name" : {
+            "type" : "string"
+          },
+          "templated" : {
+            "type" : "boolean"
+          }
+        }
+      },
+      "DebtPositionTypeRequestBody" : {
+        "type" : "object",
+        "properties" : {
+          "creationDate" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "updateDate" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "updateOperatorExternalId" : {
+            "type" : "string"
+          },
+          "debtPositionTypeId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "brokerId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "code" : {
+            "type" : "string"
+          },
+          "description" : {
+            "type" : "string"
+          },
+          "orgType" : {
+            "type" : "string"
+          },
+          "macroArea" : {
+            "type" : "string"
+          },
+          "serviceType" : {
+            "type" : "string"
+          },
+          "collectingReason" : {
+            "type" : "string"
+          },
+          "taxonomyCode" : {
+            "type" : "string"
+          },
+          "flagAnonymousFiscalCode" : {
+            "type" : "boolean"
+          },
+          "flagMandatoryDueDate" : {
+            "type" : "boolean"
+          },
+          "flagNotifyIo" : {
+            "type" : "boolean"
+          },
+          "ioTemplateMessage" : {
+            "type" : "string"
+          }
+        },
+        "required" : [ "brokerId", "code", "collectingReason", "description", "macroArea", "orgType", "serviceType", "taxonomyCode" ]
+      },
+      "DebtPositionTypePatchRequestBody" : {
+        "type" : "object",
+        "properties" : {
+          "brokerId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "code" : {
+            "type" : "string"
+          },
+          "orgType" : {
+            "type" : "string"
+          },
+          "macroArea" : {
+            "type" : "string"
+          },
+          "serviceType" : {
+            "type" : "string"
+          },
+          "collectingReason" : {
+            "type" : "string"
+          },
+          "flagAnonymousFiscalCode" : {
+            "type" : "boolean"
+          },
+          "flagMandatoryDueDate" : {
+            "type" : "boolean"
+          },
+          "flagNotifyIo" : {
+            "type" : "boolean"
+          },
+          "ioTemplateMessage" : {
+            "type" : "string"
+          }
+        }
+      },
       "TaxonomyCodeDTO" : {
         "type" : "object",
         "properties" : {
@@ -3013,36 +3343,7 @@
       },
       "TitleEnum" : {
         "type" : "string",
-        "enum" : [ "NOT_FOUND", "BAD_REQUEST", "GENERIC_ERROR" ]
-      },
-      "Link" : {
-        "type" : "object",
-        "properties" : {
-          "href" : {
-            "type" : "string"
-          },
-          "hreflang" : {
-            "type" : "string"
-          },
-          "title" : {
-            "type" : "string"
-          },
-          "type" : {
-            "type" : "string"
-          },
-          "deprecation" : {
-            "type" : "string"
-          },
-          "profile" : {
-            "type" : "string"
-          },
-          "name" : {
-            "type" : "string"
-          },
-          "templated" : {
-            "type" : "boolean"
-          }
-        }
+        "enum" : [ "NOT_FOUND", "BAD_REQUEST", "GENERIC_ERROR", "FORBIDDEN" ]
       },
       "PagedTreasuryView" : {
         "type" : "object",
@@ -4583,70 +4884,6 @@
           }
         },
         "required" : [ "content", "number", "size", "totalElements", "totalPages" ]
-      },
-      "DebtPositionType" : {
-        "type" : "object",
-        "properties" : {
-          "creationDate" : {
-            "type" : "string",
-            "format" : "date-time"
-          },
-          "updateDate" : {
-            "type" : "string",
-            "format" : "date-time"
-          },
-          "updateOperatorExternalId" : {
-            "type" : "string"
-          },
-          "debtPositionTypeId" : {
-            "type" : "integer",
-            "format" : "int64"
-          },
-          "brokerId" : {
-            "type" : "integer",
-            "format" : "int64"
-          },
-          "code" : {
-            "type" : "string"
-          },
-          "description" : {
-            "type" : "string"
-          },
-          "orgType" : {
-            "type" : "string"
-          },
-          "macroArea" : {
-            "type" : "string"
-          },
-          "serviceType" : {
-            "type" : "string"
-          },
-          "collectingReason" : {
-            "type" : "string"
-          },
-          "taxonomyCode" : {
-            "type" : "string"
-          },
-          "flagAnonymousFiscalCode" : {
-            "type" : "boolean"
-          },
-          "flagMandatoryDueDate" : {
-            "type" : "boolean"
-          },
-          "flagNotifyIo" : {
-            "type" : "boolean"
-          },
-          "ioTemplateMessage" : {
-            "type" : "string"
-          },
-          "_links" : {
-            "type" : "object",
-            "additionalProperties" : {
-              "$ref" : "#/components/schemas/Link"
-            }
-          }
-        },
-        "required" : [ "brokerId", "code", "collectingReason", "description", "macroArea", "orgType", "serviceType", "taxonomyCode" ]
       },
       "ServiceStatus" : {
         "type" : "object",

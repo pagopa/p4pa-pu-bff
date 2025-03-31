@@ -5,12 +5,14 @@ import it.gov.pagopa.pu.bff.dto.generated.ErrorDTO;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ValidationException;
+import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.event.Level;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.ErrorResponse;
 import org.springframework.web.ErrorResponseException;
@@ -18,8 +20,6 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
-
-import java.util.stream.Collectors;
 
 @RestControllerAdvice
 @Slf4j
@@ -30,9 +30,14 @@ public class GlobalExceptionHandler {
     return handleException(ex, request, HttpStatus.BAD_REQUEST, ErrorDTO.TitleEnum.GENERIC_ERROR);
   }
 
-  @ExceptionHandler({ValidationException.class, HttpMessageNotReadableException.class, MethodArgumentNotValidException.class, MethodArgumentTypeMismatchException.class})
+  @ExceptionHandler({ValidationException.class, HttpMessageNotReadableException.class, MethodArgumentNotValidException.class, MethodArgumentTypeMismatchException.class, IllegalArgumentException.class})
   public ResponseEntity<ErrorDTO> handleViolationException(Exception ex, HttpServletRequest request) {
     return handleException(ex, request, HttpStatus.BAD_REQUEST, ErrorDTO.TitleEnum.BAD_REQUEST);
+  }
+
+  @ExceptionHandler({AuthorizationDeniedException.class})
+  public ResponseEntity<ErrorDTO> handleAuthorizationDeniedException(Exception ex, HttpServletRequest request) {
+    return handleException(ex, request, HttpStatus.FORBIDDEN, ErrorDTO.TitleEnum.FORBIDDEN);
   }
 
   @ExceptionHandler({ServletException.class, ErrorResponseException.class})

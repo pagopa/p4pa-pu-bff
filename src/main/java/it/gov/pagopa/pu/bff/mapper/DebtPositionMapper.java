@@ -19,6 +19,7 @@ public class DebtPositionMapper {
       		.iupd(debtPosition.getIupdOrg())
       		.status(debtPosition.getStatus())
       		.paymentOptions(debtPosition.getPaymentOptions())
+          .description(debtPosition.getDescription())
       		.build();
       debtPositionDetailDTO.setDebtor(buildDebtor(debtPosition));
       return debtPositionDetailDTO;

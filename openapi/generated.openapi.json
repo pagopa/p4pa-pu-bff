@@ -4434,6 +4434,9 @@
           "debtor" : {
             "$ref" : "#/components/schemas/PersonDTO"
           },
+          "description" : {
+            "type" : "string"
+          },
           "debtPositionTypeOrgDescription" : {
             "type" : "string"
           },

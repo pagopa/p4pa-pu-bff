@@ -13,7 +13,7 @@ public interface DebtPositionTypeRetrieverService {
   DebtPositionType getDebtPositionTypeById(String accessToken, Long id);
 
   PagedDebtPositionTypeWithCount getDebtPositionTypeWithCount(
-    Long organizationId, Pageable pageable,
+    Long organizationId, String description, Pageable pageable,
     UserInfo loggedUser, String accessToken);
 
   DebtPositionTypeDetailDTO getDebtPositionTypeDetail(Long organizationId, Long debtPositionTypeId, UserInfo loggedUser, String accessToken);

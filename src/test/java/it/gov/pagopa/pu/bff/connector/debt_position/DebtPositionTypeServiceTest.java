@@ -45,14 +45,15 @@ class DebtPositionTypeServiceTest {
   @Test
   void whenGetDebtPositionTypeWithCountByIdThenInvokeClient() {
     Long debtPositionTypeId = 1L;
+    String description = "description";
     String accessToken = "ACCESSTOKEN";
     Pageable pageable = Mockito.mock(Pageable.class);
     PagedModelDebtPositionTypeWithCount expectedResult = new PagedModelDebtPositionTypeWithCount();
 
-    when(client.getDebtPositionTypeWithCount(Mockito.same(debtPositionTypeId), Mockito.same(pageable), Mockito.same(accessToken)))
+    when(client.getDebtPositionTypeWithCount(Mockito.same(debtPositionTypeId), Mockito.same(description), Mockito.same(pageable), Mockito.same(accessToken)))
       .thenReturn(expectedResult);
 
-    PagedModelDebtPositionTypeWithCount result = service.getDebtPositionTypeWithCount(debtPositionTypeId, pageable, accessToken);
+    PagedModelDebtPositionTypeWithCount result = service.getDebtPositionTypeWithCount(debtPositionTypeId, description, pageable, accessToken);
 
     assertSame(expectedResult, result);
   }

@@ -30,10 +30,11 @@ public class DebtPositionTypeClient {
     }
   }
 
-  public PagedModelDebtPositionTypeWithCount getDebtPositionTypeWithCount(Long brokerId, Pageable pageable, String accessToken) {
+  public PagedModelDebtPositionTypeWithCount getDebtPositionTypeWithCount(Long brokerId, String description, Pageable pageable, String accessToken) {
     try {
       return debtPositionApisHolder.getDebtPositionTypeWithCountSearchControllerApi(accessToken)
         .crudDebtPositionTypesWithCountFindByBrokerId(brokerId,
+          description,
           PageUtils.getPageNumber(pageable),
           PageUtils.getPageSize(pageable),
           PageUtils.getSortList(pageable));

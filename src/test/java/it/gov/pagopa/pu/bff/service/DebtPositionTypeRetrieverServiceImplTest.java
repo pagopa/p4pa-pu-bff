@@ -116,17 +116,18 @@ class DebtPositionTypeRetrieverServiceImplTest {
   @Test
   void givenValidUserWhenGetDebtPositionTypeWithCountThenOK() {
     long brokerId = 1L;
+    String description = "description";
     UserInfo userInfo = new UserInfo();
     userInfo.setBrokerId(brokerId);
     PagedModelDebtPositionTypeWithCount pagedModelDebtPositionTypeWithCount = new PagedModelDebtPositionTypeWithCount();
     PagedDebtPositionTypeWithCount pagedDebtPositionTypeWithCount = new PagedDebtPositionTypeWithCount();
 
     Mockito.doNothing().when(authorizationServiceMock).validateAdminRole(1L,userInfo);
-    Mockito.when(debtPositionTypeServiceMock.getDebtPositionTypeWithCount(brokerId, PageRequest.of(0,10),accessToken)).thenReturn(pagedModelDebtPositionTypeWithCount);
+    Mockito.when(debtPositionTypeServiceMock.getDebtPositionTypeWithCount(brokerId, description, PageRequest.of(0,10),accessToken)).thenReturn(pagedModelDebtPositionTypeWithCount);
     Mockito.when(debtPositionTypeWithCountMapperMock.mapToPagedDebtPositionWithCount(pagedModelDebtPositionTypeWithCount)).thenReturn(pagedDebtPositionTypeWithCount);
 
     PagedDebtPositionTypeWithCount result = debtPositionTypeRetrieverService.getDebtPositionTypeWithCount(
-      1L, PageRequest.of(0,10),
+      1L, description, PageRequest.of(0,10),
       userInfo, accessToken);
 
     assertNotNull(result);
@@ -138,6 +139,7 @@ class DebtPositionTypeRetrieverServiceImplTest {
   @Test
   void givenInvalidUserWhenGetDebtPositionTypeWithCountThenAuthorizationDeniedException() {
     long brokerId = 1L;
+    String description = "description";
     UserInfo userInfo = new UserInfo();
     userInfo.setBrokerId(brokerId);
     PageRequest pageRequest = PageRequest.of(0, 10);
@@ -146,7 +148,7 @@ class DebtPositionTypeRetrieverServiceImplTest {
 
     Assertions.assertThrows(AuthorizationDeniedException.class,()->
       debtPositionTypeRetrieverService.getDebtPositionTypeWithCount(
-        1L, pageRequest, userInfo, accessToken));
+        1L, description, pageRequest, userInfo, accessToken));
 
     Mockito.verifyNoMoreInteractions(authorizationServiceMock);
     Mockito.verifyNoInteractions(debtPositionTypeServiceMock,debtPositionTypeWithCountMapperMock);

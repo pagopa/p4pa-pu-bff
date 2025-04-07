@@ -7,7 +7,7 @@ import org.springframework.data.domain.Pageable;
 
 public interface DebtPositionTypeService {
   DebtPositionType getDebtPositionTypeById(Long id, String accessToken);
-  PagedModelDebtPositionTypeWithCount getDebtPositionTypeWithCount(Long brokerId, Pageable pageable, String accessToken);
+  PagedModelDebtPositionTypeWithCount getDebtPositionTypeWithCount(Long brokerId, String description, Pageable pageable, String accessToken);
   DebtPositionType createDebtPositionType(
     DebtPositionTypeRequestBody debtPositionType, String accessToken);
   DebtPositionType patchDebtPositionType(Long debtPositionTypeId, DebtPositionTypeRequestBody debtPositionType, String accessToken);

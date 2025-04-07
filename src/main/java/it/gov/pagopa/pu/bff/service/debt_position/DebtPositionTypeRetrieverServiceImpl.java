@@ -45,12 +45,13 @@ public class DebtPositionTypeRetrieverServiceImpl implements
 
   @Override
   public PagedDebtPositionTypeWithCount getDebtPositionTypeWithCount(
-    Long organizationId, Pageable pageable,
+    Long organizationId, String description, Pageable pageable,
     UserInfo loggedUser, String accessToken) {
     authorizationService.validateAdminRole(organizationId, loggedUser);
     return debtPositionTypeWithCountMapper.mapToPagedDebtPositionWithCount(
       debtPositionTypeService.getDebtPositionTypeWithCount(
         loggedUser.getBrokerId(),
+        description,
         pageable,
         accessToken)
     );

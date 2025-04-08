@@ -24,10 +24,13 @@ public class TransferRetrieverServiceImpl implements TransferRetrieverService {
     AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser);
     CollectionModelTransfer collection = transferService.getTransfers(installmentId, loggedUser.getMappedExternalUserId(), accessToken);
 
-    if (collection == null || collection.getEmbedded() ==  null || collection.getEmbedded().getTransfers() == null){
+    if (collection == null || collection.getEmbedded() == null || collection.getEmbedded().getTransfers() == null) {
       return Collections.emptyList();
     }
-    return collection.getEmbedded().getTransfers();
+    return collection.getEmbedded().getTransfers()
+      .stream()
+      .filter(transfer -> transfer.getTransferIndex() != 1)
+      .toList();
   }
 
 }

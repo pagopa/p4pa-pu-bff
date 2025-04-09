@@ -128,16 +128,66 @@
         "security" : [ ]
       }
     },
-    "/bff/export-flow-files" : {
+    "/bff/export-flow-files/payments-reporting" : {
       "post" : {
         "tags" : [ "ExportFiles" ],
-        "summary" : "create-export-file",
-        "operationId" : "createExportFile",
+        "summary" : "create-payments-reporting-export-file",
+        "operationId" : "createPaymentsReportingExportFile",
         "requestBody" : {
           "content" : {
             "application/json" : {
               "schema" : {
-                "$ref" : "#/components/schemas/ExportFileRequestDTO"
+                "$ref" : "#/components/schemas/PaymentsReportingExportFileRequestDTO"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "201" : {
+            "description" : "OK"
+          }
+        },
+        "security" : [ {
+          "BearerAuth" : [ ]
+        } ]
+      }
+    },
+    "/bff/export-flow-files/paid" : {
+      "post" : {
+        "tags" : [ "ExportFiles" ],
+        "summary" : "create-paid-export-file",
+        "operationId" : "createPaidExportFile",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/PaidExportFileRequestDTO"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "201" : {
+            "description" : "OK"
+          }
+        },
+        "security" : [ {
+          "BearerAuth" : [ ]
+        } ]
+      }
+    },
+    "/bff/export-flow-files/classification" : {
+      "post" : {
+        "tags" : [ "ExportFiles" ],
+        "summary" : "create-classifications-export-file",
+        "operationId" : "createClassificationsExportFile",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/ClassificationsExportFileRequestDTO"
               }
             }
           },
@@ -3032,7 +3082,82 @@
         },
         "required" : [ "access_token", "expires_in", "token_type" ]
       },
-      "ExportFileFilter" : {
+      "ExportFileTypeEnum" : {
+        "type" : "string",
+        "enum" : [ "PAID", "CLASSIFICATIONS", "PAYMENTS_REPORTING" ]
+      },
+      "PaymentsReportingExportFileFilter" : {
+        "type" : "object",
+        "properties" : {
+          "iuf" : {
+            "type" : "string"
+          }
+        }
+      },
+      "PaymentsReportingExportFileRequestDTO" : {
+        "type" : "object",
+        "properties" : {
+          "organizationId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "exportFileType" : {
+            "$ref" : "#/components/schemas/ExportFileTypeEnum"
+          },
+          "fileVersion" : {
+            "type" : "string"
+          },
+          "filterFields" : {
+            "$ref" : "#/components/schemas/PaymentsReportingExportFileFilter"
+          }
+        },
+        "required" : [ "exportFileType", "fileVersion", "filterFields", "organizationId" ]
+      },
+      "LocalDateIntervalFilter" : {
+        "type" : "object",
+        "properties" : {
+          "from" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "to" : {
+            "type" : "string",
+            "format" : "date"
+          }
+        }
+      },
+      "PaidExportFileFilter" : {
+        "type" : "object",
+        "properties" : {
+          "paymentDate" : {
+            "$ref" : "#/components/schemas/LocalDateIntervalFilter"
+          },
+          "debtPositionTypeOrgId" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }
+      },
+      "PaidExportFileRequestDTO" : {
+        "type" : "object",
+        "properties" : {
+          "organizationId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "exportFileType" : {
+            "$ref" : "#/components/schemas/ExportFileTypeEnum"
+          },
+          "fileVersion" : {
+            "type" : "string"
+          },
+          "filterFields" : {
+            "$ref" : "#/components/schemas/PaidExportFileFilter"
+          }
+        },
+        "required" : [ "exportFileType", "fileVersion", "filterFields", "organizationId" ]
+      },
+      "ClassificationsExportFileFilter" : {
         "type" : "object",
         "properties" : {
           "iuf" : {
@@ -3076,17 +3201,10 @@
           },
           "billAmountCents" : {
             "type" : "string"
-          },
-          "paymentDate" : {
-            "$ref" : "#/components/schemas/LocalDateIntervalFilter"
-          },
-          "debtPositionTypeOrgId" : {
-            "type" : "integer",
-            "format" : "int64"
           }
         }
       },
-      "ExportFileRequestDTO" : {
+      "ClassificationsExportFileRequestDTO" : {
         "type" : "object",
         "properties" : {
           "organizationId" : {
@@ -3100,27 +3218,10 @@
             "type" : "string"
           },
           "filterFields" : {
-            "$ref" : "#/components/schemas/ExportFileFilter"
+            "$ref" : "#/components/schemas/ClassificationsExportFileFilter"
           }
         },
         "required" : [ "exportFileType", "fileVersion", "filterFields", "organizationId" ]
-      },
-      "ExportFileTypeEnum" : {
-        "type" : "string",
-        "enum" : [ "PAID", "CLASSIFICATIONS", "PAYMENTS_REPORTING" ]
-      },
-      "LocalDateIntervalFilter" : {
-        "type" : "object",
-        "properties" : {
-          "from" : {
-            "type" : "string",
-            "format" : "date"
-          },
-          "to" : {
-            "type" : "string",
-            "format" : "date"
-          }
-        }
       },
       "DebtPositionType" : {
         "type" : "object",

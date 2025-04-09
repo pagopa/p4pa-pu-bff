@@ -1,7 +1,9 @@
 package it.gov.pagopa.pu.bff.connector.process_executions.client;
 
 import it.gov.pagopa.pu.bff.connector.process_executions.config.ProcessExecutionsApisHolder;
-import it.gov.pagopa.pu.processexecutions.dto.generated.ExportFileRequestDTO;
+import it.gov.pagopa.pu.processexecutions.dto.generated.ClassificationsExportFileRequestDTO;
+import it.gov.pagopa.pu.processexecutions.dto.generated.PaidExportFileRequestDTO;
+import it.gov.pagopa.pu.processexecutions.dto.generated.PaymentsReportingExportFileRequestDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -16,10 +18,21 @@ public class ExportFileClient {
     this.processExecutionsApisHolder = processExecutionsApisHolder;
   }
 
-
-  public void createExportFile(ExportFileRequestDTO requestDTO, String accessToken) {
+  public void createPaidExportFile(PaidExportFileRequestDTO paidExportFileRequestDTOrequestDTO, String accessToken) {
     processExecutionsApisHolder.getExportFileControllerApi(accessToken)
-      .createExportFile(requestDTO);
+      .createPaidExportFile(paidExportFileRequestDTOrequestDTO);
+  }
+
+  public void createClassificationsExportFile(
+    ClassificationsExportFileRequestDTO classificationsExportFileRequestDTO, String accessToken) {
+    processExecutionsApisHolder.getExportFileControllerApi(accessToken)
+      .createClassificationsExportFile(classificationsExportFileRequestDTO);
+  }
+
+  public void createPaymentsReportingExportFile(
+    PaymentsReportingExportFileRequestDTO paymentsReportingExportFileRequestDTO, String accessToken) {
+    processExecutionsApisHolder.getExportFileControllerApi(accessToken)
+      .createPaymentsReportingExportFile(paymentsReportingExportFileRequestDTO);
   }
 
 }

@@ -2,6 +2,7 @@ package it.gov.pagopa.pu.bff.connector.process_executions.client;
 
 import it.gov.pagopa.pu.bff.connector.process_executions.config.ProcessExecutionsApisHolder;
 import it.gov.pagopa.pu.bff.dto.ExportFileFiltersDTO;
+import it.gov.pagopa.pu.bff.util.DateUtils;
 import it.gov.pagopa.pu.bff.util.PageUtils;
 import it.gov.pagopa.pu.processexecutions.dto.generated.PagedModelExportFile;
 import lombok.extern.slf4j.Slf4j;
@@ -27,8 +28,8 @@ public class ExportFileSearchClient {
       .crudExportFilesFindByOrganizationIDFlowTypeCreateDate(
         String.valueOf(exportFileFilters.getOrganizationId()),
         exportFileFilters.getExportFileType().toString(),
-        exportFileFilters.getCreationDate().getFrom(),
-        exportFileFilters.getCreationDate().getTo(),
+        DateUtils.toLocalDateTime(exportFileFilters.getCreationDate().getFrom()),
+        DateUtils.toLocalDateTime(exportFileFilters.getCreationDate().getTo()),
         operatorExternalId,
         exportFileFilters.getStatus(),
         exportFileFilters.getFileName(),

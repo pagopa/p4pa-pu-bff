@@ -1204,17 +1204,47 @@ paths:
           description: Not Found - DebtPosition not found
         '500':
           description: Internal Server Error
-  /export-flow-files:
+  /export-flow-files/paid:
     post:
-      summary: create-export-file
+      summary: create-paid-export-file
       tags:
         - ExportFiles
-      operationId: createExportFile
+      operationId: createPaidExportFile
       requestBody:
         content:
           application/json:
             schema:
-              type: 'ExportFileRequestDTO'
+              type: 'PaidExportFileRequestDTO'
+        required: true
+      responses:
+        '201':
+          description: OK
+  /export-flow-files/classification:
+    post:
+      summary: create-classifications-export-file
+      tags:
+        - ExportFiles
+      operationId: createClassificationsExportFile
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: 'ClassificationsExportFileRequestDTO'
+        required: true
+      responses:
+        '201':
+          description: OK
+  /export-flow-files/payments-reporting:
+    post:
+      summary: create-payments-reporting-export-file
+      tags:
+        - ExportFiles
+      operationId: createPaymentsReportingExportFile
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: 'PaymentsReportingExportFileRequestDTO'
         required: true
       responses:
         '201':

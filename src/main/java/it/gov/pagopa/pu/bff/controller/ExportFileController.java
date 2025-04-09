@@ -6,15 +6,16 @@ import it.gov.pagopa.pu.bff.dto.OffsetDateTimeIntervalFilter;
 import it.gov.pagopa.pu.bff.dto.generated.PagedExportFile;
 import it.gov.pagopa.pu.bff.security.SecurityUtils;
 import it.gov.pagopa.pu.bff.service.export_flow_file.ExportFileRetrieverService;
+import it.gov.pagopa.pu.processexecutions.dto.generated.ClassificationsExportFileRequestDTO;
 import it.gov.pagopa.pu.processexecutions.dto.generated.ExportFile.ExportFileTypeEnum;
-import it.gov.pagopa.pu.processexecutions.dto.generated.ExportFileRequestDTO;
 import it.gov.pagopa.pu.processexecutions.dto.generated.ExportFileStatus;
+import it.gov.pagopa.pu.processexecutions.dto.generated.PaidExportFileRequestDTO;
+import it.gov.pagopa.pu.processexecutions.dto.generated.PaymentsReportingExportFileRequestDTO;
+import java.time.OffsetDateTime;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.time.OffsetDateTime;
 
 
 @Slf4j
@@ -45,13 +46,37 @@ public class ExportFileController implements ExportFilesApi {
   }
 
   @Override
-  public ResponseEntity<Void> createExportFile(
-    ExportFileRequestDTO requestDTO) {
+  public ResponseEntity<Void> createPaidExportFile(
+    PaidExportFileRequestDTO requestDTO) {
     log.info(
-      "User requested export file having organizationId {} and exportFileType {}",
-      requestDTO.getOrganizationId(), requestDTO.getExportFileType());
+      "User requested paid export file having organizationId {}",
+      requestDTO.getOrganizationId());
 
-    exportFileRetrieverService.createExportFile(requestDTO, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken());
+    exportFileRetrieverService.createPaidExportFile(requestDTO, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken());
+
+    return ResponseEntity.ok().build();
+  }
+
+  @Override
+  public ResponseEntity<Void> createClassificationsExportFile(
+    ClassificationsExportFileRequestDTO requestDTO) {
+    log.info(
+      "User requested classifications export file having organizationId {}",
+      requestDTO.getOrganizationId());
+
+    exportFileRetrieverService.createClassificationsExportFile(requestDTO, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken());
+
+    return ResponseEntity.ok().build();
+  }
+
+  @Override
+  public ResponseEntity<Void> createPaymentsReportingExportFile(
+    PaymentsReportingExportFileRequestDTO requestDTO) {
+    log.info(
+      "User requested payments reporting export file having organizationId {}",
+      requestDTO.getOrganizationId());
+
+    exportFileRetrieverService.createPaymentsReportingExportFile(requestDTO, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken());
 
     return ResponseEntity.ok().build();
   }

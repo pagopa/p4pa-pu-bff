@@ -9,14 +9,17 @@ import it.gov.pagopa.pu.bff.dto.generated.PagedExportFile;
 import it.gov.pagopa.pu.bff.mapper.ExportFileMapper;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
 import it.gov.pagopa.pu.bff.util.TestUtils;
+import it.gov.pagopa.pu.processexecutions.dto.generated.ClassificationsExportFileFilter;
+import it.gov.pagopa.pu.processexecutions.dto.generated.ClassificationsExportFileRequestDTO;
 import it.gov.pagopa.pu.processexecutions.dto.generated.ExportFile.ExportFileTypeEnum;
-import it.gov.pagopa.pu.processexecutions.dto.generated.ExportFileFilter;
-import it.gov.pagopa.pu.processexecutions.dto.generated.ExportFileRequestDTO;
 import it.gov.pagopa.pu.processexecutions.dto.generated.ExportFileStatus;
 import it.gov.pagopa.pu.processexecutions.dto.generated.PagedModelExportFile;
+import it.gov.pagopa.pu.processexecutions.dto.generated.PaidExportFileFilter;
+import it.gov.pagopa.pu.processexecutions.dto.generated.PaidExportFileRequestDTO;
+import it.gov.pagopa.pu.processexecutions.dto.generated.PaymentsReportingExportFileFilter;
+import it.gov.pagopa.pu.processexecutions.dto.generated.PaymentsReportingExportFileRequestDTO;
 import java.time.OffsetDateTime;
 import java.util.List;
-
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -117,13 +120,12 @@ class ExportFileRetrieverServiceImplTest {
   }
 
   @Test
-  void whenCreateExportFileThenOk() {
-    ExportFileRequestDTO requestDTO = ExportFileRequestDTO.builder()
+  void whenCreatePaidExportFileThenOk() {
+    PaidExportFileRequestDTO requestDTO = PaidExportFileRequestDTO.builder()
       .organizationId(1L)
-      .exportFileType(ExportFileRequestDTO.ExportFileTypeEnum.CLASSIFICATIONS)
+      .exportFileType(PaidExportFileRequestDTO.ExportFileTypeEnum.CLASSIFICATIONS)
       .fileVersion("version1")
-      .filterFields(ExportFileFilter.builder()
-        .iuv("iuv")
+      .filterFields(PaidExportFileFilter.builder()
         .build())
       .build();
     String accessToken = "ACCESSTOKEN";
@@ -134,8 +136,52 @@ class ExportFileRetrieverServiceImplTest {
     userOrgRole.setOrganizationId(1L);
     user.setOrganizations(List.of(userOrgRole));
 
-    exportFileRetrieverService.createExportFile(requestDTO, user, accessToken);
+    exportFileRetrieverService.createPaidExportFile(requestDTO, user, accessToken);
 
-    Mockito.verify(exportFileServiceMock).createExportFile(requestDTO, accessToken);
+    Mockito.verify(exportFileServiceMock).createPaidExportFile(requestDTO, accessToken);
+  }
+
+  @Test
+  void whenCreateClassificationsExportFileThenOk() {
+    ClassificationsExportFileRequestDTO requestDTO = ClassificationsExportFileRequestDTO.builder()
+      .organizationId(1L)
+      .exportFileType(ClassificationsExportFileRequestDTO.ExportFileTypeEnum.CLASSIFICATIONS)
+      .fileVersion("version1")
+      .filterFields(ClassificationsExportFileFilter.builder()
+        .build())
+      .build();
+    String accessToken = "ACCESSTOKEN";
+    UserInfo user = TestUtils.getSampleUser();
+
+    UserOrganizationRoles userOrgRole = new UserOrganizationRoles();
+    userOrgRole.setRoles(List.of("ROLE_USER"));
+    userOrgRole.setOrganizationId(1L);
+    user.setOrganizations(List.of(userOrgRole));
+
+    exportFileRetrieverService.createClassificationsExportFile(requestDTO, user, accessToken);
+
+    Mockito.verify(exportFileServiceMock).createClassificationsExportFile(requestDTO, accessToken);
+  }
+
+  @Test
+  void whenCreatePaymentsReportingExportFileThenOk() {
+    PaymentsReportingExportFileRequestDTO requestDTO = PaymentsReportingExportFileRequestDTO.builder()
+      .organizationId(1L)
+      .exportFileType(PaymentsReportingExportFileRequestDTO.ExportFileTypeEnum.CLASSIFICATIONS)
+      .fileVersion("version1")
+      .filterFields(PaymentsReportingExportFileFilter.builder()
+        .build())
+      .build();
+    String accessToken = "ACCESSTOKEN";
+    UserInfo user = TestUtils.getSampleUser();
+
+    UserOrganizationRoles userOrgRole = new UserOrganizationRoles();
+    userOrgRole.setRoles(List.of("ROLE_USER"));
+    userOrgRole.setOrganizationId(1L);
+    user.setOrganizations(List.of(userOrgRole));
+
+    exportFileRetrieverService.createPaymentsReportingExportFile(requestDTO, user, accessToken);
+
+    Mockito.verify(exportFileServiceMock).createPaymentsReportingExportFile(requestDTO, accessToken);
   }
 }

@@ -7,10 +7,16 @@ import it.gov.pagopa.pu.bff.dto.generated.ExportFile;
 import it.gov.pagopa.pu.bff.dto.generated.PagedExportFile;
 import it.gov.pagopa.pu.bff.service.export_flow_file.ExportFileRetrieverService;
 import it.gov.pagopa.pu.bff.util.TestUtils;
+import it.gov.pagopa.pu.processexecutions.dto.generated.ClassificationsExportFileFilter;
+import it.gov.pagopa.pu.processexecutions.dto.generated.ClassificationsExportFileRequestDTO;
 import it.gov.pagopa.pu.processexecutions.dto.generated.ExportFile.ExportFileTypeEnum;
-import it.gov.pagopa.pu.processexecutions.dto.generated.ExportFileFilter;
-import it.gov.pagopa.pu.processexecutions.dto.generated.ExportFileRequestDTO;
 import it.gov.pagopa.pu.processexecutions.dto.generated.ExportFileStatus;
+import it.gov.pagopa.pu.processexecutions.dto.generated.PaidExportFileFilter;
+import it.gov.pagopa.pu.processexecutions.dto.generated.PaidExportFileRequestDTO;
+import it.gov.pagopa.pu.processexecutions.dto.generated.PaymentsReportingExportFileFilter;
+import it.gov.pagopa.pu.processexecutions.dto.generated.PaymentsReportingExportFileRequestDTO;
+import java.time.OffsetDateTime;
+import java.util.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -26,9 +32,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-
-import java.time.OffsetDateTime;
-import java.util.List;
 
 @ExtendWith(MockitoExtension.class)
 class ExportFileControllerTest {
@@ -88,21 +91,59 @@ class ExportFileControllerTest {
   }
 
   @Test
-  void givenCorrectRequestWhenCreateExportFileThenOk() {
-    ExportFileRequestDTO requestDTO = ExportFileRequestDTO.builder()
+  void givenCorrectRequestWhenCreatePaidExportFileThenOk() {
+    PaidExportFileRequestDTO requestDTO = PaidExportFileRequestDTO.builder()
       .organizationId(1L)
-      .exportFileType(ExportFileRequestDTO.ExportFileTypeEnum.CLASSIFICATIONS)
+      .exportFileType(
+        it.gov.pagopa.pu.processexecutions.dto.generated.PaidExportFileRequestDTO.ExportFileTypeEnum.PAID)
       .fileVersion("version1")
-      .filterFields(ExportFileFilter.builder()
-        .iuv("iuv")
+      .filterFields(PaidExportFileFilter.builder()
         .build())
       .build();
     TestUtils.addSampleUserIntoSecurityContext();
 
-    ResponseEntity<Void> response = exportFileController.createExportFile(requestDTO);
+    ResponseEntity<Void> response = exportFileController.createPaidExportFile(requestDTO);
 
     Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
-    Mockito.verify(exportFileRetrieverServiceMock).createExportFile(Mockito.eq(requestDTO), Mockito.any(
+    Mockito.verify(exportFileRetrieverServiceMock).createPaidExportFile(Mockito.eq(requestDTO), Mockito.any(
+      UserInfo.class), Mockito.anyString());
+  }
+
+  @Test
+  void givenCorrectRequestWhenCreateClassificationsExportFileThenOk() {
+    ClassificationsExportFileRequestDTO requestDTO = ClassificationsExportFileRequestDTO.builder()
+      .organizationId(1L)
+      .exportFileType(
+        ClassificationsExportFileRequestDTO.ExportFileTypeEnum.CLASSIFICATIONS)
+      .fileVersion("version1")
+      .filterFields(ClassificationsExportFileFilter.builder()
+        .build())
+      .build();
+    TestUtils.addSampleUserIntoSecurityContext();
+
+    ResponseEntity<Void> response = exportFileController.createClassificationsExportFile(requestDTO);
+
+    Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
+    Mockito.verify(exportFileRetrieverServiceMock).createClassificationsExportFile(Mockito.eq(requestDTO), Mockito.any(
+      UserInfo.class), Mockito.anyString());
+  }
+
+  @Test
+  void givenCorrectRequestWhenCreatePaymentsReportingExportFileThenOk() {
+    PaymentsReportingExportFileRequestDTO requestDTO = PaymentsReportingExportFileRequestDTO.builder()
+      .organizationId(1L)
+      .exportFileType(
+        PaymentsReportingExportFileRequestDTO.ExportFileTypeEnum.PAYMENTS_REPORTING)
+      .fileVersion("version1")
+      .filterFields(PaymentsReportingExportFileFilter.builder()
+        .build())
+      .build();
+    TestUtils.addSampleUserIntoSecurityContext();
+
+    ResponseEntity<Void> response = exportFileController.createPaymentsReportingExportFile(requestDTO);
+
+    Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
+    Mockito.verify(exportFileRetrieverServiceMock).createPaymentsReportingExportFile(Mockito.eq(requestDTO), Mockito.any(
       UserInfo.class), Mockito.anyString());
   }
 }

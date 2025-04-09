@@ -3,8 +3,10 @@ package it.gov.pagopa.pu.bff.connector.process_executions;
 import it.gov.pagopa.pu.bff.connector.process_executions.client.ExportFileClient;
 import it.gov.pagopa.pu.bff.connector.process_executions.client.ExportFileSearchClient;
 import it.gov.pagopa.pu.bff.dto.ExportFileFiltersDTO;
-import it.gov.pagopa.pu.processexecutions.dto.generated.ExportFileRequestDTO;
+import it.gov.pagopa.pu.processexecutions.dto.generated.ClassificationsExportFileRequestDTO;
 import it.gov.pagopa.pu.processexecutions.dto.generated.PagedModelExportFile;
+import it.gov.pagopa.pu.processexecutions.dto.generated.PaidExportFileRequestDTO;
+import it.gov.pagopa.pu.processexecutions.dto.generated.PaymentsReportingExportFileRequestDTO;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -28,7 +30,19 @@ public class ExportFileServiceImpl implements ExportFileService {
   }
 
   @Override
-  public void createExportFile(ExportFileRequestDTO requestDTO, String accessToken) {
-    client.createExportFile(requestDTO, accessToken);
+  public void createPaidExportFile(PaidExportFileRequestDTO requestDTO, String accessToken) {
+    client.createPaidExportFile(requestDTO, accessToken);
+  }
+
+  @Override
+  public void createClassificationsExportFile(
+    ClassificationsExportFileRequestDTO requestDTO, String accessToken) {
+    client.createClassificationsExportFile(requestDTO, accessToken);
+  }
+
+  @Override
+  public void createPaymentsReportingExportFile(
+    PaymentsReportingExportFileRequestDTO requestDTO, String accessToken) {
+    client.createPaymentsReportingExportFile(requestDTO, accessToken);
   }
 }

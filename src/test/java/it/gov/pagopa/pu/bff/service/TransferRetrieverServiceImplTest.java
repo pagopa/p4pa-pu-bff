@@ -17,7 +17,6 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.authorization.AuthorizationDeniedException;
 
-import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -85,9 +84,6 @@ class TransferRetrieverServiceImplTest {
     long organizationId = 1L;
     long installmentId = 1L;
     CollectionModelTransfer emptyCollectionModel = new CollectionModelTransfer();
-    CollectionModelTransferEmbedded embedded = new CollectionModelTransferEmbedded();
-    embedded.setTransfers(Collections.emptyList());
-    emptyCollectionModel.setEmbedded(embedded);
 
     try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
       authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)).thenAnswer(a -> null);
@@ -104,6 +100,31 @@ class TransferRetrieverServiceImplTest {
       Mockito.verify(transferServiceMock).getTransfers(installmentId, loggedUser.getMappedExternalUserId(), accessToken);
     }
   }
+
+  @Test
+  void givenNullCollectionWhenGetTransfersThenEmptyList() {
+    UserInfo loggedUser = new UserInfo();
+    loggedUser.setUserId("user-123");
+
+    long organizationId = 1L;
+    long installmentId = 1L;
+
+    try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
+      authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)).thenAnswer(a -> null);
+
+      Mockito.when(transferServiceMock.getTransfers(installmentId, loggedUser.getMappedExternalUserId(), accessToken))
+        .thenReturn(null);
+
+      List<TransferResponse> result = transferRetrieverService.getTransfers(organizationId, installmentId, loggedUser, accessToken);
+
+      assertNotNull(result);
+      assertTrue(result.isEmpty());
+
+      authorizationServiceMockedStatic.verify(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser));
+      Mockito.verify(transferServiceMock).getTransfers(installmentId, loggedUser.getMappedExternalUserId(), accessToken);
+    }
+  }
+
 
   @Test
   void givenInvalidUserWhenGetTransfersThenAuthorizationDeniedException() {

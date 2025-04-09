@@ -2,8 +2,10 @@ package it.gov.pagopa.pu.bff.connector.organization;
 
 import it.gov.pagopa.pu.bff.connector.organization.client.OrganizationSearchClient;
 import it.gov.pagopa.pu.organization.dto.generated.Organization;
+import it.gov.pagopa.pu.organization.dto.generated.PagedModelOrganization;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -20,5 +22,11 @@ public class OrganizationServiceImpl implements OrganizationService {
   @Cacheable(key = "#ipaCode", unless="#result == null")
   public Organization getOrganizationByIpaCode(String ipaCode, String accessToken){
     return organizationSearchClient.getOrganizationByIpaCode(ipaCode, accessToken);
+  }
+
+  @Override
+  public PagedModelOrganization getOrganizationByBrokerIdAndOrgName(
+    String brokerId, String orgName, Pageable pageable, String accessToken) {
+    return organizationSearchClient.getOrganizationByBrokerIdAndOrgName(brokerId, orgName, pageable, accessToken);
   }
 }

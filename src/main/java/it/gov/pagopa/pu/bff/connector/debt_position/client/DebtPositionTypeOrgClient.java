@@ -2,7 +2,9 @@ package it.gov.pagopa.pu.bff.connector.debt_position.client;
 
 import it.gov.pagopa.pu.bff.connector.debt_position.config.DebtPositionApisHolder;
 import it.gov.pagopa.pu.debtpositions.dto.generated.CollectionModelDebtPositionTypeOrg;
+import it.gov.pagopa.pu.debtpositions.dto.generated.CollectionModelDebtPositionTypeOrgCountByOrganizationId;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrg;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
@@ -29,6 +31,17 @@ public class DebtPositionTypeOrgClient {
         .crudGetDebtpositiontypeorg(String.valueOf(debtPositionTypeOrgId));
     } catch (HttpClientErrorException.NotFound e) {
       log.warn("DebtPositionTypeOrg with debtPositionTypeOrgId {} not found", debtPositionTypeOrgId);
+      return null;
+    }
+  }
+
+  public CollectionModelDebtPositionTypeOrgCountByOrganizationId getDebtPositionTypeOrgCountByOrganizationId(
+    List<Long> organizationIds, String accessToken) {
+    try {
+      return debtPositionApisHolder.getDebtPositionTypeOrgCountByOrganizationIdSearchControllerApi(accessToken)
+        .crudDebtPositionTypeOrgsByOrganizationCountByOrganizationIds(organizationIds);
+    } catch (HttpClientErrorException.NotFound e) {
+      log.warn("DebtPositionTypeOrgCountByOrganizationId with organizationIds {} not found", organizationIds);
       return null;
     }
   }

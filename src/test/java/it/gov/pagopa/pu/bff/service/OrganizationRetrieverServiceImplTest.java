@@ -1,12 +1,22 @@
 package it.gov.pagopa.pu.bff.service;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.anyString;
+
+import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
+import it.gov.pagopa.pu.auth.dto.generated.UserOrganizationRoles;
+import it.gov.pagopa.pu.bff.connector.debt_position.DebtPositionTypeOrgService;
 import it.gov.pagopa.pu.bff.connector.organization.OrganizationService;
 import it.gov.pagopa.pu.bff.dto.generated.OrganizationDTO;
 import it.gov.pagopa.pu.bff.mapper.OrganizationDTOMapper;
+import it.gov.pagopa.pu.bff.mapper.OrganizationWithDebtPositionTypeOrgCountMapper;
 import it.gov.pagopa.pu.bff.service.organization.OrganizationRetrieverServiceImpl;
 import it.gov.pagopa.pu.organization.dto.generated.Organization;
-import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
-import it.gov.pagopa.pu.auth.dto.generated.UserOrganizationRoles;
+import java.util.Collections;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,20 +24,19 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Collections;
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.*;
-
 @ExtendWith(MockitoExtension.class)
 class OrganizationRetrieverServiceImplTest {
 
   @Mock
+  private AuthorizationService authorizationServiceMock;
+  @Mock
   private OrganizationService organizationServiceMock;
   @Mock
+  private DebtPositionTypeOrgService debtPositionTypeOrgServiceMock;
+  @Mock
   private OrganizationDTOMapper organizationDTOMapperMock;
+  @Mock
+  private OrganizationWithDebtPositionTypeOrgCountMapper organizationWithDebtPositionTypeOrgCountMapperMock;
   private OrganizationRetrieverServiceImpl organizationService;
   private UserInfo userInfo;
   private UserOrganizationRoles userOrganizationRoles;
@@ -56,7 +65,9 @@ class OrganizationRetrieverServiceImplTest {
       .operatorRole(OrganizationDTO.OperatorRoleEnum.ADMIN)
       .build();
 
-    organizationService = new OrganizationRetrieverServiceImpl(organizationServiceMock, organizationDTOMapperMock);
+    organizationService = new OrganizationRetrieverServiceImpl(
+      authorizationServiceMock, organizationServiceMock,
+      debtPositionTypeOrgServiceMock, organizationDTOMapperMock, organizationWithDebtPositionTypeOrgCountMapperMock);
   }
 
   @Test

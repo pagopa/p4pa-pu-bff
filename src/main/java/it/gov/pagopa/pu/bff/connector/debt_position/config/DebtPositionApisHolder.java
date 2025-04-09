@@ -16,6 +16,7 @@ public class DebtPositionApisHolder {
   private final DebtPositionTypeWithCountSearchControllerApi debtPositionTypeWithCountSearchControllerApi;
   private final DebtPositionTypeOrgWithCountSearchControllerApi debtPositionTypeOrgWithCountSearchControllerApi;
   private final DebtPositionTypeOrgSearchControllerApi debtPositionTypeOrgSearchControllerApi;
+  private final DebtPositionTypeOrgCountByOrganizationIdSearchControllerApi debtPositionTypeOrgCountByOrganizationIdSearchControllerApi;
   private final InstallmentApi installmentApi;
   private final InstallmentViewSearchControllerApi installmentViewSearchControllerApi;
   private final InstallmentNoPiiSearchControllerApi installmentNoPiiSearchControllerApi;
@@ -45,6 +46,7 @@ public class DebtPositionApisHolder {
     this.debtPositionTypeWithCountSearchControllerApi = new DebtPositionTypeWithCountSearchControllerApi(apiClient);
     this.debtPositionTypeOrgWithCountSearchControllerApi = new DebtPositionTypeOrgWithCountSearchControllerApi(apiClient);
     this.debtPositionTypeOrgSearchControllerApi = new DebtPositionTypeOrgSearchControllerApi(apiClient);
+    this.debtPositionTypeOrgCountByOrganizationIdSearchControllerApi = new DebtPositionTypeOrgCountByOrganizationIdSearchControllerApi(apiClient);
     this.installmentViewSearchControllerApi = new InstallmentViewSearchControllerApi(apiClient);
     this.installmentApi = new InstallmentApi(apiClient);
     this.installmentNoPiiSearchControllerApi = new InstallmentNoPiiSearchControllerApi(apiClient);
@@ -81,6 +83,10 @@ public class DebtPositionApisHolder {
 
   public DebtPositionTypeOrgWithCountSearchControllerApi getDebtPositionTypeOrgWithCountSearchControllerApi(String accessToken) {
     return getApi(accessToken, debtPositionTypeOrgWithCountSearchControllerApi);
+  }
+
+  public DebtPositionTypeOrgCountByOrganizationIdSearchControllerApi getDebtPositionTypeOrgCountByOrganizationIdSearchControllerApi(String accessToken) {
+    return getApi(accessToken, debtPositionTypeOrgCountByOrganizationIdSearchControllerApi);
   }
 
   public TransferSearchControllerApi getTransferSearchControllerApi(String accessToken) {

@@ -1,9 +1,11 @@
 package it.gov.pagopa.pu.bff.connector.process_executions.config;
 
 import it.gov.pagopa.pu.bff.connector.BaseApiHolderTest;
-import it.gov.pagopa.pu.processexecutions.dto.generated.ExportFileRequestDTO;
 import it.gov.pagopa.pu.processexecutions.dto.generated.ExportFileStatus;
 import it.gov.pagopa.pu.processexecutions.dto.generated.IngestionFlowFileStatus;
+import it.gov.pagopa.pu.processexecutions.dto.generated.PaidExportFileRequestDTO;
+import java.time.LocalDateTime;
+import java.util.List;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,10 +16,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.web.util.DefaultUriBuilderFactory;
-
-import java.time.LocalDateTime;
-import java.time.OffsetDateTime;
-import java.util.List;
 
 @ExtendWith(MockitoExtension.class)
 class ProcessExecutionsApisHolderTest extends BaseApiHolderTest {
@@ -61,7 +59,7 @@ class ProcessExecutionsApisHolderTest extends BaseApiHolderTest {
     assertAuthenticationShouldBeSetInThreadSafeMode(
       accessToken -> processExecutionsApisHolder.getExportFileSearchControllerApi(accessToken)
         .crudExportFilesFindByOrganizationIDFlowTypeCreateDate(String.valueOf(123L), "exportFileType",
-          OffsetDateTime.now(),OffsetDateTime.now(),"operatorExternalId", ExportFileStatus.PROCESSING,"fileName",0,0,null),
+          LocalDateTime.now(),LocalDateTime.now(),"operatorExternalId", ExportFileStatus.PROCESSING,"fileName",0,0,null),
       new ParameterizedTypeReference<>() {},
       processExecutionsApisHolder::unload
     );
@@ -72,7 +70,7 @@ class ProcessExecutionsApisHolderTest extends BaseApiHolderTest {
     assertAuthenticationShouldBeSetInThreadSafeMode(
       accessToken -> {
         processExecutionsApisHolder.getExportFileControllerApi(accessToken)
-          .createExportFile(new ExportFileRequestDTO());
+          .createPaidExportFile(new PaidExportFileRequestDTO());
         return voidMock;
       },
       new ParameterizedTypeReference<>() {},

@@ -6,7 +6,9 @@ import it.gov.pagopa.pu.bff.dto.ExportFileFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedExportFile;
 import it.gov.pagopa.pu.bff.mapper.ExportFileMapper;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
-import it.gov.pagopa.pu.processexecutions.dto.generated.ExportFileRequestDTO;
+import it.gov.pagopa.pu.processexecutions.dto.generated.ClassificationsExportFileRequestDTO;
+import it.gov.pagopa.pu.processexecutions.dto.generated.PaidExportFileRequestDTO;
+import it.gov.pagopa.pu.processexecutions.dto.generated.PaymentsReportingExportFileRequestDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -43,10 +45,22 @@ public class ExportFileRetrieverServiceImpl implements
   }
 
   @Override
-  public void createExportFile(ExportFileRequestDTO requestDTO,
+  public void createPaidExportFile(PaidExportFileRequestDTO requestDTO, UserInfo loggedUser, String accessToken) {
+    AuthorizationService.validateUserForOrganizationId(requestDTO.getOrganizationId(), loggedUser);
+    exportFileService.createPaidExportFile(requestDTO, accessToken);
+  }
+
+  @Override
+  public void createClassificationsExportFile(ClassificationsExportFileRequestDTO requestDTO,
     UserInfo loggedUser, String accessToken) {
-    AuthorizationService.validateUserForOrganizationId(
-      requestDTO.getOrganizationId(), loggedUser);
-    exportFileService.createExportFile(requestDTO, accessToken);
+    AuthorizationService.validateUserForOrganizationId(requestDTO.getOrganizationId(), loggedUser);
+    exportFileService.createClassificationsExportFile(requestDTO, accessToken);
+  }
+
+  @Override
+  public void createPaymentsReportingExportFile(PaymentsReportingExportFileRequestDTO requestDTO,
+    UserInfo loggedUser, String accessToken) {
+    AuthorizationService.validateUserForOrganizationId(requestDTO.getOrganizationId(), loggedUser);
+    exportFileService.createPaymentsReportingExportFile(requestDTO, accessToken);
   }
 }

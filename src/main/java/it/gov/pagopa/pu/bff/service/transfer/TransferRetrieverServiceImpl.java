@@ -6,6 +6,7 @@ import it.gov.pagopa.pu.bff.service.AuthorizationService;
 import it.gov.pagopa.pu.debtpositions.dto.generated.CollectionModelTransfer;
 import it.gov.pagopa.pu.debtpositions.dto.generated.TransferResponse;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.util.Collections;
 import java.util.List;
@@ -24,7 +25,7 @@ public class TransferRetrieverServiceImpl implements TransferRetrieverService {
     AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser);
     CollectionModelTransfer collection = transferService.getTransfers(installmentId, loggedUser.getMappedExternalUserId(), accessToken);
 
-    if (collection == null || collection.getEmbedded() == null || collection.getEmbedded().getTransfers() == null) {
+    if (collection == null || collection.getEmbedded() == null || CollectionUtils.isEmpty(collection.getEmbedded().getTransfers())) {
       return Collections.emptyList();
     }
     return collection.getEmbedded().getTransfers()

@@ -17,17 +17,15 @@ public class OrganizationWithDebtPositionTypeOrgCountMapper {
     List<Organization> organizations,
     List<DebtPositionTypeOrgCountByOrganizationId> dptoCountsByOrgId,
     PageMetadata pageMetadata) {
+    Map<Long, Integer> dptoCountByOrgId = dptoCountsByOrgId.stream()
+      .filter(dpto -> dpto.getOrganizationId() != null &&
+        dpto.getActiveOrganizations() != null)
+      .collect(Collectors.toMap(
+        DebtPositionTypeOrgCountByOrganizationId::getOrganizationId,
+        DebtPositionTypeOrgCountByOrganizationId::getActiveOrganizations));
     List<OrganizationWithDebtPositionTypeOrgCount> content = organizations.stream()
       .filter(o -> o.getOrganizationId() != null)
-      .map(o -> {
-        Map<Long, Integer> dptoCountByOrgId = dptoCountsByOrgId.stream()
-          .filter(dpto -> dpto.getOrganizationId() != null &&
-            dpto.getActiveOrganizations() != null)
-          .collect(Collectors.toMap(
-            DebtPositionTypeOrgCountByOrganizationId::getOrganizationId,
-            DebtPositionTypeOrgCountByOrganizationId::getActiveOrganizations));
-        return mapToOrganizationWithDebtPositionTypeOrgCount(o, dptoCountByOrgId);
-      })
+      .map(o -> mapToOrganizationWithDebtPositionTypeOrgCount(o, dptoCountByOrgId))
       .toList();
 
     return PagedOrganizationWithDebtPositionTypeOrgCount.builder()

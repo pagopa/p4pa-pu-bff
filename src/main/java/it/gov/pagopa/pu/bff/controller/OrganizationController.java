@@ -31,7 +31,7 @@ public class OrganizationController implements OrganizationsApi {
   @Override
   public ResponseEntity<PagedOrganizationWithDebtPositionTypeOrgCount> getOrganizationsWithDebtPositionTypeOrgCount(Long organizationId, String organizationName, Pageable pageable) {
     log.info("User requested getOrganizationWithDebtPositionTypeOrgCount");
-    return ResponseEntity.ofNullable(organizationRetrieverService.getOrganizationsWithDebtPositionTypeOrgCount(organizationId, organizationName, pageable, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken()));
+    return ResponseEntity.ok(organizationRetrieverService.getOrganizationsWithDebtPositionTypeOrgCount(organizationId, organizationName, pageable, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken()));
   }
 
 }

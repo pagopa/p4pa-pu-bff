@@ -31,18 +31,12 @@ public class OrganizationSearchClient {
 
   public PagedModelOrganization getOrganizationByBrokerIdAndOrgName(
     String brokerId, String orgName, Pageable pageable, String accessToken) {
-    try {
-      return organizationApisHolder.getOrganizationSearchControllerApi(
-          accessToken)
-        .crudOrganizationsFindByBrokerIdAndOrgName(brokerId, orgName,
-          PageUtils.getPageNumber(pageable),
-          PageUtils.getPageSize(pageable),
-          PageUtils.getSortList(pageable));
-    } catch (HttpClientErrorException.NotFound e) {
-      log.warn("Organization with broker ID {} and orgName {} not found",
-        brokerId, orgName);
-      return null;
-    }
+    return organizationApisHolder.getOrganizationSearchControllerApi(
+        accessToken)
+      .crudOrganizationsFindByBrokerIdAndOrgName(brokerId, orgName,
+        PageUtils.getPageNumber(pageable),
+        PageUtils.getPageSize(pageable),
+        PageUtils.getSortList(pageable));
   }
 
 }

@@ -37,13 +37,8 @@ public class DebtPositionTypeOrgClient {
 
   public CollectionModelDebtPositionTypeOrgCountByOrganizationId getDebtPositionTypeOrgCountByOrganizationId(
     List<Long> organizationIds, String accessToken) {
-    try {
-      return debtPositionApisHolder.getDebtPositionTypeOrgCountByOrganizationIdSearchControllerApi(accessToken)
-        .crudDebtPositionTypeOrgsByOrganizationCountByOrganizationIds(organizationIds);
-    } catch (HttpClientErrorException.NotFound e) {
-      log.warn("DebtPositionTypeOrgCountByOrganizationId with organizationIds {} not found", organizationIds);
-      return null;
-    }
+    return debtPositionApisHolder.getDebtPositionTypeOrgCountByOrganizationIdSearchControllerApi(accessToken)
+      .crudDebtPositionTypeOrgsByOrganizationCountByOrganizationIds(organizationIds);
   }
 
 }

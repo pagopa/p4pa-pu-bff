@@ -6,6 +6,8 @@ import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrgCountByOr
 import it.gov.pagopa.pu.organization.dto.generated.Organization;
 import it.gov.pagopa.pu.organization.dto.generated.PageMetadata;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -18,11 +20,11 @@ public class OrganizationWithDebtPositionTypeOrgCountMapper {
     List<OrganizationWithDebtPositionTypeOrgCount> content = organizations.stream()
       .filter(o -> o.getOrganizationId() != null)
       .map(o -> {
-        // TODO: check what to do if no DPTO matches with orgId
-        DebtPositionTypeOrgCountByOrganizationId dptoCountByOrgId = dptoCountsByOrgId.stream()
-          .filter(dpto -> o.getOrganizationId().equals(dpto.getOrganizationId()))
-          .findFirst()
-          .orElse(null);
+        Map<Long, Integer> dptoCountByOrgId = dptoCountsByOrgId.stream()
+          .filter(dpto -> dpto.getOrganizationId() != null)
+          .collect(Collectors.toMap(
+            DebtPositionTypeOrgCountByOrganizationId::getOrganizationId,
+            DebtPositionTypeOrgCountByOrganizationId::getActiveOrganizations));
         return mapToOrganizationWithDebtPositionTypeOrgCount(o, dptoCountByOrgId);
       })
       .toList();
@@ -37,14 +39,12 @@ public class OrganizationWithDebtPositionTypeOrgCountMapper {
   }
 
   private OrganizationWithDebtPositionTypeOrgCount mapToOrganizationWithDebtPositionTypeOrgCount(
-    Organization organization, DebtPositionTypeOrgCountByOrganizationId dpto) {
+    Organization organization, Map<Long, Integer> dptoCountByOrgId) {
     return OrganizationWithDebtPositionTypeOrgCount.builder()
       .organizationId(organization.getOrganizationId())
       .ipaCode(organization.getIpaCode())
       .organizationName(organization.getOrgName())
-      // TODO: check what to do in case dpto is null
-      .debtPositionTypeOrgCount(
-        dpto != null ? dpto.getActiveOrganizations() : Integer.valueOf(0))
+      .debtPositionTypeOrgCount(dptoCountByOrgId.getOrDefault(organization.getOrganizationId(), 0))
       .build();
   }
 }

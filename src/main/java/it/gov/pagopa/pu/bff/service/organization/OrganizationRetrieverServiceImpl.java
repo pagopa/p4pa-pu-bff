@@ -63,17 +63,13 @@ public class OrganizationRetrieverServiceImpl implements OrganizationRetrieverSe
       String.valueOf(loggedUser.getBrokerId()), organizationName, pageable,
       accessToken);
 
-    if (pagedOrganizations == null
-      || pagedOrganizations.getEmbedded() == null) {
+    if (pagedOrganizations == null ||
+      pagedOrganizations.getEmbedded() == null ||
+      CollectionUtils.isEmpty(pagedOrganizations.getEmbedded().getOrganizations())) {
       return null;
     }
 
-    List<Organization> organizations = pagedOrganizations.getEmbedded()
-      .getOrganizations();
-    if (CollectionUtils.isEmpty(organizations)) {
-      return null;
-    }
-
+    List<Organization> organizations = pagedOrganizations.getEmbedded().getOrganizations();
     List<DebtPositionTypeOrgCountByOrganizationId> dptoCountsByOrgId = getDebtPositionTypeOrgCountByOrganizationId(
       organizations.stream().map(Organization::getOrganizationId).toList(),
       accessToken

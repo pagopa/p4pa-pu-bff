@@ -4426,7 +4426,7 @@
             "$ref" : "#/components/schemas/ExportFileStatus"
           }
         },
-        "required" : [ "creationDate", "exportFileId", "fileName", "operator", "status" ]
+        "required" : [ "creationDate", "exportFileId", "operator", "status" ]
       },
       "ExportFileStatus" : {
         "type" : "string",

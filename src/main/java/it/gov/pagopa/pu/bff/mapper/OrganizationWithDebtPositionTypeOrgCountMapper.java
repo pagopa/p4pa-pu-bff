@@ -21,9 +21,9 @@ public class OrganizationWithDebtPositionTypeOrgCountMapper {
         // TODO: check what to do if no DPTO matches with orgId
         DebtPositionTypeOrgCountByOrganizationId dptoCountByOrgId = dptoCountsByOrgId.stream()
           .filter(dpto -> o.getOrganizationId().equals(dpto.getOrganizationId()))
-          .findFirst().orElse(null);
-        return mapToOrganizationWithDebtPositionTypeOrgCount(o,
-          dptoCountByOrgId);
+          .findFirst()
+          .orElse(null);
+        return mapToOrganizationWithDebtPositionTypeOrgCount(o, dptoCountByOrgId);
       })
       .toList();
 

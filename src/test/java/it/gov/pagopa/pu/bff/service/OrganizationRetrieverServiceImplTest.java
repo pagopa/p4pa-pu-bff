@@ -1,20 +1,28 @@
 package it.gov.pagopa.pu.bff.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.auth.dto.generated.UserOrganizationRoles;
 import it.gov.pagopa.pu.bff.connector.debt_position.DebtPositionTypeOrgService;
 import it.gov.pagopa.pu.bff.connector.organization.OrganizationService;
 import it.gov.pagopa.pu.bff.dto.generated.OrganizationDTO;
+import it.gov.pagopa.pu.bff.dto.generated.PagedOrganizationWithDebtPositionTypeOrgCount;
 import it.gov.pagopa.pu.bff.mapper.OrganizationDTOMapper;
 import it.gov.pagopa.pu.bff.mapper.OrganizationWithDebtPositionTypeOrgCountMapper;
 import it.gov.pagopa.pu.bff.service.organization.OrganizationRetrieverServiceImpl;
+import it.gov.pagopa.pu.debtpositions.dto.generated.CollectionModelDebtPositionTypeOrgCountByOrganizationId;
+import it.gov.pagopa.pu.debtpositions.dto.generated.CollectionModelDebtPositionTypeOrgCountByOrganizationIdEmbedded;
+import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrgCountByOrganizationId;
 import it.gov.pagopa.pu.organization.dto.generated.Organization;
+import it.gov.pagopa.pu.organization.dto.generated.PagedModelOrganization;
+import it.gov.pagopa.pu.organization.dto.generated.PagedModelOrganizationEmbedded;
 import java.util.Collections;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,6 +31,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Pageable;
 
 @ExtendWith(MockitoExtension.class)
 class OrganizationRetrieverServiceImplTest {
@@ -107,7 +116,6 @@ class OrganizationRetrieverServiceImplTest {
     assertTrue(result.isEmpty());
   }
 
-
   @Test
   void testGetOrganizations_NotFound() {
     Mockito.when(organizationServiceMock.getOrganizationByIpaCode(anyString(), anyString()))
@@ -116,6 +124,78 @@ class OrganizationRetrieverServiceImplTest {
     List<OrganizationDTO> result = organizationService.getOrganizations(userInfo, accessToken);
 
     assertTrue(result.isEmpty());
+  }
+
+  @Test
+  void testGetOrganizationsWithDebtPositionTypeOrgCount() {
+    Mockito.doNothing().when(authorizationServiceMock)
+      .validateBrokerAdminRole(any(UserInfo.class));
+
+    PagedModelOrganization pagedModelOrganization = new PagedModelOrganization();
+    List<Organization> organizations = List.of(new Organization());
+    pagedModelOrganization.setEmbedded(
+      PagedModelOrganizationEmbedded.builder().organizations(organizations)
+        .build());
+    Mockito.when(
+      organizationServiceMock.getOrganizationByBrokerIdAndOrgName(anyString(),
+        anyString(), any(
+          Pageable.class), eq(null))).thenReturn(pagedModelOrganization);
+
+    CollectionModelDebtPositionTypeOrgCountByOrganizationId collectionDptoCountByOrgId = new CollectionModelDebtPositionTypeOrgCountByOrganizationId();
+    List<DebtPositionTypeOrgCountByOrganizationId> debtPositionTypeOrgCountByOrganizationIds = List.of(
+      new DebtPositionTypeOrgCountByOrganizationId());
+    collectionDptoCountByOrgId.setEmbedded(
+      CollectionModelDebtPositionTypeOrgCountByOrganizationIdEmbedded.builder()
+        .debtPositionTypeOrgCountByOrganizationIds(
+          debtPositionTypeOrgCountByOrganizationIds).build());
+    Mockito.when(
+      debtPositionTypeOrgServiceMock.getDebtPositionTypeOrgCountByOrganizationId(
+        anyList(), eq(null))).thenReturn(collectionDptoCountByOrgId);
+
+    PagedOrganizationWithDebtPositionTypeOrgCount expectedResult = new PagedOrganizationWithDebtPositionTypeOrgCount();
+    Mockito.when(
+      organizationWithDebtPositionTypeOrgCountMapperMock.mapToPagedOrganizationWithDebtPositionTypeOrgCount(
+        eq(organizations), eq(debtPositionTypeOrgCountByOrganizationIds), any())).thenReturn(expectedResult);
+
+    PagedOrganizationWithDebtPositionTypeOrgCount result = organizationService.getOrganizationsWithDebtPositionTypeOrgCount(
+      1L, "orgName", Pageable.unpaged(), new UserInfo(), null);
+
+    assertEquals(expectedResult, result);
+  }
+
+  @Test
+  void testGetOrganizationsWithDebtPositionTypeOrgCount_pagedModelNull() {
+    Mockito.doNothing().when(authorizationServiceMock)
+      .validateBrokerAdminRole(any(UserInfo.class));
+
+    Mockito.when(
+      organizationServiceMock.getOrganizationByBrokerIdAndOrgName(anyString(),
+        anyString(), any(Pageable.class), eq(null))).thenReturn(null);
+
+    PagedOrganizationWithDebtPositionTypeOrgCount result = organizationService.getOrganizationsWithDebtPositionTypeOrgCount(
+      1L, "orgName", Pageable.unpaged(), new UserInfo(), null);
+
+    assertNull(result);
+  }
+
+  @Test
+  void testGetOrganizationsWithDebtPositionTypeOrgCount_organizationsEmpty() {
+    Mockito.doNothing().when(authorizationServiceMock)
+      .validateBrokerAdminRole(any(UserInfo.class));
+
+    PagedModelOrganization pagedModelOrganization = new PagedModelOrganization();
+    pagedModelOrganization.setEmbedded(
+      PagedModelOrganizationEmbedded.builder().organizations(Collections.emptyList())
+        .build());
+    Mockito.when(
+      organizationServiceMock.getOrganizationByBrokerIdAndOrgName(anyString(),
+        anyString(), any(
+          Pageable.class), eq(null))).thenReturn(pagedModelOrganization);
+
+    PagedOrganizationWithDebtPositionTypeOrgCount result = organizationService.getOrganizationsWithDebtPositionTypeOrgCount(
+      1L, "orgName", Pageable.unpaged(), new UserInfo(), null);
+
+    assertNull(result);
   }
 
 }

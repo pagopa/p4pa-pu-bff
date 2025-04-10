@@ -1,10 +1,15 @@
 package it.gov.pagopa.pu.bff.connector.debt_position;
 
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.mockito.Mockito.when;
+
 import it.gov.pagopa.pu.bff.connector.debt_position.client.DebtPositionTypeOrgClient;
 import it.gov.pagopa.pu.bff.connector.debt_position.client.DebtPositionTypeOrgWithCountClient;
 import it.gov.pagopa.pu.debtpositions.dto.generated.CollectionModelDebtPositionTypeOrg;
+import it.gov.pagopa.pu.debtpositions.dto.generated.CollectionModelDebtPositionTypeOrgCountByOrganizationId;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrg;
 import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelDebtPositionTypeOrgWithCount;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -13,9 +18,6 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class DebtPositionTypeOrgServiceTest {
@@ -74,6 +76,22 @@ class DebtPositionTypeOrgServiceTest {
       .thenReturn(expectedResult);
 
     PagedModelDebtPositionTypeOrgWithCount result = service.getDebtPositionTypeOrgWithCount(organizationId, code, description, pageable, accessToken);
+
+    assertSame(expectedResult, result);
+  }
+
+  @Test
+  void whenGetDebtPositionTypeOrgCountByOrganizationIdThenInvokeClient() {
+    Long organizationId = 1L;
+    String code = "code";
+    String description = "description";
+    Pageable pageable = PageRequest.of(0, 10);
+    String accessToken = "ACCESSTOKEN";
+    CollectionModelDebtPositionTypeOrgCountByOrganizationId expectedResult = new CollectionModelDebtPositionTypeOrgCountByOrganizationId();
+
+    when(debtPositionTypeOrgClientMock.getDebtPositionTypeOrgCountByOrganizationId(List.of(organizationId), accessToken)).thenReturn(expectedResult);
+
+    CollectionModelDebtPositionTypeOrgCountByOrganizationId result = service.getDebtPositionTypeOrgCountByOrganizationId(List.of(organizationId), accessToken);
 
     assertSame(expectedResult, result);
   }

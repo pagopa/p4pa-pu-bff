@@ -21,7 +21,8 @@ public class OrganizationWithDebtPositionTypeOrgCountMapper {
       .filter(o -> o.getOrganizationId() != null)
       .map(o -> {
         Map<Long, Integer> dptoCountByOrgId = dptoCountsByOrgId.stream()
-          .filter(dpto -> dpto.getOrganizationId() != null)
+          .filter(dpto -> dpto.getOrganizationId() != null &&
+            dpto.getActiveOrganizations() != null)
           .collect(Collectors.toMap(
             DebtPositionTypeOrgCountByOrganizationId::getOrganizationId,
             DebtPositionTypeOrgCountByOrganizationId::getActiveOrganizations));

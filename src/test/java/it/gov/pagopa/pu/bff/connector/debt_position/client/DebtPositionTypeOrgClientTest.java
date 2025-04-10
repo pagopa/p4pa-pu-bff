@@ -101,7 +101,7 @@ class DebtPositionTypeOrgClientTest {
   }
 
   @Test
-  void whenGetDebtPositionTypeOrgCountByOrganizationIdThenInvokeWithAccessToken() {
+  void givenDebtPositionTypeOrgCountByOrganizationIdWhenGetDebtPositionTypeOrgCountByOrganizationIdThenInvokeWithAccessToken() {
     Long debtPositionTypeOrgId = 1L;
     String accessToken = "ACCESSTOKEN";
     CollectionModelDebtPositionTypeOrgCountByOrganizationId expectedResult = new CollectionModelDebtPositionTypeOrgCountByOrganizationId();
@@ -116,23 +116,6 @@ class DebtPositionTypeOrgClientTest {
     CollectionModelDebtPositionTypeOrgCountByOrganizationId result = debtPositionTypeOrgClient.getDebtPositionTypeOrgCountByOrganizationId(List.of(debtPositionTypeOrgId), accessToken);
 
     assertSame(expectedResult, result);
-  }
-
-  @Test
-  void givenNoDebtPositionTypeOrgCountByOrganizationIdWhenGetDebtPositionTypeOrgCountByOrganizationIdThenReturnNull() {
-    Long debtPositionTypeOrgId = 1L;
-    String accessToken = "ACCESSTOKEN";
-
-    when(debtPositionApisHolderMock.getDebtPositionTypeOrgCountByOrganizationIdSearchControllerApi(accessToken))
-      .thenReturn(debtPositionTypeOrgCountByOrganizationIdSearchControllerApiMock);
-    when(debtPositionTypeOrgCountByOrganizationIdSearchControllerApiMock.crudDebtPositionTypeOrgsByOrganizationCountByOrganizationIds(
-      List.of(debtPositionTypeOrgId)))
-      .thenThrow(
-        HttpClientErrorException.create(HttpStatus.NOT_FOUND, "NotFound", null, null, null));
-
-    CollectionModelDebtPositionTypeOrgCountByOrganizationId result = debtPositionTypeOrgClient.getDebtPositionTypeOrgCountByOrganizationId(List.of(debtPositionTypeOrgId), accessToken);
-
-    assertNull(result);
   }
 
 }

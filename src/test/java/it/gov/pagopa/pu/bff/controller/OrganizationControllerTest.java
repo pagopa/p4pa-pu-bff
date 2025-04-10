@@ -66,8 +66,8 @@ class OrganizationControllerTest {
 
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertEquals(1, response.getBody().size());
-    assertEquals("Test Organization", response.getBody().get(0).getOrgName());
-    assertEquals(OrganizationDTO.OperatorRoleEnum.ADMIN, response.getBody().get(0).getOperatorRole());
+    assertEquals("Test Organization", response.getBody().getFirst().getOrgName());
+    assertEquals(OrganizationDTO.OperatorRoleEnum.ADMIN, response.getBody().getFirst().getOperatorRole());
 
     verify(organizationRetrieverService, times(1)).getOrganizations(any(), any());
   }

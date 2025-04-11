@@ -3084,7 +3084,7 @@
       },
       "ExportFileTypeEnum" : {
         "type" : "string",
-        "enum" : [ "PAID", "CLASSIFICATIONS", "PAYMENTS_REPORTING" ]
+        "enum" : [ "PAID", "CLASSIFICATIONS", "PAYMENTS_REPORTING", "RECEIPTS_ARCHIVING" ]
       },
       "PaymentsReportingExportFileFilter" : {
         "type" : "object",
@@ -4802,7 +4802,7 @@
             "format" : "date-time"
           }
         },
-        "required" : [ "amountCents", "debtor", "remittanceInformation", "transfers" ]
+        "required" : [ "amountCents", "debtor", "remittanceInformation" ]
       },
       "InstallmentSyncStatus" : {
         "type" : "object",

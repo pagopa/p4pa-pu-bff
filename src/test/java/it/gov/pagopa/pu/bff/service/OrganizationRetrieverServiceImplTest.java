@@ -1,7 +1,7 @@
 package it.gov.pagopa.pu.bff.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
@@ -127,7 +127,7 @@ class OrganizationRetrieverServiceImplTest {
   }
 
   @Test
-  void testGetOrganizationsWithDebtPositionTypeOrgCount() {
+  void givenOrganizationsWithDebtPositionTyprOrgCountWhenGetOrganizationsWithDebtPositionTypeOrgCountThenOk() {
     Mockito.doNothing().when(authorizationServiceMock)
       .validateBrokerAdminRole(any(UserInfo.class));
 
@@ -164,7 +164,7 @@ class OrganizationRetrieverServiceImplTest {
   }
 
   @Test
-  void testGetOrganizationsWithDebtPositionTypeOrgCount_pagedModelNull() {
+  void givenNullPagedModelOrganizationWhenGetOrganizationsWithDebtPositionTypeOrgCountThenReturnEmptyContent() {
     Mockito.doNothing().when(authorizationServiceMock)
       .validateBrokerAdminRole(any(UserInfo.class));
 
@@ -175,11 +175,12 @@ class OrganizationRetrieverServiceImplTest {
     PagedOrganizationWithDebtPositionTypeOrgCount result = organizationService.getOrganizationsWithDebtPositionTypeOrgCount(
       1L, "orgName", Pageable.unpaged(), new UserInfo(), null);
 
-    assertNull(result);
+    assertNotNull(result);
+    assertTrue(result.getContent().isEmpty());
   }
 
   @Test
-  void testGetOrganizationsWithDebtPositionTypeOrgCount_organizationsEmpty() {
+  void givenEmptyOrganizationsWhenGetOrganizationsWithDebtPositionTypeOrgCountThenReturnEmptyContent() {
     Mockito.doNothing().when(authorizationServiceMock)
       .validateBrokerAdminRole(any(UserInfo.class));
 
@@ -195,7 +196,8 @@ class OrganizationRetrieverServiceImplTest {
     PagedOrganizationWithDebtPositionTypeOrgCount result = organizationService.getOrganizationsWithDebtPositionTypeOrgCount(
       1L, "orgName", Pageable.unpaged(), new UserInfo(), null);
 
-    assertNull(result);
+    assertNotNull(result);
+    assertTrue(result.getContent().isEmpty());
   }
 
 }

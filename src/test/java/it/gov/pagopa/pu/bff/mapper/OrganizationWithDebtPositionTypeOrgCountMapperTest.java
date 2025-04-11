@@ -23,17 +23,21 @@ class OrganizationWithDebtPositionTypeOrgCountMapperTest {
   private final OrganizationWithDebtPositionTypeOrgCountMapper mapper = new OrganizationWithDebtPositionTypeOrgCountMapper();
 
   @Test
-  void testMapToPagedOrganizationWithDebtPositionTypeOrgCount() {
+  void givenOrganizationsAndDebtPositionTypeOrgCountByOrganizationIdWhenMapToPagedThenReturnCorrectMapping() {
     // given
     Organization org1 = podamFactory.manufacturePojo(Organization.class);
     Organization org2 = podamFactory.manufacturePojo(Organization.class);
-    List<Organization> organizations = List.of(org1, org2);
+    Organization org3 = podamFactory.manufacturePojo(Organization.class);
+    org3.setOrganizationId(100L);
+    List<Organization> organizations = List.of(org1, org2, org3);
 
     DebtPositionTypeOrgCountByOrganizationId dpto1 = DebtPositionTypeOrgCountByOrganizationId.builder()
       .organizationId(org1.getOrganizationId()).activeOrganizations(3).build();
     DebtPositionTypeOrgCountByOrganizationId dpto2 = DebtPositionTypeOrgCountByOrganizationId.builder()
       .organizationId(org2.getOrganizationId()).activeOrganizations(10).build();
-    List<DebtPositionTypeOrgCountByOrganizationId> dptos = List.of(dpto1, dpto2);
+    DebtPositionTypeOrgCountByOrganizationId dpto3 = DebtPositionTypeOrgCountByOrganizationId.builder()
+      .organizationId(101L).activeOrganizations(10).build();
+    List<DebtPositionTypeOrgCountByOrganizationId> dptos = List.of(dpto1, dpto2, dpto3);
 
     PageMetadata pageMetadata = new PageMetadata(2L, 2L, 1L, 1L);
 
@@ -49,8 +53,14 @@ class OrganizationWithDebtPositionTypeOrgCountMapperTest {
       .ipaCode(org2.getIpaCode())
       .debtPositionTypeOrgCount(dpto2.getActiveOrganizations())
       .build();
+    OrganizationWithDebtPositionTypeOrgCount expectedItem3 = OrganizationWithDebtPositionTypeOrgCount.builder()
+      .organizationId(org3.getOrganizationId())
+      .organizationName(org3.getOrgName())
+      .ipaCode(org3.getIpaCode())
+      .debtPositionTypeOrgCount(0)
+      .build();
     PagedOrganizationWithDebtPositionTypeOrgCount expectedResult = PagedOrganizationWithDebtPositionTypeOrgCount.builder()
-      .content(List.of(expectedItem1, expectedItem2))
+      .content(List.of(expectedItem1, expectedItem2, expectedItem3))
       .size(pageMetadata.getSize())
       .totalPages(pageMetadata.getTotalPages())
       .totalElements(pageMetadata.getTotalElements())

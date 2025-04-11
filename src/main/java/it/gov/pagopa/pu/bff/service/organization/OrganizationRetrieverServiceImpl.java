@@ -16,11 +16,13 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 @Service
+@Slf4j
 public class OrganizationRetrieverServiceImpl implements OrganizationRetrieverService {
 
   private final AuthorizationService authorizationService;
@@ -66,10 +68,18 @@ public class OrganizationRetrieverServiceImpl implements OrganizationRetrieverSe
     if (pagedOrganizations == null ||
       pagedOrganizations.getEmbedded() == null ||
       CollectionUtils.isEmpty(pagedOrganizations.getEmbedded().getOrganizations())) {
-      return null;
+      log.info("No results for getOrganizationsWithDebtPositionTypeOrgCount");
+      return PagedOrganizationWithDebtPositionTypeOrgCount.builder()
+        .content(Collections.emptyList())
+        .size(0L)
+        .totalPages(0L)
+        .totalElements(0L)
+        .number(0L)
+        .build();
     }
 
     List<Organization> organizations = pagedOrganizations.getEmbedded().getOrganizations();
+
     List<DebtPositionTypeOrgCountByOrganizationId> dptoCountsByOrgId = getDebtPositionTypeOrgCountByOrganizationId(
       organizations.stream().map(Organization::getOrganizationId).toList(),
       accessToken

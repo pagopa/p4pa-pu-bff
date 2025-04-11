@@ -1,6 +1,6 @@
 package it.gov.pagopa.pu.bff.connector.organization.config;
 
-import it.gov.pagopa.pu.bff.config.RestTemplateConfig;
+import it.gov.pagopa.pu.bff.config.rest.RestTemplateConfig;
 import it.gov.pagopa.pu.organization.controller.ApiClient;
 import it.gov.pagopa.pu.organization.controller.BaseApi;
 import it.gov.pagopa.pu.organization.controller.generated.*;

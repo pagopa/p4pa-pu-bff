@@ -1,4 +1,4 @@
-package it.gov.pagopa.pu.bff.config;
+package it.gov.pagopa.pu.bff.config.rest;
 
 import it.gov.pagopa.pu.bff.performancelogger.RestInvokePerformanceLogger;
 import it.gov.pagopa.pu.bff.security.SecurityUtils;

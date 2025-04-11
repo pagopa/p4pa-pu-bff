@@ -1764,7 +1764,6 @@ components:
     ExportFile:
       required:
         - exportFileId
-        - fileName
         - creationDate
         - operator
         - status

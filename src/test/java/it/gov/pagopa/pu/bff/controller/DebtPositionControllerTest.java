@@ -4,8 +4,7 @@ import it.gov.pagopa.pu.bff.dto.generated.DebtPositionDetailDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedDebtPositionView;
 import it.gov.pagopa.pu.bff.service.debt_position.DebtPositionRetrieverService;
 import it.gov.pagopa.pu.bff.util.TestUtils;
-import java.time.OffsetDateTime;
-
+import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionDTO;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionStatus;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -24,6 +23,8 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import uk.co.jemos.podam.api.PodamFactory;
 
+import java.time.OffsetDateTime;
+
 @ExtendWith(MockitoExtension.class)
 class DebtPositionControllerTest {
 
@@ -41,6 +42,25 @@ class DebtPositionControllerTest {
     SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
     securityContext.setAuthentication(authentication);
     SecurityContextHolder.setContext(securityContext);
+  }
+
+  @Test
+  void givenCorrectRequestWhenCreateDebtPositionThenOk() {
+    DebtPositionDTO debtPositionDTO = podamFactory.manufacturePojo(DebtPositionDTO.class);
+    Boolean massive = true;
+    DebtPositionDTO expectedResult = podamFactory.manufacturePojo(DebtPositionDTO.class);
+
+    Mockito.when(debtPositionRetrieverServiceMock.createDebtPosition(
+        Mockito.same(debtPositionDTO),
+        Mockito.same(massive),
+        Mockito.any(), Mockito.anyString()))
+      .thenReturn(expectedResult);
+
+    ResponseEntity<DebtPositionDTO> response = debtPositionController.createDebtPosition(debtPositionDTO, massive);
+
+    Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
+    Assertions.assertNotNull(response.getBody());
+    Assertions.assertSame(expectedResult, response.getBody());
   }
 
   @Test
@@ -63,7 +83,7 @@ class DebtPositionControllerTest {
             && f.getDebtPositionTypeOrgId().equals(debtPositionTypeOrgId)
             && f.getStatus().equals(status)
         ),
-        Mockito.argThat(p->p.getPageNumber()==0 && p.getPageSize()==10 && p.getSort().isUnsorted()),
+        Mockito.argThat(p -> p.getPageNumber() == 0 && p.getPageSize() == 10 && p.getSort().isUnsorted()),
         Mockito.any(), Mockito.anyString()))
       .thenReturn(expectedResult);
 
@@ -74,11 +94,11 @@ class DebtPositionControllerTest {
       fiscalCode,
       debtPositionTypeOrgId,
       status,
-      PageRequest.of(0,10));
+      PageRequest.of(0, 10));
 
-    Assertions.assertEquals(HttpStatus.OK,response.getStatusCode());
+    Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
     Assertions.assertNotNull(response.getBody());
-    Assertions.assertSame(expectedResult,response.getBody());
+    Assertions.assertSame(expectedResult, response.getBody());
   }
 
   @Test
@@ -98,9 +118,9 @@ class DebtPositionControllerTest {
       organizationId,
       debtPositionId);
 
-    Assertions.assertEquals(HttpStatus.OK,response.getStatusCode());
+    Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
     Assertions.assertNotNull(response.getBody());
-    Assertions.assertSame(expectedResult,response.getBody());
+    Assertions.assertSame(expectedResult, response.getBody());
   }
 
   @Test
@@ -118,7 +138,7 @@ class DebtPositionControllerTest {
       organizationId,
       debtPositionId);
 
-    Assertions.assertEquals(HttpStatus.NOT_FOUND,response.getStatusCode());
+    Assertions.assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     Assertions.assertNull(response.getBody());
   }
 }

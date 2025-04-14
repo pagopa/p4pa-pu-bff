@@ -6,7 +6,6 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.ValidationException;
-import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.event.Level;
 import org.springframework.http.HttpStatus;
@@ -22,6 +21,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
+import java.util.stream.Collectors;
+
 @RestControllerAdvice
 @Slf4j
 public class GlobalExceptionHandler {
@@ -29,6 +30,11 @@ public class GlobalExceptionHandler {
   @ExceptionHandler(InvalidOperatorRoleException.class)
   public ResponseEntity<ErrorDTO> handleInvalidOperatorRoleException(InvalidOperatorRoleException ex, HttpServletRequest request) {
     return handleException(ex, request, HttpStatus.BAD_REQUEST, ErrorDTO.TitleEnum.GENERIC_ERROR);
+  }
+
+  @ExceptionHandler(InvalidDebtPositionException.class)
+  public ResponseEntity<ErrorDTO> handleInvalidDebtPositionException(InvalidDebtPositionException ex, HttpServletRequest request) {
+    return handleException(ex, request, HttpStatus.BAD_REQUEST, ErrorDTO.TitleEnum.BAD_REQUEST);
   }
 
   @ExceptionHandler({ValidationException.class, HttpMessageNotReadableException.class, MethodArgumentNotValidException.class, MethodArgumentTypeMismatchException.class, IllegalArgumentException.class})

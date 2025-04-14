@@ -1,6 +1,6 @@
 package it.gov.pagopa.pu.bff.connector.classification.config;
 
-import it.gov.pagopa.pu.bff.config.RestTemplateConfig;
+import it.gov.pagopa.pu.bff.config.rest.RestTemplateConfig;
 import it.gov.pagopa.pu.classification.controller.ApiClient;
 import it.gov.pagopa.pu.classification.controller.BaseApi;
 import it.gov.pagopa.pu.classification.controller.generated.PaymentsReportingSearchControllerApi;

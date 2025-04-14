@@ -1,8 +1,13 @@
 package it.gov.pagopa.pu.bff.connector.organization.client;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.eq;
+
 import it.gov.pagopa.pu.bff.connector.organization.config.OrganizationApisHolder;
 import it.gov.pagopa.pu.organization.controller.generated.OrganizationSearchControllerApi;
 import it.gov.pagopa.pu.organization.dto.generated.Organization;
+import it.gov.pagopa.pu.organization.dto.generated.PagedModelOrganization;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,6 +16,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.client.HttpClientErrorException;
 
@@ -71,6 +77,28 @@ class OrganizationSearchClientTest {
 
     // Then
     Assertions.assertNull(result);
+  }
+
+
+  @Test
+  void whenGetOrganizationByBrokerIdAndOrgNameThenInvokeWithAccessToken() {
+    // Given
+    String brokerId = "BROKERID";
+    String orgName = "ORGNAME";
+    String accessToken = "ACCESSTOKEN";
+    PagedModelOrganization expectedResult = new PagedModelOrganization();
+
+    Mockito.when(organizationApisHolder.getOrganizationSearchControllerApi(accessToken))
+      .thenReturn(organizationSearchControllerApiMock);
+    Mockito.when(organizationSearchControllerApiMock.crudOrganizationsFindByBrokerIdAndOrgName(eq(brokerId), eq(orgName), any(), any(), anyList()))
+      .thenReturn(expectedResult);
+
+    // When
+    PagedModelOrganization result = organizationSearchClient.getOrganizationByBrokerIdAndOrgName(brokerId, orgName,
+      Pageable.unpaged(), accessToken);
+
+    // Then
+    Assertions.assertSame(expectedResult, result);
   }
 
 }

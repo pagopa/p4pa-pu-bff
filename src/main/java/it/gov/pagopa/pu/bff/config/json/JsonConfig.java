@@ -46,6 +46,7 @@ public class JsonConfig {
     return new JavaTimeModule()
       // FE requires all date-time fields to be in Europe/Rome LocalDateTime
       .addSerializer(OffsetDateTime.class, new OffsetDateTimeToLocalDateTimeSerializer())
-      .addDeserializer(LocalDateTime.class, new OffsetDateTimeToLocalDateTimeDeserializer());
+      .addDeserializer(LocalDateTime.class, new OffsetDateTimeToLocalDateTimeDeserializer())
+      .addDeserializer(OffsetDateTime.class, new LocalDateTimeToOffsetDateTimeDeserializer());
   }
 }

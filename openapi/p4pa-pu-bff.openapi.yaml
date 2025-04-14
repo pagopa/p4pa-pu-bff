@@ -377,6 +377,11 @@ paths:
           schema:
             type: integer
             format: int64
+        - name: description
+          in: query
+          required: false
+          schema:
+            type: string
       responses:
         '200':
           description: OK
@@ -1165,6 +1170,42 @@ paths:
         '500':
           description: Internal Server Error
       x-spring-paginated: true
+  /debt-positions:
+    post:
+      tags:
+        - DebtPositions
+      summary: "Create DebtPosition"
+      operationId: createDebtPosition
+      parameters:
+        - name: massive
+          in: query
+          description: Indicates if the operation is massive (true) or single (false)
+          required: false
+          schema:
+            type: boolean
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: 'DebtPositionDTO'
+        required: true
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: 'DebtPositionDTO'
+        '400':
+          description: Invalid Request
+        '401':
+          description: Unauthorized - Missing or invalid token
+        '403':
+          description: Forbidden
+        '409':
+          description: Conflict
+        '500':
+          description: Internal Server Error
   /organization/{organizationId}/debt-positions/{debtPositionId}:
     get:
       tags:
@@ -1199,21 +1240,83 @@ paths:
           description: Not Found - DebtPosition not found
         '500':
           description: Internal Server Error
-  /export-flow-files:
+  /export-flow-files/paid:
     post:
-      summary: create-export-file
+      summary: create-paid-export-file
       tags:
         - ExportFiles
-      operationId: createExportFile
+      operationId: createPaidExportFile
       requestBody:
         content:
           application/json:
             schema:
-              type: 'ExportFileRequestDTO'
+              type: 'PaidExportFileRequestDTO'
         required: true
       responses:
         '201':
           description: OK
+  /export-flow-files/classification:
+    post:
+      summary: create-classifications-export-file
+      tags:
+        - ExportFiles
+      operationId: createClassificationsExportFile
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: 'ClassificationsExportFileRequestDTO'
+        required: true
+      responses:
+        '201':
+          description: OK
+  /export-flow-files/payments-reporting:
+    post:
+      summary: create-payments-reporting-export-file
+      tags:
+        - ExportFiles
+      operationId: createPaymentsReportingExportFile
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: 'PaymentsReportingExportFileRequestDTO'
+        required: true
+      responses:
+        '201':
+          description: OK
+  /organization/{organizationId}/organizations:
+    get:
+      tags:
+        - Organizations
+      summary: "Retrieve a paged list of Organizations with DebtPositionTypeOrgCount"
+      operationId: getOrganizationsWithDebtPositionTypeOrgCount
+      parameters:
+        - name: organizationId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: organizationName
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PagedOrganizationWithDebtPositionTypeOrgCount'
+        '401':
+          description: Unauthorized - Missing or invalid token
+        '403':
+          description: Forbidden - Access denied
+        '500':
+          description: Internal Server Error
+      x-spring-paginated: true
 security:
   - BearerAuth: [ ]
 components:
@@ -1697,7 +1800,6 @@ components:
     ExportFile:
       required:
         - exportFileId
-        - fileName
         - creationDate
         - operator
         - status
@@ -1781,6 +1883,31 @@ components:
           type: array
           items:
             type: 'PaymentsReporting'
+        size:
+          type: integer
+          format: int64
+        totalElements:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer
+          format: int64
+        number:
+          type: integer
+          format: int64
+    PagedOrganizationWithDebtPositionTypeOrgCount:
+      type: object
+      required:
+        - content
+        - size
+        - totalElements
+        - totalPages
+        - number
+      properties:
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrganizationWithDebtPositionTypeOrgCount'
         size:
           type: integer
           format: int64
@@ -1893,3 +2020,15 @@ components:
           type: boolean
         ioTemplateMessage:
           type: string
+    OrganizationWithDebtPositionTypeOrgCount:
+      type: object
+      properties:
+        organizationId:
+          type: integer
+          format: int64
+        ipaCode:
+          type: string
+        organizationName:
+          type: string
+        debtPositionTypeOrgCount:
+          type: integer

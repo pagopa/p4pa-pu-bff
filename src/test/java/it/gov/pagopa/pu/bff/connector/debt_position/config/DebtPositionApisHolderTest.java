@@ -2,6 +2,10 @@ package it.gov.pagopa.pu.bff.connector.debt_position.config;
 
 import it.gov.pagopa.pu.bff.connector.BaseApiHolderTest;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionStatus;
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.util.Collections;
+import java.util.List;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -12,11 +16,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.web.util.DefaultUriBuilderFactory;
-
-import java.time.LocalDateTime;
-import java.time.OffsetDateTime;
-import java.util.Collections;
-import java.util.List;
 
 @ExtendWith(MockitoExtension.class)
 class DebtPositionApisHolderTest extends BaseApiHolderTest {
@@ -57,7 +56,7 @@ class DebtPositionApisHolderTest extends BaseApiHolderTest {
   void whenGetDebtPositionTypeWithCountSearchControllerApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
     assertAuthenticationShouldBeSetInThreadSafeMode(
       accessToken -> debtPositionApisHolder.getDebtPositionTypeWithCountSearchControllerApi(accessToken)
-        .crudDebtPositionTypesWithCountFindByBrokerId(1L, 0, 0, Collections.emptyList()),
+        .crudDebtPositionTypesWithCountFindByBrokerId(1L, "description", 0, 0, Collections.emptyList()),
       new ParameterizedTypeReference<>() {
       },
       debtPositionApisHolder::unload);
@@ -88,6 +87,15 @@ class DebtPositionApisHolderTest extends BaseApiHolderTest {
     assertAuthenticationShouldBeSetInThreadSafeMode(
       accessToken -> debtPositionApisHolder.getDebtPositionTypeOrgSearchControllerApi(accessToken)
         .crudDebtPositionTypeOrgsFindDebtPositionTypeOrgs("1", "operator123"),
+      new ParameterizedTypeReference<>() {
+      }, debtPositionApisHolder::unload);
+  }
+
+  @Test
+  void whenGetDebtPositionTypeOrgCountByOrganizationIdSearchControllerApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
+    assertAuthenticationShouldBeSetInThreadSafeMode(
+      accessToken -> debtPositionApisHolder.getDebtPositionTypeOrgCountByOrganizationIdSearchControllerApi(accessToken)
+        .crudDebtPositionTypeOrgsByOrganizationCountByOrganizationIds(List.of(1L)),
       new ParameterizedTypeReference<>() {
       }, debtPositionApisHolder::unload);
   }

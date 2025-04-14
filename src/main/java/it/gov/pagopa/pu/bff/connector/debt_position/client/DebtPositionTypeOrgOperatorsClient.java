@@ -1,14 +1,9 @@
 package it.gov.pagopa.pu.bff.connector.debt_position.client;
 
 import it.gov.pagopa.pu.bff.connector.debt_position.config.DebtPositionApisHolder;
-import it.gov.pagopa.pu.debtpositions.dto.generated.CollectionModelDebtPositionTypeOrg;
-import it.gov.pagopa.pu.debtpositions.dto.generated.CollectionModelDebtPositionTypeOrgCountByOrganizationId;
 import it.gov.pagopa.pu.debtpositions.dto.generated.CollectionModelDebtPositionTypeOrgOperators;
-import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrg;
-import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
 
 @Service
 @Slf4j
@@ -18,28 +13,6 @@ public class DebtPositionTypeOrgOperatorsClient {
 
   public DebtPositionTypeOrgOperatorsClient(DebtPositionApisHolder debtPositionApisHolder) {
     this.debtPositionApisHolder = debtPositionApisHolder;
-  }
-
-  public CollectionModelDebtPositionTypeOrg getDebtPositionTypeOrgs(Long organizationId, String operatorExternalUserId, String accessToken) {
-    return debtPositionApisHolder.getDebtPositionTypeOrgSearchControllerApi(accessToken)
-      .crudDebtPositionTypeOrgsFindDebtPositionTypeOrgs(String.valueOf(organizationId), operatorExternalUserId);
-  }
-
-  public DebtPositionTypeOrg getDebtPositionTypeOrg(Long debtPositionTypeOrgId,
-                                                    String accessToken) {
-    try {
-      return debtPositionApisHolder.getDebtPositionTypeOrgEntityControllerApi(accessToken)
-        .crudGetDebtpositiontypeorg(String.valueOf(debtPositionTypeOrgId));
-    } catch (HttpClientErrorException.NotFound e) {
-      log.warn("DebtPositionTypeOrg with debtPositionTypeOrgId {} not found", debtPositionTypeOrgId);
-      return null;
-    }
-  }
-
-  public CollectionModelDebtPositionTypeOrgCountByOrganizationId getDebtPositionTypeOrgCountByOrganizationId(
-    List<Long> organizationIds, String accessToken) {
-    return debtPositionApisHolder.getDebtPositionTypeOrgCountByOrganizationIdSearchControllerApi(accessToken)
-      .crudDebtPositionTypeOrgsByOrganizationCountByOrganizationIds(organizationIds);
   }
 
   public CollectionModelDebtPositionTypeOrgOperators getDebtPositionTypeOrgOperators(Long debtPositionTypeOrgId, String accessToken) {

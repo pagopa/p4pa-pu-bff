@@ -1,4 +1,4 @@
-package it.gov.pagopa.pu.bff.config;
+package it.gov.pagopa.pu.bff.config.rest;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

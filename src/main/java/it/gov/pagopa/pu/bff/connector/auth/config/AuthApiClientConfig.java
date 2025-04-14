@@ -1,6 +1,6 @@
 package it.gov.pagopa.pu.bff.connector.auth.config;
 
-import it.gov.pagopa.pu.bff.config.ApiClientConfig;
+import it.gov.pagopa.pu.bff.config.rest.ApiClientConfig;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import org.springframework.boot.context.properties.ConfigurationProperties;

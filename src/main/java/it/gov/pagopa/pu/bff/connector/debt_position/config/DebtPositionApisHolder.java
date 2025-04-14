@@ -1,6 +1,6 @@
 package it.gov.pagopa.pu.bff.connector.debt_position.config;
 
-import it.gov.pagopa.pu.bff.config.RestTemplateConfig;
+import it.gov.pagopa.pu.bff.config.rest.RestTemplateConfig;
 import it.gov.pagopa.pu.debtpositions.controller.ApiClient;
 import it.gov.pagopa.pu.debtpositions.controller.BaseApi;
 import it.gov.pagopa.pu.debtpositions.controller.generated.*;

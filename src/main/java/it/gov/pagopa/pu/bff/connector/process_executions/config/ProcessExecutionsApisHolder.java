@@ -1,6 +1,6 @@
 package it.gov.pagopa.pu.bff.connector.process_executions.config;
 
-import it.gov.pagopa.pu.bff.config.RestTemplateConfig;
+import it.gov.pagopa.pu.bff.config.rest.RestTemplateConfig;
 import it.gov.pagopa.pu.processexecutions.controller.ApiClient;
 import it.gov.pagopa.pu.processexecutions.controller.BaseApi;
 import it.gov.pagopa.pu.processexecutions.controller.generated.ExportFileControllerApi;

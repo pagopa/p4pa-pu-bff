@@ -8,10 +8,13 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
+import it.gov.pagopa.pu.bff.connector.auth.AuthzService;
 import it.gov.pagopa.pu.bff.connector.debt_position.DebtPositionService;
+import it.gov.pagopa.pu.bff.connector.debt_position.DebtPositionTypeOrgOperatorsService;
 import it.gov.pagopa.pu.bff.connector.debt_position.DebtPositionTypeOrgService;
 import it.gov.pagopa.pu.bff.dto.generated.PagedDebtPositionTypeOrgWithCount;
 import it.gov.pagopa.pu.bff.exception.ConflictException;
+import it.gov.pagopa.pu.bff.mapper.DebtPositionTypeOrgOperatorsMapper;
 import it.gov.pagopa.pu.bff.mapper.DebtPositionTypeOrgWithCountMapper;
 import it.gov.pagopa.pu.bff.service.debt_position_type_org.DebtPositionTypeOrgRetrieverServiceImpl;
 import it.gov.pagopa.pu.debtpositions.dto.generated.CollectionModelDebtPositionTypeOrg;
@@ -40,14 +43,20 @@ class DebtPositionTypeOrgRetrieverServiceImplTest {
 
   @Mock
   private DebtPositionTypeOrgService debtPositionTypeOrgServiceMock;
+  @Mock
+  private DebtPositionTypeOrgOperatorsService debtPositionTypeOrgOperatorsServiceMock;
+  @Mock
+  private DebtPositionService debtPositionServiceMock;
 
   @Mock
   private DebtPositionTypeOrgWithCountMapper debtPositionTypeOrgWithCountMapperMock;
+  @Mock
+  private DebtPositionTypeOrgOperatorsMapper debtPositionTypeOrgOperatorsMapperMock;
 
   @Mock
   private AuthorizationService authorizationServiceMock;
   @Mock
-  private DebtPositionService debtPositionServiceMock;
+  private AuthzService authzServiceMock;
 
   private DebtPositionTypeOrgRetrieverServiceImpl debtPositionTypeOrgService;
 
@@ -55,8 +64,7 @@ class DebtPositionTypeOrgRetrieverServiceImplTest {
 
   @BeforeEach
   void setUp() {
-    debtPositionTypeOrgService = new DebtPositionTypeOrgRetrieverServiceImpl(debtPositionTypeOrgServiceMock,
-      debtPositionTypeOrgWithCountMapperMock, authorizationServiceMock, debtPositionServiceMock);
+    debtPositionTypeOrgService = new DebtPositionTypeOrgRetrieverServiceImpl(debtPositionTypeOrgServiceMock, debtPositionTypeOrgOperatorsServiceMock, debtPositionServiceMock, authorizationServiceMock, authzServiceMock, debtPositionTypeOrgWithCountMapperMock, debtPositionTypeOrgOperatorsMapperMock);
   }
 
   @AfterEach

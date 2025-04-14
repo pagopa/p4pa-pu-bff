@@ -57,7 +57,7 @@ public class DebtPositionApisHolder {
     this.debtPositionViewSearchControllerApi = new DebtPositionViewSearchControllerApi(apiClient);
     this.debtPositionApi = new DebtPositionApi(apiClient);
     this.debtPositionTypeOrgEntityControllerApi = new DebtPositionTypeOrgEntityControllerApi(apiClient);
-    this.debtPositionTypeOrgOperatorsSearchControllerApi = new DebtPositionTypeOrgOperatorsEntityControllerApi(apiClient);
+    this.debtPositionTypeOrgOperatorsSearchControllerApi = new DebtPositionTypeOrgOperatorsSearchControllerApi(apiClient);
   }
 
   @PreDestroy

@@ -456,7 +456,7 @@ paths:
           content:
             application/json:
               schema:
-                type: 'DebtPositionTypeOrg'
+                  type: 'DebtPositionTypeOrg'
         '401':
           description: Unauthorized - Missing or invalid token
         '403':
@@ -1722,7 +1722,7 @@ components:
         debtor:
           type: 'PersonDTO'
         payer:
-          type: 'PersonDTO'
+         type: 'PersonDTO'
         paymentDateTime:
           type: string
           format: date-time
@@ -1847,20 +1847,13 @@ components:
           type: integer
           format: int64
         exportFileType:
-          $ref: '#/components/schemas/ExportFileType'
+          type: ExportFileType
         fileVersion:
           type: string
           enum:
             - v1.0
         filterFields:
           $ref: '#/components/schemas/ReceiptsArchivingFilterFields'
-    ExportFileType:
-      type: string
-      enum:
-        - PAID
-        - CLASSIFICATIONS
-        - PAYMENTS_REPORTING
-        - RECEIPTS_ARCHIVING
     ReceiptsArchivingFilterFields:
       type: object
       properties:

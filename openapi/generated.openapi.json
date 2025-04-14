@@ -128,6 +128,31 @@
         "security" : [ ]
       }
     },
+    "/bff/export-flow-files/receipts-archiving" : {
+      "post" : {
+        "tags" : [ "ExportFiles" ],
+        "summary" : "create-receipts-archiving-export-file",
+        "operationId" : "createReceiptsArchivingExportFile",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/ReceiptsArchivingExportFileRequestDTO"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "201" : {
+            "description" : "OK"
+          }
+        },
+        "security" : [ {
+          "BearerAuth" : [ ]
+        } ]
+      }
+    },
     "/bff/export-flow-files/payments-reporting" : {
       "post" : {
         "tags" : [ "ExportFiles" ],
@@ -3176,6 +3201,50 @@
       "ExportFileTypeEnum" : {
         "type" : "string",
         "enum" : [ "PAID", "CLASSIFICATIONS", "PAYMENTS_REPORTING", "RECEIPTS_ARCHIVING" ]
+      },
+      "FileVersionEnum" : {
+        "type" : "string",
+        "enum" : [ "v1.0" ]
+      },
+      "PaymentDate" : {
+        "type" : "object",
+        "properties" : {
+          "from" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "to" : {
+            "type" : "string",
+            "format" : "date"
+          }
+        }
+      },
+      "ReceiptsArchivingExportFileRequestDTO" : {
+        "type" : "object",
+        "properties" : {
+          "organizationId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "exportFileType" : {
+            "$ref" : "#/components/schemas/ExportFileTypeEnum"
+          },
+          "fileVersion" : {
+            "$ref" : "#/components/schemas/FileVersionEnum"
+          },
+          "filterFields" : {
+            "$ref" : "#/components/schemas/ReceiptsArchivingFilterFields"
+          }
+        },
+        "required" : [ "exportFileType", "fileVersion", "filterFields", "organizationId" ]
+      },
+      "ReceiptsArchivingFilterFields" : {
+        "type" : "object",
+        "properties" : {
+          "paymentDate" : {
+            "$ref" : "#/components/schemas/PaymentDate"
+          }
+        }
       },
       "PaymentsReportingExportFileFilter" : {
         "type" : "object",

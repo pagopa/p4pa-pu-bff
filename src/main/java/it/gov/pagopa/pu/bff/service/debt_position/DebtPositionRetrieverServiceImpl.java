@@ -12,7 +12,9 @@ import it.gov.pagopa.pu.bff.service.AuthorizationService;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionDTO;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionOrigin;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -39,6 +41,16 @@ public class DebtPositionRetrieverServiceImpl implements DebtPositionRetrieverSe
     this.debtPositionMapper = debtPositionMapper;
   }
 
+  @Override
+  public DebtPositionDTO createDebtPosition(DebtPositionDTO debtPositionDTO, Boolean massive, UserInfo loggedUser, String accessToken) {
+    AuthorizationService.validateUserForOrganizationId(debtPositionDTO.getOrganizationId(), loggedUser);
+    if (debtPositionDTO.getDebtPositionId() != null) {
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad Request: Debt Position ID should not be provided");
+    }
+    return debtPositionService.createDebtPosition(debtPositionDTO, massive, accessToken);
+  }
+
+  @Override
   public PagedDebtPositionView getDebtPositionViews(
     DebtPositionViewFiltersDTO filtersDTO, Pageable pageable, UserInfo loggedUser, String accessToken) {
     AuthorizationService.validateUserForOrganizationId(filtersDTO.getOrganizationId(), loggedUser);

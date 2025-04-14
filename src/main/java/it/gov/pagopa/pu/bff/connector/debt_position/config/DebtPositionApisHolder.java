@@ -9,6 +9,7 @@ import it.gov.pagopa.pu.debtpositions.controller.generated.DebtPositionTypeEntit
 import it.gov.pagopa.pu.debtpositions.controller.generated.DebtPositionTypeOrgApi;
 import it.gov.pagopa.pu.debtpositions.controller.generated.DebtPositionTypeOrgCountByOrganizationIdSearchControllerApi;
 import it.gov.pagopa.pu.debtpositions.controller.generated.DebtPositionTypeOrgEntityControllerApi;
+import it.gov.pagopa.pu.debtpositions.controller.generated.DebtPositionTypeOrgOperatorsSearchControllerApi;
 import it.gov.pagopa.pu.debtpositions.controller.generated.DebtPositionTypeOrgSearchControllerApi;
 import it.gov.pagopa.pu.debtpositions.controller.generated.DebtPositionTypeOrgWithCountSearchControllerApi;
 import it.gov.pagopa.pu.debtpositions.controller.generated.DebtPositionTypeWithCountSearchControllerApi;
@@ -43,6 +44,7 @@ public class DebtPositionApisHolder {
   private final DebtPositionTypeOrgEntityControllerApi debtPositionTypeOrgEntityControllerApi;
   private final DebtPositionSearchControllerApi debtPositionSearchControllerApi;
   private final DebtPositionTypeOrgApi debtPositionTypeOrgApi;
+  private final DebtPositionTypeOrgOperatorsSearchControllerApi debtPositionTypeOrgOperatorsSearchControllerApi;
   private final ThreadLocal<String> bearerTokenHolder = new ThreadLocal<>();
 
   public DebtPositionApisHolder(
@@ -75,6 +77,7 @@ public class DebtPositionApisHolder {
     this.debtPositionTypeOrgEntityControllerApi = new DebtPositionTypeOrgEntityControllerApi(apiClient);
     this.debtPositionSearchControllerApi = new DebtPositionSearchControllerApi(apiClient);
     this.debtPositionTypeOrgApi = new DebtPositionTypeOrgApi(apiClient);
+    this.debtPositionTypeOrgOperatorsSearchControllerApi = new DebtPositionTypeOrgOperatorsEntityControllerApi(apiClient);
   }
 
   @PreDestroy
@@ -171,6 +174,13 @@ public class DebtPositionApisHolder {
    */
   public DebtPositionTypeOrgApi getDebtPositionTypeOrgApi(String accessToken) {
     return getApi(accessToken, debtPositionTypeOrgApi);
+  }
+
+  /**
+   * It will return a {@link DebtPositionTypeOrgOperatorsSearchControllerApi} instrumented with the provided accessToken. Use null if auth is not required
+   */
+  public DebtPositionTypeOrgOperatorsSearchControllerApi getDebtPositionTypeOrgOperatorsSearchControllerApi(String accessToken) {
+    return getApi(accessToken, debtPositionTypeOrgOperatorsSearchControllerApi);
   }
 
   private <T extends BaseApi> T getApi(String accessToken, T api) {

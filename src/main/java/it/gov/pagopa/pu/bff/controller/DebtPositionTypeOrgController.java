@@ -1,6 +1,7 @@
 package it.gov.pagopa.pu.bff.controller;
 
 import it.gov.pagopa.pu.bff.controller.generated.DebtPositionTypeOrgsApi;
+import it.gov.pagopa.pu.bff.dto.generated.PagedDebtPositionTypeOrgOperatorDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedDebtPositionTypeOrgWithCount;
 import it.gov.pagopa.pu.bff.security.SecurityUtils;
 import it.gov.pagopa.pu.bff.service.debt_position_type_org.DebtPositionTypeOrgRetrieverService;
@@ -55,4 +56,11 @@ public class DebtPositionTypeOrgController implements DebtPositionTypeOrgsApi {
       organizationId, debtPositionTypeOrgId, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken());
     return ResponseEntity.ok().build();
   }
+
+  @Override
+  public ResponseEntity<PagedDebtPositionTypeOrgOperatorDTO> getDebtPositionTypeOrgOperators(Long organizationId, Long debtPositionTypeOrgId, Pageable pageable) {
+    log.info("User requested getDebtPositionTypeOrgOperators having organizationId {} and debtPositionTypeOrgId {}", organizationId, debtPositionTypeOrgId);
+    return ResponseEntity.ok(debtPositionTypeOrgRetrieverService.getDebtPositionTypeOrgOperators(organizationId, debtPositionTypeOrgId, pageable, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken()));
+  }
+
 }

@@ -2,7 +2,6 @@ package it.gov.pagopa.pu.bff.service.debt_position_type_org;
 
 import it.gov.pagopa.pu.auth.dto.generated.OperatorsPage;
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
-import it.gov.pagopa.pu.auth.dto.generated.UserOrganizationRoles;
 import it.gov.pagopa.pu.bff.connector.auth.AuthzService;
 import it.gov.pagopa.pu.bff.connector.debt_position.DebtPositionTypeOrgOperatorsService;
 import it.gov.pagopa.pu.bff.connector.debt_position.DebtPositionService;
@@ -16,8 +15,6 @@ import it.gov.pagopa.pu.bff.service.AuthorizationService;
 import it.gov.pagopa.pu.debtpositions.dto.generated.CollectionModelDebtPositionTypeOrg;
 import it.gov.pagopa.pu.debtpositions.dto.generated.CollectionModelDebtPositionTypeOrgOperators;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrg;
-import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrgOperators;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelDebtPosition;
@@ -26,7 +23,6 @@ import java.util.List;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 
 @Service
 public class DebtPositionTypeOrgRetrieverServiceImpl implements DebtPositionTypeOrgRetrieverService {
@@ -98,27 +94,24 @@ public class DebtPositionTypeOrgRetrieverServiceImpl implements DebtPositionType
     UserInfo loggedUser, String accessToken) {
     AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser);
 
-    UserOrganizationRoles userOrganizationRole = loggedUser.getOrganizations().stream()
-      .filter(o -> organizationId.equals(o.getOrganizationId()))
-      .findFirst()
-      .orElseThrow(IllegalArgumentException::new);
-    OperatorsPage operatorsPage = getOrganizationOperators(userOrganizationRole.getOrganizationIpaCode(), accessToken);
+    OperatorsPage operatorsPage = authzService.getOrganizationOperators(
+      getUserOrganizationIpaCode(organizationId, loggedUser), null, null, null,
+      pageable.getPageNumber(), pageable.getPageSize(), accessToken);
 
-    List<DebtPositionTypeOrgOperators> debtPositionTypeOrgOperators = new ArrayList<>();
+    CollectionModelDebtPositionTypeOrgOperators collectionModelDebtPositionTypeOrgOperators = null;
     if (debtPositionTypeOrgId != null) {
-      CollectionModelDebtPositionTypeOrgOperators collectionModelDebtPositionTypeOrgOperators =
+      collectionModelDebtPositionTypeOrgOperators =
         debtPositionTypeOrgOperatorsService.getDebtPositionTypeOrgOperators(debtPositionTypeOrgId, accessToken);
-      if (collectionModelDebtPositionTypeOrgOperators != null &&
-        collectionModelDebtPositionTypeOrgOperators.getEmbedded() != null &&
-        !CollectionUtils.isEmpty(collectionModelDebtPositionTypeOrgOperators.getEmbedded().getDebtPositionTypeOrgOperatorses())) {
-        debtPositionTypeOrgOperators.addAll(collectionModelDebtPositionTypeOrgOperators.getEmbedded().getDebtPositionTypeOrgOperatorses());
-      }
     }
 
-    return debtPositionTypeOrgOperatorsMapper.mapToPagedDebtPositionTypeOrgOperatorDTO(operatorsPage, debtPositionTypeOrgOperators);
+    return debtPositionTypeOrgOperatorsMapper.mapToPagedDebtPositionTypeOrgOperatorDTO(operatorsPage, collectionModelDebtPositionTypeOrgOperators);
   }
 
-  private OperatorsPage getOrganizationOperators(String organizationIpaCode, String accessToken) {
-    return authzService.getOrganizationOperators(organizationIpaCode, null, null, null, 0, 10, accessToken);
+  private String getUserOrganizationIpaCode(Long organizationId, UserInfo loggedUser) {
+    return loggedUser.getOrganizations().stream()
+      .filter(o -> organizationId.equals(o.getOrganizationId()))
+      .findFirst()
+      .orElseThrow(IllegalArgumentException::new)
+      .getOrganizationIpaCode();
   }
 }

@@ -6,6 +6,7 @@ import it.gov.pagopa.pu.bff.dto.generated.DebtPositionDetailDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedDebtPositionView;
 import it.gov.pagopa.pu.bff.security.SecurityUtils;
 import it.gov.pagopa.pu.bff.service.debt_position.DebtPositionRetrieverService;
+import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionDTO;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionStatus;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -24,6 +25,13 @@ public class DebtPositionController implements DebtPositionsApi {
   public DebtPositionController(
     DebtPositionRetrieverService debtPositionRetrieverService) {
     this.debtPositionRetrieverService = debtPositionRetrieverService;
+  }
+
+  @Override
+  public ResponseEntity<DebtPositionDTO> createDebtPosition(DebtPositionDTO debtPositionDTO, Boolean massive) {
+    log.info("User requested createDebtPosition having organizationId {}", debtPositionDTO.getOrganizationId());
+
+    return ResponseEntity.ok(debtPositionRetrieverService.createDebtPosition(debtPositionDTO, massive, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken()));
   }
 
   @Override

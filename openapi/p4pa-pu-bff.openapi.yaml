@@ -1170,6 +1170,42 @@ paths:
         '500':
           description: Internal Server Error
       x-spring-paginated: true
+  /debt-positions:
+    post:
+      tags:
+        - DebtPositions
+      summary: "Create DebtPosition"
+      operationId: createDebtPosition
+      parameters:
+        - name: massive
+          in: query
+          description: Indicates if the operation is massive (true) or single (false)
+          required: false
+          schema:
+            type: boolean
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: 'DebtPositionDTO'
+        required: true
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: 'DebtPositionDTO'
+        '400':
+          description: Invalid Request
+        '401':
+          description: Unauthorized - Missing or invalid token
+        '403':
+          description: Forbidden
+        '409':
+          description: Conflict
+        '500':
+          description: Internal Server Error
   /organization/{organizationId}/debt-positions/{debtPositionId}:
     get:
       tags:

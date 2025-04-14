@@ -6,6 +6,7 @@ import it.gov.pagopa.pu.bff.connector.debt_position.DebtPositionTypeOrgService;
 import it.gov.pagopa.pu.bff.dto.DebtPositionViewFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.generated.DebtPositionDetailDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedDebtPositionView;
+import it.gov.pagopa.pu.bff.exception.InvalidDebtPositionException;
 import it.gov.pagopa.pu.bff.mapper.DebtPositionMapper;
 import it.gov.pagopa.pu.bff.mapper.DebtPositionViewMapper;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
@@ -30,15 +31,25 @@ public class DebtPositionRetrieverServiceImpl implements DebtPositionRetrieverSe
   );
 
   public DebtPositionRetrieverServiceImpl(DebtPositionService debtPositionService,
-    DebtPositionTypeOrgService debtPositionTypeOrgService,
-    DebtPositionViewMapper debtPositionViewMapper,
-    DebtPositionMapper debtPositionMapper) {
+                                          DebtPositionTypeOrgService debtPositionTypeOrgService,
+                                          DebtPositionViewMapper debtPositionViewMapper,
+                                          DebtPositionMapper debtPositionMapper) {
     this.debtPositionService = debtPositionService;
     this.debtPositionTypeOrgService = debtPositionTypeOrgService;
     this.debtPositionViewMapper = debtPositionViewMapper;
     this.debtPositionMapper = debtPositionMapper;
   }
 
+  @Override
+  public DebtPositionDTO createDebtPosition(DebtPositionDTO debtPositionDTO, Boolean massive, UserInfo loggedUser, String accessToken) {
+    AuthorizationService.validateUserForOrganizationId(debtPositionDTO.getOrganizationId(), loggedUser);
+    if (debtPositionDTO.getDebtPositionId() != null) {
+      throw new InvalidDebtPositionException("Bad Request: Debt Position ID should not be provided");
+    }
+    return debtPositionService.createDebtPosition(debtPositionDTO, massive, accessToken);
+  }
+
+  @Override
   public PagedDebtPositionView getDebtPositionViews(
     DebtPositionViewFiltersDTO filtersDTO, Pageable pageable, UserInfo loggedUser, String accessToken) {
     AuthorizationService.validateUserForOrganizationId(filtersDTO.getOrganizationId(), loggedUser);
@@ -54,16 +65,16 @@ public class DebtPositionRetrieverServiceImpl implements DebtPositionRetrieverSe
 
   @Override
   public DebtPositionDetailDTO getDebtPositionDetail(Long debtPositionId,
-    Long organizationId,
-    UserInfo loggedUser, String accessToken) {
-    AuthorizationService.validateUserForOrganizationId(organizationId,loggedUser);
+                                                     Long organizationId,
+                                                     UserInfo loggedUser, String accessToken) {
+    AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser);
     DebtPositionDTO debtPosition = debtPositionService.getDebtPosition(debtPositionId, accessToken);
-    if(debtPosition!=null){
+    if (debtPosition != null) {
       return debtPositionMapper.mapToDebtPositionDetailDTO(
         debtPosition,
         debtPositionTypeOrgService.getDebtPositionTypeOrg(debtPosition.getDebtPositionTypeOrgId(), accessToken)
       );
-    }else{
+    } else {
       return null;
     }
   }

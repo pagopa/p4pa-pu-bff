@@ -23,6 +23,11 @@ public class DebtPositionClient {
     this.debtPositionApisHolder = debtPositionApisHolder;
   }
 
+  public DebtPositionDTO createDebtPosition(DebtPositionDTO debtPositionDTO, Boolean massive, String accessToken) {
+    return debtPositionApisHolder.getDebtPositionApi(accessToken)
+      .createDebtPosition(debtPositionDTO, massive);
+  }
+
   public PagedModelDebtPositionView getDebtPositionViews(DebtPositionViewFiltersDTO filtersDTO, List<String> debtPositionOrigins, String operatorExternalId, Pageable pageable, String accessToken) {
     return debtPositionApisHolder.getDebtPositionViewSearchControllerApi(accessToken)
       .crudDebtPositionsViewFindDebtPositionViews(

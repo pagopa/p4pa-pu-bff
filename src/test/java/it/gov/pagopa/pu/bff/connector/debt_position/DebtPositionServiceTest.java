@@ -31,11 +31,26 @@ class DebtPositionServiceTest {
   }
 
   @Test
+  void whenCreateDebtPositionThenInvokeClient() {
+    DebtPositionDTO debtPositionDTO = new DebtPositionDTO();
+    Boolean massive = true;
+    String accessToken = "ACCESSTOKEN";
+    DebtPositionDTO expectedResult = new DebtPositionDTO();
+
+    when(clientMock.createDebtPosition(Mockito.same(debtPositionDTO), Mockito.same(massive), Mockito.same(accessToken)))
+      .thenReturn(expectedResult);
+
+    DebtPositionDTO result = service.createDebtPosition(debtPositionDTO, massive, accessToken);
+
+    assertSame(expectedResult, result);
+  }
+
+  @Test
   void whenGetDebtPositionViewsThenInvokeClient() {
     DebtPositionViewFiltersDTO filtersDTO = new DebtPositionViewFiltersDTO();
     String accessToken = "ACCESSTOKEN";
     String operatorExternalUserId = "operatorExternalUserId";
-    List<String> debtPositionOrigins = List.of(DebtPositionOrigin.ORDINARY.toString(),DebtPositionOrigin.ORDINARY_SIL.toString(), DebtPositionOrigin.SPONTANEOUS.toString());
+    List<String> debtPositionOrigins = List.of(DebtPositionOrigin.ORDINARY.toString(), DebtPositionOrigin.ORDINARY_SIL.toString(), DebtPositionOrigin.SPONTANEOUS.toString());
     Pageable pageable = Mockito.mock(Pageable.class);
     PagedModelDebtPositionView expectedResult = new PagedModelDebtPositionView();
 
@@ -53,7 +68,7 @@ class DebtPositionServiceTest {
     String accessToken = "ACCESSTOKEN";
     DebtPositionDTO expectedResult = new DebtPositionDTO();
 
-    when(clientMock.getDebtPosition(debtPositionId,accessToken))
+    when(clientMock.getDebtPosition(debtPositionId, accessToken))
       .thenReturn(expectedResult);
 
     DebtPositionDTO result = service.getDebtPosition(debtPositionId, accessToken);

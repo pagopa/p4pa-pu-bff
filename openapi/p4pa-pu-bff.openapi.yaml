@@ -1249,6 +1249,38 @@ paths:
       responses:
         '201':
           description: OK
+  /organization/{organizationId}/organizations:
+    get:
+      tags:
+        - Organizations
+      summary: "Retrieve a paged list of Organizations with DebtPositionTypeOrgCount"
+      operationId: getOrganizationsWithDebtPositionTypeOrgCount
+      parameters:
+        - name: organizationId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: organizationName
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PagedOrganizationWithDebtPositionTypeOrgCount'
+        '401':
+          description: Unauthorized - Missing or invalid token
+        '403':
+          description: Forbidden - Access denied
+        '500':
+          description: Internal Server Error
+      x-spring-paginated: true
 security:
   - BearerAuth: [ ]
 components:
@@ -1827,6 +1859,31 @@ components:
         number:
           type: integer
           format: int64
+    PagedOrganizationWithDebtPositionTypeOrgCount:
+      type: object
+      required:
+        - content
+        - size
+        - totalElements
+        - totalPages
+        - number
+      properties:
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrganizationWithDebtPositionTypeOrgCount'
+        size:
+          type: integer
+          format: int64
+        totalElements:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer
+          format: int64
+        number:
+          type: integer
+          format: int64
     PaymentsReportingDetailDTO:
       type: object
       required:
@@ -1927,3 +1984,15 @@ components:
           type: boolean
         ioTemplateMessage:
           type: string
+    OrganizationWithDebtPositionTypeOrgCount:
+      type: object
+      properties:
+        organizationId:
+          type: integer
+          format: int64
+        ipaCode:
+          type: string
+        organizationName:
+          type: string
+        debtPositionTypeOrgCount:
+          type: integer

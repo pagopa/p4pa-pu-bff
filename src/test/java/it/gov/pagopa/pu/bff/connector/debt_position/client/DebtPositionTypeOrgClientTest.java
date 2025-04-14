@@ -1,10 +1,17 @@
 package it.gov.pagopa.pu.bff.connector.debt_position.client;
 
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.mockito.Mockito.when;
+
 import it.gov.pagopa.pu.bff.connector.debt_position.config.DebtPositionApisHolder;
+import it.gov.pagopa.pu.debtpositions.controller.generated.DebtPositionTypeOrgCountByOrganizationIdSearchControllerApi;
 import it.gov.pagopa.pu.debtpositions.controller.generated.DebtPositionTypeOrgEntityControllerApi;
 import it.gov.pagopa.pu.debtpositions.controller.generated.DebtPositionTypeOrgSearchControllerApi;
 import it.gov.pagopa.pu.debtpositions.dto.generated.CollectionModelDebtPositionTypeOrg;
+import it.gov.pagopa.pu.debtpositions.dto.generated.CollectionModelDebtPositionTypeOrgCountByOrganizationId;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrg;
+import java.util.List;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,10 +22,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.client.HttpClientErrorException;
 
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.mockito.Mockito.when;
-
 @ExtendWith(MockitoExtension.class)
 class DebtPositionTypeOrgClientTest {
 
@@ -28,6 +31,8 @@ class DebtPositionTypeOrgClientTest {
   private DebtPositionTypeOrgSearchControllerApi debtPositionTypeOrgSearchControllerApiMock;
   @Mock
   private DebtPositionTypeOrgEntityControllerApi debtPositionTypeOrgEntityControllerApiMock;
+  @Mock
+  private DebtPositionTypeOrgCountByOrganizationIdSearchControllerApi debtPositionTypeOrgCountByOrganizationIdSearchControllerApiMock;
   private DebtPositionTypeOrgClient debtPositionTypeOrgClient;
 
   @BeforeEach
@@ -93,6 +98,24 @@ class DebtPositionTypeOrgClientTest {
     DebtPositionTypeOrg result = debtPositionTypeOrgClient.getDebtPositionTypeOrg(debtPositionTypeOrgId, accessToken);
 
     assertNull(result);
+  }
+
+  @Test
+  void givenDebtPositionTypeOrgCountByOrganizationIdWhenGetDebtPositionTypeOrgCountByOrganizationIdThenInvokeWithAccessToken() {
+    Long debtPositionTypeOrgId = 1L;
+    String accessToken = "ACCESSTOKEN";
+    CollectionModelDebtPositionTypeOrgCountByOrganizationId expectedResult = new CollectionModelDebtPositionTypeOrgCountByOrganizationId();
+
+    when(debtPositionApisHolderMock.getDebtPositionTypeOrgCountByOrganizationIdSearchControllerApi(accessToken))
+      .thenReturn(debtPositionTypeOrgCountByOrganizationIdSearchControllerApiMock);
+
+    when(debtPositionTypeOrgCountByOrganizationIdSearchControllerApiMock.crudDebtPositionTypeOrgsByOrganizationCountByOrganizationIds(
+      List.of(debtPositionTypeOrgId)))
+      .thenReturn(expectedResult);
+
+    CollectionModelDebtPositionTypeOrgCountByOrganizationId result = debtPositionTypeOrgClient.getDebtPositionTypeOrgCountByOrganizationId(List.of(debtPositionTypeOrgId), accessToken);
+
+    assertSame(expectedResult, result);
   }
 
 }

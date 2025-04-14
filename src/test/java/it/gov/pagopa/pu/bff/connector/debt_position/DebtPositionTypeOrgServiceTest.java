@@ -83,9 +83,6 @@ class DebtPositionTypeOrgServiceTest {
   @Test
   void whenGetDebtPositionTypeOrgCountByOrganizationIdThenInvokeClient() {
     Long organizationId = 1L;
-    String code = "code";
-    String description = "description";
-    Pageable pageable = PageRequest.of(0, 10);
     String accessToken = "ACCESSTOKEN";
     CollectionModelDebtPositionTypeOrgCountByOrganizationId expectedResult = new CollectionModelDebtPositionTypeOrgCountByOrganizationId();
 

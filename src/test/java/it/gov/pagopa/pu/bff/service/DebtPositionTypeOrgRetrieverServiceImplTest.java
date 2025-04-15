@@ -360,13 +360,14 @@ class DebtPositionTypeOrgRetrieverServiceImplTest {
 
     long organizationId = 1L;
     long debtPositionTypeOrgId = 1L;
+    Pageable pageable = Pageable.ofSize(10);
 
     try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
       authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser))
         .thenThrow(new AuthorizationDeniedException("Access denied"));
 
       Assertions.assertThrows(AuthorizationDeniedException.class, () ->
-        debtPositionTypeOrgService.getDebtPositionTypeOrgOperators(organizationId, debtPositionTypeOrgId, Pageable.ofSize(10), loggedUser, accessToken));
+        debtPositionTypeOrgService.getDebtPositionTypeOrgOperators(organizationId, debtPositionTypeOrgId, pageable, loggedUser, accessToken));
 
       authorizationServiceMockedStatic.verify(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser));
     }

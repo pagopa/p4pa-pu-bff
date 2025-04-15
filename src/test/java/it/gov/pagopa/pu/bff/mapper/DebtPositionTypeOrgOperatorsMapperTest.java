@@ -12,6 +12,7 @@ import it.gov.pagopa.pu.bff.util.TestUtils;
 import it.gov.pagopa.pu.debtpositions.dto.generated.CollectionModelDebtPositionTypeOrgOperators;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrgOperators;
 import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelDebtPositionTypeOrgOperatorsEmbedded;
+import java.util.Collections;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -58,11 +59,11 @@ class DebtPositionTypeOrgOperatorsMapperTest {
   }
 
   @Test
-  void givenDebtPositionTypeOrgOperatorsEmptyWhenMapToPagedDebtPositionTypeOrgOperatorDTOThenReturnEmptyContent() {
+  void givenOperatorsPageEmptyWhenMapToPagedDebtPositionTypeOrgOperatorDTOThenReturnEmptyContent() {
+    // given
     OperatorsPage operators = podamFactory.manufacturePojo(OperatorsPage.class);
-    CollectionModelDebtPositionTypeOrgOperators debtPositionTypeOrgOperators = CollectionModelDebtPositionTypeOrgOperators.builder()
-      .embedded(null)
-      .build();
+    operators.setContent(Collections.emptyList());
+    CollectionModelDebtPositionTypeOrgOperators debtPositionTypeOrgOperators = new CollectionModelDebtPositionTypeOrgOperators();
 
     // when
     PagedDebtPositionTypeOrgOperatorDTO result = mapper.mapToPagedDebtPositionTypeOrgOperatorDTO(operators, debtPositionTypeOrgOperators);
@@ -70,6 +71,35 @@ class DebtPositionTypeOrgOperatorsMapperTest {
     // then
     assertNotNull(result);
     assertTrue(result.getContent().isEmpty());
+    assertEquals(operators.getPageSize().longValue(), result.getSize());
+    assertEquals(operators.getTotalPages().longValue(), result.getTotalPages());
+    assertEquals(operators.getTotalElements().longValue(), result.getTotalElements());
+    assertEquals(operators.getPageNo().longValue(), result.getNumber());
+  }
+
+  @Test
+  void givenDebtPositionTypeOrgOperatorsEmptyWhenMapToPagedDebtPositionTypeOrgOperatorDTOThenReturnOnlyOperatorsData() {
+    // given
+    OperatorsPage operators = podamFactory.manufacturePojo(OperatorsPage.class);
+    CollectionModelDebtPositionTypeOrgOperators debtPositionTypeOrgOperators = CollectionModelDebtPositionTypeOrgOperators.builder()
+      .embedded(null)
+      .build();
+
+    DebtPositionTypeOrgOperatorDTO expectedItem = DebtPositionTypeOrgOperatorDTO.builder()
+      .operatorId(operators.getContent().getFirst().getOperatorId())
+      .firstName(operators.getContent().getFirst().getFirstName())
+      .lastName(operators.getContent().getFirst().getLastName())
+      .mappedExternalUserId(operators.getContent().getFirst().getMappedExternalUserId())
+      .enabled(false)
+      .build();
+
+    // when
+    PagedDebtPositionTypeOrgOperatorDTO result = mapper.mapToPagedDebtPositionTypeOrgOperatorDTO(operators, debtPositionTypeOrgOperators);
+
+    // then
+    assertNotNull(result);
+    assertFalse(result.getContent().isEmpty());
+    assertEquals(expectedItem, result.getContent().getFirst());
     assertEquals(operators.getPageSize().longValue(), result.getSize());
     assertEquals(operators.getTotalPages().longValue(), result.getTotalPages());
     assertEquals(operators.getTotalElements().longValue(), result.getTotalElements());

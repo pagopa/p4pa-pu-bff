@@ -18,11 +18,11 @@ public class DebtPositionTypeOrgOperatorsMapper {
   public PagedDebtPositionTypeOrgOperatorDTO mapToPagedDebtPositionTypeOrgOperatorDTO(
     OperatorsPage operatorsPage,
     CollectionModelDebtPositionTypeOrgOperators collectionModelDebtPositionTypeOrgOperators) {
+    HashSet<String> debtPositionTypeOrgOperatorsIds = getDebtPositionTypeOrgOperatorsIds(collectionModelDebtPositionTypeOrgOperators);
+
     List<DebtPositionTypeOrgOperatorDTO> content = operatorsPage.getContent()
       .stream()
-      .map(o -> mapToDebtPositionTypeOrgOperatorDTO(o,
-        getDebtPositionTypeOrgOperatorsIds(
-          collectionModelDebtPositionTypeOrgOperators)))
+      .map(o -> mapToDebtPositionTypeOrgOperatorDTO(o, debtPositionTypeOrgOperatorsIds))
       .toList();
 
     return PagedDebtPositionTypeOrgOperatorDTO.builder()

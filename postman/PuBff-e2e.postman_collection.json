@@ -1241,7 +1241,7 @@
 					"response": []
 				},
 				{
-					"name": "02_getDebtPositionTypeOrgOperators Copy",
+					"name": "03_getDebtPositionTypeOrgOperators",
 					"event": [
 						{
 							"listen": "test",

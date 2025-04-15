@@ -12,12 +12,13 @@ public interface DebtPositionTypeRetrieverService {
 
   DebtPositionType getDebtPositionTypeById(String accessToken, Long id);
 
-  PagedDebtPositionTypeWithCount getDebtPositionTypeWithCount(
-    Long organizationId, String description, Pageable pageable,
-    UserInfo loggedUser, String accessToken);
+  PagedDebtPositionTypeWithCount getDebtPositionTypeWithCount(Long organizationId, String description, Pageable pageable, UserInfo loggedUser, String accessToken);
 
   DebtPositionTypeDetailDTO getDebtPositionTypeDetail(Long organizationId, Long debtPositionTypeId, UserInfo loggedUser, String accessToken);
-  DebtPositionType createDebtPositionType(
-    DebtPositionTypeRequestBody debtPositionType, UserInfo userInfo, String accessToken);
+
+  DebtPositionType createDebtPositionType(DebtPositionTypeRequestBody debtPositionType, UserInfo userInfo, String accessToken);
+
   DebtPositionType patchDebtPositionType(Long debtPositionTypeId, DebtPositionTypePatchRequestBody debtPositionTypePatchRequestBody, UserInfo loggedUser, String accessToken);
+
+  Void deleteDebtPositionType(Long organizationId, Long id, UserInfo loggedUser, String accessToken);
 }

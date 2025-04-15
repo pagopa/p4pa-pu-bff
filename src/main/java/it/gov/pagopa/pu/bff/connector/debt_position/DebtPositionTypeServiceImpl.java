@@ -40,4 +40,9 @@ public class DebtPositionTypeServiceImpl implements DebtPositionTypeService {
     String accessToken) {
     return client.patchDebtPositionType(debtPositionTypeId,debtPositionType,accessToken);
   }
+
+  @Override
+  public Void deleteDebtPositionType(Long id, String accessToken) {
+    return client.deleteDebtPositionType(id, accessToken);
+  }
 }

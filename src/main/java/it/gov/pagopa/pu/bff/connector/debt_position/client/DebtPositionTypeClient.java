@@ -60,5 +60,11 @@ public class DebtPositionTypeClient {
       return null;
     }
   }
+
+  public Void deleteDebtPositionType(Long id, String accessToken) {
+    debtPositionApisHolder.getDebtPositionTypeControllerApi(accessToken)
+      .crudDeleteDebtpositiontype(String.valueOf(id));
+    return null;
+  }
 }
 

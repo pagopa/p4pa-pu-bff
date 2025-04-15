@@ -1,6 +1,7 @@
 package it.gov.pagopa.pu.bff.connector.debt_position.client;
 
 import it.gov.pagopa.pu.bff.connector.debt_position.config.DebtPositionApisHolder;
+import it.gov.pagopa.pu.bff.exception.ResourceNotFoundException;
 import it.gov.pagopa.pu.debtpositions.dto.generated.CollectionModelDebtPositionTypeOrg;
 import it.gov.pagopa.pu.debtpositions.dto.generated.CollectionModelDebtPositionTypeOrgCountByOrganizationId;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrg;
@@ -41,5 +42,12 @@ public class DebtPositionTypeOrgClient {
       .crudDebtPositionTypeOrgsByOrganizationCountByOrganizationIds(organizationIds);
   }
 
+  public void deleteDebtPositionTypeOrg(Long debtPositionTypeOrgId, String accessToken){
+    try{
+      debtPositionApisHolder.getDebtPositionTypeOrgApi(accessToken).deleteDebtPositionTypeOrg(debtPositionTypeOrgId);
+    } catch (HttpClientErrorException.NotFound e) {
+      throw new ResourceNotFoundException("DebtPositionTypeOrg with debtPositionTypeOrgId %d not found".formatted(debtPositionTypeOrgId));
+    }
+  }
 }
 

@@ -2,9 +2,13 @@ package it.gov.pagopa.pu.bff.connector.debt_position.client;
 
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
 import it.gov.pagopa.pu.bff.connector.debt_position.config.DebtPositionApisHolder;
+import it.gov.pagopa.pu.bff.exception.ResourceNotFoundException;
+import it.gov.pagopa.pu.debtpositions.controller.generated.DebtPositionTypeOrgApi;
 import it.gov.pagopa.pu.debtpositions.controller.generated.DebtPositionTypeOrgCountByOrganizationIdSearchControllerApi;
 import it.gov.pagopa.pu.debtpositions.controller.generated.DebtPositionTypeOrgEntityControllerApi;
 import it.gov.pagopa.pu.debtpositions.controller.generated.DebtPositionTypeOrgSearchControllerApi;
@@ -13,6 +17,7 @@ import it.gov.pagopa.pu.debtpositions.dto.generated.CollectionModelDebtPositionT
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrg;
 import java.util.List;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -33,6 +38,8 @@ class DebtPositionTypeOrgClientTest {
   private DebtPositionTypeOrgEntityControllerApi debtPositionTypeOrgEntityControllerApiMock;
   @Mock
   private DebtPositionTypeOrgCountByOrganizationIdSearchControllerApi debtPositionTypeOrgCountByOrganizationIdSearchControllerApiMock;
+  @Mock
+  private DebtPositionTypeOrgApi debtPositionTypeOrgApiMock;
   private DebtPositionTypeOrgClient debtPositionTypeOrgClient;
 
   @BeforeEach
@@ -42,7 +49,8 @@ class DebtPositionTypeOrgClientTest {
 
   @AfterEach
   void verifyNoMoreInteractions() {
-    Mockito.verifyNoMoreInteractions(debtPositionApisHolderMock, debtPositionTypeOrgSearchControllerApiMock, debtPositionTypeOrgEntityControllerApiMock);
+    Mockito.verifyNoMoreInteractions(debtPositionApisHolderMock, debtPositionTypeOrgSearchControllerApiMock,
+      debtPositionTypeOrgEntityControllerApiMock, debtPositionTypeOrgCountByOrganizationIdSearchControllerApiMock, debtPositionTypeOrgApiMock);
   }
 
   @Test
@@ -118,4 +126,30 @@ class DebtPositionTypeOrgClientTest {
     assertSame(expectedResult, result);
   }
 
+  @Test
+  void givenExistingDebtPositionTypeOrgWhenDeleteDebtPositionTypeOrgThenInvokeWithAccessToken() {
+    Long debtPositionTypeOrgId = 1L;
+    String accessToken = "ACCESSTOKEN";
+
+    when(debtPositionApisHolderMock.getDebtPositionTypeOrgApi(accessToken))
+      .thenReturn(debtPositionTypeOrgApiMock);
+    doNothing().when(debtPositionTypeOrgApiMock).deleteDebtPositionTypeOrg(
+      debtPositionTypeOrgId);
+
+    Assertions.assertDoesNotThrow(()->debtPositionTypeOrgClient.deleteDebtPositionTypeOrg(debtPositionTypeOrgId, accessToken));
+  }
+
+  @Test
+  void givenNoDebtPositionTypeOrgWhenDeleteDebtPositionTypeOrgThenThrowResourceNotFoundException() {
+    Long debtPositionTypeOrgId = 1L;
+    String accessToken = "ACCESSTOKEN";
+
+    when(debtPositionApisHolderMock.getDebtPositionTypeOrgApi(accessToken))
+      .thenReturn(debtPositionTypeOrgApiMock);
+    doThrow(HttpClientErrorException.create(HttpStatus.NOT_FOUND, "NotFound", null, null, null))
+      .when(debtPositionTypeOrgApiMock).deleteDebtPositionTypeOrg(debtPositionTypeOrgId);
+
+    Assertions.assertThrows(ResourceNotFoundException.class,()->
+      debtPositionTypeOrgClient.deleteDebtPositionTypeOrg(debtPositionTypeOrgId, accessToken));
+  }
 }

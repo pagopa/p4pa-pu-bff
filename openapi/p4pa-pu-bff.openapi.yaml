@@ -465,6 +465,35 @@ paths:
           description: Not Found - DebtPositionTypeOrg Not Found
         '500':
           description: Internal Server Error
+    delete:
+      tags:
+        - DebtPositionTypeOrgs
+      summary: "Deletes DebtPositionTypeOrg"
+      operationId: deleteDebtPositionTypeOrg
+      parameters:
+        - name: organizationId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: debtPositionTypeOrgId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+        '401':
+          description: Unauthorized - Missing or invalid token
+        '403':
+          description: Forbidden - Access denied
+        '404':
+          description: Not Found - DebtPositionTypeOrg Not Found
+        '500':
+          description: Internal Server Error
   /organization/{organizationId}/debt-position-type-orgs:
     get:
       tags:
@@ -1548,6 +1577,7 @@ components:
             - BAD_REQUEST
             - GENERIC_ERROR
             - FORBIDDEN
+            - CONFLICT
         description:
           type: string
           description: Description of the error

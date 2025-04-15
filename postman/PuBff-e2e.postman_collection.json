@@ -295,22 +295,21 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{puBffBaseUrl}}/bff/organization/:organizationId/organizations",
+							"raw": "{{puBffBaseUrl}}/bff/organization/:organizationId",
 							"host": [
 								"{{puBffBaseUrl}}"
 							],
 							"path": [
 								"bff",
 								"organization",
-								":organizationId",
-								"organizations"
+								":organizationId"
 							],
-							"variable": [
-								{
-									"key": "organizationId",
-									"value": ""
-								}
-							]
+              "variable": [
+                {
+                  "key": "organizationId",
+                  "value": "{{organizationId}}"
+                }
+              ]
 						}
 					},
 					"response": []

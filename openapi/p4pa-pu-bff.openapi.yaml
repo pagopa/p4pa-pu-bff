@@ -1300,7 +1300,7 @@ paths:
       responses:
         '201':
           description: OK
-  /organization/{organizationId}/organizations:
+  /organization/{organizationId}:
     get:
       tags:
         - Organizations

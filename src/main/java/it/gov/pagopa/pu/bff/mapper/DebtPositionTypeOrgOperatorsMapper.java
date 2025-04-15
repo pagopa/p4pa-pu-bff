@@ -6,7 +6,6 @@ import it.gov.pagopa.pu.bff.dto.generated.DebtPositionTypeOrgOperatorDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedDebtPositionTypeOrgOperatorDTO;
 import it.gov.pagopa.pu.debtpositions.dto.generated.CollectionModelDebtPositionTypeOrgOperators;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrgOperators;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -20,8 +19,6 @@ public class DebtPositionTypeOrgOperatorsMapper {
   public PagedDebtPositionTypeOrgOperatorDTO mapToPagedDebtPositionTypeOrgOperatorDTO(
     OperatorsPage operatorsPage,
     CollectionModelDebtPositionTypeOrgOperators collectionModelDebtPositionTypeOrgOperators) {
-    List<DebtPositionTypeOrgOperators> debtPositionTypeOrgOperators = new ArrayList<>();
-
     return PagedDebtPositionTypeOrgOperatorDTO.builder()
       .content(buildContent(operatorsPage, collectionModelDebtPositionTypeOrgOperators))
       .size(operatorsPage.getPageSize().longValue())

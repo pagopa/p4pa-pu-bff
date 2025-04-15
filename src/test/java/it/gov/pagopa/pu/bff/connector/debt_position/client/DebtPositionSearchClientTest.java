@@ -5,7 +5,8 @@ import static org.mockito.Mockito.when;
 
 import it.gov.pagopa.pu.bff.connector.debt_position.config.DebtPositionApisHolder;
 import it.gov.pagopa.pu.debtpositions.controller.generated.DebtPositionSearchControllerApi;
-import it.gov.pagopa.pu.debtpositions.dto.generated.CollectionModelDebtPosition;
+import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelDebtPosition;
+import java.util.Collections;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -13,6 +14,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageRequest;
 
 @ExtendWith(MockitoExtension.class)
 class DebtPositionSearchClientTest {
@@ -36,7 +38,7 @@ class DebtPositionSearchClientTest {
   @Test
   void whenGetDebtPositionByDebtPositionTypeOrgIdThenInvokeWithAccessToken() {
     String accessToken = "ACCESSTOKEN";
-    CollectionModelDebtPosition expectedResult = new CollectionModelDebtPosition();
+    PagedModelDebtPosition expectedResult = new PagedModelDebtPosition();
 
     long debtPositionTypeOrgId = 1L;
 
@@ -44,10 +46,11 @@ class DebtPositionSearchClientTest {
       .thenReturn(debtPositionSearchControllerApiMock);
 
     when(debtPositionSearchControllerApiMock.crudDebtPositionsFindByDebtPositionTypeOrgId(
-      debtPositionTypeOrgId))
+      debtPositionTypeOrgId,1,1, Collections.emptyList()))
       .thenReturn(expectedResult);
 
-    CollectionModelDebtPosition result = debtPositionSearchClient.getDebtPositionByDebtPositionTypeOrgId(debtPositionTypeOrgId, accessToken);
+    PagedModelDebtPosition result = debtPositionSearchClient.getDebtPositionByDebtPositionTypeOrgId(debtPositionTypeOrgId,
+      PageRequest.of(1,1), accessToken);
 
     assertSame(expectedResult, result);
   }

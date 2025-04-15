@@ -6,9 +6,9 @@ import static org.mockito.Mockito.when;
 import it.gov.pagopa.pu.bff.connector.debt_position.client.DebtPositionClient;
 import it.gov.pagopa.pu.bff.connector.debt_position.client.DebtPositionSearchClient;
 import it.gov.pagopa.pu.bff.dto.DebtPositionViewFiltersDTO;
-import it.gov.pagopa.pu.debtpositions.dto.generated.CollectionModelDebtPosition;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionDTO;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionOrigin;
+import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelDebtPosition;
 import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelDebtPositionView;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,6 +17,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
 @ExtendWith(MockitoExtension.class)
@@ -83,12 +84,13 @@ class DebtPositionServiceTest {
   void whenGetDebtPositionByDebtPositionTypeOrgIdThenInvokeClient() {
     Long debtPositionTypeOrgId = 1L;
     String accessToken = "ACCESSTOKEN";
-    CollectionModelDebtPosition expectedResult = new CollectionModelDebtPosition();
+    PagedModelDebtPosition expectedResult = new PagedModelDebtPosition();
+    PageRequest pageRequest = PageRequest.of(1, 1);
 
-    when(debtPositionSearchClientMock.getDebtPositionByDebtPositionTypeOrgId(debtPositionTypeOrgId, accessToken))
+    when(debtPositionSearchClientMock.getDebtPositionByDebtPositionTypeOrgId(debtPositionTypeOrgId,pageRequest,accessToken))
       .thenReturn(expectedResult);
 
-    CollectionModelDebtPosition result = service.getDebtPositionByDebtPositionTypeOrgId(debtPositionTypeOrgId, accessToken);
+    PagedModelDebtPosition result = service.getDebtPositionByDebtPositionTypeOrgId(debtPositionTypeOrgId,pageRequest,accessToken);
 
     assertSame(expectedResult, result);
   }

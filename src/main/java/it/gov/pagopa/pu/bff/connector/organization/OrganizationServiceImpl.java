@@ -30,7 +30,7 @@ public class OrganizationServiceImpl implements OrganizationService {
 
   @Override
   public PagedModelOrganization getOrganizationByBrokerIdAndOrgName(
-    String brokerId, String orgName, Pageable pageable, String accessToken) {
+    Long brokerId, String orgName, Pageable pageable, String accessToken) {
     return organizationSearchClient.getOrganizationByBrokerIdAndOrgName(brokerId, orgName, pageable, accessToken);
   }
 

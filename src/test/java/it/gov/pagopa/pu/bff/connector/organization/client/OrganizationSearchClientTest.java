@@ -83,14 +83,14 @@ class OrganizationSearchClientTest {
   @Test
   void whenGetOrganizationByBrokerIdAndOrgNameThenInvokeWithAccessToken() {
     // Given
-    String brokerId = "BROKERID";
+    Long brokerId = 1L;
     String orgName = "ORGNAME";
     String accessToken = "ACCESSTOKEN";
     PagedModelOrganization expectedResult = new PagedModelOrganization();
 
     Mockito.when(organizationApisHolder.getOrganizationSearchControllerApi(accessToken))
       .thenReturn(organizationSearchControllerApiMock);
-    Mockito.when(organizationSearchControllerApiMock.crudOrganizationsFindByBrokerIdAndOrgName(eq(brokerId), eq(orgName), any(), any(), anyList()))
+    Mockito.when(organizationSearchControllerApiMock.crudOrganizationsFindByBrokerIdAndOrgName(eq(String.valueOf(brokerId)), eq(orgName), any(), any(), anyList()))
       .thenReturn(expectedResult);
 
     // When

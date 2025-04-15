@@ -3,8 +3,8 @@ package it.gov.pagopa.pu.bff.connector.debt_position;
 import it.gov.pagopa.pu.bff.connector.debt_position.client.DebtPositionClient;
 import it.gov.pagopa.pu.bff.connector.debt_position.client.DebtPositionSearchClient;
 import it.gov.pagopa.pu.bff.dto.DebtPositionViewFiltersDTO;
-import it.gov.pagopa.pu.debtpositions.dto.generated.CollectionModelDebtPosition;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionDTO;
+import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelDebtPosition;
 import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelDebtPositionView;
 import java.util.List;
 import org.springframework.data.domain.Pageable;
@@ -40,8 +40,8 @@ public class DebtPositionServiceImpl implements DebtPositionService {
   }
 
   @Override
-  public CollectionModelDebtPosition getDebtPositionByDebtPositionTypeOrgId(Long debtPositionTypeOrgId,
-    String accessToken) {
-    return debtPositionSearchClient.getDebtPositionByDebtPositionTypeOrgId(debtPositionTypeOrgId,accessToken);
+  public PagedModelDebtPosition getDebtPositionByDebtPositionTypeOrgId(Long debtPositionTypeOrgId,
+    Pageable pageable, String accessToken) {
+    return debtPositionSearchClient.getDebtPositionByDebtPositionTypeOrgId(debtPositionTypeOrgId,pageable,accessToken);
   }
 }

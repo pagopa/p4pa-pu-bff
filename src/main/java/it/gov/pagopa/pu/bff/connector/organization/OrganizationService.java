@@ -7,6 +7,6 @@ import org.springframework.data.domain.Pageable;
 public interface OrganizationService {
 
   Organization getOrganizationByIpaCode(String ipaCode, String accessToken);
-  PagedModelOrganization getOrganizationByBrokerIdAndOrgName(String brokerId, String orgName, Pageable pageable, String accessToken);
+  PagedModelOrganization getOrganizationByBrokerIdAndOrgName(Long brokerId, String orgName, Pageable pageable, String accessToken);
   Organization getOrganizationByOrganizationId(Long organizationId, String accessToken);
 }

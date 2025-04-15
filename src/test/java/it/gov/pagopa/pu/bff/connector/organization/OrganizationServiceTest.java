@@ -47,7 +47,7 @@ class OrganizationServiceTest {
   @Test
   void testGetOrganizationByBrokerIdAndOrgName() {
     PagedModelOrganization expected = new PagedModelOrganization();
-    String brokerId = "brokerId";
+    Long brokerId = 1L;
     String orgName = "orgName";
     String accessToken = "accessToken";
 

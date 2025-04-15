@@ -14,10 +14,10 @@ import it.gov.pagopa.pu.bff.dto.generated.PagedDebtPositionTypeOrgWithCount;
 import it.gov.pagopa.pu.bff.exception.ConflictException;
 import it.gov.pagopa.pu.bff.mapper.DebtPositionTypeOrgWithCountMapper;
 import it.gov.pagopa.pu.bff.service.debt_position_type_org.DebtPositionTypeOrgRetrieverServiceImpl;
-import it.gov.pagopa.pu.debtpositions.dto.generated.CollectionModelDebtPosition;
 import it.gov.pagopa.pu.debtpositions.dto.generated.CollectionModelDebtPositionTypeOrg;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPosition;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrg;
+import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelDebtPosition;
 import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelDebtPositionEmbedded;
 import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelDebtPositionTypeOrgEmbedded;
 import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelDebtPositionTypeOrgWithCount;
@@ -245,11 +245,12 @@ class DebtPositionTypeOrgRetrieverServiceImplTest {
 
     Long organizationId = 1L;
     Long debtPositionTypeOrgId = 2L;
-    CollectionModelDebtPosition debtPositions = new CollectionModelDebtPosition();
+    PagedModelDebtPosition debtPositions = new PagedModelDebtPosition();
 
     Mockito.doNothing().when(authorizationServiceMock).validateOrganizationOrBrokerAdmin(organizationId,loggedUser,accessToken);
 
-    Mockito.when(debtPositionServiceMock.getDebtPositionByDebtPositionTypeOrgId(debtPositionTypeOrgId, accessToken))
+    Mockito.when(debtPositionServiceMock.getDebtPositionByDebtPositionTypeOrgId(Mockito.eq(debtPositionTypeOrgId),
+        Mockito.argThat(p->p.getPageNumber()==0&&p.getPageSize()==1),Mockito.eq(accessToken)))
       .thenReturn(debtPositions);
 
     Mockito.doNothing().when(debtPositionTypeOrgServiceMock).deleteDebtPositionTypeOrg(debtPositionTypeOrgId,accessToken);
@@ -266,12 +267,13 @@ class DebtPositionTypeOrgRetrieverServiceImplTest {
 
     Long organizationId = 1L;
     Long debtPositionTypeOrgId = 2L;
-    CollectionModelDebtPosition debtPositions = new CollectionModelDebtPosition();
+    PagedModelDebtPosition debtPositions = new PagedModelDebtPosition();
     debtPositions.setEmbedded(new PagedModelDebtPositionEmbedded(List.of(new DebtPosition())));
 
     Mockito.doNothing().when(authorizationServiceMock).validateOrganizationOrBrokerAdmin(organizationId,loggedUser,accessToken);
 
-    Mockito.when(debtPositionServiceMock.getDebtPositionByDebtPositionTypeOrgId(debtPositionTypeOrgId, accessToken))
+    Mockito.when(debtPositionServiceMock.getDebtPositionByDebtPositionTypeOrgId(Mockito.eq(debtPositionTypeOrgId),
+        Mockito.argThat(p->p.getPageNumber()==0&&p.getPageSize()==1),Mockito.eq(accessToken)))
       .thenReturn(debtPositions);
 
     Assertions.assertThrows(ConflictException.class, ()->

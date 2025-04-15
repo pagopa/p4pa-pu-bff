@@ -1,5 +1,6 @@
 package it.gov.pagopa.pu.bff.connector.organization;
 
+import it.gov.pagopa.pu.bff.connector.organization.client.OrganizationEntityClient;
 import it.gov.pagopa.pu.bff.connector.organization.client.OrganizationSearchClient;
 import it.gov.pagopa.pu.organization.dto.generated.Organization;
 import it.gov.pagopa.pu.organization.dto.generated.PagedModelOrganization;
@@ -13,9 +14,12 @@ import org.springframework.stereotype.Service;
 public class OrganizationServiceImpl implements OrganizationService {
 
   private final OrganizationSearchClient organizationSearchClient;
+  private final OrganizationEntityClient organizationEntityClient;
 
-  public OrganizationServiceImpl(OrganizationSearchClient organizationSearchClient) {
+  public OrganizationServiceImpl(OrganizationSearchClient organizationSearchClient,
+    OrganizationEntityClient organizationEntityClient) {
     this.organizationSearchClient = organizationSearchClient;
+    this.organizationEntityClient = organizationEntityClient;
   }
 
   @Override
@@ -26,7 +30,13 @@ public class OrganizationServiceImpl implements OrganizationService {
 
   @Override
   public PagedModelOrganization getOrganizationByBrokerIdAndOrgName(
-    String brokerId, String orgName, Pageable pageable, String accessToken) {
+    Long brokerId, String orgName, Pageable pageable, String accessToken) {
     return organizationSearchClient.getOrganizationByBrokerIdAndOrgName(brokerId, orgName, pageable, accessToken);
+  }
+
+  @Override
+  @Cacheable(key = "#organizationId", unless="#result == null")
+  public Organization getOrganizationByOrganizationId(Long organizationId, String accessToken){
+    return organizationEntityClient.getOrganizationByOrganizationId(organizationId, accessToken);
   }
 }

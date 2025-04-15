@@ -1,6 +1,10 @@
 package it.gov.pagopa.pu.bff.connector.auth.client;
 
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.mockito.Mockito.when;
+
 import it.gov.pagopa.pu.auth.controller.generated.AuthzApi;
+import it.gov.pagopa.pu.auth.dto.generated.OperatorsPage;
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.connector.auth.config.AuthApisHolder;
 import org.junit.jupiter.api.AfterEach;
@@ -13,9 +17,6 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.client.HttpClientErrorException;
-
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class AuthzClientTest {
@@ -68,6 +69,22 @@ class AuthzClientTest {
     UserInfo result = authzClient.getUserInfoFromMappedExternaUserId(mappedExternalUserId,accessToken);
 
     Assertions.assertNull(result);
+  }
+
+  @Test
+  void whenGetOrganizationOperatorsThenInvokeWithAccessToken() {
+    String accessToken = "ACCESSTOKEN";
+    String organizationIpaCode = "IPACODE";
+    OperatorsPage expectedResult = new OperatorsPage();
+
+    when(authApisHolderMock.getAuthzApi(accessToken))
+      .thenReturn(authzApiMock);
+    when(authzApiMock.getOrganizationOperators(organizationIpaCode, null, null, null, 0, 10))
+      .thenReturn(expectedResult);
+
+    OperatorsPage result = authzClient.getOrganizationOperators(organizationIpaCode, null, null, null, 0, 10, accessToken);
+
+    assertSame(expectedResult, result);
   }
 
 }

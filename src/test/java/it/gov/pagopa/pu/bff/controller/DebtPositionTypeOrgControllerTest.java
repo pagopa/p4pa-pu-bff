@@ -1,6 +1,7 @@
 package it.gov.pagopa.pu.bff.controller;
 
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
+import it.gov.pagopa.pu.bff.dto.generated.PagedDebtPositionTypeOrgOperatorDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedDebtPositionTypeOrgWithCount;
 import it.gov.pagopa.pu.bff.security.SecurityUtils;
 import it.gov.pagopa.pu.bff.service.debt_position_type_org.DebtPositionTypeOrgRetrieverService;
@@ -118,6 +119,29 @@ class DebtPositionTypeOrgControllerTest {
 
     ResponseEntity<PagedDebtPositionTypeOrgWithCount> response = debtPositionTypeOrgController.getDebtPositionTypeOrgWithCount(
       organizationId, code, description, pageable);
+
+    Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
+    Assertions.assertNotNull(response.getBody());
+    Assertions.assertSame(expectedResult, response.getBody());
+  }
+
+  @Test
+  void givenCorrectRequestWhenGetDebtPositionTypeOrgOperatorsThenOk() {
+    long organizationId = 1L;
+    long debtPositionTypeOrgId = 1L;
+    Pageable pageable = PageRequest.of(0, 10);
+    PagedDebtPositionTypeOrgOperatorDTO expectedResult = new PagedDebtPositionTypeOrgOperatorDTO();
+
+    Mockito.when(debtPositionTypeOrgRetrieverServiceMock.getDebtPositionTypeOrgOperators(
+      organizationId,
+      debtPositionTypeOrgId,
+      pageable,
+      SecurityUtils.getLoggedUser(),
+      SecurityUtils.getAccessToken()
+    )).thenReturn(expectedResult);
+
+    ResponseEntity<PagedDebtPositionTypeOrgOperatorDTO> response = debtPositionTypeOrgController.getDebtPositionTypeOrgOperators(
+      organizationId, debtPositionTypeOrgId, pageable);
 
     Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
     Assertions.assertNotNull(response.getBody());

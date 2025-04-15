@@ -15,4 +15,5 @@ public interface DebtPositionTypeOrgService {
   PagedModelDebtPositionTypeOrgWithCount getDebtPositionTypeOrgWithCount(Long organizationId, String code, String description, Pageable pageable, String accessToken);
 
   CollectionModelDebtPositionTypeOrgCountByOrganizationId getDebtPositionTypeOrgCountByOrganizationId(List<Long> organizationIds, String accessToken);
+  void deleteDebtPositionTypeOrg(Long debtPositionTypeOrgId, String accessToken);
 }

@@ -7,6 +7,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.same;
 
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.auth.dto.generated.UserOrganizationRoles;
@@ -61,6 +62,7 @@ class OrganizationRetrieverServiceImplTest {
 
     userInfo = new UserInfo();
     userInfo.setOrganizations(Collections.singletonList(userOrganizationRoles));
+    userInfo.setBrokerId(1L);
 
     entityModelOrganization = new Organization();
     entityModelOrganization.setOrganizationId(123L);
@@ -128,6 +130,10 @@ class OrganizationRetrieverServiceImplTest {
 
   @Test
   void givenOrganizationsWithDebtPositionTyprOrgCountWhenGetOrganizationsWithDebtPositionTypeOrgCountThenOk() {
+    UserInfo loggedUser = new UserInfo();
+    loggedUser.setBrokerId(1L);
+    String orgName = "orgName";
+
     Mockito.doNothing().when(authorizationServiceMock)
       .validateBrokerAdminRole(any(UserInfo.class));
 
@@ -137,8 +143,8 @@ class OrganizationRetrieverServiceImplTest {
       PagedModelOrganizationEmbedded.builder().organizations(organizations)
         .build());
     Mockito.when(
-      organizationServiceMock.getOrganizationByBrokerIdAndOrgName(anyString(),
-        anyString(), any(
+      organizationServiceMock.getOrganizationByBrokerIdAndOrgName(same(userInfo.getBrokerId()),
+        same(orgName), any(
           Pageable.class), eq(null))).thenReturn(pagedModelOrganization);
 
     CollectionModelDebtPositionTypeOrgCountByOrganizationId collectionDptoCountByOrgId = new CollectionModelDebtPositionTypeOrgCountByOrganizationId();
@@ -158,22 +164,26 @@ class OrganizationRetrieverServiceImplTest {
         eq(organizations), eq(debtPositionTypeOrgCountByOrganizationIds), any())).thenReturn(expectedResult);
 
     PagedOrganizationWithDebtPositionTypeOrgCount result = organizationService.getOrganizationsWithDebtPositionTypeOrgCount(
-      1L, "orgName", Pageable.unpaged(), new UserInfo(), null);
+      1L, orgName, Pageable.unpaged(), loggedUser, null);
 
     assertEquals(expectedResult, result);
   }
 
   @Test
   void givenNullPagedModelOrganizationWhenGetOrganizationsWithDebtPositionTypeOrgCountThenReturnEmptyContent() {
+    UserInfo loggedUser = new UserInfo();
+    loggedUser.setBrokerId(1L);
+    String orgName = "orgName";
+
     Mockito.doNothing().when(authorizationServiceMock)
       .validateBrokerAdminRole(any(UserInfo.class));
 
     Mockito.when(
-      organizationServiceMock.getOrganizationByBrokerIdAndOrgName(anyString(),
-        anyString(), any(Pageable.class), eq(null))).thenReturn(null);
+      organizationServiceMock.getOrganizationByBrokerIdAndOrgName(same(userInfo.getBrokerId()),
+        same(orgName), any(Pageable.class), eq(null))).thenReturn(null);
 
     PagedOrganizationWithDebtPositionTypeOrgCount result = organizationService.getOrganizationsWithDebtPositionTypeOrgCount(
-      1L, "orgName", Pageable.unpaged(), new UserInfo(), null);
+      1L, orgName, Pageable.unpaged(), loggedUser, null);
 
     assertNotNull(result);
     assertTrue(result.getContent().isEmpty());
@@ -181,6 +191,10 @@ class OrganizationRetrieverServiceImplTest {
 
   @Test
   void givenEmptyOrganizationsWhenGetOrganizationsWithDebtPositionTypeOrgCountThenReturnEmptyContent() {
+    UserInfo loggedUser = new UserInfo();
+    loggedUser.setBrokerId(1L);
+    String orgName = "orgName";
+
     Mockito.doNothing().when(authorizationServiceMock)
       .validateBrokerAdminRole(any(UserInfo.class));
 
@@ -189,12 +203,12 @@ class OrganizationRetrieverServiceImplTest {
       PagedModelOrganizationEmbedded.builder().organizations(Collections.emptyList())
         .build());
     Mockito.when(
-      organizationServiceMock.getOrganizationByBrokerIdAndOrgName(anyString(),
-        anyString(), any(
+      organizationServiceMock.getOrganizationByBrokerIdAndOrgName(same(loggedUser.getBrokerId()),
+        same(orgName), any(
           Pageable.class), eq(null))).thenReturn(pagedModelOrganization);
 
     PagedOrganizationWithDebtPositionTypeOrgCount result = organizationService.getOrganizationsWithDebtPositionTypeOrgCount(
-      1L, "orgName", Pageable.unpaged(), new UserInfo(), null);
+      1L, orgName, Pageable.unpaged(), loggedUser, null);
 
     assertNotNull(result);
     assertTrue(result.getContent().isEmpty());

@@ -7,16 +7,8 @@ import it.gov.pagopa.pu.bff.dto.generated.ExportFile;
 import it.gov.pagopa.pu.bff.dto.generated.PagedExportFile;
 import it.gov.pagopa.pu.bff.service.export_flow_file.ExportFileRetrieverService;
 import it.gov.pagopa.pu.bff.util.TestUtils;
-import it.gov.pagopa.pu.processexecutions.dto.generated.ClassificationsExportFileFilter;
-import it.gov.pagopa.pu.processexecutions.dto.generated.ClassificationsExportFileRequestDTO;
+import it.gov.pagopa.pu.processexecutions.dto.generated.*;
 import it.gov.pagopa.pu.processexecutions.dto.generated.ExportFile.ExportFileTypeEnum;
-import it.gov.pagopa.pu.processexecutions.dto.generated.ExportFileStatus;
-import it.gov.pagopa.pu.processexecutions.dto.generated.PaidExportFileFilter;
-import it.gov.pagopa.pu.processexecutions.dto.generated.PaidExportFileRequestDTO;
-import it.gov.pagopa.pu.processexecutions.dto.generated.PaymentsReportingExportFileFilter;
-import it.gov.pagopa.pu.processexecutions.dto.generated.PaymentsReportingExportFileRequestDTO;
-import java.time.OffsetDateTime;
-import java.util.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -32,6 +24,10 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+
+import java.time.LocalDate;
+import java.time.OffsetDateTime;
+import java.util.List;
 
 @ExtendWith(MockitoExtension.class)
 class ExportFileControllerTest {
@@ -146,5 +142,28 @@ class ExportFileControllerTest {
     Mockito.verify(exportFileRetrieverServiceMock).createPaymentsReportingExportFile(Mockito.eq(requestDTO), Mockito.any(
       UserInfo.class), Mockito.anyString());
   }
+
+  @Test
+  void givenCorrectRequestWhenCreateArchivingExportFileThenOk() {
+    LocalDate localDate = LocalDate.parse("2025-04-14");
+    LocalDateIntervalFilter localDateIntervalFilter = LocalDateIntervalFilter.builder().from(localDate).to(localDate).build();
+    ReceiptsArchivingExportFileFilter receiptsArchivingExportFileFilter = ReceiptsArchivingExportFileFilter.builder().paymentDate(localDateIntervalFilter).build();
+
+    ReceiptsArchivingExportFileRequestDTO receiptsArchivingExportFileRequestDTO = ReceiptsArchivingExportFileRequestDTO.builder()
+      .organizationId(1L)
+      .exportFileType(ReceiptsArchivingExportFileRequestDTO.ExportFileTypeEnum.RECEIPTS_ARCHIVING)
+      .fileVersion("V1_0")
+      .filterFields(receiptsArchivingExportFileFilter)
+      .build();
+
+    TestUtils.addSampleUserIntoSecurityContext();
+
+    ResponseEntity<Void> response = exportFileController.createReceiptsArchivingExportFile(receiptsArchivingExportFileRequestDTO);
+
+    Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
+    Mockito.verify(exportFileRetrieverServiceMock).createReceiptsArchivingExportFile(Mockito.eq(receiptsArchivingExportFileRequestDTO), Mockito.any(
+      UserInfo.class), Mockito.anyString());
+  }
+
 }
 

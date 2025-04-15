@@ -4,6 +4,7 @@ import it.gov.pagopa.pu.bff.connector.process_executions.config.ProcessExecution
 import it.gov.pagopa.pu.processexecutions.dto.generated.ClassificationsExportFileRequestDTO;
 import it.gov.pagopa.pu.processexecutions.dto.generated.PaidExportFileRequestDTO;
 import it.gov.pagopa.pu.processexecutions.dto.generated.PaymentsReportingExportFileRequestDTO;
+import it.gov.pagopa.pu.processexecutions.dto.generated.ReceiptsArchivingExportFileRequestDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -33,6 +34,10 @@ public class ExportFileClient {
     PaymentsReportingExportFileRequestDTO paymentsReportingExportFileRequestDTO, String accessToken) {
     processExecutionsApisHolder.getExportFileControllerApi(accessToken)
       .createPaymentsReportingExportFile(paymentsReportingExportFileRequestDTO);
+  }
+
+  public void createReceiptsArchivingExportFile(ReceiptsArchivingExportFileRequestDTO receiptsArchivingExportFileRequestDTO , String accessToken){
+    processExecutionsApisHolder.getExportFileControllerApi(accessToken).createReceiptsArchivingExportFile(receiptsArchivingExportFileRequestDTO);
   }
 
 }

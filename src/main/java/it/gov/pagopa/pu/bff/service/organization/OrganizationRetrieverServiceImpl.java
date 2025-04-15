@@ -62,7 +62,7 @@ public class OrganizationRetrieverServiceImpl implements OrganizationRetrieverSe
     authorizationService.validateBrokerAdminRole(loggedUser);
 
     PagedModelOrganization pagedOrganizations = organizationService.getOrganizationByBrokerIdAndOrgName(
-      String.valueOf(loggedUser.getBrokerId()), organizationName, pageable,
+      loggedUser.getBrokerId(), organizationName, pageable,
       accessToken);
 
     if (pagedOrganizations == null ||

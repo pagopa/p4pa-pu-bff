@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "f3188362-878f-43c7-902c-bc9879757f68",
+		"_postman_id": "93a3e7a2-8ee2-4e7b-97af-b0ecc05cdcbc",
 		"name": "PU-BFF",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "28798913"
@@ -304,12 +304,12 @@
 								"organization",
 								":organizationId"
 							],
-              "variable": [
-                {
-                  "key": "organizationId",
-                  "value": "{{organizationId}}"
-                }
-              ]
+							"variable": [
+								{
+									"key": "organizationId",
+									"value": "{{organizationId}}"
+								}
+							]
 						}
 					},
 					"response": []
@@ -1234,6 +1234,81 @@
 								{
 									"key": "debtPositionTypeOrgId",
 									"value": "{{debtPositionTypeOrgId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "02_getDebtPositionTypeOrgOperators Copy",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let jsonResponse = pm.response.json();\r",
+									"pm.test(\"[DebtPositionTypeOrg getDebtPositionTypeOrgOperators], expected httpStatus: 200\", () => {\r",
+									"    pm.response.to.have.status(200);\r",
+									"})\r",
+									"pm.test(\"[DebtPositionTypeOrg getDebtPositionTypeOrgOperators] - getDebtPositionTypeOrgOperators\", () => {\r",
+									"    pm.expect(jsonResponse).to.have.property(\"content\").and.to.be.an(\"array\");\r",
+									"    pm.expect(jsonResponse).to.have.property(\"size\").and.to.be.a(\"number\");\r",
+									"    pm.expect(jsonResponse).to.have.property(\"totalElements\").and.to.be.a(\"number\");\r",
+									"    pm.expect(jsonResponse).to.have.property(\"totalPages\").and.to.be.a(\"number\");\r",
+									"    pm.expect(jsonResponse).to.have.property(\"number\").and.to.be.a(\"number\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{puBffBaseUrl}}/bff/organization/:organizationId/debt-position-type-orgs/operators?debtPositionTypeOrgId={{debtPositionTypeOrgId}}",
+							"host": [
+								"{{puBffBaseUrl}}"
+							],
+							"path": [
+								"bff",
+								"organization",
+								":organizationId",
+								"debt-position-type-orgs",
+								"operators"
+							],
+							"query": [
+								{
+									"key": "debtPositionTypeOrgId",
+									"value": "{{debtPositionTypeOrgId}}"
+								}
+							],
+							"variable": [
+								{
+									"key": "organizationId",
+									"value": "{{organizationId}}"
 								}
 							]
 						}

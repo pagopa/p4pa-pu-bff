@@ -6,7 +6,6 @@ import it.gov.pagopa.pu.bff.dto.generated.DebtPositionTypeOrgOperatorDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedDebtPositionTypeOrgOperatorDTO;
 import it.gov.pagopa.pu.debtpositions.dto.generated.CollectionModelDebtPositionTypeOrgOperators;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrgOperators;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -19,8 +18,15 @@ public class DebtPositionTypeOrgOperatorsMapper {
   public PagedDebtPositionTypeOrgOperatorDTO mapToPagedDebtPositionTypeOrgOperatorDTO(
     OperatorsPage operatorsPage,
     CollectionModelDebtPositionTypeOrgOperators collectionModelDebtPositionTypeOrgOperators) {
+    List<DebtPositionTypeOrgOperatorDTO> content = operatorsPage.getContent()
+      .stream()
+      .map(o -> mapToDebtPositionTypeOrgOperatorDTO(o,
+        getDebtPositionTypeOrgOperatorsIds(
+          collectionModelDebtPositionTypeOrgOperators)))
+      .toList();
+
     return PagedDebtPositionTypeOrgOperatorDTO.builder()
-      .content(buildContent(operatorsPage, collectionModelDebtPositionTypeOrgOperators))
+      .content(content)
       .size(operatorsPage.getPageSize().longValue())
       .totalPages(operatorsPage.getTotalPages().longValue())
       .totalElements(operatorsPage.getTotalElements().longValue())
@@ -28,24 +34,21 @@ public class DebtPositionTypeOrgOperatorsMapper {
       .build();
   }
 
-  private List<DebtPositionTypeOrgOperatorDTO> buildContent(OperatorsPage operatorsPage,
+  private HashSet<String> getDebtPositionTypeOrgOperatorsIds(
     CollectionModelDebtPositionTypeOrgOperators collectionModelDebtPositionTypeOrgOperators) {
     if (collectionModelDebtPositionTypeOrgOperators != null &&
       collectionModelDebtPositionTypeOrgOperators.getEmbedded() != null &&
       !CollectionUtils.isEmpty(
-        collectionModelDebtPositionTypeOrgOperators.getEmbedded().getDebtPositionTypeOrgOperatorses())) {
-      HashSet<String> debtPositionTypeOrgOperatorsIds = collectionModelDebtPositionTypeOrgOperators.getEmbedded().getDebtPositionTypeOrgOperatorses()
+        collectionModelDebtPositionTypeOrgOperators.getEmbedded()
+          .getDebtPositionTypeOrgOperatorses())) {
+      return collectionModelDebtPositionTypeOrgOperators.getEmbedded()
+        .getDebtPositionTypeOrgOperatorses()
         .stream()
         .map(DebtPositionTypeOrgOperators::getOperatorExternalUserId)
         .collect(Collectors.toCollection(HashSet::new));
-
-      return operatorsPage.getContent()
-        .stream()
-        .map(o -> mapToDebtPositionTypeOrgOperatorDTO(o, debtPositionTypeOrgOperatorsIds))
-        .toList();
     }
 
-    return Collections.emptyList();
+    return new HashSet<>();
   }
 
   private DebtPositionTypeOrgOperatorDTO mapToDebtPositionTypeOrgOperatorDTO(

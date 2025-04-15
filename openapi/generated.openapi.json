@@ -3244,11 +3244,7 @@
         "type" : "string",
         "enum" : [ "PAID", "CLASSIFICATIONS", "PAYMENTS_REPORTING", "RECEIPTS_ARCHIVING" ]
       },
-      "FileVersionEnum" : {
-        "type" : "string",
-        "enum" : [ "v1.0" ]
-      },
-      "PaymentDate" : {
+      "LocalDateIntervalFilter" : {
         "type" : "object",
         "properties" : {
           "from" : {
@@ -3258,6 +3254,14 @@
           "to" : {
             "type" : "string",
             "format" : "date"
+          }
+        }
+      },
+      "ReceiptsArchivingExportFileFilter" : {
+        "type" : "object",
+        "properties" : {
+          "paymentDate" : {
+            "$ref" : "#/components/schemas/LocalDateIntervalFilter"
           }
         }
       },
@@ -3272,21 +3276,13 @@
             "$ref" : "#/components/schemas/ExportFileTypeEnum"
           },
           "fileVersion" : {
-            "$ref" : "#/components/schemas/FileVersionEnum"
+            "type" : "string"
           },
           "filterFields" : {
-            "$ref" : "#/components/schemas/ReceiptsArchivingFilterFields"
+            "$ref" : "#/components/schemas/ReceiptsArchivingExportFileFilter"
           }
         },
         "required" : [ "exportFileType", "fileVersion", "filterFields", "organizationId" ]
-      },
-      "ReceiptsArchivingFilterFields" : {
-        "type" : "object",
-        "properties" : {
-          "paymentDate" : {
-            "$ref" : "#/components/schemas/PaymentDate"
-          }
-        }
       },
       "PaymentsReportingExportFileFilter" : {
         "type" : "object",
@@ -3314,19 +3310,6 @@
           }
         },
         "required" : [ "exportFileType", "fileVersion", "filterFields", "organizationId" ]
-      },
-      "LocalDateIntervalFilter" : {
-        "type" : "object",
-        "properties" : {
-          "from" : {
-            "type" : "string",
-            "format" : "date"
-          },
-          "to" : {
-            "type" : "string",
-            "format" : "date"
-          }
-        }
       },
       "PaidExportFileFilter" : {
         "type" : "object",

@@ -1,17 +1,20 @@
 package it.gov.pagopa.pu.bff.service.debt_position_type_org;
 
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
+import it.gov.pagopa.pu.bff.connector.debt_position.DebtPositionService;
 import it.gov.pagopa.pu.bff.connector.debt_position.DebtPositionTypeOrgService;
 import it.gov.pagopa.pu.bff.dto.generated.PagedDebtPositionTypeOrgWithCount;
+import it.gov.pagopa.pu.bff.exception.ConflictException;
 import it.gov.pagopa.pu.bff.mapper.DebtPositionTypeOrgWithCountMapper;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
+import it.gov.pagopa.pu.debtpositions.dto.generated.CollectionModelDebtPosition;
 import it.gov.pagopa.pu.debtpositions.dto.generated.CollectionModelDebtPositionTypeOrg;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrg;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-
 import java.util.Collections;
 import java.util.List;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 @Service
 public class DebtPositionTypeOrgRetrieverServiceImpl implements DebtPositionTypeOrgRetrieverService {
@@ -19,13 +22,16 @@ public class DebtPositionTypeOrgRetrieverServiceImpl implements DebtPositionType
   private final DebtPositionTypeOrgService debtPositionTypeOrgService;
   private final DebtPositionTypeOrgWithCountMapper debtPositionTypeOrgWithCountMapper;
   private final AuthorizationService authorizationService;
+  private final DebtPositionService debtPositionService;
 
   public DebtPositionTypeOrgRetrieverServiceImpl(DebtPositionTypeOrgService debtPositionTypeOrgService,
                                                  DebtPositionTypeOrgWithCountMapper debtPositionTypeOrgWithCountMapper,
-                                                 AuthorizationService authorizationService) {
+                                                 AuthorizationService authorizationService,
+    DebtPositionService debtPositionService) {
     this.debtPositionTypeOrgService = debtPositionTypeOrgService;
     this.debtPositionTypeOrgWithCountMapper = debtPositionTypeOrgWithCountMapper;
     this.authorizationService = authorizationService;
+    this.debtPositionService = debtPositionService;
   }
 
   @Override
@@ -52,4 +58,15 @@ public class DebtPositionTypeOrgRetrieverServiceImpl implements DebtPositionType
       debtPositionTypeOrgService.getDebtPositionTypeOrgWithCount(organizationId, code, description, pageable, accessToken));
   }
 
+  @Override
+  public void deleteDebtPositionTypeOrg(Long organizationId,
+    Long debtPositionTypeOrgId, UserInfo loggedUser, String accessToken) {
+    authorizationService.validateOrganizationOrBrokerAdmin(organizationId,loggedUser,accessToken);
+    CollectionModelDebtPosition debtPositions = debtPositionService.getDebtPositionByDebtPositionTypeOrgId(
+      debtPositionTypeOrgId, accessToken);
+    if(debtPositions!=null && debtPositions.getEmbedded()!=null && !CollectionUtils.isEmpty(debtPositions.getEmbedded().getDebtPositions())){
+      throw new ConflictException( String.format("Cannot delete DebtPositionTypeOrg: %d DebtPositions still reference it.", debtPositions.getEmbedded().getDebtPositions().size()));
+    }
+    debtPositionTypeOrgService.deleteDebtPositionTypeOrg(debtPositionTypeOrgId,accessToken);
+  }
 }

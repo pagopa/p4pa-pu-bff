@@ -1,6 +1,8 @@
 package it.gov.pagopa.pu.bff.connector.debt_position;
 
 import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 import it.gov.pagopa.pu.bff.connector.debt_position.client.DebtPositionTypeOrgClient;
@@ -91,6 +93,18 @@ class DebtPositionTypeOrgServiceTest {
     CollectionModelDebtPositionTypeOrgCountByOrganizationId result = service.getDebtPositionTypeOrgCountByOrganizationId(List.of(organizationId), accessToken);
 
     assertSame(expectedResult, result);
+  }
+
+  @Test
+  void whenDeleteDebtPositionTypeOrgThenInvokeClient() {
+    Long debtPositionTypeOrgId = 1L;
+    String accessToken = "ACCESSTOKEN";
+
+    doNothing().when(debtPositionTypeOrgClientMock).deleteDebtPositionTypeOrg(debtPositionTypeOrgId,accessToken);
+
+    service.deleteDebtPositionTypeOrg(debtPositionTypeOrgId, accessToken);
+
+    verifyNoMoreInteractions(debtPositionTypeOrgClientMock);
   }
 
 }

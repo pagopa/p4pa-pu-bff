@@ -47,4 +47,9 @@ public class DebtPositionTypeOrgServiceImpl implements DebtPositionTypeOrgServic
     return debtPositionTypeOrgClient.getDebtPositionTypeOrgCountByOrganizationId(organizationIds, accessToken);
   }
 
+  @Override
+  public void deleteDebtPositionTypeOrg(Long debtPositionTypeOrgId, String accessToken) {
+    debtPositionTypeOrgClient.deleteDebtPositionTypeOrg(debtPositionTypeOrgId, accessToken);
+  }
+
 }

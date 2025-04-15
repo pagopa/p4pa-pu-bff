@@ -4,6 +4,8 @@ import it.gov.pagopa.pu.auth.dto.generated.AccessToken;
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.auth.dto.generated.UserOrganizationRoles;
 import it.gov.pagopa.pu.bff.connector.auth.client.AuthnClient;
+import it.gov.pagopa.pu.bff.connector.organization.OrganizationService;
+import it.gov.pagopa.pu.organization.dto.generated.Organization;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,12 +23,15 @@ public class AuthorizationService {
   public static final String ROLE_ADMIN = "ROLE_ADMIN";
 
   private final AuthnClient authClientImpl;
+  private final OrganizationService organizationService;
   private final String subjectIssuer;
 
   public AuthorizationService(@Value("${rest.auth.token-exchange-issuer}") String subjectIssuer,
-                              AuthnClient authClientImpl) {
+                              AuthnClient authClientImpl,
+    OrganizationService organizationService) {
     this.subjectIssuer = subjectIssuer;
     this.authClientImpl = authClientImpl;
+    this.organizationService = organizationService;
   }
 
   public UserInfo validateToken(String accessToken) {
@@ -48,15 +53,7 @@ public class AuthorizationService {
   }
 
   public void validateBrokerAdminRole(UserInfo loggedUser) {
-    String brokerFiscalCode = loggedUser.getBrokerFiscalCode();
-    boolean isBrokerAdmin = loggedUser.getOrganizations()
-      .stream()
-      .anyMatch(o ->
-        brokerFiscalCode.equals(o.getOrganizationFiscalCode()) &&
-          !CollectionUtils.isEmpty(o.getRoles()) &&
-          o.getRoles().contains(ROLE_ADMIN));
-
-    if (!isBrokerAdmin) {
+    if (!isBrokerAdminRole(loggedUser)) {
       log.debug(
         "Broker is not an admin for this organization. [user brokerFiscalCode:{}]",
         loggedUser.getBrokerFiscalCode());
@@ -66,10 +63,20 @@ public class AuthorizationService {
     }
   }
 
+  private static boolean isBrokerAdminRole(UserInfo loggedUser) {
+    String brokerFiscalCode = loggedUser.getBrokerFiscalCode();
+    return loggedUser.getOrganizations()
+      .stream()
+      .anyMatch(o ->
+        o.getOrganizationFiscalCode().equals(brokerFiscalCode) &&
+          !CollectionUtils.isEmpty(o.getRoles()) &&
+          o.getRoles().contains(ROLE_ADMIN));
+  }
+
   public void validateAdminRole(Long organizationId, UserInfo loggedUser) {
     boolean roleAdmin = isAdminRole(organizationId, loggedUser);
     if (!roleAdmin) {
-      handleUnauthorizedUser(organizationId, loggedUser);
+      throw buildAuthorizationDeniedException(organizationId, loggedUser);
     }
   }
 
@@ -82,13 +89,13 @@ public class AuthorizationService {
 
   public static void validateUserForOrganizationId(Long organizationId, UserInfo loggedUser) {
     if (getUserOrganizationRoles(organizationId, loggedUser).isEmpty()) {
-      handleUnauthorizedUser(organizationId, loggedUser);
+      throw buildAuthorizationDeniedException(organizationId, loggedUser);
     }
   }
 
-  private static void handleUnauthorizedUser(Long organizationId, UserInfo loggedUser) {
+  private static AuthorizationDeniedException buildAuthorizationDeniedException(Long organizationId, UserInfo loggedUser){
     log.debug("Unauthorized user. [organizationId:{}]", organizationId);
-    throw new AuthorizationDeniedException("Access denied on organizationId " + organizationId + " to user " + loggedUser.getMappedExternalUserId());
+    return new AuthorizationDeniedException("Access denied on organizationId " + organizationId + " to user " + loggedUser.getMappedExternalUserId());
   }
 
   private static Optional<UserOrganizationRoles> getUserOrganizationRoles(Long organizationId, UserInfo loggedUser) {
@@ -99,5 +106,24 @@ public class AuthorizationService {
 
   public void logout(String accessToken) {
     authClientImpl.logout(CLIENT_ID,accessToken);
+  }
+
+  public void validateOrganizationOrBrokerAdmin(Long organizationId, UserInfo loggedUser, String accessToken){
+    if (!isOrganizationOrBrokerAdmin(organizationId,loggedUser,accessToken)) {
+      throw new AuthorizationDeniedException(
+        "User is neither the organization’s admin nor the broker’s admin, or the organization having organizationId "+organizationId+" is not managed by the broker having brokerId "+ loggedUser.getBrokerId());
+    }
+  }
+
+  public boolean isOrganizationOrBrokerAdmin(Long organizationId, UserInfo loggedUser, String accessToken){
+    return isAdminRole(organizationId,loggedUser) ||
+      (isBrokerAdminRole(loggedUser)
+        && isOrganizationHandledByBroker(organizationId,loggedUser,accessToken));
+  }
+
+  private boolean isOrganizationHandledByBroker(Long organizationId, UserInfo loggedUser, String accessToken) {
+    Organization organization = organizationService.getOrganizationByOrganizationId(
+      organizationId, accessToken);
+    return loggedUser.getBrokerId()!=null && organization!=null && loggedUser.getBrokerId().equals(organization.getBrokerId());
   }
 }

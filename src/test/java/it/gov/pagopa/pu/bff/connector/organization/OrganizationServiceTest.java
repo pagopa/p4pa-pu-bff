@@ -3,6 +3,7 @@ package it.gov.pagopa.pu.bff.connector.organization;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.Mockito.when;
 
+import it.gov.pagopa.pu.bff.connector.organization.client.OrganizationEntityClient;
 import it.gov.pagopa.pu.bff.connector.organization.client.OrganizationSearchClient;
 import it.gov.pagopa.pu.organization.dto.generated.Organization;
 import it.gov.pagopa.pu.organization.dto.generated.PagedModelOrganization;
@@ -18,13 +19,15 @@ import org.springframework.data.domain.Pageable;
 class OrganizationServiceTest {
 
   @Mock
-  private OrganizationSearchClient client;
+  private OrganizationSearchClient organizationSearchClient;
+  @Mock
+  private OrganizationEntityClient organizationEntityClient;
 
   private OrganizationService service;
 
   @BeforeEach
   void setUp() {
-    service = new OrganizationServiceImpl(client);
+    service = new OrganizationServiceImpl(organizationSearchClient,organizationEntityClient);
   }
 
   @Test
@@ -33,7 +36,7 @@ class OrganizationServiceTest {
     String ipaCode = "ipaCode";
     String accessToken = "accessToken";
 
-    when(client.getOrganizationByIpaCode(Mockito.same(ipaCode), Mockito.same(accessToken)))
+    when(organizationSearchClient.getOrganizationByIpaCode(Mockito.same(ipaCode), Mockito.same(accessToken)))
       .thenReturn(expected);
 
     Organization result = service.getOrganizationByIpaCode(ipaCode, accessToken);
@@ -48,10 +51,24 @@ class OrganizationServiceTest {
     String orgName = "orgName";
     String accessToken = "accessToken";
 
-    when(client.getOrganizationByBrokerIdAndOrgName(Mockito.same(brokerId), Mockito.same(orgName), Mockito.any(), Mockito.same(accessToken)))
+    when(organizationSearchClient.getOrganizationByBrokerIdAndOrgName(Mockito.same(brokerId), Mockito.same(orgName), Mockito.any(), Mockito.same(accessToken)))
       .thenReturn(expected);
 
     PagedModelOrganization result = service.getOrganizationByBrokerIdAndOrgName(brokerId, orgName, Pageable.unpaged(), accessToken);
+
+    assertSame(expected, result);
+  }
+
+  @Test
+  void testGetOrganizationByOrganizationId() {
+    Organization expected = new Organization();
+    Long organizationId = 1L;
+    String accessToken = "accessToken";
+
+    when(organizationEntityClient.getOrganizationByOrganizationId(Mockito.same(organizationId), Mockito.same(accessToken)))
+      .thenReturn(expected);
+
+    Organization result = service.getOrganizationByOrganizationId(organizationId, accessToken);
 
     assertSame(expected, result);
   }

@@ -1295,7 +1295,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ReceiptsArchivingExportFileRequestDTO'
+              $ref: 'ReceiptsArchivingExportFileRequestDTO'
         required: true
       responses:
         '201':
@@ -1835,39 +1835,6 @@ components:
           type: string
         status:
           type: 'ExportFileStatus'
-    ReceiptsArchivingExportFileRequestDTO:
-      required:
-        - organizationId
-        - exportFileType
-        - fileVersion
-        - filterFields
-      type: object
-      properties:
-        organizationId:
-          type: integer
-          format: int64
-        exportFileType:
-          type: ExportFileType
-        fileVersion:
-          type: string
-          enum:
-            - v1.0
-        filterFields:
-          $ref: '#/components/schemas/ReceiptsArchivingFilterFields'
-    ReceiptsArchivingFilterFields:
-      type: object
-      properties:
-        paymentDate:
-          $ref: '#/components/schemas/PaymentDate'
-    PaymentDate:
-      type: object
-      properties:
-        from:
-          type: string
-          format: date
-        to:
-          type: string
-          format: date
     PagedDebtPositionView:
       type: object
       required:

@@ -30,7 +30,7 @@ class DebtPositionTypeOrgOperatorsMapperTest {
   void givenOperatorsAndDebtPositionTypeOrgOperatorsWhenMapToPagedDebtPositionTypeOrgOperatorDTOThenCorrectMapping() {
     OperatorsPage operators = podamFactory.manufacturePojo(OperatorsPage.class);
     DebtPositionTypeOrgOperators debtPositionTypeOrgOperator = podamFactory.manufacturePojo(DebtPositionTypeOrgOperators.class);
-    debtPositionTypeOrgOperator.setOperatorExternalUserId(operators.getContent().getFirst().getOperatorId());
+    debtPositionTypeOrgOperator.setOperatorExternalUserId(operators.getContent().getFirst().getMappedExternalUserId());
     CollectionModelDebtPositionTypeOrgOperators debtPositionTypeOrgOperators = CollectionModelDebtPositionTypeOrgOperators.builder()
       .embedded(PagedModelDebtPositionTypeOrgOperatorsEmbedded.builder()
         .debtPositionTypeOrgOperatorses(List.of(debtPositionTypeOrgOperator))

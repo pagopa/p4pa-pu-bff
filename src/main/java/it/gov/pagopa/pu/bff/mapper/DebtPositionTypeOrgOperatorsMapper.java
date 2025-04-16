@@ -58,7 +58,7 @@ public class DebtPositionTypeOrgOperatorsMapper {
       .firstName(operator.getFirstName())
       .lastName(operator.getLastName())
       .mappedExternalUserId(operator.getMappedExternalUserId())
-      .enabled(debtPositionTypeOrgOperatorIds.contains(operator.getOperatorId()))
+      .enabled(debtPositionTypeOrgOperatorIds.contains(operator.getMappedExternalUserId()))
       .build();
   }
 }

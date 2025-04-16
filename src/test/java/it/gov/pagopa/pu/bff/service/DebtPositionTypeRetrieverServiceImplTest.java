@@ -361,7 +361,6 @@ class DebtPositionTypeRetrieverServiceImplTest {
   void givenDebtPositionTypeAssociatedWithOrgsWhenDeleteDebtPositionTypeThenConflictException() {
     long debtPositionTypeId = 123L;
     UserInfo loggedUser = new UserInfo();
-    String accessToken = "TOKEN";
 
     DebtPositionTypeOrgSearchControllerApi debtPositionTypeOrgSearchControllerApiMock = Mockito.mock(DebtPositionTypeOrgSearchControllerApi.class);
     Mockito.when(debtPositionApisHolderMock.getDebtPositionTypeOrgSearchControllerApi(accessToken))

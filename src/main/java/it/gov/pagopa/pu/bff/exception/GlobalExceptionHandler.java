@@ -21,6 +21,7 @@ import org.springframework.web.ErrorResponseException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 @RestControllerAdvice
@@ -54,8 +55,13 @@ public class GlobalExceptionHandler {
   }
 
   @ExceptionHandler({AuthorizationDeniedException.class})
-  public ResponseEntity<ErrorDTO> handleAuthorizationDeniedException(Exception ex, HttpServletRequest request) {
+  public ResponseEntity<ErrorDTO> handleAuthorizationDeniedException(AuthorizationDeniedException ex, HttpServletRequest request) {
     return handleException(ex, request, HttpStatus.FORBIDDEN, ErrorDTO.TitleEnum.FORBIDDEN);
+  }
+
+  @ExceptionHandler({HttpClientErrorException.class})
+  public ResponseEntity<ErrorDTO> handleHttpClientErrorException(HttpClientErrorException ex, HttpServletRequest request) {
+    return handleException(ex, request, ex.getStatusCode(), TitleEnum.GENERIC_ERROR);
   }
 
   @ExceptionHandler({ServletException.class, ErrorResponseException.class})

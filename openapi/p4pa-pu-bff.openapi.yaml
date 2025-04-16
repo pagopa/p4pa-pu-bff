@@ -158,6 +158,7 @@ paths:
       parameters:
         - name: organizationType
           in: query
+          required: true
           schema:
             type: string
       responses:
@@ -183,10 +184,12 @@ paths:
       parameters:
         - name: organizationType
           in: query
+          required: true
           schema:
             type: string
         - name: macroAreaCode
           in: query
+          required: true
           schema:
             type: string
       responses:
@@ -212,14 +215,17 @@ paths:
       parameters:
         - name: organizationType
           in: query
+          required: true
           schema:
             type: string
         - name: macroAreaCode
           in: query
+          required: true
           schema:
             type: string
         - name: serviceTypeCode
           in: query
+          required: true
           schema:
             type: string
       responses:
@@ -245,18 +251,22 @@ paths:
       parameters:
         - name: organizationType
           in: query
+          required: true
           schema:
             type: string
         - name: macroAreaCode
           in: query
+          required: true
           schema:
             type: string
         - name: serviceTypeCode
           in: query
+          required: true
           schema:
             type: string
         - name: collectionReason
           in: query
+          required: true
           schema:
             type: string
       responses:
@@ -1346,7 +1356,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: 'ReceiptsArchivingExportFileRequestDTO'
+              type: 'ReceiptsArchivingExportFileRequestDTO'
         required: true
       responses:
         '201':
@@ -1394,6 +1404,17 @@ components:
   schemas:
     TaxonomyCodeDTO:
       type: object
+      required:
+        - organizationType
+        - organizationTypeDescription
+        - macroAreaCode
+        - macroAreaName
+        - macroAreaDescription
+        - serviceTypeCode
+        - serviceType
+        - serviceTypeDescription
+        - collectionReason
+        - taxonomyCode
       properties:
         organizationType:
           type: string
@@ -1417,6 +1438,16 @@ components:
           type: string
     TaxonomyCollectionReasonDTO:
       type: object
+      required:
+        - organizationType
+        - organizationTypeDescription
+        - macroAreaCode
+        - macroAreaName
+        - macroAreaDescription
+        - serviceTypeCode
+        - serviceType
+        - serviceTypeDescription
+        - collectionReason
       properties:
         organizationType:
           type: string
@@ -1438,6 +1469,15 @@ components:
           type: string
     TaxonomyServiceTypeCodeDTO:
       type: object
+      required:
+        - organizationType
+        - organizationTypeDescription
+        - macroAreaCode
+        - macroAreaName
+        - macroAreaDescription
+        - serviceTypeCode
+        - serviceType
+        - serviceTypeDescription
       properties:
         organizationType:
           type: string
@@ -1457,6 +1497,12 @@ components:
           type: string
     TaxonomyMacroAreaCodeDTO:
       type: object
+      required:
+        - organizationType
+        - organizationTypeDescription
+        - macroAreaCode
+        - macroAreaName
+        - macroAreaDescription
       properties:
         organizationType:
           type: string
@@ -1470,6 +1516,9 @@ components:
           type: string
     TaxonomyOrganizationTypeDTO:
       type: object
+      required:
+        - organizationType
+        - organizationTypeDescription
       properties:
         organizationType:
           type: string
@@ -2037,6 +2086,7 @@ components:
         code:
           type: string
           maxLength: 255
+          readOnly: true
         description:
           type: string
           readOnly: true
@@ -2066,19 +2116,6 @@ components:
     DebtPositionTypePatchRequestBody:
       type: object
       properties:
-        brokerId:
-          type: integer
-          format: int64
-        code:
-          type: string
-        orgType:
-          type: string
-        macroArea:
-          type: string
-        serviceType:
-          type: string
-        collectingReason:
-          type: string
         flagAnonymousFiscalCode:
           type: boolean
         flagMandatoryDueDate:

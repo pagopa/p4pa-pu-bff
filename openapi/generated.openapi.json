@@ -515,28 +515,28 @@
         "parameters" : [ {
           "name" : "organizationType",
           "in" : "query",
-          "required" : false,
+          "required" : true,
           "schema" : {
             "type" : "string"
           }
         }, {
           "name" : "macroAreaCode",
           "in" : "query",
-          "required" : false,
+          "required" : true,
           "schema" : {
             "type" : "string"
           }
         }, {
           "name" : "serviceTypeCode",
           "in" : "query",
-          "required" : false,
+          "required" : true,
           "schema" : {
             "type" : "string"
           }
         }, {
           "name" : "collectionReason",
           "in" : "query",
-          "required" : false,
+          "required" : true,
           "schema" : {
             "type" : "string"
           }
@@ -568,14 +568,14 @@
         "parameters" : [ {
           "name" : "organizationType",
           "in" : "query",
-          "required" : false,
+          "required" : true,
           "schema" : {
             "type" : "string"
           }
         }, {
           "name" : "macroAreaCode",
           "in" : "query",
-          "required" : false,
+          "required" : true,
           "schema" : {
             "type" : "string"
           }
@@ -710,7 +710,7 @@
         "parameters" : [ {
           "name" : "organizationType",
           "in" : "query",
-          "required" : false,
+          "required" : true,
           "schema" : {
             "type" : "string"
           }
@@ -781,21 +781,21 @@
         "parameters" : [ {
           "name" : "organizationType",
           "in" : "query",
-          "required" : false,
+          "required" : true,
           "schema" : {
             "type" : "string"
           }
         }, {
           "name" : "macroAreaCode",
           "in" : "query",
-          "required" : false,
+          "required" : true,
           "schema" : {
             "type" : "string"
           }
         }, {
           "name" : "serviceTypeCode",
           "in" : "query",
-          "required" : false,
+          "required" : true,
           "schema" : {
             "type" : "string"
           }
@@ -3901,25 +3901,6 @@
       "DebtPositionTypePatchRequestBody" : {
         "type" : "object",
         "properties" : {
-          "brokerId" : {
-            "type" : "integer",
-            "format" : "int64"
-          },
-          "code" : {
-            "type" : "string"
-          },
-          "orgType" : {
-            "type" : "string"
-          },
-          "macroArea" : {
-            "type" : "string"
-          },
-          "serviceType" : {
-            "type" : "string"
-          },
-          "collectingReason" : {
-            "type" : "string"
-          },
           "flagAnonymousFiscalCode" : {
             "type" : "boolean"
           },
@@ -3967,7 +3948,8 @@
           "taxonomyCode" : {
             "type" : "string"
           }
-        }
+        },
+        "required" : [ "collectionReason", "macroAreaCode", "macroAreaDescription", "macroAreaName", "organizationType", "organizationTypeDescription", "serviceType", "serviceTypeCode", "serviceTypeDescription", "taxonomyCode" ]
       },
       "TaxonomyServiceTypeCodeDTO" : {
         "type" : "object",
@@ -3996,7 +3978,8 @@
           "serviceTypeDescription" : {
             "type" : "string"
           }
-        }
+        },
+        "required" : [ "macroAreaCode", "macroAreaDescription", "macroAreaName", "organizationType", "organizationTypeDescription", "serviceType", "serviceTypeCode", "serviceTypeDescription" ]
       },
       "TaxonomyOrganizationTypeDTO" : {
         "type" : "object",
@@ -4007,7 +3990,8 @@
           "organizationTypeDescription" : {
             "type" : "string"
           }
-        }
+        },
+        "required" : [ "organizationType", "organizationTypeDescription" ]
       },
       "TaxonomyMacroAreaCodeDTO" : {
         "type" : "object",
@@ -4027,7 +4011,8 @@
           "macroAreaDescription" : {
             "type" : "string"
           }
-        }
+        },
+        "required" : [ "macroAreaCode", "macroAreaDescription", "macroAreaName", "organizationType", "organizationTypeDescription" ]
       },
       "TaxonomyCollectionReasonDTO" : {
         "type" : "object",
@@ -4059,7 +4044,8 @@
           "collectionReason" : {
             "type" : "string"
           }
-        }
+        },
+        "required" : [ "collectionReason", "macroAreaCode", "macroAreaDescription", "macroAreaName", "organizationType", "organizationTypeDescription", "serviceType", "serviceTypeCode", "serviceTypeDescription" ]
       },
       "OperatorRoleEnum" : {
         "type" : "string",
@@ -5246,7 +5232,8 @@
           "code" : {
             "type" : "string",
             "maxLength" : 255,
-            "minLength" : 0
+            "minLength" : 0,
+            "readOnly" : true
           },
           "description" : {
             "type" : "string",

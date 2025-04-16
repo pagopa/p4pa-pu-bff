@@ -327,6 +327,28 @@ paths:
           description: Not Found - Debt Position Type not found
         '500':
           description: Internal Server Error
+    delete:
+      tags:
+        - DebtPositionTypes
+      summary: "Delete a specific DebtPositionType"
+      operationId: deleteDebtPositionType
+      parameters:
+        - name: debtPositionTypeId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: The unique identifier of the debt-position-type
+      responses:
+        '204':
+          description: No Content
+        '401':
+          description: Unauthorized - Missing or invalid token
+        '404':
+          description: Not Found - Debt Position Type not found
+        '500':
+          description: Internal Server Error
   /organization/{organizationId}/debt-position-type-orgs-with-count:
     get:
       tags:
@@ -1027,33 +1049,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorDTO'
-  /organization/{organizationId}/debt-position-types/{id}:
-    delete:
-      tags:
-        - DebtPositionTypes
-      summary: "Delete a specific debt-position-type"
-      operationId: deleteDebtPositionType
-      parameters:
-        - name: organizationId
-          in: path
-          required: true
-          schema:
-            type: integer
-            format: int64
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: integer
-            format: int64
-          description: The unique identifier of the debt-position-type
-      responses:
-        '204':
-          description: No Content
-        '401':
-          description: Unauthorized - Missing or invalid token
-        '404':
-          description: Not Found
   /debt-position-types/{id}:
     get:
       tags:

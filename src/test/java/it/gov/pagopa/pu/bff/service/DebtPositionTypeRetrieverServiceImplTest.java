@@ -1,29 +1,19 @@
 package it.gov.pagopa.pu.bff.service;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
-
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.connector.debt_position.DebtPositionTypeService;
+import it.gov.pagopa.pu.bff.connector.debt_position.config.DebtPositionApisHolder;
 import it.gov.pagopa.pu.bff.dto.generated.DebtPositionTypeDetailDTO;
 import it.gov.pagopa.pu.bff.dto.generated.DebtPositionTypePatchRequestBody;
 import it.gov.pagopa.pu.bff.dto.generated.PagedDebtPositionTypeWithCount;
+import it.gov.pagopa.pu.bff.exception.ConflictException;
 import it.gov.pagopa.pu.bff.mapper.DebtPositionTypeMapper;
 import it.gov.pagopa.pu.bff.mapper.DebtPositionTypeWithCountMapper;
 import it.gov.pagopa.pu.bff.service.debt_position.DebtPositionTypeRetrieverServiceImpl;
 import it.gov.pagopa.pu.bff.service.taxonomy.TaxonomyRetrieverService;
 import it.gov.pagopa.pu.bff.util.TestUtils;
-import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionType;
-import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeRequestBody;
-import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelDebtPositionTypeWithCount;
+import it.gov.pagopa.pu.debtpositions.controller.generated.DebtPositionTypeOrgSearchControllerApi;
+import it.gov.pagopa.pu.debtpositions.dto.generated.*;
 import it.gov.pagopa.pu.organization.dto.generated.Taxonomy;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -36,12 +26,16 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.security.authorization.AuthorizationDeniedException;
 import uk.co.jemos.podam.api.PodamFactory;
 
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
+
 @ExtendWith(MockitoExtension.class)
 class DebtPositionTypeRetrieverServiceImplTest {
 
   @Mock
   private DebtPositionTypeService debtPositionTypeServiceMock;
-
   @Mock
   private AuthorizationService authorizationServiceMock;
   @Mock
@@ -50,6 +44,8 @@ class DebtPositionTypeRetrieverServiceImplTest {
   private TaxonomyRetrieverService taxonomyRetrieverServiceMock;
   @Mock
   private DebtPositionTypeMapper debtPositionTypeMapperMock;
+  @Mock
+  private DebtPositionApisHolder debtPositionApisHolderMock;
 
   private DebtPositionTypeRetrieverServiceImpl debtPositionTypeRetrieverService;
 
@@ -77,7 +73,7 @@ class DebtPositionTypeRetrieverServiceImplTest {
     debtPositionType.setFlagNotifyIo(true);
     debtPositionType.setIoTemplateMessage("Test IO Template Message");
 
-    debtPositionTypeRetrieverService = new DebtPositionTypeRetrieverServiceImpl(debtPositionTypeServiceMock, debtPositionTypeWithCountMapperMock, taxonomyRetrieverServiceMock, authorizationServiceMock, debtPositionTypeMapperMock);
+    debtPositionTypeRetrieverService = new DebtPositionTypeRetrieverServiceImpl(debtPositionTypeServiceMock, debtPositionTypeWithCountMapperMock, taxonomyRetrieverServiceMock, authorizationServiceMock, debtPositionTypeMapperMock, debtPositionApisHolderMock);
   }
 
   @Test
@@ -122,18 +118,18 @@ class DebtPositionTypeRetrieverServiceImplTest {
     PagedModelDebtPositionTypeWithCount pagedModelDebtPositionTypeWithCount = new PagedModelDebtPositionTypeWithCount();
     PagedDebtPositionTypeWithCount pagedDebtPositionTypeWithCount = new PagedDebtPositionTypeWithCount();
 
-    Mockito.doNothing().when(authorizationServiceMock).validateAdminRole(1L,userInfo);
-    Mockito.when(debtPositionTypeServiceMock.getDebtPositionTypeWithCount(brokerId, description, PageRequest.of(0,10),accessToken)).thenReturn(pagedModelDebtPositionTypeWithCount);
+    Mockito.doNothing().when(authorizationServiceMock).validateAdminRole(1L, userInfo);
+    Mockito.when(debtPositionTypeServiceMock.getDebtPositionTypeWithCount(brokerId, description, PageRequest.of(0, 10), accessToken)).thenReturn(pagedModelDebtPositionTypeWithCount);
     Mockito.when(debtPositionTypeWithCountMapperMock.mapToPagedDebtPositionWithCount(pagedModelDebtPositionTypeWithCount)).thenReturn(pagedDebtPositionTypeWithCount);
 
     PagedDebtPositionTypeWithCount result = debtPositionTypeRetrieverService.getDebtPositionTypeWithCount(
-      1L, description, PageRequest.of(0,10),
+      1L, description, PageRequest.of(0, 10),
       userInfo, accessToken);
 
     assertNotNull(result);
-    assertSame(pagedDebtPositionTypeWithCount,result);
+    assertSame(pagedDebtPositionTypeWithCount, result);
 
-    Mockito.verifyNoMoreInteractions(debtPositionTypeServiceMock,debtPositionTypeWithCountMapperMock,authorizationServiceMock);
+    Mockito.verifyNoMoreInteractions(debtPositionTypeServiceMock, debtPositionTypeWithCountMapperMock, authorizationServiceMock);
   }
 
   @Test
@@ -144,14 +140,14 @@ class DebtPositionTypeRetrieverServiceImplTest {
     userInfo.setBrokerId(brokerId);
     PageRequest pageRequest = PageRequest.of(0, 10);
 
-    Mockito.doThrow(new AuthorizationDeniedException("")).when(authorizationServiceMock).validateAdminRole(1L,userInfo);
+    Mockito.doThrow(new AuthorizationDeniedException("")).when(authorizationServiceMock).validateAdminRole(1L, userInfo);
 
-    Assertions.assertThrows(AuthorizationDeniedException.class,()->
+    Assertions.assertThrows(AuthorizationDeniedException.class, () ->
       debtPositionTypeRetrieverService.getDebtPositionTypeWithCount(
         1L, description, pageRequest, userInfo, accessToken));
 
     Mockito.verifyNoMoreInteractions(authorizationServiceMock);
-    Mockito.verifyNoInteractions(debtPositionTypeServiceMock,debtPositionTypeWithCountMapperMock);
+    Mockito.verifyNoInteractions(debtPositionTypeServiceMock, debtPositionTypeWithCountMapperMock);
   }
 
   @Test
@@ -258,7 +254,7 @@ class DebtPositionTypeRetrieverServiceImplTest {
 
     Mockito.doNothing().when(authorizationServiceMock).validateBrokerAdminRole(userInfo);
 
-    Assertions.assertThrows(IllegalArgumentException.class,()-> debtPositionTypeRetrieverService.createDebtPositionType(debtPositionTypeRequestBody, userInfo, accessToken));
+    Assertions.assertThrows(IllegalArgumentException.class, () -> debtPositionTypeRetrieverService.createDebtPositionType(debtPositionTypeRequestBody, userInfo, accessToken));
 
     Mockito.verifyNoInteractions(debtPositionTypeServiceMock);
   }
@@ -291,10 +287,10 @@ class DebtPositionTypeRetrieverServiceImplTest {
 
     Mockito.doNothing().when(authorizationServiceMock).validateBrokerAdminRole(userInfo);
     Mockito.when(debtPositionTypeMapperMock.mapToDebtPositionTypeRequestBody(debtPositionTypePatchRequestBody)).thenReturn(debtPositionTypeRequestBody);
-    Mockito.when(debtPositionTypeServiceMock.patchDebtPositionType(eq(debtPositionTypeId),eq(debtPositionTypeRequestBody), anyString()))
+    Mockito.when(debtPositionTypeServiceMock.patchDebtPositionType(eq(debtPositionTypeId), eq(debtPositionTypeRequestBody), anyString()))
       .thenReturn(debtPositionType);
 
-    DebtPositionType result = debtPositionTypeRetrieverService.patchDebtPositionType(debtPositionTypeId,debtPositionTypePatchRequestBody, userInfo, accessToken);
+    DebtPositionType result = debtPositionTypeRetrieverService.patchDebtPositionType(debtPositionTypeId, debtPositionTypePatchRequestBody, userInfo, accessToken);
 
     Assertions.assertNotNull(result);
     Assertions.assertEquals(debtPositionType, result);
@@ -309,10 +305,10 @@ class DebtPositionTypeRetrieverServiceImplTest {
 
     Mockito.doThrow(new AuthorizationDeniedException("AuthorizationDeniedException")).when(authorizationServiceMock).validateBrokerAdminRole(userInfo);
 
-    Assertions.assertThrows(AuthorizationDeniedException.class, () -> debtPositionTypeRetrieverService.patchDebtPositionType(debtPositionTypeId,debtPositionTypePatchRequestBody, userInfo, accessToken));
+    Assertions.assertThrows(AuthorizationDeniedException.class, () -> debtPositionTypeRetrieverService.patchDebtPositionType(debtPositionTypeId, debtPositionTypePatchRequestBody, userInfo, accessToken));
 
     Mockito.verifyNoMoreInteractions(authorizationServiceMock);
-    Mockito.verifyNoInteractions(debtPositionTypeMapperMock,debtPositionTypeServiceMock);
+    Mockito.verifyNoInteractions(debtPositionTypeMapperMock, debtPositionTypeServiceMock);
   }
 
   @Test
@@ -329,12 +325,82 @@ class DebtPositionTypeRetrieverServiceImplTest {
 
     Mockito.doNothing().when(authorizationServiceMock).validateBrokerAdminRole(userInfo);
     Mockito.when(debtPositionTypeMapperMock.mapToDebtPositionTypeRequestBody(debtPositionTypePatchRequestBody)).thenReturn(debtPositionTypeRequestBody);
-    Mockito.when(debtPositionTypeServiceMock.patchDebtPositionType(eq(debtPositionTypeId),eq(debtPositionTypeRequestBody), anyString()))
+    Mockito.when(debtPositionTypeServiceMock.patchDebtPositionType(eq(debtPositionTypeId), eq(debtPositionTypeRequestBody), anyString()))
       .thenReturn(null);
 
-    DebtPositionType result = debtPositionTypeRetrieverService.patchDebtPositionType(debtPositionTypeId,debtPositionTypePatchRequestBody, userInfo, accessToken);
+    DebtPositionType result = debtPositionTypeRetrieverService.patchDebtPositionType(debtPositionTypeId, debtPositionTypePatchRequestBody, userInfo, accessToken);
 
     Assertions.assertNull(result);
   }
+
+  @Test
+  void givenValidRequestWhenDeleteDebtPositionTypeThenNoContent() {
+    long debtPositionTypeId = 123L;
+    UserInfo loggedUser = new UserInfo();
+
+    DebtPositionTypeOrgSearchControllerApi debtPositionTypeOrgSearchControllerApiMock = Mockito.mock(DebtPositionTypeOrgSearchControllerApi.class);
+    Mockito.when(debtPositionApisHolderMock.getDebtPositionTypeOrgSearchControllerApi(accessToken))
+      .thenReturn(debtPositionTypeOrgSearchControllerApiMock);
+
+    Mockito.when(debtPositionTypeOrgSearchControllerApiMock.crudDebtPositionTypeOrgsFindByDebtPositionTypeId(debtPositionTypeId))
+      .thenReturn(new CollectionModelDebtPositionTypeOrg());
+
+    Mockito.doNothing().when(authorizationServiceMock).validateBrokerAdminRole(loggedUser);
+    Mockito.doNothing().when(debtPositionTypeServiceMock).deleteDebtPositionType(debtPositionTypeId, accessToken);
+
+    debtPositionTypeRetrieverService.deleteDebtPositionType(debtPositionTypeId, loggedUser, accessToken);
+
+    Mockito.verify(authorizationServiceMock).validateBrokerAdminRole(loggedUser);
+    Mockito.verify(debtPositionApisHolderMock).getDebtPositionTypeOrgSearchControllerApi(accessToken);
+    Mockito.verify(debtPositionTypeOrgSearchControllerApiMock).crudDebtPositionTypeOrgsFindByDebtPositionTypeId(debtPositionTypeId);
+    Mockito.verify(debtPositionTypeServiceMock).deleteDebtPositionType(debtPositionTypeId, accessToken);
+    Mockito.verifyNoMoreInteractions(authorizationServiceMock, debtPositionApisHolderMock, debtPositionTypeServiceMock);
+  }
+
+  @Test
+  void givenDebtPositionTypeAssociatedWithOrgsWhenDeleteDebtPositionTypeThenConflictException() {
+    long debtPositionTypeId = 123L;
+    UserInfo loggedUser = new UserInfo();
+    String accessToken = "TOKEN";
+
+    DebtPositionTypeOrgSearchControllerApi debtPositionTypeOrgSearchControllerApiMock = Mockito.mock(DebtPositionTypeOrgSearchControllerApi.class);
+    Mockito.when(debtPositionApisHolderMock.getDebtPositionTypeOrgSearchControllerApi(accessToken))
+      .thenReturn(debtPositionTypeOrgSearchControllerApiMock);
+
+    CollectionModelDebtPositionTypeOrg collectionModel = new CollectionModelDebtPositionTypeOrg();
+    PagedModelDebtPositionTypeOrgEmbedded embedded = new PagedModelDebtPositionTypeOrgEmbedded();
+    embedded.setDebtPositionTypeOrgs(List.of(new DebtPositionTypeOrg()));
+    collectionModel.setEmbedded(embedded);
+
+    Mockito.when(debtPositionTypeOrgSearchControllerApiMock.crudDebtPositionTypeOrgsFindByDebtPositionTypeId(debtPositionTypeId))
+      .thenReturn(collectionModel);
+
+    Mockito.doNothing().when(authorizationServiceMock).validateBrokerAdminRole(loggedUser);
+
+    Assertions.assertThrows(ConflictException.class, () ->
+      debtPositionTypeRetrieverService.deleteDebtPositionType(debtPositionTypeId, loggedUser, accessToken));
+
+    Mockito.verify(authorizationServiceMock).validateBrokerAdminRole(loggedUser);
+    Mockito.verify(debtPositionApisHolderMock).getDebtPositionTypeOrgSearchControllerApi(accessToken);
+    Mockito.verify(debtPositionTypeOrgSearchControllerApiMock).crudDebtPositionTypeOrgsFindByDebtPositionTypeId(debtPositionTypeId);
+    Mockito.verifyNoMoreInteractions(authorizationServiceMock, debtPositionApisHolderMock);
+    Mockito.verifyNoInteractions(debtPositionTypeServiceMock);
+  }
+
+  @Test
+  void givenInvalidUserWhenDeleteDebtPositionTypeThenAuthorizationDeniedException() {
+    long debtPositionTypeId = 123L;
+    UserInfo loggedUser = new UserInfo();
+
+    Mockito.doThrow(new AuthorizationDeniedException("")).when(authorizationServiceMock).validateBrokerAdminRole(loggedUser);
+
+    Assertions.assertThrows(AuthorizationDeniedException.class, () ->
+      debtPositionTypeRetrieverService.deleteDebtPositionType(debtPositionTypeId, loggedUser, accessToken));
+
+    Mockito.verify(authorizationServiceMock).validateBrokerAdminRole(loggedUser);
+    Mockito.verifyNoMoreInteractions(authorizationServiceMock);
+    Mockito.verifyNoInteractions(debtPositionApisHolderMock, debtPositionTypeServiceMock);
+  }
+
 }
 

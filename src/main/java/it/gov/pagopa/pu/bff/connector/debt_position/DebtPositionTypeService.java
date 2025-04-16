@@ -14,5 +14,5 @@ public interface DebtPositionTypeService {
 
   DebtPositionType patchDebtPositionType(Long debtPositionTypeId, DebtPositionTypeRequestBody debtPositionType, String accessToken);
 
-  Void deleteDebtPositionType(Long id, String accessToken);
+  void deleteDebtPositionType(Long debtPositionTypeId, String accessToken);
 }

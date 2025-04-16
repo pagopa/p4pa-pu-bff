@@ -1,6 +1,7 @@
 package it.gov.pagopa.pu.bff.connector.debt_position.client;
 
 import it.gov.pagopa.pu.bff.connector.debt_position.config.DebtPositionApisHolder;
+import it.gov.pagopa.pu.bff.exception.ResourceNotFoundException;
 import it.gov.pagopa.pu.bff.util.PageUtils;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionType;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeRequestBody;
@@ -52,19 +53,23 @@ public class DebtPositionTypeClient {
 
   public DebtPositionType patchDebtPositionType(
     Long debtPositionTypeId, DebtPositionTypeRequestBody debtPositionType, String accessToken) {
-    try{
-    return debtPositionApisHolder.getDebtPositionTypeControllerApi(accessToken)
-      .crudPatchDebtpositiontype(debtPositionTypeId.toString(),debtPositionType);
+    try {
+      return debtPositionApisHolder.getDebtPositionTypeControllerApi(accessToken)
+        .crudPatchDebtpositiontype(debtPositionTypeId.toString(), debtPositionType);
     } catch (HttpClientErrorException.NotFound e) {
       log.warn("DebtPositionType with debtPositionTypeId {} not found", debtPositionTypeId);
       return null;
     }
   }
 
-  public Void deleteDebtPositionType(Long id, String accessToken) {
-    debtPositionApisHolder.getDebtPositionTypeControllerApi(accessToken)
-      .crudDeleteDebtpositiontype(String.valueOf(id));
-    return null;
+  public void deleteDebtPositionType(Long debtPositionTypeId, String accessToken) {
+    try {
+       debtPositionApisHolder.getDebtPositionTypeControllerApi(accessToken)
+        .crudDeleteDebtpositiontype(String.valueOf(debtPositionTypeId));
+    } catch (HttpClientErrorException.NotFound e) {
+      throw new ResourceNotFoundException("DebtPositionType with ID %d not found".formatted(debtPositionTypeId));
+    }
   }
+
 }
 

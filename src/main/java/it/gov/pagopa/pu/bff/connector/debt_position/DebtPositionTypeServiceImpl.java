@@ -30,7 +30,7 @@ public class DebtPositionTypeServiceImpl implements DebtPositionTypeService {
   public DebtPositionType createDebtPositionType(
     DebtPositionTypeRequestBody debtPositionType,
     String accessToken) {
-    return client.createDebtPositionType(debtPositionType,accessToken);
+    return client.createDebtPositionType(debtPositionType, accessToken);
   }
 
   @Override
@@ -38,11 +38,11 @@ public class DebtPositionTypeServiceImpl implements DebtPositionTypeService {
     Long debtPositionTypeId,
     DebtPositionTypeRequestBody debtPositionType,
     String accessToken) {
-    return client.patchDebtPositionType(debtPositionTypeId,debtPositionType,accessToken);
+    return client.patchDebtPositionType(debtPositionTypeId, debtPositionType, accessToken);
   }
 
   @Override
-  public Void deleteDebtPositionType(Long id, String accessToken) {
-    return client.deleteDebtPositionType(id, accessToken);
+  public void deleteDebtPositionType(Long debtPositionTypeId, String accessToken) {
+    client.deleteDebtPositionType(debtPositionTypeId, accessToken);
   }
 }

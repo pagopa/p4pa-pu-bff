@@ -396,6 +396,38 @@
       }
     },
     "/bff/debt-position-types/{debtPositionTypeId}" : {
+      "delete" : {
+        "tags" : [ "DebtPositionTypes" ],
+        "summary" : "Delete a specific DebtPositionType",
+        "operationId" : "deleteDebtPositionType",
+        "parameters" : [ {
+          "name" : "debtPositionTypeId",
+          "in" : "path",
+          "description" : "The unique identifier of the debt-position-type",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        } ],
+        "responses" : {
+          "204" : {
+            "description" : "No Content"
+          },
+          "401" : {
+            "description" : "Unauthorized - Missing or invalid token"
+          },
+          "404" : {
+            "description" : "Not Found - Debt Position Type not found"
+          },
+          "500" : {
+            "description" : "Internal Server Error"
+          }
+        },
+        "security" : [ {
+          "BearerAuth" : [ ]
+        } ]
+      },
       "patch" : {
         "tags" : [ "DebtPositionTypes" ],
         "description" : "Patch a DebtPositionType",

@@ -6,6 +6,7 @@ import it.gov.pagopa.pu.bff.connector.debt_position.config.DebtPositionApisHolde
 import it.gov.pagopa.pu.bff.dto.generated.DebtPositionTypeDetailDTO;
 import it.gov.pagopa.pu.bff.dto.generated.DebtPositionTypePatchRequestBody;
 import it.gov.pagopa.pu.bff.dto.generated.PagedDebtPositionTypeWithCount;
+import it.gov.pagopa.pu.bff.exception.ConflictException;
 import it.gov.pagopa.pu.bff.mapper.DebtPositionTypeMapper;
 import it.gov.pagopa.pu.bff.mapper.DebtPositionTypeWithCountMapper;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
@@ -17,9 +18,7 @@ import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelDebtPositionTypeOr
 import it.gov.pagopa.pu.organization.dto.generated.Taxonomy;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 @Service
 public class DebtPositionTypeRetrieverServiceImpl implements
@@ -112,19 +111,17 @@ public class DebtPositionTypeRetrieverServiceImpl implements
   }
 
   @Override
-  public Void deleteDebtPositionType(Long organizationId, Long id, UserInfo loggedUser, String accessToken) {
+  public void deleteDebtPositionType(Long debtPositionTypeId, UserInfo loggedUser, String accessToken) {
     authorizationService.validateBrokerAdminRole(loggedUser);
 
     CollectionModelDebtPositionTypeOrg collectionModel = debtPositionApisHolder.getDebtPositionTypeOrgSearchControllerApi(accessToken)
-      .crudDebtPositionTypeOrgsFindByDebtPositionTypeId(id);
+      .crudDebtPositionTypeOrgsFindByDebtPositionTypeId(debtPositionTypeId);
 
     PagedModelDebtPositionTypeOrgEmbedded embedded = collectionModel.getEmbedded();
     if (embedded != null && embedded.getDebtPositionTypeOrgs() != null && !embedded.getDebtPositionTypeOrgs().isEmpty()) {
-      throw new ResponseStatusException(HttpStatus.CONFLICT, "debt-position-type is associated with one or more debt-position-type-org");
+      throw new ConflictException("Cannot delete DebtPositionType: it is associated with one or more DebtPositionTypeOrgs");
     }
-
-    debtPositionTypeService.deleteDebtPositionType(id, accessToken);
-    return null;
+    debtPositionTypeService.deleteDebtPositionType(debtPositionTypeId, accessToken);
   }
 
 }

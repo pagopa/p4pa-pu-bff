@@ -20,5 +20,5 @@ public interface DebtPositionTypeRetrieverService {
 
   DebtPositionType patchDebtPositionType(Long debtPositionTypeId, DebtPositionTypePatchRequestBody debtPositionTypePatchRequestBody, UserInfo loggedUser, String accessToken);
 
-  Void deleteDebtPositionType(Long organizationId, Long id, UserInfo loggedUser, String accessToken);
+  void deleteDebtPositionType(Long debtPositionTypeId, UserInfo loggedUser, String accessToken);
 }

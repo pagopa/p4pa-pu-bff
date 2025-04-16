@@ -255,5 +255,22 @@ class DebtPositionTypeControllerTest {
     Assertions.assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     Assertions.assertNull(response.getBody());
   }
+
+  @Test
+  void givenCorrectRequestWhenDeleteDebtPositionTypeThenNoContent() {
+    long debtPositionTypeId = 1L;
+
+    Mockito.doNothing().when(debtPositionTypeRetrieverServiceMock).deleteDebtPositionType(
+      Mockito.eq(debtPositionTypeId),
+      Mockito.any(),
+      Mockito.anyString()
+    );
+
+    ResponseEntity<Void> response = debtPositionTypeController.deleteDebtPositionType(debtPositionTypeId);
+
+    Assertions.assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+    Mockito.verifyNoMoreInteractions(debtPositionTypeRetrieverServiceMock);
+  }
+
 }
 

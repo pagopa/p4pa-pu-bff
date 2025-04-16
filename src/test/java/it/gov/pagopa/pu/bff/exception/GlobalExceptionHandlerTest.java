@@ -24,6 +24,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.test.context.ContextConfiguration;
@@ -38,6 +39,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.server.ServerErrorException;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter;
 
@@ -238,5 +240,15 @@ class GlobalExceptionHandlerTest {
       .andExpect(MockMvcResultMatchers.status().isNotFound())
       .andExpect(MockMvcResultMatchers.jsonPath("$.title").value("NOT_FOUND"))
       .andExpect(MockMvcResultMatchers.jsonPath("$.description").value("Error"));
+  }
+
+  @Test
+  void handleHttpClientErrorException() throws Exception {
+    doThrow(new HttpClientErrorException(HttpStatus.FORBIDDEN, "Error")).when(testControllerSpy).testEndpoint(DATA, BODY);
+
+    performRequest(DATA, MediaType.APPLICATION_JSON)
+      .andExpect(MockMvcResultMatchers.status().isForbidden())
+      .andExpect(MockMvcResultMatchers.jsonPath("$.title").value("GENERIC_ERROR"))
+      .andExpect(MockMvcResultMatchers.jsonPath("$.description").value(HttpStatus.FORBIDDEN.value()+" Error"));
   }
 }

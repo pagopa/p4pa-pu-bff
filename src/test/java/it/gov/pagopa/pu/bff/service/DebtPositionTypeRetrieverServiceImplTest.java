@@ -333,7 +333,7 @@ class DebtPositionTypeRetrieverServiceImplTest {
   }
 
   @Test
-  void givenValidRequestWhenDeleteDebtPositionTypeThenNoContent() {
+  void givenValidRequestWhenDeleteDebtPositionTypeThenOk() {
     long debtPositionTypeId = 123L;
     UserInfo loggedUser = new UserInfo();
 

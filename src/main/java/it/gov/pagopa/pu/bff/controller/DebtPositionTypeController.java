@@ -72,7 +72,7 @@ public class DebtPositionTypeController implements DebtPositionTypesApi {
   public ResponseEntity<Void> deleteDebtPositionType(Long debtPositionTypeId) {
     log.info("User requested deleteDebtPositionType having ID {}", debtPositionTypeId);
     debtPositionTypeRetrieverService.deleteDebtPositionType(debtPositionTypeId, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken());
-    return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    return ResponseEntity.ok().build();
   }
 
 }

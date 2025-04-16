@@ -1,8 +1,8 @@
 package it.gov.pagopa.pu.bff.service;
 
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
+import it.gov.pagopa.pu.bff.connector.debt_position.DebtPositionTypeOrgService;
 import it.gov.pagopa.pu.bff.connector.debt_position.DebtPositionTypeService;
-import it.gov.pagopa.pu.bff.connector.debt_position.config.DebtPositionApisHolder;
 import it.gov.pagopa.pu.bff.dto.generated.DebtPositionTypeDetailDTO;
 import it.gov.pagopa.pu.bff.dto.generated.DebtPositionTypePatchRequestBody;
 import it.gov.pagopa.pu.bff.dto.generated.PagedDebtPositionTypeWithCount;
@@ -12,7 +12,6 @@ import it.gov.pagopa.pu.bff.mapper.DebtPositionTypeWithCountMapper;
 import it.gov.pagopa.pu.bff.service.debt_position.DebtPositionTypeRetrieverServiceImpl;
 import it.gov.pagopa.pu.bff.service.taxonomy.TaxonomyRetrieverService;
 import it.gov.pagopa.pu.bff.util.TestUtils;
-import it.gov.pagopa.pu.debtpositions.controller.generated.DebtPositionTypeOrgSearchControllerApi;
 import it.gov.pagopa.pu.debtpositions.dto.generated.*;
 import it.gov.pagopa.pu.organization.dto.generated.Taxonomy;
 import org.junit.jupiter.api.Assertions;
@@ -37,6 +36,8 @@ class DebtPositionTypeRetrieverServiceImplTest {
   @Mock
   private DebtPositionTypeService debtPositionTypeServiceMock;
   @Mock
+  private DebtPositionTypeOrgService debtPositionTypeOrgServiceMock;
+  @Mock
   private AuthorizationService authorizationServiceMock;
   @Mock
   private DebtPositionTypeWithCountMapper debtPositionTypeWithCountMapperMock;
@@ -44,8 +45,6 @@ class DebtPositionTypeRetrieverServiceImplTest {
   private TaxonomyRetrieverService taxonomyRetrieverServiceMock;
   @Mock
   private DebtPositionTypeMapper debtPositionTypeMapperMock;
-  @Mock
-  private DebtPositionApisHolder debtPositionApisHolderMock;
 
   private DebtPositionTypeRetrieverServiceImpl debtPositionTypeRetrieverService;
 
@@ -73,7 +72,7 @@ class DebtPositionTypeRetrieverServiceImplTest {
     debtPositionType.setFlagNotifyIo(true);
     debtPositionType.setIoTemplateMessage("Test IO Template Message");
 
-    debtPositionTypeRetrieverService = new DebtPositionTypeRetrieverServiceImpl(debtPositionTypeServiceMock, debtPositionTypeWithCountMapperMock, taxonomyRetrieverServiceMock, authorizationServiceMock, debtPositionTypeMapperMock, debtPositionApisHolderMock);
+    debtPositionTypeRetrieverService = new DebtPositionTypeRetrieverServiceImpl(debtPositionTypeServiceMock, debtPositionTypeWithCountMapperMock, taxonomyRetrieverServiceMock, authorizationServiceMock, debtPositionTypeMapperMock, debtPositionTypeOrgServiceMock);
   }
 
   @Test
@@ -338,12 +337,10 @@ class DebtPositionTypeRetrieverServiceImplTest {
     long debtPositionTypeId = 123L;
     UserInfo loggedUser = new UserInfo();
 
-    DebtPositionTypeOrgSearchControllerApi debtPositionTypeOrgSearchControllerApiMock = Mockito.mock(DebtPositionTypeOrgSearchControllerApi.class);
-    Mockito.when(debtPositionApisHolderMock.getDebtPositionTypeOrgSearchControllerApi(accessToken))
-      .thenReturn(debtPositionTypeOrgSearchControllerApiMock);
+    PagedModelDebtPositionTypeOrg pagedModel = new PagedModelDebtPositionTypeOrg();
 
-    Mockito.when(debtPositionTypeOrgSearchControllerApiMock.crudDebtPositionTypeOrgsFindByDebtPositionTypeId(debtPositionTypeId))
-      .thenReturn(new CollectionModelDebtPositionTypeOrg());
+    Mockito.when(debtPositionTypeOrgServiceMock.getDebtPositionTypeOrgByDebtPositionTypeId(debtPositionTypeId, PageRequest.of(0, 1), accessToken))
+      .thenReturn(pagedModel);
 
     Mockito.doNothing().when(authorizationServiceMock).validateBrokerAdminRole(loggedUser);
     Mockito.doNothing().when(debtPositionTypeServiceMock).deleteDebtPositionType(debtPositionTypeId, accessToken);
@@ -351,10 +348,9 @@ class DebtPositionTypeRetrieverServiceImplTest {
     debtPositionTypeRetrieverService.deleteDebtPositionType(debtPositionTypeId, loggedUser, accessToken);
 
     Mockito.verify(authorizationServiceMock).validateBrokerAdminRole(loggedUser);
-    Mockito.verify(debtPositionApisHolderMock).getDebtPositionTypeOrgSearchControllerApi(accessToken);
-    Mockito.verify(debtPositionTypeOrgSearchControllerApiMock).crudDebtPositionTypeOrgsFindByDebtPositionTypeId(debtPositionTypeId);
+    Mockito.verify(debtPositionTypeOrgServiceMock).getDebtPositionTypeOrgByDebtPositionTypeId(debtPositionTypeId, PageRequest.of(0, 1), accessToken);
     Mockito.verify(debtPositionTypeServiceMock).deleteDebtPositionType(debtPositionTypeId, accessToken);
-    Mockito.verifyNoMoreInteractions(authorizationServiceMock, debtPositionApisHolderMock, debtPositionTypeServiceMock);
+    Mockito.verifyNoMoreInteractions(authorizationServiceMock, debtPositionTypeOrgServiceMock, debtPositionTypeServiceMock);
   }
 
   @Test
@@ -362,17 +358,13 @@ class DebtPositionTypeRetrieverServiceImplTest {
     long debtPositionTypeId = 123L;
     UserInfo loggedUser = new UserInfo();
 
-    DebtPositionTypeOrgSearchControllerApi debtPositionTypeOrgSearchControllerApiMock = Mockito.mock(DebtPositionTypeOrgSearchControllerApi.class);
-    Mockito.when(debtPositionApisHolderMock.getDebtPositionTypeOrgSearchControllerApi(accessToken))
-      .thenReturn(debtPositionTypeOrgSearchControllerApiMock);
-
-    CollectionModelDebtPositionTypeOrg collectionModel = new CollectionModelDebtPositionTypeOrg();
+    PagedModelDebtPositionTypeOrg pagedModel = new PagedModelDebtPositionTypeOrg();
     PagedModelDebtPositionTypeOrgEmbedded embedded = new PagedModelDebtPositionTypeOrgEmbedded();
     embedded.setDebtPositionTypeOrgs(List.of(new DebtPositionTypeOrg()));
-    collectionModel.setEmbedded(embedded);
+    pagedModel.setEmbedded(embedded);
 
-    Mockito.when(debtPositionTypeOrgSearchControllerApiMock.crudDebtPositionTypeOrgsFindByDebtPositionTypeId(debtPositionTypeId))
-      .thenReturn(collectionModel);
+    Mockito.when(debtPositionTypeOrgServiceMock.getDebtPositionTypeOrgByDebtPositionTypeId(debtPositionTypeId, PageRequest.of(0, 1), accessToken))
+      .thenReturn(pagedModel);
 
     Mockito.doNothing().when(authorizationServiceMock).validateBrokerAdminRole(loggedUser);
 
@@ -380,9 +372,8 @@ class DebtPositionTypeRetrieverServiceImplTest {
       debtPositionTypeRetrieverService.deleteDebtPositionType(debtPositionTypeId, loggedUser, accessToken));
 
     Mockito.verify(authorizationServiceMock).validateBrokerAdminRole(loggedUser);
-    Mockito.verify(debtPositionApisHolderMock).getDebtPositionTypeOrgSearchControllerApi(accessToken);
-    Mockito.verify(debtPositionTypeOrgSearchControllerApiMock).crudDebtPositionTypeOrgsFindByDebtPositionTypeId(debtPositionTypeId);
-    Mockito.verifyNoMoreInteractions(authorizationServiceMock, debtPositionApisHolderMock);
+    Mockito.verify(debtPositionTypeOrgServiceMock).getDebtPositionTypeOrgByDebtPositionTypeId(debtPositionTypeId, PageRequest.of(0, 1), accessToken);
+    Mockito.verifyNoMoreInteractions(authorizationServiceMock, debtPositionTypeOrgServiceMock);
     Mockito.verifyNoInteractions(debtPositionTypeServiceMock);
   }
 
@@ -398,7 +389,7 @@ class DebtPositionTypeRetrieverServiceImplTest {
 
     Mockito.verify(authorizationServiceMock).validateBrokerAdminRole(loggedUser);
     Mockito.verifyNoMoreInteractions(authorizationServiceMock);
-    Mockito.verifyNoInteractions(debtPositionApisHolderMock, debtPositionTypeServiceMock);
+    Mockito.verifyNoInteractions(debtPositionTypeOrgServiceMock, debtPositionTypeServiceMock);
   }
 
 }

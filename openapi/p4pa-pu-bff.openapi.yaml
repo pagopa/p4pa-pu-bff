@@ -351,12 +351,14 @@ paths:
             format: int64
           description: The unique identifier of the debt-position-type
       responses:
-        '204':
-          description: No Content
+        '200':
+          description: OK
         '401':
           description: Unauthorized - Missing or invalid token
+        '403':
+          description: Forbidden - Access denied
         '404':
-          description: Not Found - Debt Position Type not found
+          description: Not Found - DebtPositionTypeOrg Not Found
         '500':
           description: Internal Server Error
   /organization/{organizationId}/debt-position-type-orgs-with-count:

@@ -1,9 +1,10 @@
 package it.gov.pagopa.pu.bff.connector.debt_position.client;
 
 import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 import it.gov.pagopa.pu.bff.connector.debt_position.config.DebtPositionApisHolder;
+import it.gov.pagopa.pu.bff.exception.ResourceNotFoundException;
 import it.gov.pagopa.pu.debtpositions.controller.generated.DebtPositionTypeEntityControllerApi;
 import it.gov.pagopa.pu.debtpositions.controller.generated.DebtPositionTypeWithCountSearchControllerApi;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionType;
@@ -198,6 +199,32 @@ class DebtPositionTypeClientTest {
       debtPositionTypeId,debtPositionTypeRequestBody,accessToken);
 
     Assertions.assertNull(result);
+  }
+
+  @Test
+  void givenExistingDebtPositionTypeWhenDeleteDebtPositionTypeThenInvokeWithAccessToken() {
+    Long debtPositionTypeId = 1L;
+    String accessToken = "ACCESSTOKEN";
+
+    when(debtPositionApisHolderMock.getDebtPositionTypeControllerApi(accessToken))
+      .thenReturn(debtPositionTypeEntityControllerApiMock);
+    doNothing().when(debtPositionTypeEntityControllerApiMock).crudDeleteDebtpositiontype(String.valueOf(debtPositionTypeId));
+
+    Assertions.assertDoesNotThrow(() -> debtPositionTypeClient.deleteDebtPositionType(debtPositionTypeId, accessToken));
+  }
+
+  @Test
+  void givenNoDebtPositionTypeWhenDeleteDebtPositionTypeThenThrowResourceNotFoundException() {
+    Long debtPositionTypeId = 1L;
+    String accessToken = "ACCESSTOKEN";
+
+    when(debtPositionApisHolderMock.getDebtPositionTypeControllerApi(accessToken))
+      .thenReturn(debtPositionTypeEntityControllerApiMock);
+    doThrow(HttpClientErrorException.create(HttpStatus.NOT_FOUND, "NotFound", null, null, null))
+      .when(debtPositionTypeEntityControllerApiMock).crudDeleteDebtpositiontype(String.valueOf(debtPositionTypeId));
+
+    Assertions.assertThrows(ResourceNotFoundException.class, () ->
+      debtPositionTypeClient.deleteDebtPositionType(debtPositionTypeId, accessToken));
   }
 
 }

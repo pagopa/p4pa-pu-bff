@@ -56,7 +56,7 @@ public class DebtPositionTypeController implements DebtPositionTypesApi {
     DebtPositionTypeRequestBody body) {
     log.info("User requested createDebtPositionType()");
     return new ResponseEntity<>(debtPositionTypeRetrieverService.createDebtPositionType(
-      body,SecurityUtils.getLoggedUser(),SecurityUtils.getAccessToken()),HttpStatus.CREATED);
+      body, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken()), HttpStatus.CREATED);
   }
 
   @Override
@@ -65,6 +65,14 @@ public class DebtPositionTypeController implements DebtPositionTypesApi {
     DebtPositionTypePatchRequestBody debtPositionTypePatchRequestBody) {
     log.info("User requested patchDebtPositionType having debtPositionTypeId {}", debtPositionTypeId);
     return ResponseEntity.ofNullable(debtPositionTypeRetrieverService.patchDebtPositionType(
-      debtPositionTypeId,debtPositionTypePatchRequestBody,SecurityUtils.getLoggedUser(),SecurityUtils.getAccessToken()));
+      debtPositionTypeId, debtPositionTypePatchRequestBody, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken()));
   }
+
+  @Override
+  public ResponseEntity<Void> deleteDebtPositionType(Long debtPositionTypeId) {
+    log.info("User requested deleteDebtPositionType having ID {}", debtPositionTypeId);
+    debtPositionTypeRetrieverService.deleteDebtPositionType(debtPositionTypeId, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken());
+    return ResponseEntity.ok().build();
+  }
+
 }

@@ -2,11 +2,10 @@ package it.gov.pagopa.pu.bff.connector.debt_position;
 
 import it.gov.pagopa.pu.bff.config.CacheConfig.Fields;
 import it.gov.pagopa.pu.bff.connector.debt_position.client.DebtPositionTypeOrgClient;
+import it.gov.pagopa.pu.bff.connector.debt_position.client.DebtPositionTypeOrgSearchClient;
 import it.gov.pagopa.pu.bff.connector.debt_position.client.DebtPositionTypeOrgWithCountClient;
-import it.gov.pagopa.pu.debtpositions.dto.generated.CollectionModelDebtPositionTypeOrg;
-import it.gov.pagopa.pu.debtpositions.dto.generated.CollectionModelDebtPositionTypeOrgCountByOrganizationId;
-import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrg;
-import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelDebtPositionTypeOrgWithCount;
+import it.gov.pagopa.pu.debtpositions.dto.generated.*;
+
 import java.util.List;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.Cacheable;
@@ -19,10 +18,12 @@ public class DebtPositionTypeOrgServiceImpl implements DebtPositionTypeOrgServic
 
   private final DebtPositionTypeOrgClient debtPositionTypeOrgClient;
   private final DebtPositionTypeOrgWithCountClient debtPositionTypeOrgWithCountClient;
+  private final DebtPositionTypeOrgSearchClient debtPositionTypeOrgSearchClient;
 
-  public DebtPositionTypeOrgServiceImpl(DebtPositionTypeOrgClient debtPositionTypeOrgClient, DebtPositionTypeOrgWithCountClient debtPositionTypeOrgWithCountClient) {
+  public DebtPositionTypeOrgServiceImpl(DebtPositionTypeOrgClient debtPositionTypeOrgClient, DebtPositionTypeOrgWithCountClient debtPositionTypeOrgWithCountClient, DebtPositionTypeOrgSearchClient debtPositionTypeOrgSearchClient) {
     this.debtPositionTypeOrgClient = debtPositionTypeOrgClient;
     this.debtPositionTypeOrgWithCountClient = debtPositionTypeOrgWithCountClient;
+    this.debtPositionTypeOrgSearchClient = debtPositionTypeOrgSearchClient;
   }
 
   @Override
@@ -50,6 +51,11 @@ public class DebtPositionTypeOrgServiceImpl implements DebtPositionTypeOrgServic
   @Override
   public void deleteDebtPositionTypeOrg(Long debtPositionTypeOrgId, String accessToken) {
     debtPositionTypeOrgClient.deleteDebtPositionTypeOrg(debtPositionTypeOrgId, accessToken);
+  }
+
+  @Override
+  public PagedModelDebtPositionTypeOrg getDebtPositionTypeOrgByDebtPositionTypeId(Long debtPositionTypeId, Pageable pageable, String accessToken) {
+    return debtPositionTypeOrgSearchClient.getDebtPositionTypeOrgByDebtPositionTypeId(debtPositionTypeId, pageable, accessToken);
   }
 
 }

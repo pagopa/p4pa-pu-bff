@@ -423,6 +423,9 @@
           "404" : {
             "description" : "Not Found - DebtPositionTypeOrg Not Found"
           },
+          "409" : {
+            "description" : "Conflict"
+          },
           "500" : {
             "description" : "Internal Server Error"
           }
@@ -2932,6 +2935,9 @@
           "404" : {
             "description" : "Not Found - DebtPositionTypeOrg Not Found"
           },
+          "409" : {
+            "description" : "Conflict"
+          },
           "500" : {
             "description" : "Internal Server Error"
           }
@@ -3194,16 +3200,6 @@
           },
           "403" : {
             "description" : "Forbidden - Access denied",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/DebtPositionType"
-                }
-              }
-            }
-          },
-          "409" : {
-            "description" : "Conflict",
             "content" : {
               "application/json" : {
                 "schema" : {

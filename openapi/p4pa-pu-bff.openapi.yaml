@@ -1087,6 +1087,8 @@ paths:
           description: Unauthorized - Missing or invalid token
         '403':
           description: Forbidden - Access denied
+        '409':
+          description: Conflict
         '500':
           description: Internal Server Error
   /organization/{organizationId}/ingestion-flow-files:

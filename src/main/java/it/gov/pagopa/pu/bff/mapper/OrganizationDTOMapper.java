@@ -19,6 +19,9 @@ public class OrganizationDTOMapper {
       .operatorRole(operatorRole)
       .orgLogo(organization.getOrgLogo())
       .orgFiscalCode(organization.getOrgFiscalCode())
+      .flagNotifyIo(organization.getFlagNotifyIo())
+      .flagNotifyOutcomePush(organization.getFlagNotifyOutcomePush())
+      .flagPaymentNotification(organization.getFlagPaymentNotification())
       .build();
   }
 

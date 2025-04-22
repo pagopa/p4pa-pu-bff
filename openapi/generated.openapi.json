@@ -3597,6 +3597,9 @@
             "type" : "string",
             "format" : "date-time"
           },
+          "updateOperatorExternalId" : {
+            "type" : "string"
+          },
           "paymentOptions" : {
             "type" : "array",
             "items" : {
@@ -3706,6 +3709,9 @@
           "updateDate" : {
             "type" : "string",
             "format" : "date-time"
+          },
+          "updateOperatorExternalId" : {
+            "type" : "string"
           }
         },
         "required" : [ "amountCents", "debtor", "remittanceInformation" ]
@@ -3753,6 +3759,17 @@
           "paymentOptionIndex" : {
             "type" : "integer",
             "format" : "int32"
+          },
+          "creationDate" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "updateDate" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "updateOperatorExternalId" : {
+            "type" : "string"
           },
           "installments" : {
             "type" : "array",
@@ -3852,6 +3869,17 @@
           "transferIndex" : {
             "type" : "integer",
             "format" : "int32"
+          },
+          "creationDate" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "updateDate" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "updateOperatorExternalId" : {
+            "type" : "string"
           }
         },
         "required" : [ "amountCents", "category", "orgFiscalCode", "orgName", "remittanceInformation", "transferIndex" ]
@@ -4186,9 +4214,18 @@
           },
           "orgFiscalCode" : {
             "type" : "string"
+          },
+          "flagNotifyIo" : {
+            "type" : "boolean"
+          },
+          "flagNotifyOutcomePush" : {
+            "type" : "boolean"
+          },
+          "flagPaymentNotification" : {
+            "type" : "boolean"
           }
         },
-        "required" : [ "ipaCode", "operatorRole", "orgFiscalCode", "orgName", "organizationId" ]
+        "required" : [ "flagNotifyIo", "flagNotifyOutcomePush", "flagPaymentNotification", "ipaCode", "operatorRole", "orgFiscalCode", "orgName", "organizationId" ]
       },
       "ErrorDTO" : {
         "type" : "object",

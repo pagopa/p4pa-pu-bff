@@ -4214,9 +4214,18 @@
           },
           "orgFiscalCode" : {
             "type" : "string"
+          },
+          "flagNotifyIo" : {
+            "type" : "boolean"
+          },
+          "flagNotifyOutcomePush" : {
+            "type" : "boolean"
+          },
+          "flagPaymentNotification" : {
+            "type" : "boolean"
           }
         },
-        "required" : [ "ipaCode", "operatorRole", "orgFiscalCode", "orgName", "organizationId" ]
+        "required" : [ "flagNotifyIo", "flagNotifyOutcomePush", "flagPaymentNotification", "ipaCode", "operatorRole", "orgFiscalCode", "orgName", "organizationId" ]
       },
       "ErrorDTO" : {
         "type" : "object",

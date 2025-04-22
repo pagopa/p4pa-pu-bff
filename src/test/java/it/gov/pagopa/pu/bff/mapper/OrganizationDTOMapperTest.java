@@ -28,6 +28,9 @@ class OrganizationDTOMapperTest {
     organization.setOrgLogo("base64LogoString");
     organization.setOrgFiscalCode("orgFiscalCode");
     List<String> roles = Collections.singletonList("ROLE_ADMIN");
+    organization.setFlagNotifyIo(false);
+    organization.setFlagNotifyOutcomePush(false);
+    organization.setFlagPaymentNotification(false);
 
     OrganizationDTO result = mapper.mapToOrganizationDTO(organization, roles);
 
@@ -39,6 +42,9 @@ class OrganizationDTOMapperTest {
     assertEquals(OrganizationDTO.OperatorRoleEnum.ADMIN, result.getOperatorRole());
     assertEquals("base64LogoString", result.getOrgLogo());
     assertEquals("orgFiscalCode", result.getOrgFiscalCode());
+    assertEquals(false, result.getFlagNotifyIo());
+    assertEquals(false, result.getFlagNotifyOutcomePush());
+    assertEquals(false, result.getFlagPaymentNotification());
   }
 
   @Test
@@ -62,6 +68,9 @@ class OrganizationDTOMapperTest {
     organization.setIpaCode("testIpaCode");
     organization.setOrgName("Test Organization");
     organization.setOrgFiscalCode("orgFiscalCode");
+    organization.setFlagNotifyIo(false);
+    organization.setFlagNotifyOutcomePush(false);
+    organization.setFlagPaymentNotification(false);
 
     OrganizationDTO result = mapper.mapToOrganizationDTO(organization, Collections.emptyList());
 
@@ -73,6 +82,9 @@ class OrganizationDTOMapperTest {
     assertNull(result.getOperatorRole());
     assertNull(result.getOrgLogo());
     assertEquals("orgFiscalCode", result.getOrgFiscalCode());
+    assertEquals(false, result.getFlagNotifyIo());
+    assertEquals(false, result.getFlagNotifyOutcomePush());
+    assertEquals(false, result.getFlagPaymentNotification());
   }
 
 }

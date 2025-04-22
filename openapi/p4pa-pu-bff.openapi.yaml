@@ -1570,6 +1570,9 @@ components:
         - orgName
         - operatorRole
         - orgFiscalCode
+        - flagNotifyIo
+        - flagNotifyOutcomePush
+        - flagPaymentNotification
       properties:
         organizationId:
           type: integer
@@ -1593,6 +1596,12 @@ components:
           description: Base64 encoded logo of the organization
         orgFiscalCode:
           type: string
+        flagNotifyIo:
+          type: boolean
+        flagNotifyOutcomePush:
+          type: boolean
+        flagPaymentNotification:
+          type: boolean
     ConfigFE:
       type: object
       required:

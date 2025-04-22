@@ -1,10 +1,12 @@
 package it.gov.pagopa.pu.bff.controller;
 
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
+import it.gov.pagopa.pu.bff.dto.generated.PagedDebtPositionTypeOrgOperatorDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedDebtPositionTypeOrgWithCount;
 import it.gov.pagopa.pu.bff.security.SecurityUtils;
 import it.gov.pagopa.pu.bff.service.debt_position_type_org.DebtPositionTypeOrgRetrieverService;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrg;
+import java.util.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -21,8 +23,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-
-import java.util.List;
 
 @ExtendWith(MockitoExtension.class)
 class DebtPositionTypeOrgControllerTest {
@@ -122,6 +122,48 @@ class DebtPositionTypeOrgControllerTest {
     Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
     Assertions.assertNotNull(response.getBody());
     Assertions.assertSame(expectedResult, response.getBody());
+  }
+
+  @Test
+  void givenCorrectRequestWhenGetDebtPositionTypeOrgOperatorsThenOk() {
+    long organizationId = 1L;
+    long debtPositionTypeOrgId = 1L;
+    Pageable pageable = PageRequest.of(0, 10);
+    PagedDebtPositionTypeOrgOperatorDTO expectedResult = new PagedDebtPositionTypeOrgOperatorDTO();
+
+    Mockito.when(debtPositionTypeOrgRetrieverServiceMock.getDebtPositionTypeOrgOperators(
+      organizationId,
+      debtPositionTypeOrgId,
+      pageable,
+      SecurityUtils.getLoggedUser(),
+      SecurityUtils.getAccessToken()
+    )).thenReturn(expectedResult);
+
+    ResponseEntity<PagedDebtPositionTypeOrgOperatorDTO> response = debtPositionTypeOrgController.getDebtPositionTypeOrgOperators(
+      organizationId, debtPositionTypeOrgId, pageable);
+
+    Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
+    Assertions.assertNotNull(response.getBody());
+    Assertions.assertSame(expectedResult, response.getBody());
+  }
+
+  @Test
+  void givenCorrectRequestWhenDeleteDebtPositionTypeOrgThenOk() {
+    long organizationId = 1L;
+    long debtPositionTypeOrgId = 2L;
+
+    Mockito.doNothing().when(debtPositionTypeOrgRetrieverServiceMock).deleteDebtPositionTypeOrg(
+      Mockito.eq(organizationId),
+      Mockito.eq(debtPositionTypeOrgId),
+      Mockito.any(),
+      Mockito.anyString()
+    );
+
+    ResponseEntity<Void> response = debtPositionTypeOrgController.deleteDebtPositionTypeOrg(
+      organizationId, debtPositionTypeOrgId);
+
+    Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
+    Mockito.verifyNoMoreInteractions(debtPositionTypeOrgRetrieverServiceMock);
   }
 
 }

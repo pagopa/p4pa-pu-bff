@@ -86,4 +86,18 @@ class DebtPositionTypeServiceTest {
 
     assertSame(expectedResult, result);
   }
+
+  @Test
+  void givenValidRequestWhenDeleteDebtPositionTypeThenClientCalled() {
+    long debtPositionTypeId = 123L;
+    String accessToken = "TOKEN";
+
+    Mockito.doNothing().when(client).deleteDebtPositionType(debtPositionTypeId, accessToken);
+
+    service.deleteDebtPositionType(debtPositionTypeId, accessToken);
+
+    Mockito.verify(client).deleteDebtPositionType(debtPositionTypeId, accessToken);
+    Mockito.verifyNoMoreInteractions(client);
+  }
+
 }

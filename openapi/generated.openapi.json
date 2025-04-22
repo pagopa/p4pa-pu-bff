@@ -396,6 +396,44 @@
       }
     },
     "/bff/debt-position-types/{debtPositionTypeId}" : {
+      "delete" : {
+        "tags" : [ "DebtPositionTypes" ],
+        "summary" : "Delete a specific DebtPositionType",
+        "operationId" : "deleteDebtPositionType",
+        "parameters" : [ {
+          "name" : "debtPositionTypeId",
+          "in" : "path",
+          "description" : "The unique identifier of the debt-position-type",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          },
+          "401" : {
+            "description" : "Unauthorized - Missing or invalid token"
+          },
+          "403" : {
+            "description" : "Forbidden - Access denied"
+          },
+          "404" : {
+            "description" : "Not Found - DebtPositionTypeOrg Not Found"
+          },
+          "409" : {
+            "description" : "Conflict"
+          },
+          "500" : {
+            "description" : "Internal Server Error"
+          }
+        },
+        "security" : [ {
+          "BearerAuth" : [ ]
+        } ]
+      },
       "patch" : {
         "tags" : [ "DebtPositionTypes" ],
         "description" : "Patch a DebtPositionType",
@@ -483,28 +521,28 @@
         "parameters" : [ {
           "name" : "organizationType",
           "in" : "query",
-          "required" : false,
+          "required" : true,
           "schema" : {
             "type" : "string"
           }
         }, {
           "name" : "macroAreaCode",
           "in" : "query",
-          "required" : false,
+          "required" : true,
           "schema" : {
             "type" : "string"
           }
         }, {
           "name" : "serviceTypeCode",
           "in" : "query",
-          "required" : false,
+          "required" : true,
           "schema" : {
             "type" : "string"
           }
         }, {
           "name" : "collectionReason",
           "in" : "query",
-          "required" : false,
+          "required" : true,
           "schema" : {
             "type" : "string"
           }
@@ -536,14 +574,14 @@
         "parameters" : [ {
           "name" : "organizationType",
           "in" : "query",
-          "required" : false,
+          "required" : true,
           "schema" : {
             "type" : "string"
           }
         }, {
           "name" : "macroAreaCode",
           "in" : "query",
-          "required" : false,
+          "required" : true,
           "schema" : {
             "type" : "string"
           }
@@ -678,7 +716,7 @@
         "parameters" : [ {
           "name" : "organizationType",
           "in" : "query",
-          "required" : false,
+          "required" : true,
           "schema" : {
             "type" : "string"
           }
@@ -749,21 +787,21 @@
         "parameters" : [ {
           "name" : "organizationType",
           "in" : "query",
-          "required" : false,
+          "required" : true,
           "schema" : {
             "type" : "string"
           }
         }, {
           "name" : "macroAreaCode",
           "in" : "query",
-          "required" : false,
+          "required" : true,
           "schema" : {
             "type" : "string"
           }
         }, {
           "name" : "serviceTypeCode",
           "in" : "query",
-          "required" : false,
+          "required" : true,
           "schema" : {
             "type" : "string"
           }
@@ -878,6 +916,105 @@
               "application/json" : {
                 "schema" : {
                   "$ref" : "#/components/schemas/ErrorDTO"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "BearerAuth" : [ ]
+        } ]
+      }
+    },
+    "/bff/organization/{organizationId}" : {
+      "get" : {
+        "tags" : [ "Organizations" ],
+        "summary" : "Retrieve a paged list of Organizations with DebtPositionTypeOrgCount",
+        "operationId" : "getOrganizationsWithDebtPositionTypeOrgCount",
+        "parameters" : [ {
+          "name" : "organizationId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }, {
+          "name" : "organizationName",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "page",
+          "in" : "query",
+          "description" : "Zero-based page index (0..N)",
+          "required" : false,
+          "schema" : {
+            "type" : "integer",
+            "default" : 0,
+            "minimum" : 0
+          }
+        }, {
+          "name" : "size",
+          "in" : "query",
+          "description" : "The size of the page to be returned",
+          "required" : false,
+          "schema" : {
+            "type" : "integer",
+            "default" : 20,
+            "minimum" : 1
+          }
+        }, {
+          "name" : "sort",
+          "in" : "query",
+          "description" : "Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/PagedOrganizationWithDebtPositionTypeOrgCount"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Unauthorized - Missing or invalid token",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/PagedOrganizationWithDebtPositionTypeOrgCount"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Forbidden - Access denied",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/PagedOrganizationWithDebtPositionTypeOrgCount"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal Server Error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/PagedOrganizationWithDebtPositionTypeOrgCount"
                 }
               }
             }
@@ -1786,105 +1923,6 @@
               "application/json" : {
                 "schema" : {
                   "$ref" : "#/components/schemas/ErrorDTO"
-                }
-              }
-            }
-          }
-        },
-        "security" : [ {
-          "BearerAuth" : [ ]
-        } ]
-      }
-    },
-    "/bff/organization/{organizationId}/organizations" : {
-      "get" : {
-        "tags" : [ "Organizations" ],
-        "summary" : "Retrieve a paged list of Organizations with DebtPositionTypeOrgCount",
-        "operationId" : "getOrganizationsWithDebtPositionTypeOrgCount",
-        "parameters" : [ {
-          "name" : "organizationId",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "type" : "integer",
-            "format" : "int64"
-          }
-        }, {
-          "name" : "organizationName",
-          "in" : "query",
-          "required" : false,
-          "schema" : {
-            "type" : "string"
-          }
-        }, {
-          "name" : "page",
-          "in" : "query",
-          "description" : "Zero-based page index (0..N)",
-          "required" : false,
-          "schema" : {
-            "type" : "integer",
-            "default" : 0,
-            "minimum" : 0
-          }
-        }, {
-          "name" : "size",
-          "in" : "query",
-          "description" : "The size of the page to be returned",
-          "required" : false,
-          "schema" : {
-            "type" : "integer",
-            "default" : 20,
-            "minimum" : 1
-          }
-        }, {
-          "name" : "sort",
-          "in" : "query",
-          "description" : "Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.",
-          "required" : false,
-          "schema" : {
-            "type" : "array",
-            "items" : {
-              "type" : "string"
-            }
-          }
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : "OK",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/PagedOrganizationWithDebtPositionTypeOrgCount"
-                }
-              }
-            }
-          },
-          "401" : {
-            "description" : "Unauthorized - Missing or invalid token",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/PagedOrganizationWithDebtPositionTypeOrgCount"
-                }
-              }
-            }
-          },
-          "403" : {
-            "description" : "Forbidden - Access denied",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/PagedOrganizationWithDebtPositionTypeOrgCount"
-                }
-              }
-            }
-          },
-          "500" : {
-            "description" : "Internal Server Error",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/PagedOrganizationWithDebtPositionTypeOrgCount"
                 }
               }
             }
@@ -2862,6 +2900,151 @@
         "security" : [ {
           "BearerAuth" : [ ]
         } ]
+      },
+      "delete" : {
+        "tags" : [ "DebtPositionTypeOrgs" ],
+        "summary" : "Deletes DebtPositionTypeOrg",
+        "operationId" : "deleteDebtPositionTypeOrg",
+        "parameters" : [ {
+          "name" : "organizationId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }, {
+          "name" : "debtPositionTypeOrgId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          },
+          "401" : {
+            "description" : "Unauthorized - Missing or invalid token"
+          },
+          "403" : {
+            "description" : "Forbidden - Access denied"
+          },
+          "404" : {
+            "description" : "Not Found - DebtPositionTypeOrg Not Found"
+          },
+          "409" : {
+            "description" : "Conflict"
+          },
+          "500" : {
+            "description" : "Internal Server Error"
+          }
+        },
+        "security" : [ {
+          "BearerAuth" : [ ]
+        } ]
+      }
+    },
+    "/bff/organization/{organizationId}/debt-position-type-orgs/operators" : {
+      "get" : {
+        "tags" : [ "DebtPositionTypeOrgs" ],
+        "summary" : "Retrieve a page of DebtPositionTypeOrgOperatorDTO",
+        "operationId" : "getDebtPositionTypeOrgOperators",
+        "parameters" : [ {
+          "name" : "organizationId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }, {
+          "name" : "debtPositionTypeOrgId",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }, {
+          "name" : "page",
+          "in" : "query",
+          "description" : "Zero-based page index (0..N)",
+          "required" : false,
+          "schema" : {
+            "type" : "integer",
+            "default" : 0,
+            "minimum" : 0
+          }
+        }, {
+          "name" : "size",
+          "in" : "query",
+          "description" : "The size of the page to be returned",
+          "required" : false,
+          "schema" : {
+            "type" : "integer",
+            "default" : 20,
+            "minimum" : 1
+          }
+        }, {
+          "name" : "sort",
+          "in" : "query",
+          "description" : "Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/PagedDebtPositionTypeOrgOperatorDTO"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Unauthorized - Missing or invalid token",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/PagedDebtPositionTypeOrgOperatorDTO"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Forbidden - Access denied",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/PagedDebtPositionTypeOrgOperatorDTO"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal Server Error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/PagedDebtPositionTypeOrgOperatorDTO"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "BearerAuth" : [ ]
+        } ]
       }
     },
     "/bff/organization/{organizationId}/debt-position-type-orgs-with-count" : {
@@ -3202,11 +3385,7 @@
         "type" : "string",
         "enum" : [ "PAID", "CLASSIFICATIONS", "PAYMENTS_REPORTING", "RECEIPTS_ARCHIVING" ]
       },
-      "FileVersionEnum" : {
-        "type" : "string",
-        "enum" : [ "v1.0" ]
-      },
-      "PaymentDate" : {
+      "LocalDateIntervalFilter" : {
         "type" : "object",
         "properties" : {
           "from" : {
@@ -3216,6 +3395,14 @@
           "to" : {
             "type" : "string",
             "format" : "date"
+          }
+        }
+      },
+      "ReceiptsArchivingExportFileFilter" : {
+        "type" : "object",
+        "properties" : {
+          "paymentDate" : {
+            "$ref" : "#/components/schemas/LocalDateIntervalFilter"
           }
         }
       },
@@ -3230,21 +3417,13 @@
             "$ref" : "#/components/schemas/ExportFileTypeEnum"
           },
           "fileVersion" : {
-            "$ref" : "#/components/schemas/FileVersionEnum"
+            "type" : "string"
           },
           "filterFields" : {
-            "$ref" : "#/components/schemas/ReceiptsArchivingFilterFields"
+            "$ref" : "#/components/schemas/ReceiptsArchivingExportFileFilter"
           }
         },
         "required" : [ "exportFileType", "fileVersion", "filterFields", "organizationId" ]
-      },
-      "ReceiptsArchivingFilterFields" : {
-        "type" : "object",
-        "properties" : {
-          "paymentDate" : {
-            "$ref" : "#/components/schemas/PaymentDate"
-          }
-        }
       },
       "PaymentsReportingExportFileFilter" : {
         "type" : "object",
@@ -3272,19 +3451,6 @@
           }
         },
         "required" : [ "exportFileType", "fileVersion", "filterFields", "organizationId" ]
-      },
-      "LocalDateIntervalFilter" : {
-        "type" : "object",
-        "properties" : {
-          "from" : {
-            "type" : "string",
-            "format" : "date"
-          },
-          "to" : {
-            "type" : "string",
-            "format" : "date"
-          }
-        }
       },
       "PaidExportFileFilter" : {
         "type" : "object",
@@ -3431,6 +3597,9 @@
             "type" : "string",
             "format" : "date-time"
           },
+          "updateOperatorExternalId" : {
+            "type" : "string"
+          },
           "paymentOptions" : {
             "type" : "array",
             "items" : {
@@ -3540,6 +3709,9 @@
           "updateDate" : {
             "type" : "string",
             "format" : "date-time"
+          },
+          "updateOperatorExternalId" : {
+            "type" : "string"
           }
         },
         "required" : [ "amountCents", "debtor", "remittanceInformation" ]
@@ -3587,6 +3759,17 @@
           "paymentOptionIndex" : {
             "type" : "integer",
             "format" : "int32"
+          },
+          "creationDate" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "updateDate" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "updateOperatorExternalId" : {
+            "type" : "string"
           },
           "installments" : {
             "type" : "array",
@@ -3686,6 +3869,17 @@
           "transferIndex" : {
             "type" : "integer",
             "format" : "int32"
+          },
+          "creationDate" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "updateDate" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "updateOperatorExternalId" : {
+            "type" : "string"
           }
         },
         "required" : [ "amountCents", "category", "orgFiscalCode", "orgName", "remittanceInformation", "transferIndex" ]
@@ -3844,25 +4038,6 @@
       "DebtPositionTypePatchRequestBody" : {
         "type" : "object",
         "properties" : {
-          "brokerId" : {
-            "type" : "integer",
-            "format" : "int64"
-          },
-          "code" : {
-            "type" : "string"
-          },
-          "orgType" : {
-            "type" : "string"
-          },
-          "macroArea" : {
-            "type" : "string"
-          },
-          "serviceType" : {
-            "type" : "string"
-          },
-          "collectingReason" : {
-            "type" : "string"
-          },
           "flagAnonymousFiscalCode" : {
             "type" : "boolean"
           },
@@ -3910,7 +4085,8 @@
           "taxonomyCode" : {
             "type" : "string"
           }
-        }
+        },
+        "required" : [ "collectionReason", "macroAreaCode", "macroAreaDescription", "macroAreaName", "organizationType", "organizationTypeDescription", "serviceType", "serviceTypeCode", "serviceTypeDescription", "taxonomyCode" ]
       },
       "TaxonomyServiceTypeCodeDTO" : {
         "type" : "object",
@@ -3939,7 +4115,8 @@
           "serviceTypeDescription" : {
             "type" : "string"
           }
-        }
+        },
+        "required" : [ "macroAreaCode", "macroAreaDescription", "macroAreaName", "organizationType", "organizationTypeDescription", "serviceType", "serviceTypeCode", "serviceTypeDescription" ]
       },
       "TaxonomyOrganizationTypeDTO" : {
         "type" : "object",
@@ -3950,7 +4127,8 @@
           "organizationTypeDescription" : {
             "type" : "string"
           }
-        }
+        },
+        "required" : [ "organizationType", "organizationTypeDescription" ]
       },
       "TaxonomyMacroAreaCodeDTO" : {
         "type" : "object",
@@ -3970,7 +4148,8 @@
           "macroAreaDescription" : {
             "type" : "string"
           }
-        }
+        },
+        "required" : [ "macroAreaCode", "macroAreaDescription", "macroAreaName", "organizationType", "organizationTypeDescription" ]
       },
       "TaxonomyCollectionReasonDTO" : {
         "type" : "object",
@@ -4002,7 +4181,8 @@
           "collectionReason" : {
             "type" : "string"
           }
-        }
+        },
+        "required" : [ "collectionReason", "macroAreaCode", "macroAreaDescription", "macroAreaName", "organizationType", "organizationTypeDescription", "serviceType", "serviceTypeCode", "serviceTypeDescription" ]
       },
       "OperatorRoleEnum" : {
         "type" : "string",
@@ -4054,7 +4234,54 @@
       },
       "TitleEnum" : {
         "type" : "string",
-        "enum" : [ "NOT_FOUND", "BAD_REQUEST", "GENERIC_ERROR", "FORBIDDEN" ]
+        "enum" : [ "NOT_FOUND", "BAD_REQUEST", "GENERIC_ERROR", "FORBIDDEN", "CONFLICT" ]
+      },
+      "OrganizationWithDebtPositionTypeOrgCount" : {
+        "type" : "object",
+        "properties" : {
+          "organizationId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "ipaCode" : {
+            "type" : "string"
+          },
+          "organizationName" : {
+            "type" : "string"
+          },
+          "debtPositionTypeOrgCount" : {
+            "type" : "integer",
+            "format" : "int32"
+          }
+        }
+      },
+      "PagedOrganizationWithDebtPositionTypeOrgCount" : {
+        "type" : "object",
+        "properties" : {
+          "content" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/OrganizationWithDebtPositionTypeOrgCount"
+            }
+          },
+          "size" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "totalElements" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "totalPages" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "number" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        },
+        "required" : [ "content", "number", "size", "totalElements", "totalPages" ]
       },
       "PagedTreasuryView" : {
         "type" : "object",
@@ -4719,53 +4946,6 @@
         },
         "required" : [ "amountPaidCents", "iur", "iuv", "paymentsReportingId" ]
       },
-      "OrganizationWithDebtPositionTypeOrgCount" : {
-        "type" : "object",
-        "properties" : {
-          "organizationId" : {
-            "type" : "integer",
-            "format" : "int64"
-          },
-          "ipaCode" : {
-            "type" : "string"
-          },
-          "organizationName" : {
-            "type" : "string"
-          },
-          "debtPositionTypeOrgCount" : {
-            "type" : "integer",
-            "format" : "int32"
-          }
-        }
-      },
-      "PagedOrganizationWithDebtPositionTypeOrgCount" : {
-        "type" : "object",
-        "properties" : {
-          "content" : {
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/components/schemas/OrganizationWithDebtPositionTypeOrgCount"
-            }
-          },
-          "size" : {
-            "type" : "integer",
-            "format" : "int64"
-          },
-          "totalElements" : {
-            "type" : "integer",
-            "format" : "int64"
-          },
-          "totalPages" : {
-            "type" : "integer",
-            "format" : "int64"
-          },
-          "number" : {
-            "type" : "integer",
-            "format" : "int64"
-          }
-        },
-        "required" : [ "content", "number", "size", "totalElements", "totalPages" ]
-      },
       "InstallmentView" : {
         "type" : "object",
         "properties" : {
@@ -5189,7 +5369,8 @@
           "code" : {
             "type" : "string",
             "maxLength" : 255,
-            "minLength" : 0
+            "minLength" : 0,
+            "readOnly" : true
           },
           "description" : {
             "type" : "string",
@@ -5339,6 +5520,54 @@
           }
         },
         "required" : [ "code", "debtPositionTypeId", "description", "iban", "organizationId" ]
+      },
+      "DebtPositionTypeOrgOperatorDTO" : {
+        "type" : "object",
+        "properties" : {
+          "operatorId" : {
+            "type" : "string"
+          },
+          "mappedExternalUserId" : {
+            "type" : "string"
+          },
+          "firstName" : {
+            "type" : "string"
+          },
+          "lastName" : {
+            "type" : "string"
+          },
+          "enabled" : {
+            "type" : "boolean"
+          }
+        }
+      },
+      "PagedDebtPositionTypeOrgOperatorDTO" : {
+        "type" : "object",
+        "properties" : {
+          "content" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/DebtPositionTypeOrgOperatorDTO"
+            }
+          },
+          "size" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "totalElements" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "totalPages" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "number" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        },
+        "required" : [ "content", "number", "size", "totalElements", "totalPages" ]
       },
       "DebtPositionTypeOrgWithCount" : {
         "type" : "object",

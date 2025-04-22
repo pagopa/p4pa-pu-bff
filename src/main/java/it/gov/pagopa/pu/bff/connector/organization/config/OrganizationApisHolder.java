@@ -3,7 +3,15 @@ package it.gov.pagopa.pu.bff.connector.organization.config;
 import it.gov.pagopa.pu.bff.config.rest.RestTemplateConfig;
 import it.gov.pagopa.pu.organization.controller.ApiClient;
 import it.gov.pagopa.pu.organization.controller.BaseApi;
-import it.gov.pagopa.pu.organization.controller.generated.*;
+import it.gov.pagopa.pu.organization.controller.generated.BrokerEntityControllerApi;
+import it.gov.pagopa.pu.organization.controller.generated.OrganizationEntityControllerApi;
+import it.gov.pagopa.pu.organization.controller.generated.OrganizationSearchControllerApi;
+import it.gov.pagopa.pu.organization.controller.generated.TaxonomyCodeDtoSearchControllerApi;
+import it.gov.pagopa.pu.organization.controller.generated.TaxonomyCollectionReasonDtoSearchControllerApi;
+import it.gov.pagopa.pu.organization.controller.generated.TaxonomyMacroAreaCodeDtoSearchControllerApi;
+import it.gov.pagopa.pu.organization.controller.generated.TaxonomyOrganizationTypeDtoSearchControllerApi;
+import it.gov.pagopa.pu.organization.controller.generated.TaxonomySearchControllerApi;
+import it.gov.pagopa.pu.organization.controller.generated.TaxonomyServiceTypeCodeDtoSearchControllerApi;
 import jakarta.annotation.PreDestroy;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.stereotype.Service;
@@ -20,6 +28,7 @@ public class OrganizationApisHolder {
     private final TaxonomyOrganizationTypeDtoSearchControllerApi taxonomyOrganizationTypeDtoSearchControllerApi;
     private final TaxonomyServiceTypeCodeDtoSearchControllerApi taxonomyServiceTypeCodeDtoSearchControllerApi;
     private final TaxonomyCodeDtoSearchControllerApi taxonomyCodeDtoSearchControllerApi;
+    private final OrganizationEntityControllerApi organizationEntityControllerApi;
     private final ThreadLocal<String> bearerTokenHolder = new ThreadLocal<>();
 
     public OrganizationApisHolder(
@@ -44,6 +53,7 @@ public class OrganizationApisHolder {
         this.taxonomyOrganizationTypeDtoSearchControllerApi = new TaxonomyOrganizationTypeDtoSearchControllerApi(apiClient);
         this.taxonomyServiceTypeCodeDtoSearchControllerApi = new TaxonomyServiceTypeCodeDtoSearchControllerApi(apiClient);
         this.taxonomyCodeDtoSearchControllerApi = new TaxonomyCodeDtoSearchControllerApi(apiClient);
+        this.organizationEntityControllerApi = new OrganizationEntityControllerApi(apiClient);
     }
 
     @PreDestroy
@@ -83,6 +93,10 @@ public class OrganizationApisHolder {
 
     public TaxonomyCodeDtoSearchControllerApi getTaxonomyCode(String accessToken){
       return getApi(accessToken,taxonomyCodeDtoSearchControllerApi);
+    }
+
+    public OrganizationEntityControllerApi getOrganizationEntityControllerApi(String accessToken){
+      return getApi(accessToken,organizationEntityControllerApi);
     }
 
     private <T extends BaseApi> T getApi(String accessToken, T api) {

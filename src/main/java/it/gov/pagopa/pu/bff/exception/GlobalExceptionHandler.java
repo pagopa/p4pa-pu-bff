@@ -2,10 +2,12 @@ package it.gov.pagopa.pu.bff.exception;
 
 import com.fasterxml.jackson.databind.JsonMappingException;
 import it.gov.pagopa.pu.bff.dto.generated.ErrorDTO;
+import it.gov.pagopa.pu.bff.dto.generated.ErrorDTO.TitleEnum;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.ValidationException;
+import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.event.Level;
 import org.springframework.http.HttpStatus;
@@ -19,13 +21,23 @@ import org.springframework.web.ErrorResponseException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
-
-import java.util.stream.Collectors;
 
 @RestControllerAdvice
 @Slf4j
 public class GlobalExceptionHandler {
+
+  @ExceptionHandler(ConflictException.class)
+  public ResponseEntity<ErrorDTO> handleConflictException(
+    ConflictException ex, HttpServletRequest request) {
+    return handleException(ex, request, HttpStatus.CONFLICT, ErrorDTO.TitleEnum.CONFLICT);
+  }
+
+  @ExceptionHandler(ResourceNotFoundException.class)
+  public ResponseEntity<ErrorDTO> handleResourceNotFoundException(ResourceNotFoundException ex, HttpServletRequest request) {
+    return handleException(ex, request, HttpStatus.NOT_FOUND, TitleEnum.NOT_FOUND);
+  }
 
   @ExceptionHandler(InvalidOperatorRoleException.class)
   public ResponseEntity<ErrorDTO> handleInvalidOperatorRoleException(InvalidOperatorRoleException ex, HttpServletRequest request) {
@@ -43,8 +55,13 @@ public class GlobalExceptionHandler {
   }
 
   @ExceptionHandler({AuthorizationDeniedException.class})
-  public ResponseEntity<ErrorDTO> handleAuthorizationDeniedException(Exception ex, HttpServletRequest request) {
+  public ResponseEntity<ErrorDTO> handleAuthorizationDeniedException(AuthorizationDeniedException ex, HttpServletRequest request) {
     return handleException(ex, request, HttpStatus.FORBIDDEN, ErrorDTO.TitleEnum.FORBIDDEN);
+  }
+
+  @ExceptionHandler({HttpClientErrorException.class})
+  public ResponseEntity<ErrorDTO> handleHttpClientErrorException(HttpClientErrorException ex, HttpServletRequest request) {
+    return handleException(ex, request, ex.getStatusCode(), TitleEnum.GENERIC_ERROR);
   }
 
   @ExceptionHandler({ServletException.class, ErrorResponseException.class})

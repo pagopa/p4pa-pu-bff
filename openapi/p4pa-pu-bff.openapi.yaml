@@ -158,6 +158,7 @@ paths:
       parameters:
         - name: organizationType
           in: query
+          required: true
           schema:
             type: string
       responses:
@@ -183,10 +184,12 @@ paths:
       parameters:
         - name: organizationType
           in: query
+          required: true
           schema:
             type: string
         - name: macroAreaCode
           in: query
+          required: true
           schema:
             type: string
       responses:
@@ -212,14 +215,17 @@ paths:
       parameters:
         - name: organizationType
           in: query
+          required: true
           schema:
             type: string
         - name: macroAreaCode
           in: query
+          required: true
           schema:
             type: string
         - name: serviceTypeCode
           in: query
+          required: true
           schema:
             type: string
       responses:
@@ -245,18 +251,22 @@ paths:
       parameters:
         - name: organizationType
           in: query
+          required: true
           schema:
             type: string
         - name: macroAreaCode
           in: query
+          required: true
           schema:
             type: string
         - name: serviceTypeCode
           in: query
+          required: true
           schema:
             type: string
         - name: collectionReason
           in: query
+          required: true
           schema:
             type: string
       responses:
@@ -325,6 +335,32 @@ paths:
           description: Forbidden - Access denied
         '404':
           description: Not Found - Debt Position Type not found
+        '500':
+          description: Internal Server Error
+    delete:
+      tags:
+        - DebtPositionTypes
+      summary: "Delete a specific DebtPositionType"
+      operationId: deleteDebtPositionType
+      parameters:
+        - name: debtPositionTypeId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: The unique identifier of the debt-position-type
+      responses:
+        '200':
+          description: OK
+        '401':
+          description: Unauthorized - Missing or invalid token
+        '403':
+          description: Forbidden - Access denied
+        '404':
+          description: Not Found - DebtPositionTypeOrg Not Found
+        '409':
+          description: Conflict
         '500':
           description: Internal Server Error
   /organization/{organizationId}/debt-position-type-orgs-with-count:
@@ -463,6 +499,37 @@ paths:
           description: Forbidden - Access denied
         '404':
           description: Not Found - DebtPositionTypeOrg Not Found
+        '500':
+          description: Internal Server Error
+    delete:
+      tags:
+        - DebtPositionTypeOrgs
+      summary: "Deletes DebtPositionTypeOrg"
+      operationId: deleteDebtPositionTypeOrg
+      parameters:
+        - name: organizationId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: debtPositionTypeOrgId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+        '401':
+          description: Unauthorized - Missing or invalid token
+        '403':
+          description: Forbidden - Access denied
+        '404':
+          description: Not Found - DebtPositionTypeOrg Not Found
+        '409':
+          description: Conflict
         '500':
           description: Internal Server Error
   /organization/{organizationId}/debt-position-type-orgs:
@@ -1295,12 +1362,12 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ReceiptsArchivingExportFileRequestDTO'
+              type: 'ReceiptsArchivingExportFileRequestDTO'
         required: true
       responses:
         '201':
           description: OK
-  /organization/{organizationId}/organizations:
+  /organization/{organizationId}:
     get:
       tags:
         - Organizations
@@ -1332,6 +1399,38 @@ paths:
         '500':
           description: Internal Server Error
       x-spring-paginated: true
+  /organization/{organizationId}/debt-position-type-orgs/operators:
+    get:
+      tags:
+        - DebtPositionTypeOrgs
+      summary: "Retrieve a page of DebtPositionTypeOrgOperatorDTO"
+      operationId: getDebtPositionTypeOrgOperators
+      parameters:
+        - name: organizationId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: debtPositionTypeOrgId
+          in: query
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PagedDebtPositionTypeOrgOperatorDTO'
+        '401':
+          description: Unauthorized - Missing or invalid token
+        '403':
+          description: Forbidden - Access denied
+        '500':
+          description: Internal Server Error
+      x-spring-paginated: true
 security:
   - BearerAuth: [ ]
 components:
@@ -1343,6 +1442,17 @@ components:
   schemas:
     TaxonomyCodeDTO:
       type: object
+      required:
+        - organizationType
+        - organizationTypeDescription
+        - macroAreaCode
+        - macroAreaName
+        - macroAreaDescription
+        - serviceTypeCode
+        - serviceType
+        - serviceTypeDescription
+        - collectionReason
+        - taxonomyCode
       properties:
         organizationType:
           type: string
@@ -1366,6 +1476,16 @@ components:
           type: string
     TaxonomyCollectionReasonDTO:
       type: object
+      required:
+        - organizationType
+        - organizationTypeDescription
+        - macroAreaCode
+        - macroAreaName
+        - macroAreaDescription
+        - serviceTypeCode
+        - serviceType
+        - serviceTypeDescription
+        - collectionReason
       properties:
         organizationType:
           type: string
@@ -1387,6 +1507,15 @@ components:
           type: string
     TaxonomyServiceTypeCodeDTO:
       type: object
+      required:
+        - organizationType
+        - organizationTypeDescription
+        - macroAreaCode
+        - macroAreaName
+        - macroAreaDescription
+        - serviceTypeCode
+        - serviceType
+        - serviceTypeDescription
       properties:
         organizationType:
           type: string
@@ -1406,6 +1535,12 @@ components:
           type: string
     TaxonomyMacroAreaCodeDTO:
       type: object
+      required:
+        - organizationType
+        - organizationTypeDescription
+        - macroAreaCode
+        - macroAreaName
+        - macroAreaDescription
       properties:
         organizationType:
           type: string
@@ -1419,6 +1554,9 @@ components:
           type: string
     TaxonomyOrganizationTypeDTO:
       type: object
+      required:
+        - organizationType
+        - organizationTypeDescription
       properties:
         organizationType:
           type: string
@@ -1521,6 +1659,7 @@ components:
             - BAD_REQUEST
             - GENERIC_ERROR
             - FORBIDDEN
+            - CONFLICT
         description:
           type: string
           description: Description of the error
@@ -1835,39 +1974,6 @@ components:
           type: string
         status:
           type: 'ExportFileStatus'
-    ReceiptsArchivingExportFileRequestDTO:
-      required:
-        - organizationId
-        - exportFileType
-        - fileVersion
-        - filterFields
-      type: object
-      properties:
-        organizationId:
-          type: integer
-          format: int64
-        exportFileType:
-          type: ExportFileType
-        fileVersion:
-          type: string
-          enum:
-            - v1.0
-        filterFields:
-          $ref: '#/components/schemas/ReceiptsArchivingFilterFields'
-    ReceiptsArchivingFilterFields:
-      type: object
-      properties:
-        paymentDate:
-          $ref: '#/components/schemas/PaymentDate'
-    PaymentDate:
-      type: object
-      properties:
-        from:
-          type: string
-          format: date
-        to:
-          type: string
-          format: date
     PagedDebtPositionView:
       type: object
       required:
@@ -2018,6 +2124,7 @@ components:
         code:
           type: string
           maxLength: 255
+          readOnly: true
         description:
           type: string
           readOnly: true
@@ -2047,19 +2154,6 @@ components:
     DebtPositionTypePatchRequestBody:
       type: object
       properties:
-        brokerId:
-          type: integer
-          format: int64
-        code:
-          type: string
-        orgType:
-          type: string
-        macroArea:
-          type: string
-        serviceType:
-          type: string
-        collectingReason:
-          type: string
         flagAnonymousFiscalCode:
           type: boolean
         flagMandatoryDueDate:
@@ -2080,3 +2174,41 @@ components:
           type: string
         debtPositionTypeOrgCount:
           type: integer
+    PagedDebtPositionTypeOrgOperatorDTO:
+      type: object
+      required:
+        - content
+        - size
+        - totalElements
+        - totalPages
+        - number
+      properties:
+        content:
+          type: array
+          items:
+            type: 'DebtPositionTypeOrgOperatorDTO'
+        size:
+          type: integer
+          format: int64
+        totalElements:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer
+          format: int64
+        number:
+          type: integer
+          format: int64
+    DebtPositionTypeOrgOperatorDTO:
+      type: object
+      properties:
+        operatorId:
+          type: string
+        mappedExternalUserId:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        enabled:
+          type: boolean

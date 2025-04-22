@@ -1,18 +1,9 @@
 package it.gov.pagopa.pu.bff.connector.process_executions;
 
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.mockito.Mockito.when;
-
 import it.gov.pagopa.pu.bff.connector.process_executions.client.ExportFileClient;
 import it.gov.pagopa.pu.bff.connector.process_executions.client.ExportFileSearchClient;
 import it.gov.pagopa.pu.bff.dto.ExportFileFiltersDTO;
-import it.gov.pagopa.pu.processexecutions.dto.generated.ClassificationsExportFileFilter;
-import it.gov.pagopa.pu.processexecutions.dto.generated.ClassificationsExportFileRequestDTO;
-import it.gov.pagopa.pu.processexecutions.dto.generated.PagedModelExportFile;
-import it.gov.pagopa.pu.processexecutions.dto.generated.PaidExportFileFilter;
-import it.gov.pagopa.pu.processexecutions.dto.generated.PaidExportFileRequestDTO;
-import it.gov.pagopa.pu.processexecutions.dto.generated.PaymentsReportingExportFileFilter;
-import it.gov.pagopa.pu.processexecutions.dto.generated.PaymentsReportingExportFileRequestDTO;
+import it.gov.pagopa.pu.processexecutions.dto.generated.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,6 +11,11 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Pageable;
+
+import java.time.LocalDate;
+
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class ExportFileServiceTest {
@@ -98,6 +94,24 @@ class ExportFileServiceTest {
     service.createPaymentsReportingExportFile(requestDTO, accessToken);
 
     Mockito.verify(client).createPaymentsReportingExportFile(requestDTO, accessToken);
+  }
+
+  @Test
+  void whenCreateReceiptsArchivingExportFileThenInvokeClient() {
+    LocalDate localDate = LocalDate.parse("2025-04-14");
+    LocalDateIntervalFilter localDateIntervalFilter = LocalDateIntervalFilter.builder().from(localDate).to(localDate).build();
+    ReceiptsArchivingExportFileFilter receiptsArchivingExportFileFilter = ReceiptsArchivingExportFileFilter.builder().paymentDate(localDateIntervalFilter).build();
+    ReceiptsArchivingExportFileRequestDTO receiptsArchivingExportFileRequestDTO = ReceiptsArchivingExportFileRequestDTO.builder()
+      .organizationId(1L)
+      .exportFileType(ReceiptsArchivingExportFileRequestDTO.ExportFileTypeEnum.RECEIPTS_ARCHIVING)
+      .fileVersion("v1.0")
+      .filterFields(receiptsArchivingExportFileFilter)
+      .build();
+    String accessToken = "ACCESSTOKEN";
+
+    service.createReceiptsArchivingExportFile(receiptsArchivingExportFileRequestDTO, accessToken);
+
+    Mockito.verify(client).createReceiptsArchivingExportFile(receiptsArchivingExportFileRequestDTO, accessToken);
   }
 
 }

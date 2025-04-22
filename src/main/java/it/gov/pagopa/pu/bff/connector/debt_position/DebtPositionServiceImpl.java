@@ -1,21 +1,25 @@
 package it.gov.pagopa.pu.bff.connector.debt_position;
 
 import it.gov.pagopa.pu.bff.connector.debt_position.client.DebtPositionClient;
+import it.gov.pagopa.pu.bff.connector.debt_position.client.DebtPositionSearchClient;
 import it.gov.pagopa.pu.bff.dto.DebtPositionViewFiltersDTO;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionDTO;
+import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelDebtPosition;
 import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelDebtPositionView;
+import java.util.List;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class DebtPositionServiceImpl implements DebtPositionService {
 
   private final DebtPositionClient client;
+  private final DebtPositionSearchClient debtPositionSearchClient;
 
-  public DebtPositionServiceImpl(DebtPositionClient client) {
+  public DebtPositionServiceImpl(DebtPositionClient client,
+    DebtPositionSearchClient debtPositionSearchClient) {
     this.client = client;
+    this.debtPositionSearchClient = debtPositionSearchClient;
   }
 
   @Override
@@ -33,5 +37,11 @@ public class DebtPositionServiceImpl implements DebtPositionService {
   @Override
   public DebtPositionDTO getDebtPosition(Long debtPositionId, String accessToken) {
     return client.getDebtPosition(debtPositionId, accessToken);
+  }
+
+  @Override
+  public PagedModelDebtPosition getDebtPositionByDebtPositionTypeOrgId(Long debtPositionTypeOrgId,
+    Pageable pageable, String accessToken) {
+    return debtPositionSearchClient.getDebtPositionByDebtPositionTypeOrgId(debtPositionTypeOrgId,pageable,accessToken);
   }
 }

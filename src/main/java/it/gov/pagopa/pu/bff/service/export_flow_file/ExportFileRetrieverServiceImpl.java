@@ -9,6 +9,7 @@ import it.gov.pagopa.pu.bff.service.AuthorizationService;
 import it.gov.pagopa.pu.processexecutions.dto.generated.ClassificationsExportFileRequestDTO;
 import it.gov.pagopa.pu.processexecutions.dto.generated.PaidExportFileRequestDTO;
 import it.gov.pagopa.pu.processexecutions.dto.generated.PaymentsReportingExportFileRequestDTO;
+import it.gov.pagopa.pu.processexecutions.dto.generated.ReceiptsArchivingExportFileRequestDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -62,5 +63,11 @@ public class ExportFileRetrieverServiceImpl implements
     UserInfo loggedUser, String accessToken) {
     AuthorizationService.validateUserForOrganizationId(requestDTO.getOrganizationId(), loggedUser);
     exportFileService.createPaymentsReportingExportFile(requestDTO, accessToken);
+  }
+
+  @Override
+  public void createReceiptsArchivingExportFile(ReceiptsArchivingExportFileRequestDTO receiptsArchivingExportFileRequestDTO, UserInfo loggedUser, String accessToken) {
+    AuthorizationService.validateUserForOrganizationId(receiptsArchivingExportFileRequestDTO.getOrganizationId(),loggedUser);
+    exportFileService.createReceiptsArchivingExportFile(receiptsArchivingExportFileRequestDTO,accessToken);
   }
 }

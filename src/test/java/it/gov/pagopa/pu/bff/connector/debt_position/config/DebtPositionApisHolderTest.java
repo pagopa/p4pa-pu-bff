@@ -101,6 +101,15 @@ class DebtPositionApisHolderTest extends BaseApiHolderTest {
   }
 
   @Test
+  void whenGetDebtPositionTypeOrgOperatorsSearchControllerApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
+    assertAuthenticationShouldBeSetInThreadSafeMode(
+      accessToken -> debtPositionApisHolder.getDebtPositionTypeOrgOperatorsSearchControllerApi(accessToken)
+        .crudDebtPositionTypeOrgOperatorsFindByDebtPositionTypeOrgId(1L),
+      new ParameterizedTypeReference<>() {
+      }, debtPositionApisHolder::unload);
+  }
+
+  @Test
   void whenGetTransferSearchControllerApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
     assertAuthenticationShouldBeSetInThreadSafeMode(
       accessToken -> debtPositionApisHolder.getTransferSearchControllerApi(accessToken)
@@ -184,6 +193,31 @@ class DebtPositionApisHolderTest extends BaseApiHolderTest {
       accessToken -> debtPositionApisHolder.getDebtPositionTypeOrgEntityControllerApi(accessToken)
         .crudGetDebtpositiontypeorg(
           "1"),
+      new ParameterizedTypeReference<>() {
+      },
+      debtPositionApisHolder::unload);
+  }
+
+  @Test
+  void whenGetDebtPositionSearchControllerApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
+    assertAuthenticationShouldBeSetInThreadSafeMode(
+      accessToken -> debtPositionApisHolder.getDebtPositionSearchControllerApi(accessToken)
+        .crudDebtPositionsFindByDebtPositionTypeOrgId(
+          1L,1,1,Collections.emptyList()),
+      new ParameterizedTypeReference<>() {
+      },
+      debtPositionApisHolder::unload);
+  }
+
+  @Test
+  void whenGetDebtPositionTypeOrgApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
+    assertAuthenticationShouldBeSetInThreadSafeMode(
+      accessToken -> {
+        debtPositionApisHolder.getDebtPositionTypeOrgApi(accessToken)
+          .deleteDebtPositionTypeOrg(
+            1L);
+        return voidMock;
+      },
       new ParameterizedTypeReference<>() {
       },
       debtPositionApisHolder::unload);

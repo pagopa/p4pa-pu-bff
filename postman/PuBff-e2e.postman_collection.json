@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "f3188362-878f-43c7-902c-bc9879757f68",
+		"_postman_id": "222ce516-5fb1-4ac2-bee1-d3bf0025b210",
 		"name": "PU-BFF",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "28798913"
@@ -268,10 +268,10 @@
 									"})\r",
 									"\r",
 									"pm.test(\"[organizations] - get list of organizations\", () => {\r",
-									"    jsonResponse.forEach((item)=> {\r",
+									"    jsonResponse.content.forEach((item)=> {\r",
 									"        pm.expect(item).to.have.property(\"organizationId\").and.to.not.be.null;\r",
 									"        pm.expect(item).to.have.property(\"ipaCode\").and.to.not.be.null;\r",
-									"        pm.expect(item).to.have.property(\"orgName\").and.to.not.be.null;\r",
+									"        pm.expect(item).to.have.property(\"organizationName\").and.to.not.be.null;\r",
 									"        pm.expect(item).to.have.property(\"debtPositionTypeOrgCount\").and.to.not.be.null;\r",
 									"    });\r",
 									"})"
@@ -295,20 +295,19 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{puBffBaseUrl}}/bff/organization/:organizationId/organizations",
+							"raw": "{{puBffBaseUrl}}/bff/organization/:organizationId",
 							"host": [
 								"{{puBffBaseUrl}}"
 							],
 							"path": [
 								"bff",
 								"organization",
-								":organizationId",
-								"organizations"
+								":organizationId"
 							],
 							"variable": [
 								{
 									"key": "organizationId",
-									"value": ""
+									"value": "{{organizationId}}"
 								}
 							]
 						}
@@ -1242,6 +1241,81 @@
 					"response": []
 				},
 				{
+					"name": "03_getDebtPositionTypeOrgOperators",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let jsonResponse = pm.response.json();\r",
+									"pm.test(\"[DebtPositionTypeOrg getDebtPositionTypeOrgOperators], expected httpStatus: 200\", () => {\r",
+									"    pm.response.to.have.status(200);\r",
+									"})\r",
+									"pm.test(\"[DebtPositionTypeOrg getDebtPositionTypeOrgOperators] - getDebtPositionTypeOrgOperators\", () => {\r",
+									"    pm.expect(jsonResponse).to.have.property(\"content\").and.to.be.an(\"array\");\r",
+									"    pm.expect(jsonResponse).to.have.property(\"size\").and.to.be.a(\"number\");\r",
+									"    pm.expect(jsonResponse).to.have.property(\"totalElements\").and.to.be.a(\"number\");\r",
+									"    pm.expect(jsonResponse).to.have.property(\"totalPages\").and.to.be.a(\"number\");\r",
+									"    pm.expect(jsonResponse).to.have.property(\"number\").and.to.be.a(\"number\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{puBffBaseUrl}}/bff/organization/:organizationId/debt-position-type-orgs/operators?debtPositionTypeOrgId={{debtPositionTypeOrgId}}",
+							"host": [
+								"{{puBffBaseUrl}}"
+							],
+							"path": [
+								"bff",
+								"organization",
+								":organizationId",
+								"debt-position-type-orgs",
+								"operators"
+							],
+							"query": [
+								{
+									"key": "debtPositionTypeOrgId",
+									"value": "{{debtPositionTypeOrgId}}"
+								}
+							],
+							"variable": [
+								{
+									"key": "organizationId",
+									"value": "{{organizationId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "03_createDebtPositionType",
 					"event": [
 						{
@@ -1339,7 +1413,7 @@
 									"pm.test(\"[debt-position-type] - createDebtPositionType\", () => {\r",
 									"    pm.expect(jsonResponse).to.have.property(\"debtPositionTypeId\").and.to.not.be.null;\r",
 									"    pm.expect(jsonResponse).to.have.property(\"brokerId\").and.to.not.be.null;\r",
-									"    pm.expect(jsonResponse).to.have.property(\"code\").and.to.equal(pm.variables.get(\"debtPositionTypeCode\"));\r",
+									"    pm.expect(jsonResponse).to.have.property(\"code\").and.to.not.be.null;\r",
 									"    pm.expect(jsonResponse).to.have.property(\"collectingReason\").and.to.not.be.null;\r",
 									"    pm.expect(jsonResponse).to.have.property(\"description\").and.to.not.be.null;\r",
 									"    pm.expect(jsonResponse).to.have.property(\"macroArea\").and.to.not.be.null;\r",
@@ -1349,7 +1423,7 @@
 									"    pm.expect(jsonResponse).to.have.property(\"flagAnonymousFiscalCode\").and.to.not.be.null;\r",
 									"    pm.expect(jsonResponse).to.have.property(\"flagMandatoryDueDate\").and.to.not.be.null;\r",
 									"    pm.expect(jsonResponse).to.have.property(\"flagNotifyIo\").and.to.not.be.null;\r",
-									"    pm.expect(jsonResponse).to.have.property(\"ioTemplateMessage\").and.to.not.be.null;\r",
+									"    pm.expect(jsonResponse).to.have.property(\"ioTemplateMessage\").and.to.equal(pm.variables.get(\"debtPositionTypeIoTemplateMessage\"));\r",
 									"})\r",
 									""
 								],
@@ -1362,7 +1436,7 @@
 							"script": {
 								"exec": [
 									"let debtPositionTypeId = pm.collectionVariables.get(\"debtPositionTypeId\");\r",
-									"pm.variables.set(\"debtPositionTypeCode\",\"TEST-PATCH\")"
+									"pm.variables.set(\"debtPositionTypeIoTemplateMessage\",\"TEST-PATCH\")"
 								],
 								"type": "text/javascript",
 								"packages": {}
@@ -1384,7 +1458,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"code\": \"{{debtPositionTypeCode}}\",\n    \"brokerId\": 1,\n    \"orgType\": \"A\",\n    \"macroArea\": \"F\",\n    \"serviceType\": \"T\",\n    \"collectingReason\": \"R\",\n    \"flagAnonymousFiscalCode\": true,\n    \"flagMandatoryDueDate\": true,\n    \"flagNotifyIo\": true,\n    \"ioTemplateMessage\": \"Template145\"\n}",
+							"raw": "{\n    \"flagAnonymousFiscalCode\": true,\n    \"flagMandatoryDueDate\": true,\n    \"flagNotifyIo\": true,\n    \"ioTemplateMessage\": \"{{debtPositionTypeIoTemplateMessage}}\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"

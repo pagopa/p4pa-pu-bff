@@ -6,11 +6,9 @@ import it.gov.pagopa.pu.bff.dto.OffsetDateTimeIntervalFilter;
 import it.gov.pagopa.pu.bff.dto.generated.PagedExportFile;
 import it.gov.pagopa.pu.bff.security.SecurityUtils;
 import it.gov.pagopa.pu.bff.service.export_flow_file.ExportFileRetrieverService;
-import it.gov.pagopa.pu.processexecutions.dto.generated.ClassificationsExportFileRequestDTO;
+import it.gov.pagopa.pu.processexecutions.dto.generated.*;
 import it.gov.pagopa.pu.processexecutions.dto.generated.ExportFile.ExportFileTypeEnum;
-import it.gov.pagopa.pu.processexecutions.dto.generated.ExportFileStatus;
-import it.gov.pagopa.pu.processexecutions.dto.generated.PaidExportFileRequestDTO;
-import it.gov.pagopa.pu.processexecutions.dto.generated.PaymentsReportingExportFileRequestDTO;
+
 import java.time.OffsetDateTime;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -77,6 +75,17 @@ public class ExportFileController implements ExportFilesApi {
       requestDTO.getOrganizationId());
 
     exportFileRetrieverService.createPaymentsReportingExportFile(requestDTO, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken());
+
+    return ResponseEntity.ok().build();
+  }
+
+  @Override
+  public ResponseEntity<Void> createReceiptsArchivingExportFile(ReceiptsArchivingExportFileRequestDTO receiptsArchivingExportFileRequestDTO) {
+    log.info(
+      "User requested receipts archiving export file having organizationId {}",
+      receiptsArchivingExportFileRequestDTO.getOrganizationId());
+
+    exportFileRetrieverService.createReceiptsArchivingExportFile(receiptsArchivingExportFileRequestDTO, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken());
 
     return ResponseEntity.ok().build();
   }

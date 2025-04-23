@@ -3942,6 +3942,9 @@
           "ioTemplateMessage" : {
             "type" : "string"
           },
+          "ioTemplateSubject" : {
+            "type" : "string"
+          },
           "_links" : {
             "type" : "object",
             "additionalProperties" : {
@@ -4033,6 +4036,9 @@
             "type" : "boolean"
           },
           "ioTemplateMessage" : {
+            "type" : "string"
+          },
+          "ioTemplateSubject" : {
             "type" : "string"
           }
         },

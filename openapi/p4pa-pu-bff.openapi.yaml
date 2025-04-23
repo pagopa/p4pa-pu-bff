@@ -288,7 +288,7 @@ paths:
         content:
           application/json:
             schema:
-              type: 'DebtPositionTypeRequestBody'
+              $ref: '#/components/schemas/DebtPositionTypeRequestBody'
         required: true
       responses:
         '201':
@@ -2221,3 +2221,49 @@ components:
           type: string
         enabled:
           type: boolean
+    DebtPositionTypeRequestBody:
+      type: object
+      required:
+        - code
+        - collectingReason
+        - description
+        - macroArea
+        - orgType
+        - serviceType
+        - taxonomyCode
+      properties:
+        creationDate:
+          type: string
+          format: date-time
+        updateDate:
+          type: string
+          format: date-time
+        updateOperatorExternalId:
+          type: string
+        debtPositionTypeId:
+          type: integer
+          format: int64
+        code:
+          type: string
+        description:
+          type: string
+        orgType:
+          type: string
+        macroArea:
+          type: string
+        serviceType:
+          type: string
+        collectingReason:
+          type: string
+        taxonomyCode:
+          type: string
+        flagAnonymousFiscalCode:
+          type: boolean
+        flagMandatoryDueDate:
+          type: boolean
+        flagNotifyIo:
+          type: boolean
+        ioTemplateMessage:
+          type: string
+        ioTemplateSubject:
+          type: string

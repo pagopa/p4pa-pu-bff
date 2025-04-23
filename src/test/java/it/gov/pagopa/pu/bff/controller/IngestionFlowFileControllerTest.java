@@ -1,14 +1,15 @@
 package it.gov.pagopa.pu.bff.controller;
 
+import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.dto.IngestionFlowFileFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.generated.IngestionFlowFile;
 import it.gov.pagopa.pu.bff.dto.generated.PagedIngestionFlowFile;
+import it.gov.pagopa.pu.bff.security.SecurityUtilsTest;
 import it.gov.pagopa.pu.bff.service.ingestion_flow_file.IngestionFlowFileRetrieverService;
+import it.gov.pagopa.pu.bff.util.TestUtils;
 import it.gov.pagopa.pu.processexecutions.dto.generated.IngestionFlowFile.IngestionFlowFileTypeEnum;
-import java.time.OffsetDateTime;
-import java.util.List;
-
 import it.gov.pagopa.pu.processexecutions.dto.generated.IngestionFlowFileStatus;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,10 +21,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
+
+import java.time.OffsetDateTime;
+import java.util.List;
 
 @ExtendWith(MockitoExtension.class)
 class IngestionFlowFileControllerTest {
@@ -34,12 +34,24 @@ class IngestionFlowFileControllerTest {
   @InjectMocks
   private IngestionFlowFileController ingestionFlowFileController;
 
+  private final String accessToken = "fakeAccessToken";
+  private final UserInfo loggedUser = TestUtils.getPodamFactory().manufacturePojo(UserInfo.class);
+
   @BeforeEach
   void setUp() {
-    Authentication authentication = new UsernamePasswordAuthenticationToken("fakeUser", "fakeAccessToken");
-    SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
-    securityContext.setAuthentication(authentication);
-    SecurityContextHolder.setContext(securityContext);
+    SecurityUtilsTest.configureSecurityContext(accessToken, loggedUser);
+  }
+
+  @AfterEach
+  void verifyNoMoreInteractions(){
+    Mockito.verifyNoMoreInteractions(
+      ingestionFlowFileRetrieverServiceMock
+    );
+  }
+
+  @AfterEach
+  void clearContext(){
+    SecurityUtilsTest.clearSecurityContext();
   }
 
   @Test
@@ -72,7 +84,7 @@ class IngestionFlowFileControllerTest {
     Mockito.when(ingestionFlowFileRetrieverServiceMock.getIngestionFlowFiles(
         Mockito.eq(expectedFilter),
         Mockito.argThat(p->p.getPageNumber()==0 && p.getPageSize()==10 && p.getSort().isUnsorted()),
-        Mockito.any(), Mockito.anyString()))
+        Mockito.same(loggedUser), Mockito.same(accessToken)))
       .thenReturn(expectedResult);
 
     ResponseEntity<PagedIngestionFlowFile> response = ingestionFlowFileController.getIngestionFlowFiles(organizationId,

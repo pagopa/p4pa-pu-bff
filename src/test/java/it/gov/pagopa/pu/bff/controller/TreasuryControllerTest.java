@@ -4,9 +4,12 @@ import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.dto.LocalDateIntervalFilter;
 import it.gov.pagopa.pu.bff.dto.TreasuryViewFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedTreasuryView;
+import it.gov.pagopa.pu.bff.security.SecurityUtilsTest;
 import it.gov.pagopa.pu.bff.service.treasury.TreasuryRetrieverService;
+import it.gov.pagopa.pu.bff.util.TestUtils;
 import it.gov.pagopa.pu.classification.dto.generated.Treasury;
 import it.gov.pagopa.pu.classification.dto.generated.TreasuryView;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,10 +22,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -36,16 +35,24 @@ class TreasuryControllerTest {
   @InjectMocks
   private TreasuryController treasuryController;
 
-  private UserInfo userInfo;
+  private final String accessToken = "fakeAccessToken";
+  private final UserInfo loggedUser = TestUtils.getPodamFactory().manufacturePojo(UserInfo.class);
 
   @BeforeEach
   void setUp() {
-    userInfo = new UserInfo();
-    userInfo.setMappedExternalUserId("fakeExternalUser");
-    Authentication authentication = new UsernamePasswordAuthenticationToken(userInfo, "fakeAccessToken");
-    SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
-    securityContext.setAuthentication(authentication);
-    SecurityContextHolder.setContext(securityContext);
+    SecurityUtilsTest.configureSecurityContext(accessToken, loggedUser);
+  }
+
+  @AfterEach
+  void verifyNoMoreInteractions(){
+    Mockito.verifyNoMoreInteractions(
+      treasuryRetrieverServiceMock
+    );
+  }
+
+  @AfterEach
+  void clearContext(){
+    SecurityUtilsTest.clearSecurityContext();
   }
 
   @Test
@@ -90,7 +97,7 @@ class TreasuryControllerTest {
     expectedResult.setTotalPages(1L);
     expectedResult.setNumber(0L);
 
-    Mockito.when(treasuryRetrieverServiceMock.getTreasuries(filtersDTO, pageable, userInfo, "fakeAccessToken"))
+    Mockito.when(treasuryRetrieverServiceMock.getTreasuries(filtersDTO, pageable, loggedUser, accessToken))
       .thenReturn(expectedResult);
 
     ResponseEntity<PagedTreasuryView> response = treasuryController.getTreasuries(
@@ -117,7 +124,7 @@ class TreasuryControllerTest {
       .pspLastName("PSPLastName")
       .build();
 
-    Mockito.when(treasuryRetrieverServiceMock.getTreasuryDetail(Mockito.eq(organizationId), Mockito.eq(treasuryId), Mockito.any(), Mockito.anyString()))
+    Mockito.when(treasuryRetrieverServiceMock.getTreasuryDetail(Mockito.eq(organizationId), Mockito.eq(treasuryId), Mockito.same(loggedUser), Mockito.same(accessToken)))
       .thenReturn(expectedTreasury);
 
     ResponseEntity<Treasury> response = treasuryController.getTreasuryDetail(organizationId, treasuryId);
@@ -132,7 +139,7 @@ class TreasuryControllerTest {
     long organizationId = 1L;
     String treasuryId = "INVALID_TREASURY_ID";
 
-    Mockito.when(treasuryRetrieverServiceMock.getTreasuryDetail(organizationId, treasuryId, userInfo, "fakeAccessToken"))
+    Mockito.when(treasuryRetrieverServiceMock.getTreasuryDetail(organizationId, treasuryId, loggedUser, accessToken))
       .thenReturn(null);
 
     ResponseEntity<Treasury> response = treasuryController.getTreasuryDetail(organizationId, treasuryId);

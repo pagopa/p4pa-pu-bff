@@ -37,6 +37,7 @@ val openApiToolsVersion = "0.2.6"
 val micrometerVersion = "1.4.3"
 val caffeineVersion = "3.2.0"
 val httpClientVersion = "5.4.2"
+val mapStructVersion = "1.6.3"
 
 val wiremockVersion = "3.12.0"
 val wiremockSpringBootVersion = "2.1.3"
@@ -57,11 +58,14 @@ dependencies {
   implementation("org.springframework.boot:spring-boot-starter-cache")
   implementation("com.github.ben-manes.caffeine:caffeine:$caffeineVersion")
   implementation("org.apache.httpcomponents.client5:httpclient5:$httpClientVersion")
+  implementation ("org.mapstruct:mapstruct:${mapStructVersion}")
 
 
   compileOnly("org.projectlombok:lombok")
   annotationProcessor("org.projectlombok:lombok")
+  annotationProcessor("org.mapstruct:mapstruct-processor:$mapStructVersion")
   testAnnotationProcessor("org.projectlombok:lombok")
+  testAnnotationProcessor("org.mapstruct:mapstruct-processor:$mapStructVersion")
 
   //	Testing
   testImplementation("org.springframework.boot:spring-boot-starter-test")
@@ -181,7 +185,6 @@ tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>("ope
     "PaymentsReporting" to "it.gov.pagopa.pu.classification.dto.generated.PaymentsReporting",
     "Transfer" to "it.gov.pagopa.pu.debtpositions.dto.generated.TransferResponse",
     "UserInfo" to "it.gov.pagopa.pu.auth.dto.generated.UserInfo",
-    "DebtPositionTypeRequestBody" to "it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeRequestBody",
     "DebtPositionTypeResponseBody" to "it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionType"
   ))
   configOptions.set(mapOf(

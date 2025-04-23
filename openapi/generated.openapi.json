@@ -4001,10 +4001,6 @@
             "type" : "integer",
             "format" : "int64"
           },
-          "brokerId" : {
-            "type" : "integer",
-            "format" : "int64"
-          },
           "code" : {
             "type" : "string"
           },
@@ -4042,7 +4038,7 @@
             "type" : "string"
           }
         },
-        "required" : [ "brokerId", "code", "collectingReason", "description", "macroArea", "orgType", "serviceType", "taxonomyCode" ]
+        "required" : [ "code", "collectingReason", "description", "macroArea", "orgType", "serviceType", "taxonomyCode" ]
       },
       "DebtPositionTypePatchRequestBody" : {
         "type" : "object",

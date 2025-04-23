@@ -2,6 +2,19 @@ package it.gov.pagopa.pu.bff.util;
 
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.auth.dto.generated.UserOrganizationRoles;
+import it.gov.pagopa.pu.bff.security.SecurityUtilsTest;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.ClassUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
+import org.junit.jupiter.api.Assertions;
+import uk.co.jemos.podam.api.AttributeMetadata;
+import uk.co.jemos.podam.api.DataProviderStrategy;
+import uk.co.jemos.podam.api.PodamFactory;
+import uk.co.jemos.podam.api.PodamFactoryImpl;
+import uk.co.jemos.podam.common.ManufacturingContext;
+import uk.co.jemos.podam.typeManufacturers.AbstractTypeManufacturer;
+
 import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 import java.math.BigInteger;
@@ -9,29 +22,7 @@ import java.time.OffsetDateTime;
 import java.time.chrono.ChronoZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAccessor;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.ClassUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.junit.jupiter.api.Assertions;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
-import uk.co.jemos.podam.api.AttributeMetadata;
-import uk.co.jemos.podam.api.DataProviderStrategy;
-import uk.co.jemos.podam.api.PodamFactory;
-import uk.co.jemos.podam.api.PodamFactoryImpl;
-import uk.co.jemos.podam.common.ManufacturingContext;
-import uk.co.jemos.podam.typeManufacturers.AbstractTypeManufacturer;
+import java.util.*;
 
 @Slf4j
 public class TestUtils {
@@ -51,19 +42,12 @@ public class TestUtils {
       f -> !excludedFieldsSet.contains(f.getName()));
   }
 
-  public static void addSampleUserIntoSecurityContext(){
+  public static Pair<String, UserInfo> addSampleUserIntoSecurityContext(){
     UserInfo userInfo = getSampleUser();
+    String accessToken = "token";
 
-    Collection<? extends GrantedAuthority> authorities = null;
-    if (userInfo.getOrganizationAccess() != null) {
-      authorities = userInfo.getOrganizations().stream()
-        .filter(o -> userInfo.getOrganizationAccess().equals(o.getOrganizationIpaCode()))
-        .flatMap(r -> r.getRoles().stream())
-        .map(SimpleGrantedAuthority::new)
-        .toList();
-    }
-    UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userInfo, "token", authorities);
-    SecurityContextHolder.getContext().setAuthentication(authToken);
+    SecurityUtilsTest.configureSecurityContext(accessToken, userInfo);
+    return Pair.of(accessToken, userInfo);
   }
 
   public static UserInfo getSampleUser(){

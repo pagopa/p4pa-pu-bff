@@ -5421,6 +5421,9 @@
           },
           "ioTemplateMessage" : {
             "type" : "string"
+          },
+          "ioTemplateSubject" : {
+            "type" : "string"
           }
         },
         "required" : [ "code", "collectionReason", "debtPositionTypeId", "description", "macroAreaName", "organizationTypeDescription", "serviceType", "taxonomyCode" ]

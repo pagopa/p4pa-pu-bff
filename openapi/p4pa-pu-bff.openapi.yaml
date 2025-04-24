@@ -2160,6 +2160,8 @@ components:
           type: boolean
         ioTemplateMessage:
           type: string
+        ioTemplateSubject:
+          type: string
     DebtPositionTypePatchRequestBody:
       type: object
       properties:

@@ -29,6 +29,7 @@ public class DebtPositionTypeMapper {
       .flagMandatoryDueDate(debtPositionType.getFlagMandatoryDueDate())
       .flagNotifyIo(debtPositionType.getFlagNotifyIo())
       .ioTemplateMessage(debtPositionType.getIoTemplateMessage())
+      .ioTemplateSubject(debtPositionType.getIoTemplateSubject())
       .build();
   }
 

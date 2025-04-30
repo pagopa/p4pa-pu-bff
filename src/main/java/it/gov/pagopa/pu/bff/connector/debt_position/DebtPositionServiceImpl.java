@@ -23,7 +23,7 @@ public class DebtPositionServiceImpl implements DebtPositionService {
   }
 
   @Override
-  public DebtPositionDTO createDebtPosition(DebtPositionDTO debtPositionDTO, Boolean massive, String accessToken) {
+  public DebtPositionDTO createDebtPosition(DebtPositionDTO debtPositionDTO, boolean massive, String accessToken) {
     return client.createDebtPosition(debtPositionDTO, massive, accessToken);
   }
 

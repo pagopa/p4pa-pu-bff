@@ -233,15 +233,6 @@
         "tags" : [ "DebtPositions" ],
         "summary" : "Create DebtPosition",
         "operationId" : "createDebtPosition",
-        "parameters" : [ {
-          "name" : "massive",
-          "in" : "query",
-          "description" : "Indicates if the operation is massive (true) or single (false)",
-          "required" : false,
-          "schema" : {
-            "type" : "boolean"
-          }
-        } ],
         "requestBody" : {
           "content" : {
             "application/json" : {
@@ -3489,19 +3480,25 @@
           "iuf" : {
             "type" : "string"
           },
+          "iud" : {
+            "type" : "string"
+          },
           "iuv" : {
             "type" : "string"
           },
           "iur" : {
             "type" : "string"
           },
-          "debtPositionTypeCode" : {
-            "type" : "string"
-          },
           "label" : {
-            "type" : "string"
+            "$ref" : "#/components/schemas/LabelEnum"
           },
           "lastClassificationDate" : {
+            "$ref" : "#/components/schemas/LocalDateIntervalFilter"
+          },
+          "payDate" : {
+            "$ref" : "#/components/schemas/LocalDateIntervalFilter"
+          },
+          "paymentDate" : {
             "$ref" : "#/components/schemas/LocalDateIntervalFilter"
           },
           "regulationDate" : {
@@ -3513,19 +3510,22 @@
           "regionValueDate" : {
             "$ref" : "#/components/schemas/LocalDateIntervalFilter"
           },
-          "debtorUniqueIdentifierCode" : {
-            "type" : "string"
-          },
-          "payerUniqueIdentifierCode" : {
-            "type" : "string"
-          },
-          "pspLastName" : {
+          "regulationUniqueIdentifier" : {
             "type" : "string"
           },
           "accountRegistryCode" : {
             "type" : "string"
           },
           "billAmountCents" : {
+            "type" : "string"
+          },
+          "remittanceInformation" : {
+            "type" : "string"
+          },
+          "pspCompanyName" : {
+            "type" : "string"
+          },
+          "pspLastName" : {
             "type" : "string"
           }
         }
@@ -3548,6 +3548,10 @@
           }
         },
         "required" : [ "exportFileType", "fileVersion", "filterFields", "organizationId" ]
+      },
+      "LabelEnum" : {
+        "type" : "string",
+        "enum" : [ "DOPPI", "RT_NO_IUF", "RT_NO_IUD", "IUV_NO_RT", "TES_NO_IUF_OR_IUV", "IUF_NO_TES", "IUD_RT_IUF", "RT_IUF", "RT_TES", "IUD_RT_IUF_TES", "RT_IUF_TES", "IUF_TES_DIV_IMP", "IUD_NO_RT", "TES_NO_MATCH", "UNKNOWN" ]
       },
       "DebtPositionDTO" : {
         "type" : "object",

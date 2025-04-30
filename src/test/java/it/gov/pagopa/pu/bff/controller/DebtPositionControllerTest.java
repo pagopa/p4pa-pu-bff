@@ -58,16 +58,14 @@ class DebtPositionControllerTest {
   @Test
   void givenCorrectRequestWhenCreateDebtPositionThenOk() {
     DebtPositionDTO debtPositionDTO = podamFactory.manufacturePojo(DebtPositionDTO.class);
-    Boolean massive = true;
     DebtPositionDTO expectedResult = podamFactory.manufacturePojo(DebtPositionDTO.class);
 
     Mockito.when(debtPositionRetrieverServiceMock.createDebtPosition(
         Mockito.same(debtPositionDTO),
-        Mockito.same(massive),
         Mockito.same(loggedUser), Mockito.same(accessToken)))
       .thenReturn(expectedResult);
 
-    ResponseEntity<DebtPositionDTO> response = debtPositionController.createDebtPosition(debtPositionDTO, massive);
+    ResponseEntity<DebtPositionDTO> response = debtPositionController.createDebtPosition(debtPositionDTO);
 
     Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
     Assertions.assertNotNull(response.getBody());

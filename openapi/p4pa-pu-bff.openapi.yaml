@@ -1243,13 +1243,6 @@ paths:
         - DebtPositions
       summary: "Create DebtPosition"
       operationId: createDebtPosition
-      parameters:
-        - name: massive
-          in: query
-          description: Indicates if the operation is massive (true) or single (false)
-          required: false
-          schema:
-            type: boolean
       requestBody:
         content:
           application/json:

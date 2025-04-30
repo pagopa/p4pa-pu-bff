@@ -8,7 +8,7 @@ import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionDTO;
 import org.springframework.data.domain.Pageable;
 
 public interface DebtPositionRetrieverService {
-  DebtPositionDTO createDebtPosition(DebtPositionDTO debtPositionDTO, Boolean massive, UserInfo loggedUser, String accessToken);
+  DebtPositionDTO createDebtPosition(DebtPositionDTO debtPositionDTO, UserInfo loggedUser, String accessToken);
 
   PagedDebtPositionView getDebtPositionViews(DebtPositionViewFiltersDTO filtersDTO, Pageable pageable, UserInfo loggedUser, String accessToken);
 

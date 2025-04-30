@@ -28,10 +28,10 @@ public class DebtPositionController implements DebtPositionsApi {
   }
 
   @Override
-  public ResponseEntity<DebtPositionDTO> createDebtPosition(DebtPositionDTO debtPositionDTO, Boolean massive) {
+  public ResponseEntity<DebtPositionDTO> createDebtPosition(DebtPositionDTO debtPositionDTO) {
     log.info("User requested createDebtPosition having organizationId {}", debtPositionDTO.getOrganizationId());
 
-    return ResponseEntity.ok(debtPositionRetrieverService.createDebtPosition(debtPositionDTO, massive, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken()));
+    return ResponseEntity.ok(debtPositionRetrieverService.createDebtPosition(debtPositionDTO, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken()));
   }
 
   @Override

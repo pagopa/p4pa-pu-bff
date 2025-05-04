@@ -71,7 +71,7 @@ class DebtPositionTypeMapperTest {
     DebtPositionTypeRequestBody result = debtPositionTypeMapper.mapToDebtPositionTypeRequestBody(debtPositionTypePatchRequestBody);
 
     Assertions.assertNotNull(result);
-    TestUtils.checkNotNullFields(result,"creationDate","updateDate","updateOperatorExternalId","debtPositionTypeId","description","taxonomyCode","code","brokerId", "orgType", "macroArea", "serviceType", "collectingReason", "ioTemplateSubject");
+    TestUtils.checkNotNullFields(result,"creationDate","updateDate","updateOperatorExternalId","updateTraceId","debtPositionTypeId","description","taxonomyCode","code","brokerId", "orgType", "macroArea", "serviceType", "collectingReason", "ioTemplateSubject");
     TestUtils.reflectionEqualsByName(debtPositionTypePatchRequestBody,result);
   }
 }

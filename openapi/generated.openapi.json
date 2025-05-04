@@ -3604,6 +3604,9 @@
           "updateOperatorExternalId" : {
             "type" : "string"
           },
+          "updateTraceId" : {
+            "type" : "string"
+          },
           "paymentOptions" : {
             "type" : "array",
             "items" : {
@@ -3719,6 +3722,9 @@
           },
           "updateOperatorExternalId" : {
             "type" : "string"
+          },
+          "updateTraceId" : {
+            "type" : "string"
           }
         },
         "required" : [ "amountCents", "debtor", "remittanceInformation" ]
@@ -3776,6 +3782,9 @@
             "format" : "date-time"
           },
           "updateOperatorExternalId" : {
+            "type" : "string"
+          },
+          "updateTraceId" : {
             "type" : "string"
           },
           "installments" : {
@@ -3887,6 +3896,9 @@
           },
           "updateOperatorExternalId" : {
             "type" : "string"
+          },
+          "updateTraceId" : {
+            "type" : "string"
           }
         },
         "required" : [ "amountCents", "category", "orgFiscalCode", "orgName", "remittanceInformation", "transferIndex" ]
@@ -3903,6 +3915,9 @@
             "format" : "date-time"
           },
           "updateOperatorExternalId" : {
+            "type" : "string"
+          },
+          "updateTraceId" : {
             "type" : "string"
           },
           "debtPositionTypeId" : {
@@ -3990,17 +4005,6 @@
       "DebtPositionTypeRequestBody" : {
         "type" : "object",
         "properties" : {
-          "creationDate" : {
-            "type" : "string",
-            "format" : "date-time"
-          },
-          "updateDate" : {
-            "type" : "string",
-            "format" : "date-time"
-          },
-          "updateOperatorExternalId" : {
-            "type" : "string"
-          },
           "debtPositionTypeId" : {
             "type" : "integer",
             "format" : "int64"
@@ -4401,6 +4405,9 @@
           "updateOperatorExternalId" : {
             "type" : "string"
           },
+          "updateTraceId" : {
+            "type" : "string"
+          },
           "treasuryId" : {
             "type" : "string"
           },
@@ -4567,6 +4574,9 @@
             "format" : "date-time"
           },
           "updateOperatorExternalId" : {
+            "type" : "string"
+          },
+          "updateTraceId" : {
             "type" : "string"
           },
           "transferId" : {
@@ -4830,6 +4840,9 @@
             "format" : "date-time"
           },
           "updateOperatorExternalId" : {
+            "type" : "string"
+          },
+          "updateTraceId" : {
             "type" : "string"
           },
           "paymentsReportingId" : {
@@ -5444,6 +5457,9 @@
             "format" : "date-time"
           },
           "updateOperatorExternalId" : {
+            "type" : "string"
+          },
+          "updateTraceId" : {
             "type" : "string"
           },
           "debtPositionTypeOrgId" : {

@@ -2227,14 +2227,6 @@ components:
         - serviceType
         - taxonomyCode
       properties:
-        creationDate:
-          type: string
-          format: date-time
-        updateDate:
-          type: string
-          format: date-time
-        updateOperatorExternalId:
-          type: string
         debtPositionTypeId:
           type: integer
           format: int64

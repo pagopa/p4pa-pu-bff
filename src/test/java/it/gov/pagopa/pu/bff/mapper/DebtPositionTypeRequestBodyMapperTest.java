@@ -22,7 +22,7 @@ class DebtPositionTypeRequestBodyMapperTest {
     // Then
     TestUtils.reflectionEqualsByName(dto, result);
     Assertions.assertEquals(-1L, result.getBrokerId());
-    TestUtils.checkNotNullFields(result);
+    TestUtils.checkNotNullFields(result, "creationDate", "updateDate", "updateOperatorExternalId", "updateTraceId");
   }
 
   @Test
@@ -37,6 +37,6 @@ class DebtPositionTypeRequestBodyMapperTest {
     // Then
     TestUtils.reflectionEqualsByName(dto, result);
     Assertions.assertSame(brokerId, result.getBrokerId());
-    TestUtils.checkNotNullFields(result);
+    TestUtils.checkNotNullFields(result, "creationDate", "updateDate", "updateOperatorExternalId", "updateTraceId");
   }
 }

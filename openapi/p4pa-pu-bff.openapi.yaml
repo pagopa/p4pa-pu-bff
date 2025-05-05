@@ -2166,6 +2166,8 @@ components:
           type: boolean
         ioTemplateMessage:
           type: string
+        ioTemplateSubject:
+          type: string
     OrganizationWithDebtPositionTypeOrgCount:
       type: object
       properties:

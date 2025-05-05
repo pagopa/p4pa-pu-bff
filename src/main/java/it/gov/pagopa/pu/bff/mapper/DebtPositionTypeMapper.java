@@ -40,6 +40,7 @@ public class DebtPositionTypeMapper {
     debtPositionTypeRequestBody.setFlagMandatoryDueDate(debtPositionTypePatchRequestBody.getFlagMandatoryDueDate());
     debtPositionTypeRequestBody.setFlagNotifyIo(debtPositionTypePatchRequestBody.getFlagNotifyIo());
     debtPositionTypeRequestBody.setIoTemplateMessage(debtPositionTypePatchRequestBody.getIoTemplateMessage());
+    debtPositionTypeRequestBody.setIoTemplateSubject(debtPositionTypePatchRequestBody.getIoTemplateSubject());
     return debtPositionTypeRequestBody;
   }
 }

@@ -3517,7 +3517,8 @@
             "type" : "string"
           },
           "billAmountCents" : {
-            "type" : "string"
+            "type" : "integer",
+            "format" : "int64"
           },
           "remittanceInformation" : {
             "type" : "string"

@@ -39,10 +39,10 @@ class DebtPositionTypeMapperTest {
     Assertions.assertEquals(debtPositionType.getFlagAnonymousFiscalCode(), result.getFlagAnonymousFiscalCode());
     Assertions.assertEquals(debtPositionType.getFlagMandatoryDueDate(), result.getFlagMandatoryDueDate());
     Assertions.assertEquals(debtPositionType.getFlagNotifyIo(), result.getFlagNotifyIo());
-    Assertions.assertEquals(taxonomy.getOrganizationTypeDescription(), result.getOrganizationTypeDescription());
-    Assertions.assertEquals(taxonomy.getMacroAreaName(), result.getMacroAreaName());
+    Assertions.assertEquals(taxonomy.getOrganizationTypeDescription(), result.getOrgType());
+    Assertions.assertEquals(taxonomy.getMacroAreaName(), result.getMacroArea());
     Assertions.assertEquals(taxonomy.getServiceType(), result.getServiceType());
-    Assertions.assertEquals(taxonomy.getCollectionReason(), result.getCollectionReason());
+    Assertions.assertEquals(taxonomy.getCollectionReason(), result.getCollectingReason());
   }
 
   @Test

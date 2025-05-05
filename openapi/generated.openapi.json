@@ -3741,6 +3741,9 @@
           },
           "syncStatusTo" : {
             "$ref" : "#/components/schemas/InstallmentStatus"
+          },
+          "syncError" : {
+            "type" : "string"
           }
         },
         "required" : [ "syncStatusFrom", "syncStatusTo" ]
@@ -5410,11 +5413,11 @@
             "type" : "string",
             "readOnly" : true
           },
-          "organizationTypeDescription" : {
+          "orgType" : {
             "type" : "string",
             "readOnly" : true
           },
-          "macroAreaName" : {
+          "macroArea" : {
             "type" : "string",
             "readOnly" : true
           },
@@ -5422,7 +5425,7 @@
             "type" : "string",
             "readOnly" : true
           },
-          "collectionReason" : {
+          "collectingReason" : {
             "type" : "string",
             "readOnly" : true
           },
@@ -5446,7 +5449,7 @@
             "type" : "string"
           }
         },
-        "required" : [ "code", "collectionReason", "debtPositionTypeId", "description", "macroAreaName", "organizationTypeDescription", "serviceType", "taxonomyCode" ]
+        "required" : [ "code", "collectingReason", "debtPositionTypeId", "description", "macroArea", "orgType", "serviceType", "taxonomyCode" ]
       },
       "DebtPositionTypeOrg" : {
         "type" : "object",

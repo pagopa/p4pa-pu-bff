@@ -2113,10 +2113,10 @@ components:
         - debtPositionTypeId
         - code
         - description
-        - organizationTypeDescription
-        - macroAreaName
+        - orgType
+        - macroArea
         - serviceType
-        - collectionReason
+        - collectingReason
         - taxonomyCode
       type: object
       properties:
@@ -2130,16 +2130,16 @@ components:
         description:
           type: string
           readOnly: true
-        organizationTypeDescription:
+        orgType:
           type: string
           readOnly: true
-        macroAreaName:
+        macroArea:
           type: string
           readOnly: true
         serviceType:
           type: string
           readOnly: true
-        collectionReason:
+        collectingReason:
           type: string
           readOnly: true
         taxonomyCode:

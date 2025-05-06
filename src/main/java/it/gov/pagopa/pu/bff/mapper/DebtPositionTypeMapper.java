@@ -20,15 +20,16 @@ public class DebtPositionTypeMapper {
       .debtPositionTypeId(debtPositionType.getDebtPositionTypeId())
       .code(debtPositionType.getCode())
       .description(debtPositionType.getDescription())
-      .organizationTypeDescription(taxonomy.getOrganizationTypeDescription())
-      .macroAreaName(taxonomy.getMacroAreaName())
+      .orgType(taxonomy.getOrganizationTypeDescription())
+      .macroArea(taxonomy.getMacroAreaName())
       .serviceType(taxonomy.getServiceType())
-      .collectionReason(taxonomy.getCollectionReason())
+      .collectingReason(taxonomy.getCollectionReason())
       .taxonomyCode(debtPositionType.getTaxonomyCode())
       .flagAnonymousFiscalCode(debtPositionType.getFlagAnonymousFiscalCode())
       .flagMandatoryDueDate(debtPositionType.getFlagMandatoryDueDate())
       .flagNotifyIo(debtPositionType.getFlagNotifyIo())
       .ioTemplateMessage(debtPositionType.getIoTemplateMessage())
+      .ioTemplateSubject(debtPositionType.getIoTemplateSubject())
       .build();
   }
 
@@ -39,6 +40,7 @@ public class DebtPositionTypeMapper {
     debtPositionTypeRequestBody.setFlagMandatoryDueDate(debtPositionTypePatchRequestBody.getFlagMandatoryDueDate());
     debtPositionTypeRequestBody.setFlagNotifyIo(debtPositionTypePatchRequestBody.getFlagNotifyIo());
     debtPositionTypeRequestBody.setIoTemplateMessage(debtPositionTypePatchRequestBody.getIoTemplateMessage());
+    debtPositionTypeRequestBody.setIoTemplateSubject(debtPositionTypePatchRequestBody.getIoTemplateSubject());
     return debtPositionTypeRequestBody;
   }
 }

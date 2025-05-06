@@ -288,7 +288,7 @@ paths:
         content:
           application/json:
             schema:
-              type: 'DebtPositionTypeRequestBody'
+              $ref: '#/components/schemas/DebtPositionTypeRequestBody'
         required: true
       responses:
         '201':
@@ -1243,13 +1243,6 @@ paths:
         - DebtPositions
       summary: "Create DebtPosition"
       operationId: createDebtPosition
-      parameters:
-        - name: massive
-          in: query
-          description: Indicates if the operation is massive (true) or single (false)
-          required: false
-          schema:
-            type: boolean
       requestBody:
         content:
           application/json:
@@ -1570,6 +1563,9 @@ components:
         - orgName
         - operatorRole
         - orgFiscalCode
+        - flagNotifyIo
+        - flagNotifyOutcomePush
+        - flagPaymentNotification
       properties:
         organizationId:
           type: integer
@@ -1593,6 +1589,12 @@ components:
           description: Base64 encoded logo of the organization
         orgFiscalCode:
           type: string
+        flagNotifyIo:
+          type: boolean
+        flagNotifyOutcomePush:
+          type: boolean
+        flagPaymentNotification:
+          type: boolean
     ConfigFE:
       type: object
       required:
@@ -2111,10 +2113,10 @@ components:
         - debtPositionTypeId
         - code
         - description
-        - organizationTypeDescription
-        - macroAreaName
+        - orgType
+        - macroArea
         - serviceType
-        - collectionReason
+        - collectingReason
         - taxonomyCode
       type: object
       properties:
@@ -2128,16 +2130,16 @@ components:
         description:
           type: string
           readOnly: true
-        organizationTypeDescription:
+        orgType:
           type: string
           readOnly: true
-        macroAreaName:
+        macroArea:
           type: string
           readOnly: true
         serviceType:
           type: string
           readOnly: true
-        collectionReason:
+        collectingReason:
           type: string
           readOnly: true
         taxonomyCode:
@@ -2151,6 +2153,8 @@ components:
           type: boolean
         ioTemplateMessage:
           type: string
+        ioTemplateSubject:
+          type: string
     DebtPositionTypePatchRequestBody:
       type: object
       properties:
@@ -2161,6 +2165,8 @@ components:
         flagNotifyIo:
           type: boolean
         ioTemplateMessage:
+          type: string
+        ioTemplateSubject:
           type: string
     OrganizationWithDebtPositionTypeOrgCount:
       type: object
@@ -2212,3 +2218,41 @@ components:
           type: string
         enabled:
           type: boolean
+    DebtPositionTypeRequestBody:
+      type: object
+      required:
+        - code
+        - collectingReason
+        - description
+        - macroArea
+        - orgType
+        - serviceType
+        - taxonomyCode
+      properties:
+        debtPositionTypeId:
+          type: integer
+          format: int64
+        code:
+          type: string
+        description:
+          type: string
+        orgType:
+          type: string
+        macroArea:
+          type: string
+        serviceType:
+          type: string
+        collectingReason:
+          type: string
+        taxonomyCode:
+          type: string
+        flagAnonymousFiscalCode:
+          type: boolean
+        flagMandatoryDueDate:
+          type: boolean
+        flagNotifyIo:
+          type: boolean
+        ioTemplateMessage:
+          type: string
+        ioTemplateSubject:
+          type: string

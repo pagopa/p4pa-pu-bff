@@ -1,49 +1,49 @@
 package it.gov.pagopa.pu.bff.controller;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
+import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.dto.generated.OrganizationDTO;
 import it.gov.pagopa.pu.bff.dto.generated.OrganizationWithDebtPositionTypeOrgCount;
 import it.gov.pagopa.pu.bff.dto.generated.PagedOrganizationWithDebtPositionTypeOrgCount;
+import it.gov.pagopa.pu.bff.security.SecurityUtilsTest;
 import it.gov.pagopa.pu.bff.service.organization.OrganizationRetrieverService;
-import java.util.ArrayList;
-import java.util.List;
+import it.gov.pagopa.pu.bff.util.TestUtils;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class OrganizationControllerTest {
 
   @Mock
-  private OrganizationRetrieverService organizationRetrieverService;
+  private OrganizationRetrieverService organizationRetrieverServiceMock;
 
   @InjectMocks
   private OrganizationController organizationController;
+
+  private final String accessToken = "fakeAccessToken";
+  private final UserInfo loggedUser = TestUtils.getPodamFactory().manufacturePojo(UserInfo.class);
 
   private List<OrganizationDTO> organizationDTOList;
 
   @BeforeEach
   void setUp() {
-    Authentication authentication = new UsernamePasswordAuthenticationToken("fakeUser", "fakeAccessToken");
-    SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
-    securityContext.setAuthentication(authentication);
-    SecurityContextHolder.setContext(securityContext);
+    SecurityUtilsTest.configureSecurityContext(accessToken, loggedUser);
 
     organizationDTOList = new ArrayList<>();
     OrganizationDTO.OperatorRoleEnum operatorRole = OrganizationDTO.OperatorRoleEnum.ADMIN;
@@ -58,18 +58,29 @@ class OrganizationControllerTest {
     organizationDTOList.add(organizationDTO);
   }
 
+  @AfterEach
+  void verifyNoMoreInteractions(){
+    Mockito.verifyNoMoreInteractions(
+      organizationRetrieverServiceMock
+    );
+  }
+
+  @AfterEach
+  void clearContext(){
+    SecurityUtilsTest.clearSecurityContext();
+  }
+
   @Test
   void testGetOrganizations() {
-    when(organizationRetrieverService.getOrganizations(any(), any())).thenReturn(organizationDTOList);
+    when(organizationRetrieverServiceMock.getOrganizations(Mockito.same(loggedUser), Mockito.same(accessToken))).thenReturn(organizationDTOList);
 
     ResponseEntity<List<OrganizationDTO>> response = organizationController.getOrganizations();
 
     assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertNotNull(response.getBody());
     assertEquals(1, response.getBody().size());
     assertEquals("Test Organization", response.getBody().getFirst().getOrgName());
     assertEquals(OrganizationDTO.OperatorRoleEnum.ADMIN, response.getBody().getFirst().getOperatorRole());
-
-    verify(organizationRetrieverService, times(1)).getOrganizations(any(), any());
   }
 
   @Test
@@ -84,17 +95,16 @@ class OrganizationControllerTest {
       .totalPages(1L)
       .number(0L)
       .build();
-    when(organizationRetrieverService.getOrganizationsWithDebtPositionTypeOrgCount(eq(1L), eq("orgName"), any(), eq(null), any()))
+    when(organizationRetrieverServiceMock.getOrganizationsWithDebtPositionTypeOrgCount(eq(1L), eq("orgName"), any(), Mockito.same(loggedUser), Mockito.same(accessToken)))
       .thenReturn(expected);
 
     ResponseEntity<PagedOrganizationWithDebtPositionTypeOrgCount> response = organizationController.getOrganizationsWithDebtPositionTypeOrgCount(1L, "orgName", Pageable.unpaged());
 
     assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertNotNull(response.getBody());
     assertEquals(1, response.getBody().getContent().size());
     assertEquals("orgName", response.getBody().getContent().getFirst().getOrganizationName());
     assertEquals(3, response.getBody().getContent().getFirst().getDebtPositionTypeOrgCount());
-
-    verify(organizationRetrieverService, times(1)).getOrganizationsWithDebtPositionTypeOrgCount(any(), any(), any(), eq(null), any());
   }
 
 }

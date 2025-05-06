@@ -1,9 +1,11 @@
 package it.gov.pagopa.pu.bff.controller;
 
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
-import it.gov.pagopa.pu.bff.security.SecurityUtils;
+import it.gov.pagopa.pu.bff.security.SecurityUtilsTest;
 import it.gov.pagopa.pu.bff.service.transfer.TransferRetrieverService;
+import it.gov.pagopa.pu.bff.util.TestUtils;
 import it.gov.pagopa.pu.debtpositions.dto.generated.TransferResponse;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,10 +16,6 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.List;
 
@@ -30,14 +28,24 @@ class TransferControllerTest {
   @InjectMocks
   private TransferController transferController;
 
+  private final String accessToken = "fakeAccessToken";
+  private final UserInfo loggedUser = TestUtils.getPodamFactory().manufacturePojo(UserInfo.class);
+
   @BeforeEach
   void setUp() {
-    UserInfo userInfo = new UserInfo();
-    userInfo.setMappedExternalUserId("fakeExternalUser");
-    Authentication authentication = new UsernamePasswordAuthenticationToken(userInfo, "fakeAccessToken");
-    SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
-    securityContext.setAuthentication(authentication);
-    SecurityContextHolder.setContext(securityContext);
+    SecurityUtilsTest.configureSecurityContext(accessToken, loggedUser);
+  }
+
+  @AfterEach
+  void verifyNoMoreInteractions(){
+    Mockito.verifyNoMoreInteractions(
+      transferRetrieverServiceMock
+    );
+  }
+
+  @AfterEach
+  void clearContext(){
+    SecurityUtilsTest.clearSecurityContext();
   }
 
   @Test
@@ -49,8 +57,7 @@ class TransferControllerTest {
     Mockito.when(transferRetrieverServiceMock.getTransfers(
       organizationId,
       installmentId,
-      SecurityUtils.getLoggedUser(),
-      SecurityUtils.getAccessToken()
+      loggedUser, accessToken
     )).thenReturn(expectedResult);
 
     ResponseEntity<List<TransferResponse>> response = transferController.getTransfers(organizationId, installmentId);

@@ -233,15 +233,6 @@
         "tags" : [ "DebtPositions" ],
         "summary" : "Create DebtPosition",
         "operationId" : "createDebtPosition",
-        "parameters" : [ {
-          "name" : "massive",
-          "in" : "query",
-          "description" : "Indicates if the operation is massive (true) or single (false)",
-          "required" : false,
-          "schema" : {
-            "type" : "boolean"
-          }
-        } ],
         "requestBody" : {
           "content" : {
             "application/json" : {
@@ -3489,19 +3480,25 @@
           "iuf" : {
             "type" : "string"
           },
+          "iud" : {
+            "type" : "string"
+          },
           "iuv" : {
             "type" : "string"
           },
           "iur" : {
             "type" : "string"
           },
-          "debtPositionTypeCode" : {
-            "type" : "string"
-          },
           "label" : {
-            "type" : "string"
+            "$ref" : "#/components/schemas/LabelEnum"
           },
           "lastClassificationDate" : {
+            "$ref" : "#/components/schemas/LocalDateIntervalFilter"
+          },
+          "payDate" : {
+            "$ref" : "#/components/schemas/LocalDateIntervalFilter"
+          },
+          "paymentDate" : {
             "$ref" : "#/components/schemas/LocalDateIntervalFilter"
           },
           "regulationDate" : {
@@ -3513,19 +3510,23 @@
           "regionValueDate" : {
             "$ref" : "#/components/schemas/LocalDateIntervalFilter"
           },
-          "debtorUniqueIdentifierCode" : {
-            "type" : "string"
-          },
-          "payerUniqueIdentifierCode" : {
-            "type" : "string"
-          },
-          "pspLastName" : {
+          "regulationUniqueIdentifier" : {
             "type" : "string"
           },
           "accountRegistryCode" : {
             "type" : "string"
           },
           "billAmountCents" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "remittanceInformation" : {
+            "type" : "string"
+          },
+          "pspCompanyName" : {
+            "type" : "string"
+          },
+          "pspLastName" : {
             "type" : "string"
           }
         }
@@ -3548,6 +3549,10 @@
           }
         },
         "required" : [ "exportFileType", "fileVersion", "filterFields", "organizationId" ]
+      },
+      "LabelEnum" : {
+        "type" : "string",
+        "enum" : [ "DOPPI", "RT_NO_IUF", "RT_NO_IUD", "IUV_NO_RT", "TES_NO_IUF_OR_IUV", "IUF_NO_TES", "IUD_RT_IUF", "RT_IUF", "RT_TES", "IUD_RT_IUF_TES", "RT_IUF_TES", "IUF_TES_DIV_IMP", "IUD_NO_RT", "TES_NO_MATCH", "UNKNOWN" ]
       },
       "DebtPositionDTO" : {
         "type" : "object",
@@ -3598,6 +3603,9 @@
             "format" : "date-time"
           },
           "updateOperatorExternalId" : {
+            "type" : "string"
+          },
+          "updateTraceId" : {
             "type" : "string"
           },
           "paymentOptions" : {
@@ -3656,6 +3664,9 @@
           "nav" : {
             "type" : "string"
           },
+          "iun" : {
+            "type" : "string"
+          },
           "dueDate" : {
             "type" : "string",
             "format" : "date"
@@ -3712,6 +3723,9 @@
           },
           "updateOperatorExternalId" : {
             "type" : "string"
+          },
+          "updateTraceId" : {
+            "type" : "string"
           }
         },
         "required" : [ "amountCents", "debtor", "remittanceInformation" ]
@@ -3728,6 +3742,9 @@
           },
           "syncStatusTo" : {
             "$ref" : "#/components/schemas/InstallmentStatus"
+          },
+          "syncError" : {
+            "type" : "string"
           }
         },
         "required" : [ "syncStatusFrom", "syncStatusTo" ]
@@ -3769,6 +3786,9 @@
             "format" : "date-time"
           },
           "updateOperatorExternalId" : {
+            "type" : "string"
+          },
+          "updateTraceId" : {
             "type" : "string"
           },
           "installments" : {
@@ -3880,6 +3900,9 @@
           },
           "updateOperatorExternalId" : {
             "type" : "string"
+          },
+          "updateTraceId" : {
+            "type" : "string"
           }
         },
         "required" : [ "amountCents", "category", "orgFiscalCode", "orgName", "remittanceInformation", "transferIndex" ]
@@ -3896,6 +3919,9 @@
             "format" : "date-time"
           },
           "updateOperatorExternalId" : {
+            "type" : "string"
+          },
+          "updateTraceId" : {
             "type" : "string"
           },
           "debtPositionTypeId" : {
@@ -3937,6 +3963,9 @@
             "type" : "boolean"
           },
           "ioTemplateMessage" : {
+            "type" : "string"
+          },
+          "ioTemplateSubject" : {
             "type" : "string"
           },
           "_links" : {
@@ -3980,22 +4009,7 @@
       "DebtPositionTypeRequestBody" : {
         "type" : "object",
         "properties" : {
-          "creationDate" : {
-            "type" : "string",
-            "format" : "date-time"
-          },
-          "updateDate" : {
-            "type" : "string",
-            "format" : "date-time"
-          },
-          "updateOperatorExternalId" : {
-            "type" : "string"
-          },
           "debtPositionTypeId" : {
-            "type" : "integer",
-            "format" : "int64"
-          },
-          "brokerId" : {
             "type" : "integer",
             "format" : "int64"
           },
@@ -4031,9 +4045,12 @@
           },
           "ioTemplateMessage" : {
             "type" : "string"
+          },
+          "ioTemplateSubject" : {
+            "type" : "string"
           }
         },
-        "required" : [ "brokerId", "code", "collectingReason", "description", "macroArea", "orgType", "serviceType", "taxonomyCode" ]
+        "required" : [ "code", "collectingReason", "description", "macroArea", "orgType", "serviceType", "taxonomyCode" ]
       },
       "DebtPositionTypePatchRequestBody" : {
         "type" : "object",
@@ -4048,6 +4065,9 @@
             "type" : "boolean"
           },
           "ioTemplateMessage" : {
+            "type" : "string"
+          },
+          "ioTemplateSubject" : {
             "type" : "string"
           }
         }
@@ -4214,9 +4234,18 @@
           },
           "orgFiscalCode" : {
             "type" : "string"
+          },
+          "flagNotifyIo" : {
+            "type" : "boolean"
+          },
+          "flagNotifyOutcomePush" : {
+            "type" : "boolean"
+          },
+          "flagPaymentNotification" : {
+            "type" : "boolean"
           }
         },
-        "required" : [ "ipaCode", "operatorRole", "orgFiscalCode", "orgName", "organizationId" ]
+        "required" : [ "flagNotifyIo", "flagNotifyOutcomePush", "flagPaymentNotification", "ipaCode", "operatorRole", "orgFiscalCode", "orgName", "organizationId" ]
       },
       "ErrorDTO" : {
         "type" : "object",
@@ -4381,6 +4410,9 @@
             "format" : "date-time"
           },
           "updateOperatorExternalId" : {
+            "type" : "string"
+          },
+          "updateTraceId" : {
             "type" : "string"
           },
           "treasuryId" : {
@@ -4549,6 +4581,9 @@
             "format" : "date-time"
           },
           "updateOperatorExternalId" : {
+            "type" : "string"
+          },
+          "updateTraceId" : {
             "type" : "string"
           },
           "transferId" : {
@@ -4812,6 +4847,9 @@
             "format" : "date-time"
           },
           "updateOperatorExternalId" : {
+            "type" : "string"
+          },
+          "updateTraceId" : {
             "type" : "string"
           },
           "paymentsReportingId" : {
@@ -5376,11 +5414,11 @@
             "type" : "string",
             "readOnly" : true
           },
-          "organizationTypeDescription" : {
+          "orgType" : {
             "type" : "string",
             "readOnly" : true
           },
-          "macroAreaName" : {
+          "macroArea" : {
             "type" : "string",
             "readOnly" : true
           },
@@ -5388,7 +5426,7 @@
             "type" : "string",
             "readOnly" : true
           },
-          "collectionReason" : {
+          "collectingReason" : {
             "type" : "string",
             "readOnly" : true
           },
@@ -5407,9 +5445,12 @@
           },
           "ioTemplateMessage" : {
             "type" : "string"
+          },
+          "ioTemplateSubject" : {
+            "type" : "string"
           }
         },
-        "required" : [ "code", "collectionReason", "debtPositionTypeId", "description", "macroAreaName", "organizationTypeDescription", "serviceType", "taxonomyCode" ]
+        "required" : [ "code", "collectingReason", "debtPositionTypeId", "description", "macroArea", "orgType", "serviceType", "taxonomyCode" ]
       },
       "DebtPositionTypeOrg" : {
         "type" : "object",
@@ -5423,6 +5464,9 @@
             "format" : "date-time"
           },
           "updateOperatorExternalId" : {
+            "type" : "string"
+          },
+          "updateTraceId" : {
             "type" : "string"
           },
           "debtPositionTypeOrgId" : {

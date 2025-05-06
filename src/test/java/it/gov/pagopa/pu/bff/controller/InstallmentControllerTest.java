@@ -4,10 +4,13 @@ import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.dto.InstallmentViewFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.OffsetDateTimeIntervalFilter;
 import it.gov.pagopa.pu.bff.dto.generated.PagedInstallmentView;
+import it.gov.pagopa.pu.bff.security.SecurityUtilsTest;
 import it.gov.pagopa.pu.bff.service.installment.InstallmentRetrieverService;
+import it.gov.pagopa.pu.bff.util.TestUtils;
 import it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentDetailDTO;
 import it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentStatus;
 import it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentView;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,10 +23,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.time.OffsetDateTime;
 import java.util.List;
@@ -40,16 +39,24 @@ class InstallmentControllerTest {
   @InjectMocks
   private InstallmentController installmentController;
 
-  private UserInfo userInfo;
+  private final String accessToken = "fakeAccessToken";
+  private final UserInfo loggedUser = TestUtils.getPodamFactory().manufacturePojo(UserInfo.class);
 
   @BeforeEach
   void setUp() {
-    userInfo = new UserInfo();
-    userInfo.setMappedExternalUserId("fakeExternalUser");
-    Authentication authentication = new UsernamePasswordAuthenticationToken(userInfo, "fakeAccessToken");
-    SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
-    securityContext.setAuthentication(authentication);
-    SecurityContextHolder.setContext(securityContext);
+    SecurityUtilsTest.configureSecurityContext(accessToken, loggedUser);
+  }
+
+  @AfterEach
+  void verifyNoMoreInteractions(){
+    Mockito.verifyNoMoreInteractions(
+      installmentRetrieverServiceMock
+    );
+  }
+
+  @AfterEach
+  void clearContext(){
+    SecurityUtilsTest.clearSecurityContext();
   }
 
   @Test
@@ -64,7 +71,7 @@ class InstallmentControllerTest {
 
     OffsetDateTimeIntervalFilter paymentDateTimeFilter = new OffsetDateTimeIntervalFilter(dueDateFrom, dueDateTo);
 
-    InstallmentViewFiltersDTO filtersDTO = new InstallmentViewFiltersDTO(organizationId, userInfo.getMappedExternalUserId(), paymentDateTimeFilter, iuv, fiscalCode, debtPositionTypeOrgId);
+    InstallmentViewFiltersDTO filtersDTO = new InstallmentViewFiltersDTO(organizationId, loggedUser.getMappedExternalUserId(), paymentDateTimeFilter, iuv, fiscalCode, debtPositionTypeOrgId);
 
     PagedInstallmentView expectedResult = new PagedInstallmentView();
     expectedResult.setContent(List.of(InstallmentView.builder()
@@ -83,7 +90,7 @@ class InstallmentControllerTest {
     expectedResult.setTotalPages(1L);
     expectedResult.setNumber(0L);
 
-    when(installmentRetrieverServiceMock.getInstallments(filtersDTO, pageable, userInfo, "fakeAccessToken"))
+    when(installmentRetrieverServiceMock.getInstallments(filtersDTO, pageable, loggedUser, accessToken))
       .thenReturn(expectedResult);
 
     ResponseEntity<PagedInstallmentView> response = installmentController.getInstallments(organizationId, dueDateFrom, dueDateTo, iuv, fiscalCode, debtPositionTypeOrgId, pageable);
@@ -100,7 +107,7 @@ class InstallmentControllerTest {
     InstallmentDetailDTO expectedResult = new InstallmentDetailDTO();
 
     Mockito.when(installmentRetrieverServiceMock.getInstallmentDetail(Mockito.eq(organizationId), Mockito.eq(installmentId),
-      Mockito.any(), Mockito.anyString())).thenReturn(expectedResult);
+      Mockito.same(loggedUser), Mockito.same(accessToken))).thenReturn(expectedResult);
 
     ResponseEntity<InstallmentDetailDTO> response = installmentController.getInstallmentDetail(organizationId, installmentId);
 

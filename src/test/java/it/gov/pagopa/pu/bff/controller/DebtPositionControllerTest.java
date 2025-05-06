@@ -1,11 +1,14 @@
 package it.gov.pagopa.pu.bff.controller;
 
+import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.dto.generated.DebtPositionDetailDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedDebtPositionView;
+import it.gov.pagopa.pu.bff.security.SecurityUtilsTest;
 import it.gov.pagopa.pu.bff.service.debt_position.DebtPositionRetrieverService;
 import it.gov.pagopa.pu.bff.util.TestUtils;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionDTO;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionStatus;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,10 +20,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
 import uk.co.jemos.podam.api.PodamFactory;
 
 import java.time.OffsetDateTime;
@@ -36,27 +35,37 @@ class DebtPositionControllerTest {
 
   private final PodamFactory podamFactory = TestUtils.getPodamFactory();
 
+  private final String accessToken = "fakeAccessToken";
+  private final UserInfo loggedUser = podamFactory.manufacturePojo(UserInfo.class);
+
   @BeforeEach
   void setUp() {
-    Authentication authentication = new UsernamePasswordAuthenticationToken("fakeUser", "fakeAccessToken");
-    SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
-    securityContext.setAuthentication(authentication);
-    SecurityContextHolder.setContext(securityContext);
+    SecurityUtilsTest.configureSecurityContext(accessToken, loggedUser);
+  }
+
+  @AfterEach
+  void verifyNoMoreInteractions(){
+    Mockito.verifyNoMoreInteractions(
+      debtPositionRetrieverServiceMock
+    );
+  }
+
+  @AfterEach
+  void clearContext(){
+    SecurityUtilsTest.clearSecurityContext();
   }
 
   @Test
   void givenCorrectRequestWhenCreateDebtPositionThenOk() {
     DebtPositionDTO debtPositionDTO = podamFactory.manufacturePojo(DebtPositionDTO.class);
-    Boolean massive = true;
     DebtPositionDTO expectedResult = podamFactory.manufacturePojo(DebtPositionDTO.class);
 
     Mockito.when(debtPositionRetrieverServiceMock.createDebtPosition(
         Mockito.same(debtPositionDTO),
-        Mockito.same(massive),
-        Mockito.any(), Mockito.anyString()))
+        Mockito.same(loggedUser), Mockito.same(accessToken)))
       .thenReturn(expectedResult);
 
-    ResponseEntity<DebtPositionDTO> response = debtPositionController.createDebtPosition(debtPositionDTO, massive);
+    ResponseEntity<DebtPositionDTO> response = debtPositionController.createDebtPosition(debtPositionDTO);
 
     Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
     Assertions.assertNotNull(response.getBody());
@@ -84,7 +93,7 @@ class DebtPositionControllerTest {
             && f.getStatus().equals(status)
         ),
         Mockito.argThat(p -> p.getPageNumber() == 0 && p.getPageSize() == 10 && p.getSort().isUnsorted()),
-        Mockito.any(), Mockito.anyString()))
+        Mockito.same(loggedUser), Mockito.same(accessToken)))
       .thenReturn(expectedResult);
 
     ResponseEntity<PagedDebtPositionView> response = debtPositionController.getDebtPositionViews(
@@ -111,7 +120,7 @@ class DebtPositionControllerTest {
     Mockito.when(debtPositionRetrieverServiceMock.getDebtPositionDetail(
         Mockito.same(debtPositionId),
         Mockito.same(organizationId),
-        Mockito.any(), Mockito.anyString()))
+        Mockito.same(loggedUser), Mockito.same(accessToken)))
       .thenReturn(expectedResult);
 
     ResponseEntity<DebtPositionDetailDTO> response = debtPositionController.getDebtPositionDetail(
@@ -131,7 +140,7 @@ class DebtPositionControllerTest {
     Mockito.when(debtPositionRetrieverServiceMock.getDebtPositionDetail(
         Mockito.same(debtPositionId),
         Mockito.same(organizationId),
-        Mockito.any(), Mockito.anyString()))
+        Mockito.same(loggedUser), Mockito.same(accessToken)))
       .thenReturn(null);
 
     ResponseEntity<DebtPositionDetailDTO> response = debtPositionController.getDebtPositionDetail(

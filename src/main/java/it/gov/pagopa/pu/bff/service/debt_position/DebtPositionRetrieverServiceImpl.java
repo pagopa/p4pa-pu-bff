@@ -41,12 +41,12 @@ public class DebtPositionRetrieverServiceImpl implements DebtPositionRetrieverSe
   }
 
   @Override
-  public DebtPositionDTO createDebtPosition(DebtPositionDTO debtPositionDTO, Boolean massive, UserInfo loggedUser, String accessToken) {
+  public DebtPositionDTO createDebtPosition(DebtPositionDTO debtPositionDTO, UserInfo loggedUser, String accessToken) {
     AuthorizationService.validateUserForOrganizationId(debtPositionDTO.getOrganizationId(), loggedUser);
     if (debtPositionDTO.getDebtPositionId() != null) {
       throw new InvalidDebtPositionException("Bad Request: Debt Position ID should not be provided");
     }
-    return debtPositionService.createDebtPosition(debtPositionDTO, massive, accessToken);
+    return debtPositionService.createDebtPosition(debtPositionDTO, false, accessToken);
   }
 
   @Override

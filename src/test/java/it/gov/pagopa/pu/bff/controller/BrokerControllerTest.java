@@ -1,23 +1,24 @@
 package it.gov.pagopa.pu.bff.controller;
 
-import it.gov.pagopa.pu.bff.dto.generated.ConfigFE;
-import it.gov.pagopa.pu.bff.service.broker.BrokerRetrieverService;
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
+import it.gov.pagopa.pu.bff.dto.generated.ConfigFE;
+import it.gov.pagopa.pu.bff.security.SecurityUtilsTest;
+import it.gov.pagopa.pu.bff.service.broker.BrokerRetrieverService;
+import it.gov.pagopa.pu.bff.util.TestUtils;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class BrokerControllerTest {
@@ -29,38 +30,40 @@ class BrokerControllerTest {
   private BrokerController brokerController;
 
   private ConfigFE configFE;
-  private UserInfo userInfo;
+
+  private final String accessToken = "fakeAccessToken";
+  private final UserInfo loggedUser = TestUtils.getPodamFactory().manufacturePojo(UserInfo.class);
 
   @BeforeEach
   void setUp() {
-
-    userInfo = new UserInfo();
-    userInfo.setUserId("fakeUserId");
-    userInfo.setMappedExternalUserId("fakeExternalId");
-    userInfo.setFiscalCode("fakeFiscalCode");
-    userInfo.setFamilyName("FakeFamilyName");
-    userInfo.setName("FakeName");
-    userInfo.setIssuer("fakeIssuer");
-    userInfo.setCanManageUsers(true);
-
-    Authentication authentication = new UsernamePasswordAuthenticationToken(userInfo, "fakeAccessToken");
-    SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
-    securityContext.setAuthentication(authentication);
-    SecurityContextHolder.setContext(securityContext);
+    SecurityUtilsTest.configureSecurityContext(accessToken, loggedUser);
 
     configFE = new ConfigFE();
   }
 
+  @AfterEach
+  void verifyNoMoreInteractions(){
+    Mockito.verifyNoMoreInteractions(
+      brokerRetrieverServiceMock
+    );
+  }
+
+  @AfterEach
+  void clearContext(){
+    SecurityUtilsTest.clearSecurityContext();
+  }
+
   @Test
   void testGetBrokerConfig() {
-    when(brokerRetrieverServiceMock.getBrokerConfig(userInfo, "fakeAccessToken")).thenReturn(configFE);
+    // Given
+    when(brokerRetrieverServiceMock.getBrokerConfig(Mockito.same(loggedUser), Mockito.same(accessToken))).thenReturn(configFE);
 
+    // When
     ResponseEntity<ConfigFE> response = brokerController.getBrokerConfig();
 
+    // Then
     assertEquals(HttpStatus.OK, response.getStatusCode());
-    assertEquals(configFE, response.getBody());
-
-    verify(brokerRetrieverServiceMock, times(1)).getBrokerConfig(userInfo, "fakeAccessToken");
+    assertSame(configFE, response.getBody());
   }
 
 }

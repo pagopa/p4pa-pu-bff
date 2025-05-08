@@ -74,7 +74,6 @@ class ClassificationRetrieverServiceImplTest {
     long organizationId = 1L;
     TreasuredClassificationFiltersDTO treasuredClassificationFiltersDTO = new TreasuredClassificationFiltersDTO();
     PageRequest pageable = PageRequest.of(0, 10);
-    PagedTreasuredClassification expectedResult = new PagedTreasuredClassification();
 
     try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
       authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser))

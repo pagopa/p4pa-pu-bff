@@ -128,7 +128,7 @@ public class DebtPositionTypeOrgRetrieverServiceImpl implements DebtPositionType
   @Override
   public DebtPositionTypeOrg createDebtPositionTypeOrg(Long organizationId,
     SaveDebtPositionTypeOrgDTO createDebtPositionTypeOrgDTO, UserInfo loggedUser, String accessToken) {
-    AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser);
+    authorizationService.validateAdminRole(organizationId, loggedUser);
     validateDebtPositionTypeOrg(organizationId, createDebtPositionTypeOrgDTO.getDebtPositionTypeOrg(), loggedUser.getBrokerId(),
       accessToken);
 

@@ -3,6 +3,7 @@ package it.gov.pagopa.pu.bff.connector.classification.config;
 import it.gov.pagopa.pu.bff.config.rest.RestTemplateConfig;
 import it.gov.pagopa.pu.classification.controller.ApiClient;
 import it.gov.pagopa.pu.classification.controller.BaseApi;
+import it.gov.pagopa.pu.classification.controller.generated.ClassificationsApi;
 import it.gov.pagopa.pu.classification.controller.generated.PaymentsReportingSearchControllerApi;
 import it.gov.pagopa.pu.classification.controller.generated.PaymentsReportingViewSearchControllerApi;
 import it.gov.pagopa.pu.classification.controller.generated.TreasurySearchControllerApi;
@@ -19,6 +20,7 @@ public class ClassificationApisHolder {
   private final PaymentsReportingSearchControllerApi paymentsReportingSearchControllerApi;
   private final TreasuryViewSearchControllerApi treasuryViewSearchControllerApi;
   private final TreasurySearchControllerApi treasurySearchControllerApi;
+  private final ClassificationsApi classificationsApi;
   private final ThreadLocal<String> bearerTokenHolder = new ThreadLocal<>();
 
   public ClassificationApisHolder(ClassificationApiClientConfig clientConfig,
@@ -37,6 +39,7 @@ public class ClassificationApisHolder {
     this.paymentsReportingSearchControllerApi = new PaymentsReportingSearchControllerApi(apiClient);
     this.treasuryViewSearchControllerApi = new TreasuryViewSearchControllerApi(apiClient);
     this.treasurySearchControllerApi = new TreasurySearchControllerApi(apiClient);
+    this.classificationsApi = new ClassificationsApi(apiClient);
   }
 
   @PreDestroy
@@ -58,6 +61,10 @@ public class ClassificationApisHolder {
 
   public TreasurySearchControllerApi getTreasurySearchControllerApi(String accessToken) {
     return getApi(accessToken, treasurySearchControllerApi);
+  }
+
+  public ClassificationsApi getClassificationsApi(String accessToken) {
+    return getApi(accessToken, classificationsApi);
   }
 
   private <T extends BaseApi> T getApi(String accessToken, T api) {

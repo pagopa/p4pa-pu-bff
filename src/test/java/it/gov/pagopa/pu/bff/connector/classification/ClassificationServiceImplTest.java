@@ -1,6 +1,6 @@
 package it.gov.pagopa.pu.bff.connector.classification;
 
-import it.gov.pagopa.pu.bff.connector.classification.client.ClassificationSearchClient;
+import it.gov.pagopa.pu.bff.connector.classification.client.ClassificationClient;
 import it.gov.pagopa.pu.classification.dto.generated.ClassificationDetailViewDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,12 +16,12 @@ import static org.mockito.Mockito.when;
 class ClassificationServiceImplTest {
 
   @Mock
-  private ClassificationSearchClient classificationSearchClientMock;
+  private ClassificationClient classificationClientMock;
   private ClassificationServiceImpl classificationService;
 
   @BeforeEach
   void setUp() {
-    classificationService = new ClassificationServiceImpl(classificationSearchClientMock);
+    classificationService = new ClassificationServiceImpl(classificationClientMock);
   }
 
   @Test
@@ -31,7 +31,7 @@ class ClassificationServiceImplTest {
     String accessToken = "ACCESSTOKEN";
     ClassificationDetailViewDTO expectedClassificationDetail = new ClassificationDetailViewDTO();
 
-    when(classificationSearchClientMock.getClassificationDetail(Mockito.same(organizationId), Mockito.same(classificationId), Mockito.same(accessToken)))
+    when(classificationClientMock.getClassificationDetail(Mockito.same(organizationId), Mockito.same(classificationId), Mockito.same(accessToken)))
       .thenReturn(expectedClassificationDetail);
 
     ClassificationDetailViewDTO result = classificationService.getClassificationDetail(organizationId, classificationId, accessToken);

@@ -45,7 +45,7 @@ class ClassificationRetrieverServiceImplTest {
     try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
       authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)).thenAnswer(a -> null);
 
-      when(classificationServiceMock.getClassificationDetail(Mockito.eq(organizationId), Mockito.eq(classificationId), Mockito.anyString()))
+      when(classificationServiceMock.getClassificationDetail(organizationId, classificationId, accessToken))
         .thenReturn(expectedClassificationDetail);
 
       ClassificationDetailViewDTO result = classificationRetrieverService.getClassificationDetail(organizationId, classificationId, loggedUser, accessToken);
@@ -54,7 +54,7 @@ class ClassificationRetrieverServiceImplTest {
       assertSame(expectedClassificationDetail, result);
 
       authorizationServiceMockedStatic.verify(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser));
-      verify(classificationServiceMock).getClassificationDetail(Mockito.eq(organizationId), Mockito.eq(classificationId), Mockito.anyString());
+      verify(classificationServiceMock).getClassificationDetail(organizationId, classificationId, accessToken);
       verifyNoMoreInteractions(classificationServiceMock);
     }
   }

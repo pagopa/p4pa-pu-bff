@@ -19,17 +19,17 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class ClassificationSearchClientTest {
+class ClassificationClientTest {
 
   @Mock
   private ClassificationApisHolder classificationApisHolderMock;
   @Mock
   private ClassificationsApi classificationsApiMock;
-  private ClassificationSearchClient classificationSearchClient;
+  private ClassificationClient classificationClient;
 
   @BeforeEach
   void setUp() {
-    classificationSearchClient = new ClassificationSearchClient(classificationApisHolderMock);
+    classificationClient = new ClassificationClient(classificationApisHolderMock);
   }
 
   @AfterEach
@@ -38,7 +38,7 @@ class ClassificationSearchClientTest {
   }
 
   @Test
-  void whenGetClassificationDetailThenInvokeWithAccessToken() {
+  void givenValidParamsWhenGetClassificationDetailThenReturnExpectedDetail() {
     String accessToken = "ACCESSTOKEN";
     Long organizationId = 1L;
     Long classificationId = 123L;
@@ -50,13 +50,13 @@ class ClassificationSearchClientTest {
     when(classificationsApiMock.getClassificationDetail(organizationId, classificationId))
       .thenReturn(expectedClassificationDetail);
 
-    ClassificationDetailViewDTO result = classificationSearchClient.getClassificationDetail(organizationId, classificationId, accessToken);
+    ClassificationDetailViewDTO result = classificationClient.getClassificationDetail(organizationId, classificationId, accessToken);
 
     assertSame(expectedClassificationDetail, result);
   }
 
   @Test
-  void whenGetClassificationDetailNotFoundThenReturnNull() {
+  void givenValidParamsWhenClassificationDetailNotFoundThenThrowHttpClientErrorException() {
     String accessToken = "ACCESSTOKEN";
     Long organizationId = 1L;
     Long classificationId = 123L;
@@ -67,7 +67,7 @@ class ClassificationSearchClientTest {
     when(classificationsApiMock.getClassificationDetail(organizationId, classificationId))
       .thenThrow(HttpClientErrorException.create(HttpStatus.NOT_FOUND, "NotFound", null, null, null));
 
-    ClassificationDetailViewDTO result = classificationSearchClient.getClassificationDetail(organizationId, classificationId, accessToken);
+    ClassificationDetailViewDTO result = classificationClient.getClassificationDetail(organizationId, classificationId, accessToken);
 
     assertNull(result);
     verify(classificationsApiMock).getClassificationDetail(organizationId, classificationId);

@@ -8,10 +8,10 @@ import org.springframework.web.client.HttpClientErrorException;
 
 @Service
 @Slf4j
-public class ClassificationSearchClient {
+public class ClassificationClient {
   private final ClassificationApisHolder classificationApisHolder;
 
-  public ClassificationSearchClient(ClassificationApisHolder classificationApisHolder) {
+  public ClassificationClient(ClassificationApisHolder classificationApisHolder) {
     this.classificationApisHolder = classificationApisHolder;
   }
 

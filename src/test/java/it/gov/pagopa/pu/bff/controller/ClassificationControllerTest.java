@@ -50,7 +50,7 @@ class ClassificationControllerTest {
 
 
   @Test
-  void testGetClassificationDetail() {
+  void givenCorrectRequestWhenGetClassificationDetailThenOK() {
     Long organizationId = 1L;
     Long classificationId = 1L;
     ClassificationDetailViewDTO mockDetailView = new ClassificationDetailViewDTO();

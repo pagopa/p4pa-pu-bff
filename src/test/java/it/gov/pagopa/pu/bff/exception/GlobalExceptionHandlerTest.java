@@ -251,4 +251,24 @@ class GlobalExceptionHandlerTest {
       .andExpect(MockMvcResultMatchers.jsonPath("$.title").value("GENERIC_ERROR"))
       .andExpect(MockMvcResultMatchers.jsonPath("$.description").value(HttpStatus.FORBIDDEN.value()+" Error"));
   }
+
+  @Test
+  void handleInvalidDebtPositionTypeOrgException() throws Exception {
+    doThrow(new InvalidDebtPositionTypeOrgException("Error")).when(testControllerSpy).testEndpoint(DATA, BODY);
+
+    performRequest(DATA, MediaType.APPLICATION_JSON)
+      .andExpect(MockMvcResultMatchers.status().isBadRequest())
+      .andExpect(MockMvcResultMatchers.jsonPath("$.title").value("BAD_REQUEST"))
+      .andExpect(MockMvcResultMatchers.jsonPath("$.description").value("Error"));
+  }
+
+  @Test
+  void handleInvalidOperatorRoleException() throws Exception {
+    doThrow(new InvalidOperatorRoleException("Error")).when(testControllerSpy).testEndpoint(DATA, BODY);
+
+    performRequest(DATA, MediaType.APPLICATION_JSON)
+      .andExpect(MockMvcResultMatchers.status().isBadRequest())
+      .andExpect(MockMvcResultMatchers.jsonPath("$.title").value("GENERIC_ERROR"))
+      .andExpect(MockMvcResultMatchers.jsonPath("$.description").value("Error"));
+  }
 }

@@ -28,6 +28,11 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 @Slf4j
 public class GlobalExceptionHandler {
 
+  @ExceptionHandler(InvalidDebtPositionTypeOrgException.class)
+  public ResponseEntity<ErrorDTO> handleInvalidDebtPositionTypeOrgException(InvalidDebtPositionTypeOrgException ex, HttpServletRequest request) {
+    return handleException(ex, request, HttpStatus.BAD_REQUEST, ErrorDTO.TitleEnum.BAD_REQUEST);
+  }
+
   @ExceptionHandler(ConflictException.class)
   public ResponseEntity<ErrorDTO> handleConflictException(
     ConflictException ex, HttpServletRequest request) {

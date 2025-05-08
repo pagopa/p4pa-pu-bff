@@ -56,7 +56,7 @@ class ClassificationClientTest {
   }
 
   @Test
-  void givenValidParamsWhenClassificationDetailNotFoundThenThrowHttpClientErrorException() {
+  void givenNonExistingClassificationWhenClassificationDetailNotFoundThenThrowHttpClientErrorException() {
     String accessToken = "ACCESSTOKEN";
     Long organizationId = 1L;
     Long classificationId = 123L;

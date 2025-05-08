@@ -6,6 +6,7 @@ import it.gov.pagopa.pu.bff.dto.TreasuredClassificationFiltersDTO;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
 import it.gov.pagopa.pu.classification.dto.generated.PagedTreasuredClassification;
 import org.springframework.data.domain.Pageable;
+import it.gov.pagopa.pu.classification.dto.generated.ClassificationDetailViewDTO;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -25,5 +26,11 @@ public class ClassificationRetrieverServiceImpl implements ClassificationRetriev
     AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser);
     return classificationService.getTreasuredClassifications(organizationId,
       treasuredClassificationFiltersDTO, pageable, accessToken);
+  }
+
+  @Override
+  public ClassificationDetailViewDTO getClassificationDetail(Long organizationId, Long classificationId, UserInfo loggedUser, String accessToken) {
+    AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser);
+    return classificationService.getClassificationDetail(organizationId, classificationId, accessToken);
   }
 }

@@ -94,6 +94,8 @@ rest:
     timeout:
       connect-millis: "\${DEFAULT_REST_TIMEOUT_CONNECT_MILLIS:120000}"
       read-millis: "\${DEFAULT_REST_TIMEOUT_READ_MILLIS:120000}"
+  page:
+    request-max-page-size: "\${REST_PAGE_REQUEST_MAX_PAGE_SIZE:1000}"
   auth:
     base-url: "\${AUTH_SERVER_BASE_URL:}/payhub"
     max-attempts: "\${AUTH_MAX_ATTEMPTS:3}" # It's counting also the first attempt
@@ -134,3 +136,8 @@ cache:
   debtPositionTypeOrg:
     size: "\${CACHE_DEBT_POSITION_TYPE_ORG_MAXIMUM_SIZE:100}"
     expire-in: "\${CACHE_DEBT_POSITION_TYPE_ORG_MINUTES:60}"
+
+page:
+  debtPositionTypeOrg:
+    operators:
+      max-page-size: "\${DEBT_POSITION_TYPE_ORG_OPERATORS_MAX_PAGE_SIZE:10000}"

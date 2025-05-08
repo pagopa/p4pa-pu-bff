@@ -10,6 +10,7 @@ import it.gov.pagopa.pu.classification.dto.generated.ClassificationsEnum;
 import it.gov.pagopa.pu.classification.dto.generated.PagedTreasuredClassification;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
+import it.gov.pagopa.pu.classification.dto.generated.ClassificationDetailViewDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -40,6 +41,7 @@ public class ClassificationController implements ClassificationsApi {
     String iuf, String regulationUniqueIdentifier, String accountRegistryCode,
     Long billAmountCents,
     String remittanceInformation, Pageable pageable) {
+    log.info("User requested getTreasuredClassifications having organizationId {}", organizationId);
     LocalDateIntervalFilter lastClassificationDateFilter = new LocalDateIntervalFilter(lastClassificationDateFrom, lastClassificationDateTo);
     OffsetDateTimeIntervalFilter payDateTimeFilter = new OffsetDateTimeIntervalFilter(payDateFrom, payDateTo);
     OffsetDateTimeIntervalFilter paymentDateTimeFilter = new OffsetDateTimeIntervalFilter(paymentDateTimeFrom, paymentDateTimeTo);
@@ -69,5 +71,13 @@ public class ClassificationController implements ClassificationsApi {
 
     return ResponseEntity.ok(classificationRetrieverService.getTreasuredClassification(organizationId, treasuredClassificationFiltersDTO, pageable,
       SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken()));
+  }
+
+  @Override
+  public ResponseEntity<ClassificationDetailViewDTO> getClassificationDetail(Long organizationId, Long classificationId) {
+    log.info("User requested getClassificationDetail having organizationId {} and classificationId {}", organizationId, classificationId);
+
+    return ResponseEntity.ofNullable(classificationRetrieverService.getClassificationDetail(
+      organizationId, classificationId, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken()));
   }
 }

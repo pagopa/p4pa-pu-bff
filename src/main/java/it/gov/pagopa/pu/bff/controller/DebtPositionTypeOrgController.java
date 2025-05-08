@@ -3,6 +3,7 @@ package it.gov.pagopa.pu.bff.controller;
 import it.gov.pagopa.pu.bff.controller.generated.DebtPositionTypeOrgsApi;
 import it.gov.pagopa.pu.bff.dto.generated.PagedDebtPositionTypeOrgOperatorDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedDebtPositionTypeOrgWithCount;
+import it.gov.pagopa.pu.bff.dto.generated.SaveDebtPositionTypeOrgDTO;
 import it.gov.pagopa.pu.bff.security.SecurityUtils;
 import it.gov.pagopa.pu.bff.service.debt_position_type_org.DebtPositionTypeOrgRetrieverService;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrg;
@@ -63,4 +64,10 @@ public class DebtPositionTypeOrgController implements DebtPositionTypeOrgsApi {
     return ResponseEntity.ok(debtPositionTypeOrgRetrieverService.getDebtPositionTypeOrgOperators(organizationId, debtPositionTypeOrgId, pageable, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken()));
   }
 
+  @Override
+  public ResponseEntity<DebtPositionTypeOrg> createDebtPositionTypeOrg(Long organizationId, SaveDebtPositionTypeOrgDTO createDebtPositionTypeOrgDTO) {
+    log.info("User requested createDebtPositionTypeOrg having organizationId {}", organizationId);
+    return new ResponseEntity<>(debtPositionTypeOrgRetrieverService.createDebtPositionTypeOrg(organizationId,createDebtPositionTypeOrgDTO,
+      SecurityUtils.getLoggedUser(),SecurityUtils.getAccessToken()),HttpStatus.CREATED);
+  }
 }

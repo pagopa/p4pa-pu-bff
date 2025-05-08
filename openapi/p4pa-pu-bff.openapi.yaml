@@ -560,6 +560,33 @@ paths:
           description: Forbidden - Access denied
         '500':
           description: Internal Server Error
+    post:
+      tags:
+        - DebtPositionTypeOrgs
+      operationId: createDebtPositionTypeOrg
+      parameters:
+        - name: organizationId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SaveDebtPositionTypeOrgDTO"
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: 'DebtPositionTypeOrg'
+        '404':
+          description: Not Found
+        "500":
+          description: Internal server error
   /organization/{organizationId}/transfers:
     get:
       tags:
@@ -685,6 +712,40 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorDTO'
+  /organization/{organizationId}/classifications/{classificationId}:
+    get:
+      tags:
+        - Classifications
+      summary: "Retrieve classification detail"
+      operationId: getClassificationDetail
+      parameters:
+        - name: organizationId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: classificationId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: 'ClassificationDetailViewDTO'
+        '404':
+          description: Not Found - Classification Not Found
+        '401':
+          description: Unauthorized - Missing or invalid token
+        '403':
+          description: Forbidden - Access denied
+        '500':
+          description: Internal Server Error
   /organization/{organizationId}/treasuries/{treasuryId}:
     get:
       tags:
@@ -2392,3 +2453,29 @@ components:
           type: string
         ioTemplateSubject:
           type: string
+    SaveDebtPositionTypeOrgDTO:
+      type: object
+      required:
+        - debtPositionTypeOrg
+        - operatorsSelection
+      properties:
+        debtPositionTypeOrg:
+          type: 'DebtPositionTypeOrg'
+        operatorsSelection:
+          $ref: "#/components/schemas/OperatorsSelection"
+        enabledOperators:
+          type: array
+          uniqueItems: true
+          items:
+            type: string
+        disabledOperators:
+          type: array
+          uniqueItems: true
+          items:
+            type: string
+    OperatorsSelection:
+      type: string
+      enum:
+        - ALL
+        - NONE
+        - SELECTED

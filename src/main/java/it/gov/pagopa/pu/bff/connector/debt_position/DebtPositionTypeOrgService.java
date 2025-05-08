@@ -1,9 +1,13 @@
 package it.gov.pagopa.pu.bff.connector.debt_position;
 
-import it.gov.pagopa.pu.debtpositions.dto.generated.*;
-import org.springframework.data.domain.Pageable;
-
+import it.gov.pagopa.pu.debtpositions.dto.generated.CollectionModelDebtPositionTypeOrg;
+import it.gov.pagopa.pu.debtpositions.dto.generated.CollectionModelDebtPositionTypeOrgCountByOrganizationId;
+import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrg;
+import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelDebtPositionTypeOrg;
+import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelDebtPositionTypeOrgWithCount;
+import it.gov.pagopa.pu.debtpositions.dto.generated.SaveDebtPositionTypeOrgDTO;
 import java.util.List;
+import org.springframework.data.domain.Pageable;
 
 public interface DebtPositionTypeOrgService {
   CollectionModelDebtPositionTypeOrg getDebtPositionTypeOrgs(Long organizationId, String operatorExternalUserId, String accessToken);
@@ -17,4 +21,6 @@ public interface DebtPositionTypeOrgService {
   void deleteDebtPositionTypeOrg(Long debtPositionTypeOrgId, String accessToken);
 
   PagedModelDebtPositionTypeOrg getDebtPositionTypeOrgByDebtPositionTypeId(Long debtPositionTypeId, Pageable pageable, String accessToken);
+
+  DebtPositionTypeOrg saveDebtPositionTypeOrg(SaveDebtPositionTypeOrgDTO saveDebtPositionTypeOrg, String accessToken);
 }

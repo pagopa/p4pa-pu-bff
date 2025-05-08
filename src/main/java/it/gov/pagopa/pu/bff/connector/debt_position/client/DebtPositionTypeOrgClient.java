@@ -5,6 +5,7 @@ import it.gov.pagopa.pu.bff.exception.ResourceNotFoundException;
 import it.gov.pagopa.pu.debtpositions.dto.generated.CollectionModelDebtPositionTypeOrg;
 import it.gov.pagopa.pu.debtpositions.dto.generated.CollectionModelDebtPositionTypeOrgCountByOrganizationId;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrg;
+import it.gov.pagopa.pu.debtpositions.dto.generated.SaveDebtPositionTypeOrgDTO;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -48,6 +49,10 @@ public class DebtPositionTypeOrgClient {
     } catch (HttpClientErrorException.NotFound e) {
       throw new ResourceNotFoundException("DebtPositionTypeOrg with debtPositionTypeOrgId %d not found".formatted(debtPositionTypeOrgId));
     }
+  }
+
+  public DebtPositionTypeOrg saveDebtPositionTypeOrg(SaveDebtPositionTypeOrgDTO saveDebtPositionTypeOrg, String accessToken){
+    return debtPositionApisHolder.getDebtPositionTypeOrgApi(accessToken).saveDebtPositionTypeOrg(saveDebtPositionTypeOrg);
   }
 }
 

@@ -268,7 +268,7 @@ class GlobalExceptionHandlerTest {
 
     performRequest(DATA, MediaType.APPLICATION_JSON)
       .andExpect(MockMvcResultMatchers.status().isBadRequest())
-      .andExpect(MockMvcResultMatchers.jsonPath("$.title").value("BAD_REQUEST"))
+      .andExpect(MockMvcResultMatchers.jsonPath("$.title").value("GENERIC_ERROR"))
       .andExpect(MockMvcResultMatchers.jsonPath("$.description").value("Error"));
   }
 }

@@ -1877,12 +1877,7 @@
               ]
             },
             "method": "GET",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer eyJraWQiOiIzNTMxNTA2Ny05YmVjLTMxY2MtYmIwMi0zMzBhZTZlOGY0NjIiLCJ0eXAiOiJhdCtKV1QiLCJhbGciOiJSUzUxMiJ9.eyJ0eXAiOiJiZWFyZXIiLCJpc3MiOiJkZXYucGlhdHRhZm9ybWF1bml0YXJpYS5wYWdvcGEuaXQiLCJqdGkiOiIzMmVhN2YyNi00YzY1LTRlYTQtOTM0MS0xZjI0NTEzZDk1OWYiLCJzdWIiOiJFVXFLaUQxcHNMckdOdUx4Q0d6cml5LXJveVBsQnZ1eWVKTWMwZHhheE5zPSIsImlhdCI6MTc0NjY5NjQ2NCwiZXhwIjoxNzQ2NzEwODY0LCJvcmdhbml6YXRpb25JcGFDb2RlIjoiREVNTyJ9.UaLcQs6adJMz-AeGf97FJn0DiP3nJXDUrGpjK4SX_2NquxPnsZRlEbRhG3uxt9nqS_K6s9yAONNdH0afXFQaXzlyxz474FH3uI1_EfFKkcljIks2rZVPza73Mz3l3jWS1Heg5luSDLi5UzGeM8oyCsqbWV23jMvEqAe_ukl-I3BUaWpDfRk6U3lcjWeT13VNKNizE6HGbCGHz1m43X8hhKK6Ie-pNLFguoHfHivpIX4y09pjIPxnPv6uaKATkQvfKX8j1htlgERZo0VnvLX4y3eKs2zJAws4iCe5IsBngeAJm8wKN1mW6zKlIuczRsUiqezNAdLIUgfus2h4LvUqxw"
-              }
-            ],
+            "header": [],
             "url": {
               "raw": "{{p4paAuthBaseUrl}}/am/operators/{{organizationIpaCode}}",
               "host": [

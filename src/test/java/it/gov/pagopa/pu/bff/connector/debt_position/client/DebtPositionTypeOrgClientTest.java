@@ -8,6 +8,7 @@ import static org.mockito.Mockito.when;
 
 import it.gov.pagopa.pu.bff.connector.debt_position.config.DebtPositionApisHolder;
 import it.gov.pagopa.pu.bff.exception.ResourceNotFoundException;
+import it.gov.pagopa.pu.bff.util.TestUtils;
 import it.gov.pagopa.pu.debtpositions.controller.generated.DebtPositionTypeOrgApi;
 import it.gov.pagopa.pu.debtpositions.controller.generated.DebtPositionTypeOrgCountByOrganizationIdSearchControllerApi;
 import it.gov.pagopa.pu.debtpositions.controller.generated.DebtPositionTypeOrgEntityControllerApi;
@@ -15,6 +16,7 @@ import it.gov.pagopa.pu.debtpositions.controller.generated.DebtPositionTypeOrgSe
 import it.gov.pagopa.pu.debtpositions.dto.generated.CollectionModelDebtPositionTypeOrg;
 import it.gov.pagopa.pu.debtpositions.dto.generated.CollectionModelDebtPositionTypeOrgCountByOrganizationId;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrg;
+import it.gov.pagopa.pu.debtpositions.dto.generated.SaveDebtPositionTypeOrgDTO;
 import java.util.List;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -151,5 +153,23 @@ class DebtPositionTypeOrgClientTest {
 
     Assertions.assertThrows(ResourceNotFoundException.class,()->
       debtPositionTypeOrgClient.deleteDebtPositionTypeOrg(debtPositionTypeOrgId, accessToken));
+  }
+
+  @Test
+  void whenSaveDebtPositionTypeOrgThenInvokeWithAccessToken() {
+    SaveDebtPositionTypeOrgDTO saveDebtPositionTypeOrgDTO = TestUtils.getPodamFactory().manufacturePojo(SaveDebtPositionTypeOrgDTO.class);
+    String accessToken = "ACCESSTOKEN";
+    DebtPositionTypeOrg expectedResult = new DebtPositionTypeOrg();
+
+    when(debtPositionApisHolderMock.getDebtPositionTypeOrgApi(accessToken))
+      .thenReturn(debtPositionTypeOrgApiMock);
+
+    when(debtPositionTypeOrgApiMock.saveDebtPositionTypeOrg(
+      saveDebtPositionTypeOrgDTO))
+      .thenReturn(expectedResult);
+
+    DebtPositionTypeOrg result = debtPositionTypeOrgClient.saveDebtPositionTypeOrg(saveDebtPositionTypeOrgDTO, accessToken);
+
+    assertSame(expectedResult, result);
   }
 }

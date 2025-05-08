@@ -4,8 +4,12 @@ import it.gov.pagopa.pu.bff.config.CacheConfig.Fields;
 import it.gov.pagopa.pu.bff.connector.debt_position.client.DebtPositionTypeOrgClient;
 import it.gov.pagopa.pu.bff.connector.debt_position.client.DebtPositionTypeOrgSearchClient;
 import it.gov.pagopa.pu.bff.connector.debt_position.client.DebtPositionTypeOrgWithCountClient;
-import it.gov.pagopa.pu.debtpositions.dto.generated.*;
-
+import it.gov.pagopa.pu.debtpositions.dto.generated.CollectionModelDebtPositionTypeOrg;
+import it.gov.pagopa.pu.debtpositions.dto.generated.CollectionModelDebtPositionTypeOrgCountByOrganizationId;
+import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrg;
+import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelDebtPositionTypeOrg;
+import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelDebtPositionTypeOrgWithCount;
+import it.gov.pagopa.pu.debtpositions.dto.generated.SaveDebtPositionTypeOrgDTO;
 import java.util.List;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.Cacheable;
@@ -58,4 +62,9 @@ public class DebtPositionTypeOrgServiceImpl implements DebtPositionTypeOrgServic
     return debtPositionTypeOrgSearchClient.getDebtPositionTypeOrgByDebtPositionTypeId(debtPositionTypeId, pageable, accessToken);
   }
 
+  @Override
+  public DebtPositionTypeOrg saveDebtPositionTypeOrg(
+    SaveDebtPositionTypeOrgDTO saveDebtPositionTypeOrg, String accessToken) {
+    return debtPositionTypeOrgClient.saveDebtPositionTypeOrg(saveDebtPositionTypeOrg,accessToken);
+  }
 }

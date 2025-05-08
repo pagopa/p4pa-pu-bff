@@ -6,14 +6,19 @@ import it.gov.pagopa.pu.bff.connector.auth.AuthzService;
 import it.gov.pagopa.pu.bff.connector.debt_position.DebtPositionService;
 import it.gov.pagopa.pu.bff.connector.debt_position.DebtPositionTypeOrgOperatorsService;
 import it.gov.pagopa.pu.bff.connector.debt_position.DebtPositionTypeOrgService;
+import it.gov.pagopa.pu.bff.connector.debt_position.DebtPositionTypeService;
 import it.gov.pagopa.pu.bff.dto.generated.PagedDebtPositionTypeOrgOperatorDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedDebtPositionTypeOrgWithCount;
+import it.gov.pagopa.pu.bff.dto.generated.SaveDebtPositionTypeOrgDTO;
 import it.gov.pagopa.pu.bff.exception.ConflictException;
+import it.gov.pagopa.pu.bff.exception.InvalidDebtPositionTypeOrgException;
+import it.gov.pagopa.pu.bff.mapper.DebtPositionTypeOrgMapper;
 import it.gov.pagopa.pu.bff.mapper.DebtPositionTypeOrgOperatorsMapper;
 import it.gov.pagopa.pu.bff.mapper.DebtPositionTypeOrgWithCountMapper;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
 import it.gov.pagopa.pu.debtpositions.dto.generated.CollectionModelDebtPositionTypeOrg;
 import it.gov.pagopa.pu.debtpositions.dto.generated.CollectionModelDebtPositionTypeOrgOperators;
+import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionType;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrg;
 import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelDebtPosition;
 import java.util.Collections;
@@ -32,24 +37,29 @@ public class DebtPositionTypeOrgRetrieverServiceImpl implements DebtPositionType
   private final AuthorizationService authorizationService;
   private final DebtPositionService debtPositionService;
   private final AuthzService authzService;
+  private final DebtPositionTypeService debtPositionTypeService;
   private final DebtPositionTypeOrgWithCountMapper debtPositionTypeOrgWithCountMapper;
   private final DebtPositionTypeOrgOperatorsMapper debtPositionTypeOrgOperatorsMapper;
+  private final DebtPositionTypeOrgMapper debtPositionTypeOrgMapper;
 
   public DebtPositionTypeOrgRetrieverServiceImpl(
     DebtPositionTypeOrgService debtPositionTypeOrgService,
     DebtPositionTypeOrgOperatorsService debtPositionTypeOrgOperatorsService,
     DebtPositionService debtPositionService,
     AuthorizationService authorizationService,
-    AuthzService authzService,
+    AuthzService authzService, DebtPositionTypeService debtPositionTypeService,
     DebtPositionTypeOrgWithCountMapper debtPositionTypeOrgWithCountMapper,
-    DebtPositionTypeOrgOperatorsMapper debtPositionTypeOrgOperatorsMapper) {
+    DebtPositionTypeOrgOperatorsMapper debtPositionTypeOrgOperatorsMapper,
+    DebtPositionTypeOrgMapper debtPositionTypeOrgMapper) {
     this.debtPositionTypeOrgService = debtPositionTypeOrgService;
     this.debtPositionTypeOrgOperatorsService = debtPositionTypeOrgOperatorsService;
     this.debtPositionService = debtPositionService;
     this.authorizationService = authorizationService;
     this.authzService = authzService;
+    this.debtPositionTypeService = debtPositionTypeService;
     this.debtPositionTypeOrgWithCountMapper = debtPositionTypeOrgWithCountMapper;
     this.debtPositionTypeOrgOperatorsMapper = debtPositionTypeOrgOperatorsMapper;
+    this.debtPositionTypeOrgMapper = debtPositionTypeOrgMapper;
   }
 
   @Override
@@ -113,5 +123,41 @@ public class DebtPositionTypeOrgRetrieverServiceImpl implements DebtPositionType
       .findFirst()
       .orElseThrow(IllegalArgumentException::new)
       .getOrganizationIpaCode();
+  }
+
+  @Override
+  public DebtPositionTypeOrg createDebtPositionTypeOrg(Long organizationId,
+    SaveDebtPositionTypeOrgDTO createDebtPositionTypeOrgDTO, UserInfo loggedUser, String accessToken) {
+    AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser);
+    validateDebtPositionTypeOrg(organizationId, createDebtPositionTypeOrgDTO.getDebtPositionTypeOrg(), loggedUser.getBrokerId(),
+      accessToken);
+
+    return debtPositionTypeOrgService.saveDebtPositionTypeOrg(
+      debtPositionTypeOrgMapper.mapToSaveDebtPositionTypeOrgDTO(createDebtPositionTypeOrgDTO,
+        loggedUser.getMappedExternalUserId(),  getUserOrganizationIpaCode(organizationId, loggedUser),accessToken),
+      accessToken
+    );
+  }
+
+  private void validateDebtPositionTypeOrg(Long organizationId,
+    DebtPositionTypeOrg debtPositionTypeOrgDTO,
+    Long brokerId, String accessToken) {
+    if(!organizationId.equals(
+      debtPositionTypeOrgDTO.getOrganizationId())){
+      throw new InvalidDebtPositionTypeOrgException("The DebtPositionTypeOrg's organizationId "+ debtPositionTypeOrgDTO.getOrganizationId()+
+        " does not match the given organizationId "+ organizationId);
+    }
+    if(debtPositionTypeOrgDTO.getDebtPositionTypeOrgId()!=null){
+      throw new InvalidDebtPositionTypeOrgException("DebtPositionTypeOrgId should not be provided");
+    }
+    DebtPositionType debtPositionType = debtPositionTypeService.getDebtPositionTypeById(
+      debtPositionTypeOrgDTO.getDebtPositionTypeId(),
+      accessToken);
+    if(debtPositionType==null){
+      throw new InvalidDebtPositionTypeOrgException("DebtPositionType having id "+debtPositionTypeOrgDTO.getDebtPositionTypeId()+" not found");
+    }
+    if(!debtPositionType.getBrokerId().equals(brokerId)){
+      throw new InvalidDebtPositionTypeOrgException("The brokerId "+brokerId+" does not match the given DebtPositionType's brokerId");
+    }
   }
 }

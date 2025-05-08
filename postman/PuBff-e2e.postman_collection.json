@@ -1,1957 +1,2679 @@
 {
-	"info": {
-		"_postman_id": "222ce516-5fb1-4ac2-bee1-d3bf0025b210",
-		"name": "PU-BFF",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "28798913"
-	},
-	"item": [
-		{
-			"name": "00_login",
-			"item": [
-				{
-					"name": "00_authtoken jwt",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm=instrumentPmMethod(pm);\r",
-									"\r",
-									"pm.test(\"MyPay - 00_authtoken jwt - Responses with 200\", function () {\r",
-									"    pm.response.to.have.status(200);\r",
-									"});\r",
-									"\r",
-									"pm.test(\"MyPay - 00_authtoken jwt - Verify response body\", function () {\r",
-									"    let jsonResponse = pm.response.json();\r",
-									"\r",
-									"    pm.expect(jsonResponse).have.property(\"access_token\")\r",
-									"    pm.expect(jsonResponse).have.property(\"token_type\")\r",
-									"    pm.expect(jsonResponse).have.property(\"expires_in\")\r",
-									"});\r",
-									"\r",
-									"let jsonResponse = pm.response.json();\r",
-									"pm.collectionVariables.set(\"accessToken\", jsonResponse.access_token);\r",
-									""
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						}
-					],
-					"request": {
-						"method": "POST",
-						"header": [],
-						"url": {
-							"raw": "{{p4paAuthBaseUrl}}/oauth/token?client_id=piattaforma-unitaria&grant_type=urn:ietf:params:oauth:grant-type:token-exchange&subject_token={{tokenExchange_subjectToken}}&subject_issuer={{tokenExchange_issuer}}&scope=openid&subject_token_type=urn:ietf:params:oauth:token-type:jwt",
-							"host": [
-								"{{p4paAuthBaseUrl}}"
-							],
-							"path": [
-								"oauth",
-								"token"
-							],
-							"query": [
-								{
-									"key": "client_id",
-									"value": "piattaforma-unitaria"
-								},
-								{
-									"key": "grant_type",
-									"value": "urn:ietf:params:oauth:grant-type:token-exchange"
-								},
-								{
-									"key": "subject_token",
-									"value": "{{tokenExchange_subjectToken}}"
-								},
-								{
-									"key": "subject_issuer",
-									"value": "{{tokenExchange_issuer}}"
-								},
-								{
-									"key": "scope",
-									"value": "openid"
-								},
-								{
-									"key": "subject_token_type",
-									"value": "urn:ietf:params:oauth:token-type:jwt"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "00_postToken",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm=instrumentPmMethod(pm);\r",
-									"\r",
-									"pm.test(\"00_postToken - Responses with 200\", function () {\r",
-									"    pm.response.to.have.status(200);\r",
-									"});\r",
-									"\r",
-									"pm.test(\"00_postToken - Verify response body\", function () {\r",
-									"    let jsonResponse = pm.response.json();\r",
-									"\r",
-									"    pm.expect(jsonResponse).have.property(\"access_token\")\r",
-									"    pm.expect(jsonResponse).have.property(\"token_type\")\r",
-									"    pm.expect(jsonResponse).have.property(\"expires_in\")\r",
-									"\r",
-									"});\r",
-									"\r",
-									"let jsonResponse = pm.response.json();\r",
-									""
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						}
-					],
-					"request": {
-						"method": "POST",
-						"header": [],
-						"url": {
-							"raw": "{{puBffBaseUrl}}/bff/token?idToken={{tokenExchange_subjectToken}}",
-							"host": [
-								"{{puBffBaseUrl}}"
-							],
-							"path": [
-								"bff",
-								"token"
-							],
-							"query": [
-								{
-									"key": "idToken",
-									"value": "{{tokenExchange_subjectToken}}"
-								}
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "01_Organization",
-			"item": [
-				{
-					"name": "01_getBrokerConfig",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"let jsonResponse = pm.response.json();\r",
-									"\r",
-									"pm.test(\"[brokers - config], expected httpStatus: 200\", () => {\r",
-									"    pm.response.to.have.status(200);\r",
-									"})\r",
-									"\r",
-									"pm.test(\"[brokers - config] - get list of config\", () => {\r",
-									"    pm.expect(jsonResponse).to.have.property(\"headerAssistanceUrl\").and.to.not.be.null;\r",
-									"    pm.expect(jsonResponse).to.have.property(\"logoFooterImg\").and.to.not.be.null;\r",
-									"    pm.expect(jsonResponse).to.have.property(\"footerDescText\").and.to.not.be.null;\r",
-									"    pm.expect(jsonResponse).to.have.property(\"footerPrivacyInfoUrl\").and.to.not.be.null;\r",
-									"    pm.expect(jsonResponse).to.have.property(\"footerGDPRUrl\").and.to.not.be.null;\r",
-									"    pm.expect(jsonResponse).to.have.property(\"footerTermsCondUrl\").and.to.not.be.null;\r",
-									"    pm.expect(jsonResponse).to.have.property(\"footerAccessibilityUrl\").and.to.not.be.null;\r",
-									"    pm.expect(jsonResponse).to.have.property(\"brokerId\").and.to.not.be.null;\r",
-									"    pm.expect(jsonResponse).to.have.property(\"brokerFiscalCode\").and.to.not.be.null;\r",
-									"    pm.expect(jsonResponse).to.have.property(\"canManageUsers\").and.to.not.be.null;\r",
-									"})\r",
-									"\r",
-									""
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						},
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									""
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						}
-					],
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{puBffBaseUrl}}/bff/brokers/config",
-							"host": [
-								"{{puBffBaseUrl}}"
-							],
-							"path": [
-								"bff",
-								"brokers",
-								"config"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "01_getOrganizations",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"let jsonResponse = pm.response.json();\r",
-									"\r",
-									"pm.test(\"[organizations], expected httpStatus: 200\", () => {\r",
-									"    pm.response.to.have.status(200);\r",
-									"})\r",
-									"\r",
-									"pm.test(\"[organizations] - get list of organizations\", () => {\r",
-									"    jsonResponse.forEach((item)=> {\r",
-									"        pm.expect(item).to.have.property(\"organizationId\").and.to.not.be.null;\r",
-									"        pm.expect(item).to.have.property(\"ipaCode\").and.to.not.be.null;\r",
-									"        pm.expect(item).to.have.property(\"orgName\").and.to.not.be.null;\r",
-									"        pm.expect(item).to.have.property(\"operatorRole\").and.to.not.be.null;\r",
-									"        pm.expect(item).to.have.property(\"orgFiscalCode\").and.to.not.be.null;\r",
-									"    });\r",
-									"})\r",
-									"\r",
-									"pm.collectionVariables.set(\"organizationId\",  jsonResponse[0]?.organizationId);"
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						},
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									""
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						}
-					],
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{puBffBaseUrl}}/bff/organizations",
-							"host": [
-								"{{puBffBaseUrl}}"
-							],
-							"path": [
-								"bff",
-								"organizations"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "01_getOrganizationsWithDebtPositionTypeOrgCount",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"let jsonResponse = pm.response.json();\r",
-									"\r",
-									"pm.test(\"[organizations], expected httpStatus: 200\", () => {\r",
-									"    pm.response.to.have.status(200);\r",
-									"})\r",
-									"\r",
-									"pm.test(\"[organizations] - get list of organizations\", () => {\r",
-									"    jsonResponse.content.forEach((item)=> {\r",
-									"        pm.expect(item).to.have.property(\"organizationId\").and.to.not.be.null;\r",
-									"        pm.expect(item).to.have.property(\"ipaCode\").and.to.not.be.null;\r",
-									"        pm.expect(item).to.have.property(\"organizationName\").and.to.not.be.null;\r",
-									"        pm.expect(item).to.have.property(\"debtPositionTypeOrgCount\").and.to.not.be.null;\r",
-									"    });\r",
-									"})"
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						},
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									""
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						}
-					],
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{puBffBaseUrl}}/bff/organization/:organizationId",
-							"host": [
-								"{{puBffBaseUrl}}"
-							],
-							"path": [
-								"bff",
-								"organization",
-								":organizationId"
-							],
-							"variable": [
-								{
-									"key": "organizationId",
-									"value": "{{organizationId}}"
-								}
-							]
-						}
-					},
-					"response": []
-				}
-			],
-			"auth": {
-				"type": "bearer",
-				"bearer": [
-					{
-						"key": "token",
-						"value": "{{accessToken}}",
-						"type": "string"
-					}
-				]
-			},
-			"event": [
-				{
-					"listen": "prerequest",
-					"script": {
-						"type": "text/javascript",
-						"packages": {},
-						"exec": [
-							""
-						]
-					}
-				},
-				{
-					"listen": "test",
-					"script": {
-						"type": "text/javascript",
-						"packages": {},
-						"exec": [
-							""
-						]
-					}
-				}
-			]
-		},
-		{
-			"name": "02_Taxonomy",
-			"item": [
-				{
-					"name": "02_getOrganizationTypes",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"let jsonResponse = pm.response.json();\r",
-									"\r",
-									"pm.test(\"[taxonomy getOrganizationTypes], expected httpStatus: 200\", () => {\r",
-									"    pm.response.to.have.status(200);\r",
-									"})\r",
-									"\r",
-									"pm.test(\"[taxonomy getOrganizationTypes] - getOrganizationTypes\", () => {\r",
-									"    pm.expect(jsonResponse).to.be.an('array').that.is.not.empty;\r",
-									"\r",
-									"    pm.expect(jsonResponse[0].organizationType).not.null;\r",
-									"    pm.expect(jsonResponse[0].organizationTypeDescription).not.null;\r",
-									"})\r",
-									"\r",
-									""
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						}
-					],
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{puBffBaseUrl}}/bff/taxonomy/getOrganizationTypes",
-							"host": [
-								"{{puBffBaseUrl}}"
-							],
-							"path": [
-								"bff",
-								"taxonomy",
-								"getOrganizationTypes"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "02_getMacroArea",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"let jsonResponse = pm.response.json();\r",
-									"\r",
-									"pm.test(\"[taxonomy getMacroArea], expected httpStatus: 200\", () => {\r",
-									"    pm.response.to.have.status(200);\r",
-									"})\r",
-									"\r",
-									"pm.test(\"[taxonomy getMacroArea] - getMacroArea\", () => {\r",
-									"    pm.expect(jsonResponse).to.be.an('array').that.is.not.empty;\r",
-									"\r",
-									"    pm.expect(jsonResponse[0].organizationType).not.null;\r",
-									"    pm.expect(jsonResponse[0].organizationTypeDescription).not.null;\r",
-									"    pm.expect(jsonResponse[0].macroAreaCode).not.null;\r",
-									"    pm.expect(jsonResponse[0].macroAreaName).not.null;\r",
-									"    pm.expect(jsonResponse[0].macroAreaDescription).not.null;\r",
-									"})\r",
-									"\r",
-									""
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						}
-					],
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{puBffBaseUrl}}/bff/taxonomy/getMacroArea?organizationType=01",
-							"host": [
-								"{{puBffBaseUrl}}"
-							],
-							"path": [
-								"bff",
-								"taxonomy",
-								"getMacroArea"
-							],
-							"query": [
-								{
-									"key": "organizationType",
-									"value": "01"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "02_getServiceType",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"let jsonResponse = pm.response.json();\r",
-									"\r",
-									"pm.test(\"[taxonomy getServiceType], expected httpStatus: 200\", () => {\r",
-									"    pm.response.to.have.status(200);\r",
-									"})\r",
-									"\r",
-									"pm.test(\"[taxonomy getServiceType] - getServiceType\", () => {\r",
-									"    pm.expect(jsonResponse).to.be.an('array').that.is.not.empty;\r",
-									"\r",
-									"    pm.expect(jsonResponse[0].organizationType).not.null;\r",
-									"    pm.expect(jsonResponse[0].organizationTypeDescription).not.null;\r",
-									"    pm.expect(jsonResponse[0].macroAreaCode).not.null;\r",
-									"    pm.expect(jsonResponse[0].macroAreaName).not.null;\r",
-									"    pm.expect(jsonResponse[0].macroAreaDescription).not.null;\r",
-									"    pm.expect(jsonResponse[0].serviceTypeCode).not.null;\r",
-									"    pm.expect(jsonResponse[0].serviceType).not.null;\r",
-									"    pm.expect(jsonResponse[0].serviceTypeDescription).not.null;\r",
-									"})\r",
-									"\r",
-									""
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						}
-					],
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{puBffBaseUrl}}/bff/taxonomy/getServiceType?organizationType=01&macroAreaCode=01",
-							"host": [
-								"{{puBffBaseUrl}}"
-							],
-							"path": [
-								"bff",
-								"taxonomy",
-								"getServiceType"
-							],
-							"query": [
-								{
-									"key": "organizationType",
-									"value": "01"
-								},
-								{
-									"key": "macroAreaCode",
-									"value": "01"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "02_getCollectionReason",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"let jsonResponse = pm.response.json();\r",
-									"\r",
-									"pm.test(\"[taxonomy getCollectionReason], expected httpStatus: 200\", () => {\r",
-									"    pm.response.to.have.status(200);\r",
-									"})\r",
-									"\r",
-									"pm.test(\"[taxonomy getCollectionReason] - getTaxonomyCode\", () => {\r",
-									"    pm.expect(jsonResponse).to.be.an('array').that.is.not.empty;\r",
-									"\r",
-									"    pm.expect(jsonResponse[0].organizationType).not.null;\r",
-									"    pm.expect(jsonResponse[0].organizationTypeDescription).not.null;\r",
-									"    pm.expect(jsonResponse[0].macroAreaCode).not.null;\r",
-									"    pm.expect(jsonResponse[0].macroAreaName).not.null;\r",
-									"    pm.expect(jsonResponse[0].macroAreaDescription).not.null;\r",
-									"    pm.expect(jsonResponse[0].serviceTypeCode).not.null;\r",
-									"    pm.expect(jsonResponse[0].serviceType).not.null;\r",
-									"    pm.expect(jsonResponse[0].serviceTypeDescription).not.null;\r",
-									"    pm.expect(jsonResponse[0].collectionReason).not.null;\r",
-									"})\r",
-									"\r",
-									""
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						}
-					],
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{puBffBaseUrl}}/bff/taxonomy/getCollectionReason?organizationType=01&macroAreaCode=01&serviceTypeCode=100",
-							"host": [
-								"{{puBffBaseUrl}}"
-							],
-							"path": [
-								"bff",
-								"taxonomy",
-								"getCollectionReason"
-							],
-							"query": [
-								{
-									"key": "organizationType",
-									"value": "01"
-								},
-								{
-									"key": "macroAreaCode",
-									"value": "01"
-								},
-								{
-									"key": "serviceTypeCode",
-									"value": "100"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "02_getTaxonomyCode",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"let jsonResponse = pm.response.json();\r",
-									"\r",
-									"pm.test(\"[taxonomy getTaxonomyCode], expected httpStatus: 200\", () => {\r",
-									"    pm.response.to.have.status(200);\r",
-									"})\r",
-									"\r",
-									"pm.test(\"[taxonomy getTaxonomyCode] - getTaxonomyCode\", () => {\r",
-									"    pm.expect(jsonResponse).to.be.an('array').that.is.not.empty;\r",
-									"\r",
-									"    pm.expect(jsonResponse[0].organizationType).not.null;\r",
-									"    pm.expect(jsonResponse[0].organizationTypeDescription).not.null;\r",
-									"    pm.expect(jsonResponse[0].macroAreaCode).not.null;\r",
-									"    pm.expect(jsonResponse[0].macroAreaName).not.null;\r",
-									"    pm.expect(jsonResponse[0].macroAreaDescription).not.null;\r",
-									"    pm.expect(jsonResponse[0].serviceTypeCode).not.null;\r",
-									"    pm.expect(jsonResponse[0].serviceType).not.null;\r",
-									"    pm.expect(jsonResponse[0].serviceTypeDescription).not.null;\r",
-									"    pm.expect(jsonResponse[0].collectionReason).not.null;\r",
-									"    pm.expect(jsonResponse[0].taxonomyCode).not.null;\r",
-									"})\r",
-									"\r",
-									""
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						}
-					],
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{puBffBaseUrl}}/bff/taxonomy/getTaxonomyCode?organizationType=01&macroAreaCode=01&serviceTypeCode=100&collectionReason=IM",
-							"host": [
-								"{{puBffBaseUrl}}"
-							],
-							"path": [
-								"bff",
-								"taxonomy",
-								"getTaxonomyCode"
-							],
-							"query": [
-								{
-									"key": "organizationType",
-									"value": "01"
-								},
-								{
-									"key": "macroAreaCode",
-									"value": "01"
-								},
-								{
-									"key": "serviceTypeCode",
-									"value": "100"
-								},
-								{
-									"key": "collectionReason",
-									"value": "IM"
-								}
-							]
-						}
-					},
-					"response": []
-				}
-			],
-			"auth": {
-				"type": "bearer",
-				"bearer": [
-					{
-						"key": "token",
-						"value": "{{accessToken}}",
-						"type": "string"
-					}
-				]
-			},
-			"event": [
-				{
-					"listen": "prerequest",
-					"script": {
-						"type": "text/javascript",
-						"packages": {},
-						"exec": [
-							""
-						]
-					}
-				},
-				{
-					"listen": "test",
-					"script": {
-						"type": "text/javascript",
-						"packages": {},
-						"exec": [
-							""
-						]
-					}
-				}
-			]
-		},
-		{
-			"name": "99_Monitoring",
-			"item": [
-				{
-					"name": "99_coreHealthIndicator",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"let jsonResponse = pm.response.json();\r",
-									"\r",
-									"pm.test(\"expected httpStatus: 200\", () => {\r",
-									"    pm.response.to.have.status(200);\r",
-									"})\r",
-									"\r",
-									"pm.response.json().forEach((item) => {\r",
-									"    pm.expect(item.serviceName).not.null;\r",
-									"    pm.expect(item.statusMessage).to.eql(\"{\\\"status\\\":\\\"UP\\\"}\");\r",
-									"})"
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						}
-					],
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{puBffBaseUrl}}/bff/core-health",
-							"host": [
-								"{{puBffBaseUrl}}"
-							],
-							"path": [
-								"bff",
-								"core-health"
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "03_Debt_Positions",
-			"item": [
-				{
-					"name": "03_getAllDebtPositionType",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"Response status is 200\", function () {\r",
-									"    pm.response.to.have.status(200);\r",
-									"});\r",
-									"\r",
-									"let response = pm.response.json();\r",
-									"let debtPositionTypeId = response._embedded.debtPositionTypes[0]?.debtPositionTypeId;\r",
-									"\r",
-									" pm.collectionVariables.set(\"debtPositionTypeId\", debtPositionTypeId);\r",
-									"\r",
-									""
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						}
-					],
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{accessToken}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{debtPositionBaseUrl}}/crud/debt-position-types",
-							"host": [
-								"{{debtPositionBaseUrl}}"
-							],
-							"path": [
-								"crud",
-								"debt-position-types"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "03_getDebtPositionType",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"let jsonResponse = pm.response.json();\r",
-									"\r",
-									"pm.test(\"[debt-position-type], expected httpStatus: 200\", () => {\r",
-									"    pm.response.to.have.status(200);\r",
-									"})\r",
-									"\r",
-									"pm.test(\"[debt-position-type] - get debtPositionType\", () => {\r",
-									"    pm.expect(jsonResponse.debtPositionTypeId).not.null;\r",
-									"    pm.expect(jsonResponse.brokerId).not.null;\r",
-									"    pm.expect(jsonResponse.code).not.null;\r",
-									"    pm.expect(jsonResponse.description).not.null;\r",
-									"    pm.expect(jsonResponse.orgType).not.null;\r",
-									"    pm.expect(jsonResponse.macroArea).not.null;\r",
-									"    pm.expect(jsonResponse.serviceType).not.null;\r",
-									"    pm.expect(jsonResponse.collectingReason).not.null;\r",
-									"    pm.expect(jsonResponse.taxonomyCode).not.null;\r",
-									"    pm.expect(jsonResponse.flagAnonymousFiscalCode).not.null;\r",
-									"    pm.expect(jsonResponse.flagMandatoryDueDate).not.null;\r",
-									"    pm.expect(jsonResponse.flagNotifyIo).not.null;\r",
-									"})"
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						},
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									"let debtPositionTypeId = pm.collectionVariables.get(\"debtPositionTypeId\");\r",
-									""
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						}
-					],
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{accessToken}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{puBffBaseUrl}}/bff/debt-position-types/:id",
-							"host": [
-								"{{puBffBaseUrl}}"
-							],
-							"path": [
-								"bff",
-								"debt-position-types",
-								":id"
-							],
-							"variable": [
-								{
-									"key": "id",
-									"value": "{{debtPositionTypeId}}"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "03_getReceipts",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"Response status is 200\", function () {\r",
-									"    pm.response.to.have.status(200);\r",
-									"});\r",
-									"let response = pm.response.json();\r",
-									"let receiptId = response.content[0]?.receiptId;\r",
-									"\r",
-									" pm.collectionVariables.set(\"receiptId\", receiptId);\r",
-									""
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						},
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									""
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						}
-					],
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{accessToken}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [
-							{
-								"key": "Accept",
-								"value": "application/json"
-							},
-							{
-								"key": "Authorization",
-								"value": "Bearer {{bearerToken}}"
-							}
-						],
-						"url": {
-							"raw": "{{puBffBaseUrl}}/bff/organization/:organizationId/receipts?receiptOrigin=RECEIPT_FILE",
-							"host": [
-								"{{puBffBaseUrl}}"
-							],
-							"path": [
-								"bff",
-								"organization",
-								":organizationId",
-								"receipts"
-							],
-							"query": [
-								{
-									"key": "receiptOrigin",
-									"value": "RECEIPT_FILE"
-								}
-							],
-							"variable": [
-								{
-									"key": "organizationId",
-									"value": "{{organizationId}}"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "03_getReceiptDetail",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"let jsonResponse = pm.response.json();",
-									"pm.test(\"[receipt getReceiptDetail], expected httpStatus: 200\", () => {",
-									"    pm.response.to.have.status(200);",
-									"})",
-									"pm.test(\"[receipt getReceiptDetail] - getReceiptDetail\", () => {",
-									"    pm.expect(jsonResponse).to.have.property(\"receiptId\").and.to.not.be.null;",
-									"    pm.expect(jsonResponse).to.have.property(\"paymentAmountCents\").and.to.not.be.null;",
-									"    pm.expect(jsonResponse).to.have.property(\"remittanceInformation\").and.to.not.be.null;",
-									"    pm.expect(jsonResponse).to.have.property(\"debtPositionTypeOrgDescription\").and.to.not.be.null;",
-									"    pm.expect(jsonResponse).to.have.property(\"debtor\").and.to.not.be.null;",
-									"    pm.expect(jsonResponse.debtor).to.have.property(\"fullName\").and.to.not.be.null;",
-									"    pm.expect(jsonResponse.debtor).to.have.property(\"fiscalCode\").and.to.not.be.null;",
-									"    pm.expect(jsonResponse).to.have.property(\"pspCompanyName\").and.to.not.be.null;",
-									"    pm.expect(jsonResponse).to.have.property(\"iud\").and.to.not.be.null;",
-									"});",
-									"",
-									"",
-									""
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						},
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									""
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						}
-					],
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{accessToken}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [
-							{
-								"key": "Accept",
-								"value": "application/json"
-							}
-						],
-						"url": {
-							"raw": "{{puBffBaseUrl}}/bff/organization/:organizationId/receipts/:receiptId",
-							"host": [
-								"{{puBffBaseUrl}}"
-							],
-							"path": [
-								"bff",
-								"organization",
-								":organizationId",
-								"receipts",
-								":receiptId"
-							],
-							"variable": [
-								{
-									"key": "organizationId",
-									"value": "{{organizationId}}"
-								},
-								{
-									"key": "receiptId",
-									"value": "{{receiptId}}"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "03_getDebtPositions",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"let jsonResponse = pm.response.json();",
-									"pm.test(\"[receipt getDebtPositions], expected httpStatus: 200\", () => {",
-									"    pm.response.to.have.status(200);",
-									"})",
-									"pm.test(\"[DebtPosition getDebtPositions] - getDebtPositions\", () => {",
-									"    pm.expect(jsonResponse).to.have.property(\"content\").and.to.be.an(\"array\");",
-									"    pm.expect(jsonResponse).to.have.property(\"size\").and.to.be.a(\"number\");",
-									"    pm.expect(jsonResponse).to.have.property(\"totalElements\").and.to.be.a(\"number\");",
-									"    pm.expect(jsonResponse).to.have.property(\"totalPages\").and.to.be.a(\"number\");",
-									"    pm.expect(jsonResponse).to.have.property(\"number\").and.to.be.a(\"number\");",
-									"});",
-									"",
-									"pm.collectionVariables.set(\"debtPositionTypeOrgId\", jsonResponse.content[0]?.debtPositionTypeOrgId);"
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						}
-					],
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{accessToken}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [
-							{
-								"key": "Accept",
-								"value": "application/json"
-							}
-						],
-						"url": {
-							"raw": "{{puBffBaseUrl}}/bff/organization/:organizationId/debt-positions?creationDateFrom=2025-01-25T12%3A04%3A59.000Z&creationDateTo=2025-10-28T12%3A04%3A59.000Z",
-							"host": [
-								"{{puBffBaseUrl}}"
-							],
-							"path": [
-								"bff",
-								"organization",
-								":organizationId",
-								"debt-positions"
-							],
-							"query": [
-								{
-									"key": "creationDateFrom",
-									"value": "2025-01-25T12%3A04%3A59.000Z"
-								},
-								{
-									"key": "creationDateTo",
-									"value": "2025-10-28T12%3A04%3A59.000Z"
-								}
-							],
-							"variable": [
-								{
-									"key": "organizationId",
-									"value": "{{organizationId}}"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "03_getDebtPositionTypeDetail",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"let jsonResponse = pm.response.json();\r",
-									"\r",
-									"pm.test(\"[debt-position-type], expected httpStatus: 200\", () => {\r",
-									"    pm.response.to.have.status(200);\r",
-									"})\r",
-									"\r",
-									"pm.test(\"[debt-position-type] - get debtPositionTypeDetail\", () => {\r",
-									"    pm.expect(jsonResponse.debtPositionTypeId).not.null;\r",
-									"    pm.expect(jsonResponse.code).not.null;\r",
-									"    pm.expect(jsonResponse.description).not.null;\r",
-									"    pm.expect(jsonResponse.organizationTypeDescription).not.null;\r",
-									"    pm.expect(jsonResponse.macroAreaName).not.null;\r",
-									"    pm.expect(jsonResponse.serviceType).not.null;\r",
-									"    pm.expect(jsonResponse.collectionReason).not.null;\r",
-									"    pm.expect(jsonResponse.taxonomyCode).not.null;\r",
-									"})"
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						},
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									"let debtPositionTypeId = pm.collectionVariables.get(\"debtPositionTypeId\");\r",
-									""
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						}
-					],
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{accessToken}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{puBffBaseUrl}}/bff/organization/:organizationId/debt-position-types/:id",
-							"host": [
-								"{{puBffBaseUrl}}"
-							],
-							"path": [
-								"bff",
-								"organization",
-								":organizationId",
-								"debt-position-types",
-								":id"
-							],
-							"variable": [
-								{
-									"key": "organizationId",
-									"value": "3"
-								},
-								{
-									"key": "id",
-									"value": "3"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "03_getDebtPositionTypeOrgById",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"let jsonResponse = pm.response.json();\r",
-									"\r",
-									"pm.test(\"[DebtPositionTypeOrg getDebtPositionTypeOrgById], expected httpStatus: 200\", () => {\r",
-									"    pm.response.to.have.status(200);\r",
-									"})\r",
-									"\r",
-									"pm.test(\"[DebtPositionTypeOrg getDebtPositionTypeOrgById] - getDebtPositionTypeOrgById\", () => {\r",
-									"    pm.expect(jsonResponse).to.have.property(\"code\").and.to.not.be.null;\r",
-									"    pm.expect(jsonResponse).to.have.property(\"debtPositionTypeOrgId\").and.to.not.be.null;\r",
-									"    pm.expect(jsonResponse).to.have.property(\"debtPositionTypeId\").and.to.not.be.null;\r",
-									"    pm.expect(jsonResponse).to.have.property(\"description\").and.to.not.be.null;\r",
-									"    pm.expect(jsonResponse).to.have.property(\"iban\").and.to.not.be.null;\r",
-									"    pm.expect(jsonResponse).to.have.property(\"organizationId\").and.to.not.be.null;\r",
-									"});"
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						}
-					],
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{accessToken}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [
-							{
-								"key": "accept",
-								"value": "application/json"
-							}
-						],
-						"url": {
-							"raw": "{{puBffBaseUrl}}/bff/organization/:organizationId/debt-position-type-orgs/:debtPositionTypeOrgId",
-							"host": [
-								"{{puBffBaseUrl}}"
-							],
-							"path": [
-								"bff",
-								"organization",
-								":organizationId",
-								"debt-position-type-orgs",
-								":debtPositionTypeOrgId"
-							],
-							"variable": [
-								{
-									"key": "organizationId",
-									"value": "{{organizationId}}"
-								},
-								{
-									"key": "debtPositionTypeOrgId",
-									"value": "{{debtPositionTypeOrgId}}"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "03_getDebtPositionTypeOrgOperators",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"let jsonResponse = pm.response.json();\r",
-									"pm.test(\"[DebtPositionTypeOrg getDebtPositionTypeOrgOperators], expected httpStatus: 200\", () => {\r",
-									"    pm.response.to.have.status(200);\r",
-									"})\r",
-									"pm.test(\"[DebtPositionTypeOrg getDebtPositionTypeOrgOperators] - getDebtPositionTypeOrgOperators\", () => {\r",
-									"    pm.expect(jsonResponse).to.have.property(\"content\").and.to.be.an(\"array\");\r",
-									"    pm.expect(jsonResponse).to.have.property(\"size\").and.to.be.a(\"number\");\r",
-									"    pm.expect(jsonResponse).to.have.property(\"totalElements\").and.to.be.a(\"number\");\r",
-									"    pm.expect(jsonResponse).to.have.property(\"totalPages\").and.to.be.a(\"number\");\r",
-									"    pm.expect(jsonResponse).to.have.property(\"number\").and.to.be.a(\"number\");\r",
-									"});"
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						},
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									""
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						}
-					],
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{accessToken}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{puBffBaseUrl}}/bff/organization/:organizationId/debt-position-type-orgs/operators?debtPositionTypeOrgId={{debtPositionTypeOrgId}}",
-							"host": [
-								"{{puBffBaseUrl}}"
-							],
-							"path": [
-								"bff",
-								"organization",
-								":organizationId",
-								"debt-position-type-orgs",
-								"operators"
-							],
-							"query": [
-								{
-									"key": "debtPositionTypeOrgId",
-									"value": "{{debtPositionTypeOrgId}}"
-								}
-							],
-							"variable": [
-								{
-									"key": "organizationId",
-									"value": "{{organizationId}}"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "03_createDebtPositionType",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"let jsonResponse = pm.response.json();\r",
-									"\r",
-									"pm.test(\"[debt-position-type], expected httpStatus: 200\", () => {\r",
-									"    pm.response.to.have.status(201);\r",
-									"})\r",
-									"\r",
-									"pm.test(\"[debt-position-type] - createDebtPositionType\", () => {\r",
-									"    pm.expect(jsonResponse).to.have.property(\"debtPositionTypeId\").and.to.not.be.null;\r",
-									"    pm.expect(jsonResponse).to.have.property(\"brokerId\").and.to.not.be.null;\r",
-									"    pm.expect(jsonResponse).to.have.property(\"code\").and.to.not.be.null;\r",
-									"    pm.expect(jsonResponse).to.have.property(\"collectingReason\").and.to.not.be.null;\r",
-									"    pm.expect(jsonResponse).to.have.property(\"description\").and.to.not.be.null;\r",
-									"    pm.expect(jsonResponse).to.have.property(\"macroArea\").and.to.not.be.null;\r",
-									"    pm.expect(jsonResponse).to.have.property(\"orgType\").and.to.not.be.null;\r",
-									"    pm.expect(jsonResponse).to.have.property(\"serviceType\").and.to.not.be.null;\r",
-									"    pm.expect(jsonResponse).to.have.property(\"taxonomyCode\").and.to.not.be.null;\r",
-									"    pm.expect(jsonResponse).to.have.property(\"flagAnonymousFiscalCode\").and.to.not.be.null;\r",
-									"    pm.expect(jsonResponse).to.have.property(\"flagMandatoryDueDate\").and.to.not.be.null;\r",
-									"    pm.expect(jsonResponse).to.have.property(\"flagNotifyIo\").and.to.not.be.null;\r",
-									"    pm.expect(jsonResponse).to.have.property(\"ioTemplateMessage\").and.to.not.be.null;\r",
-									"})\r",
-									"\r",
-									"pm.collectionVariables.set(\"createdDebtPositionTypeId\", jsonResponse.debtPositionTypeId);"
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						},
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									"let debtPositionTypeId = pm.collectionVariables.get(\"debtPositionTypeId\");\r",
-									""
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						}
-					],
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{accessToken}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"code\": \"TEST\",\n    \"brokerId\": {{brokerId}},\n    \"description\": \"Test C Debt Position Type\",\n    \"orgType\": \"A\",\n    \"macroArea\": \"F\",\n    \"serviceType\": \"T\",\n    \"collectingReason\": \"R\",\n    \"taxonomyCode\": \"9/0201139AP/\",\n    \"flagAnonymousFiscalCode\": true,\n    \"flagMandatoryDueDate\": true,\n    \"flagNotifyIo\": true,\n    \"ioTemplateMessage\": \"Template145\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{puBffBaseUrl}}/bff/debt-position-types",
-							"host": [
-								"{{puBffBaseUrl}}"
-							],
-							"path": [
-								"bff",
-								"debt-position-types"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "03_patchDebtPositionType",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"let jsonResponse = pm.response.json();\r",
-									"\r",
-									"pm.test(\"[debt-position-type], expected httpStatus: 200\", () => {\r",
-									"    pm.response.to.have.status(200);\r",
-									"})\r",
-									"\r",
-									"pm.test(\"[debt-position-type] - createDebtPositionType\", () => {\r",
-									"    pm.expect(jsonResponse).to.have.property(\"debtPositionTypeId\").and.to.not.be.null;\r",
-									"    pm.expect(jsonResponse).to.have.property(\"brokerId\").and.to.not.be.null;\r",
-									"    pm.expect(jsonResponse).to.have.property(\"code\").and.to.not.be.null;\r",
-									"    pm.expect(jsonResponse).to.have.property(\"collectingReason\").and.to.not.be.null;\r",
-									"    pm.expect(jsonResponse).to.have.property(\"description\").and.to.not.be.null;\r",
-									"    pm.expect(jsonResponse).to.have.property(\"macroArea\").and.to.not.be.null;\r",
-									"    pm.expect(jsonResponse).to.have.property(\"orgType\").and.to.not.be.null;\r",
-									"    pm.expect(jsonResponse).to.have.property(\"serviceType\").and.to.not.be.null;\r",
-									"    pm.expect(jsonResponse).to.have.property(\"taxonomyCode\").and.to.not.be.null;\r",
-									"    pm.expect(jsonResponse).to.have.property(\"flagAnonymousFiscalCode\").and.to.not.be.null;\r",
-									"    pm.expect(jsonResponse).to.have.property(\"flagMandatoryDueDate\").and.to.not.be.null;\r",
-									"    pm.expect(jsonResponse).to.have.property(\"flagNotifyIo\").and.to.not.be.null;\r",
-									"    pm.expect(jsonResponse).to.have.property(\"ioTemplateMessage\").and.to.equal(pm.variables.get(\"debtPositionTypeIoTemplateMessage\"));\r",
-									"})\r",
-									""
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						},
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									"let debtPositionTypeId = pm.collectionVariables.get(\"debtPositionTypeId\");\r",
-									"pm.variables.set(\"debtPositionTypeIoTemplateMessage\",\"TEST-PATCH\")"
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						}
-					],
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{accessToken}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "PATCH",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"flagAnonymousFiscalCode\": true,\n    \"flagMandatoryDueDate\": true,\n    \"flagNotifyIo\": true,\n    \"ioTemplateMessage\": \"{{debtPositionTypeIoTemplateMessage}}\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{puBffBaseUrl}}/bff/debt-position-types/{{createdDebtPositionTypeId}}",
-							"host": [
-								"{{puBffBaseUrl}}"
-							],
-							"path": [
-								"bff",
-								"debt-position-types",
-								"{{createdDebtPositionTypeId}}"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "03_DeleteDebtPositionType",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									""
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						},
-						{
-							"listen": "prerequest",
-							"script": {
-								"packages": {},
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{accessToken}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "DELETE",
-						"header": [],
-						"url": {
-							"raw": "{{debtPositionBaseUrl}}/crud/debt-position-types/{{createdDebtPositionTypeId}}",
-							"host": [
-								"{{debtPositionBaseUrl}}"
-							],
-							"path": [
-								"crud",
-								"debt-position-types",
-								"{{createdDebtPositionTypeId}}"
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "04_Classification",
-			"item": [
-				{
-					"name": "04_getPaymentsReporting",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"let jsonResponse = pm.response.json();\r",
-									"pm.test(\"[receipt getPaymentsReporting], expected httpStatus: 200\", () => {\r",
-									"    pm.response.to.have.status(200);\r",
-									"})\r",
-									"pm.test(\"[PaymentsReporting getPaymentsReporting] - getPaymentsReporting\", () => {\r",
-									"    pm.expect(jsonResponse).to.have.property(\"content\").and.to.be.an(\"array\");\r",
-									"    pm.expect(jsonResponse).to.have.property(\"size\").and.to.be.a(\"number\");\r",
-									"    pm.expect(jsonResponse).to.have.property(\"totalElements\").and.to.be.a(\"number\");\r",
-									"    pm.expect(jsonResponse).to.have.property(\"totalPages\").and.to.be.a(\"number\");\r",
-									"    pm.expect(jsonResponse).to.have.property(\"number\").and.to.be.a(\"number\");\r",
-									"});\r",
-									"\r",
-									"pm.collectionVariables.set(\"iuf\", jsonResponse.content[0]?.iuf);\r",
-									""
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						},
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{accessToken}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [
-							{
-								"key": "accept",
-								"value": "application/json"
-							}
-						],
-						"url": {
-							"raw": "{{puBffBaseUrl}}/bff/organization/:organizationId/payments-reporting",
-							"host": [
-								"{{puBffBaseUrl}}"
-							],
-							"path": [
-								"bff",
-								"organization",
-								":organizationId",
-								"payments-reporting"
-							],
-							"variable": [
-								{
-									"key": "organizationId",
-									"value": "{{organizationId}}"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "04_getPaymentsReportingRows",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"let jsonResponse = pm.response.json();\r",
-									"pm.test(\"[receipt getPaymentsReportingRows], expected httpStatus: 200\", () => {\r",
-									"    pm.response.to.have.status(200);\r",
-									"})\r",
-									"pm.test(\"[PaymentsReporting getPaymentsReportingRows] - getPaymentsReportingRows\", () => {\r",
-									"    pm.expect(jsonResponse).to.have.property(\"content\").and.to.be.an(\"array\");\r",
-									"    pm.expect(jsonResponse).to.have.property(\"size\").and.to.be.a(\"number\");\r",
-									"    pm.expect(jsonResponse).to.have.property(\"totalElements\").and.to.be.a(\"number\");\r",
-									"    pm.expect(jsonResponse).to.have.property(\"totalPages\").and.to.be.a(\"number\");\r",
-									"    pm.expect(jsonResponse).to.have.property(\"number\").and.to.be.a(\"number\");\r",
-									"});\r",
-									"\r",
-									"pm.collectionVariables.set(\"paymentsReportingId\", jsonResponse.content[0]?.paymentsReportingId);"
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						},
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									""
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						}
-					],
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{accessToken}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [
-							{
-								"key": "accept",
-								"value": "application/json"
-							}
-						],
-						"url": {
-							"raw": "{{puBffBaseUrl}}/bff/organization/:organizationId/payments-reporting/:iuf/rows",
-							"host": [
-								"{{puBffBaseUrl}}"
-							],
-							"path": [
-								"bff",
-								"organization",
-								":organizationId",
-								"payments-reporting",
-								":iuf",
-								"rows"
-							],
-							"variable": [
-								{
-									"key": "organizationId",
-									"value": "{{organizationId}}"
-								},
-								{
-									"key": "iuf",
-									"value": "{{iuf}}"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "04_getPaymentsReportingDetail",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"let jsonResponse = pm.response.json();\r",
-									"pm.test(\"[receipt getPaymentsReportingDetail], expected httpStatus: 200\", () => {\r",
-									"    pm.response.to.have.status(200);\r",
-									"})\r",
-									"pm.test(\"[PaymentsReporting getPaymentsReportingDetail] - getPaymentsReportingDetail\", () => {\r",
-									"    pm.expect(jsonResponse).to.have.property(\"paymentsReportingId\").and.to.be.a(\"string\");\r",
-									"    pm.expect(jsonResponse).to.have.property(\"iuv\").and.to.be.a(\"string\");\r",
-									"    pm.expect(jsonResponse).to.have.property(\"iur\").and.to.be.a(\"string\");\r",
-									"    pm.expect(jsonResponse).to.have.property(\"amountPaidCents\").and.to.be.a(\"number\");\r",
-									"});"
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						},
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									""
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						}
-					],
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{accessToken}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [
-							{
-								"key": "accept",
-								"value": "application/json"
-							}
-						],
-						"url": {
-							"raw": "{{puBffBaseUrl}}/bff/organization/:organizationId/payments-reporting/:iuf/rows/:paymentsReportingId",
-							"host": [
-								"{{puBffBaseUrl}}"
-							],
-							"path": [
-								"bff",
-								"organization",
-								":organizationId",
-								"payments-reporting",
-								":iuf",
-								"rows",
-								":paymentsReportingId"
-							],
-							"variable": [
-								{
-									"key": "organizationId",
-									"value": "{{organizationId}}"
-								},
-								{
-									"key": "iuf",
-									"value": "{{iuf}}"
-								},
-								{
-									"key": "paymentsReportingId",
-									"value": "{{paymentsReportingId}}"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "04_getTreasuries",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"let jsonResponse = pm.response.json();\r",
-									"pm.test(\"[getTreasuries], expected httpStatus: 200\", () => {\r",
-									"    pm.response.to.have.status(200);\r",
-									"})\r",
-									"pm.test(\"[Treasury getTreasuries] - getTreasuries\", () => {\r",
-									"    pm.expect(jsonResponse).to.have.property(\"content\").and.to.be.an(\"array\");\r",
-									"    pm.expect(jsonResponse).to.have.property(\"size\").and.to.be.a(\"number\");\r",
-									"    pm.expect(jsonResponse).to.have.property(\"totalElements\").and.to.be.a(\"number\");\r",
-									"    pm.expect(jsonResponse).to.have.property(\"totalPages\").and.to.be.a(\"number\");\r",
-									"    pm.expect(jsonResponse).to.have.property(\"number\").and.to.be.a(\"number\");\r",
-									"});"
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						}
-					],
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{accessToken}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [
-							{
-								"key": "accept",
-								"value": "application/json"
-							}
-						],
-						"url": {
-							"raw": "{{puBffBaseUrl}}/bff/organization/:organizationId/treasuries",
-							"host": [
-								"{{puBffBaseUrl}}"
-							],
-							"path": [
-								"bff",
-								"organization",
-								":organizationId",
-								"treasuries"
-							],
-							"variable": [
-								{
-									"key": "organizationId",
-									"value": "{{organizationId}}"
-								}
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		}
-	],
-	"event": [
-		{
-			"listen": "prerequest",
-			"script": {
-				"type": "text/javascript",
-				"packages": {},
-				"exec": [
-					""
-				]
-			}
-		},
-		{
-			"listen": "test",
-			"script": {
-				"type": "text/javascript",
-				"packages": {},
-				"exec": [
-					"// START COMMON UTILITIES\r",
-					"\r",
-					"// global variable to use in order to skip tests\r",
-					"skipTests=false;\r",
-					"\r",
-					"// method to be invoked as first thing inside tests in order to instrument the \"pm\" variable:\r",
-					"// eg: pm = pm=instrumentPmMethod(pm);\r",
-					"instrumentPmMethod = (pm) => {\r",
-					"    const pmProxy = {\r",
-					"        get: function(pm, key) {\r",
-					"            if (key == 'test') {\r",
-					"                return (skipTests ? pm.test.skip : pm.test);\r",
-					"            }\r",
-					"            return pm[key];\r",
-					"        }\r",
-					"    };\r",
-					"\r",
-					"    return new Proxy(pm, pmProxy);\r",
-					"}\r",
-					"\r",
-					"// function to be used in order to retry the current request, configuring a maximum number of attempts and a fixed delay between each invoke\r",
-					"retryRequest = (pm, setTimeout, waitingMillis = 1000, maxAttempts = 30) => {\r",
-					"    if(!pm || !setTimeout){\r",
-					"        throw new Error(\"Invalid invoke to retryRequest function! Some required parameters are undefined: pm=\" + pm + \", setTimeout=\" + setTimeout)\r",
-					"    }\r",
-					"\r",
-					"    const retryVariableName = \"retry_\" + pm.info.requestId\r",
-					"    const attempt = (pm.variables.get(retryVariableName) ?? 0) + 1;\r",
-					"    if(attempt < maxAttempts) {\r",
-					"        console.info(pm.info.requestName + \" not ready, retrying [attempt \" + attempt + \"/\" + maxAttempts + \"] after \" + waitingMillis + \" ms\");\r",
-					"        pm.variables.set(retryVariableName, attempt)\r",
-					"        pm.execution.setNextRequest(pm.info.requestId);\r",
-					"        return setTimeout(()=>{}, waitingMillis);\r",
-					"    } else {\r",
-					"        pm.test(pm.info.requestName + \" not ready\", () => pm.expect.fail(attempt + \" attempts\"));\r",
-					"    }\r",
-					"}\r",
-					"\r",
-					"// function to be used in order to retry the current request until it returns a known response HTTP status code\r",
-					"retryWhenStatusCode = (pm, setTimeout, statusCode, waitingMillis, maxAttempts) => {\r",
-					"    if(pm.response.code == statusCode){\r",
-					"        console.log(\"Obtained \" + statusCode + \"! Performing retry...\")\r",
-					"        skipTests=true;\r",
-					"        return retryRequest(pm, setTimeout, waitingMillis, maxAttempts)\r",
-					"    }\r",
-					"}\r",
-					"\r",
-					"// XML utilities\r",
-					"xml2js = require('xml2js');\r",
-					"\r",
-					"parseXmlResponse = (response) => {\r",
-					"    let body;\r",
-					"    xml2js.parseString(response.text(), {\r",
-					"            ignoreAttrs: true, \r",
-					"            explicitArray: false,\r",
-					"        }, function (err, result) {\r",
-					"            if(err){\r",
-					"                console.error(err)\r",
-					"            }\r",
-					"        body = result;\r",
-					"    });\r",
-					"    return body;\r",
-					"};"
-				]
-			}
-		}
-	],
-	"variable": [
-		{
-			"key": "accessToken",
-			"value": ""
-		},
-		{
-			"key": "debtPositionTypeId",
-			"value": ""
-		},
-		{
-			"key": "organizationId",
-			"value": ""
-		},
-		{
-			"key": "receiptId",
-			"value": ""
-		},
-		{
-			"key": "debtPositionTypeOrgId",
-			"value": "",
-			"type": "string"
-		},
-		{
-			"key": "createdDebtPositionTypeId",
-			"value": ""
-		},
-		{
-			"key": "iuf",
-			"value": ""
-		},
-		{
-			"key": "paymentsReportingId",
-			"value": ""
-		}
-	]
+  "info": {
+    "_postman_id": "250947dd-90f4-4eed-822c-c74b36d85ab2",
+    "name": "PU-BFF",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "17966353"
+  },
+  "item": [
+    {
+      "name": "00_login",
+      "item": [
+        {
+          "name": "00_authtoken jwt",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm=instrumentPmMethod(pm);\r",
+                  "\r",
+                  "pm.test(\"MyPay - 00_authtoken jwt - Responses with 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"MyPay - 00_authtoken jwt - Verify response body\", function () {\r",
+                  "    let jsonResponse = pm.response.json();\r",
+                  "\r",
+                  "    pm.expect(jsonResponse).have.property(\"access_token\")\r",
+                  "    pm.expect(jsonResponse).have.property(\"token_type\")\r",
+                  "    pm.expect(jsonResponse).have.property(\"expires_in\")\r",
+                  "});\r",
+                  "\r",
+                  "let jsonResponse = pm.response.json();\r",
+                  "pm.collectionVariables.set(\"accessToken\", jsonResponse.access_token);\r",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{p4paAuthBaseUrl}}/oauth/token?client_id=piattaforma-unitaria&grant_type=urn:ietf:params:oauth:grant-type:token-exchange&subject_token={{tokenExchange_subjectToken}}&subject_issuer={{tokenExchange_issuer}}&scope=openid&subject_token_type=urn:ietf:params:oauth:token-type:jwt",
+              "host": [
+                "{{p4paAuthBaseUrl}}"
+              ],
+              "path": [
+                "oauth",
+                "token"
+              ],
+              "query": [
+                {
+                  "key": "client_id",
+                  "value": "piattaforma-unitaria"
+                },
+                {
+                  "key": "grant_type",
+                  "value": "urn:ietf:params:oauth:grant-type:token-exchange"
+                },
+                {
+                  "key": "subject_token",
+                  "value": "{{tokenExchange_subjectToken}}"
+                },
+                {
+                  "key": "subject_issuer",
+                  "value": "{{tokenExchange_issuer}}"
+                },
+                {
+                  "key": "scope",
+                  "value": "openid"
+                },
+                {
+                  "key": "subject_token_type",
+                  "value": "urn:ietf:params:oauth:token-type:jwt"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "00_postToken",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm=instrumentPmMethod(pm);\r",
+                  "\r",
+                  "pm.test(\"00_postToken - Responses with 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"00_postToken - Verify response body\", function () {\r",
+                  "    let jsonResponse = pm.response.json();\r",
+                  "\r",
+                  "    pm.expect(jsonResponse).have.property(\"access_token\")\r",
+                  "    pm.expect(jsonResponse).have.property(\"token_type\")\r",
+                  "    pm.expect(jsonResponse).have.property(\"expires_in\")\r",
+                  "\r",
+                  "});\r",
+                  "\r",
+                  "let jsonResponse = pm.response.json();\r",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{puBffBaseUrl}}/bff/token?idToken={{tokenExchange_subjectToken}}",
+              "host": [
+                "{{puBffBaseUrl}}"
+              ],
+              "path": [
+                "bff",
+                "token"
+              ],
+              "query": [
+                {
+                  "key": "idToken",
+                  "value": "{{tokenExchange_subjectToken}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "01_Organization",
+      "item": [
+        {
+          "name": "01_getBrokerConfig",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let jsonResponse = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"[brokers - config], expected httpStatus: 200\", () => {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "})\r",
+                  "\r",
+                  "pm.test(\"[brokers - config] - get list of config\", () => {\r",
+                  "    pm.expect(jsonResponse).to.have.property(\"headerAssistanceUrl\").and.to.not.be.null;\r",
+                  "    pm.expect(jsonResponse).to.have.property(\"logoFooterImg\").and.to.not.be.null;\r",
+                  "    pm.expect(jsonResponse).to.have.property(\"footerDescText\").and.to.not.be.null;\r",
+                  "    pm.expect(jsonResponse).to.have.property(\"footerPrivacyInfoUrl\").and.to.not.be.null;\r",
+                  "    pm.expect(jsonResponse).to.have.property(\"footerGDPRUrl\").and.to.not.be.null;\r",
+                  "    pm.expect(jsonResponse).to.have.property(\"footerTermsCondUrl\").and.to.not.be.null;\r",
+                  "    pm.expect(jsonResponse).to.have.property(\"footerAccessibilityUrl\").and.to.not.be.null;\r",
+                  "    pm.expect(jsonResponse).to.have.property(\"brokerId\").and.to.not.be.null;\r",
+                  "    pm.expect(jsonResponse).to.have.property(\"brokerFiscalCode\").and.to.not.be.null;\r",
+                  "    pm.expect(jsonResponse).to.have.property(\"canManageUsers\").and.to.not.be.null;\r",
+                  "})\r",
+                  "\r",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{puBffBaseUrl}}/bff/brokers/config",
+              "host": [
+                "{{puBffBaseUrl}}"
+              ],
+              "path": [
+                "bff",
+                "brokers",
+                "config"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "01_getOrganizations",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let jsonResponse = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"[organizations], expected httpStatus: 200\", () => {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "})\r",
+                  "\r",
+                  "pm.test(\"[organizations] - get list of organizations\", () => {\r",
+                  "    jsonResponse.forEach((item)=> {\r",
+                  "        pm.expect(item).to.have.property(\"organizationId\").and.to.not.be.null;\r",
+                  "        pm.expect(item).to.have.property(\"ipaCode\").and.to.not.be.null;\r",
+                  "        pm.expect(item).to.have.property(\"orgName\").and.to.not.be.null;\r",
+                  "        pm.expect(item).to.have.property(\"operatorRole\").and.to.not.be.null;\r",
+                  "        pm.expect(item).to.have.property(\"orgFiscalCode\").and.to.not.be.null;\r",
+                  "    });\r",
+                  "})\r",
+                  "\r",
+                  "pm.collectionVariables.set(\"organizationId\",  jsonResponse[0]?.organizationId);\r",
+                  "pm.collectionVariables.set(\"organizationIpaCode\",  jsonResponse[0]?.ipaCode);"
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{puBffBaseUrl}}/bff/organizations",
+              "host": [
+                "{{puBffBaseUrl}}"
+              ],
+              "path": [
+                "bff",
+                "organizations"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "01_getOrganizationsWithDebtPositionTypeOrgCount",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let jsonResponse = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"[organizations], expected httpStatus: 200\", () => {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "})\r",
+                  "\r",
+                  "pm.test(\"[organizations] - get list of organizations\", () => {\r",
+                  "    jsonResponse.content.forEach((item)=> {\r",
+                  "        pm.expect(item).to.have.property(\"organizationId\").and.to.not.be.null;\r",
+                  "        pm.expect(item).to.have.property(\"ipaCode\").and.to.not.be.null;\r",
+                  "        pm.expect(item).to.have.property(\"organizationName\").and.to.not.be.null;\r",
+                  "        pm.expect(item).to.have.property(\"debtPositionTypeOrgCount\").and.to.not.be.null;\r",
+                  "    });\r",
+                  "})"
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{puBffBaseUrl}}/bff/organization/:organizationId",
+              "host": [
+                "{{puBffBaseUrl}}"
+              ],
+              "path": [
+                "bff",
+                "organization",
+                ":organizationId"
+              ],
+              "variable": [
+                {
+                  "key": "organizationId",
+                  "value": "{{organizationId}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "auth": {
+        "type": "bearer",
+        "bearer": [
+          {
+            "key": "token",
+            "value": "{{accessToken}}",
+            "type": "string"
+          }
+        ]
+      },
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "packages": {},
+            "exec": [
+              ""
+            ]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "packages": {},
+            "exec": [
+              ""
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "02_Taxonomy",
+      "item": [
+        {
+          "name": "02_getOrganizationTypes",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let jsonResponse = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"[taxonomy getOrganizationTypes], expected httpStatus: 200\", () => {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "})\r",
+                  "\r",
+                  "pm.test(\"[taxonomy getOrganizationTypes] - getOrganizationTypes\", () => {\r",
+                  "    pm.expect(jsonResponse).to.be.an('array').that.is.not.empty;\r",
+                  "\r",
+                  "    pm.expect(jsonResponse[0].organizationType).not.null;\r",
+                  "    pm.expect(jsonResponse[0].organizationTypeDescription).not.null;\r",
+                  "})\r",
+                  "\r",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{puBffBaseUrl}}/bff/taxonomy/getOrganizationTypes",
+              "host": [
+                "{{puBffBaseUrl}}"
+              ],
+              "path": [
+                "bff",
+                "taxonomy",
+                "getOrganizationTypes"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "02_getMacroArea",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let jsonResponse = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"[taxonomy getMacroArea], expected httpStatus: 200\", () => {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "})\r",
+                  "\r",
+                  "pm.test(\"[taxonomy getMacroArea] - getMacroArea\", () => {\r",
+                  "    pm.expect(jsonResponse).to.be.an('array').that.is.not.empty;\r",
+                  "\r",
+                  "    pm.expect(jsonResponse[0].organizationType).not.null;\r",
+                  "    pm.expect(jsonResponse[0].organizationTypeDescription).not.null;\r",
+                  "    pm.expect(jsonResponse[0].macroAreaCode).not.null;\r",
+                  "    pm.expect(jsonResponse[0].macroAreaName).not.null;\r",
+                  "    pm.expect(jsonResponse[0].macroAreaDescription).not.null;\r",
+                  "})\r",
+                  "\r",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{puBffBaseUrl}}/bff/taxonomy/getMacroArea?organizationType=01",
+              "host": [
+                "{{puBffBaseUrl}}"
+              ],
+              "path": [
+                "bff",
+                "taxonomy",
+                "getMacroArea"
+              ],
+              "query": [
+                {
+                  "key": "organizationType",
+                  "value": "01"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "02_getServiceType",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let jsonResponse = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"[taxonomy getServiceType], expected httpStatus: 200\", () => {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "})\r",
+                  "\r",
+                  "pm.test(\"[taxonomy getServiceType] - getServiceType\", () => {\r",
+                  "    pm.expect(jsonResponse).to.be.an('array').that.is.not.empty;\r",
+                  "\r",
+                  "    pm.expect(jsonResponse[0].organizationType).not.null;\r",
+                  "    pm.expect(jsonResponse[0].organizationTypeDescription).not.null;\r",
+                  "    pm.expect(jsonResponse[0].macroAreaCode).not.null;\r",
+                  "    pm.expect(jsonResponse[0].macroAreaName).not.null;\r",
+                  "    pm.expect(jsonResponse[0].macroAreaDescription).not.null;\r",
+                  "    pm.expect(jsonResponse[0].serviceTypeCode).not.null;\r",
+                  "    pm.expect(jsonResponse[0].serviceType).not.null;\r",
+                  "    pm.expect(jsonResponse[0].serviceTypeDescription).not.null;\r",
+                  "})\r",
+                  "\r",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{puBffBaseUrl}}/bff/taxonomy/getServiceType?organizationType=01&macroAreaCode=01",
+              "host": [
+                "{{puBffBaseUrl}}"
+              ],
+              "path": [
+                "bff",
+                "taxonomy",
+                "getServiceType"
+              ],
+              "query": [
+                {
+                  "key": "organizationType",
+                  "value": "01"
+                },
+                {
+                  "key": "macroAreaCode",
+                  "value": "01"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "02_getCollectionReason",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let jsonResponse = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"[taxonomy getCollectionReason], expected httpStatus: 200\", () => {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "})\r",
+                  "\r",
+                  "pm.test(\"[taxonomy getCollectionReason] - getTaxonomyCode\", () => {\r",
+                  "    pm.expect(jsonResponse).to.be.an('array').that.is.not.empty;\r",
+                  "\r",
+                  "    pm.expect(jsonResponse[0].organizationType).not.null;\r",
+                  "    pm.expect(jsonResponse[0].organizationTypeDescription).not.null;\r",
+                  "    pm.expect(jsonResponse[0].macroAreaCode).not.null;\r",
+                  "    pm.expect(jsonResponse[0].macroAreaName).not.null;\r",
+                  "    pm.expect(jsonResponse[0].macroAreaDescription).not.null;\r",
+                  "    pm.expect(jsonResponse[0].serviceTypeCode).not.null;\r",
+                  "    pm.expect(jsonResponse[0].serviceType).not.null;\r",
+                  "    pm.expect(jsonResponse[0].serviceTypeDescription).not.null;\r",
+                  "    pm.expect(jsonResponse[0].collectionReason).not.null;\r",
+                  "})\r",
+                  "\r",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{puBffBaseUrl}}/bff/taxonomy/getCollectionReason?organizationType=01&macroAreaCode=01&serviceTypeCode=100",
+              "host": [
+                "{{puBffBaseUrl}}"
+              ],
+              "path": [
+                "bff",
+                "taxonomy",
+                "getCollectionReason"
+              ],
+              "query": [
+                {
+                  "key": "organizationType",
+                  "value": "01"
+                },
+                {
+                  "key": "macroAreaCode",
+                  "value": "01"
+                },
+                {
+                  "key": "serviceTypeCode",
+                  "value": "100"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "02_getTaxonomyCode",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let jsonResponse = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"[taxonomy getTaxonomyCode], expected httpStatus: 200\", () => {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "})\r",
+                  "\r",
+                  "pm.test(\"[taxonomy getTaxonomyCode] - getTaxonomyCode\", () => {\r",
+                  "    pm.expect(jsonResponse).to.be.an('array').that.is.not.empty;\r",
+                  "\r",
+                  "    pm.expect(jsonResponse[0].organizationType).not.null;\r",
+                  "    pm.expect(jsonResponse[0].organizationTypeDescription).not.null;\r",
+                  "    pm.expect(jsonResponse[0].macroAreaCode).not.null;\r",
+                  "    pm.expect(jsonResponse[0].macroAreaName).not.null;\r",
+                  "    pm.expect(jsonResponse[0].macroAreaDescription).not.null;\r",
+                  "    pm.expect(jsonResponse[0].serviceTypeCode).not.null;\r",
+                  "    pm.expect(jsonResponse[0].serviceType).not.null;\r",
+                  "    pm.expect(jsonResponse[0].serviceTypeDescription).not.null;\r",
+                  "    pm.expect(jsonResponse[0].collectionReason).not.null;\r",
+                  "    pm.expect(jsonResponse[0].taxonomyCode).not.null;\r",
+                  "})\r",
+                  "\r",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{puBffBaseUrl}}/bff/taxonomy/getTaxonomyCode?organizationType=01&macroAreaCode=01&serviceTypeCode=100&collectionReason=IM",
+              "host": [
+                "{{puBffBaseUrl}}"
+              ],
+              "path": [
+                "bff",
+                "taxonomy",
+                "getTaxonomyCode"
+              ],
+              "query": [
+                {
+                  "key": "organizationType",
+                  "value": "01"
+                },
+                {
+                  "key": "macroAreaCode",
+                  "value": "01"
+                },
+                {
+                  "key": "serviceTypeCode",
+                  "value": "100"
+                },
+                {
+                  "key": "collectionReason",
+                  "value": "IM"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "auth": {
+        "type": "bearer",
+        "bearer": [
+          {
+            "key": "token",
+            "value": "{{accessToken}}",
+            "type": "string"
+          }
+        ]
+      },
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "packages": {},
+            "exec": [
+              ""
+            ]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "packages": {},
+            "exec": [
+              ""
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "99_Monitoring",
+      "item": [
+        {
+          "name": "99_coreHealthIndicator",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let jsonResponse = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"expected httpStatus: 200\", () => {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "})\r",
+                  "\r",
+                  "pm.response.json().forEach((item) => {\r",
+                  "    pm.expect(item.serviceName).not.null;\r",
+                  "    pm.expect(item.statusMessage).to.eql(\"{\\\"status\\\":\\\"UP\\\"}\");\r",
+                  "})"
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{puBffBaseUrl}}/bff/core-health",
+              "host": [
+                "{{puBffBaseUrl}}"
+              ],
+              "path": [
+                "bff",
+                "core-health"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "03_Debt_Positions",
+      "item": [
+        {
+          "name": "03_getAllDebtPositionType",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Response status is 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "let response = pm.response.json();\r",
+                  "const debtPositionType = response._embedded.debtPositionTypes.find(item => item.brokerId >0);\r",
+                  "let debtPositionTypeId = debtPositionType?.debtPositionTypeId;\r",
+                  "\r",
+                  " pm.collectionVariables.set(\"debtPositionTypeId\", debtPositionTypeId);\r",
+                  "\r",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{debtPositionBaseUrl}}/crud/debt-position-types",
+              "host": [
+                "{{debtPositionBaseUrl}}"
+              ],
+              "path": [
+                "crud",
+                "debt-position-types"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "03_getDebtPositionType",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let jsonResponse = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"[debt-position-type], expected httpStatus: 200\", () => {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "})\r",
+                  "\r",
+                  "pm.test(\"[debt-position-type] - get debtPositionType\", () => {\r",
+                  "    pm.expect(jsonResponse.debtPositionTypeId).not.null;\r",
+                  "    pm.expect(jsonResponse.brokerId).not.null;\r",
+                  "    pm.expect(jsonResponse.code).not.null;\r",
+                  "    pm.expect(jsonResponse.description).not.null;\r",
+                  "    pm.expect(jsonResponse.orgType).not.null;\r",
+                  "    pm.expect(jsonResponse.macroArea).not.null;\r",
+                  "    pm.expect(jsonResponse.serviceType).not.null;\r",
+                  "    pm.expect(jsonResponse.collectingReason).not.null;\r",
+                  "    pm.expect(jsonResponse.taxonomyCode).not.null;\r",
+                  "    pm.expect(jsonResponse.flagAnonymousFiscalCode).not.null;\r",
+                  "    pm.expect(jsonResponse.flagMandatoryDueDate).not.null;\r",
+                  "    pm.expect(jsonResponse.flagNotifyIo).not.null;\r",
+                  "})"
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "let debtPositionTypeId = pm.collectionVariables.get(\"debtPositionTypeId\");\r",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{puBffBaseUrl}}/bff/debt-position-types/:id",
+              "host": [
+                "{{puBffBaseUrl}}"
+              ],
+              "path": [
+                "bff",
+                "debt-position-types",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{debtPositionTypeId}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "03_getReceipts",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Response status is 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "let response = pm.response.json();\r",
+                  "let receiptId = response.content[0]?.receiptId;\r",
+                  "\r",
+                  " pm.collectionVariables.set(\"receiptId\", receiptId);\r",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{bearerToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{puBffBaseUrl}}/bff/organization/:organizationId/receipts?receiptOrigin=RECEIPT_FILE",
+              "host": [
+                "{{puBffBaseUrl}}"
+              ],
+              "path": [
+                "bff",
+                "organization",
+                ":organizationId",
+                "receipts"
+              ],
+              "query": [
+                {
+                  "key": "receiptOrigin",
+                  "value": "RECEIPT_FILE"
+                }
+              ],
+              "variable": [
+                {
+                  "key": "organizationId",
+                  "value": "{{organizationId}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "03_getReceiptDetail",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let jsonResponse = pm.response.json();",
+                  "pm.test(\"[receipt getReceiptDetail], expected httpStatus: 200\", () => {",
+                  "    pm.response.to.have.status(200);",
+                  "})",
+                  "pm.test(\"[receipt getReceiptDetail] - getReceiptDetail\", () => {",
+                  "    pm.expect(jsonResponse).to.have.property(\"receiptId\").and.to.not.be.null;",
+                  "    pm.expect(jsonResponse).to.have.property(\"paymentAmountCents\").and.to.not.be.null;",
+                  "    pm.expect(jsonResponse).to.have.property(\"remittanceInformation\").and.to.not.be.null;",
+                  "    pm.expect(jsonResponse).to.have.property(\"debtPositionTypeOrgDescription\").and.to.not.be.null;",
+                  "    pm.expect(jsonResponse).to.have.property(\"debtor\").and.to.not.be.null;",
+                  "    pm.expect(jsonResponse.debtor).to.have.property(\"fullName\").and.to.not.be.null;",
+                  "    pm.expect(jsonResponse.debtor).to.have.property(\"fiscalCode\").and.to.not.be.null;",
+                  "    pm.expect(jsonResponse).to.have.property(\"pspCompanyName\").and.to.not.be.null;",
+                  "    pm.expect(jsonResponse).to.have.property(\"iud\").and.to.not.be.null;",
+                  "});",
+                  "",
+                  "",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{puBffBaseUrl}}/bff/organization/:organizationId/receipts/:receiptId",
+              "host": [
+                "{{puBffBaseUrl}}"
+              ],
+              "path": [
+                "bff",
+                "organization",
+                ":organizationId",
+                "receipts",
+                ":receiptId"
+              ],
+              "variable": [
+                {
+                  "key": "organizationId",
+                  "value": "{{organizationId}}"
+                },
+                {
+                  "key": "receiptId",
+                  "value": "{{receiptId}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "03_getDebtPositions",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let jsonResponse = pm.response.json();",
+                  "pm.test(\"[receipt getDebtPositions], expected httpStatus: 200\", () => {",
+                  "    pm.response.to.have.status(200);",
+                  "})",
+                  "pm.test(\"[DebtPosition getDebtPositions] - getDebtPositions\", () => {",
+                  "    pm.expect(jsonResponse).to.have.property(\"content\").and.to.be.an(\"array\");",
+                  "    pm.expect(jsonResponse).to.have.property(\"size\").and.to.be.a(\"number\");",
+                  "    pm.expect(jsonResponse).to.have.property(\"totalElements\").and.to.be.a(\"number\");",
+                  "    pm.expect(jsonResponse).to.have.property(\"totalPages\").and.to.be.a(\"number\");",
+                  "    pm.expect(jsonResponse).to.have.property(\"number\").and.to.be.a(\"number\");",
+                  "});",
+                  "",
+                  "pm.collectionVariables.set(\"debtPositionTypeOrgId\", jsonResponse.content[0]?.debtPositionTypeOrgId);"
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{puBffBaseUrl}}/bff/organization/:organizationId/debt-positions?creationDateFrom=2025-01-25T12%3A04%3A59.000Z&creationDateTo=2025-10-28T12%3A04%3A59.000Z",
+              "host": [
+                "{{puBffBaseUrl}}"
+              ],
+              "path": [
+                "bff",
+                "organization",
+                ":organizationId",
+                "debt-positions"
+              ],
+              "query": [
+                {
+                  "key": "creationDateFrom",
+                  "value": "2025-01-25T12%3A04%3A59.000Z"
+                },
+                {
+                  "key": "creationDateTo",
+                  "value": "2025-10-28T12%3A04%3A59.000Z"
+                }
+              ],
+              "variable": [
+                {
+                  "key": "organizationId",
+                  "value": "{{organizationId}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "03_getDebtPositionTypeDetail",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let jsonResponse = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"[debt-position-type], expected httpStatus: 200\", () => {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "})\r",
+                  "\r",
+                  "pm.test(\"[debt-position-type] - get debtPositionTypeDetail\", () => {\r",
+                  "    pm.expect(jsonResponse.debtPositionTypeId).not.null;\r",
+                  "    pm.expect(jsonResponse.code).not.null;\r",
+                  "    pm.expect(jsonResponse.description).not.null;\r",
+                  "    pm.expect(jsonResponse.organizationTypeDescription).not.null;\r",
+                  "    pm.expect(jsonResponse.macroAreaName).not.null;\r",
+                  "    pm.expect(jsonResponse.serviceType).not.null;\r",
+                  "    pm.expect(jsonResponse.collectionReason).not.null;\r",
+                  "    pm.expect(jsonResponse.taxonomyCode).not.null;\r",
+                  "})"
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "let debtPositionTypeId = pm.collectionVariables.get(\"debtPositionTypeId\");\r",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{puBffBaseUrl}}/bff/organization/:organizationId/debt-position-types/:id",
+              "host": [
+                "{{puBffBaseUrl}}"
+              ],
+              "path": [
+                "bff",
+                "organization",
+                ":organizationId",
+                "debt-position-types",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "organizationId",
+                  "value": "{{organizationId}}"
+                },
+                {
+                  "key": "id",
+                  "value": "{{debtPositionTypeId}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "03_getDebtPositionTypeOrgById",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let jsonResponse = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"[DebtPositionTypeOrg getDebtPositionTypeOrgById], expected httpStatus: 200\", () => {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "})\r",
+                  "\r",
+                  "pm.test(\"[DebtPositionTypeOrg getDebtPositionTypeOrgById] - getDebtPositionTypeOrgById\", () => {\r",
+                  "    pm.expect(jsonResponse).to.have.property(\"code\").and.to.not.be.null;\r",
+                  "    pm.expect(jsonResponse).to.have.property(\"debtPositionTypeOrgId\").and.to.not.be.null;\r",
+                  "    pm.expect(jsonResponse).to.have.property(\"debtPositionTypeId\").and.to.not.be.null;\r",
+                  "    pm.expect(jsonResponse).to.have.property(\"description\").and.to.not.be.null;\r",
+                  "    pm.expect(jsonResponse).to.have.property(\"iban\").and.to.not.be.null;\r",
+                  "    pm.expect(jsonResponse).to.have.property(\"organizationId\").and.to.not.be.null;\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{puBffBaseUrl}}/bff/organization/:organizationId/debt-position-type-orgs/:debtPositionTypeOrgId",
+              "host": [
+                "{{puBffBaseUrl}}"
+              ],
+              "path": [
+                "bff",
+                "organization",
+                ":organizationId",
+                "debt-position-type-orgs",
+                ":debtPositionTypeOrgId"
+              ],
+              "variable": [
+                {
+                  "key": "organizationId",
+                  "value": "{{organizationId}}"
+                },
+                {
+                  "key": "debtPositionTypeOrgId",
+                  "value": "{{debtPositionTypeOrgId}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "03_getDebtPositionTypeOrgOperators",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let jsonResponse = pm.response.json();\r",
+                  "pm.test(\"[DebtPositionTypeOrg getDebtPositionTypeOrgOperators], expected httpStatus: 200\", () => {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "})\r",
+                  "pm.test(\"[DebtPositionTypeOrg getDebtPositionTypeOrgOperators] - getDebtPositionTypeOrgOperators\", () => {\r",
+                  "    pm.expect(jsonResponse).to.have.property(\"content\").and.to.be.an(\"array\");\r",
+                  "    pm.expect(jsonResponse).to.have.property(\"size\").and.to.be.a(\"number\");\r",
+                  "    pm.expect(jsonResponse).to.have.property(\"totalElements\").and.to.be.a(\"number\");\r",
+                  "    pm.expect(jsonResponse).to.have.property(\"totalPages\").and.to.be.a(\"number\");\r",
+                  "    pm.expect(jsonResponse).to.have.property(\"number\").and.to.be.a(\"number\");\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{puBffBaseUrl}}/bff/organization/:organizationId/debt-position-type-orgs/operators?debtPositionTypeOrgId={{debtPositionTypeOrgId}}",
+              "host": [
+                "{{puBffBaseUrl}}"
+              ],
+              "path": [
+                "bff",
+                "organization",
+                ":organizationId",
+                "debt-position-type-orgs",
+                "operators"
+              ],
+              "query": [
+                {
+                  "key": "debtPositionTypeOrgId",
+                  "value": "{{debtPositionTypeOrgId}}"
+                }
+              ],
+              "variable": [
+                {
+                  "key": "organizationId",
+                  "value": "{{organizationId}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "03_createDebtPositionType",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let jsonResponse = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"[debt-position-type], expected httpStatus: 200\", () => {\r",
+                  "    pm.response.to.have.status(201);\r",
+                  "})\r",
+                  "\r",
+                  "pm.test(\"[debt-position-type] - createDebtPositionType\", () => {\r",
+                  "    pm.expect(jsonResponse).to.have.property(\"debtPositionTypeId\").and.to.not.be.null;\r",
+                  "    pm.expect(jsonResponse).to.have.property(\"brokerId\").and.to.not.be.null;\r",
+                  "    pm.expect(jsonResponse).to.have.property(\"code\").and.to.not.be.null;\r",
+                  "    pm.expect(jsonResponse).to.have.property(\"collectingReason\").and.to.not.be.null;\r",
+                  "    pm.expect(jsonResponse).to.have.property(\"description\").and.to.not.be.null;\r",
+                  "    pm.expect(jsonResponse).to.have.property(\"macroArea\").and.to.not.be.null;\r",
+                  "    pm.expect(jsonResponse).to.have.property(\"orgType\").and.to.not.be.null;\r",
+                  "    pm.expect(jsonResponse).to.have.property(\"serviceType\").and.to.not.be.null;\r",
+                  "    pm.expect(jsonResponse).to.have.property(\"taxonomyCode\").and.to.not.be.null;\r",
+                  "    pm.expect(jsonResponse).to.have.property(\"flagAnonymousFiscalCode\").and.to.not.be.null;\r",
+                  "    pm.expect(jsonResponse).to.have.property(\"flagMandatoryDueDate\").and.to.not.be.null;\r",
+                  "    pm.expect(jsonResponse).to.have.property(\"flagNotifyIo\").and.to.not.be.null;\r",
+                  "    pm.expect(jsonResponse).to.have.property(\"ioTemplateMessage\").and.to.not.be.null;\r",
+                  "})\r",
+                  "\r",
+                  "pm.collectionVariables.set(\"createdDebtPositionTypeId\", jsonResponse.debtPositionTypeId);"
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "let debtPositionTypeId = pm.collectionVariables.get(\"debtPositionTypeId\");\r",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"code\": \"TEST\",\n    \"brokerId\": {{brokerId}},\n    \"description\": \"Test C Debt Position Type\",\n    \"orgType\": \"A\",\n    \"macroArea\": \"F\",\n    \"serviceType\": \"T\",\n    \"collectingReason\": \"R\",\n    \"taxonomyCode\": \"9/0201139AP/\",\n    \"flagAnonymousFiscalCode\": true,\n    \"flagMandatoryDueDate\": true,\n    \"flagNotifyIo\": true,\n    \"ioTemplateMessage\": \"Template145\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{puBffBaseUrl}}/bff/debt-position-types",
+              "host": [
+                "{{puBffBaseUrl}}"
+              ],
+              "path": [
+                "bff",
+                "debt-position-types"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "03_patchDebtPositionType",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let jsonResponse = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"[debt-position-type], expected httpStatus: 200\", () => {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "})\r",
+                  "\r",
+                  "pm.test(\"[debt-position-type] - createDebtPositionType\", () => {\r",
+                  "    pm.expect(jsonResponse).to.have.property(\"debtPositionTypeId\").and.to.not.be.null;\r",
+                  "    pm.expect(jsonResponse).to.have.property(\"brokerId\").and.to.not.be.null;\r",
+                  "    pm.expect(jsonResponse).to.have.property(\"code\").and.to.not.be.null;\r",
+                  "    pm.expect(jsonResponse).to.have.property(\"collectingReason\").and.to.not.be.null;\r",
+                  "    pm.expect(jsonResponse).to.have.property(\"description\").and.to.not.be.null;\r",
+                  "    pm.expect(jsonResponse).to.have.property(\"macroArea\").and.to.not.be.null;\r",
+                  "    pm.expect(jsonResponse).to.have.property(\"orgType\").and.to.not.be.null;\r",
+                  "    pm.expect(jsonResponse).to.have.property(\"serviceType\").and.to.not.be.null;\r",
+                  "    pm.expect(jsonResponse).to.have.property(\"taxonomyCode\").and.to.not.be.null;\r",
+                  "    pm.expect(jsonResponse).to.have.property(\"flagAnonymousFiscalCode\").and.to.not.be.null;\r",
+                  "    pm.expect(jsonResponse).to.have.property(\"flagMandatoryDueDate\").and.to.not.be.null;\r",
+                  "    pm.expect(jsonResponse).to.have.property(\"flagNotifyIo\").and.to.not.be.null;\r",
+                  "    pm.expect(jsonResponse).to.have.property(\"ioTemplateMessage\").and.to.equal(pm.variables.get(\"debtPositionTypeIoTemplateMessage\"));\r",
+                  "})\r",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "let debtPositionTypeId = pm.collectionVariables.get(\"debtPositionTypeId\");\r",
+                  "pm.variables.set(\"debtPositionTypeIoTemplateMessage\",\"TEST-PATCH\")"
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"flagAnonymousFiscalCode\": true,\n    \"flagMandatoryDueDate\": true,\n    \"flagNotifyIo\": true,\n    \"ioTemplateMessage\": \"{{debtPositionTypeIoTemplateMessage}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{puBffBaseUrl}}/bff/debt-position-types/{{createdDebtPositionTypeId}}",
+              "host": [
+                "{{puBffBaseUrl}}"
+              ],
+              "path": [
+                "bff",
+                "debt-position-types",
+                "{{createdDebtPositionTypeId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "03_DeleteDebtPositionType",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "packages": {},
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{debtPositionBaseUrl}}/crud/debt-position-types/{{createdDebtPositionTypeId}}",
+              "host": [
+                "{{debtPositionBaseUrl}}"
+              ],
+              "path": [
+                "crud",
+                "debt-position-types",
+                "{{createdDebtPositionTypeId}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "04_Classification",
+      "item": [
+        {
+          "name": "04_getPaymentsReporting",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let jsonResponse = pm.response.json();\r",
+                  "pm.test(\"[receipt getPaymentsReporting], expected httpStatus: 200\", () => {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "})\r",
+                  "pm.test(\"[PaymentsReporting getPaymentsReporting] - getPaymentsReporting\", () => {\r",
+                  "    pm.expect(jsonResponse).to.have.property(\"content\").and.to.be.an(\"array\");\r",
+                  "    pm.expect(jsonResponse).to.have.property(\"size\").and.to.be.a(\"number\");\r",
+                  "    pm.expect(jsonResponse).to.have.property(\"totalElements\").and.to.be.a(\"number\");\r",
+                  "    pm.expect(jsonResponse).to.have.property(\"totalPages\").and.to.be.a(\"number\");\r",
+                  "    pm.expect(jsonResponse).to.have.property(\"number\").and.to.be.a(\"number\");\r",
+                  "});\r",
+                  "\r",
+                  "pm.collectionVariables.set(\"iuf\", jsonResponse.content[0]?.iuf);\r",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{puBffBaseUrl}}/bff/organization/:organizationId/payments-reporting",
+              "host": [
+                "{{puBffBaseUrl}}"
+              ],
+              "path": [
+                "bff",
+                "organization",
+                ":organizationId",
+                "payments-reporting"
+              ],
+              "variable": [
+                {
+                  "key": "organizationId",
+                  "value": "{{organizationId}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "04_getPaymentsReportingRows",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let jsonResponse = pm.response.json();\r",
+                  "pm.test(\"[receipt getPaymentsReportingRows], expected httpStatus: 200\", () => {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "})\r",
+                  "pm.test(\"[PaymentsReporting getPaymentsReportingRows] - getPaymentsReportingRows\", () => {\r",
+                  "    pm.expect(jsonResponse).to.have.property(\"content\").and.to.be.an(\"array\");\r",
+                  "    pm.expect(jsonResponse).to.have.property(\"size\").and.to.be.a(\"number\");\r",
+                  "    pm.expect(jsonResponse).to.have.property(\"totalElements\").and.to.be.a(\"number\");\r",
+                  "    pm.expect(jsonResponse).to.have.property(\"totalPages\").and.to.be.a(\"number\");\r",
+                  "    pm.expect(jsonResponse).to.have.property(\"number\").and.to.be.a(\"number\");\r",
+                  "});\r",
+                  "\r",
+                  "pm.collectionVariables.set(\"paymentsReportingId\", jsonResponse.content[0]?.paymentsReportingId);"
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{puBffBaseUrl}}/bff/organization/:organizationId/payments-reporting/:iuf/rows",
+              "host": [
+                "{{puBffBaseUrl}}"
+              ],
+              "path": [
+                "bff",
+                "organization",
+                ":organizationId",
+                "payments-reporting",
+                ":iuf",
+                "rows"
+              ],
+              "variable": [
+                {
+                  "key": "organizationId",
+                  "value": "{{organizationId}}"
+                },
+                {
+                  "key": "iuf",
+                  "value": "{{iuf}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "04_getPaymentsReportingDetail",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let jsonResponse = pm.response.json();\r",
+                  "pm.test(\"[receipt getPaymentsReportingDetail], expected httpStatus: 200\", () => {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "})\r",
+                  "pm.test(\"[PaymentsReporting getPaymentsReportingDetail] - getPaymentsReportingDetail\", () => {\r",
+                  "    pm.expect(jsonResponse).to.have.property(\"paymentsReportingId\").and.to.be.a(\"string\");\r",
+                  "    pm.expect(jsonResponse).to.have.property(\"iuv\").and.to.be.a(\"string\");\r",
+                  "    pm.expect(jsonResponse).to.have.property(\"iur\").and.to.be.a(\"string\");\r",
+                  "    pm.expect(jsonResponse).to.have.property(\"amountPaidCents\").and.to.be.a(\"number\");\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{puBffBaseUrl}}/bff/organization/:organizationId/payments-reporting/:iuf/rows/:paymentsReportingId",
+              "host": [
+                "{{puBffBaseUrl}}"
+              ],
+              "path": [
+                "bff",
+                "organization",
+                ":organizationId",
+                "payments-reporting",
+                ":iuf",
+                "rows",
+                ":paymentsReportingId"
+              ],
+              "variable": [
+                {
+                  "key": "organizationId",
+                  "value": "{{organizationId}}"
+                },
+                {
+                  "key": "iuf",
+                  "value": "{{iuf}}"
+                },
+                {
+                  "key": "paymentsReportingId",
+                  "value": "{{paymentsReportingId}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "04_getTreasuries",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let jsonResponse = pm.response.json();\r",
+                  "pm.test(\"[getTreasuries], expected httpStatus: 200\", () => {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "})\r",
+                  "pm.test(\"[Treasury getTreasuries] - getTreasuries\", () => {\r",
+                  "    pm.expect(jsonResponse).to.have.property(\"content\").and.to.be.an(\"array\");\r",
+                  "    pm.expect(jsonResponse).to.have.property(\"size\").and.to.be.a(\"number\");\r",
+                  "    pm.expect(jsonResponse).to.have.property(\"totalElements\").and.to.be.a(\"number\");\r",
+                  "    pm.expect(jsonResponse).to.have.property(\"totalPages\").and.to.be.a(\"number\");\r",
+                  "    pm.expect(jsonResponse).to.have.property(\"number\").and.to.be.a(\"number\");\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{puBffBaseUrl}}/bff/organization/:organizationId/treasuries",
+              "host": [
+                "{{puBffBaseUrl}}"
+              ],
+              "path": [
+                "bff",
+                "organization",
+                ":organizationId",
+                "treasuries"
+              ],
+              "variable": [
+                {
+                  "key": "organizationId",
+                  "value": "{{organizationId}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "05_Debt_Position_Type_Org",
+      "item": [
+        {
+          "name": "getOrganizationOperators",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let jsonResponse = pm.response.json();",
+                  "pm.collectionVariables.set(\"organizationOperators\", jsonResponse.totalElements);",
+                  " "
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer eyJraWQiOiIzNTMxNTA2Ny05YmVjLTMxY2MtYmIwMi0zMzBhZTZlOGY0NjIiLCJ0eXAiOiJhdCtKV1QiLCJhbGciOiJSUzUxMiJ9.eyJ0eXAiOiJiZWFyZXIiLCJpc3MiOiJkZXYucGlhdHRhZm9ybWF1bml0YXJpYS5wYWdvcGEuaXQiLCJqdGkiOiIzMmVhN2YyNi00YzY1LTRlYTQtOTM0MS0xZjI0NTEzZDk1OWYiLCJzdWIiOiJFVXFLaUQxcHNMckdOdUx4Q0d6cml5LXJveVBsQnZ1eWVKTWMwZHhheE5zPSIsImlhdCI6MTc0NjY5NjQ2NCwiZXhwIjoxNzQ2NzEwODY0LCJvcmdhbml6YXRpb25JcGFDb2RlIjoiREVNTyJ9.UaLcQs6adJMz-AeGf97FJn0DiP3nJXDUrGpjK4SX_2NquxPnsZRlEbRhG3uxt9nqS_K6s9yAONNdH0afXFQaXzlyxz474FH3uI1_EfFKkcljIks2rZVPza73Mz3l3jWS1Heg5luSDLi5UzGeM8oyCsqbWV23jMvEqAe_ukl-I3BUaWpDfRk6U3lcjWeT13VNKNizE6HGbCGHz1m43X8hhKK6Ie-pNLFguoHfHivpIX4y09pjIPxnPv6uaKATkQvfKX8j1htlgERZo0VnvLX4y3eKs2zJAws4iCe5IsBngeAJm8wKN1mW6zKlIuczRsUiqezNAdLIUgfus2h4LvUqxw"
+              }
+            ],
+            "url": {
+              "raw": "{{p4paAuthBaseUrl}}/am/operators/{{organizationIpaCode}}",
+              "host": [
+                "{{p4paAuthBaseUrl}}"
+              ],
+              "path": [
+                "am",
+                "operators",
+                "{{organizationIpaCode}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "05_createDebtPositionTypeOrg - operatorsSelection ALL",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let jsonResponse = pm.response.json();",
+                  "",
+                  "pm.test(\"[debt-position-type-org - createDebtPositionTypeOrg - operatorSelection ALL], expected httpStatus: 201\", () => {",
+                  "    pm.response.to.have.status(201);",
+                  "})",
+                  "",
+                  "pm.collectionVariables.set(\"createdDebtPositionTypeOrgId\", jsonResponse.debtPositionTypeOrgId);",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"debtPositionTypeOrg\":{\n        \"debtPositionTypeId\": {{debtPositionTypeId}},\n        \"organizationId\": {{organizationId}},\n        \"balance\": \"\",\n        \"code\": \"CODE-CREATE\",\n        \"description\": \"Test for Save Debt Position Type Org\",\n        \"iban\": \"IT60X0542811101000000123456\",\n        \"postalIban\": \"IT60X0542811101000000123457\",\n        \"postalAccountCode\": \"1234567890\",\n        \"holderPostalCc\": \"Holder Postal CC\",\n        \"orgSector\": \"Public Sector\",\n        \"xsdDefinitionRef\": \"definitionRef123\",\n        \"amountCents\": 10000,\n        \"externalPaymentUrl\": \"https://example.com/payment\",\n        \"flagAnonymousFiscalCode\": false,\n        \"flagMandatoryDueDate\": false,\n        \"flagSpontaneous\": false,\n        \"flagNotifyIo\": true,\n        \"ioTemplateMessage\": \"Test IO Message Template\",\n        \"flagActive\": true,\n        \"flagNotifyOutcomePush\": false,\n        \"flagAmountActualization\": false,\n        \"flagExternal\": false\n    },\n    \"enabledOperators\":[\n    ],\n    \"disabledOperators\":[\n    ],\n    \"operatorsSelection\": \"ALL\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{puBffBaseUrl}}/bff/organization/:organizationId/debt-position-type-orgs",
+              "host": [
+                "{{puBffBaseUrl}}"
+              ],
+              "path": [
+                "bff",
+                "organization",
+                ":organizationId",
+                "debt-position-type-orgs"
+              ],
+              "variable": [
+                {
+                  "key": "organizationId",
+                  "value": "{{organizationId}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "DebtPosition - findByDebtPositionTypeOrgId - operatorsSelection ALL",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let jsonResponse = pm.response.json();",
+                  "let organizationOperators = pm.collectionVariables.get(\"organizationOperators\");",
+                  "",
+                  "pm.test(\"[debt-position-type-org - findByDebtPositionTypeOrgId - operatorSelection ALL], expected httpStatus: 200\", () => {",
+                  "    pm.response.to.have.status(200);",
+                  "    pm.expect(jsonResponse._embedded.debtPositionTypeOrgOperatorses.length).to.eql(organizationOperators);",
+                  "})",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"debtPositionTypeOrg\":{\n        \"debtPositionTypeId\": {{debtPositionTypeId}},\n        \"organizationId\": {{organizationId}},\n        \"balance\": \"\",\n        \"code\": \"CODE-CREATE\",\n        \"description\": \"Test for Save Debt Position Type Org\",\n        \"iban\": \"IT60X0542811101000000123456\",\n        \"postalIban\": \"IT60X0542811101000000123457\",\n        \"postalAccountCode\": \"1234567890\",\n        \"holderPostalCc\": \"Holder Postal CC\",\n        \"orgSector\": \"Public Sector\",\n        \"xsdDefinitionRef\": \"definitionRef123\",\n        \"amountCents\": 10000,\n        \"externalPaymentUrl\": \"https://example.com/payment\",\n        \"flagAnonymousFiscalCode\": false,\n        \"flagMandatoryDueDate\": false,\n        \"flagSpontaneous\": false,\n        \"flagNotifyIo\": true,\n        \"ioTemplateMessage\": \"Test IO Message Template\",\n        \"flagActive\": true,\n        \"flagNotifyOutcomePush\": false,\n        \"flagAmountActualization\": false,\n        \"flagExternal\": false\n    },\n    \"enabledOperators\":[\n    ],\n    \"disabledOperators\":[\n    ],\n    \"operatorsSelection\": \"ALL\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{debtPositionBaseUrl}}/crud/debt-position-type-org-operators/search/findByDebtPositionTypeOrgId?debtPositionTypeOrgId={{createdDebtPositionTypeOrgId}}",
+              "host": [
+                "{{debtPositionBaseUrl}}"
+              ],
+              "path": [
+                "crud",
+                "debt-position-type-org-operators",
+                "search",
+                "findByDebtPositionTypeOrgId"
+              ],
+              "query": [
+                {
+                  "key": "debtPositionTypeOrgId",
+                  "value": "{{createdDebtPositionTypeOrgId}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "05_deleteDebtPositionTypeOrg - operatorSelection ALL",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"[debt-position-type-org - deleteDebtPositionTypeOrg], expected httpStatus: 200\", () => {",
+                  "    pm.response.to.have.status(200);",
+                  "})",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{puBffBaseUrl}}/bff/organization/:organizationId/debt-position-type-orgs/{{createdDebtPositionTypeOrgId}}",
+              "host": [
+                "{{puBffBaseUrl}}"
+              ],
+              "path": [
+                "bff",
+                "organization",
+                ":organizationId",
+                "debt-position-type-orgs",
+                "{{createdDebtPositionTypeOrgId}}"
+              ],
+              "variable": [
+                {
+                  "key": "organizationId",
+                  "value": "{{organizationId}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "05_createDebtPositionTypeOrg - operatorsSelection SELECTED",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let jsonResponse = pm.response.json();",
+                  "",
+                  "pm.test(\"[debt-position-type-org - createDebtPositionTypeOrg - operatorSelection SELECTED], expected httpStatus: 201\", () => {",
+                  "    pm.response.to.have.status(201);",
+                  "})",
+                  "",
+                  "pm.collectionVariables.set(\"createdDebtPositionTypeOrgId\", jsonResponse.debtPositionTypeOrgId);",
+                  "",
+                  "let requestBody = JSON.parse(pm.request.body.raw);",
+                  "pm.collectionVariables.set(\"enabledOperators\", requestBody.enabledOperators.length);",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"debtPositionTypeOrg\":{\n        \"debtPositionTypeId\": {{debtPositionTypeId}},\n        \"organizationId\": {{organizationId}},\n        \"balance\": \"\",\n        \"code\": \"CODE-CREATE\",\n        \"description\": \"Test for Save Debt Position Type Org\",\n        \"iban\": \"IT60X0542811101000000123456\",\n        \"postalIban\": \"IT60X0542811101000000123457\",\n        \"postalAccountCode\": \"1234567890\",\n        \"holderPostalCc\": \"Holder Postal CC\",\n        \"orgSector\": \"Public Sector\",\n        \"xsdDefinitionRef\": \"definitionRef123\",\n        \"amountCents\": 10000,\n        \"externalPaymentUrl\": \"https://example.com/payment\",\n        \"flagAnonymousFiscalCode\": false,\n        \"flagMandatoryDueDate\": false,\n        \"flagSpontaneous\": false,\n        \"flagNotifyIo\": true,\n        \"ioTemplateMessage\": \"Test IO Message Template\",\n        \"flagActive\": true,\n        \"flagNotifyOutcomePush\": false,\n        \"flagAmountActualization\": false,\n        \"flagExternal\": false\n    },\n    \"enabledOperators\":[\n        \"operator1\",\n        \"operator2\"\n    ],\n    \"disabledOperators\":[\n    ],\n    \"operatorsSelection\": \"SELECTED\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{puBffBaseUrl}}/bff/organization/:organizationId/debt-position-type-orgs",
+              "host": [
+                "{{puBffBaseUrl}}"
+              ],
+              "path": [
+                "bff",
+                "organization",
+                ":organizationId",
+                "debt-position-type-orgs"
+              ],
+              "variable": [
+                {
+                  "key": "organizationId",
+                  "value": "{{organizationId}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "DebtPosition - findByDebtPositionTypeOrgId - operatorsSelection SELECTED",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let jsonResponse = pm.response.json();",
+                  "let enabledOperators = pm.collectionVariables.get(\"enabledOperators\");",
+                  "",
+                  "pm.test(\"[debt-position-type-org - findByDebtPositionTypeOrgId - operatorSelection SELECTED], expected httpStatus: 200\", () => {",
+                  "    pm.response.to.have.status(200);",
+                  "    pm.expect(jsonResponse._embedded.debtPositionTypeOrgOperatorses.length).to.eql(enabledOperators+1);",
+                  "})",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"debtPositionTypeOrg\":{\n        \"debtPositionTypeId\": {{debtPositionTypeId}},\n        \"organizationId\": {{organizationId}},\n        \"balance\": \"\",\n        \"code\": \"CODE-CREATE\",\n        \"description\": \"Test for Save Debt Position Type Org\",\n        \"iban\": \"IT60X0542811101000000123456\",\n        \"postalIban\": \"IT60X0542811101000000123457\",\n        \"postalAccountCode\": \"1234567890\",\n        \"holderPostalCc\": \"Holder Postal CC\",\n        \"orgSector\": \"Public Sector\",\n        \"xsdDefinitionRef\": \"definitionRef123\",\n        \"amountCents\": 10000,\n        \"externalPaymentUrl\": \"https://example.com/payment\",\n        \"flagAnonymousFiscalCode\": false,\n        \"flagMandatoryDueDate\": false,\n        \"flagSpontaneous\": false,\n        \"flagNotifyIo\": true,\n        \"ioTemplateMessage\": \"Test IO Message Template\",\n        \"flagActive\": true,\n        \"flagNotifyOutcomePush\": false,\n        \"flagAmountActualization\": false,\n        \"flagExternal\": false\n    },\n    \"enabledOperators\":[\n    ],\n    \"disabledOperators\":[\n    ],\n    \"operatorsSelection\": \"ALL\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{debtPositionBaseUrl}}/crud/debt-position-type-org-operators/search/findByDebtPositionTypeOrgId?debtPositionTypeOrgId={{createdDebtPositionTypeOrgId}}",
+              "host": [
+                "{{debtPositionBaseUrl}}"
+              ],
+              "path": [
+                "crud",
+                "debt-position-type-org-operators",
+                "search",
+                "findByDebtPositionTypeOrgId"
+              ],
+              "query": [
+                {
+                  "key": "debtPositionTypeOrgId",
+                  "value": "{{createdDebtPositionTypeOrgId}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "05_deleteDebtPositionTypeOrg  - operatorSelection SELECTED",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"[debt-position-type-org - deleteDebtPositionTypeOrg], expected httpStatus: 200\", () => {",
+                  "    pm.response.to.have.status(200);",
+                  "})",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{puBffBaseUrl}}/bff/organization/:organizationId/debt-position-type-orgs/{{createdDebtPositionTypeOrgId}}",
+              "host": [
+                "{{puBffBaseUrl}}"
+              ],
+              "path": [
+                "bff",
+                "organization",
+                ":organizationId",
+                "debt-position-type-orgs",
+                "{{createdDebtPositionTypeOrgId}}"
+              ],
+              "variable": [
+                {
+                  "key": "organizationId",
+                  "value": "{{organizationId}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "05_createDebtPositionTypeOrg - operatorsSelection NONE",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let jsonResponse = pm.response.json();",
+                  "",
+                  "pm.test(\"[debt-position-type-org - createDebtPositionTypeOrg - operatorSelection NONE], expected httpStatus: 201\", () => {",
+                  "    pm.response.to.have.status(201);",
+                  "})",
+                  "",
+                  "pm.collectionVariables.set(\"createdDebtPositionTypeOrgId\", jsonResponse.debtPositionTypeOrgId);",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"debtPositionTypeOrg\":{\n        \"debtPositionTypeId\": {{debtPositionTypeId}},\n        \"organizationId\": {{organizationId}},\n        \"balance\": \"\",\n        \"code\": \"CODE-CREATE\",\n        \"description\": \"Test for Save Debt Position Type Org\",\n        \"iban\": \"IT60X0542811101000000123456\",\n        \"postalIban\": \"IT60X0542811101000000123457\",\n        \"postalAccountCode\": \"1234567890\",\n        \"holderPostalCc\": \"Holder Postal CC\",\n        \"orgSector\": \"Public Sector\",\n        \"xsdDefinitionRef\": \"definitionRef123\",\n        \"amountCents\": 10000,\n        \"externalPaymentUrl\": \"https://example.com/payment\",\n        \"flagAnonymousFiscalCode\": false,\n        \"flagMandatoryDueDate\": false,\n        \"flagSpontaneous\": false,\n        \"flagNotifyIo\": true,\n        \"ioTemplateMessage\": \"Test IO Message Template\",\n        \"flagActive\": true,\n        \"flagNotifyOutcomePush\": false,\n        \"flagAmountActualization\": false,\n        \"flagExternal\": false\n    },\n    \"enabledOperators\":[\n    ],\n    \"disabledOperators\":[\n    ],\n    \"operatorsSelection\": \"NONE\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{puBffBaseUrl}}/bff/organization/:organizationId/debt-position-type-orgs",
+              "host": [
+                "{{puBffBaseUrl}}"
+              ],
+              "path": [
+                "bff",
+                "organization",
+                ":organizationId",
+                "debt-position-type-orgs"
+              ],
+              "variable": [
+                {
+                  "key": "organizationId",
+                  "value": "{{organizationId}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "DebtPosition - findByDebtPositionTypeOrgId - operatorsSelection NONE",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let jsonResponse = pm.response.json();",
+                  "",
+                  "pm.test(\"[debt-position-type-org - findByDebtPositionTypeOrgId - operatorSelection NONE], expected httpStatus: 200\", () => {",
+                  "    pm.response.to.have.status(200);",
+                  "    pm.expect(jsonResponse._embedded.debtPositionTypeOrgOperatorses.length).to.eql(1);",
+                  "})",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"debtPositionTypeOrg\":{\n        \"debtPositionTypeId\": {{debtPositionTypeId}},\n        \"organizationId\": {{organizationId}},\n        \"balance\": \"\",\n        \"code\": \"CODE-CREATE\",\n        \"description\": \"Test for Save Debt Position Type Org\",\n        \"iban\": \"IT60X0542811101000000123456\",\n        \"postalIban\": \"IT60X0542811101000000123457\",\n        \"postalAccountCode\": \"1234567890\",\n        \"holderPostalCc\": \"Holder Postal CC\",\n        \"orgSector\": \"Public Sector\",\n        \"xsdDefinitionRef\": \"definitionRef123\",\n        \"amountCents\": 10000,\n        \"externalPaymentUrl\": \"https://example.com/payment\",\n        \"flagAnonymousFiscalCode\": false,\n        \"flagMandatoryDueDate\": false,\n        \"flagSpontaneous\": false,\n        \"flagNotifyIo\": true,\n        \"ioTemplateMessage\": \"Test IO Message Template\",\n        \"flagActive\": true,\n        \"flagNotifyOutcomePush\": false,\n        \"flagAmountActualization\": false,\n        \"flagExternal\": false\n    },\n    \"enabledOperators\":[\n    ],\n    \"disabledOperators\":[\n    ],\n    \"operatorsSelection\": \"ALL\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{debtPositionBaseUrl}}/crud/debt-position-type-org-operators/search/findByDebtPositionTypeOrgId?debtPositionTypeOrgId={{createdDebtPositionTypeOrgId}}",
+              "host": [
+                "{{debtPositionBaseUrl}}"
+              ],
+              "path": [
+                "crud",
+                "debt-position-type-org-operators",
+                "search",
+                "findByDebtPositionTypeOrgId"
+              ],
+              "query": [
+                {
+                  "key": "debtPositionTypeOrgId",
+                  "value": "{{createdDebtPositionTypeOrgId}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "05_deleteDebtPositionTypeOrg  - operatorSelection NONE",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"[debt-position-type-org - deleteDebtPositionTypeOrg], expected httpStatus: 200\", () => {",
+                  "    pm.response.to.have.status(200);",
+                  "})",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{puBffBaseUrl}}/bff/organization/:organizationId/debt-position-type-orgs/{{createdDebtPositionTypeOrgId}}",
+              "host": [
+                "{{puBffBaseUrl}}"
+              ],
+              "path": [
+                "bff",
+                "organization",
+                ":organizationId",
+                "debt-position-type-orgs",
+                "{{createdDebtPositionTypeOrgId}}"
+              ],
+              "variable": [
+                {
+                  "key": "organizationId",
+                  "value": "{{organizationId}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "exec": [
+          "// START COMMON UTILITIES\r",
+          "\r",
+          "// global variable to use in order to skip tests\r",
+          "skipTests=false;\r",
+          "\r",
+          "// method to be invoked as first thing inside tests in order to instrument the \"pm\" variable:\r",
+          "// eg: pm = pm=instrumentPmMethod(pm);\r",
+          "instrumentPmMethod = (pm) => {\r",
+          "    const pmProxy = {\r",
+          "        get: function(pm, key) {\r",
+          "            if (key == 'test') {\r",
+          "                return (skipTests ? pm.test.skip : pm.test);\r",
+          "            }\r",
+          "            return pm[key];\r",
+          "        }\r",
+          "    };\r",
+          "\r",
+          "    return new Proxy(pm, pmProxy);\r",
+          "}\r",
+          "\r",
+          "// function to be used in order to retry the current request, configuring a maximum number of attempts and a fixed delay between each invoke\r",
+          "retryRequest = (pm, setTimeout, waitingMillis = 1000, maxAttempts = 30) => {\r",
+          "    if(!pm || !setTimeout){\r",
+          "        throw new Error(\"Invalid invoke to retryRequest function! Some required parameters are undefined: pm=\" + pm + \", setTimeout=\" + setTimeout)\r",
+          "    }\r",
+          "\r",
+          "    const retryVariableName = \"retry_\" + pm.info.requestId\r",
+          "    const attempt = (pm.variables.get(retryVariableName) ?? 0) + 1;\r",
+          "    if(attempt < maxAttempts) {\r",
+          "        console.info(pm.info.requestName + \" not ready, retrying [attempt \" + attempt + \"/\" + maxAttempts + \"] after \" + waitingMillis + \" ms\");\r",
+          "        pm.variables.set(retryVariableName, attempt)\r",
+          "        pm.execution.setNextRequest(pm.info.requestId);\r",
+          "        return setTimeout(()=>{}, waitingMillis);\r",
+          "    } else {\r",
+          "        pm.test(pm.info.requestName + \" not ready\", () => pm.expect.fail(attempt + \" attempts\"));\r",
+          "    }\r",
+          "}\r",
+          "\r",
+          "// function to be used in order to retry the current request until it returns a known response HTTP status code\r",
+          "retryWhenStatusCode = (pm, setTimeout, statusCode, waitingMillis, maxAttempts) => {\r",
+          "    if(pm.response.code == statusCode){\r",
+          "        console.log(\"Obtained \" + statusCode + \"! Performing retry...\")\r",
+          "        skipTests=true;\r",
+          "        return retryRequest(pm, setTimeout, waitingMillis, maxAttempts)\r",
+          "    }\r",
+          "}\r",
+          "\r",
+          "// XML utilities\r",
+          "xml2js = require('xml2js');\r",
+          "\r",
+          "parseXmlResponse = (response) => {\r",
+          "    let body;\r",
+          "    xml2js.parseString(response.text(), {\r",
+          "            ignoreAttrs: true, \r",
+          "            explicitArray: false,\r",
+          "        }, function (err, result) {\r",
+          "            if(err){\r",
+          "                console.error(err)\r",
+          "            }\r",
+          "        body = result;\r",
+          "    });\r",
+          "    return body;\r",
+          "};"
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "accessToken",
+      "value": ""
+    },
+    {
+      "key": "debtPositionTypeId",
+      "value": ""
+    },
+    {
+      "key": "organizationId",
+      "value": ""
+    },
+    {
+      "key": "receiptId",
+      "value": ""
+    },
+    {
+      "key": "debtPositionTypeOrgId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "createdDebtPositionTypeId",
+      "value": ""
+    },
+    {
+      "key": "iuf",
+      "value": ""
+    },
+    {
+      "key": "paymentsReportingId",
+      "value": ""
+    },
+    {
+      "key": "createdDebtPositionTypeOrgId",
+      "value": ""
+    },
+    {
+      "key": "organizationOperators",
+      "value": ""
+    },
+    {
+      "key": "enabledOperators",
+      "value": ""
+    },
+    {
+      "key": "organizationIpaCode",
+      "value": ""
+    }
+  ]
 }

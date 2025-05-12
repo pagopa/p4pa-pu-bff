@@ -17,6 +17,7 @@ import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionOrigin;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrg;
 import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelDebtPositionView;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -25,6 +26,8 @@ import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authorization.AuthorizationDeniedException;
 import uk.co.jemos.podam.api.PodamFactory;
 
@@ -254,4 +257,44 @@ class DebtPositionRetrieverServiceImplTest {
       authorizationServiceMockedStatic.verify(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser));
     }
   }
+
+  @Test
+  void givenValidUserWhenDeleteDebtPositionThenOk() {
+    UserInfo loggedUser = new UserInfo();
+    loggedUser.setMappedExternalUserId("mappedExternalUserId");
+    Long organizationId = 1L;
+    Long debtPositionId = 2L;
+    ResponseEntity<Void> voidResponseEntity = new ResponseEntity<>(HttpStatus.OK);
+
+    try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
+      authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)).thenAnswer(a -> null);
+
+      Mockito.when(debtPositionServiceMock.deleteDebtPosition(debtPositionId,accessToken)).thenReturn(voidResponseEntity);
+
+      ResponseEntity<Void> response = debtPositionRetrieverService.deleteDebtPosition(organizationId, debtPositionId, loggedUser, accessToken);
+
+      Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
+      Assertions.assertNull(response.getBody());
+      authorizationServiceMockedStatic.verify(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser));
+    }
+
+  }
+
+  @Test
+  void givenInvalidUserWhenDeleteDebtPositionThenAuthorizationDeniedException() {
+    UserInfo loggedUser = new UserInfo();
+    Long organizationId = 1L;
+    Long debtPositionId = 2L;
+
+    try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
+      authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser))
+        .thenThrow(new AuthorizationDeniedException("Access denied"));
+
+      assertThrows(AuthorizationDeniedException.class, () -> debtPositionRetrieverService.deleteDebtPosition(organizationId, debtPositionId, loggedUser, accessToken));
+
+      authorizationServiceMockedStatic.verify(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser));
+    }
+
+  }
+
 }

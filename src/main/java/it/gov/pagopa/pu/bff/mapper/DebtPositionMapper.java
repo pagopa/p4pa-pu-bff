@@ -16,6 +16,7 @@ public class DebtPositionMapper {
       DebtPositionDetailDTO debtPositionDetailDTO = DebtPositionDetailDTO.builder()
       		.debtPositionTypeOrgDescription(debtPositionTypeOrg!=null?debtPositionTypeOrg.getDescription():null)
       		.debtPositionTypeOrgCode(debtPositionTypeOrg!=null?debtPositionTypeOrg.getCode():null)
+          .debtPositionOrigin(debtPosition.getDebtPositionOrigin())
       		.iupd(debtPosition.getIupdOrg())
       		.status(debtPosition.getStatus())
       		.paymentOptions(debtPosition.getPaymentOptions())

@@ -5873,6 +5873,9 @@
           "description" : {
             "type" : "string"
           },
+          "debtPositionOrigin" : {
+            "$ref" : "#/components/schemas/DebtPositionOrigin"
+          },
           "debtPositionTypeOrgDescription" : {
             "type" : "string"
           },

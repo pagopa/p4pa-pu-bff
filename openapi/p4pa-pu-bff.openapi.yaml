@@ -2211,6 +2211,8 @@ components:
           type: 'PersonDTO'
         description:
           type: string
+        debtPositionOrigin:
+          type: 'DebtPositionOrigin'
         debtPositionTypeOrgDescription:
           type: string
         debtPositionTypeOrgCode:

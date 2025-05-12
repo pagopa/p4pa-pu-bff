@@ -1,10 +1,16 @@
 package it.gov.pagopa.pu.bff.controller;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
+import it.gov.pagopa.pu.bff.dto.TreasuredClassificationFiltersDTO;
 import it.gov.pagopa.pu.bff.security.SecurityUtilsTest;
 import it.gov.pagopa.pu.bff.service.classification.ClassificationRetrieverService;
 import it.gov.pagopa.pu.bff.util.TestUtils;
 import it.gov.pagopa.pu.classification.dto.generated.ClassificationDetailViewDTO;
+import it.gov.pagopa.pu.classification.dto.generated.PagedTreasuredClassification;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,12 +20,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import uk.co.jemos.podam.api.PodamFactory;
 
 @ExtendWith(MockitoExtension.class)
 class ClassificationControllerTest {
@@ -29,6 +33,8 @@ class ClassificationControllerTest {
 
   @InjectMocks
   private ClassificationController classificationController;
+
+  private final PodamFactory podamFactory = TestUtils.getPodamFactory();
 
   private final String accessToken = "fakeAccessToken";
   private final UserInfo loggedUser = TestUtils.getPodamFactory().manufacturePojo(UserInfo.class);
@@ -48,6 +54,47 @@ class ClassificationControllerTest {
     SecurityUtilsTest.clearSecurityContext();
   }
 
+  @Test
+  void givenCorrectRequestWhenGetTreasuredClassificationThenOK() {
+    Long organizationId = 1L;
+    TreasuredClassificationFiltersDTO treasuredClassificationFiltersDTO = podamFactory.manufacturePojo(TreasuredClassificationFiltersDTO.class);
+    PageRequest pageable = PageRequest.of(0, 10);
+    PagedTreasuredClassification mockPagedTreasuredClassification = new PagedTreasuredClassification();
+    when(classificationRetrieverServiceMock.getTreasuredClassification(
+      organizationId, treasuredClassificationFiltersDTO, pageable, loggedUser, accessToken))
+      .thenReturn(mockPagedTreasuredClassification);
+
+    ResponseEntity<PagedTreasuredClassification> response = classificationController.getTreasuredClassifications(organizationId,
+      treasuredClassificationFiltersDTO.getLabel(),
+      treasuredClassificationFiltersDTO.getLastClassificationDate().getFrom(),
+      treasuredClassificationFiltersDTO.getLastClassificationDate().getTo(),
+      treasuredClassificationFiltersDTO.getIud(),
+      treasuredClassificationFiltersDTO.getIuv(),
+      treasuredClassificationFiltersDTO.getIur(),
+      treasuredClassificationFiltersDTO.getPayDate().getFrom(),
+      treasuredClassificationFiltersDTO.getPayDate().getTo(),
+      treasuredClassificationFiltersDTO.getPaymentDateTime().getFrom(),
+      treasuredClassificationFiltersDTO.getPaymentDateTime().getTo(),
+      treasuredClassificationFiltersDTO.getRegulationDate().getFrom(),
+      treasuredClassificationFiltersDTO.getRegulationDate().getTo(),
+      treasuredClassificationFiltersDTO.getBillDate().getFrom(),
+      treasuredClassificationFiltersDTO.getBillDate().getTo(),
+      treasuredClassificationFiltersDTO.getRegionValueDate().getFrom(),
+      treasuredClassificationFiltersDTO.getRegionValueDate().getTo(),
+      treasuredClassificationFiltersDTO.getPspCompanyName(),
+      treasuredClassificationFiltersDTO.getPspLastName(),
+      treasuredClassificationFiltersDTO.getIuf(),
+      treasuredClassificationFiltersDTO.getRegulationUniqueIdentifier(),
+      treasuredClassificationFiltersDTO.getAccountRegistryCode(),
+      treasuredClassificationFiltersDTO.getBillAmountCents(),
+      treasuredClassificationFiltersDTO.getRemittanceInformation(),
+      pageable);
+
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertEquals(mockPagedTreasuredClassification, response.getBody());
+    verify(classificationRetrieverServiceMock).getTreasuredClassification(
+      organizationId, treasuredClassificationFiltersDTO, pageable, loggedUser, accessToken);
+  }
 
   @Test
   void givenCorrectRequestWhenGetClassificationDetailThenOK() {

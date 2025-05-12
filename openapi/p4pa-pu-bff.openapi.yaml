@@ -1516,6 +1516,142 @@ paths:
         '500':
           description: Internal Server Error
       x-spring-paginated: true
+  /organization/{organizationId}/classifications/treasured:
+    get:
+      tags:
+        - Classifications
+      summary: "Retrieve a paged list of treasured classifications based on filters"
+      operationId: getTreasuredClassifications
+      parameters:
+        - name: organizationId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: The ID of the organization
+        - name: label
+          in: query
+          required: true
+          schema:
+            type: 'ClassificationsEnum'
+        - name: iud
+          in: query
+          schema:
+            type: string
+        - name: iuv
+          in: query
+          schema:
+            type: string
+        - name: iur
+          in: query
+          schema:
+            type: string
+        - name: lastClassificationDateFrom
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+        - name: lastClassificationDateTo
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+        - name: payDateFrom
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: payDateTo
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: paymentDateTimeFrom
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: paymentDateTimeTo
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: regulationDateFrom
+          in: query
+          schema:
+            type: string
+            format: date
+        - name: regulationDateTo
+          in: query
+          schema:
+            type: string
+            format: date
+        - name: billDateFrom
+          in: query
+          schema:
+            type: string
+            format: date
+        - name: billDateTo
+          in: query
+          schema:
+            type: string
+            format: date
+        - name: regionValueDateFrom
+          in: query
+          schema:
+            type: string
+            format: date
+        - name: regionValueDateTo
+          in: query
+          schema:
+            type: string
+            format: date
+        - name: pspCompanyName
+          in: query
+          schema:
+            type: string
+        - name: pspLastName
+          in: query
+          schema:
+            type: string
+        - name: iuf
+          in: query
+          schema:
+            type: string
+        - name: regulationUniqueIdentifier
+          in: query
+          schema:
+            type: string
+        - name: accountRegistryCode
+          in: query
+          schema:
+            type: string
+        - name: billAmountCents
+          in: query
+          schema:
+            type: integer
+            format: int64
+        - name: remittanceInformation
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: 'PagedTreasuredClassification'
+        '401':
+          description: Unauthorized - Missing or invalid token
+        '403':
+          description: Forbidden - Access denied
+        '500':
+          description: Internal Server Error
+      x-spring-paginated: true
 security:
   - BearerAuth: [ ]
 components:

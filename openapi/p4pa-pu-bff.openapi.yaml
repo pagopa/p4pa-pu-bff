@@ -492,7 +492,7 @@ paths:
           content:
             application/json:
               schema:
-                  type: 'DebtPositionTypeOrg'
+                type: 'DebtPositionTypeOrg'
         '401':
           description: Unauthorized - Missing or invalid token
         '403':
@@ -1361,6 +1361,37 @@ paths:
           description: Not Found - DebtPosition not found
         '500':
           description: Internal Server Error
+    delete:
+      tags:
+        - DebtPositions
+      summary: "Delete a specific DebtPosition"
+      operationId: deleteDebtPosition
+      parameters:
+        - name: organizationId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: debtPositionId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Debt-position removed logically
+        '204':
+          description: Debt-position removed physically
+        '400':
+          description: Bad request
+        '404':
+          description: Debt-position not found
+        '409':
+          description: Conflict
+        '500':
+          description: Server Error
   /export-flow-files/paid:
     post:
       summary: create-paid-export-file
@@ -1924,7 +1955,7 @@ components:
         debtor:
           type: 'PersonDTO'
         payer:
-         type: 'PersonDTO'
+          type: 'PersonDTO'
         paymentDateTime:
           type: string
           format: date-time

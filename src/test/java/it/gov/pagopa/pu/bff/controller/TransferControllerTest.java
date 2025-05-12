@@ -4,7 +4,7 @@ import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.security.SecurityUtilsTest;
 import it.gov.pagopa.pu.bff.service.transfer.TransferRetrieverService;
 import it.gov.pagopa.pu.bff.util.TestUtils;
-import it.gov.pagopa.pu.debtpositions.dto.generated.TransferResponse;
+import it.gov.pagopa.pu.debtpositions.dto.generated.Transfer;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -52,7 +52,7 @@ class TransferControllerTest {
   void givenCorrectRequestWhenGetTransfersThenOk() {
     long organizationId = 1L;
     long installmentId = 1L;
-    List<TransferResponse> expectedResult = List.of(new TransferResponse());
+    List<Transfer> expectedResult = List.of(new Transfer());
 
     Mockito.when(transferRetrieverServiceMock.getTransfers(
       organizationId,
@@ -60,7 +60,7 @@ class TransferControllerTest {
       loggedUser, accessToken
     )).thenReturn(expectedResult);
 
-    ResponseEntity<List<TransferResponse>> response = transferController.getTransfers(organizationId, installmentId);
+    ResponseEntity<List<Transfer>> response = transferController.getTransfers(organizationId, installmentId);
 
     Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
     Assertions.assertNotNull(response.getBody());

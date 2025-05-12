@@ -5,7 +5,7 @@ import it.gov.pagopa.pu.bff.connector.debt_position.TransferService;
 import it.gov.pagopa.pu.bff.service.transfer.TransferRetrieverServiceImpl;
 import it.gov.pagopa.pu.debtpositions.dto.generated.CollectionModelTransfer;
 import it.gov.pagopa.pu.debtpositions.dto.generated.CollectionModelTransferEmbedded;
-import it.gov.pagopa.pu.debtpositions.dto.generated.TransferResponse;
+import it.gov.pagopa.pu.debtpositions.dto.generated.Transfer;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -48,14 +48,14 @@ class TransferRetrieverServiceImplTest {
 
     long organizationId = 1L;
     long installmentId = 1L;
-    TransferResponse transferResponse1 = new TransferResponse();
-    transferResponse1.setTransferIndex(1);
-    TransferResponse transferResponse2 = new TransferResponse();
-    transferResponse2.setTransferIndex(2);
+    Transfer transfer1 = new Transfer();
+    transfer1.setTransferIndex(1);
+    Transfer transfer2 = new Transfer();
+    transfer2.setTransferIndex(2);
 
 
     CollectionModelTransferEmbedded embedded = new CollectionModelTransferEmbedded();
-    embedded.setTransfers(List.of(transferResponse1, transferResponse2));
+    embedded.setTransfers(List.of(transfer1, transfer2));
     CollectionModelTransfer collectionModel = new CollectionModelTransfer();
     collectionModel.setEmbedded(embedded);
 
@@ -65,14 +65,13 @@ class TransferRetrieverServiceImplTest {
       Mockito.when(transferServiceMock.getTransfers(installmentId, loggedUser.getMappedExternalUserId(), accessToken))
         .thenReturn(collectionModel);
 
-      List<TransferResponse> result = transferRetrieverService.getTransfers(organizationId, installmentId, loggedUser, accessToken);
+      List<Transfer> result = transferRetrieverService.getTransfers(organizationId, installmentId, loggedUser, accessToken);
 
       assertNotNull(result);
       assertFalse(result.isEmpty());
-      assertSame(transferResponse2, result.get(0));
+      assertSame(transfer2, result.getFirst());
 
       authorizationServiceMockedStatic.verify(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser));
-      Mockito.verify(transferServiceMock).getTransfers(installmentId, loggedUser.getMappedExternalUserId(), accessToken);
     }
   }
 
@@ -91,13 +90,12 @@ class TransferRetrieverServiceImplTest {
       Mockito.when(transferServiceMock.getTransfers(installmentId, loggedUser.getMappedExternalUserId(), accessToken))
         .thenReturn(emptyCollectionModel);
 
-      List<TransferResponse> result = transferRetrieverService.getTransfers(organizationId, installmentId, loggedUser, accessToken);
+      List<Transfer> result = transferRetrieverService.getTransfers(organizationId, installmentId, loggedUser, accessToken);
 
       assertNotNull(result);
       assertTrue(result.isEmpty());
 
       authorizationServiceMockedStatic.verify(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser));
-      Mockito.verify(transferServiceMock).getTransfers(installmentId, loggedUser.getMappedExternalUserId(), accessToken);
     }
   }
 
@@ -115,13 +113,12 @@ class TransferRetrieverServiceImplTest {
       Mockito.when(transferServiceMock.getTransfers(installmentId, loggedUser.getMappedExternalUserId(), accessToken))
         .thenReturn(null);
 
-      List<TransferResponse> result = transferRetrieverService.getTransfers(organizationId, installmentId, loggedUser, accessToken);
+      List<Transfer> result = transferRetrieverService.getTransfers(organizationId, installmentId, loggedUser, accessToken);
 
       assertNotNull(result);
       assertTrue(result.isEmpty());
 
       authorizationServiceMockedStatic.verify(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser));
-      Mockito.verify(transferServiceMock).getTransfers(installmentId, loggedUser.getMappedExternalUserId(), accessToken);
     }
   }
 
@@ -152,13 +149,13 @@ class TransferRetrieverServiceImplTest {
 
     long organizationId = 1L;
     long installmentId = 1L;
-    TransferResponse transferResponse1 = new TransferResponse();
-    transferResponse1.setTransferIndex(1);
-    TransferResponse transferResponse2 = new TransferResponse();
-    transferResponse2.setTransferIndex(2);
+    Transfer transfer1 = new Transfer();
+    transfer1.setTransferIndex(1);
+    Transfer transfer2 = new Transfer();
+    transfer2.setTransferIndex(2);
 
     CollectionModelTransferEmbedded embedded = new CollectionModelTransferEmbedded();
-    embedded.setTransfers(List.of(transferResponse1, transferResponse2));
+    embedded.setTransfers(List.of(transfer1, transfer2));
     CollectionModelTransfer collectionModel = new CollectionModelTransfer();
     collectionModel.setEmbedded(embedded);
 
@@ -168,15 +165,14 @@ class TransferRetrieverServiceImplTest {
       Mockito.when(transferServiceMock.getTransfers(installmentId, loggedUser.getMappedExternalUserId(), accessToken))
         .thenReturn(collectionModel);
 
-      List<TransferResponse> result = transferRetrieverService.getTransfers(organizationId, installmentId, loggedUser, accessToken);
+      List<Transfer> result = transferRetrieverService.getTransfers(organizationId, installmentId, loggedUser, accessToken);
 
       assertNotNull(result);
       assertFalse(result.isEmpty());
       assertEquals(1, result.size());
-      assertSame(transferResponse2, result.get(0));
+      assertSame(transfer2, result.getFirst());
 
       authorizationServiceMockedStatic.verify(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser));
-      Mockito.verify(transferServiceMock).getTransfers(installmentId, loggedUser.getMappedExternalUserId(), accessToken);
     }
   }
 

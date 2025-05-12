@@ -6,6 +6,7 @@ import it.gov.pagopa.pu.bff.dto.generated.DebtPositionDetailDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedDebtPositionView;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionDTO;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 
 public interface DebtPositionRetrieverService {
   DebtPositionDTO createDebtPosition(DebtPositionDTO debtPositionDTO, UserInfo loggedUser, String accessToken);
@@ -13,4 +14,6 @@ public interface DebtPositionRetrieverService {
   PagedDebtPositionView getDebtPositionViews(DebtPositionViewFiltersDTO filtersDTO, Pageable pageable, UserInfo loggedUser, String accessToken);
 
   DebtPositionDetailDTO getDebtPositionDetail(Long debtPositionId, Long organizationId, UserInfo loggedUser, String accessToken);
+
+  ResponseEntity<Void> deleteDebtPosition(Long organizationId, Long debtPositionId, UserInfo loggedUser, String accessToken);
 }

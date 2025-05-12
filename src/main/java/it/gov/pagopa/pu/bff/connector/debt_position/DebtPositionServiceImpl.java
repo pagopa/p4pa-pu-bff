@@ -8,6 +8,7 @@ import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelDebtPosition;
 import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelDebtPositionView;
 import java.util.List;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -43,5 +44,10 @@ public class DebtPositionServiceImpl implements DebtPositionService {
   public PagedModelDebtPosition getDebtPositionByDebtPositionTypeOrgId(Long debtPositionTypeOrgId,
     Pageable pageable, String accessToken) {
     return debtPositionSearchClient.getDebtPositionByDebtPositionTypeOrgId(debtPositionTypeOrgId,pageable,accessToken);
+  }
+
+  @Override
+  public ResponseEntity<Void> deleteDebtPosition(Long debtPositionId, String accessToken) {
+    return client.deleteDebtPosition(debtPositionId, accessToken);
   }
 }

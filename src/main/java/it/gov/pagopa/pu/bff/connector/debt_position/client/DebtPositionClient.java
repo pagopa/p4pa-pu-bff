@@ -2,12 +2,14 @@ package it.gov.pagopa.pu.bff.connector.debt_position.client;
 
 import it.gov.pagopa.pu.bff.connector.debt_position.config.DebtPositionApisHolder;
 import it.gov.pagopa.pu.bff.dto.DebtPositionViewFiltersDTO;
+import it.gov.pagopa.pu.bff.exception.ResourceNotFoundException;
 import it.gov.pagopa.pu.bff.util.DateUtils;
 import it.gov.pagopa.pu.bff.util.PageUtils;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionDTO;
 import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelDebtPositionView;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 
@@ -55,5 +57,14 @@ public class DebtPositionClient {
       return null;
     }
   }
+
+  public ResponseEntity<Void> deleteDebtPosition(Long debtPositionId, String accessToken){
+    try {
+      return debtPositionApisHolder.getDebtPositionApi(accessToken).deleteDebtPositionWithHttpInfo(debtPositionId);
+    }catch (HttpClientErrorException.NotFound e) {
+      throw new ResourceNotFoundException("DebtPosition with ID %d not found".formatted(debtPositionId));
+    }
+  }
+
 }
 

@@ -10,6 +10,7 @@ import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionDTO;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionStatus;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -62,4 +63,16 @@ public class DebtPositionController implements DebtPositionsApi {
     log.info("User requested getDebtPositionDetail having organizationId {} and debtPositionId {} ", organizationId, debtPositionId);
     return ResponseEntity.ofNullable(debtPositionRetrieverService.getDebtPositionDetail(debtPositionId,organizationId,SecurityUtils.getLoggedUser(),SecurityUtils.getAccessToken()));
   }
+
+  @Override
+  public ResponseEntity<Void> deleteDebtPosition(Long organizationId, Long debtPositionId) {
+    log.info("User requested deleteDebtPosition having organizationId {} and debtPositionId {} ", organizationId, debtPositionId);
+    ResponseEntity<Void> voidResponseEntity = debtPositionRetrieverService.deleteDebtPosition(organizationId, debtPositionId, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken());
+
+    if (voidResponseEntity.getStatusCode().equals(HttpStatus.NO_CONTENT)){
+      return ResponseEntity.noContent().build();
+    }
+    return ResponseEntity.ok().build();
+  }
+
 }

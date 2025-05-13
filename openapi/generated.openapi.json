@@ -1452,7 +1452,7 @@
                 "schema" : {
                   "type" : "array",
                   "items" : {
-                    "$ref" : "#/components/schemas/TransferResponse"
+                    "$ref" : "#/components/schemas/Transfer"
                   }
                 }
               }
@@ -1465,7 +1465,7 @@
                 "schema" : {
                   "type" : "array",
                   "items" : {
-                    "$ref" : "#/components/schemas/TransferResponse"
+                    "$ref" : "#/components/schemas/Transfer"
                   }
                 }
               }
@@ -1478,7 +1478,7 @@
                 "schema" : {
                   "type" : "array",
                   "items" : {
-                    "$ref" : "#/components/schemas/TransferResponse"
+                    "$ref" : "#/components/schemas/Transfer"
                   }
                 }
               }
@@ -1491,7 +1491,7 @@
                 "schema" : {
                   "type" : "array",
                   "items" : {
-                    "$ref" : "#/components/schemas/TransferResponse"
+                    "$ref" : "#/components/schemas/Transfer"
                   }
                 }
               }
@@ -5163,7 +5163,7 @@
           }
         }
       },
-      "TransferResponse" : {
+      "Transfer" : {
         "type" : "object",
         "properties" : {
           "creationDate" : {
@@ -5216,6 +5216,12 @@
           "transferIndex" : {
             "type" : "integer",
             "format" : "int32"
+          },
+          "_links" : {
+            "type" : "object",
+            "additionalProperties" : {
+              "$ref" : "#/components/schemas/Link"
+            }
           }
         },
         "required" : [ "amountCents", "category", "installmentId", "orgFiscalCode", "remittanceInformation", "transferIndex" ]
@@ -5917,6 +5923,9 @@
           },
           "description" : {
             "type" : "string"
+          },
+          "debtPositionOrigin" : {
+            "$ref" : "#/components/schemas/DebtPositionOrigin"
           },
           "debtPositionTypeOrgDescription" : {
             "type" : "string"

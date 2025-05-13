@@ -155,9 +155,26 @@ class DebtPositionClientTest {
     when(debtPositionApiMock.deleteDebtPositionWithHttpInfo(debtPositionId))
       .thenReturn(voidResponseEntity);
 
-    ResponseEntity<Void> response = debtPositionClient.deleteDebtPosition(debtPositionId, accessToken);
+    Boolean deletedDebtPositionPhysically = debtPositionClient.deleteDebtPosition(debtPositionId, accessToken);
 
-    Assertions.assertSame(voidResponseEntity, response);
+    Assertions.assertFalse(deletedDebtPositionPhysically);
+    Mockito.verifyNoMoreInteractions(debtPositionApiMock, debtPositionApisHolderMock);
+  }
+
+  @Test
+  void givenExistingDebtPositionIdWhenDeleteDebtPositionThenInvokeWithAccessTokenAndReturnNoContent() {
+    Long debtPositionId = 1L;
+    String accessToken = "ACCESSTOKEN";
+    ResponseEntity<Void> voidResponseEntity = new ResponseEntity<>(HttpStatus.NO_CONTENT);
+
+    when(debtPositionApisHolderMock.getDebtPositionApi(accessToken))
+      .thenReturn(debtPositionApiMock);
+    when(debtPositionApiMock.deleteDebtPositionWithHttpInfo(debtPositionId))
+      .thenReturn(voidResponseEntity);
+
+    Boolean deletedDebtPositionPhysically = debtPositionClient.deleteDebtPosition(debtPositionId, accessToken);
+
+    Assertions.assertTrue(deletedDebtPositionPhysically);
     Mockito.verifyNoMoreInteractions(debtPositionApiMock, debtPositionApisHolderMock);
   }
 

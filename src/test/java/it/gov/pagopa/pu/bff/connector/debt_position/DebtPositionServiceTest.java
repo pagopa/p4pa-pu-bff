@@ -1,5 +1,6 @@
 package it.gov.pagopa.pu.bff.connector.debt_position;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.Mockito.when;
 
@@ -104,10 +105,10 @@ class DebtPositionServiceTest {
     ResponseEntity<Void> voidResponseEntity = new ResponseEntity<>(HttpStatus.OK);
 
     when(clientMock.deleteDebtPosition(debtPositionId,accessToken))
-      .thenReturn(voidResponseEntity);
+      .thenReturn(false);
 
-    ResponseEntity<Void> response = service.deleteDebtPosition(debtPositionId, accessToken);
+    Boolean deletedDebtPositionPhysically = service.deleteDebtPosition(debtPositionId, accessToken);
 
-    assertSame(voidResponseEntity, response);
+    assertFalse(deletedDebtPositionPhysically);
   }
 }

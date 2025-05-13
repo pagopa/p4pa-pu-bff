@@ -9,6 +9,7 @@ import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionDTO;
 import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelDebtPositionView;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
@@ -58,9 +59,10 @@ public class DebtPositionClient {
     }
   }
 
-  public ResponseEntity<Void> deleteDebtPosition(Long debtPositionId, String accessToken){
+  public Boolean deleteDebtPosition(Long debtPositionId, String accessToken){
     try {
-      return debtPositionApisHolder.getDebtPositionApi(accessToken).deleteDebtPositionWithHttpInfo(debtPositionId);
+      ResponseEntity<Void> voidResponseEntity = debtPositionApisHolder.getDebtPositionApi(accessToken).deleteDebtPositionWithHttpInfo(debtPositionId);
+      return voidResponseEntity.getStatusCode().equals(HttpStatus.NO_CONTENT);
     }catch (HttpClientErrorException.NotFound e) {
       throw new ResourceNotFoundException("DebtPosition with ID %d not found".formatted(debtPositionId));
     }

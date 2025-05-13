@@ -155,14 +155,13 @@ class DebtPositionControllerTest {
   void givenDebtPositionIdWhenDeleteDebtPositionThenOk() {
     long organizationId = 1L;
     Long debtPositionId = 2L;
-    ResponseEntity<Void> voidResponseEntity = new ResponseEntity<>(HttpStatus.OK);
 
     Mockito.when(debtPositionRetrieverServiceMock.deleteDebtPosition(
         Mockito.same(organizationId),
         Mockito.same(debtPositionId),
         Mockito.same(loggedUser),
         Mockito.same(accessToken)))
-      .thenReturn(voidResponseEntity);
+      .thenReturn(false);
 
     ResponseEntity<Void> response = debtPositionController.deleteDebtPosition(
       organizationId,
@@ -176,14 +175,13 @@ class DebtPositionControllerTest {
   void givenDebtPositionIdWhenDeleteDebtPositionThenNoContent() {
     long organizationId = 1L;
     Long debtPositionId = 2L;
-    ResponseEntity<Void> voidResponseEntity = new ResponseEntity<>(HttpStatus.NO_CONTENT);
 
     Mockito.when(debtPositionRetrieverServiceMock.deleteDebtPosition(
         Mockito.same(organizationId),
         Mockito.same(debtPositionId),
         Mockito.same(loggedUser),
         Mockito.same(accessToken)))
-      .thenReturn(voidResponseEntity);
+      .thenReturn(true);
 
     ResponseEntity<Void> response = debtPositionController.deleteDebtPosition(
       organizationId,

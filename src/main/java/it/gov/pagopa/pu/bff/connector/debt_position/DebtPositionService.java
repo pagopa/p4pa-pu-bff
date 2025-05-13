@@ -16,5 +16,16 @@ public interface DebtPositionService {
   DebtPositionDTO getDebtPosition(Long debtPositionId, String accessToken);
   PagedModelDebtPosition getDebtPositionByDebtPositionTypeOrgId(Long debtPositionTypeOrgId, Pageable pageable, String accessToken);
 
-  Boolean deleteDebtPosition(Long debtPositionId, String accessToken);
+
+  /**
+   * Delegates the deletion of a debt position to the client.
+   *
+   * <p>Returns {@code true} if the debt position was physically deleted (HTTP 204 No Content),
+   * or {@code false} if it was logically deleted by setting its status to <code>CANCELLED</code> (HTTP 200 OK).
+   *
+   * @param debtPositionId the ID of the debt position
+   * @param accessToken the access token for authentication
+   * @return {@code true} if physically deleted, {@code false} if logically deleted
+   */
+  boolean deleteDebtPosition(Long debtPositionId, String accessToken);
 }

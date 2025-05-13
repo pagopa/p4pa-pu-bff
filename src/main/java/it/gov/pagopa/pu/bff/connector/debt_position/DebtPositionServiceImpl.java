@@ -47,7 +47,7 @@ public class DebtPositionServiceImpl implements DebtPositionService {
   }
 
   @Override
-  public Boolean deleteDebtPosition(Long debtPositionId, String accessToken) {
+  public boolean deleteDebtPosition(Long debtPositionId, String accessToken) {
     return client.deleteDebtPosition(debtPositionId, accessToken);
   }
 }

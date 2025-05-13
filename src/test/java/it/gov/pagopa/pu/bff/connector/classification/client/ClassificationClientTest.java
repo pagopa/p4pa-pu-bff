@@ -57,9 +57,9 @@ class ClassificationClientTest {
       .thenReturn(classificationsApiMock);
 
     when(classificationsApiMock.getTreasuredClassifications(organizationId,
-      treasuredClassificationFiltersDTO.getLabel(),
       treasuredClassificationFiltersDTO.getLastClassificationDate().getFrom(),
       treasuredClassificationFiltersDTO.getLastClassificationDate().getTo(),
+      treasuredClassificationFiltersDTO.getLabel(),
       treasuredClassificationFiltersDTO.getIud(),
       treasuredClassificationFiltersDTO.getIuv(),
       treasuredClassificationFiltersDTO.getIur(),

@@ -2693,6 +2693,51 @@
         "security" : [ {
           "BearerAuth" : [ ]
         } ]
+      },
+      "delete" : {
+        "tags" : [ "DebtPositions" ],
+        "summary" : "Delete a specific DebtPosition",
+        "operationId" : "deleteDebtPosition",
+        "parameters" : [ {
+          "name" : "organizationId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }, {
+          "name" : "debtPositionId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Debt-position removed logically"
+          },
+          "204" : {
+            "description" : "Debt-position removed physically"
+          },
+          "400" : {
+            "description" : "Bad request"
+          },
+          "404" : {
+            "description" : "Debt-position not found"
+          },
+          "409" : {
+            "description" : "Conflict"
+          },
+          "500" : {
+            "description" : "Server Error"
+          }
+        },
+        "security" : [ {
+          "BearerAuth" : [ ]
+        } ]
       }
     },
     "/bff/organization/{organizationId}/debt-position-types" : {
@@ -6589,9 +6634,6 @@
             "type" : "string"
           },
           "debtPositionTypeOrgCode" : {
-            "type" : "string"
-          },
-          "debtPositionTypeOrgDescription" : {
             "type" : "string"
           },
           "installmentIngestionFlowFileName" : {

@@ -150,4 +150,44 @@ class DebtPositionControllerTest {
     Assertions.assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     Assertions.assertNull(response.getBody());
   }
+
+  @Test
+  void givenDebtPositionIdWhenDeleteDebtPositionThenOk() {
+    long organizationId = 1L;
+    Long debtPositionId = 2L;
+
+    Mockito.when(debtPositionRetrieverServiceMock.deleteDebtPosition(
+        Mockito.same(organizationId),
+        Mockito.same(debtPositionId),
+        Mockito.same(loggedUser),
+        Mockito.same(accessToken)))
+      .thenReturn(false);
+
+    ResponseEntity<Void> response = debtPositionController.deleteDebtPosition(
+      organizationId,
+      debtPositionId);
+
+    Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
+    Assertions.assertNull(response.getBody());
+  }
+
+  @Test
+  void givenDebtPositionIdWhenDeleteDebtPositionThenNoContent() {
+    long organizationId = 1L;
+    Long debtPositionId = 2L;
+
+    Mockito.when(debtPositionRetrieverServiceMock.deleteDebtPosition(
+        Mockito.same(organizationId),
+        Mockito.same(debtPositionId),
+        Mockito.same(loggedUser),
+        Mockito.same(accessToken)))
+      .thenReturn(true);
+
+    ResponseEntity<Void> response = debtPositionController.deleteDebtPosition(
+      organizationId,
+      debtPositionId);
+
+    Assertions.assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+    Assertions.assertNull(response.getBody());
+  }
 }

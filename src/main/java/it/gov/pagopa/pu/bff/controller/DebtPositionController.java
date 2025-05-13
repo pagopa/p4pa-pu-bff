@@ -62,4 +62,16 @@ public class DebtPositionController implements DebtPositionsApi {
     log.info("User requested getDebtPositionDetail having organizationId {} and debtPositionId {} ", organizationId, debtPositionId);
     return ResponseEntity.ofNullable(debtPositionRetrieverService.getDebtPositionDetail(debtPositionId,organizationId,SecurityUtils.getLoggedUser(),SecurityUtils.getAccessToken()));
   }
+
+  @Override
+  public ResponseEntity<Void> deleteDebtPosition(Long organizationId, Long debtPositionId) {
+    log.info("User requested deleteDebtPosition having organizationId {} and debtPositionId {} ", organizationId, debtPositionId);
+    boolean deletedDebtPositionPhysically = debtPositionRetrieverService.deleteDebtPosition(organizationId, debtPositionId, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken());
+
+    if (deletedDebtPositionPhysically){
+      return ResponseEntity.noContent().build();
+    }
+    return ResponseEntity.ok().build();
+  }
+
 }

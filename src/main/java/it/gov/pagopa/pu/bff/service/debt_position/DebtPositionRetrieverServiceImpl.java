@@ -79,4 +79,10 @@ public class DebtPositionRetrieverServiceImpl implements DebtPositionRetrieverSe
     }
   }
 
+  @Override
+  public boolean deleteDebtPosition(Long organizationId, Long debtPositionId, UserInfo loggedUser, String accessToken) {
+    AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser);
+    return debtPositionService.deleteDebtPosition(debtPositionId,accessToken);
+  }
+
 }

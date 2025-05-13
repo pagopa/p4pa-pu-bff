@@ -66,7 +66,7 @@ public class DebtPositionController implements DebtPositionsApi {
   @Override
   public ResponseEntity<Void> deleteDebtPosition(Long organizationId, Long debtPositionId) {
     log.info("User requested deleteDebtPosition having organizationId {} and debtPositionId {} ", organizationId, debtPositionId);
-    Boolean deletedDebtPositionPhysically = debtPositionRetrieverService.deleteDebtPosition(organizationId, debtPositionId, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken());
+    boolean deletedDebtPositionPhysically = debtPositionRetrieverService.deleteDebtPosition(organizationId, debtPositionId, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken());
 
     if (deletedDebtPositionPhysically){
       return ResponseEntity.noContent().build();

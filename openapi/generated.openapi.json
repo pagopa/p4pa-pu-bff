@@ -6636,9 +6636,6 @@
           "debtPositionTypeOrgCode" : {
             "type" : "string"
           },
-          "debtPositionTypeOrgDescription" : {
-            "type" : "string"
-          },
           "installmentIngestionFlowFileName" : {
             "type" : "string"
           },

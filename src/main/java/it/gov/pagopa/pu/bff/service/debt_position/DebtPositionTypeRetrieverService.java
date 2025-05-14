@@ -8,6 +8,8 @@ import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionType;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeRequestBody;
 import org.springframework.data.domain.Pageable;
 
+import java.util.List;
+
 public interface DebtPositionTypeRetrieverService {
 
   DebtPositionType getDebtPositionTypeById(String accessToken, Long id);
@@ -21,4 +23,6 @@ public interface DebtPositionTypeRetrieverService {
   DebtPositionType patchDebtPositionType(Long debtPositionTypeId, DebtPositionTypePatchRequestBody debtPositionTypePatchRequestBody, UserInfo loggedUser, String accessToken);
 
   void deleteDebtPositionType(Long debtPositionTypeId, UserInfo loggedUser, String accessToken);
+
+  List<DebtPositionType> getDebtPositionTypesByOrganizationId(Long organizationId, UserInfo loggedUser, String accessToken);
 }

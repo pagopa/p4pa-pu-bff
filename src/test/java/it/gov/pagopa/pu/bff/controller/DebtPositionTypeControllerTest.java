@@ -281,5 +281,22 @@ class DebtPositionTypeControllerTest {
     Mockito.verifyNoMoreInteractions(debtPositionTypeRetrieverServiceMock);
   }
 
+  @Test
+  void givenOrganizationIdWhenGetDebtPositionTypesByOrganizationIdThenOk() {
+    Long organizationId = 1L;
+    List<DebtPositionType> expectedList = List.of(debtPositionTypeDTO);
+
+    Mockito.when(debtPositionTypeRetrieverServiceMock.getDebtPositionTypesByOrganizationId(Mockito.eq(organizationId), same(loggedUser), same(accessToken)))
+      .thenReturn(expectedList);
+
+    ResponseEntity<List<DebtPositionType>> response = debtPositionTypeController.getDebtPositionTypesByOrganizationId(organizationId);
+
+    assertNotNull(response);
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertEquals(expectedList, response.getBody());
+
+    Mockito.verify(debtPositionTypeRetrieverServiceMock).getDebtPositionTypesByOrganizationId(Mockito.eq(organizationId), same(loggedUser), same(accessToken));
+  }
+
 }
 

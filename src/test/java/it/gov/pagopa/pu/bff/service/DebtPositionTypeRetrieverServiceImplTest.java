@@ -27,6 +27,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.security.authorization.AuthorizationDeniedException;
 import uk.co.jemos.podam.api.PodamFactory;
 
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -422,6 +423,35 @@ class DebtPositionTypeRetrieverServiceImplTest {
     assertNotNull(result);
     assertEquals(1, result.size());
     assertEquals(debtPositionType.getDebtPositionTypeId(), result.get(0).getDebtPositionTypeId());
+
+    Mockito.verify(authorizationServiceMock).validateAdminRole(organizationId, loggedUser);
+    Mockito.verify(organizationServiceMock).getOrganizationByOrganizationId(organizationId, accessToken);
+    Mockito.verify(debtPositionTypeServiceMock).getDebtPositionTypesByBrokerIdAndOrgType(456L, "OrgType001", accessToken);
+  }
+
+  @Test
+  void givenOrganizationIdWhenDebtPositionTypesIsEmptyThenReturnEmptyList() {
+    Long organizationId = 1L;
+    UserInfo loggedUser = podamFactory.manufacturePojo(UserInfo.class);
+
+    Organization organization = new Organization();
+    organization.setBrokerId(456L);
+    organization.setOrgTypeCode("OrgType001");
+
+    PagedModelDebtPositionTypeEmbedded embedded = new PagedModelDebtPositionTypeEmbedded();
+    embedded.setDebtPositionTypes(Collections.emptyList());
+
+    CollectionModelDebtPositionType collectionModel = new CollectionModelDebtPositionType();
+    collectionModel.setEmbedded(embedded);
+
+    Mockito.doNothing().when(authorizationServiceMock).validateAdminRole(organizationId, loggedUser);
+    Mockito.when(organizationServiceMock.getOrganizationByOrganizationId(organizationId, accessToken)).thenReturn(organization);
+    Mockito.when(debtPositionTypeServiceMock.getDebtPositionTypesByBrokerIdAndOrgType(456L, "OrgType001", accessToken)).thenReturn(collectionModel);
+
+    List<DebtPositionType> result = debtPositionTypeRetrieverService.getDebtPositionTypesByOrganizationId(organizationId, loggedUser, accessToken);
+
+    assertNotNull(result);
+    assertTrue(result.isEmpty());
 
     Mockito.verify(authorizationServiceMock).validateAdminRole(organizationId, loggedUser);
     Mockito.verify(organizationServiceMock).getOrganizationByOrganizationId(organizationId, accessToken);

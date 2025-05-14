@@ -39,7 +39,7 @@ class OrganizationDTOMapperTest {
     assertEquals(123L, result.getOrganizationId());
     assertEquals("testIpaCode", result.getIpaCode());
     assertEquals("Test Organization", result.getOrgName());
-    assertEquals(OrganizationDTO.OperatorRoleEnum.ADMIN, result.getOperatorRole());
+    assertEquals(OrganizationDTO.OperatorRoleEnum.ROLE_ADMIN, result.getOperatorRole());
     assertEquals("base64LogoString", result.getOrgLogo());
     assertEquals("orgFiscalCode", result.getOrgFiscalCode());
     assertEquals(false, result.getFlagNotifyIo());

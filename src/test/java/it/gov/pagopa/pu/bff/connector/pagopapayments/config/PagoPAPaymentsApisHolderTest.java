@@ -1,7 +1,7 @@
 package it.gov.pagopa.pu.bff.connector.pagopapayments.config;
 
 import it.gov.pagopa.pu.bff.connector.BaseApiHolderTest;
-import it.gov.pagopa.pu.pagopapayments.dto.generated.DebtPositionDTO;
+import it.gov.pagopa.pu.bff.dto.generated.DebtPositionDetailDTO;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -42,7 +42,7 @@ class PagoPAPaymentsApisHolderTest extends BaseApiHolderTest {
   void whenGetPrintPaymentNoticeControllerApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
     assertAuthenticationShouldBeSetInThreadSafeMode(
       accessToken -> pagoPAPaymentsApisHolder.getPrintPaymentNoticeControllerApi(accessToken)
-        .generateNotice(1L,"iuv",new DebtPositionDTO()),
+        .generateNotice("iuv",new DebtPositionDetailDTO()),
       new ParameterizedTypeReference<>() {},
       pagoPAPaymentsApisHolder::unload
     );

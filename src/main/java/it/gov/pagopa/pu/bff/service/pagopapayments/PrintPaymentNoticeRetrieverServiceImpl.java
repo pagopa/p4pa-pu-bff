@@ -3,28 +3,36 @@ package it.gov.pagopa.pu.bff.service.pagopapayments;
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.connector.pagopapayments.PrintPaymentNoticeService;
 import it.gov.pagopa.pu.bff.dto.FileResourceDTO;
-import it.gov.pagopa.pu.bff.exception.InvalidDebtPositionException;
+import it.gov.pagopa.pu.bff.dto.generated.DebtPositionDetailDTO;
+import it.gov.pagopa.pu.bff.exception.ResourceNotFoundException;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
-import it.gov.pagopa.pu.pagopapayments.dto.generated.DebtPositionDTO;
+import it.gov.pagopa.pu.bff.service.debt_position.DebtPositionRetrieverService;
 import org.springframework.stereotype.Service;
 
 @Service
 public class PrintPaymentNoticeRetrieverServiceImpl implements PrintPaymentNoticeRetrieverService{
   private final PrintPaymentNoticeService printPaymentNoticeService;
+  private final DebtPositionRetrieverService debtPositionRetrieverService;
 
   public PrintPaymentNoticeRetrieverServiceImpl(
-    PrintPaymentNoticeService printPaymentNoticeService) {
+    PrintPaymentNoticeService printPaymentNoticeService,
+    DebtPositionRetrieverService debtPositionRetrieverService) {
     this.printPaymentNoticeService = printPaymentNoticeService;
+    this.debtPositionRetrieverService = debtPositionRetrieverService;
   }
 
   @Override
   public FileResourceDTO generateNotice(Long organizationId, String iuv,
-    DebtPositionDTO debtPositionDTO, UserInfo loggedUser, String accessToken) {
+    Long debtPositionId, UserInfo loggedUser, String accessToken) {
     AuthorizationService.validateUserForOrganizationId(organizationId,loggedUser);
-    if(!organizationId.equals(debtPositionDTO.getOrganizationId())){
-      throw new InvalidDebtPositionException("The DebtPosition's organizationId "+ debtPositionDTO.getOrganizationId()+
-        " does not match the given organizationId "+ organizationId);
+    DebtPositionDetailDTO debtPositionDetail = debtPositionRetrieverService.getDebtPositionDetail(
+      debtPositionId, organizationId, loggedUser, accessToken);
+    if(debtPositionDetail==null){
+      throw new ResourceNotFoundException(
+        "DebtPosition having ID %d not found".formatted(debtPositionId));
     }
-    return printPaymentNoticeService.generateNotice(organizationId,iuv,debtPositionDTO,accessToken);
+    return printPaymentNoticeService.generateNotice(iuv,
+      debtPositionDetail,
+      accessToken);
   }
 }

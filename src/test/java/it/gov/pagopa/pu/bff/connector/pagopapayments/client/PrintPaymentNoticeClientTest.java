@@ -4,9 +4,9 @@ import static org.mockito.Mockito.when;
 
 import it.gov.pagopa.pu.bff.connector.pagopapayments.config.PagoPAPaymentsApisHolder;
 import it.gov.pagopa.pu.bff.dto.FileResourceDTO;
+import it.gov.pagopa.pu.bff.dto.generated.DebtPositionDetailDTO;
 import it.gov.pagopa.pu.bff.util.TestUtils;
 import it.gov.pagopa.pu.pagopapayments.controller.generated.PrintPaymentNoticeApi;
-import it.gov.pagopa.pu.pagopapayments.dto.generated.DebtPositionDTO;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -47,9 +47,8 @@ class PrintPaymentNoticeClientTest {
   @Test
   void whenGenerateNoticeThenOk() {
     String accessToken = "ACCESSTOKEN";
-    Long organizationId = 1L;
     String iuv = "iuv";
-    DebtPositionDTO debtPositionDTO = podamFactory.manufacturePojo(DebtPositionDTO.class);
+    DebtPositionDetailDTO debtPositionDetailDTO = podamFactory.manufacturePojo(DebtPositionDetailDTO.class);
     ByteArrayResource expectedResource = new ByteArrayResource("PDF-DATA".getBytes());
     String expectedFileName = "filename";
     HttpHeaders headers = new HttpHeaders();
@@ -59,11 +58,10 @@ class PrintPaymentNoticeClientTest {
 
     when(pagoPAPaymentsApisHolderMock.getPrintPaymentNoticeControllerApi(accessToken))
       .thenReturn(printPaymentNoticeApiMock);
-    when(printPaymentNoticeApiMock.generateNoticeWithHttpInfo(organizationId,iuv,debtPositionDTO)).thenReturn(
+    when(printPaymentNoticeApiMock.generateNoticeWithHttpInfo(iuv,debtPositionDetailDTO)).thenReturn(
       responseEntity);
 
-    FileResourceDTO response = printPaymentNoticeClient.generateNotice(
-      organizationId, iuv, debtPositionDTO, accessToken);
+    FileResourceDTO response = printPaymentNoticeClient.generateNotice(iuv,debtPositionDetailDTO,accessToken);
 
     Assertions.assertNotNull(response);
     Assertions.assertEquals(expectedResource,response.getResource());

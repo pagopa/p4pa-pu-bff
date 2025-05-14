@@ -4,7 +4,6 @@ import it.gov.pagopa.pu.bff.controller.generated.PrintPaymentNoticeApi;
 import it.gov.pagopa.pu.bff.dto.FileResourceDTO;
 import it.gov.pagopa.pu.bff.security.SecurityUtils;
 import it.gov.pagopa.pu.bff.service.pagopapayments.PrintPaymentNoticeRetrieverService;
-import it.gov.pagopa.pu.pagopapayments.dto.generated.DebtPositionDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.Resource;
 import org.springframework.http.ContentDisposition;
@@ -24,12 +23,11 @@ public class PrintPaymentNoticeController implements PrintPaymentNoticeApi {
   }
 
   @Override
-  public ResponseEntity<Resource> generateNotice(Long organizationId,
-    String iuv, DebtPositionDTO debtPositionDTO) {
-    log.info("User requested generateNotice having organizationId {} and iuv {}", organizationId, iuv);
+  public ResponseEntity<Resource> generateNotice(Long organizationId, Long debtPositionId, String iuv) {
+    log.info("User requested generateNotice having organizationId {} debtPositionId {} and iuv {}", organizationId, debtPositionId, iuv);
 
     FileResourceDTO fileResourceDTO = printPaymentNoticeRetrieverService.generateNotice(
-      organizationId,iuv,debtPositionDTO,SecurityUtils.getLoggedUser(),SecurityUtils.getAccessToken());
+      organizationId,iuv,debtPositionId,SecurityUtils.getLoggedUser(),SecurityUtils.getAccessToken());
     HttpHeaders headers = new HttpHeaders();
     headers.setContentDisposition(ContentDisposition.attachment()
       .filename(fileResourceDTO.getFileName())

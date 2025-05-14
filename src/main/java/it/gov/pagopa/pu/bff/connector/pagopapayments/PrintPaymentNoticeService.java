@@ -1,8 +1,8 @@
 package it.gov.pagopa.pu.bff.connector.pagopapayments;
 
 import it.gov.pagopa.pu.bff.dto.FileResourceDTO;
-import it.gov.pagopa.pu.pagopapayments.dto.generated.DebtPositionDTO;
+import it.gov.pagopa.pu.bff.dto.generated.DebtPositionDetailDTO;
 
 public interface PrintPaymentNoticeService {
-  FileResourceDTO generateNotice(Long organizationId, String iuv, DebtPositionDTO debtPositionDTO, String accessToken);
+  FileResourceDTO generateNotice(String iuv, DebtPositionDetailDTO debtPositionDTO, String accessToken);
 }

@@ -190,8 +190,7 @@ tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>("ope
     "DebtPositionTypeResponseBody" to "it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionType",
     "PagedTreasuredClassification" to "it.gov.pagopa.pu.classification.dto.generated.PagedTreasuredClassification",
     "ClassificationsEnum" to "it.gov.pagopa.pu.classification.dto.generated.ClassificationsEnum",
-    "DebtPositionOrigin" to "it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionOrigin",
-    "DebtPositionNoticeDTO" to "it.gov.pagopa.pu.pagopapayments.dto.generated.DebtPositionDTO"
+    "DebtPositionOrigin" to "it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionOrigin"
   ))
   configOptions.set(mapOf(
     "dateLibrary" to "java8",
@@ -371,8 +370,11 @@ tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>("ope
     "generatedConstructorWithRequiredArgs" to "true",
     "additionalModelTypeAnnotations" to "@lombok.experimental.SuperBuilder(toBuilder = true)"
   ))
+  schemaMappings.set(mapOf(
+    "DebtPositionDTO" to "it.gov.pagopa.pu.bff.dto.generated.DebtPositionDetailDTO"
+  ))
   typeMappings.set(mapOf(
-   "string+binary" to "Resource"
+    "string+binary" to "Resource"
   ))
   importMappings.set(mapOf(
     "Resource" to "org.springframework.core.io.Resource"

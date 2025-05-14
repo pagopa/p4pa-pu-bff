@@ -1652,7 +1652,7 @@ paths:
         '500':
           description: Internal Server Error
       x-spring-paginated: true
-  /organization/{organizationId}/printpaymentnotice/generate:
+  /organization/{organizationId}/printpaymentnotice/generate/{debtPositionId}:
     post:
       tags:
         - print-payment-notice
@@ -1664,17 +1664,17 @@ paths:
           schema:
             type: integer
             format: int64
+        - name: debtPositionId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
         - name: iuv
           in: query
           required: true
           schema:
             type: string
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: 'DebtPositionNoticeDTO'
-        required: true
       responses:
         "200":
           description: Ok

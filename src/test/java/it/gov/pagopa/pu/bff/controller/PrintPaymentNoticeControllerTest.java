@@ -8,7 +8,6 @@ import it.gov.pagopa.pu.bff.dto.FileResourceDTO;
 import it.gov.pagopa.pu.bff.security.SecurityUtilsTest;
 import it.gov.pagopa.pu.bff.service.pagopapayments.PrintPaymentNoticeRetrieverService;
 import it.gov.pagopa.pu.bff.util.TestUtils;
-import it.gov.pagopa.pu.pagopapayments.dto.generated.DebtPositionDTO;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -57,15 +56,15 @@ class PrintPaymentNoticeControllerTest {
   void givenCorrectRequestWhenGenerateNoticeThenOk() {
     long organizationId = 1L;
     String iuv = "iuv";
-    DebtPositionDTO debtPositionDTO = podamFactory.manufacturePojo(DebtPositionDTO.class);
+    Long debtPositionId = 2L;
     FileResourceDTO fileResourceDTO = new FileResourceDTO();
     fileResourceDTO.setResource(new ByteArrayResource("PDF-DATA".getBytes()));
     fileResourceDTO.setFileName("filename");
 
-    Mockito.when(printPaymentNoticeRetrieverServiceMock.generateNotice(organizationId, iuv, debtPositionDTO, loggedUser, accessToken))
+    Mockito.when(printPaymentNoticeRetrieverServiceMock.generateNotice(organizationId, iuv, debtPositionId, loggedUser, accessToken))
       .thenReturn(fileResourceDTO);
 
-    ResponseEntity<Resource> response = printPaymentNoticeController.generateNotice(organizationId, iuv, debtPositionDTO);
+    ResponseEntity<Resource> response = printPaymentNoticeController.generateNotice(organizationId, debtPositionId, iuv);
 
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertNotNull(response.getBody());

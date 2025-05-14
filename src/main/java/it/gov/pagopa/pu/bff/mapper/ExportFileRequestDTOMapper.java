@@ -53,7 +53,7 @@ public class ExportFileRequestDTOMapper {
     return OffsetDateTimeIntervalFilter.builder()
       .from(DateUtils.toOffsetDateTimeStartOfTheDay(
         localDateIntervalFilter.getFrom()))
-      .to(DateUtils.toOffsetDateTimeStartOfTheDay(
+      .to(DateUtils.toOffsetDateTimeEndOfTheDay(
         localDateIntervalFilter.getTo()))
       .build();
   }

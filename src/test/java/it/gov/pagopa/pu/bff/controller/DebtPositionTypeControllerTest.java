@@ -282,7 +282,7 @@ class DebtPositionTypeControllerTest {
   }
 
   @Test
-  void givenOrganizationIdWhenGetDebtPositionTypesByOrganizationIdThenOk() {
+  void whenGetDebtPositionTypesByOrganizationIdThenOk() {
     Long organizationId = 1L;
     List<DebtPositionType> expectedList = List.of(debtPositionTypeDTO);
 

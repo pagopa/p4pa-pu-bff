@@ -2919,7 +2919,7 @@
         } ]
       }
     },
-    "/bff/organization/{organizationId}/debt-position-types/list" : {
+    "/bff/organization/{organizationId}/debt-position-types/organization" : {
       "get" : {
         "tags" : [ "DebtPositionTypes" ],
         "summary" : "Retrieve a list of debt position types based on the Organization's brokerId and orgTypeCode",

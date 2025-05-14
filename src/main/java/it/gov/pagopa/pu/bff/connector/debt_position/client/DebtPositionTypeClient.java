@@ -73,13 +73,8 @@ public class DebtPositionTypeClient {
   }
 
   public CollectionModelDebtPositionType getDebtPositionTypesByBrokerIdAndOrgType(Long brokerId, String orgType, String accessToken) {
-    try {
-      return debtPositionApisHolder.getDebtPositionTypeSearchControllerApi(accessToken)
-        .crudDebtPositionTypesFindAllByBrokerIdAndOrgType(brokerId, orgType);
-    } catch (HttpClientErrorException.NotFound e) {
-      log.warn("DebtPositionType with brokerId {} and orgType {} not found", brokerId, orgType);
-      return null;
-    }
+    return debtPositionApisHolder.getDebtPositionTypeSearchControllerApi(accessToken)
+      .crudDebtPositionTypesFindAllByBrokerIdAndOrgType(brokerId, orgType);
   }
 
 }

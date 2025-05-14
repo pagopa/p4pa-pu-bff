@@ -136,7 +136,7 @@ public class DebtPositionTypeRetrieverServiceImpl implements
 
   @Override
   public List<DebtPositionType> getDebtPositionTypesByOrganizationId(Long organizationId, UserInfo loggedUser, String accessToken) {
-    authorizationService.validateAdminRole(organizationId, loggedUser);
+    AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser);
 
     Organization organization = organizationService.getOrganizationByOrganizationId(organizationId, accessToken);
     Long brokerId = organization.getBrokerId();

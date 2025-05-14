@@ -2,7 +2,7 @@ package it.gov.pagopa.pu.bff.connector.pagopapayments;
 
 import it.gov.pagopa.pu.bff.connector.pagopapayments.client.PrintPaymentNoticeClient;
 import it.gov.pagopa.pu.bff.dto.FileResourceDTO;
-import it.gov.pagopa.pu.bff.dto.generated.DebtPositionDetailDTO;
+import it.gov.pagopa.pu.pagopapayments.dto.generated.DebtPositionDTO;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -16,7 +16,7 @@ public class PrintPaymentNoticeServiceImpl implements PrintPaymentNoticeService 
 
   @Override
   public FileResourceDTO generateNotice(String iuv,
-    DebtPositionDetailDTO debtPositionDTO, String accessToken) {
+    DebtPositionDTO debtPositionDTO, String accessToken) {
     return client.generateNotice(iuv, debtPositionDTO, accessToken);
   }
 }

@@ -5,11 +5,12 @@ import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionDTO;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrg;
 import it.gov.pagopa.pu.debtpositions.dto.generated.EntityTypeEnum;
 import it.gov.pagopa.pu.debtpositions.dto.generated.PersonDTO;
-import org.springframework.stereotype.Component;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.springframework.util.CollectionUtils;
 
-@Component
-public class DebtPositionMapper {
+@Mapper(componentModel = "spring")
+public abstract class DebtPositionMapper {
   private static final String MULTI_DEBTOR_NAME = "CO-OBBLIGATO";
 
   public DebtPositionDetailDTO mapToDebtPositionDetailDTO(DebtPositionDTO debtPosition, DebtPositionTypeOrg debtPositionTypeOrg){
@@ -40,4 +41,9 @@ public class DebtPositionMapper {
     }
     return debtor;
   }
+
+  @Mapping(target = "organizationId", source = "organizationId")
+  @Mapping(target = "debtPositionId", source = "debtPositionId")
+  public abstract it.gov.pagopa.pu.pagopapayments.dto.generated.DebtPositionDTO mapToDebtPositionDTO(DebtPositionDetailDTO dto,
+    Long organizationId, Long debtPositionId);
 }

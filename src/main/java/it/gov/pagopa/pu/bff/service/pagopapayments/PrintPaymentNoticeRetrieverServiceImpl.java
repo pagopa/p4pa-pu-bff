@@ -5,6 +5,7 @@ import it.gov.pagopa.pu.bff.connector.pagopapayments.PrintPaymentNoticeService;
 import it.gov.pagopa.pu.bff.dto.FileResourceDTO;
 import it.gov.pagopa.pu.bff.dto.generated.DebtPositionDetailDTO;
 import it.gov.pagopa.pu.bff.exception.ResourceNotFoundException;
+import it.gov.pagopa.pu.bff.mapper.DebtPositionMapper;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
 import it.gov.pagopa.pu.bff.service.debt_position.DebtPositionRetrieverService;
 import org.springframework.stereotype.Service;
@@ -13,12 +14,15 @@ import org.springframework.stereotype.Service;
 public class PrintPaymentNoticeRetrieverServiceImpl implements PrintPaymentNoticeRetrieverService{
   private final PrintPaymentNoticeService printPaymentNoticeService;
   private final DebtPositionRetrieverService debtPositionRetrieverService;
+  private final DebtPositionMapper debtPositionMapper;
 
   public PrintPaymentNoticeRetrieverServiceImpl(
     PrintPaymentNoticeService printPaymentNoticeService,
-    DebtPositionRetrieverService debtPositionRetrieverService) {
+    DebtPositionRetrieverService debtPositionRetrieverService,
+    DebtPositionMapper debtPositionMapper) {
     this.printPaymentNoticeService = printPaymentNoticeService;
     this.debtPositionRetrieverService = debtPositionRetrieverService;
+    this.debtPositionMapper = debtPositionMapper;
   }
 
   @Override
@@ -32,7 +36,7 @@ public class PrintPaymentNoticeRetrieverServiceImpl implements PrintPaymentNotic
         "DebtPosition having ID %d not found".formatted(debtPositionId));
     }
     return printPaymentNoticeService.generateNotice(iuv,
-      debtPositionDetail,
+      debtPositionMapper.mapToDebtPositionDTO(debtPositionDetail,organizationId, debtPositionId),
       accessToken);
   }
 }

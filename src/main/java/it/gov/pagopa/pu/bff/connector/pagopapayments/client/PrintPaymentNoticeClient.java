@@ -2,7 +2,7 @@ package it.gov.pagopa.pu.bff.connector.pagopapayments.client;
 
 import it.gov.pagopa.pu.bff.connector.pagopapayments.config.PagoPAPaymentsApisHolder;
 import it.gov.pagopa.pu.bff.dto.FileResourceDTO;
-import it.gov.pagopa.pu.bff.dto.generated.DebtPositionDetailDTO;
+import it.gov.pagopa.pu.pagopapayments.dto.generated.DebtPositionDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +20,7 @@ public class PrintPaymentNoticeClient {
   }
 
   public FileResourceDTO generateNotice(
-    String iuv, DebtPositionDetailDTO debtPositionDTO, String accessToken) {
+    String iuv, DebtPositionDTO debtPositionDTO, String accessToken) {
     ResponseEntity<Resource> resourceResponseEntity = pagoPAPaymentsApisHolder.getPrintPaymentNoticeControllerApi(
         accessToken)
       .generateNoticeWithHttpInfo(iuv, debtPositionDTO);

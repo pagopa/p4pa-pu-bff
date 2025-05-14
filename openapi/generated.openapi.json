@@ -4085,24 +4085,16 @@
         "type" : "string",
         "enum" : [ "PAID", "CLASSIFICATIONS", "PAYMENTS_REPORTING", "RECEIPTS_ARCHIVING" ]
       },
-      "OffsetDateTimeIntervalFilter" : {
+      "LocalDateIntervalFilter" : {
         "type" : "object",
         "properties" : {
           "from" : {
             "type" : "string",
-            "format" : "date-time"
+            "format" : "date"
           },
           "to" : {
             "type" : "string",
-            "format" : "date-time"
-          }
-        }
-      },
-      "ReceiptsArchivingExportFileFilter" : {
-        "type" : "object",
-        "properties" : {
-          "paymentDateTime" : {
-            "$ref" : "#/components/schemas/OffsetDateTimeIntervalFilter"
+            "format" : "date"
           }
         }
       },
@@ -4119,11 +4111,11 @@
           "fileVersion" : {
             "type" : "string"
           },
-          "filterFields" : {
-            "$ref" : "#/components/schemas/ReceiptsArchivingExportFileFilter"
+          "paymentDate" : {
+            "$ref" : "#/components/schemas/LocalDateIntervalFilter"
           }
         },
-        "required" : [ "exportFileType", "fileVersion", "filterFields", "organizationId" ]
+        "required" : [ "exportFileType", "fileVersion", "organizationId", "paymentDate" ]
       },
       "PaymentsReportingExportFileFilter" : {
         "type" : "object",
@@ -4152,18 +4144,6 @@
         },
         "required" : [ "exportFileType", "fileVersion", "filterFields", "organizationId" ]
       },
-      "PaidExportFileFilter" : {
-        "type" : "object",
-        "properties" : {
-          "paymentDateTime" : {
-            "$ref" : "#/components/schemas/OffsetDateTimeIntervalFilter"
-          },
-          "debtPositionTypeOrgId" : {
-            "type" : "integer",
-            "format" : "int64"
-          }
-        }
-      },
       "PaidExportFileRequestDTO" : {
         "type" : "object",
         "properties" : {
@@ -4177,11 +4157,15 @@
           "fileVersion" : {
             "type" : "string"
           },
-          "filterFields" : {
-            "$ref" : "#/components/schemas/PaidExportFileFilter"
+          "paymentDate" : {
+            "$ref" : "#/components/schemas/LocalDateIntervalFilter"
+          },
+          "debtPositionTypeOrgId" : {
+            "type" : "integer",
+            "format" : "int64"
           }
         },
-        "required" : [ "exportFileType", "fileVersion", "filterFields", "organizationId" ]
+        "required" : [ "debtPositionTypeOrgId", "exportFileType", "fileVersion", "organizationId", "paymentDate" ]
       },
       "ClassificationsExportFileFilter" : {
         "type" : "object",
@@ -4262,19 +4246,6 @@
       "LabelEnum" : {
         "type" : "string",
         "enum" : [ "DOPPI", "RT_NO_IUF", "RT_NO_IUD", "IUV_NO_RT", "TES_NO_IUF_OR_IUV", "IUF_NO_TES", "IUD_RT_IUF", "RT_IUF", "RT_TES", "IUD_RT_IUF_TES", "RT_IUF_TES", "IUF_TES_DIV_IMP", "IUD_NO_RT", "TES_NO_MATCH", "UNKNOWN" ]
-      },
-      "LocalDateIntervalFilter" : {
-        "type" : "object",
-        "properties" : {
-          "from" : {
-            "type" : "string",
-            "format" : "date"
-          },
-          "to" : {
-            "type" : "string",
-            "format" : "date"
-          }
-        }
       },
       "DebtPositionDTO" : {
         "type" : "object",

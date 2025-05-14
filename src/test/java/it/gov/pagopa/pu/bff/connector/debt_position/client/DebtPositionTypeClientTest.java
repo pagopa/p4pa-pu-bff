@@ -1,17 +1,14 @@
 package it.gov.pagopa.pu.bff.connector.debt_position.client;
 
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.mockito.Mockito.*;
-
 import it.gov.pagopa.pu.bff.connector.debt_position.config.DebtPositionApisHolder;
 import it.gov.pagopa.pu.bff.exception.ResourceNotFoundException;
 import it.gov.pagopa.pu.debtpositions.controller.generated.DebtPositionTypeEntityControllerApi;
+import it.gov.pagopa.pu.debtpositions.controller.generated.DebtPositionTypeSearchControllerApi;
 import it.gov.pagopa.pu.debtpositions.controller.generated.DebtPositionTypeWithCountSearchControllerApi;
+import it.gov.pagopa.pu.debtpositions.dto.generated.CollectionModelDebtPositionType;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionType;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeRequestBody;
 import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelDebtPositionTypeWithCount;
-import java.util.Collections;
-import java.util.List;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -27,6 +24,13 @@ import org.springframework.data.domain.Sort.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.client.HttpClientErrorException;
 
+import java.util.Collections;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.mockito.Mockito.*;
+
 @ExtendWith(MockitoExtension.class)
 class DebtPositionTypeClientTest {
 
@@ -36,6 +40,8 @@ class DebtPositionTypeClientTest {
   private DebtPositionTypeWithCountSearchControllerApi debtPositionTypeWithCountSearchControllerApiMock;
   @Mock
   private DebtPositionTypeEntityControllerApi debtPositionTypeEntityControllerApiMock;
+  @Mock
+  private DebtPositionTypeSearchControllerApi debtPositionTypeSearchControllerApiMock;
 
   private DebtPositionTypeClient debtPositionTypeClient;
 
@@ -49,8 +55,9 @@ class DebtPositionTypeClientTest {
     Mockito.verifyNoMoreInteractions(
       debtPositionApisHolderMock,
       debtPositionTypeWithCountSearchControllerApiMock,
-      debtPositionTypeEntityControllerApiMock
-      );
+      debtPositionTypeEntityControllerApiMock,
+      debtPositionTypeSearchControllerApiMock
+    );
   }
 
   @Test
@@ -82,26 +89,26 @@ class DebtPositionTypeClientTest {
 
     DebtPositionType result = debtPositionTypeClient.getDebtPositionTypeById(debtPositionTypeId, accessToken);
 
-    Assertions.assertNull(result);
+    assertNull(result);
   }
 
   @Test
   void whenGetDebtPositionTypeWithCountThenInvokeWithAccessToken() {
     long brokerId = 1L;
     String description = "description";
-    List<String> sortList = List.of("sort1,ASC","sort2,DESC");
+    List<String> sortList = List.of("sort1,ASC", "sort2,DESC");
     String accessToken = "ACCESSTOKEN";
     PagedModelDebtPositionTypeWithCount expectedResult = new PagedModelDebtPositionTypeWithCount();
 
     when(debtPositionApisHolderMock.getDebtPositionTypeWithCountSearchControllerApi(accessToken))
       .thenReturn(debtPositionTypeWithCountSearchControllerApiMock);
     when(debtPositionTypeWithCountSearchControllerApiMock.crudDebtPositionTypesWithCountFindByBrokerId(
-      brokerId, description,0,10,sortList))
+      brokerId, description, 0, 10, sortList))
       .thenReturn(expectedResult);
 
     PagedModelDebtPositionTypeWithCount result = debtPositionTypeClient.getDebtPositionTypeWithCount(
-      brokerId, description, PageRequest.of(0,10,
-        Sort.by(List.of(Order.asc("sort1"),Order.desc("sort2")))), accessToken);
+      brokerId, description, PageRequest.of(0, 10,
+        Sort.by(List.of(Order.asc("sort1"), Order.desc("sort2")))), accessToken);
 
     assertSame(expectedResult, result);
   }
@@ -116,7 +123,7 @@ class DebtPositionTypeClientTest {
     when(debtPositionApisHolderMock.getDebtPositionTypeWithCountSearchControllerApi(accessToken))
       .thenReturn(debtPositionTypeWithCountSearchControllerApiMock);
     when(debtPositionTypeWithCountSearchControllerApiMock.crudDebtPositionTypesWithCountFindByBrokerId(
-      brokerId, description,0,null, Collections.emptyList()))
+      brokerId, description, 0, null, Collections.emptyList()))
       .thenReturn(expectedResult);
 
     PagedModelDebtPositionTypeWithCount result = debtPositionTypeClient.getDebtPositionTypeWithCount(
@@ -130,20 +137,20 @@ class DebtPositionTypeClientTest {
   void givenNoExistentBrokerIdWhenGetDebtPositionTypeWithCountThenNull() {
     long brokerId = 1L;
     String description = "description";
-    List<String> sortList = List.of("sort1,ASC","sort2,DESC");
+    List<String> sortList = List.of("sort1,ASC", "sort2,DESC");
     String accessToken = "ACCESSTOKEN";
 
     when(debtPositionApisHolderMock.getDebtPositionTypeWithCountSearchControllerApi(accessToken))
       .thenReturn(debtPositionTypeWithCountSearchControllerApiMock);
     when(debtPositionTypeWithCountSearchControllerApiMock.crudDebtPositionTypesWithCountFindByBrokerId(
-      brokerId, description,0,10,sortList))
+      brokerId, description, 0, 10, sortList))
       .thenThrow(HttpClientErrorException.create(HttpStatus.NOT_FOUND, "NotFound", null, null, null));
 
     PagedModelDebtPositionTypeWithCount result = debtPositionTypeClient.getDebtPositionTypeWithCount(
-      brokerId, description,PageRequest.of(0,10,
-        Sort.by(List.of(Order.asc("sort1"),Order.desc("sort2")))), accessToken);
+      brokerId, description, PageRequest.of(0, 10,
+        Sort.by(List.of(Order.asc("sort1"), Order.desc("sort2")))), accessToken);
 
-    Assertions.assertNull(result);
+    assertNull(result);
   }
 
   @Test
@@ -174,11 +181,11 @@ class DebtPositionTypeClientTest {
     when(debtPositionApisHolderMock.getDebtPositionTypeControllerApi(accessToken))
       .thenReturn(debtPositionTypeEntityControllerApiMock);
     when(debtPositionTypeEntityControllerApiMock.crudPatchDebtpositiontype(
-      debtPositionTypeId.toString(),debtPositionTypeRequestBody))
+      debtPositionTypeId.toString(), debtPositionTypeRequestBody))
       .thenReturn(expectedResult);
 
     DebtPositionType result = debtPositionTypeClient.patchDebtPositionType(
-      debtPositionTypeId,debtPositionTypeRequestBody, accessToken);
+      debtPositionTypeId, debtPositionTypeRequestBody, accessToken);
 
     assertSame(expectedResult, result);
   }
@@ -192,13 +199,13 @@ class DebtPositionTypeClientTest {
     when(debtPositionApisHolderMock.getDebtPositionTypeControllerApi(accessToken))
       .thenReturn(debtPositionTypeEntityControllerApiMock);
     when(debtPositionTypeEntityControllerApiMock.crudPatchDebtpositiontype(
-      debtPositionTypeId.toString(),debtPositionTypeRequestBody))
+      debtPositionTypeId.toString(), debtPositionTypeRequestBody))
       .thenThrow(HttpClientErrorException.create(HttpStatus.NOT_FOUND, "NotFound", null, null, null));
 
     DebtPositionType result = debtPositionTypeClient.patchDebtPositionType(
-      debtPositionTypeId,debtPositionTypeRequestBody,accessToken);
+      debtPositionTypeId, debtPositionTypeRequestBody, accessToken);
 
-    Assertions.assertNull(result);
+    assertNull(result);
   }
 
   @Test
@@ -225,6 +232,23 @@ class DebtPositionTypeClientTest {
 
     Assertions.assertThrows(ResourceNotFoundException.class, () ->
       debtPositionTypeClient.deleteDebtPositionType(debtPositionTypeId, accessToken));
+  }
+
+  @Test
+  void whenGetDebtPositionTypesByBrokerIdAndOrgTypeThenReturnResult() {
+    Long brokerId = 123L;
+    String orgType = "ORG_TYPE";
+    String accessToken = "ACCESSTOKEN";
+    CollectionModelDebtPositionType expectedResult = new CollectionModelDebtPositionType();
+
+    when(debtPositionApisHolderMock.getDebtPositionTypeSearchControllerApi(accessToken))
+      .thenReturn(debtPositionTypeSearchControllerApiMock);
+    when(debtPositionTypeSearchControllerApiMock.crudDebtPositionTypesFindAllByBrokerIdAndOrgType(brokerId, orgType))
+      .thenReturn(expectedResult);
+
+    CollectionModelDebtPositionType result = debtPositionTypeClient.getDebtPositionTypesByBrokerIdAndOrgType(brokerId, orgType, accessToken);
+
+    assertSame(expectedResult, result);
   }
 
 }

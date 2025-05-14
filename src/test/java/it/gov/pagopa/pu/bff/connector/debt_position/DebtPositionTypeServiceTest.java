@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.Mockito.when;
 
 import it.gov.pagopa.pu.bff.connector.debt_position.client.DebtPositionTypeClient;
+import it.gov.pagopa.pu.debtpositions.dto.generated.CollectionModelDebtPositionType;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionType;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeRequestBody;
 import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelDebtPositionTypeWithCount;
@@ -98,6 +99,22 @@ class DebtPositionTypeServiceTest {
 
     Mockito.verify(client).deleteDebtPositionType(debtPositionTypeId, accessToken);
     Mockito.verifyNoMoreInteractions(client);
+  }
+
+  @Test
+  void whenGetDebtPositionTypesByBrokerIdAndOrgTypeThenInvokeClient() {
+    Long brokerId = 123L;
+    String orgType = "ORG_TYPE";
+    String accessToken = "ACCESSTOKEN";
+    CollectionModelDebtPositionType expectedResult = new CollectionModelDebtPositionType();
+
+    when(client.getDebtPositionTypesByBrokerIdAndOrgType(brokerId, orgType, accessToken))
+      .thenReturn(expectedResult);
+
+    CollectionModelDebtPositionType result = service.getDebtPositionTypesByBrokerIdAndOrgType(brokerId, orgType, accessToken);
+
+    assertSame(expectedResult, result);
+    Mockito.verify(client).getDebtPositionTypesByBrokerIdAndOrgType(brokerId, orgType, accessToken);
   }
 
 }

@@ -15,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.Objects;
 
 
@@ -47,9 +48,7 @@ public class DebtPositionTypeController implements DebtPositionTypesApi {
   @Override
   public ResponseEntity<DebtPositionTypeDetailDTO> getDebtPositionTypeDetail(
     Long organizationId, Long debtPositionTypeId) {
-    log.info(
-      "User requested getDebtPositionTypeDetail having organizationId {} and ID {}",
-      organizationId, debtPositionTypeId);
+    log.info("User requested getDebtPositionTypeDetail having organizationId {} and ID {}", organizationId, debtPositionTypeId);
     return ResponseEntity.ofNullable(
       debtPositionTypeRetrieverService.getDebtPositionTypeDetail(organizationId,
         debtPositionTypeId, SecurityUtils.getLoggedUser(),
@@ -81,4 +80,10 @@ public class DebtPositionTypeController implements DebtPositionTypesApi {
     return ResponseEntity.ok().build();
   }
 
+  @Override
+  public ResponseEntity<List<DebtPositionType>> getDebtPositionTypesByOrganizationId(Long organizationId) {
+    log.info("User requested getDebtPositionTypesByOrganizationId having organizationId {}", organizationId);
+    return ResponseEntity.ok(debtPositionTypeRetrieverService.getDebtPositionTypesByOrganizationId(
+      organizationId, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken()));
+  }
 }

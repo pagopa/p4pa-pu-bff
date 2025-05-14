@@ -1154,6 +1154,36 @@ paths:
           description: Forbidden - Access denied
         '500':
           description: Internal Server Error
+  /organization/{organizationId}/debt-position-types/organization:
+    get:
+      tags:
+        - DebtPositionTypes
+      summary: "Retrieve a list of debt position types based on the Organization's brokerId and orgTypeCode"
+      operationId: getDebtPositionTypesByOrganizationId
+      parameters:
+        - name: organizationId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: 'DebtPositionType'
+        '401':
+          description: Unauthorized - Missing or invalid token
+        '403':
+          description: Forbidden - Access denied
+        '404':
+          description: Not Found
+        '500':
+          description: Internal Server Error
   /organization/{organizationId}/ingestion-flow-files:
     get:
       tags:

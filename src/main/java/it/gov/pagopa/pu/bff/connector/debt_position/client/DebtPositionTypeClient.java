@@ -3,6 +3,7 @@ package it.gov.pagopa.pu.bff.connector.debt_position.client;
 import it.gov.pagopa.pu.bff.connector.debt_position.config.DebtPositionApisHolder;
 import it.gov.pagopa.pu.bff.exception.ResourceNotFoundException;
 import it.gov.pagopa.pu.bff.util.PageUtils;
+import it.gov.pagopa.pu.debtpositions.dto.generated.CollectionModelDebtPositionType;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionType;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeRequestBody;
 import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelDebtPositionTypeWithCount;
@@ -64,11 +65,16 @@ public class DebtPositionTypeClient {
 
   public void deleteDebtPositionType(Long debtPositionTypeId, String accessToken) {
     try {
-       debtPositionApisHolder.getDebtPositionTypeControllerApi(accessToken)
+      debtPositionApisHolder.getDebtPositionTypeControllerApi(accessToken)
         .crudDeleteDebtpositiontype(String.valueOf(debtPositionTypeId));
     } catch (HttpClientErrorException.NotFound e) {
       throw new ResourceNotFoundException("DebtPositionType with ID %d not found".formatted(debtPositionTypeId));
     }
+  }
+
+  public CollectionModelDebtPositionType getDebtPositionTypesByBrokerIdAndOrgType(Long brokerId, String orgType, String accessToken) {
+    return debtPositionApisHolder.getDebtPositionTypeSearchControllerApi(accessToken)
+      .crudDebtPositionTypesFindAllByBrokerIdAndOrgType(brokerId, orgType);
   }
 
 }

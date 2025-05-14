@@ -3,6 +3,7 @@ package it.gov.pagopa.pu.bff.service;
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.connector.debt_position.DebtPositionTypeOrgService;
 import it.gov.pagopa.pu.bff.connector.debt_position.DebtPositionTypeService;
+import it.gov.pagopa.pu.bff.connector.organization.OrganizationService;
 import it.gov.pagopa.pu.bff.dto.generated.DebtPositionTypeDetailDTO;
 import it.gov.pagopa.pu.bff.dto.generated.DebtPositionTypePatchRequestBody;
 import it.gov.pagopa.pu.bff.dto.generated.PagedDebtPositionTypeWithCount;
@@ -13,18 +14,21 @@ import it.gov.pagopa.pu.bff.service.debt_position.DebtPositionTypeRetrieverServi
 import it.gov.pagopa.pu.bff.service.taxonomy.TaxonomyRetrieverService;
 import it.gov.pagopa.pu.bff.util.TestUtils;
 import it.gov.pagopa.pu.debtpositions.dto.generated.*;
+import it.gov.pagopa.pu.organization.dto.generated.Organization;
 import it.gov.pagopa.pu.organization.dto.generated.Taxonomy;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
+import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.authorization.AuthorizationDeniedException;
 import uk.co.jemos.podam.api.PodamFactory;
 
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -45,6 +49,8 @@ class DebtPositionTypeRetrieverServiceImplTest {
   private TaxonomyRetrieverService taxonomyRetrieverServiceMock;
   @Mock
   private DebtPositionTypeMapper debtPositionTypeMapperMock;
+  @Mock
+  private OrganizationService organizationServiceMock;
 
   private DebtPositionTypeRetrieverServiceImpl debtPositionTypeRetrieverService;
 
@@ -72,7 +78,7 @@ class DebtPositionTypeRetrieverServiceImplTest {
     debtPositionType.setFlagNotifyIo(true);
     debtPositionType.setIoTemplateMessage("Test IO Template Message");
 
-    debtPositionTypeRetrieverService = new DebtPositionTypeRetrieverServiceImpl(debtPositionTypeServiceMock, debtPositionTypeWithCountMapperMock, taxonomyRetrieverServiceMock, authorizationServiceMock, debtPositionTypeMapperMock, debtPositionTypeOrgServiceMock);
+    debtPositionTypeRetrieverService = new DebtPositionTypeRetrieverServiceImpl(debtPositionTypeServiceMock, debtPositionTypeWithCountMapperMock, taxonomyRetrieverServiceMock, authorizationServiceMock, debtPositionTypeMapperMock, debtPositionTypeOrgServiceMock, organizationServiceMock);
   }
 
   @Test
@@ -390,6 +396,73 @@ class DebtPositionTypeRetrieverServiceImplTest {
     Mockito.verify(authorizationServiceMock).validateBrokerAdminRole(loggedUser);
     Mockito.verifyNoMoreInteractions(authorizationServiceMock);
     Mockito.verifyNoInteractions(debtPositionTypeOrgServiceMock, debtPositionTypeServiceMock);
+  }
+
+  @Test
+  void whenGetDebtPositionTypesByOrganizationIdThenReturnDebtPositionTypeList() {
+    Long organizationId = 1L;
+    UserInfo loggedUser = podamFactory.manufacturePojo(UserInfo.class);
+
+    Organization organization = new Organization();
+    organization.setBrokerId(456L);
+    organization.setOrgTypeCode("OrgType001");
+
+    List<DebtPositionType> expectedList = List.of(debtPositionType);
+
+    PagedModelDebtPositionTypeEmbedded embedded = new PagedModelDebtPositionTypeEmbedded();
+    embedded.setDebtPositionTypes(expectedList);
+
+    CollectionModelDebtPositionType collectionModel = new CollectionModelDebtPositionType();
+    collectionModel.setEmbedded(embedded);
+
+    try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
+      authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)).thenAnswer(invocation -> null);
+
+      Mockito.when(organizationServiceMock.getOrganizationByOrganizationId(organizationId, accessToken)).thenReturn(organization);
+      Mockito.when(debtPositionTypeServiceMock.getDebtPositionTypesByBrokerIdAndOrgType(456L, "OrgType001", accessToken)).thenReturn(collectionModel);
+
+      List<DebtPositionType> result = debtPositionTypeRetrieverService.getDebtPositionTypesByOrganizationId(organizationId, loggedUser, accessToken);
+
+      assertNotNull(result);
+      assertEquals(1, result.size());
+      assertEquals(debtPositionType.getDebtPositionTypeId(), result.get(0).getDebtPositionTypeId());
+
+      authorizationServiceMockedStatic.verify(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser));
+      Mockito.verify(organizationServiceMock).getOrganizationByOrganizationId(organizationId, accessToken);
+      Mockito.verify(debtPositionTypeServiceMock).getDebtPositionTypesByBrokerIdAndOrgType(456L, "OrgType001", accessToken);
+    }
+  }
+
+  @Test
+  void whenDebtPositionTypesIsEmptyThenReturnEmptyList() {
+    Long organizationId = 1L;
+    UserInfo loggedUser = podamFactory.manufacturePojo(UserInfo.class);
+
+    Organization organization = new Organization();
+    organization.setBrokerId(456L);
+    organization.setOrgTypeCode("OrgType001");
+
+    PagedModelDebtPositionTypeEmbedded embedded = new PagedModelDebtPositionTypeEmbedded();
+    embedded.setDebtPositionTypes(Collections.emptyList());
+
+    CollectionModelDebtPositionType collectionModel = new CollectionModelDebtPositionType();
+    collectionModel.setEmbedded(embedded);
+
+    try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
+      authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)).thenAnswer(invocation -> null);
+
+      Mockito.when(organizationServiceMock.getOrganizationByOrganizationId(organizationId, accessToken)).thenReturn(organization);
+      Mockito.when(debtPositionTypeServiceMock.getDebtPositionTypesByBrokerIdAndOrgType(456L, "OrgType001", accessToken)).thenReturn(collectionModel);
+
+      List<DebtPositionType> result = debtPositionTypeRetrieverService.getDebtPositionTypesByOrganizationId(organizationId, loggedUser, accessToken);
+
+      assertNotNull(result);
+      assertTrue(result.isEmpty());
+
+      authorizationServiceMockedStatic.verify(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser));
+      Mockito.verify(organizationServiceMock).getOrganizationByOrganizationId(organizationId, accessToken);
+      Mockito.verify(debtPositionTypeServiceMock).getDebtPositionTypesByBrokerIdAndOrgType(456L, "OrgType001", accessToken);
+    }
   }
 
 }

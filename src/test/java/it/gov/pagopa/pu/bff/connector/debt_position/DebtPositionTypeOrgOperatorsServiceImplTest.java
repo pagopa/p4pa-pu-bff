@@ -5,6 +5,7 @@ import static org.mockito.Mockito.when;
 
 import it.gov.pagopa.pu.bff.connector.debt_position.client.DebtPositionTypeOrgOperatorsClient;
 import it.gov.pagopa.pu.debtpositions.dto.generated.CollectionModelDebtPositionTypeOrgOperators;
+import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrgOperators;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -36,6 +37,22 @@ class DebtPositionTypeOrgOperatorsServiceImplTest {
       .thenReturn(expectedResult);
 
     CollectionModelDebtPositionTypeOrgOperators result = service.getDebtPositionTypeOrgOperators(debtPositionTypeOrgId, accessToken);
+
+    assertSame(expectedResult, result);
+  }
+
+  @Test
+  void whenFindByDebtPositionTypeOrgIdAndOperatorExternalUserIdThenInvokeClient() {
+    Long debtPositionTypeOrgId = 1L;
+    String operatorExternalUsreId = "operatorExternalUsreId";
+    String accessToken = "ACCESSTOKEN";
+    DebtPositionTypeOrgOperators expectedResult = new DebtPositionTypeOrgOperators();
+
+    when(debtPositionTypeOrgOperatorsClientMock.findByDebtPositionTypeOrgIdAndOperatorExternalUserId(
+      debtPositionTypeOrgId,operatorExternalUsreId,accessToken))
+      .thenReturn(expectedResult);
+
+    DebtPositionTypeOrgOperators result = service.findByDebtPositionTypeOrgIdAndOperatorExternalUserId(debtPositionTypeOrgId, operatorExternalUsreId, accessToken);
 
     assertSame(expectedResult, result);
   }

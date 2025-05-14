@@ -1652,11 +1652,11 @@ paths:
         '500':
           description: Internal Server Error
       x-spring-paginated: true
-  /organization/{organizationId}/printpaymentnotice/generate/{debtPositionId}:
-    post:
+  /organization/{organizationId}/debtpositions/{debtPositionId}/notice:
+    get:
       tags:
-        - print-payment-notice
-      operationId: generateNotice
+        - DebtPositions
+      operationId: getPaymentNotice
       parameters:
         - name: organizationId
           in: path

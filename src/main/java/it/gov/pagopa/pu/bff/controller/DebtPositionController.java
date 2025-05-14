@@ -2,18 +2,23 @@ package it.gov.pagopa.pu.bff.controller;
 
 import it.gov.pagopa.pu.bff.controller.generated.DebtPositionsApi;
 import it.gov.pagopa.pu.bff.dto.DebtPositionViewFiltersDTO;
+import it.gov.pagopa.pu.bff.dto.FileResourceDTO;
 import it.gov.pagopa.pu.bff.dto.generated.DebtPositionDetailDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedDebtPositionView;
 import it.gov.pagopa.pu.bff.security.SecurityUtils;
+import it.gov.pagopa.pu.bff.service.debt_position.DebtPositionNoticeRetrieverService;
 import it.gov.pagopa.pu.bff.service.debt_position.DebtPositionRetrieverService;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionDTO;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionStatus;
+import java.time.OffsetDateTime;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ContentDisposition;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.time.OffsetDateTime;
 
 
 @Slf4j
@@ -21,10 +26,13 @@ import java.time.OffsetDateTime;
 public class DebtPositionController implements DebtPositionsApi {
 
   private final DebtPositionRetrieverService debtPositionRetrieverService;
+  private final DebtPositionNoticeRetrieverService debtPositionNoticeRetrieverService;
 
   public DebtPositionController(
-    DebtPositionRetrieverService debtPositionRetrieverService) {
+    DebtPositionRetrieverService debtPositionRetrieverService,
+    DebtPositionNoticeRetrieverService debtPositionNoticeRetrieverService) {
     this.debtPositionRetrieverService = debtPositionRetrieverService;
+    this.debtPositionNoticeRetrieverService = debtPositionNoticeRetrieverService;
   }
 
   @Override
@@ -74,4 +82,21 @@ public class DebtPositionController implements DebtPositionsApi {
     return ResponseEntity.ok().build();
   }
 
+  @Override
+  public ResponseEntity<Resource> getPaymentNotice(Long organizationId,
+    Long debtPositionId, String iuv) {
+    log.info("User requested getPaymentNotice having organizationId {} debtPositionId {} and iuv {}", organizationId, debtPositionId, iuv);
+
+    FileResourceDTO fileResourceDTO = debtPositionNoticeRetrieverService.getNotice(
+      organizationId,iuv,debtPositionId,SecurityUtils.getLoggedUser(),SecurityUtils.getAccessToken());
+    HttpHeaders headers = new HttpHeaders();
+    headers.setContentDisposition(ContentDisposition.attachment()
+      .filename(fileResourceDTO.getFileName())
+      .build());
+
+    return ResponseEntity.ok()
+      .contentType(MediaType.APPLICATION_PDF)
+      .headers(headers)
+      .body(fileResourceDTO.getResource());
+  }
 }

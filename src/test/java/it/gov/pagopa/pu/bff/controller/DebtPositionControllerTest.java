@@ -1,13 +1,19 @@
 package it.gov.pagopa.pu.bff.controller;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
+import it.gov.pagopa.pu.bff.dto.FileResourceDTO;
 import it.gov.pagopa.pu.bff.dto.generated.DebtPositionDetailDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedDebtPositionView;
 import it.gov.pagopa.pu.bff.security.SecurityUtilsTest;
+import it.gov.pagopa.pu.bff.service.debt_position.DebtPositionNoticeRetrieverService;
 import it.gov.pagopa.pu.bff.service.debt_position.DebtPositionRetrieverService;
 import it.gov.pagopa.pu.bff.util.TestUtils;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionDTO;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionStatus;
+import java.time.OffsetDateTime;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,18 +23,20 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import uk.co.jemos.podam.api.PodamFactory;
-
-import java.time.OffsetDateTime;
 
 @ExtendWith(MockitoExtension.class)
 class DebtPositionControllerTest {
 
   @Mock
   private DebtPositionRetrieverService debtPositionRetrieverServiceMock;
+  @Mock
+  private DebtPositionNoticeRetrieverService debtPositionNoticeRetrieverServiceMock;
 
   @InjectMocks
   private DebtPositionController debtPositionController;
@@ -189,5 +197,25 @@ class DebtPositionControllerTest {
 
     Assertions.assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
     Assertions.assertNull(response.getBody());
+  }
+
+  @Test
+  void givenCorrectRequestWhenGetPaymentNoticeThenOk() {
+    long organizationId = 1L;
+    String iuv = "iuv";
+    Long debtPositionId = 2L;
+    FileResourceDTO fileResourceDTO = new FileResourceDTO();
+    fileResourceDTO.setResource(new ByteArrayResource("PDF-DATA".getBytes()));
+    fileResourceDTO.setFileName("filename");
+
+    Mockito.when(debtPositionNoticeRetrieverServiceMock.getNotice(organizationId, iuv, debtPositionId, loggedUser, accessToken))
+      .thenReturn(fileResourceDTO);
+
+    ResponseEntity<Resource> response = debtPositionController.getPaymentNotice(organizationId, debtPositionId, iuv);
+
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertNotNull(response.getBody());
+    assertEquals(fileResourceDTO.getResource(), response.getBody());
+    assertEquals(fileResourceDTO.getFileName(), response.getHeaders().getContentDisposition().getFilename());
   }
 }

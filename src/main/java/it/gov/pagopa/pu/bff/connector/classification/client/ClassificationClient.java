@@ -23,9 +23,9 @@ public class ClassificationClient {
   public PagedTreasuredClassification getTreasuredClassifications(Long organizationId, TreasuredClassificationFiltersDTO filters, Pageable pageable, String accessToken) {
     return classificationApisHolder.getClassificationsApi(accessToken)
       .getTreasuredClassifications(organizationId,
-        filters.getLabel(),
         filters.getLastClassificationDate().getFrom(),
         filters.getLastClassificationDate().getTo(),
+        filters.getLabel(),
         filters.getIud(),
         filters.getIuv(),
         filters.getIur(),

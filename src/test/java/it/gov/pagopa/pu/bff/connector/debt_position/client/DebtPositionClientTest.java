@@ -2,6 +2,7 @@ package it.gov.pagopa.pu.bff.connector.debt_position.client;
 
 import it.gov.pagopa.pu.bff.connector.debt_position.config.DebtPositionApisHolder;
 import it.gov.pagopa.pu.bff.dto.DebtPositionViewFiltersDTO;
+import it.gov.pagopa.pu.bff.exception.ResourceNotFoundException;
 import it.gov.pagopa.pu.bff.util.TestUtils;
 import it.gov.pagopa.pu.debtpositions.controller.generated.DebtPositionApi;
 import it.gov.pagopa.pu.debtpositions.controller.generated.DebtPositionViewSearchControllerApi;
@@ -17,6 +18,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpClientErrorException;
 import uk.co.jemos.podam.api.PodamFactory;
 
@@ -141,4 +143,55 @@ class DebtPositionClientTest {
     Assertions.assertNull(result);
     Mockito.verifyNoMoreInteractions(debtPositionApiMock, debtPositionApisHolderMock);
   }
+
+  @Test
+  void givenExistingDebtPositionIdWhenDeleteDebtPositionThenInvokeWithAccessToken() {
+    Long debtPositionId = 1L;
+    String accessToken = "ACCESSTOKEN";
+    ResponseEntity<Void> voidResponseEntity = new ResponseEntity<>(HttpStatus.OK);
+
+    when(debtPositionApisHolderMock.getDebtPositionApi(accessToken))
+      .thenReturn(debtPositionApiMock);
+    when(debtPositionApiMock.deleteDebtPositionWithHttpInfo(debtPositionId))
+      .thenReturn(voidResponseEntity);
+
+    Boolean deletedDebtPositionPhysically = debtPositionClient.deleteDebtPosition(debtPositionId, accessToken);
+
+    Assertions.assertFalse(deletedDebtPositionPhysically);
+    Mockito.verifyNoMoreInteractions(debtPositionApiMock, debtPositionApisHolderMock);
+  }
+
+  @Test
+  void givenExistingDebtPositionIdWhenDeleteDebtPositionThenInvokeWithAccessTokenAndReturnNoContent() {
+    Long debtPositionId = 1L;
+    String accessToken = "ACCESSTOKEN";
+    ResponseEntity<Void> voidResponseEntity = new ResponseEntity<>(HttpStatus.NO_CONTENT);
+
+    when(debtPositionApisHolderMock.getDebtPositionApi(accessToken))
+      .thenReturn(debtPositionApiMock);
+    when(debtPositionApiMock.deleteDebtPositionWithHttpInfo(debtPositionId))
+      .thenReturn(voidResponseEntity);
+
+    Boolean deletedDebtPositionPhysically = debtPositionClient.deleteDebtPosition(debtPositionId, accessToken);
+
+    Assertions.assertTrue(deletedDebtPositionPhysically);
+    Mockito.verifyNoMoreInteractions(debtPositionApiMock, debtPositionApisHolderMock);
+  }
+
+  @Test
+  void givenWrongDebtPositionIdWhenDeleteDebtPositionThenThrowNotFoundException() {
+    Long debtPositionId = 1L;
+    String accessToken = "ACCESSTOKEN";
+
+    when(debtPositionApisHolderMock.getDebtPositionApi(accessToken))
+      .thenReturn(debtPositionApiMock);
+    when(debtPositionApiMock.deleteDebtPositionWithHttpInfo(debtPositionId))
+      .thenThrow(HttpClientErrorException.create(HttpStatus.NOT_FOUND, "NotFound", null, null, null));
+
+    ResourceNotFoundException ex = Assertions.assertThrows(ResourceNotFoundException.class, () -> debtPositionClient.deleteDebtPosition(debtPositionId, accessToken));
+
+    Assertions.assertEquals("DebtPosition with ID 1 not found", ex.getMessage());
+    Mockito.verifyNoMoreInteractions(debtPositionApiMock, debtPositionApisHolderMock);
+  }
+
 }

@@ -371,7 +371,7 @@ tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>("ope
     "additionalModelTypeAnnotations" to "@lombok.experimental.SuperBuilder(toBuilder = true)"
   ))
   schemaMappings.set(mapOf(
-    "PaymentOptionDTO" to "it.gov.pagopa.pu.debtpositions.dto.generated.PaymentOptionDTO"
+    "DebtPositionDTO" to "it.gov.pagopa.pu.bff.dto.generated.DebtPositionDetailDTO"
   ))
   typeMappings.set(mapOf(
     "string+binary" to "Resource"

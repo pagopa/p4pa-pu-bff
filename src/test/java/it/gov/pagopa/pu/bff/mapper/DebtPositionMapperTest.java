@@ -2,24 +2,26 @@ package it.gov.pagopa.pu.bff.mapper;
 
 import it.gov.pagopa.pu.bff.dto.generated.DebtPositionDetailDTO;
 import it.gov.pagopa.pu.bff.util.TestUtils;
-import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionDTO;
-import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrg;
-import it.gov.pagopa.pu.debtpositions.dto.generated.EntityTypeEnum;
-import it.gov.pagopa.pu.debtpositions.dto.generated.PaymentOptionDTO;
-import it.gov.pagopa.pu.debtpositions.dto.generated.PersonDTO;
-import java.util.List;
+import it.gov.pagopa.pu.debtpositions.dto.generated.*;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mapstruct.factory.Mappers;
 import org.mockito.junit.jupiter.MockitoExtension;
 import uk.co.jemos.podam.api.PodamFactory;
 
+import java.util.List;
+
 @ExtendWith(MockitoExtension.class)
 class DebtPositionMapperTest {
-  private final DebtPositionMapper mapper = Mappers.getMapper(DebtPositionMapper.class);
+  private DebtPositionMapper mapper;
   private final PodamFactory podamFactory = TestUtils.getPodamFactory();
+
+  @BeforeEach
+  void setUp() {
+    mapper = new DebtPositionMapper();
+  }
 
   @Test
   void givenNoMultiDebtorDebtPositionWhenMapToDebtPositionDetailDTOThenCorrectMapping() {
@@ -89,23 +91,5 @@ class DebtPositionMapperTest {
     }else{
       TestUtils.reflectionEqualsByName(debtor,debtPositionDTO.getPaymentOptions().getFirst().getInstallments().getFirst().getDebtor());
     }
-  }
-
-  @Test
-  void givenDebtPositionDetailDTOAndOrganizationIdWhenMapToDebtPositionDTOThenMapIt(){
-    DebtPositionDetailDTO dto = podamFactory.manufacturePojo(
-      DebtPositionDetailDTO.class);
-    long organizationId = 2L;
-    long debtPositionId = 3L;
-
-    it.gov.pagopa.pu.pagopapayments.dto.generated.DebtPositionDTO result = mapper.mapToDebtPositionDTO(
-      dto, organizationId,debtPositionId);
-
-    TestUtils.reflectionEqualsByName(dto, result, "debtPositionTypeOrgDescription","debtPositionTypeOrgCode","debtPositionOrigin", "status", "debtor", "iupd");
-    Assertions.assertEquals(dto.getDebtPositionOrigin().toString(),result.getDebtPositionOrigin().toString());
-    Assertions.assertEquals(dto.getStatus().toString(),result.getStatus().toString());
-    Assertions.assertEquals(organizationId, result.getOrganizationId());
-    Assertions.assertEquals(debtPositionId, result.getDebtPositionId());
-    TestUtils.checkNotNullFields(result, "creationDate", "updateDate", "updateOperatorExternalId", "updateTraceId", "iupdOrg", "debtPositionTypeOrgId", "validityDate", "flagIuvVolatile", "multiDebtor", "flagPagoPaPayment");
   }
 }

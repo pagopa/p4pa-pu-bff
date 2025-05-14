@@ -5,8 +5,8 @@ import static org.mockito.Mockito.when;
 
 import it.gov.pagopa.pu.bff.connector.pagopapayments.client.PrintPaymentNoticeClient;
 import it.gov.pagopa.pu.bff.dto.FileResourceDTO;
+import it.gov.pagopa.pu.bff.dto.generated.DebtPositionDetailDTO;
 import it.gov.pagopa.pu.bff.util.TestUtils;
-import it.gov.pagopa.pu.pagopapayments.dto.generated.DebtPositionDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -32,14 +32,14 @@ class PrintPaymentNoticeServiceTest {
   @Test
   void whenGenerateNoticeThenInvokeClient() {
     String iuv = "iuv";
-    DebtPositionDTO debtPositionDTO = podamFactory.manufacturePojo(DebtPositionDTO.class);
+    DebtPositionDetailDTO debtPositionDetailDTO = podamFactory.manufacturePojo(DebtPositionDetailDTO.class);
     FileResourceDTO expectedResult = new FileResourceDTO();
 
-    when(printPaymentNoticeClientMock.generateNotice(iuv,debtPositionDTO,
+    when(printPaymentNoticeClientMock.generateNotice(iuv,debtPositionDetailDTO,
       ACCESS_TOKEN))
       .thenReturn(expectedResult);
 
-    FileResourceDTO result = service.generateNotice(iuv,debtPositionDTO,
+    FileResourceDTO result = service.generateNotice(iuv,debtPositionDetailDTO,
       ACCESS_TOKEN);
 
     assertSame(expectedResult, result);

@@ -8,12 +8,10 @@ import it.gov.pagopa.pu.bff.connector.pagopapayments.PrintPaymentNoticeService;
 import it.gov.pagopa.pu.bff.dto.FileResourceDTO;
 import it.gov.pagopa.pu.bff.dto.generated.DebtPositionDetailDTO;
 import it.gov.pagopa.pu.bff.exception.ResourceNotFoundException;
-import it.gov.pagopa.pu.bff.mapper.DebtPositionMapper;
 import it.gov.pagopa.pu.bff.service.debt_position.DebtPositionRetrieverService;
 import it.gov.pagopa.pu.bff.service.pagopapayments.PrintPaymentNoticeRetrieverService;
 import it.gov.pagopa.pu.bff.service.pagopapayments.PrintPaymentNoticeRetrieverServiceImpl;
 import it.gov.pagopa.pu.bff.util.TestUtils;
-import it.gov.pagopa.pu.pagopapayments.dto.generated.DebtPositionDTO;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -33,8 +31,6 @@ class PrintPaymentNoticeRetrieverServiceImplTest {
   private PrintPaymentNoticeService printPaymentNoticeServiceMock;
   @Mock
   private DebtPositionRetrieverService debtPositionRetrieverServiceMock;
-  @Mock
-  private DebtPositionMapper debtPositionMapperMock;
 
   private PrintPaymentNoticeRetrieverService printPaymentNoticeRetrieverService;
 
@@ -43,7 +39,7 @@ class PrintPaymentNoticeRetrieverServiceImplTest {
   @BeforeEach
   void setUp() {
     printPaymentNoticeRetrieverService = new PrintPaymentNoticeRetrieverServiceImpl(
-      printPaymentNoticeServiceMock, debtPositionRetrieverServiceMock, debtPositionMapperMock);
+      printPaymentNoticeServiceMock, debtPositionRetrieverServiceMock);
   }
 
   @Test
@@ -55,7 +51,6 @@ class PrintPaymentNoticeRetrieverServiceImplTest {
     Long debtPositionId=2L;
     String iuv = "iuv";
     DebtPositionDetailDTO debtPositionDetail = podamFactory.manufacturePojo(DebtPositionDetailDTO.class);
-    DebtPositionDTO debtPositionDTO = podamFactory.manufacturePojo(DebtPositionDTO.class);
     FileResourceDTO expectedResult = new FileResourceDTO();
 
     try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
@@ -63,10 +58,8 @@ class PrintPaymentNoticeRetrieverServiceImplTest {
 
       Mockito.when(debtPositionRetrieverServiceMock.getDebtPositionDetail(debtPositionId,organizationId,loggedUser,accessToken))
         .thenReturn(debtPositionDetail);
-      Mockito.when(debtPositionMapperMock.mapToDebtPositionDTO(debtPositionDetail,organizationId,debtPositionId))
-        .thenReturn(debtPositionDTO);
       Mockito.when(
-          printPaymentNoticeServiceMock.generateNotice(iuv,debtPositionDTO,accessToken))
+          printPaymentNoticeServiceMock.generateNotice(iuv,debtPositionDetail,accessToken))
         .thenReturn(expectedResult);
 
       FileResourceDTO result = printPaymentNoticeRetrieverService.generateNotice(organizationId, iuv, debtPositionId, loggedUser, accessToken);
@@ -75,7 +68,7 @@ class PrintPaymentNoticeRetrieverServiceImplTest {
       assertSame(expectedResult, result);
 
       authorizationServiceMockedStatic.verify(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser));
-      Mockito.verifyNoMoreInteractions(printPaymentNoticeServiceMock,debtPositionMapperMock);
+      Mockito.verifyNoMoreInteractions(printPaymentNoticeServiceMock);
     }
   }
 
@@ -98,7 +91,7 @@ class PrintPaymentNoticeRetrieverServiceImplTest {
         ()->printPaymentNoticeRetrieverService.generateNotice(organizationId, iuv, debtPositionId, loggedUser, accessToken));
 
       authorizationServiceMockedStatic.verify(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser));
-      Mockito.verifyNoInteractions(printPaymentNoticeServiceMock,debtPositionMapperMock);
+      Mockito.verifyNoInteractions(printPaymentNoticeServiceMock);
     }
   }
 
@@ -121,7 +114,7 @@ class PrintPaymentNoticeRetrieverServiceImplTest {
 
       authorizationServiceMockedStatic.verify(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser));
     }
-    Mockito.verifyNoInteractions(printPaymentNoticeServiceMock,debtPositionRetrieverServiceMock,debtPositionMapperMock);
+    Mockito.verifyNoInteractions(printPaymentNoticeServiceMock,debtPositionRetrieverServiceMock);
   }
 }
 

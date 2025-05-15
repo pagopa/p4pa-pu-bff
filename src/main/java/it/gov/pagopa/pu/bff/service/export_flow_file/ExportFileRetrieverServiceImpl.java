@@ -4,13 +4,12 @@ import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.connector.process_executions.ExportFileService;
 import it.gov.pagopa.pu.bff.dto.ExportFileFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedExportFile;
-import it.gov.pagopa.pu.bff.dto.generated.PaidExportFileRequestDTO;
-import it.gov.pagopa.pu.bff.dto.generated.ReceiptsArchivingExportFileRequestDTO;
 import it.gov.pagopa.pu.bff.mapper.ExportFileMapper;
-import it.gov.pagopa.pu.bff.mapper.ExportFileRequestDTOMapper;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
 import it.gov.pagopa.pu.processexecutions.dto.generated.ClassificationsExportFileRequestDTO;
+import it.gov.pagopa.pu.processexecutions.dto.generated.PaidExportFileRequestDTO;
 import it.gov.pagopa.pu.processexecutions.dto.generated.PaymentsReportingExportFileRequestDTO;
+import it.gov.pagopa.pu.processexecutions.dto.generated.ReceiptsArchivingExportFileRequestDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -22,15 +21,12 @@ public class ExportFileRetrieverServiceImpl implements
 
   private final ExportFileService exportFileService;
   private final ExportFileMapper exportFileMapper;
-  private final ExportFileRequestDTOMapper exportFileRequestDTOMapper;
 
   public ExportFileRetrieverServiceImpl(
     ExportFileService exportFileService,
-    ExportFileMapper exportFileMapper,
-    ExportFileRequestDTOMapper exportFileRequestDTOMapper) {
+    ExportFileMapper exportFileMapper) {
     this.exportFileService = exportFileService;
     this.exportFileMapper = exportFileMapper;
-    this.exportFileRequestDTOMapper = exportFileRequestDTOMapper;
   }
 
   @Override
@@ -53,9 +49,7 @@ public class ExportFileRetrieverServiceImpl implements
   public void createPaidExportFile(PaidExportFileRequestDTO requestDTO,
     UserInfo loggedUser, String accessToken) {
     AuthorizationService.validateUserForOrganizationId(requestDTO.getOrganizationId(), loggedUser);
-    exportFileService.createPaidExportFile(
-      exportFileRequestDTOMapper.map2ProcessExecutionsDto(requestDTO),
-      accessToken);
+    exportFileService.createPaidExportFile(requestDTO, accessToken);
   }
 
   @Override
@@ -78,8 +72,6 @@ public class ExportFileRetrieverServiceImpl implements
     UserInfo loggedUser, String accessToken) {
     AuthorizationService.validateUserForOrganizationId(
       receiptsArchivingExportFileRequestDTO.getOrganizationId(), loggedUser);
-    exportFileService.createReceiptsArchivingExportFile(
-      exportFileRequestDTOMapper.map2ProcessExecutionsDto(receiptsArchivingExportFileRequestDTO),
-      accessToken);
+    exportFileService.createReceiptsArchivingExportFile(receiptsArchivingExportFileRequestDTO, accessToken);
   }
 }

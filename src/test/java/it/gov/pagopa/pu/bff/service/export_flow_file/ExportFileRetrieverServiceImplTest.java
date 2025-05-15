@@ -4,13 +4,9 @@ import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.auth.dto.generated.UserOrganizationRoles;
 import it.gov.pagopa.pu.bff.connector.process_executions.ExportFileService;
 import it.gov.pagopa.pu.bff.dto.ExportFileFiltersDTO;
-import it.gov.pagopa.pu.bff.dto.LocalDateIntervalFilter;
 import it.gov.pagopa.pu.bff.dto.OffsetDateTimeIntervalFilter;
 import it.gov.pagopa.pu.bff.dto.generated.PagedExportFile;
-import it.gov.pagopa.pu.bff.dto.generated.PaidExportFileRequestDTO;
-import it.gov.pagopa.pu.bff.dto.generated.ReceiptsArchivingExportFileRequestDTO;
 import it.gov.pagopa.pu.bff.mapper.ExportFileMapper;
-import it.gov.pagopa.pu.bff.mapper.ExportFileRequestDTOMapper;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
 import it.gov.pagopa.pu.bff.util.TestUtils;
 import it.gov.pagopa.pu.processexecutions.dto.generated.ClassificationsExportFileFilter;
@@ -18,9 +14,12 @@ import it.gov.pagopa.pu.processexecutions.dto.generated.ClassificationsExportFil
 import it.gov.pagopa.pu.processexecutions.dto.generated.ExportFile.ExportFileTypeEnum;
 import it.gov.pagopa.pu.processexecutions.dto.generated.ExportFileStatus;
 import it.gov.pagopa.pu.processexecutions.dto.generated.PagedModelExportFile;
+import it.gov.pagopa.pu.processexecutions.dto.generated.PaidExportFileFilter;
+import it.gov.pagopa.pu.processexecutions.dto.generated.PaidExportFileRequestDTO;
 import it.gov.pagopa.pu.processexecutions.dto.generated.PaymentsReportingExportFileFilter;
 import it.gov.pagopa.pu.processexecutions.dto.generated.PaymentsReportingExportFileRequestDTO;
-import java.time.LocalDate;
+import it.gov.pagopa.pu.processexecutions.dto.generated.ReceiptsArchivingExportFileFilter;
+import it.gov.pagopa.pu.processexecutions.dto.generated.ReceiptsArchivingExportFileRequestDTO;
 import java.time.OffsetDateTime;
 import java.util.List;
 import org.junit.jupiter.api.Assertions;
@@ -39,14 +38,11 @@ class ExportFileRetrieverServiceImplTest {
   @Mock
   private ExportFileMapper exportFileMapperMock;
 
-  private final ExportFileRequestDTOMapper exportFileRequestDTOMapper = new ExportFileRequestDTOMapper();
-
   private ExportFileRetrieverService exportFileRetrieverService;
 
   @BeforeEach
   void setUp() {
-    exportFileRetrieverService = new ExportFileRetrieverServiceImpl(
-      exportFileServiceMock, exportFileMapperMock, exportFileRequestDTOMapper);
+    exportFileRetrieverService = new ExportFileRetrieverServiceImpl(exportFileServiceMock, exportFileMapperMock);
   }
 
   @Test
@@ -128,10 +124,9 @@ class ExportFileRetrieverServiceImplTest {
   void whenCreatePaidExportFileThenOk() {
     PaidExportFileRequestDTO requestDTO = PaidExportFileRequestDTO.builder()
       .organizationId(1L)
-      .exportFileType(ExportFileTypeEnum.PAID)
+      .exportFileType(PaidExportFileRequestDTO.ExportFileTypeEnum.PAID)
       .fileVersion("version1")
-      .paymentDate(new LocalDateIntervalFilter(LocalDate.now(), LocalDate.now()))
-      .debtPositionTypeOrgId(1L)
+      .filterFields(new PaidExportFileFilter())
       .build();
     String accessToken = "ACCESSTOKEN";
     UserInfo user = TestUtils.getSampleUser();
@@ -143,7 +138,7 @@ class ExportFileRetrieverServiceImplTest {
 
     exportFileRetrieverService.createPaidExportFile(requestDTO, user, accessToken);
 
-    Mockito.verify(exportFileServiceMock).createPaidExportFile(exportFileRequestDTOMapper.map2ProcessExecutionsDto(requestDTO), accessToken);
+    Mockito.verify(exportFileServiceMock).createPaidExportFile(requestDTO, accessToken);
   }
 
   @Test
@@ -194,10 +189,9 @@ class ExportFileRetrieverServiceImplTest {
   void whenCreateReceiptsArchivingExportFileThenOk() {
     ReceiptsArchivingExportFileRequestDTO receiptsArchivingExportFileRequestDTO = ReceiptsArchivingExportFileRequestDTO.builder()
       .organizationId(1L)
-      .exportFileType(ExportFileTypeEnum.RECEIPTS_ARCHIVING)
+      .exportFileType(ReceiptsArchivingExportFileRequestDTO.ExportFileTypeEnum.RECEIPTS_ARCHIVING)
       .fileVersion("V1_0")
-      .paymentDate(
-        new LocalDateIntervalFilter(LocalDate.now(), LocalDate.now()))
+      .filterFields(new ReceiptsArchivingExportFileFilter())
       .build();
 
     String accessToken = "ACCESSTOKEN";
@@ -211,8 +205,6 @@ class ExportFileRetrieverServiceImplTest {
     exportFileRetrieverService.createReceiptsArchivingExportFile(
       receiptsArchivingExportFileRequestDTO, user, accessToken);
 
-    Mockito.verify(exportFileServiceMock).createReceiptsArchivingExportFile(
-      exportFileRequestDTOMapper.map2ProcessExecutionsDto(
-        receiptsArchivingExportFileRequestDTO), accessToken);
+    Mockito.verify(exportFileServiceMock).createReceiptsArchivingExportFile(receiptsArchivingExportFileRequestDTO, accessToken);
   }
 }

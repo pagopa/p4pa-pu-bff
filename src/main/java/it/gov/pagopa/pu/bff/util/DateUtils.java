@@ -1,7 +1,10 @@
 package it.gov.pagopa.pu.bff.util;
 
+import static it.gov.pagopa.pu.bff.util.Constants.ZONEID;
+
 import it.gov.pagopa.pu.bff.dto.LocalDateIntervalFilter;
 
+import it.gov.pagopa.pu.processexecutions.dto.generated.OffsetDateTimeIntervalFilter;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -10,8 +13,6 @@ import java.time.ZoneId;
 
 public class DateUtils {
   private DateUtils(){}
-
-  public static final ZoneId ZONEID = ZoneId.of("Europe/Rome");
 
   public static LocalDateTime toLocalDateTime(OffsetDateTime date){
     return date!=null?date.atZoneSameInstant(ZoneId.systemDefault()).toLocalDateTime():null;
@@ -37,5 +38,13 @@ public class DateUtils {
     }
     LocalDateTime endOfDay = LocalDateTime.of(localDate, LocalTime.MAX.truncatedTo(java.time.temporal.ChronoUnit.MILLIS));
     return endOfDay.atZone(ZONEID).toOffsetDateTime();
+  }
+
+  public static OffsetDateTimeIntervalFilter toRangeClosedOffsetDateTimeIntervalFilter(
+    LocalDateIntervalFilter localDateIntervalFilter) {
+    return OffsetDateTimeIntervalFilter.builder()
+      .from(toOffsetDateTimeStartOfTheDay(localDateIntervalFilter.getFrom()))
+      .to(toOffsetDateTimeEndOfTheDay(localDateIntervalFilter.getTo()))
+      .build();
   }
 }

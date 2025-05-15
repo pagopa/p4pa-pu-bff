@@ -2,12 +2,9 @@ package it.gov.pagopa.pu.bff.controller;
 
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.dto.ExportFileFiltersDTO;
-import it.gov.pagopa.pu.bff.dto.LocalDateIntervalFilter;
 import it.gov.pagopa.pu.bff.dto.OffsetDateTimeIntervalFilter;
 import it.gov.pagopa.pu.bff.dto.generated.ExportFile;
 import it.gov.pagopa.pu.bff.dto.generated.PagedExportFile;
-import it.gov.pagopa.pu.bff.dto.generated.PaidExportFileRequestDTO;
-import it.gov.pagopa.pu.bff.dto.generated.ReceiptsArchivingExportFileRequestDTO;
 import it.gov.pagopa.pu.bff.security.SecurityUtilsTest;
 import it.gov.pagopa.pu.bff.service.export_flow_file.ExportFileRetrieverService;
 import it.gov.pagopa.pu.bff.util.TestUtils;
@@ -15,9 +12,12 @@ import it.gov.pagopa.pu.processexecutions.dto.generated.ClassificationsExportFil
 import it.gov.pagopa.pu.processexecutions.dto.generated.ClassificationsExportFileRequestDTO;
 import it.gov.pagopa.pu.processexecutions.dto.generated.ExportFile.ExportFileTypeEnum;
 import it.gov.pagopa.pu.processexecutions.dto.generated.ExportFileStatus;
+import it.gov.pagopa.pu.processexecutions.dto.generated.PaidExportFileFilter;
+import it.gov.pagopa.pu.processexecutions.dto.generated.PaidExportFileRequestDTO;
 import it.gov.pagopa.pu.processexecutions.dto.generated.PaymentsReportingExportFileFilter;
 import it.gov.pagopa.pu.processexecutions.dto.generated.PaymentsReportingExportFileRequestDTO;
-import java.time.LocalDate;
+import it.gov.pagopa.pu.processexecutions.dto.generated.ReceiptsArchivingExportFileFilter;
+import it.gov.pagopa.pu.processexecutions.dto.generated.ReceiptsArchivingExportFileRequestDTO;
 import java.time.OffsetDateTime;
 import java.util.List;
 import org.junit.jupiter.api.AfterEach;
@@ -106,10 +106,9 @@ class ExportFileControllerTest {
   void givenCorrectRequestWhenCreatePaidExportFileThenOk() {
     PaidExportFileRequestDTO requestDTO = PaidExportFileRequestDTO.builder()
       .organizationId(1L)
-      .exportFileType(ExportFileTypeEnum.PAID)
+      .exportFileType(PaidExportFileRequestDTO.ExportFileTypeEnum.PAID)
       .fileVersion("version1")
-      .paymentDate(new LocalDateIntervalFilter(LocalDate.now(), LocalDate.now()))
-      .debtPositionTypeOrgId(1L)
+      .filterFields(new PaidExportFileFilter())
       .build();
 
     ResponseEntity<Void> response = exportFileController.createPaidExportFile(requestDTO);
@@ -159,9 +158,9 @@ class ExportFileControllerTest {
   void givenCorrectRequestWhenCreateArchivingExportFileThenOk() {
     ReceiptsArchivingExportFileRequestDTO receiptsArchivingExportFileRequestDTO = ReceiptsArchivingExportFileRequestDTO.builder()
       .organizationId(1L)
-      .exportFileType(ExportFileTypeEnum.RECEIPTS_ARCHIVING)
+      .exportFileType(ReceiptsArchivingExportFileRequestDTO.ExportFileTypeEnum.RECEIPTS_ARCHIVING)
       .fileVersion("V1_0")
-      .paymentDate(new LocalDateIntervalFilter(LocalDate.now(), LocalDate.now()))
+      .filterFields(new ReceiptsArchivingExportFileFilter())
       .build();
 
     ResponseEntity<Void> response = exportFileController.createReceiptsArchivingExportFile(receiptsArchivingExportFileRequestDTO);

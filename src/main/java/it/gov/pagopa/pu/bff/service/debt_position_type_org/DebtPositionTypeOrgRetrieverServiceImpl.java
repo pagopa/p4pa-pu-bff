@@ -7,26 +7,25 @@ import it.gov.pagopa.pu.bff.connector.debt_position.DebtPositionService;
 import it.gov.pagopa.pu.bff.connector.debt_position.DebtPositionTypeOrgOperatorsService;
 import it.gov.pagopa.pu.bff.connector.debt_position.DebtPositionTypeOrgService;
 import it.gov.pagopa.pu.bff.connector.debt_position.DebtPositionTypeService;
+import it.gov.pagopa.pu.bff.dto.generated.DebtPositionTypeOrgDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedDebtPositionTypeOrgOperatorDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedDebtPositionTypeOrgWithCount;
 import it.gov.pagopa.pu.bff.dto.generated.SaveDebtPositionTypeOrgDTO;
 import it.gov.pagopa.pu.bff.exception.ConflictException;
 import it.gov.pagopa.pu.bff.exception.InvalidDebtPositionTypeOrgException;
+import it.gov.pagopa.pu.bff.mapper.DebtPositionTypeOrgDTOMapper;
 import it.gov.pagopa.pu.bff.mapper.DebtPositionTypeOrgMapper;
 import it.gov.pagopa.pu.bff.mapper.DebtPositionTypeOrgOperatorsMapper;
 import it.gov.pagopa.pu.bff.mapper.DebtPositionTypeOrgWithCountMapper;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
-import it.gov.pagopa.pu.debtpositions.dto.generated.CollectionModelDebtPositionTypeOrg;
-import it.gov.pagopa.pu.debtpositions.dto.generated.CollectionModelDebtPositionTypeOrgOperators;
-import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionType;
-import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrg;
-import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelDebtPosition;
-import java.util.Collections;
-import java.util.List;
+import it.gov.pagopa.pu.debtpositions.dto.generated.*;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+
+import java.util.Collections;
+import java.util.List;
 
 
 @Service
@@ -41,16 +40,18 @@ public class DebtPositionTypeOrgRetrieverServiceImpl implements DebtPositionType
   private final DebtPositionTypeOrgWithCountMapper debtPositionTypeOrgWithCountMapper;
   private final DebtPositionTypeOrgOperatorsMapper debtPositionTypeOrgOperatorsMapper;
   private final DebtPositionTypeOrgMapper debtPositionTypeOrgMapper;
+  private final DebtPositionTypeOrgDTOMapper debtPositionTypeOrgDTOMapper;
 
   public DebtPositionTypeOrgRetrieverServiceImpl(
-    DebtPositionTypeOrgService debtPositionTypeOrgService,
-    DebtPositionTypeOrgOperatorsService debtPositionTypeOrgOperatorsService,
-    DebtPositionService debtPositionService,
-    AuthorizationService authorizationService,
-    AuthzService authzService, DebtPositionTypeService debtPositionTypeService,
-    DebtPositionTypeOrgWithCountMapper debtPositionTypeOrgWithCountMapper,
-    DebtPositionTypeOrgOperatorsMapper debtPositionTypeOrgOperatorsMapper,
-    DebtPositionTypeOrgMapper debtPositionTypeOrgMapper) {
+          DebtPositionTypeOrgService debtPositionTypeOrgService,
+          DebtPositionTypeOrgOperatorsService debtPositionTypeOrgOperatorsService,
+          DebtPositionService debtPositionService,
+          AuthorizationService authorizationService,
+          AuthzService authzService, DebtPositionTypeService debtPositionTypeService,
+          DebtPositionTypeOrgWithCountMapper debtPositionTypeOrgWithCountMapper,
+          DebtPositionTypeOrgOperatorsMapper debtPositionTypeOrgOperatorsMapper,
+          DebtPositionTypeOrgMapper debtPositionTypeOrgMapper,
+          DebtPositionTypeOrgDTOMapper debtPositionTypeOrgDTOMapper) {
     this.debtPositionTypeOrgService = debtPositionTypeOrgService;
     this.debtPositionTypeOrgOperatorsService = debtPositionTypeOrgOperatorsService;
     this.debtPositionService = debtPositionService;
@@ -60,12 +61,13 @@ public class DebtPositionTypeOrgRetrieverServiceImpl implements DebtPositionType
     this.debtPositionTypeOrgWithCountMapper = debtPositionTypeOrgWithCountMapper;
     this.debtPositionTypeOrgOperatorsMapper = debtPositionTypeOrgOperatorsMapper;
     this.debtPositionTypeOrgMapper = debtPositionTypeOrgMapper;
+    this.debtPositionTypeOrgDTOMapper = debtPositionTypeOrgDTOMapper;
   }
 
   @Override
-  public DebtPositionTypeOrg getDebtPositionTypeOrgById(Long organizationId, Long debtPositionTypeOrgId, UserInfo loggedUser, String accessToken) {
+  public DebtPositionTypeOrgDTO getDebtPositionTypeOrgById(Long organizationId, Long debtPositionTypeOrgId, UserInfo loggedUser, String accessToken) {
     AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser);
-    return debtPositionTypeOrgService.getDebtPositionTypeOrg(debtPositionTypeOrgId, accessToken);
+    return debtPositionTypeOrgDTOMapper.map(debtPositionTypeOrgService.getDebtPositionTypeOrg(debtPositionTypeOrgId, accessToken));
   }
 
   @Override

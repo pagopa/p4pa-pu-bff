@@ -6,6 +6,8 @@ import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.util.Collections;
 import java.util.List;
+
+import it.gov.pagopa.pu.debtpositions.dto.generated.ReceiptOriginType;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -76,7 +78,7 @@ class DebtPositionApisHolderTest extends BaseApiHolderTest {
   void whenGetReceiptViewSearchControllerApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
     assertAuthenticationShouldBeSetInThreadSafeMode(
       accessToken -> debtPositionApisHolder.getReceiptViewSearchControllerApi(accessToken)
-        .crudReceiptsViewFindReceiptsByFilters("1", "origin", "operator", "iuv", "iur", "iud", 1L, null, null, 0, 10, Collections.emptyList()),
+        .crudReceiptsViewFindReceiptsByFilters("1", "operator", ReceiptOriginType.RECEIPT_PAGOPA,  "iuv", "iur", "iud", 1L, null, null, 0, 10, Collections.emptyList()),
       new ParameterizedTypeReference<>() {
       },
       debtPositionApisHolder::unload);
@@ -164,8 +166,8 @@ class DebtPositionApisHolderTest extends BaseApiHolderTest {
       accessToken -> debtPositionApisHolder.getDebtPositionViewSearchControllerApi(accessToken)
         .crudDebtPositionsViewFindDebtPositionViews(
           1L,
-          List.of("debtPositionOrigin"),
           "operatorExternalUserId",
+          List.of("debtPositionOrigin"),
           LocalDateTime.now(),
           LocalDateTime.now(),
           "fiscalCode",

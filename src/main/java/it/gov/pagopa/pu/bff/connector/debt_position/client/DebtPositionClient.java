@@ -35,8 +35,8 @@ public class DebtPositionClient {
     return debtPositionApisHolder.getDebtPositionViewSearchControllerApi(accessToken)
       .crudDebtPositionsViewFindDebtPositionViews(
         filtersDTO.getOrganizationId(),
-        debtPositionOrigins,
         operatorExternalId,
+        debtPositionOrigins,
         DateUtils.toLocalDateTime(filtersDTO.getCreationDateFrom()),
         DateUtils.toLocalDateTime(filtersDTO.getCreationDateTo()),
         filtersDTO.getFiscalCode(),

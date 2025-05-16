@@ -1432,7 +1432,7 @@ paths:
         content:
           application/json:
             schema:
-              type: 'PaidExportFileRequestDTO'
+              $ref: '#/components/schemas/PaidExportFileRequest'
         required: true
       responses:
         '201':
@@ -1477,7 +1477,7 @@ paths:
         content:
           application/json:
             schema:
-              type: 'ReceiptsArchivingExportFileRequestDTO'
+              $ref: '#/components/schemas/ReceiptsArchivingExportFileRequest'
         required: true
       responses:
         '201':
@@ -2577,3 +2577,46 @@ components:
         - ALL
         - NONE
         - SELECTED
+    PaidExportFileRequest:
+      type: object
+      required:
+        - organizationId
+        - exportFileType
+        - fileVersion
+        - filterFields
+      properties:
+        organizationId:
+          type: integer
+          format: int64
+        exportFileType:
+          type: 'PaidExportFileType'
+        fileVersion:
+          type: string
+        filterFields:
+          type: object
+          properties:
+            paymentDate:
+              type: 'LocalDateInterval'
+            debtPositionTypeOrgId:
+              type: integer
+              format: int64
+    ReceiptsArchivingExportFileRequest:
+      type: object
+      required:
+        - organizationId
+        - exportFileType
+        - fileVersion
+        - filterFields
+      properties:
+        organizationId:
+          type: integer
+          format: int64
+        exportFileType:
+          type: 'ReceiptsArchivingExportFileType'
+        fileVersion:
+          type: string
+        filterFields:
+          type: object
+          properties:
+            paymentDate:
+              type: 'LocalDateInterval'

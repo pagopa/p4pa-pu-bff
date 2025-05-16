@@ -168,6 +168,8 @@ tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>("ope
     "ClassificationsExportFileRequestDTO" to "it.gov.pagopa.pu.processexecutions.dto.generated.ClassificationsExportFileRequestDTO",
     "PaymentsReportingExportFileRequestDTO" to "it.gov.pagopa.pu.processexecutions.dto.generated.PaymentsReportingExportFileRequestDTO",
     "ReceiptsArchivingExportFileRequestDTO" to "it.gov.pagopa.pu.processexecutions.dto.generated.ReceiptsArchivingExportFileRequestDTO",
+    "PaidExportFileType" to "it.gov.pagopa.pu.processexecutions.dto.generated.PaidExportFileRequestDTO.ExportFileTypeEnum",
+    "ReceiptsArchivingExportFileType" to "it.gov.pagopa.pu.processexecutions.dto.generated.ReceiptsArchivingExportFileRequestDTO.ExportFileTypeEnum",
     "ReceiptView" to "it.gov.pagopa.pu.debtpositions.dto.generated.ReceiptView",
     "ReceiptOriginType" to "it.gov.pagopa.pu.debtpositions.dto.generated.ReceiptOriginType",
     "DebtPositionTypeOrg" to "it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrg",
@@ -190,7 +192,8 @@ tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>("ope
     "DebtPositionTypeResponseBody" to "it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionType",
     "PagedTreasuredClassification" to "it.gov.pagopa.pu.classification.dto.generated.PagedTreasuredClassification",
     "ClassificationsEnum" to "it.gov.pagopa.pu.classification.dto.generated.ClassificationsEnum",
-    "DebtPositionOrigin" to "it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionOrigin"
+    "DebtPositionOrigin" to "it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionOrigin",
+    "LocalDateInterval" to "it.gov.pagopa.pu.bff.dto.LocalDateIntervalFilter"
   ))
   configOptions.set(mapOf(
     "dateLibrary" to "java8",

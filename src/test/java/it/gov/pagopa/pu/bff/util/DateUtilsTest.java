@@ -114,7 +114,7 @@ class DateUtilsTest {
 
   @Test
   void givenNullLocalDateWhenToOffsetDateTimeEndOfTheDayThenReturnNull() {
-    assertNull(DateUtils.toOffsetDateTimeStartOfTheDay(null));
+    assertNull(DateUtils.toOffsetDateTimeEndOfTheDay(null));
   }
 
   @Test

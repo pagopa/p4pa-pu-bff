@@ -78,8 +78,8 @@ class DebtPositionClientTest {
       .thenReturn(debtPositionViewSearchControllerApiMock);
     when(debtPositionViewSearchControllerApiMock.crudDebtPositionsViewFindDebtPositionViews(
       filtersDTO.getOrganizationId(),
-      List.of(DebtPositionOrigin.ORDINARY.toString(), DebtPositionOrigin.RECEIPT_FILE.toString()),
       operatorExternalUserId,
+      List.of(DebtPositionOrigin.ORDINARY.toString(), DebtPositionOrigin.RECEIPT_FILE.toString()),
       filtersDTO.getCreationDateFrom().toLocalDateTime(),
       filtersDTO.getCreationDateTo().toLocalDateTime(),
       filtersDTO.getFiscalCode(),
@@ -97,8 +97,8 @@ class DebtPositionClientTest {
     Mockito.verify(debtPositionApisHolderMock).getDebtPositionViewSearchControllerApi(accessToken);
     Mockito.verify(debtPositionViewSearchControllerApiMock).crudDebtPositionsViewFindDebtPositionViews(
       filtersDTO.getOrganizationId(),
-      List.of(DebtPositionOrigin.ORDINARY.getValue(), DebtPositionOrigin.RECEIPT_FILE.getValue()),
       operatorExternalUserId,
+      List.of(DebtPositionOrigin.ORDINARY.getValue(), DebtPositionOrigin.RECEIPT_FILE.getValue()),
       filtersDTO.getCreationDateFrom().toLocalDateTime(),
       filtersDTO.getCreationDateTo().toLocalDateTime(),
       filtersDTO.getFiscalCode(),

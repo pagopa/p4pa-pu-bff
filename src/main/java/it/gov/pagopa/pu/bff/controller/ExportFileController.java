@@ -4,11 +4,14 @@ import it.gov.pagopa.pu.bff.controller.generated.ExportFilesApi;
 import it.gov.pagopa.pu.bff.dto.ExportFileFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.OffsetDateTimeIntervalFilter;
 import it.gov.pagopa.pu.bff.dto.generated.PagedExportFile;
+import it.gov.pagopa.pu.bff.dto.generated.PaidExportFileRequest;
+import it.gov.pagopa.pu.bff.dto.generated.ReceiptsArchivingExportFileRequest;
 import it.gov.pagopa.pu.bff.security.SecurityUtils;
 import it.gov.pagopa.pu.bff.service.export_flow_file.ExportFileRetrieverService;
-import it.gov.pagopa.pu.processexecutions.dto.generated.*;
+import it.gov.pagopa.pu.processexecutions.dto.generated.ClassificationsExportFileRequestDTO;
 import it.gov.pagopa.pu.processexecutions.dto.generated.ExportFile.ExportFileTypeEnum;
-
+import it.gov.pagopa.pu.processexecutions.dto.generated.ExportFileStatus;
+import it.gov.pagopa.pu.processexecutions.dto.generated.PaymentsReportingExportFileRequestDTO;
 import java.time.OffsetDateTime;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -45,7 +48,7 @@ public class ExportFileController implements ExportFilesApi {
 
   @Override
   public ResponseEntity<Void> createPaidExportFile(
-    PaidExportFileRequestDTO requestDTO) {
+    PaidExportFileRequest requestDTO) {
     log.info(
       "User requested paid export file having organizationId {}",
       requestDTO.getOrganizationId());
@@ -80,7 +83,8 @@ public class ExportFileController implements ExportFilesApi {
   }
 
   @Override
-  public ResponseEntity<Void> createReceiptsArchivingExportFile(ReceiptsArchivingExportFileRequestDTO receiptsArchivingExportFileRequestDTO) {
+  public ResponseEntity<Void> createReceiptsArchivingExportFile(
+    ReceiptsArchivingExportFileRequest receiptsArchivingExportFileRequestDTO) {
     log.info(
       "User requested receipts archiving export file having organizationId {}",
       receiptsArchivingExportFileRequestDTO.getOrganizationId());

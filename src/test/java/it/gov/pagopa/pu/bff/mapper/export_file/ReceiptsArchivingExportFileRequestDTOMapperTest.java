@@ -40,6 +40,7 @@ class ReceiptsArchivingExportFileRequestDTOMapperTest {
 
     ReceiptsArchivingExportFileRequestDTO result = mapper.map2ProcessExecutionsDto(request);
 
+    TestUtils.checkNotNullFields(result);
     assertEquals(expected, result);
   }
 }

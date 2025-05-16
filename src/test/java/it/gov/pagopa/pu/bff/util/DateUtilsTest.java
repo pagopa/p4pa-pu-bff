@@ -99,7 +99,7 @@ class DateUtilsTest {
     OffsetDateTime result = DateUtils.toOffsetDateTimeEndOfTheDay(
       LocalDate.now());
 
-    assertConversion(expected, result);
+    assertTrue(expected.isEqual(result));
   }
 
   @Test
@@ -109,7 +109,7 @@ class DateUtilsTest {
     OffsetDateTime result = DateUtils.toOffsetDateTimeStartOfTheDay(
       LocalDate.now());
 
-    assertConversion(expected, result);
+    assertTrue(expected.isEqual(result));
   }
 
   @Test
@@ -139,13 +139,4 @@ class DateUtilsTest {
     assertEquals(expected.getTo(), result.getTo());
   }
 
-  private static void assertConversion(OffsetDateTime expected, OffsetDateTime result) {
-    assertNotNull(result);
-    assertEquals(expected.getYear(), result.getYear());
-    assertEquals(expected.getMonthValue(), result.getMonthValue());
-    assertEquals(expected.getDayOfMonth(), result.getDayOfMonth());
-    assertEquals(expected.getHour(), result.getHour());
-    assertEquals(expected.getMinute(), result.getMinute());
-    assertEquals(expected.getSecond(), result.getSecond());
-  }
 }

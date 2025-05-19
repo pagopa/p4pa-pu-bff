@@ -54,6 +54,21 @@ public class GlobalExceptionHandler {
     return handleException(ex, request, HttpStatus.BAD_REQUEST, ErrorDTO.TitleEnum.BAD_REQUEST);
   }
 
+  @ExceptionHandler(InstallmentsNotFoundException.class)
+  public ResponseEntity<ErrorDTO> handleInstallmentsNotFoundException(InstallmentsNotFoundException ex, HttpServletRequest request) {
+    return handleException(ex, request, HttpStatus.NOT_FOUND, TitleEnum.NOT_FOUND);
+  }
+
+  @ExceptionHandler(ZipFileException.class)
+  public ResponseEntity<ErrorDTO> handleZipFileException(ZipFileException ex, HttpServletRequest request) {
+    return handleException(ex, request, HttpStatus.INTERNAL_SERVER_ERROR, TitleEnum.GENERIC_ERROR);
+  }
+
+  @ExceptionHandler(PdfProcessingException.class)
+  public ResponseEntity<ErrorDTO> handlePdfProcessingException(PdfProcessingException ex, HttpServletRequest request) {
+    return handleException(ex, request, HttpStatus.INTERNAL_SERVER_ERROR, TitleEnum.GENERIC_ERROR);
+  }
+
   @ExceptionHandler({ValidationException.class, HttpMessageNotReadableException.class, MethodArgumentNotValidException.class, MethodArgumentTypeMismatchException.class, IllegalArgumentException.class})
   public ResponseEntity<ErrorDTO> handleViolationException(Exception ex, HttpServletRequest request) {
     return handleException(ex, request, HttpStatus.BAD_REQUEST, ErrorDTO.TitleEnum.BAD_REQUEST);

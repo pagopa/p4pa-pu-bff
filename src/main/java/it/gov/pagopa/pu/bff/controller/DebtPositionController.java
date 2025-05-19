@@ -5,20 +5,19 @@ import it.gov.pagopa.pu.bff.dto.DebtPositionViewFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.FileResourceDTO;
 import it.gov.pagopa.pu.bff.dto.generated.DebtPositionDetailDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedDebtPositionView;
+import it.gov.pagopa.pu.bff.exception.InstallmentsNotFoundException;
 import it.gov.pagopa.pu.bff.security.SecurityUtils;
 import it.gov.pagopa.pu.bff.service.debt_position.DebtPositionNoticeRetrieverService;
 import it.gov.pagopa.pu.bff.service.debt_position.DebtPositionRetrieverService;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionDTO;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionStatus;
-import java.time.OffsetDateTime;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.ContentDisposition;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.time.OffsetDateTime;
 
 
 @Slf4j
@@ -98,5 +97,27 @@ public class DebtPositionController implements DebtPositionsApi {
       .contentType(MediaType.APPLICATION_PDF)
       .headers(headers)
       .body(fileResourceDTO.getResource());
+  }
+
+  @Override
+  public ResponseEntity<Resource> getDebtPositionNoticesZip(Long organizationId, Long debtPositionId) {
+    log.info("User requested getDebtPositionNoticesZip having organizationId {} and debtPositionId {} ", organizationId, debtPositionId);
+
+    try {
+      Resource debtPositionPaymentNoticesZipped = debtPositionRetrieverService.getDebtPositionNoticesZip(organizationId, debtPositionId, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken());
+      HttpHeaders headers = new HttpHeaders();
+      headers.setContentDisposition(ContentDisposition.attachment()
+        .filename(debtPositionPaymentNoticesZipped.getFilename())
+        .build());
+
+      return ResponseEntity.ok()
+        .headers(headers)
+        .contentType(MediaType.APPLICATION_OCTET_STREAM)
+        .body(debtPositionPaymentNoticesZipped);
+
+    } catch (InstallmentsNotFoundException e){
+      return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
   }
 }

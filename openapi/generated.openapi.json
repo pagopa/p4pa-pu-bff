@@ -3196,7 +3196,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/DebtPositionTypeOrg"
+                  "$ref" : "#/components/schemas/DebtPositionTypeOrgDTO"
                 }
               }
             }
@@ -3206,7 +3206,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/DebtPositionTypeOrg"
+                  "$ref" : "#/components/schemas/DebtPositionTypeOrgDTO"
                 }
               }
             }
@@ -3216,7 +3216,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/DebtPositionTypeOrg"
+                  "$ref" : "#/components/schemas/DebtPositionTypeOrgDTO"
                 }
               }
             }
@@ -3226,7 +3226,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/DebtPositionTypeOrg"
+                  "$ref" : "#/components/schemas/DebtPositionTypeOrgDTO"
                 }
               }
             }
@@ -3236,7 +3236,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/DebtPositionTypeOrg"
+                  "$ref" : "#/components/schemas/DebtPositionTypeOrgDTO"
                 }
               }
             }
@@ -6306,6 +6306,112 @@
           }
         },
         "required" : [ "code", "collectingReason", "debtPositionTypeId", "description", "macroArea", "orgType", "serviceType", "taxonomyCode" ]
+      },
+      "DebtPositionTypeOrgDTO" : {
+        "type" : "object",
+        "properties" : {
+          "debtPositionTypeOrgId" : {
+            "type" : "integer",
+            "format" : "int64",
+            "readOnly" : true
+          },
+          "debtPositionTypeId" : {
+            "type" : "integer",
+            "format" : "int64",
+            "readOnly" : true
+          },
+          "organizationId" : {
+            "type" : "integer",
+            "format" : "int64",
+            "readOnly" : true
+          },
+          "balance" : {
+            "type" : "string",
+            "readOnly" : true
+          },
+          "code" : {
+            "type" : "string",
+            "readOnly" : true
+          },
+          "description" : {
+            "type" : "string",
+            "readOnly" : true
+          },
+          "iban" : {
+            "type" : "string"
+          },
+          "postalIban" : {
+            "type" : "string"
+          },
+          "postalAccountCode" : {
+            "type" : "string"
+          },
+          "holderPostalCc" : {
+            "type" : "string"
+          },
+          "orgSector" : {
+            "type" : "string",
+            "readOnly" : true
+          },
+          "xsdDefinitionRef" : {
+            "type" : "string"
+          },
+          "amountCents" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "externalPaymentUrl" : {
+            "type" : "string"
+          },
+          "flagAnonymousFiscalCode" : {
+            "type" : "boolean",
+            "readOnly" : true
+          },
+          "flagMandatoryDueDate" : {
+            "type" : "boolean",
+            "readOnly" : true
+          },
+          "flagSpontaneous" : {
+            "type" : "boolean"
+          },
+          "flagNotifyIo" : {
+            "type" : "boolean",
+            "readOnly" : true
+          },
+          "serviceId" : {
+            "type" : "string"
+          },
+          "ioTemplateSubject" : {
+            "type" : "string"
+          },
+          "ioTemplateMessage" : {
+            "type" : "string"
+          },
+          "flagActive" : {
+            "type" : "boolean",
+            "readOnly" : true
+          },
+          "flagNotifyOutcomePush" : {
+            "type" : "boolean"
+          },
+          "notifyOutcomePushOrgSilServiceId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "flagAmountActualization" : {
+            "type" : "boolean",
+            "readOnly" : true
+          },
+          "amountActualizationOrgSilServiceId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "flagExternal" : {
+            "type" : "boolean",
+            "readOnly" : true
+          }
+        },
+        "required" : [ "code", "debtPositionTypeId", "description", "organizationId" ]
       },
       "DebtPositionTypeOrgOperatorDTO" : {
         "type" : "object",

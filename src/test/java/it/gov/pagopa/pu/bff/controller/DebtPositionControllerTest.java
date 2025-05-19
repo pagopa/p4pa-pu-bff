@@ -1,12 +1,10 @@
 package it.gov.pagopa.pu.bff.controller;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.dto.FileResourceDTO;
 import it.gov.pagopa.pu.bff.dto.generated.DebtPositionDetailDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedDebtPositionView;
+import it.gov.pagopa.pu.bff.exception.InstallmentsNotFoundException;
 import it.gov.pagopa.pu.bff.security.SecurityUtilsTest;
 import it.gov.pagopa.pu.bff.service.debt_position.DebtPositionNoticeRetrieverService;
 import it.gov.pagopa.pu.bff.service.debt_position.DebtPositionRetrieverService;
@@ -29,6 +27,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import uk.co.jemos.podam.api.PodamFactory;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
 class DebtPositionControllerTest {
@@ -156,7 +156,7 @@ class DebtPositionControllerTest {
       debtPositionId);
 
     Assertions.assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
-    Assertions.assertNull(response.getBody());
+    assertNull(response.getBody());
   }
 
   @Test
@@ -176,7 +176,7 @@ class DebtPositionControllerTest {
       debtPositionId);
 
     Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
-    Assertions.assertNull(response.getBody());
+    assertNull(response.getBody());
   }
 
   @Test
@@ -196,7 +196,7 @@ class DebtPositionControllerTest {
       debtPositionId);
 
     Assertions.assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
-    Assertions.assertNull(response.getBody());
+    assertNull(response.getBody());
   }
 
   @Test
@@ -217,5 +217,38 @@ class DebtPositionControllerTest {
     assertNotNull(response.getBody());
     assertEquals(fileResourceDTO.getResource(), response.getBody());
     assertEquals(fileResourceDTO.getFileName(), response.getHeaders().getContentDisposition().getFilename());
+  }
+
+  @Test
+  void givenCorrectRequestWhenGetDebtPositionNoticesZipThenOk() {
+    long organizationId = 1L;
+    Long debtPositionId = 2L;
+
+    Resource resource = new ByteArrayResource("PDF-DATA".getBytes());
+
+    Mockito.when(debtPositionRetrieverServiceMock.getDebtPositionNoticesZip(organizationId, debtPositionId, loggedUser, accessToken))
+      .thenReturn(resource);
+
+    ResponseEntity<Resource> response = debtPositionController.getDebtPositionNoticesZip(organizationId, debtPositionId);
+
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertNotNull(response.getBody());
+    assertEquals(resource, response.getBody());
+    assertEquals(resource.getFilename(), response.getHeaders().getContentDisposition().getFilename());
+  }
+
+
+  @Test
+  void givenCorrectRequestWhenGetDebtPositionNoticesZipThenNoContent() {
+    long organizationId = 1L;
+    Long debtPositionId = 2L;
+
+    Mockito.when(debtPositionRetrieverServiceMock.getDebtPositionNoticesZip(organizationId, debtPositionId, loggedUser, accessToken))
+      .thenThrow(InstallmentsNotFoundException.class);
+
+    ResponseEntity<Resource> response = debtPositionController.getDebtPositionNoticesZip(organizationId, debtPositionId);
+
+    assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+    assertNull(response.getBody());
   }
 }

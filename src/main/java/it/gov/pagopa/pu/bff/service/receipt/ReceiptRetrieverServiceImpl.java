@@ -8,6 +8,7 @@ import it.gov.pagopa.pu.bff.dto.generated.ReceiptDetailDTO;
 import it.gov.pagopa.pu.bff.mapper.ReceiptDetailDTOMapper;
 import it.gov.pagopa.pu.bff.mapper.ReceiptViewMapper;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -18,7 +19,7 @@ public class ReceiptRetrieverServiceImpl implements ReceiptRetrieverService {
   private final ReceiptDetailDTOMapper receiptDetailDTOMapper;
 
   public ReceiptRetrieverServiceImpl(ReceiptService receiptService, ReceiptViewMapper receiptViewMapper,
-    ReceiptDetailDTOMapper receiptDetailDTOMapper) {
+                                     ReceiptDetailDTOMapper receiptDetailDTOMapper) {
     this.receiptService = receiptService;
     this.receiptViewMapper = receiptViewMapper;
     this.receiptDetailDTOMapper = receiptDetailDTOMapper;
@@ -27,13 +28,29 @@ public class ReceiptRetrieverServiceImpl implements ReceiptRetrieverService {
   @Override
   public PagedReceiptView getReceipts(ReceiptViewFiltersDTO receiptViewFiltersDTO, Pageable pageable, UserInfo loggedUser, String accessToken) {
     AuthorizationService.validateUserForOrganizationId(receiptViewFiltersDTO.getOrganizationId(), loggedUser);
-    return receiptViewMapper.mapToPagedReceiptView(receiptService.getReceipts(receiptViewFiltersDTO, pageable, accessToken));
+
+    boolean hasAtLeastOneFilter =
+      receiptViewFiltersDTO.getReceiptOrigin() != null ||
+        StringUtils.isNotBlank(receiptViewFiltersDTO.getIuv()) ||
+        StringUtils.isNotBlank(receiptViewFiltersDTO.getIur()) ||
+        StringUtils.isNotBlank(receiptViewFiltersDTO.getIud()) ||
+        receiptViewFiltersDTO.getDebtPositionTypeOrgId() != null ||
+        (receiptViewFiltersDTO.getPaymentDateTime() != null &&
+          (receiptViewFiltersDTO.getPaymentDateTime().getFrom() != null ||
+            receiptViewFiltersDTO.getPaymentDateTime().getTo() != null));
+
+    if (!hasAtLeastOneFilter) {
+      throw new IllegalArgumentException("At least one of the research fields must be inserted");
+    }
+
+    return receiptViewMapper.mapToPagedReceiptView(
+      receiptService.getReceipts(receiptViewFiltersDTO, pageable, accessToken));
   }
 
   @Override
   public ReceiptDetailDTO getReceiptDetail(Long organizationId, Long receiptId,
-    UserInfo loggedUser,
-    String accessToken) {
+                                           UserInfo loggedUser,
+                                           String accessToken) {
     AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser);
     return receiptDetailDTOMapper.mapToReceiptDetailDTO(receiptService.getReceiptDetail(receiptId,
       loggedUser.getMappedExternalUserId(), accessToken));

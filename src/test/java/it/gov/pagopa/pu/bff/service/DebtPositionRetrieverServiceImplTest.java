@@ -162,6 +162,33 @@ class DebtPositionRetrieverServiceImplTest {
   }
 
   @Test
+  void givenNoFiltersWhenGetDebtPositionViewsThenThrowIllegalArgumentException() {
+    UserInfo loggedUser = new UserInfo();
+    loggedUser.setMappedExternalUserId("mappedExternalUserId");
+    PageRequest pageRequest = PageRequest.of(0, 10);
+
+    DebtPositionViewFiltersDTO filtersDTO = new DebtPositionViewFiltersDTO();
+    filtersDTO.setOrganizationId(1L);
+    filtersDTO.setCreationDateFrom(null);
+    filtersDTO.setCreationDateTo(null);
+    filtersDTO.setFiscalCode(null);
+    filtersDTO.setDebtPositionTypeOrgId(null);
+    filtersDTO.setStatus(null);
+
+    try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
+      authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(filtersDTO.getOrganizationId(), loggedUser)).thenAnswer(a -> null);
+
+      IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () ->
+        debtPositionRetrieverService.getDebtPositionViews(filtersDTO, pageRequest, loggedUser, accessToken));
+
+      assertEquals("At least one of the research fields must be inserted", exception.getMessage());
+
+      authorizationServiceMockedStatic.verify(() -> AuthorizationService.validateUserForOrganizationId(filtersDTO.getOrganizationId(), loggedUser));
+    }
+    Mockito.verifyNoInteractions(debtPositionServiceMock, debtPositionViewMapperMock);
+  }
+
+  @Test
   void givenInvalidUserWhenGetDebtPositionViewsThenAuthorizationDeniedException() {
     UserInfo loggedUser = new UserInfo();
     PageRequest pageRequest = PageRequest.of(0, 10);

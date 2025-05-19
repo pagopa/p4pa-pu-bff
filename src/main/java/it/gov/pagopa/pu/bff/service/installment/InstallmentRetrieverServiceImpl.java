@@ -1,6 +1,6 @@
 package it.gov.pagopa.pu.bff.service.installment;
 
-import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
+import  it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.connector.debt_position.InstallmentService;
 import it.gov.pagopa.pu.bff.dto.InstallmentViewFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedInstallmentView;
@@ -9,6 +9,7 @@ import it.gov.pagopa.pu.bff.service.AuthorizationService;
 import it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentDetailDTO;
 import it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentNoPII;
 import it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentStatus;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -31,7 +32,20 @@ public class InstallmentRetrieverServiceImpl implements InstallmentRetrieverServ
   @Override
   public PagedInstallmentView getInstallments(InstallmentViewFiltersDTO installmentViewFiltersDTO, Pageable pageable, UserInfo loggedUser, String accessToken) {
     AuthorizationService.validateUserForOrganizationId(installmentViewFiltersDTO.getOrganizationId(), loggedUser);
-    return installmentViewMapper.mapToPagedInstallmentView(installmentService.getInstallments(installmentViewFiltersDTO, pageable, accessToken));
+
+    boolean hasAtLeastOneFilter =
+      (installmentViewFiltersDTO.getDueDate() != null &&
+        (installmentViewFiltersDTO.getDueDate().getFrom() != null || installmentViewFiltersDTO.getDueDate().getTo() != null)) ||
+        StringUtils.isNotBlank(installmentViewFiltersDTO.getIuv()) ||
+        StringUtils.isNotBlank(installmentViewFiltersDTO.getFiscalCode()) ||
+        installmentViewFiltersDTO.getDebtPositionTypeOrgId() != null;
+
+    if (!hasAtLeastOneFilter) {
+      throw new IllegalArgumentException("At least one of the research fields must be inserted");
+    }
+
+    return installmentViewMapper.mapToPagedInstallmentView(
+      installmentService.getInstallments(installmentViewFiltersDTO, pageable, accessToken));
   }
 
   @Override

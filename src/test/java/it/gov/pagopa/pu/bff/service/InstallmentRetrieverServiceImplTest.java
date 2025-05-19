@@ -3,6 +3,7 @@ package it.gov.pagopa.pu.bff.service;
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.connector.debt_position.InstallmentService;
 import it.gov.pagopa.pu.bff.dto.InstallmentViewFiltersDTO;
+import it.gov.pagopa.pu.bff.dto.OffsetDateTimeIntervalFilter;
 import it.gov.pagopa.pu.bff.dto.generated.PagedInstallmentView;
 import it.gov.pagopa.pu.bff.mapper.InstallmentViewMapper;
 import it.gov.pagopa.pu.bff.service.installment.InstallmentRetrieverServiceImpl;
@@ -56,13 +57,14 @@ class InstallmentRetrieverServiceImplTest {
 
     InstallmentViewFiltersDTO filtersDTO = new InstallmentViewFiltersDTO();
     filtersDTO.setOrganizationId(1L);
+    filtersDTO.setDueDate(new OffsetDateTimeIntervalFilter(OffsetDateTime.now().minusDays(5), null));
     Pageable pageable = PageRequest.of(0, 10);
 
     PagedModelInstallmentView pagedModelInstallmentView = new PagedModelInstallmentView();
     PagedInstallmentView expectedPagedInstallmentView = new PagedInstallmentView();
 
     try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
-      authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(filtersDTO.getOrganizationId(), loggedUser)).thenAnswer(a->null);
+      authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(filtersDTO.getOrganizationId(), loggedUser)).thenAnswer(a -> null);
 
       Mockito.when(installmentServiceMock.getInstallments(filtersDTO, pageable, accessToken))
         .thenReturn(pagedModelInstallmentView);
@@ -77,6 +79,33 @@ class InstallmentRetrieverServiceImplTest {
 
       authorizationServiceMockedStatic.verify(() -> AuthorizationService.validateUserForOrganizationId(filtersDTO.getOrganizationId(), loggedUser));
     }
+  }
+
+  @Test
+  void givenNoFiltersWhenGetInstallmentsThenThrowIllegalArgumentException() {
+    UserInfo loggedUser = new UserInfo();
+    loggedUser.setUserId("user-123");
+
+    InstallmentViewFiltersDTO filtersDTO = new InstallmentViewFiltersDTO();
+    filtersDTO.setOrganizationId(1L);
+    filtersDTO.setDueDate(new OffsetDateTimeIntervalFilter(null, null));
+    filtersDTO.setIuv(null);
+    filtersDTO.setFiscalCode(null);
+    filtersDTO.setDebtPositionTypeOrgId(null);
+
+    Pageable pageable = PageRequest.of(0, 10);
+
+    try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
+      authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(filtersDTO.getOrganizationId(), loggedUser)).thenAnswer(a -> null);
+
+      IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () ->
+        installmentRetrieverService.getInstallments(filtersDTO, pageable, loggedUser, accessToken));
+
+      assertEquals("At least one of the research fields must be inserted", exception.getMessage());
+
+      authorizationServiceMockedStatic.verify(() -> AuthorizationService.validateUserForOrganizationId(filtersDTO.getOrganizationId(), loggedUser));
+    }
+    Mockito.verifyNoInteractions(installmentServiceMock, installmentViewMapperMock);
   }
 
   @Test
@@ -115,7 +144,7 @@ class InstallmentRetrieverServiceImplTest {
     installmentDetailDTO.setPspCompanyName("pspCompanyName");
 
     try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
-      authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)).thenAnswer(a->null);
+      authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)).thenAnswer(a -> null);
 
       Mockito.when(installmentServiceMock.getInstallmentDetail(installmentId, loggedUser.getMappedExternalUserId(), accessToken))
         .thenReturn(installmentDetailDTO);
@@ -166,7 +195,7 @@ class InstallmentRetrieverServiceImplTest {
     installmentDetailDTO.setStatus(InstallmentStatus.UNPAID);
 
     try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
-      authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)).thenAnswer(a->null);
+      authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)).thenAnswer(a -> null);
 
       Mockito.when(installmentServiceMock.getInstallmentDetail(installmentId, loggedUser.getMappedExternalUserId(), accessToken))
         .thenReturn(installmentDetailDTO);
@@ -198,7 +227,7 @@ class InstallmentRetrieverServiceImplTest {
 
     try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
       authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser))
-        .thenAnswer(a->null);
+        .thenAnswer(a -> null);
       Mockito.when(installmentServiceMock.getInstallmentFromTransferSemanticKey(organizationId, iuv, iur, transferIndex, loggedUser.getMappedExternalUserId(), accessToken))
         .thenReturn(installmentNoPII);
 

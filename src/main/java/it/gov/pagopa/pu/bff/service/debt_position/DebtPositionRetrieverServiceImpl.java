@@ -12,6 +12,7 @@ import it.gov.pagopa.pu.bff.mapper.DebtPositionViewMapper;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionDTO;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionOrigin;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -52,15 +53,27 @@ public class DebtPositionRetrieverServiceImpl implements DebtPositionRetrieverSe
   @Override
   public PagedDebtPositionView getDebtPositionViews(
     DebtPositionViewFiltersDTO filtersDTO, Pageable pageable, UserInfo loggedUser, String accessToken) {
+
     AuthorizationService.validateUserForOrganizationId(filtersDTO.getOrganizationId(), loggedUser);
+
+    boolean hasAtLeastOneFilter =
+      filtersDTO.getCreationDateFrom() != null ||
+        filtersDTO.getCreationDateTo() != null ||
+        StringUtils.isNotBlank(filtersDTO.getFiscalCode()) ||
+        filtersDTO.getDebtPositionTypeOrgId() != null ||
+        filtersDTO.getStatus() != null;
+
+    if (!hasAtLeastOneFilter) {
+      throw new IllegalArgumentException("At least one of the research fields must be inserted");
+    }
+
     return debtPositionViewMapper.mapToPagedDebtPositionView(
       debtPositionService.getDebtPositionViews(
         filtersDTO,
         debtPositionOriginFilterList,
         loggedUser.getMappedExternalUserId(),
         pageable,
-        accessToken)
-    );
+        accessToken));
   }
 
   @Override

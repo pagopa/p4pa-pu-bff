@@ -25,8 +25,7 @@ import org.springframework.security.authorization.AuthorizationDeniedException;
 
 import java.time.OffsetDateTime;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
 class ReceiptRetrieverServiceImplTest {
@@ -83,6 +82,29 @@ class ReceiptRetrieverServiceImplTest {
       Mockito.verify(receiptViewMapperMock).mapToPagedReceiptView(pagedModelReceiptView);
       Mockito.verifyNoMoreInteractions(receiptServiceMock, receiptViewMapperMock);
     }
+  }
+
+  @Test
+  void givenNoFiltersWhenGetReceiptsThenThrowIllegalArgumentException() {
+    UserInfo loggedUser = new UserInfo();
+    loggedUser.setUserId("user-123");
+
+    ReceiptViewFiltersDTO filtersDTO = new ReceiptViewFiltersDTO(
+      1L, null, null, null, null, null, null, new OffsetDateTimeIntervalFilter(null, null)
+    );
+    Pageable pageable = PageRequest.of(0, 10);
+
+    try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
+      authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(filtersDTO.getOrganizationId(), loggedUser)).thenAnswer(a -> null);
+
+      IllegalArgumentException exception = Assertions.assertThrows(IllegalArgumentException.class, () ->
+        receiptViewService.getReceipts(filtersDTO, pageable, loggedUser, accessToken));
+
+      assertEquals("At least one of the research fields must be inserted", exception.getMessage());
+
+      authorizationServiceMockedStatic.verify(() -> AuthorizationService.validateUserForOrganizationId(filtersDTO.getOrganizationId(), loggedUser));
+    }
+    Mockito.verifyNoInteractions(receiptServiceMock, receiptViewMapperMock);
   }
 
   @Test

@@ -182,7 +182,7 @@ class DebtPositionRetrieverServiceImplTest {
       IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () ->
         debtPositionRetrieverService.getDebtPositionViews(filtersDTO, pageRequest, loggedUser, accessToken));
 
-      assertEquals("At least one of the research fields must be inserted", exception.getMessage());
+      assertEquals("At least one of the research fields should be inserted", exception.getMessage());
 
       authorizationServiceMockedStatic.verify(() -> AuthorizationService.validateUserForOrganizationId(filtersDTO.getOrganizationId(), loggedUser));
     }

@@ -33,19 +33,23 @@ public class InstallmentRetrieverServiceImpl implements InstallmentRetrieverServ
   public PagedInstallmentView getInstallments(InstallmentViewFiltersDTO installmentViewFiltersDTO, Pageable pageable, UserInfo loggedUser, String accessToken) {
     AuthorizationService.validateUserForOrganizationId(installmentViewFiltersDTO.getOrganizationId(), loggedUser);
 
-    boolean hasAtLeastOneFilter =
-      (installmentViewFiltersDTO.getDueDate() != null &&
-        (installmentViewFiltersDTO.getDueDate().getFrom() != null || installmentViewFiltersDTO.getDueDate().getTo() != null)) ||
-        StringUtils.isNotBlank(installmentViewFiltersDTO.getIuv()) ||
-        StringUtils.isNotBlank(installmentViewFiltersDTO.getFiscalCode()) ||
-        installmentViewFiltersDTO.getDebtPositionTypeOrgId() != null;
-
-    if (!hasAtLeastOneFilter) {
-      throw new IllegalArgumentException("At least one of the research fields must be inserted");
-    }
+    validateInstallmentViewFilters(installmentViewFiltersDTO);
 
     return installmentViewMapper.mapToPagedInstallmentView(
       installmentService.getInstallments(installmentViewFiltersDTO, pageable, accessToken));
+  }
+
+  private void validateInstallmentViewFilters(InstallmentViewFiltersDTO filtersDTO) {
+    boolean hasDueDateFilter = filtersDTO.getDueDate() != null &&
+      (filtersDTO.getDueDate().getFrom() != null || filtersDTO.getDueDate().getTo() != null);
+
+    if (hasDueDateFilter ||
+      StringUtils.isNotBlank(filtersDTO.getIuv()) ||
+      StringUtils.isNotBlank(filtersDTO.getFiscalCode()) ||
+      filtersDTO.getDebtPositionTypeOrgId() != null) {
+      return;
+    }
+    throw new IllegalArgumentException("At least one of the research fields should be inserted");
   }
 
   @Override

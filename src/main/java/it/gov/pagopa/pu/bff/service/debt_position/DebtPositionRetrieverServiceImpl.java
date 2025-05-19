@@ -56,16 +56,7 @@ public class DebtPositionRetrieverServiceImpl implements DebtPositionRetrieverSe
 
     AuthorizationService.validateUserForOrganizationId(filtersDTO.getOrganizationId(), loggedUser);
 
-    boolean hasAtLeastOneFilter =
-      filtersDTO.getCreationDateFrom() != null ||
-        filtersDTO.getCreationDateTo() != null ||
-        StringUtils.isNotBlank(filtersDTO.getFiscalCode()) ||
-        filtersDTO.getDebtPositionTypeOrgId() != null ||
-        filtersDTO.getStatus() != null;
-
-    if (!hasAtLeastOneFilter) {
-      throw new IllegalArgumentException("At least one of the research fields must be inserted");
-    }
+    validateDebtPositionViewFilters(filtersDTO);
 
     return debtPositionViewMapper.mapToPagedDebtPositionView(
       debtPositionService.getDebtPositionViews(
@@ -74,6 +65,17 @@ public class DebtPositionRetrieverServiceImpl implements DebtPositionRetrieverSe
         loggedUser.getMappedExternalUserId(),
         pageable,
         accessToken));
+  }
+
+  private void validateDebtPositionViewFilters(DebtPositionViewFiltersDTO filtersDTO) {
+    if (filtersDTO.getCreationDateFrom() != null ||
+      filtersDTO.getCreationDateTo() != null ||
+      StringUtils.isNotBlank(filtersDTO.getFiscalCode()) ||
+      filtersDTO.getDebtPositionTypeOrgId() != null ||
+      filtersDTO.getStatus() != null) {
+      return;
+    }
+    throw new IllegalArgumentException("At least one of the research fields should be inserted");
   }
 
   @Override

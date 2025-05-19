@@ -100,7 +100,7 @@ class ReceiptRetrieverServiceImplTest {
       IllegalArgumentException exception = Assertions.assertThrows(IllegalArgumentException.class, () ->
         receiptViewService.getReceipts(filtersDTO, pageable, loggedUser, accessToken));
 
-      assertEquals("At least one of the research fields must be inserted", exception.getMessage());
+      assertEquals("At least one of the research fields should be inserted", exception.getMessage());
 
       authorizationServiceMockedStatic.verify(() -> AuthorizationService.validateUserForOrganizationId(filtersDTO.getOrganizationId(), loggedUser));
     }

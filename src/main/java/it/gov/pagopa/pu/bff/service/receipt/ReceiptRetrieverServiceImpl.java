@@ -29,22 +29,25 @@ public class ReceiptRetrieverServiceImpl implements ReceiptRetrieverService {
   public PagedReceiptView getReceipts(ReceiptViewFiltersDTO receiptViewFiltersDTO, Pageable pageable, UserInfo loggedUser, String accessToken) {
     AuthorizationService.validateUserForOrganizationId(receiptViewFiltersDTO.getOrganizationId(), loggedUser);
 
-    boolean hasAtLeastOneFilter =
-      receiptViewFiltersDTO.getReceiptOrigin() != null ||
-        StringUtils.isNotBlank(receiptViewFiltersDTO.getIuv()) ||
-        StringUtils.isNotBlank(receiptViewFiltersDTO.getIur()) ||
-        StringUtils.isNotBlank(receiptViewFiltersDTO.getIud()) ||
-        receiptViewFiltersDTO.getDebtPositionTypeOrgId() != null ||
-        (receiptViewFiltersDTO.getPaymentDateTime() != null &&
-          (receiptViewFiltersDTO.getPaymentDateTime().getFrom() != null ||
-            receiptViewFiltersDTO.getPaymentDateTime().getTo() != null));
-
-    if (!hasAtLeastOneFilter) {
-      throw new IllegalArgumentException("At least one of the research fields must be inserted");
-    }
+    validateReceiptViewFilters(receiptViewFiltersDTO);
 
     return receiptViewMapper.mapToPagedReceiptView(
       receiptService.getReceipts(receiptViewFiltersDTO, pageable, accessToken));
+  }
+
+  private void validateReceiptViewFilters(ReceiptViewFiltersDTO filtersDTO) {
+    boolean hasPaymentDateFilter = filtersDTO.getPaymentDateTime() != null &&
+      (filtersDTO.getPaymentDateTime().getFrom() != null || filtersDTO.getPaymentDateTime().getTo() != null);
+
+    if (filtersDTO.getReceiptOrigin() != null ||
+      StringUtils.isNotBlank(filtersDTO.getIuv()) ||
+      StringUtils.isNotBlank(filtersDTO.getIur()) ||
+      StringUtils.isNotBlank(filtersDTO.getIud()) ||
+      filtersDTO.getDebtPositionTypeOrgId() != null ||
+      hasPaymentDateFilter) {
+      return;
+    }
+    throw new IllegalArgumentException("At least one of the research fields should be inserted");
   }
 
   @Override

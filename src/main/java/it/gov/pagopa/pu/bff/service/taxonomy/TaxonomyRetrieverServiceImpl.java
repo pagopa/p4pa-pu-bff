@@ -1,11 +1,13 @@
 package it.gov.pagopa.pu.bff.service.taxonomy;
 
 import it.gov.pagopa.pu.bff.connector.organization.TaxonomyService;
+import it.gov.pagopa.pu.bff.dto.generated.PagedTaxonomy;
 import it.gov.pagopa.pu.bff.dto.generated.TaxonomyCodeDTO;
 import it.gov.pagopa.pu.bff.dto.generated.TaxonomyCollectionReasonDTO;
 import it.gov.pagopa.pu.bff.dto.generated.TaxonomyMacroAreaCodeDTO;
 import it.gov.pagopa.pu.bff.dto.generated.TaxonomyOrganizationTypeDTO;
 import it.gov.pagopa.pu.bff.dto.generated.TaxonomyServiceTypeCodeDTO;
+import it.gov.pagopa.pu.bff.mapper.TaxonomyMapper;
 import it.gov.pagopa.pu.bff.mapper.taxonomy.TaxonomyCodeMapper;
 import it.gov.pagopa.pu.bff.mapper.taxonomy.TaxonomyCollectionReasonMapper;
 import it.gov.pagopa.pu.bff.mapper.taxonomy.TaxonomyMacroAreaCodeMapper;
@@ -13,12 +15,14 @@ import it.gov.pagopa.pu.bff.mapper.taxonomy.TaxonomyOrganizationTypeMapper;
 import it.gov.pagopa.pu.bff.mapper.taxonomy.TaxonomyServiceTypeCodeMapper;
 import it.gov.pagopa.pu.organization.dto.generated.Taxonomy;
 import java.util.List;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
 public class TaxonomyRetrieverServiceImpl implements TaxonomyRetrieverService {
 
   private final TaxonomyService taxonomyService;
+  private final TaxonomyMapper taxonomyMapper;
   private final TaxonomyOrganizationTypeMapper taxonomyOrganizationTypeMapper;
   private final TaxonomyMacroAreaCodeMapper taxonomyMacroAreaCodeMapper;
   private final TaxonomyCollectionReasonMapper taxonomyCollectionReasonMapper;
@@ -26,12 +30,14 @@ public class TaxonomyRetrieverServiceImpl implements TaxonomyRetrieverService {
   private final TaxonomyCodeMapper taxonomyCodeMapper;
 
   public TaxonomyRetrieverServiceImpl(TaxonomyService taxonomyService,
+    TaxonomyMapper taxonomyMapper,
                                       TaxonomyOrganizationTypeMapper taxonomyOrganizationTypeMapper,
                                       TaxonomyMacroAreaCodeMapper taxonomyMacroAreaCodeMapper,
                                       TaxonomyCollectionReasonMapper taxonomyCollectionReasonMapper,
                                       TaxonomyServiceTypeCodeMapper taxonomyServiceTypeCodeMapper,
                                       TaxonomyCodeMapper taxonomyCodeMapper){
     this.taxonomyService = taxonomyService;
+    this.taxonomyMapper = taxonomyMapper;
     this.taxonomyOrganizationTypeMapper = taxonomyOrganizationTypeMapper;
     this.taxonomyMacroAreaCodeMapper = taxonomyMacroAreaCodeMapper;
     this.taxonomyCollectionReasonMapper = taxonomyCollectionReasonMapper;
@@ -97,5 +103,14 @@ public class TaxonomyRetrieverServiceImpl implements TaxonomyRetrieverService {
       .stream()
       .map(taxonomyCodeMapper::map)
       .toList();
+  }
+
+  @Override
+  public PagedTaxonomy getTaxonomies(String organizationType,
+    String macroAreaCode, String serviceTypeCode, String collectionReason,
+    Pageable pageable, String accessToken) {
+    return taxonomyMapper.mapToPagedTaxonomy(
+      taxonomyService.getTaxonomies(organizationType, macroAreaCode, serviceTypeCode, collectionReason, pageable, accessToken)
+    );
   }
 }

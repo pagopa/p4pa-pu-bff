@@ -193,7 +193,8 @@ tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>("ope
     "PagedTreasuredClassification" to "it.gov.pagopa.pu.classification.dto.generated.PagedTreasuredClassification",
     "ClassificationsEnum" to "it.gov.pagopa.pu.classification.dto.generated.ClassificationsEnum",
     "DebtPositionOrigin" to "it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionOrigin",
-    "LocalDateInterval" to "it.gov.pagopa.pu.bff.dto.LocalDateIntervalFilter"
+    "LocalDateInterval" to "it.gov.pagopa.pu.bff.dto.LocalDateIntervalFilter",
+    "Taxonomy" to "it.gov.pagopa.pu.organization.dto.generated.Taxonomy"
   ))
   configOptions.set(mapOf(
     "dateLibrary" to "java8",

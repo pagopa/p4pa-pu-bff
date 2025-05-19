@@ -109,6 +109,66 @@ class InstallmentRetrieverServiceImplTest {
   }
 
   @Test
+  void givenDueDateToOnlyWhenGetInstallmentsThenOk() {
+    UserInfo loggedUser = new UserInfo();
+    loggedUser.setUserId("user-123");
+
+    InstallmentViewFiltersDTO filtersDTO = new InstallmentViewFiltersDTO();
+    filtersDTO.setOrganizationId(1L);
+    filtersDTO.setDueDate(new OffsetDateTimeIntervalFilter(null, OffsetDateTime.now().plusDays(5)));
+    Pageable pageable = PageRequest.of(0, 10);
+
+    PagedModelInstallmentView pagedModelInstallmentView = new PagedModelInstallmentView();
+    PagedInstallmentView expectedPagedInstallmentView = new PagedInstallmentView();
+
+    try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
+      authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(filtersDTO.getOrganizationId(), loggedUser)).thenAnswer(a -> null);
+
+      Mockito.when(installmentServiceMock.getInstallments(filtersDTO, pageable, accessToken))
+        .thenReturn(pagedModelInstallmentView);
+
+      Mockito.when(installmentViewMapperMock.mapToPagedInstallmentView(pagedModelInstallmentView))
+        .thenReturn(expectedPagedInstallmentView);
+
+      PagedInstallmentView result = installmentRetrieverService.getInstallments(filtersDTO, pageable, loggedUser, accessToken);
+
+      assertNotNull(result);
+      assertSame(expectedPagedInstallmentView, result);
+    }
+  }
+
+  @Test
+  void givenIuvOnlyWhenGetInstallmentsThenOk() {
+    UserInfo loggedUser = new UserInfo();
+    loggedUser.setUserId("user-123");
+
+    InstallmentViewFiltersDTO filtersDTO = new InstallmentViewFiltersDTO();
+    filtersDTO.setOrganizationId(1L);
+    filtersDTO.setIuv("IUV123");
+
+    Pageable pageable = PageRequest.of(0, 10);
+
+    PagedModelInstallmentView pagedModelInstallmentView = new PagedModelInstallmentView();
+    PagedInstallmentView expectedPagedInstallmentView = new PagedInstallmentView();
+
+    try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
+      authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(filtersDTO.getOrganizationId(), loggedUser)).thenAnswer(a -> null);
+
+      Mockito.when(installmentServiceMock.getInstallments(filtersDTO, pageable, accessToken))
+        .thenReturn(pagedModelInstallmentView);
+
+      Mockito.when(installmentViewMapperMock.mapToPagedInstallmentView(pagedModelInstallmentView))
+        .thenReturn(expectedPagedInstallmentView);
+
+      PagedInstallmentView result = installmentRetrieverService.getInstallments(filtersDTO, pageable, loggedUser, accessToken);
+
+      assertNotNull(result);
+      assertSame(expectedPagedInstallmentView, result);
+    }
+  }
+
+
+  @Test
   void givenInvalidUserWhenGetInstallmentsThenAuthorizationDeniedException() {
     UserInfo loggedUser = new UserInfo();
     loggedUser.setUserId("user-123");

@@ -324,8 +324,8 @@ class DebtPositionRetrieverServiceImplTest {
     installmentDTOPAID.setIuv(iuv);
     installmentDTOPAID.setStatus(InstallmentStatus.PAID);
     InstallmentDTO installmentDTOWithNullStatus = podamFactory.manufacturePojo(InstallmentDTO.class);
-    installmentDTOUNPAYABLE.setIuv(iuv);
-    installmentDTOUNPAYABLE.setStatus(null);
+    installmentDTOWithNullStatus.setIuv(iuv);
+    installmentDTOWithNullStatus.setStatus(null);
     paymentOptionDTO.setInstallments(List.of(installmentDTOUNPAID, installmentDTOUNPAYABLE));
     paymentOptionDTO1.setInstallments(List.of(installmentDTOPAID, installmentDTOWithNullStatus));
     debtPositionDTO.setPaymentOptions(List.of(paymentOptionDTO, paymentOptionDTO1));
@@ -341,6 +341,7 @@ class DebtPositionRetrieverServiceImplTest {
       Mockito.when(debtPositionServiceMock.getDebtPosition(debtPositionId, accessToken)).thenReturn(debtPositionDTO);
       Mockito.when(debtPositionNoticeRetrieverServiceMock.getNotice(organizationId, iuv, debtPositionId, loggedUser, accessToken)).thenReturn(fileResourceDTO);
       Mockito.when(zipFileServiceMock.zipAndCleanTmpFile(Path.of(String.valueOf(workingDirectory), "1_2_PDF.zip"), List.of(Path.of(String.valueOf(workingDirectory), "filename"), Path.of(String.valueOf(workingDirectory), "filename")))).thenReturn(file);
+
       Resource result = debtPositionRetrieverService.getDebtPositionNoticesZip(organizationId, debtPositionId, loggedUser, accessToken);
 
       assertNotNull(result);

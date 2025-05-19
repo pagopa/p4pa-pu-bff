@@ -65,8 +65,8 @@ class ZipFileServiceTest {
   @Test
   void givenPathsWhenZipperThenThrowZipFileException() {
     //given
-    Path file1 = tempDir.resolve("file1.txt");
-    Path file2 = tempDir.resolve("file2.txt");
+    Path file1 = tempDir.resolve("file1");
+    Path file2 = tempDir.resolve("file2");
 
     //when
     Path zipPath = tempDir.resolve("output.zip");

@@ -68,14 +68,13 @@ public class DebtPositionRetrieverServiceImpl implements DebtPositionRetrieverSe
   }
 
   private void validateDebtPositionViewFilters(DebtPositionViewFiltersDTO filtersDTO) {
-    if (filtersDTO.getCreationDateFrom() != null ||
-      filtersDTO.getCreationDateTo() != null ||
-      StringUtils.isNotBlank(filtersDTO.getFiscalCode()) ||
-      filtersDTO.getDebtPositionTypeOrgId() != null ||
-      filtersDTO.getStatus() != null) {
-      return;
+    if (filtersDTO.getCreationDateFrom() == null &&
+      filtersDTO.getCreationDateTo() == null &&
+      StringUtils.isBlank(filtersDTO.getFiscalCode()) &&
+      filtersDTO.getDebtPositionTypeOrgId() == null &&
+      filtersDTO.getStatus() == null) {
+      throw new IllegalArgumentException("At least one of the research fields should be inserted");
     }
-    throw new IllegalArgumentException("At least one of the research fields should be inserted");
   }
 
   @Override

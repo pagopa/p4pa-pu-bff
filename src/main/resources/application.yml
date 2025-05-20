@@ -146,6 +146,3 @@ page:
   debtPositionTypeOrg:
     operators:
       max-page-size: "\${DEBT_POSITION_TYPE_ORG_OPERATORS_MAX_PAGE_SIZE:10000}"
-
-folders:
-  tmp: "\${TMP_FOLDER:\${java.io.tmpdir}}"

@@ -16,13 +16,11 @@ import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionDTO;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionOrigin;
 import it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentStatus;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.Resource;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.nio.file.Path;
 import java.util.List;
 
 @Slf4j
@@ -35,7 +33,7 @@ public class DebtPositionRetrieverServiceImpl implements DebtPositionRetrieverSe
   private final DebtPositionMapper debtPositionMapper;
   private final DebtPositionNoticeRetrieverService debtPositionNoticeRetrieverService;
   private final ZipFileService zipFileService;
-  private final Path workingDirectory;
+
   private static final List<String> debtPositionOriginFilterList = List.of(
     DebtPositionOrigin.ORDINARY.toString(),
     DebtPositionOrigin.ORDINARY_SIL.toString(),
@@ -47,15 +45,13 @@ public class DebtPositionRetrieverServiceImpl implements DebtPositionRetrieverSe
                                           DebtPositionViewMapper debtPositionViewMapper,
                                           DebtPositionMapper debtPositionMapper,
                                           DebtPositionNoticeRetrieverService debtPositionNoticeRetrieverService,
-                                          ZipFileService zipFileService,
-                                          @Value("${folders.tmp}")Path workingDirectory) {
+                                          ZipFileService zipFileService) {
     this.debtPositionService = debtPositionService;
     this.debtPositionTypeOrgService = debtPositionTypeOrgService;
     this.debtPositionViewMapper = debtPositionViewMapper;
     this.debtPositionMapper = debtPositionMapper;
     this.debtPositionNoticeRetrieverService = debtPositionNoticeRetrieverService;
     this.zipFileService = zipFileService;
-    this.workingDirectory = workingDirectory;
   }
 
   @Override
@@ -132,7 +128,7 @@ public class DebtPositionRetrieverServiceImpl implements DebtPositionRetrieverSe
         po.getInstallments()
           .stream()
           .filter(
-            i -> i.getStatus() != null &&
+            i ->
               (InstallmentStatus.UNPAID.equals(i.getStatus()) ||
                 InstallmentStatus.UNPAYABLE.equals(i.getStatus())))
       )
@@ -144,12 +140,7 @@ public class DebtPositionRetrieverServiceImpl implements DebtPositionRetrieverSe
       return null;
     }
 
-    return zipFileService.createZipFromResources(pdfResources, workingDirectory, buildZipFileName(organizationId, debtPositionId));
-
-  }
-
-  private String buildZipFileName(Long organizationId, Long debtPositionId) {
-    return organizationId + "_" + debtPositionId + "_PDF.zip";
+    return zipFileService.zipper(pdfResources);
   }
 
 }

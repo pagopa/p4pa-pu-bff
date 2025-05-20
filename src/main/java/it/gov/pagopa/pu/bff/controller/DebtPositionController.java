@@ -106,7 +106,7 @@ public class DebtPositionController implements DebtPositionsApi {
     if (debtPositionPaymentNoticesZipped != null){
       HttpHeaders headers = new HttpHeaders();
       headers.setContentDisposition(ContentDisposition.attachment()
-        .filename(debtPositionPaymentNoticesZipped.getFilename())
+        .filename(buildZipFileName(organizationId, debtPositionId))
         .build());
 
       return ResponseEntity.ok()
@@ -117,5 +117,9 @@ public class DebtPositionController implements DebtPositionsApi {
       return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
+  }
+
+  private String buildZipFileName(Long organizationId, Long debtPositionId) {
+    return organizationId + "_" + debtPositionId + "_NOTICES_PDF.zip";
   }
 }

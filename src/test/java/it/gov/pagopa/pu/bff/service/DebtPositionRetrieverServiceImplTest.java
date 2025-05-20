@@ -24,14 +24,11 @@ import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.core.io.ByteArrayResource;
-import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.authorization.AuthorizationDeniedException;
 import uk.co.jemos.podam.api.PodamFactory;
 
-import java.io.File;
-import java.nio.file.Path;
 import java.time.OffsetDateTime;
 import java.util.List;
 
@@ -58,11 +55,10 @@ class DebtPositionRetrieverServiceImplTest {
   private final PodamFactory podamFactory = TestUtils.getPodamFactory();
 
   private final String accessToken = "TOKEN";
-  private final Path workingDirectory = Path.of("build/tmp/test");
 
   @BeforeEach
   void setUp() {
-    debtPositionRetrieverService = new DebtPositionRetrieverServiceImpl(debtPositionServiceMock, debtPositionTypeOrgServiceMock, debtPositionViewMapperMock, debtPositionMapperMock, debtPositionNoticeRetrieverServiceMock, zipFileServiceMock, workingDirectory);
+    debtPositionRetrieverService = new DebtPositionRetrieverServiceImpl(debtPositionServiceMock, debtPositionTypeOrgServiceMock, debtPositionViewMapperMock, debtPositionMapperMock, debtPositionNoticeRetrieverServiceMock, zipFileServiceMock);
   }
 
   @AfterEach
@@ -418,19 +414,17 @@ class DebtPositionRetrieverServiceImplTest {
     paymentOptionDTO1.setInstallments(List.of(installmentDTOPAID, installmentDTOWithNullStatus));
     debtPositionDTO.setPaymentOptions(List.of(paymentOptionDTO, paymentOptionDTO1));
 
-    Resource resource = new ByteArrayResource("PDF-DATA".getBytes());
-    FileResourceDTO fileResourceDTO = new FileResourceDTO(resource, "filename");
+    ByteArrayResource expectedResult = new ByteArrayResource("PDF-DATA".getBytes());
 
-    File file = podamFactory.manufacturePojo(File.class);
-    FileSystemResource expectedResult = new FileSystemResource(file);
+    FileResourceDTO fileResourceDTO = new FileResourceDTO(expectedResult, "filename");
 
     try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
       authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)).thenAnswer(a -> null);
 
       Mockito.when(debtPositionServiceMock.getDebtPosition(debtPositionId, accessToken)).thenReturn(debtPositionDTO);
       Mockito.when(debtPositionNoticeRetrieverServiceMock.getNotice(organizationId, iuv, debtPositionId, loggedUser, accessToken)).thenReturn(fileResourceDTO);
-      Mockito.when(zipFileServiceMock.createZipFromResources(List.of(fileResourceDTO, fileResourceDTO),workingDirectory, "1_2_PDF.zip")).thenReturn(expectedResult);
 
+      Mockito.when(zipFileServiceMock.zipper(List.of(fileResourceDTO, fileResourceDTO))).thenReturn(expectedResult);
       Resource result = debtPositionRetrieverService.getDebtPositionNoticesZip(organizationId, debtPositionId, loggedUser, accessToken);
 
       assertNotNull(result);

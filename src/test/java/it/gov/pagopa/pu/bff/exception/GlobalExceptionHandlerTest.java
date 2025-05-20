@@ -282,13 +282,4 @@ class GlobalExceptionHandlerTest {
       .andExpect(MockMvcResultMatchers.jsonPath("$.description").value("Error"));
   }
 
-  @Test
-  void handlePdfProcessingException() throws Exception {
-    doThrow(new PdfProcessingException("Error")).when(testControllerSpy).testEndpoint(DATA, BODY);
-
-    performRequest(DATA, MediaType.APPLICATION_JSON)
-      .andExpect(MockMvcResultMatchers.status().isInternalServerError())
-      .andExpect(MockMvcResultMatchers.jsonPath("$.title").value("GENERIC_ERROR"))
-      .andExpect(MockMvcResultMatchers.jsonPath("$.description").value("Error"));
-  }
 }

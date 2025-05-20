@@ -233,7 +233,7 @@ class DebtPositionControllerTest {
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertNotNull(response.getBody());
     assertEquals(resource, response.getBody());
-    assertEquals(resource.getFilename(), response.getHeaders().getContentDisposition().getFilename());
+    assertEquals("1_2_NOTICES_PDF.zip", response.getHeaders().getContentDisposition().getFilename());
   }
 
   @Test

@@ -219,7 +219,7 @@ class DebtPositionControllerTest {
   }
 
   @Test
-  void givenCorrectRequestWhenGetDebtPositionNoticesZipThenOk() {
+  void givenCorrectRequestWhenGetPaymentNoticeZipThenOk() {
     long organizationId = 1L;
     Long debtPositionId = 2L;
 
@@ -237,7 +237,7 @@ class DebtPositionControllerTest {
   }
 
   @Test
-  void givenCorrectRequestWhenGetDebtPositionNoticesZipThenNoContent() {
+  void givenCorrectRequestWhenGetPaymentNoticeZipThenNoContent() {
     long organizationId = 1L;
     Long debtPositionId = 2L;
 

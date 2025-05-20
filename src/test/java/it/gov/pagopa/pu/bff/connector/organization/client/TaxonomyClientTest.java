@@ -3,6 +3,7 @@ package it.gov.pagopa.pu.bff.connector.organization.client;
 import it.gov.pagopa.pu.bff.connector.organization.config.OrganizationApisHolder;
 import it.gov.pagopa.pu.organization.controller.generated.*;
 import it.gov.pagopa.pu.organization.dto.generated.*;
+import java.util.Collections;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,6 +12,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 
 @ExtendWith(MockitoExtension.class)
 class TaxonomyClientTest {
@@ -154,6 +157,27 @@ class TaxonomyClientTest {
 
     // When
     CollectionModelTaxonomyCodeDTO result = taxonomyClient.getTaxonomyCode(null, null, null, null, accessToken);
+
+    // Then
+    Assertions.assertSame(expectedResult, result);
+  }
+
+  @Test
+  void whenGetTaxonomiesThenInvokeWithAccessToken() {
+    // Given
+    String accessToken = "ACCESSTOKEN";
+    PagedModelTaxonomy expectedResult = new PagedModelTaxonomy();
+
+    Mockito.when(
+        organizationApisHolder.getTaxonomySearchControllerApi(accessToken))
+      .thenReturn(taxonomySearchControllerApiMock);
+    Mockito.when(taxonomySearchControllerApiMock.crudTaxonomiesFindTaxonomies(null, null,
+          null, null, 0, 10, Collections.emptyList()))
+      .thenReturn(expectedResult);
+
+    // When
+    PagedModelTaxonomy result = taxonomyClient.getTaxonomies(null, null, null,
+      null, PageRequest.of(0,10, Sort.unsorted()), accessToken);
 
     // Then
     Assertions.assertSame(expectedResult, result);

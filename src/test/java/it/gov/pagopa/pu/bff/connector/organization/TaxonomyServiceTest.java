@@ -9,6 +9,7 @@ import it.gov.pagopa.pu.organization.dto.generated.CollectionModelTaxonomyCollec
 import it.gov.pagopa.pu.organization.dto.generated.CollectionModelTaxonomyMacroAreaCodeDTO;
 import it.gov.pagopa.pu.organization.dto.generated.CollectionModelTaxonomyOrganizationTypeDTO;
 import it.gov.pagopa.pu.organization.dto.generated.CollectionModelTaxonomyServiceTypeCodeDTO;
+import it.gov.pagopa.pu.organization.dto.generated.PagedModelTaxonomy;
 import it.gov.pagopa.pu.organization.dto.generated.Taxonomy;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,6 +17,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 @ExtendWith(MockitoExtension.class)
 class TaxonomyServiceTest {
@@ -87,6 +90,17 @@ class TaxonomyServiceTest {
     when(client.getTaxonomyByTaxonomyCode("TAX", accessToken))
       .thenReturn(expected);
     Taxonomy result = service.getTaxonomyByTaxonomyCode("TAX", accessToken);
+    assertSame(expected, result);
+  }
+
+  @Test
+  void testGetTaxonomies() {
+    PagedModelTaxonomy expected = new PagedModelTaxonomy();
+    String collectionReason = "collectionReason";
+    Pageable pageable = PageRequest.of(0,10);
+    when(client.getTaxonomies(Mockito.same(organizationType), Mockito.same(macroAreaCode), Mockito.same(serviceTypeCode), Mockito.same(collectionReason), Mockito.same(pageable), Mockito.same(accessToken)))
+      .thenReturn(expected);
+    PagedModelTaxonomy result = service.getTaxonomies(organizationType, macroAreaCode, serviceTypeCode, collectionReason, pageable, accessToken);
     assertSame(expected, result);
   }
 }

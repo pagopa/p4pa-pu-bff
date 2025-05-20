@@ -1717,6 +1717,36 @@ paths:
           description: Invalid request
         "500":
           description: Internal server error
+  /taxonomy:
+    get:
+      tags:
+        - Taxonomy
+      operationId: getTaxonomies
+      parameters:
+        - name: organizationType
+          in: query
+          schema:
+            type: string
+        - name: macroAreaCode
+          in: query
+          schema:
+            type: string
+        - name: serviceTypeCode
+          in: query
+          schema:
+            type: string
+        - name: collectionReason
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PagedTaxonomy'
+      x-spring-paginated: true
   /organization/{organizationId}/debt-positions/{debtPositionId}/notice/zip:
     get:
       tags:
@@ -2738,3 +2768,28 @@ components:
           properties:
             paymentDate:
               type: 'LocalDateInterval'
+    PagedTaxonomy:
+      type: object
+      required:
+        - content
+        - size
+        - totalElements
+        - totalPages
+        - number
+      properties:
+        content:
+          type: array
+          items:
+            type: 'Taxonomy'
+        size:
+          type: integer
+          format: int64
+        totalElements:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer
+          format: int64
+        number:
+          type: integer
+          format: int64

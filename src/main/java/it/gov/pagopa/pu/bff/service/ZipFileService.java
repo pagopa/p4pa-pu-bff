@@ -50,25 +50,32 @@ public class ZipFileService {
     }
   }
 
-  public Resource createZipFromResources(List<FileResourceDTO> pdfResources, Path workingDirectory, Long organizationId, Long debtPositionId) {
+  public Resource createZipFromResources(List<FileResourceDTO> pdfResources, Path workingDirectory, String zipFileName) {
+    if (pdfResources == null){
+      return null;
+    }
+
     List<Path> pdfPaths = pdfResources.stream()
+      .filter(f -> f.getResource() != null)
       .map(f -> {
-        try (InputStream is = f.getResource().getInputStream()) {
-          Path customPath = workingDirectory.resolve(f.getFileName());
-          Files.copy(is, customPath, StandardCopyOption.REPLACE_EXISTING);
-          return customPath;
-        } catch (IOException e) {
-          throw new PdfProcessingException("Failed to create or copy temporary PDF file");
-        }
+          try (InputStream is = f.getResource().getInputStream()) {
+            Path customPath = workingDirectory.resolve(f.getFileName());
+            Files.copy(is, customPath, StandardCopyOption.REPLACE_EXISTING);
+            return customPath;
+          } catch (IOException e) {
+            throw new PdfProcessingException("Failed to create or copy temporary PDF file");
+          }
       })
       .toList();
 
-    Path filePath = workingDirectory.resolve(buildZipFileName(organizationId, debtPositionId));
+    if (pdfPaths.isEmpty()){
+      return null;
+    }
+
+    Path filePath = workingDirectory.resolve(zipFileName);
     return new FileSystemResource(zipAndCleanTmpFile(filePath, pdfPaths));
   }
 
-  private String buildZipFileName(Long organizationId, Long debtPositionId) {
-    return organizationId + "_" + debtPositionId + "_PDF.zip";
-  }
+
 
 }

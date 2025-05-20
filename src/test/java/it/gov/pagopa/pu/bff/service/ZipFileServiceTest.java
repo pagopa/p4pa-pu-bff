@@ -67,7 +67,7 @@ class ZipFileServiceTest {
   }
 
   @Test
-  void givenPathsWhenZipperThenThrowZipFileException() {
+  void givenWrongPathsWhenZipperThenThrowZipFileException() {
     //given
     Path file1 = tempDir.resolve("file1");
     Path file2 = tempDir.resolve("file2");
@@ -89,11 +89,9 @@ class ZipFileServiceTest {
     Files.writeString(file3, "Dummy PDF content");
     Resource resource = new FileSystemResource(file3);
     FileResourceDTO fileResourceDTO = new FileResourceDTO(resource, "file3.pdf");
-    Long organizationId = 1L;
-    Long debtPositionId = 3L;
 
     //when
-    Resource result = zipFileService.createZipFromResources(List.of(fileResourceDTO), tempDir, organizationId, debtPositionId);
+    Resource result = zipFileService.createZipFromResources(List.of(fileResourceDTO), tempDir, "1_3_PDF.zip");
 
     //then
     assertNotNull(result);
@@ -104,18 +102,32 @@ class ZipFileServiceTest {
   }
 
   @Test
-  void givenParametersWhenCreateZipFromResourcesThenThrowPdfProcessingException() {
+  void givenParametersAndWrongFileWhenCreateZipFromResourcesThenThrowPdfProcessingException() {
     //given
     Path file3 = tempDir.resolve("file3");
     Resource resource = new FileSystemResource(file3);
     FileResourceDTO fileResourceDTO = new FileResourceDTO(resource, "file3");
-    Long organizationId = 1L;
-    Long debtPositionId = 3L;
 
     //then
     List<FileResourceDTO> listOfFileResourceDTO = List.of(fileResourceDTO);
-    PdfProcessingException ex = assertThrows(PdfProcessingException.class, () -> zipFileService.createZipFromResources(listOfFileResourceDTO, tempDir, organizationId, debtPositionId));
+    PdfProcessingException ex = assertThrows(PdfProcessingException.class, () -> zipFileService.createZipFromResources(listOfFileResourceDTO, tempDir, "1_3_PDF.zip"));
     assertEquals("Failed to create or copy temporary PDF file", ex.getMessage());
+  }
+
+  @Test
+  void givenNullPdfResourcesListWhenCreateZipFromResourcesThenReturnNull(){
+    Resource resource = zipFileService.createZipFromResources(null, tempDir, "1_3_PDF.zip");
+
+    assertNull(resource);
+  }
+
+  @Test
+  void givenNullResourcesWhenCreateZipFromResourcesThenReturnNull() {
+    List<FileResourceDTO> listOfFileResource = List.of(new FileResourceDTO(null,"filename"));
+
+    Resource result = zipFileService.createZipFromResources(listOfFileResource, tempDir, "1_3_PDF.zip");
+
+    assertNull(result);
   }
 
 }

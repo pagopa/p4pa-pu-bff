@@ -332,17 +332,19 @@ class DebtPositionRetrieverServiceImplTest {
     FileResourceDTO fileResourceDTO = new FileResourceDTO(resource, "filename");
 
     File file = podamFactory.manufacturePojo(File.class);
+    FileSystemResource expectedResult = new FileSystemResource(file);
 
     try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
       authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)).thenAnswer(a -> null);
 
       Mockito.when(debtPositionServiceMock.getDebtPosition(debtPositionId, accessToken)).thenReturn(debtPositionDTO);
       Mockito.when(debtPositionNoticeRetrieverServiceMock.getNotice(organizationId, iuv, debtPositionId, loggedUser, accessToken)).thenReturn(fileResourceDTO);
-      Mockito.when(zipFileServiceMock.createZipFromResources(List.of(fileResourceDTO, fileResourceDTO),workingDirectory, organizationId, debtPositionId)).thenReturn(new FileSystemResource(file));
+      Mockito.when(zipFileServiceMock.createZipFromResources(List.of(fileResourceDTO, fileResourceDTO),workingDirectory, "1_2_PDF.zip")).thenReturn(expectedResult);
 
       Resource result = debtPositionRetrieverService.getDebtPositionNoticesZip(organizationId, debtPositionId, loggedUser, accessToken);
 
       assertNotNull(result);
+      assertEquals(expectedResult, result);
       Mockito.verify(debtPositionNoticeRetrieverServiceMock, Mockito.times(2)).getNotice(organizationId, iuv, debtPositionId, loggedUser, accessToken);
       authorizationServiceMockedStatic.verify(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser));
     }
@@ -350,7 +352,7 @@ class DebtPositionRetrieverServiceImplTest {
   }
 
   @Test
-  void givenValidUserWhenGetDebtPositionNoticesZipWithNullInstallmentsThenReturnNull() {
+  void givenValidUserAndDebtPositionWithNullInstallmentsWhenGetDebtPositionNoticesZipThenReturnNull() {
     UserInfo loggedUser = new UserInfo();
     loggedUser.setMappedExternalUserId("mappedExternalUserId");
     Long organizationId = 1L;
@@ -372,7 +374,7 @@ class DebtPositionRetrieverServiceImplTest {
   }
 
   @Test
-  void givenValidUserWhenGetDebtPositionNoticesZipThenReturnNull() {
+  void givenValidUserAndNullDebtPositionWhenGetDebtPositionNoticesZipThenReturnNull() {
     UserInfo loggedUser = new UserInfo();
     loggedUser.setMappedExternalUserId("mappedExternalUserId");
     Long organizationId = 1L;

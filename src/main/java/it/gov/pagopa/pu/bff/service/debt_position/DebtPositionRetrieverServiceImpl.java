@@ -107,31 +107,35 @@ public class DebtPositionRetrieverServiceImpl implements DebtPositionRetrieverSe
     AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser);
 
     DebtPositionDTO debtPosition = debtPositionService.getDebtPosition(debtPositionId, accessToken);
-    if (debtPosition != null){
-      List<FileResourceDTO> pdfResources = debtPosition
-        .getPaymentOptions()
-        .stream()
-        .flatMap(po ->
-          po.getInstallments()
-            .stream()
-            .filter(
-              i -> i.getStatus() != null &&
-                (InstallmentStatus.UNPAID.equals(i.getStatus()) ||
-                  InstallmentStatus.UNPAYABLE.equals(i.getStatus())))
-        )
-        .map(i ->
-          debtPositionNoticeRetrieverService.getNotice(organizationId, i.getIuv(), debtPositionId, loggedUser, accessToken))
-        .toList();
-
-      if (pdfResources.isEmpty()){
-        return null;
-      }
-
-      return zipFileService.createZipFromResources(pdfResources, workingDirectory, organizationId, debtPositionId);
-    }else {
+    if (debtPosition == null){
       return null;
     }
 
+    List<FileResourceDTO> pdfResources = debtPosition
+      .getPaymentOptions()
+      .stream()
+      .flatMap(po ->
+        po.getInstallments()
+          .stream()
+          .filter(
+            i -> i.getStatus() != null &&
+              (InstallmentStatus.UNPAID.equals(i.getStatus()) ||
+                InstallmentStatus.UNPAYABLE.equals(i.getStatus())))
+      )
+      .map(i ->
+        debtPositionNoticeRetrieverService.getNotice(organizationId, i.getIuv(), debtPositionId, loggedUser, accessToken))
+      .toList();
+
+    if (pdfResources.isEmpty()){
+      return null;
+    }
+
+    return zipFileService.createZipFromResources(pdfResources, workingDirectory, buildZipFileName(organizationId, debtPositionId));
+
+  }
+
+  private String buildZipFileName(Long organizationId, Long debtPositionId) {
+    return organizationId + "_" + debtPositionId + "_PDF.zip";
   }
 
 }

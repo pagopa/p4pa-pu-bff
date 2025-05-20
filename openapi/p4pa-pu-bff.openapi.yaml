@@ -636,13 +636,13 @@ paths:
             format: int64
         - name: dueDateFrom
           in: query
-          required: true
+          required: false
           schema:
             type: string
             format: date-time
         - name: dueDateTo
           in: query
-          required: true
+          required: false
           schema:
             type: string
             format: date-time
@@ -1037,7 +1037,7 @@ paths:
             format: int64
         - name: receiptOrigin
           in: query
-          required: true
+          required: false
           schema:
             type: 'ReceiptOriginType'
         - name: iuv
@@ -1291,13 +1291,13 @@ paths:
             format: int64
         - name: creationDateFrom
           in: query
-          required: true
+          required: false
           schema:
             type: string
             format: date-time
         - name: creationDateTo
           in: query
-          required: true
+          required: false
           schema:
             type: string
             format: date-time

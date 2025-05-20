@@ -74,7 +74,11 @@ class ZipFileServiceTest {
 
     //when
     Path zipPath = tempDir.resolve("output.zip");
-    ZipFileException ex = assertThrows(ZipFileException.class, () -> zipFileService.zipper(zipPath, List.of(file1, file2)));
+    List<Path> paths = List.of(file1, file2);
+    ZipFileException ex = assertThrows(ZipFileException.class, () ->
+      zipFileService.zipper(zipPath, paths)
+    );
+
     assertTrue(ex.getMessage().contains("Error while zipping:"));
   }
 
@@ -109,7 +113,8 @@ class ZipFileServiceTest {
     Long debtPositionId = 3L;
 
     //then
-    PdfProcessingException ex = assertThrows(PdfProcessingException.class, () -> zipFileService.createZipFromResources(List.of(fileResourceDTO), tempDir, organizationId, debtPositionId));
+    List<FileResourceDTO> listOfFileResourceDTO = List.of(fileResourceDTO);
+    PdfProcessingException ex = assertThrows(PdfProcessingException.class, () -> zipFileService.createZipFromResources(listOfFileResourceDTO, tempDir, organizationId, debtPositionId));
     assertEquals("Failed to create or copy temporary PDF file", ex.getMessage());
   }
 

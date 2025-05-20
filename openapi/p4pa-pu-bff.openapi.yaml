@@ -1682,7 +1682,7 @@ paths:
         '500':
           description: Internal Server Error
       x-spring-paginated: true
-  /organization/{organizationId}/debtpositions/{debtPositionId}/notice:
+  /organization/{organizationId}/debt-positions/{debtPositionId}/notice:
     get:
       tags:
         - DebtPositions
@@ -1717,7 +1717,7 @@ paths:
           description: Invalid request
         "500":
           description: Internal server error
-  /organization/{organizationId}/debtpositions/{debtPositionId}/notices/zip:
+  /organization/{organizationId}/debt-positions/{debtPositionId}/notice/zip:
     get:
       tags:
         - DebtPositions

@@ -54,11 +54,6 @@ public class GlobalExceptionHandler {
     return handleException(ex, request, HttpStatus.BAD_REQUEST, ErrorDTO.TitleEnum.BAD_REQUEST);
   }
 
-  @ExceptionHandler(InstallmentsNotFoundException.class)
-  public ResponseEntity<ErrorDTO> handleInstallmentsNotFoundException(InstallmentsNotFoundException ex, HttpServletRequest request) {
-    return handleException(ex, request, HttpStatus.NOT_FOUND, TitleEnum.NOT_FOUND);
-  }
-
   @ExceptionHandler(ZipFileException.class)
   public ResponseEntity<ErrorDTO> handleZipFileException(ZipFileException ex, HttpServletRequest request) {
     return handleException(ex, request, HttpStatus.INTERNAL_SERVER_ERROR, TitleEnum.GENERIC_ERROR);

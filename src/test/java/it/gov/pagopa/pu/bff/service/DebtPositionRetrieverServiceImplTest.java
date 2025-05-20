@@ -7,9 +7,7 @@ import it.gov.pagopa.pu.bff.dto.DebtPositionViewFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.FileResourceDTO;
 import it.gov.pagopa.pu.bff.dto.generated.DebtPositionDetailDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedDebtPositionView;
-import it.gov.pagopa.pu.bff.exception.InstallmentsNotFoundException;
 import it.gov.pagopa.pu.bff.exception.InvalidDebtPositionException;
-import it.gov.pagopa.pu.bff.exception.PdfProcessingException;
 import it.gov.pagopa.pu.bff.mapper.DebtPositionMapper;
 import it.gov.pagopa.pu.bff.mapper.DebtPositionViewMapper;
 import it.gov.pagopa.pu.bff.service.debt_position.DebtPositionNoticeRetrieverService;
@@ -26,13 +24,13 @@ import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.authorization.AuthorizationDeniedException;
 import uk.co.jemos.podam.api.PodamFactory;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
 
@@ -340,7 +338,7 @@ class DebtPositionRetrieverServiceImplTest {
 
       Mockito.when(debtPositionServiceMock.getDebtPosition(debtPositionId, accessToken)).thenReturn(debtPositionDTO);
       Mockito.when(debtPositionNoticeRetrieverServiceMock.getNotice(organizationId, iuv, debtPositionId, loggedUser, accessToken)).thenReturn(fileResourceDTO);
-      Mockito.when(zipFileServiceMock.zipAndCleanTmpFile(Path.of(String.valueOf(workingDirectory), "1_2_PDF.zip"), List.of(Path.of(String.valueOf(workingDirectory), "filename"), Path.of(String.valueOf(workingDirectory), "filename")))).thenReturn(file);
+      Mockito.when(zipFileServiceMock.createZipFromResources(List.of(fileResourceDTO, fileResourceDTO),workingDirectory, organizationId, debtPositionId)).thenReturn(new FileSystemResource(file));
 
       Resource result = debtPositionRetrieverService.getDebtPositionNoticesZip(organizationId, debtPositionId, loggedUser, accessToken);
 
@@ -352,7 +350,7 @@ class DebtPositionRetrieverServiceImplTest {
   }
 
   @Test
-  void givenValidUserWhenGetDebtPositionNoticesZipThenThrowInstallmentsNotFoundException() {
+  void givenValidUserWhenGetDebtPositionNoticesZipWithNullInstallmentsThenReturnNull() {
     UserInfo loggedUser = new UserInfo();
     loggedUser.setMappedExternalUserId("mappedExternalUserId");
     Long organizationId = 1L;
@@ -365,47 +363,12 @@ class DebtPositionRetrieverServiceImplTest {
 
       Mockito.when(debtPositionServiceMock.getDebtPosition(debtPositionId, accessToken)).thenReturn(debtPositionDTO);
 
-      InstallmentsNotFoundException ex = assertThrows(InstallmentsNotFoundException.class, () -> debtPositionRetrieverService.getDebtPositionNoticesZip(organizationId, debtPositionId, loggedUser, accessToken));
-      assertEquals("No valid installments found for the specified debt position with id 2", ex.getMessage());
+      Resource result = debtPositionRetrieverService.getDebtPositionNoticesZip(organizationId, debtPositionId, loggedUser, accessToken);
+
+      assertNull(result);
       authorizationServiceMockedStatic.verify(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser));
     }
 
   }
-
-  @Test
-  void givenValidUserWhenPdfCopyFailsThenThrowPdfProcessingException() throws IOException {
-    UserInfo loggedUser = new UserInfo();
-    loggedUser.setMappedExternalUserId("mappedExternalUserId");
-    Long organizationId = 1L;
-    Long debtPositionId = 2L;
-    String iuv = "1";
-
-    DebtPositionDTO debtPositionDTO = new DebtPositionDTO();
-    PaymentOptionDTO paymentOptionDTO = new PaymentOptionDTO();
-    InstallmentDTO installmentDTO = new InstallmentDTO();
-    installmentDTO.setIuv(iuv);
-    installmentDTO.setStatus(InstallmentStatus.UNPAID);
-    paymentOptionDTO.setInstallments(List.of(installmentDTO));
-    debtPositionDTO.setPaymentOptions(List.of(paymentOptionDTO));
-
-    FileResourceDTO fileResourceDTO = Mockito.mock(FileResourceDTO.class);
-    Resource resource = Mockito.mock(Resource.class);
-    Mockito.when(fileResourceDTO.getResource()).thenReturn(resource);
-    Mockito.when(resource.getInputStream()).thenThrow(new IOException("Simulated IO error"));
-
-    try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
-      authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)).thenAnswer(a -> null);
-
-      Mockito.when(debtPositionServiceMock.getDebtPosition(debtPositionId, accessToken)).thenReturn(debtPositionDTO);
-      Mockito.when(debtPositionNoticeRetrieverServiceMock.getNotice(organizationId, iuv, debtPositionId, loggedUser, accessToken)).thenReturn(fileResourceDTO);
-
-      PdfProcessingException ex = assertThrows(PdfProcessingException.class, () ->
-        debtPositionRetrieverService.getDebtPositionNoticesZip(organizationId, debtPositionId, loggedUser, accessToken)
-      );
-
-      assertEquals("Failed to create or copy temporary PDF file", ex.getMessage());
-    }
-  }
-
 
 }

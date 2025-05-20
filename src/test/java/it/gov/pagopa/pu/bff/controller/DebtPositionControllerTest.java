@@ -4,7 +4,6 @@ import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.dto.FileResourceDTO;
 import it.gov.pagopa.pu.bff.dto.generated.DebtPositionDetailDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedDebtPositionView;
-import it.gov.pagopa.pu.bff.exception.InstallmentsNotFoundException;
 import it.gov.pagopa.pu.bff.security.SecurityUtilsTest;
 import it.gov.pagopa.pu.bff.service.debt_position.DebtPositionNoticeRetrieverService;
 import it.gov.pagopa.pu.bff.service.debt_position.DebtPositionRetrieverService;
@@ -237,14 +236,13 @@ class DebtPositionControllerTest {
     assertEquals(resource.getFilename(), response.getHeaders().getContentDisposition().getFilename());
   }
 
-
   @Test
   void givenCorrectRequestWhenGetDebtPositionNoticesZipThenNoContent() {
     long organizationId = 1L;
     Long debtPositionId = 2L;
 
     Mockito.when(debtPositionRetrieverServiceMock.getDebtPositionNoticesZip(organizationId, debtPositionId, loggedUser, accessToken))
-      .thenThrow(InstallmentsNotFoundException.class);
+      .thenReturn(null);
 
     ResponseEntity<Resource> response = debtPositionController.getDebtPositionNoticesZip(organizationId, debtPositionId);
 

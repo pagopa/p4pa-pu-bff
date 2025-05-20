@@ -5,7 +5,6 @@ import it.gov.pagopa.pu.bff.dto.DebtPositionViewFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.FileResourceDTO;
 import it.gov.pagopa.pu.bff.dto.generated.DebtPositionDetailDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedDebtPositionView;
-import it.gov.pagopa.pu.bff.exception.InstallmentsNotFoundException;
 import it.gov.pagopa.pu.bff.security.SecurityUtils;
 import it.gov.pagopa.pu.bff.service.debt_position.DebtPositionNoticeRetrieverService;
 import it.gov.pagopa.pu.bff.service.debt_position.DebtPositionRetrieverService;
@@ -103,8 +102,8 @@ public class DebtPositionController implements DebtPositionsApi {
   public ResponseEntity<Resource> getDebtPositionNoticesZip(Long organizationId, Long debtPositionId) {
     log.info("User requested getDebtPositionNoticesZip having organizationId {} and debtPositionId {} ", organizationId, debtPositionId);
 
-    try {
-      Resource debtPositionPaymentNoticesZipped = debtPositionRetrieverService.getDebtPositionNoticesZip(organizationId, debtPositionId, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken());
+    Resource debtPositionPaymentNoticesZipped = debtPositionRetrieverService.getDebtPositionNoticesZip(organizationId, debtPositionId, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken());
+    if (debtPositionPaymentNoticesZipped != null){
       HttpHeaders headers = new HttpHeaders();
       headers.setContentDisposition(ContentDisposition.attachment()
         .filename(debtPositionPaymentNoticesZipped.getFilename())
@@ -114,8 +113,7 @@ public class DebtPositionController implements DebtPositionsApi {
         .headers(headers)
         .contentType(MediaType.APPLICATION_OCTET_STREAM)
         .body(debtPositionPaymentNoticesZipped);
-
-    } catch (InstallmentsNotFoundException e){
+    } else {
       return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 

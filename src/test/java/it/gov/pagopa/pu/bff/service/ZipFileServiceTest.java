@@ -1,8 +1,12 @@
 package it.gov.pagopa.pu.bff.service;
 
+import it.gov.pagopa.pu.bff.dto.FileResourceDTO;
+import it.gov.pagopa.pu.bff.exception.PdfProcessingException;
 import it.gov.pagopa.pu.bff.exception.ZipFileException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
 
 import java.io.File;
 import java.io.IOException;
@@ -73,4 +77,40 @@ class ZipFileServiceTest {
     ZipFileException ex = assertThrows(ZipFileException.class, () -> zipFileService.zipper(zipPath, List.of(file1, file2)));
     assertTrue(ex.getMessage().contains("Error while zipping:"));
   }
+
+  @Test
+  void givenParametersWhenCreateZipFromResourcesThenReturnResource() throws IOException {
+    //given
+    Path file3 = tempDir.resolve("file3.pdf");
+    Files.writeString(file3, "Dummy PDF content");
+    Resource resource = new FileSystemResource(file3);
+    FileResourceDTO fileResourceDTO = new FileResourceDTO(resource, "file3.pdf");
+    Long organizationId = 1L;
+    Long debtPositionId = 3L;
+
+    //when
+    Resource result = zipFileService.createZipFromResources(List.of(fileResourceDTO), tempDir, organizationId, debtPositionId);
+
+    //then
+    assertNotNull(result);
+    assertEquals("1_3_PDF.zip", result.getFilename());
+    assertTrue(result.exists());
+    assertTrue(result.isFile());
+    assertFalse(file3.toFile().exists());
+  }
+
+  @Test
+  void givenParametersWhenCreateZipFromResourcesThenThrowPdfProcessingException() {
+    //given
+    Path file3 = tempDir.resolve("file3");
+    Resource resource = new FileSystemResource(file3);
+    FileResourceDTO fileResourceDTO = new FileResourceDTO(resource, "file3");
+    Long organizationId = 1L;
+    Long debtPositionId = 3L;
+
+    //then
+    PdfProcessingException ex = assertThrows(PdfProcessingException.class, () -> zipFileService.createZipFromResources(List.of(fileResourceDTO), tempDir, organizationId, debtPositionId));
+    assertEquals("Failed to create or copy temporary PDF file", ex.getMessage());
+  }
+
 }

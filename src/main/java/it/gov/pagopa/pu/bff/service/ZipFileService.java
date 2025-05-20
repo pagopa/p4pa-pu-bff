@@ -1,14 +1,20 @@
 package it.gov.pagopa.pu.bff.service;
 
+import it.gov.pagopa.pu.bff.dto.FileResourceDTO;
+import it.gov.pagopa.pu.bff.exception.PdfProcessingException;
 import it.gov.pagopa.pu.bff.exception.ZipFileException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -42,6 +48,27 @@ public class ZipFileService {
         }
       }
     }
+  }
+
+  public Resource createZipFromResources(List<FileResourceDTO> pdfResources, Path workingDirectory, Long organizationId, Long debtPositionId) {
+    List<Path> pdfPaths = pdfResources.stream()
+      .map(f -> {
+        try (InputStream is = f.getResource().getInputStream()) {
+          Path customPath = workingDirectory.resolve(f.getFileName());
+          Files.copy(is, customPath, StandardCopyOption.REPLACE_EXISTING);
+          return customPath;
+        } catch (IOException e) {
+          throw new PdfProcessingException("Failed to create or copy temporary PDF file");
+        }
+      })
+      .toList();
+
+    Path filePath = workingDirectory.resolve(buildZipFileName(organizationId, debtPositionId));
+    return new FileSystemResource(zipAndCleanTmpFile(filePath, pdfPaths));
+  }
+
+  private String buildZipFileName(Long organizationId, Long debtPositionId) {
+    return organizationId + "_" + debtPositionId + "_PDF.zip";
   }
 
 }

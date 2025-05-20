@@ -99,8 +99,8 @@ public class DebtPositionController implements DebtPositionsApi {
   }
 
   @Override
-  public ResponseEntity<Resource> getDebtPositionNoticesZip(Long organizationId, Long debtPositionId) {
-    log.info("User requested getDebtPositionNoticesZip having organizationId {} and debtPositionId {} ", organizationId, debtPositionId);
+  public ResponseEntity<Resource> getPaymentNoticeZip(Long organizationId, Long debtPositionId) {
+    log.info("User requested getPaymentNoticeZip having organizationId {} and debtPositionId {} ", organizationId, debtPositionId);
 
     Resource debtPositionPaymentNoticesZipped = debtPositionRetrieverService.getDebtPositionNoticesZip(organizationId, debtPositionId, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken());
     if (debtPositionPaymentNoticesZipped != null){

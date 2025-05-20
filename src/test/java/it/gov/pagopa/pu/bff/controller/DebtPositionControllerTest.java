@@ -228,7 +228,7 @@ class DebtPositionControllerTest {
     Mockito.when(debtPositionRetrieverServiceMock.getDebtPositionNoticesZip(organizationId, debtPositionId, loggedUser, accessToken))
       .thenReturn(resource);
 
-    ResponseEntity<Resource> response = debtPositionController.getDebtPositionNoticesZip(organizationId, debtPositionId);
+    ResponseEntity<Resource> response = debtPositionController.getPaymentNoticeZip(organizationId, debtPositionId);
 
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertNotNull(response.getBody());
@@ -244,7 +244,7 @@ class DebtPositionControllerTest {
     Mockito.when(debtPositionRetrieverServiceMock.getDebtPositionNoticesZip(organizationId, debtPositionId, loggedUser, accessToken))
       .thenReturn(null);
 
-    ResponseEntity<Resource> response = debtPositionController.getDebtPositionNoticesZip(organizationId, debtPositionId);
+    ResponseEntity<Resource> response = debtPositionController.getPaymentNoticeZip(organizationId, debtPositionId);
 
     assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
     assertNull(response.getBody());

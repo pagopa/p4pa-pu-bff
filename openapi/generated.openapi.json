@@ -2893,7 +2893,7 @@
       "get" : {
         "tags" : [ "DebtPositions" ],
         "summary" : "Retrieved a specific DebtPosition generate and download ZIP of unpaid/unpayable installment of notices",
-        "operationId" : "getPaymentNoticeZip",
+        "operationId" : "getUnpaidPaymentNoticeZip",
         "parameters" : [ {
           "name" : "organizationId",
           "in" : "path",

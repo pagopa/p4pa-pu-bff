@@ -618,7 +618,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{puBffBaseUrl}}/bff/taxonomy/getTaxonomyCode?organizationType=01&macroAreaCode=01&serviceTypeCode=100&collectionReason=IM",
+							"raw": "{{puBffBaseUrl}}/bff/taxonomy/getTaxonomyCode?organizationType={{organizationType}}&macroAreaCode={{macroAreaCode}}&serviceTypeCode={{serviceTypeCode}}&collectionReason={{collectionReason}}",
 							"host": [
 								"{{puBffBaseUrl}}"
 							],
@@ -630,19 +630,19 @@
 							"query": [
 								{
 									"key": "organizationType",
-									"value": "01"
+									"value": "{{organizationType}}"
 								},
 								{
 									"key": "macroAreaCode",
-									"value": "01"
+									"value": "{{macroAreaCode}}"
 								},
 								{
 									"key": "serviceTypeCode",
-									"value": "100"
+									"value": "{{serviceTypeCode}}"
 								},
 								{
 									"key": "collectionReason",
-									"value": "IM"
+									"value": "{{collectionReason}}"
 								}
 							]
 						}

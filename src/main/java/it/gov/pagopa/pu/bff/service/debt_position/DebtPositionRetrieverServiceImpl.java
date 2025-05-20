@@ -18,6 +18,7 @@ import it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentStatus;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -69,15 +70,28 @@ public class DebtPositionRetrieverServiceImpl implements DebtPositionRetrieverSe
   @Override
   public PagedDebtPositionView getDebtPositionViews(
     DebtPositionViewFiltersDTO filtersDTO, Pageable pageable, UserInfo loggedUser, String accessToken) {
+
     AuthorizationService.validateUserForOrganizationId(filtersDTO.getOrganizationId(), loggedUser);
+
+    validateDebtPositionViewFilters(filtersDTO);
+
     return debtPositionViewMapper.mapToPagedDebtPositionView(
       debtPositionService.getDebtPositionViews(
         filtersDTO,
         debtPositionOriginFilterList,
         loggedUser.getMappedExternalUserId(),
         pageable,
-        accessToken)
-    );
+        accessToken));
+  }
+
+  private void validateDebtPositionViewFilters(DebtPositionViewFiltersDTO filtersDTO) {
+    if (filtersDTO.getCreationDateFrom() == null &&
+      filtersDTO.getCreationDateTo() == null &&
+      StringUtils.isBlank(filtersDTO.getFiscalCode()) &&
+      filtersDTO.getDebtPositionTypeOrgId() == null &&
+      filtersDTO.getStatus() == null) {
+      throw new IllegalArgumentException("At least one of the research fields should be inserted");
+    }
   }
 
   @Override

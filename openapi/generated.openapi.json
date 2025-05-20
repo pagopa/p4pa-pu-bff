@@ -1519,7 +1519,7 @@
         }, {
           "name" : "receiptOrigin",
           "in" : "query",
-          "required" : true,
+          "required" : false,
           "schema" : {
             "$ref" : "#/components/schemas/ReceiptOriginType"
           }
@@ -2073,7 +2073,7 @@
         }, {
           "name" : "dueDateFrom",
           "in" : "query",
-          "required" : true,
+          "required" : false,
           "schema" : {
             "type" : "string",
             "format" : "date-time"
@@ -2081,7 +2081,7 @@
         }, {
           "name" : "dueDateTo",
           "in" : "query",
-          "required" : true,
+          "required" : false,
           "schema" : {
             "type" : "string",
             "format" : "date-time"
@@ -2502,7 +2502,7 @@
         }, {
           "name" : "creationDateFrom",
           "in" : "query",
-          "required" : true,
+          "required" : false,
           "schema" : {
             "type" : "string",
             "format" : "date-time"
@@ -2510,7 +2510,7 @@
         }, {
           "name" : "creationDateTo",
           "in" : "query",
-          "required" : true,
+          "required" : false,
           "schema" : {
             "type" : "string",
             "format" : "date-time"

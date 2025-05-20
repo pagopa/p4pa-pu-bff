@@ -372,6 +372,8 @@
 									"    pm.expect(jsonResponse[0].organizationTypeDescription).not.null;\r",
 									"})\r",
 									"\r",
+									"pm.collectionVariables.set(\"organizationType\",  jsonResponse[0]?.organizationType);\r",
+									"\r",
 									""
 								],
 								"type": "text/javascript",
@@ -419,6 +421,7 @@
 									"    pm.expect(jsonResponse[0].macroAreaDescription).not.null;\r",
 									"})\r",
 									"\r",
+									"pm.collectionVariables.set(\"macroAreaCode\",  jsonResponse[0]?.macroAreaCode);\r",
 									""
 								],
 								"type": "text/javascript",
@@ -430,7 +433,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{puBffBaseUrl}}/bff/taxonomy/getMacroArea?organizationType=01",
+							"raw": "{{puBffBaseUrl}}/bff/taxonomy/getMacroArea?organizationType={{organizationType}}",
 							"host": [
 								"{{puBffBaseUrl}}"
 							],
@@ -442,7 +445,7 @@
 							"query": [
 								{
 									"key": "organizationType",
-									"value": "01"
+									"value": "{{organizationType}}"
 								}
 							]
 						}
@@ -475,6 +478,7 @@
 									"    pm.expect(jsonResponse[0].serviceTypeDescription).not.null;\r",
 									"})\r",
 									"\r",
+									"pm.collectionVariables.set(\"serviceTypeCode\",  jsonResponse[0]?.serviceTypeCode);\r",
 									""
 								],
 								"type": "text/javascript",
@@ -486,7 +490,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{puBffBaseUrl}}/bff/taxonomy/getServiceType?organizationType=01&macroAreaCode=01",
+							"raw": "{{puBffBaseUrl}}/bff/taxonomy/getServiceType?organizationType={{organizationType}}&macroAreaCode={{macroAreaCode}}",
 							"host": [
 								"{{puBffBaseUrl}}"
 							],
@@ -498,11 +502,11 @@
 							"query": [
 								{
 									"key": "organizationType",
-									"value": "01"
+									"value": "{{organizationType}}"
 								},
 								{
 									"key": "macroAreaCode",
-									"value": "01"
+									"value": "{{macroAreaCode}}"
 								}
 							]
 						}
@@ -536,6 +540,7 @@
 									"    pm.expect(jsonResponse[0].collectionReason).not.null;\r",
 									"})\r",
 									"\r",
+									"pm.collectionVariables.set(\"collectionReason\",  jsonResponse[0]?.collectionReason);\r",
 									""
 								],
 								"type": "text/javascript",
@@ -547,7 +552,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{puBffBaseUrl}}/bff/taxonomy/getCollectionReason?organizationType=01&macroAreaCode=01&serviceTypeCode=100",
+							"raw": "{{puBffBaseUrl}}/bff/taxonomy/getCollectionReason?organizationType={{organizationType}}&macroAreaCode={{macroAreaCode}}&serviceTypeCode={{serviceTypeCode}}",
 							"host": [
 								"{{puBffBaseUrl}}"
 							],
@@ -559,15 +564,15 @@
 							"query": [
 								{
 									"key": "organizationType",
-									"value": "01"
+									"value": "{{organizationType}}"
 								},
 								{
 									"key": "macroAreaCode",
-									"value": "01"
+									"value": "{{macroAreaCode}}"
 								},
 								{
 									"key": "serviceTypeCode",
-									"value": "100"
+									"value": "{{serviceTypeCode}}"
 								}
 							]
 						}
@@ -670,63 +675,11 @@
 								"type": "text/javascript",
 								"packages": {}
 							}
-						}
-					],
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{puBffBaseUrl}}/bff/taxonomy?organizationType=01&macroAreaCode=01&serviceTypeCode=100&collectionReason=IM",
-							"host": [
-								"{{puBffBaseUrl}}"
-							],
-							"path": [
-								"bff",
-								"taxonomy"
-							],
-							"query": [
-								{
-									"key": "organizationType",
-									"value": "01"
-								},
-								{
-									"key": "macroAreaCode",
-									"value": "01"
-								},
-								{
-									"key": "serviceTypeCode",
-									"value": "100"
-								},
-								{
-									"key": "collectionReason",
-									"value": "IM"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "02_getTaxonomies",
-					"event": [
+						},
 						{
-							"listen": "test",
+							"listen": "prerequest",
 							"script": {
 								"exec": [
-									"let jsonResponse = pm.response.json();\r",
-									"\r",
-									"pm.test(\"[taxonomy getTaxonomies], expected httpStatus: 200\", () => {\r",
-									"    pm.response.to.have.status(200);\r",
-									"})\r",
-									"\r",
-									"pm.test(\"[taxonomy getTaxonomies] - getTaxonomies\", () => {\r",
-									"    pm.expect(jsonResponse).to.have.property(\"content\").and.to.be.an(\"array\");\r",
-									"    pm.expect(jsonResponse).to.have.property(\"size\").and.to.be.a(\"number\");\r",
-									"    pm.expect(jsonResponse).to.have.property(\"totalElements\").and.to.be.a(\"number\");\r",
-									"    pm.expect(jsonResponse).to.have.property(\"totalPages\").and.to.be.a(\"number\");\r",
-									"    pm.expect(jsonResponse).to.have.property(\"number\").and.to.be.a(\"number\");\r",
-									"})\r",
-									"\r",
 									""
 								],
 								"type": "text/javascript",
@@ -738,7 +691,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{puBffBaseUrl}}/bff/taxonomy?organizationType=01&macroAreaCode=01&serviceTypeCode=100&collectionReason=IM",
+							"raw": "{{puBffBaseUrl}}/bff/taxonomy?organizationType={{organizationType}}&macroAreaCode={{macroAreaCode}}&serviceTypeCode={{serviceTypeCode}}&collectionReason={{collectionReason}}",
 							"host": [
 								"{{puBffBaseUrl}}"
 							],
@@ -749,19 +702,19 @@
 							"query": [
 								{
 									"key": "organizationType",
-									"value": "01"
+									"value": "{{organizationType}}"
 								},
 								{
 									"key": "macroAreaCode",
-									"value": "01"
+									"value": "{{macroAreaCode}}"
 								},
 								{
 									"key": "serviceTypeCode",
-									"value": "100"
+									"value": "{{serviceTypeCode}}"
 								},
 								{
 									"key": "collectionReason",
-									"value": "IM"
+									"value": "{{collectionReason}}"
 								}
 							]
 						}
@@ -2792,6 +2745,22 @@
 		},
 		{
 			"key": "organizationIpaCode",
+			"value": ""
+		},
+		{
+			"key": "organizationType",
+			"value": ""
+		},
+		{
+			"key": "macroAreaCode",
+			"value": ""
+		},
+		{
+			"key": "serviceTypeCode",
+			"value": ""
+		},
+		{
+			"key": "collectionReason",
 			"value": ""
 		}
 	]

@@ -40,16 +40,13 @@ public class InstallmentRetrieverServiceImpl implements InstallmentRetrieverServ
   }
 
   private void validateInstallmentViewFilters(InstallmentViewFiltersDTO filtersDTO) {
-    boolean hasDueDateFilter = filtersDTO.getDueDate() != null &&
-      (filtersDTO.getDueDate().getFrom() != null || filtersDTO.getDueDate().getTo() != null);
-
-    if (hasDueDateFilter ||
-      StringUtils.isNotBlank(filtersDTO.getIuv()) ||
-      StringUtils.isNotBlank(filtersDTO.getFiscalCode()) ||
-      filtersDTO.getDebtPositionTypeOrgId() != null) {
-      return;
+    if ((filtersDTO.getDueDate() == null ||
+      (filtersDTO.getDueDate().getFrom() == null && filtersDTO.getDueDate().getTo() == null)) &&
+      StringUtils.isBlank(filtersDTO.getIuv()) &&
+      StringUtils.isBlank(filtersDTO.getFiscalCode()) &&
+      filtersDTO.getDebtPositionTypeOrgId() == null) {
+      throw new IllegalArgumentException("At least one of the research fields should be inserted");
     }
-    throw new IllegalArgumentException("At least one of the research fields should be inserted");
   }
 
   @Override

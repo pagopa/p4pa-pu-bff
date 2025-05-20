@@ -25,8 +25,7 @@ import org.springframework.security.authorization.AuthorizationDeniedException;
 
 import java.time.OffsetDateTime;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
 class ReceiptRetrieverServiceImplTest {
@@ -86,6 +85,29 @@ class ReceiptRetrieverServiceImplTest {
   }
 
   @Test
+  void givenNoFiltersWhenGetReceiptsThenThrowIllegalArgumentException() {
+    UserInfo loggedUser = new UserInfo();
+    loggedUser.setUserId("user-123");
+
+    ReceiptViewFiltersDTO filtersDTO = new ReceiptViewFiltersDTO(
+      1L, null, null, null, null, null, null, new OffsetDateTimeIntervalFilter(null, null)
+    );
+    Pageable pageable = PageRequest.of(0, 10);
+
+    try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
+      authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(filtersDTO.getOrganizationId(), loggedUser)).thenAnswer(a -> null);
+
+      IllegalArgumentException exception = Assertions.assertThrows(IllegalArgumentException.class, () ->
+        receiptViewService.getReceipts(filtersDTO, pageable, loggedUser, accessToken));
+
+      assertEquals("At least one of the research fields should be inserted", exception.getMessage());
+
+      authorizationServiceMockedStatic.verify(() -> AuthorizationService.validateUserForOrganizationId(filtersDTO.getOrganizationId(), loggedUser));
+    }
+    Mockito.verifyNoInteractions(receiptServiceMock, receiptViewMapperMock);
+  }
+
+  @Test
   void givenInvalidUserWhenGetReceiptsThenAuthorizationDeniedException() {
     UserInfo loggedUser = new UserInfo();
     loggedUser.setUserId("user-123");
@@ -110,6 +132,73 @@ class ReceiptRetrieverServiceImplTest {
     Mockito.verifyNoInteractions(receiptServiceMock, receiptViewMapperMock);
   }
 
+  @Test
+  void givenPaymentDateTimeToOnlyWhenGetReceiptsThenOk() {
+    OffsetDateTimeIntervalFilter paymentDateTime = new OffsetDateTimeIntervalFilter(null, OffsetDateTime.now());
+    ReceiptViewFiltersDTO filtersDTO = new ReceiptViewFiltersDTO(1L, null, null, null, null, null, null, paymentDateTime);
+    testSingleFilterSuccess(filtersDTO);
+  }
+
+  @Test
+  void givenPaymentDateTimeFromOnlyWhenGetReceiptsThenOk() {
+    OffsetDateTimeIntervalFilter paymentDateTime = new OffsetDateTimeIntervalFilter(OffsetDateTime.now().minusDays(1), null);
+    ReceiptViewFiltersDTO filtersDTO = new ReceiptViewFiltersDTO(1L, null, null, null, null, null, null, paymentDateTime);
+    testSingleFilterSuccess(filtersDTO);
+  }
+
+  @Test
+  void givenDebtPositionTypeOrgIdOnlyWhenGetReceiptsThenOk() {
+    ReceiptViewFiltersDTO filtersDTO = new ReceiptViewFiltersDTO(1L, null, null, null, null, null, 99L, null);
+    testSingleFilterSuccess(filtersDTO);
+  }
+
+  @Test
+  void givenIudOnlyWhenGetReceiptsThenOk() {
+    ReceiptViewFiltersDTO filtersDTO = new ReceiptViewFiltersDTO(1L, null, null, null, null, "IUD789", null, null);
+    testSingleFilterSuccess(filtersDTO);
+  }
+
+  @Test
+  void givenIurOnlyWhenGetReceiptsThenOk() {
+    ReceiptViewFiltersDTO filtersDTO = new ReceiptViewFiltersDTO(1L, null, null, null, "IUR456", null, null, null);
+    testSingleFilterSuccess(filtersDTO);
+  }
+
+  @Test
+  void givenIuvOnlyWhenGetReceiptsThenOk() {
+    ReceiptViewFiltersDTO filtersDTO = new ReceiptViewFiltersDTO(1L, null, null, "IUV123", null, null, null, null);
+    testSingleFilterSuccess(filtersDTO);
+  }
+
+  @Test
+  void givenReceiptOriginOnlyWhenGetReceiptsThenOk() {
+    ReceiptViewFiltersDTO filtersDTO = new ReceiptViewFiltersDTO(1L, ReceiptOriginType.RECEIPT_PAGOPA, null, null, null, null, null, null);
+    testSingleFilterSuccess(filtersDTO);
+  }
+
+  private void testSingleFilterSuccess(ReceiptViewFiltersDTO filtersDTO) {
+    UserInfo loggedUser = new UserInfo();
+    loggedUser.setUserId("user-123");
+    Pageable pageable = PageRequest.of(0, 10);
+
+    PagedModelReceiptView pagedModelReceiptView = new PagedModelReceiptView();
+    PagedReceiptView expectedPagedReceiptView = new PagedReceiptView();
+
+    try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
+      authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(filtersDTO.getOrganizationId(), loggedUser)).thenAnswer(a -> null);
+
+      Mockito.when(receiptServiceMock.getReceipts(filtersDTO, pageable, accessToken))
+        .thenReturn(pagedModelReceiptView);
+
+      Mockito.when(receiptViewMapperMock.mapToPagedReceiptView(pagedModelReceiptView))
+        .thenReturn(expectedPagedReceiptView);
+
+      PagedReceiptView result = receiptViewService.getReceipts(filtersDTO, pageable, loggedUser, accessToken);
+
+      assertNotNull(result);
+      assertSame(expectedPagedReceiptView, result);
+    }
+  }
 
   @Test
   void givenValidUserWhenGetReceiptDetailThenOk() {

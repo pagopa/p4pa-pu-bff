@@ -28,6 +28,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.security.authorization.AuthorizationDeniedException;
 import uk.co.jemos.podam.api.PodamFactory;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -56,7 +57,7 @@ class DebtPositionRetrieverServiceImplTest {
   }
 
   @AfterEach
-  void verifyNoMoreInteractions(){
+  void verifyNoMoreInteractions() {
     Mockito.verifyNoMoreInteractions(
       debtPositionServiceMock,
       debtPositionTypeOrgServiceMock,
@@ -158,6 +159,95 @@ class DebtPositionRetrieverServiceImplTest {
 
       authorizationServiceMockedStatic.verify(() -> AuthorizationService.validateUserForOrganizationId(
         debtPositionViewFiltersDTO.getOrganizationId(), loggedUser));
+    }
+  }
+
+  @Test
+  void givenNoFiltersWhenGetDebtPositionViewsThenThrowIllegalArgumentException() {
+    UserInfo loggedUser = new UserInfo();
+    loggedUser.setMappedExternalUserId("mappedExternalUserId");
+    PageRequest pageRequest = PageRequest.of(0, 10);
+
+    DebtPositionViewFiltersDTO filtersDTO = new DebtPositionViewFiltersDTO();
+    filtersDTO.setOrganizationId(1L);
+    filtersDTO.setCreationDateFrom(null);
+    filtersDTO.setCreationDateTo(null);
+    filtersDTO.setFiscalCode(null);
+    filtersDTO.setDebtPositionTypeOrgId(null);
+    filtersDTO.setStatus(null);
+
+    try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
+      authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(filtersDTO.getOrganizationId(), loggedUser)).thenAnswer(a -> null);
+
+      IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () ->
+        debtPositionRetrieverService.getDebtPositionViews(filtersDTO, pageRequest, loggedUser, accessToken));
+
+      assertEquals("At least one of the research fields should be inserted", exception.getMessage());
+
+      authorizationServiceMockedStatic.verify(() -> AuthorizationService.validateUserForOrganizationId(filtersDTO.getOrganizationId(), loggedUser));
+    }
+    Mockito.verifyNoInteractions(debtPositionServiceMock, debtPositionViewMapperMock);
+  }
+
+  @Test
+  void givenCreationDateFromOnlyWhenGetDebtPositionViewsThenOk() {
+    DebtPositionViewFiltersDTO filtersDTO = new DebtPositionViewFiltersDTO();
+    filtersDTO.setOrganizationId(1L);
+    filtersDTO.setCreationDateFrom(OffsetDateTime.now().minusDays(5));
+    testSingleFilterSuccess(filtersDTO);
+  }
+
+  @Test
+  void givenCreationDateToOnlyWhenGetDebtPositionViewsThenOk() {
+    DebtPositionViewFiltersDTO filtersDTO = new DebtPositionViewFiltersDTO();
+    filtersDTO.setOrganizationId(1L);
+    filtersDTO.setCreationDateTo(OffsetDateTime.now());
+    testSingleFilterSuccess(filtersDTO);
+  }
+
+  @Test
+  void givenFiscalCodeOnlyWhenGetDebtPositionViewsThenOk() {
+    DebtPositionViewFiltersDTO filtersDTO = new DebtPositionViewFiltersDTO();
+    filtersDTO.setOrganizationId(1L);
+    filtersDTO.setFiscalCode("RSSMRA80A01H501U");
+    testSingleFilterSuccess(filtersDTO);
+  }
+
+  @Test
+  void givenDebtPositionTypeOrgIdOnlyWhenGetDebtPositionViewsThenOk() {
+    DebtPositionViewFiltersDTO filtersDTO = new DebtPositionViewFiltersDTO();
+    filtersDTO.setOrganizationId(1L);
+    filtersDTO.setDebtPositionTypeOrgId(99L);
+    testSingleFilterSuccess(filtersDTO);
+  }
+
+  private void testSingleFilterSuccess(DebtPositionViewFiltersDTO filtersDTO) {
+    UserInfo loggedUser = new UserInfo();
+    loggedUser.setMappedExternalUserId("mappedExternalUserId");
+    PageRequest pageRequest = PageRequest.of(0, 10);
+
+    List<String> debtPositionOriginFilterList = List.of(
+      DebtPositionOrigin.ORDINARY.toString(),
+      DebtPositionOrigin.ORDINARY_SIL.toString(),
+      DebtPositionOrigin.SPONTANEOUS.toString()
+    );
+
+    PagedModelDebtPositionView pagedModel = new PagedModelDebtPositionView();
+    PagedDebtPositionView expected = new PagedDebtPositionView();
+
+    try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
+      authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(filtersDTO.getOrganizationId(), loggedUser)).thenAnswer(a -> null);
+
+      Mockito.when(debtPositionServiceMock.getDebtPositionViews(filtersDTO, debtPositionOriginFilterList, loggedUser.getMappedExternalUserId(), pageRequest, accessToken))
+        .thenReturn(pagedModel);
+
+      Mockito.when(debtPositionViewMapperMock.mapToPagedDebtPositionView(pagedModel))
+        .thenReturn(expected);
+
+      PagedDebtPositionView result = debtPositionRetrieverService.getDebtPositionViews(filtersDTO, pageRequest, loggedUser, accessToken);
+
+      assertNotNull(result);
+      assertSame(expected, result);
     }
   }
 
@@ -265,7 +355,7 @@ class DebtPositionRetrieverServiceImplTest {
     try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
       authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)).thenAnswer(a -> null);
 
-      Mockito.when(debtPositionServiceMock.deleteDebtPosition(debtPositionId,accessToken)).thenReturn(false);
+      Mockito.when(debtPositionServiceMock.deleteDebtPosition(debtPositionId, accessToken)).thenReturn(false);
 
       Boolean deletedDebtPositionPhysically = debtPositionRetrieverService.deleteDebtPosition(organizationId, debtPositionId, loggedUser, accessToken);
 

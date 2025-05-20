@@ -1519,7 +1519,7 @@
         }, {
           "name" : "receiptOrigin",
           "in" : "query",
-          "required" : true,
+          "required" : false,
           "schema" : {
             "$ref" : "#/components/schemas/ReceiptOriginType"
           }
@@ -2073,7 +2073,7 @@
         }, {
           "name" : "dueDateFrom",
           "in" : "query",
-          "required" : true,
+          "required" : false,
           "schema" : {
             "type" : "string",
             "format" : "date-time"
@@ -2081,7 +2081,7 @@
         }, {
           "name" : "dueDateTo",
           "in" : "query",
-          "required" : true,
+          "required" : false,
           "schema" : {
             "type" : "string",
             "format" : "date-time"
@@ -2570,7 +2570,7 @@
         }, {
           "name" : "creationDateFrom",
           "in" : "query",
-          "required" : true,
+          "required" : false,
           "schema" : {
             "type" : "string",
             "format" : "date-time"
@@ -2578,7 +2578,7 @@
         }, {
           "name" : "creationDateTo",
           "in" : "query",
-          "required" : true,
+          "required" : false,
           "schema" : {
             "type" : "string",
             "format" : "date-time"
@@ -5943,7 +5943,7 @@
       },
       "IngestionFlowFileTypeEnum" : {
         "type" : "string",
-        "enum" : [ "RECEIPT", "RECEIPT_PAGOPA", "PAYMENTS_REPORTING", "PAYMENTS_REPORTING_PAGOPA", "TREASURY_OPI", "TREASURY_CSV", "TREASURY_XLS", "TREASURY_POSTE", "DP_INSTALLMENTS", "PAYMENT_NOTIFICATION" ]
+        "enum" : [ "RECEIPT", "RECEIPT_PAGOPA", "PAYMENTS_REPORTING", "PAYMENTS_REPORTING_PAGOPA", "TREASURY_OPI", "TREASURY_CSV", "TREASURY_XLS", "TREASURY_POSTE", "DP_INSTALLMENTS", "PAYMENT_NOTIFICATION", "ORGANIZATIONS", "ORGANIZATIONS_SIL_SERVICE", "DEBT_POSITIONS_TYPE", "DEBT_POSITIONS_TYPE_ORG", "DEBT_POSITIONS_TYPE_ORG_OPERATORS", "ASSESSMENTS" ]
       },
       "ExportFile" : {
         "type" : "object",

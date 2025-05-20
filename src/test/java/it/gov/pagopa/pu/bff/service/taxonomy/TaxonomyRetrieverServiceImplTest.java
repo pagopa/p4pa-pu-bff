@@ -195,7 +195,8 @@ class TaxonomyRetrieverServiceImplTest {
 
     PagedTaxonomy expected = new PagedTaxonomy();
 
-    Mockito.when(taxonomyServiceMock.getTaxonomies(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(), Mockito.anyString(), Mockito.any(), Mockito.anyString()))
+    Mockito.when(taxonomyServiceMock.getTaxonomies("Type1", "Macro1", "ServiceCode1", "Reason1",
+        PageRequest.of(0,10), "token"))
       .thenReturn(pagedModelTaxonomy);
     Mockito.when(taxonomyMapperMock.mapToPagedTaxonomy(pagedModelTaxonomy)).thenReturn(expected);
 

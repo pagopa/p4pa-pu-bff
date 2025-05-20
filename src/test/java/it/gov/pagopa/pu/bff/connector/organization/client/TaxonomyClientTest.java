@@ -171,13 +171,13 @@ class TaxonomyClientTest {
     Mockito.when(
         organizationApisHolder.getTaxonomySearchControllerApi(accessToken))
       .thenReturn(taxonomySearchControllerApiMock);
-    Mockito.when(taxonomySearchControllerApiMock.crudTaxonomiesFindTaxonomies(null, null,
-          null, null, 0, 10, Collections.emptyList()))
+    Mockito.when(taxonomySearchControllerApiMock.crudTaxonomiesFindTaxonomies("organizationType", "macroAreaCode", "serviceTypeCode",
+        "collectionReason", 0, 10, Collections.emptyList()))
       .thenReturn(expectedResult);
 
     // When
-    PagedModelTaxonomy result = taxonomyClient.getTaxonomies(null, null, null,
-      null, PageRequest.of(0,10, Sort.unsorted()), accessToken);
+    PagedModelTaxonomy result = taxonomyClient.getTaxonomies("organizationType", "macroAreaCode", "serviceTypeCode",
+      "collectionReason", PageRequest.of(0,10, Sort.unsorted()), accessToken);
 
     // Then
     Assertions.assertSame(expectedResult, result);

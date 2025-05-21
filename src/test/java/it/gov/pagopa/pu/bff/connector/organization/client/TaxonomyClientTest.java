@@ -14,6 +14,8 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.client.HttpClientErrorException;
 
 @ExtendWith(MockitoExtension.class)
 class TaxonomyClientTest {
@@ -71,6 +73,23 @@ class TaxonomyClientTest {
     Taxonomy result = taxonomyClient.getTaxonomyDetail(taxonomyId, accessToken);
 
     Assertions.assertSame(expectedResult, result);
+  }
+
+  @Test
+  void whenTaxonomyNotFoundThenReturnNull() {
+    String accessToken = "ACCESSTOKEN";
+    Long taxonomyId = 123L;
+
+    Mockito.when(organizationApisHolder.getTaxonomy(accessToken))
+      .thenReturn(taxonomyEntityControllerApiMock);
+    Mockito.when(taxonomyEntityControllerApiMock.crudGetTaxonomy(String.valueOf(taxonomyId)))
+      .thenThrow(HttpClientErrorException.create(
+        HttpStatus.NOT_FOUND, "Not Found", null, null, null));
+
+    Taxonomy result = taxonomyClient.getTaxonomyDetail(taxonomyId, accessToken);
+
+    Assertions.assertNull(result);
+    Mockito.verifyNoMoreInteractions(taxonomyEntityControllerApiMock, organizationApisHolder);
   }
 
   @Test

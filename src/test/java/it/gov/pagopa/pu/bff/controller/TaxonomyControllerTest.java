@@ -64,6 +64,17 @@ class TaxonomyControllerTest {
   }
 
   @Test
+  void testGetTaxonomyDetailNotFound() throws Exception {
+    TestUtils.addSampleUserIntoSecurityContext();
+    Long taxonomyId = 123L;
+
+    Mockito.when(serviceMock.getTaxonomyDetail(taxonomyId, "token")).thenReturn(null);
+
+    mockMvc.perform(get("/bff/taxonomy/" + taxonomyId))
+      .andExpect(status().isNotFound());
+  }
+
+  @Test
   void testGetCollectionReason() throws Exception {
     TestUtils.addSampleUserIntoSecurityContext();
     List<TaxonomyCollectionReasonDTO> res = new ArrayList<>();

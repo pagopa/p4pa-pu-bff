@@ -22,6 +22,11 @@ public class TaxonomyClient {
     this.organizationApisHolder = organizationApisHolder;
   }
 
+  public Taxonomy getTaxonomyDetail(Long taxonomyId, String accessToken) {
+    return organizationApisHolder.getTaxonomy(accessToken)
+      .crudGetTaxonomy(String.valueOf(taxonomyId));
+  }
+
   public Taxonomy getTaxonomyByTaxonomyCode(String taxonomyCode, String accessToken) {
     return organizationApisHolder.getTaxonomySearchControllerApi(accessToken)
       .crudTaxonomiesFindByTaxonomyCode(taxonomyCode);

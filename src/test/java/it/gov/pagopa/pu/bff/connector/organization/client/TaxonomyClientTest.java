@@ -33,6 +33,8 @@ class TaxonomyClientTest {
   private TaxonomyServiceTypeCodeDtoSearchControllerApi taxonomyServiceTypeCodeDtoSearchControllerApiMock;
   @Mock
   private TaxonomyCodeDtoSearchControllerApi taxonomyCodeDtoSearchControllerApiMock;
+  @Mock
+  private TaxonomyEntityControllerApi taxonomyEntityControllerApiMock;
 
   private TaxonomyClient taxonomyClient;
 
@@ -50,8 +52,25 @@ class TaxonomyClientTest {
       taxonomyMacroAreaCodeDtoSearchControllerApiMock,
       taxonomyOrganizationTypeDtoSearchControllerApiMock,
       taxonomyServiceTypeCodeDtoSearchControllerApiMock,
-      taxonomyCodeDtoSearchControllerApiMock
+      taxonomyCodeDtoSearchControllerApiMock,
+      taxonomyEntityControllerApiMock
     );
+  }
+
+  @Test
+  void whenGetTaxonomyDetailThenInvokeWithAccessToken() {
+    String accessToken = "ACCESSTOKEN";
+    Long taxonomyId = 123L;
+    Taxonomy expectedResult = new Taxonomy();
+
+    Mockito.when(organizationApisHolder.getTaxonomy(accessToken))
+      .thenReturn(taxonomyEntityControllerApiMock);
+    Mockito.when(taxonomyEntityControllerApiMock.crudGetTaxonomy(String.valueOf(taxonomyId)))
+      .thenReturn(expectedResult);
+
+    Taxonomy result = taxonomyClient.getTaxonomyDetail(taxonomyId, accessToken);
+
+    Assertions.assertSame(expectedResult, result);
   }
 
   @Test

@@ -56,6 +56,16 @@ class OrganizationApisHolderTest extends BaseApiHolderTest {
   }
 
   @Test
+  void whenGetTaxonomyThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
+    assertAuthenticationShouldBeSetInThreadSafeMode(
+      accessToken -> organizationApisHolder.getTaxonomy(accessToken)
+        .crudGetTaxonomy("123"),
+      new ParameterizedTypeReference<>() {},
+      organizationApisHolder::unload
+    );
+  }
+
+  @Test
   void whenGetTaxonomySearchControllerApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
     assertAuthenticationShouldBeSetInThreadSafeMode(
       accessToken -> organizationApisHolder.getTaxonomySearchControllerApi(accessToken)

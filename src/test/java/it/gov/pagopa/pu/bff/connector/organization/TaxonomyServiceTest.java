@@ -39,6 +39,19 @@ class TaxonomyServiceTest {
   }
 
   @Test
+  void testGetTaxonomyDetail() {
+    Long taxonomyId = 123L;
+    Taxonomy expected = new Taxonomy();
+
+    when(client.getTaxonomyDetail(Mockito.same(taxonomyId), Mockito.same(accessToken)))
+      .thenReturn(expected);
+
+    Taxonomy result = service.getTaxonomyDetail(taxonomyId, accessToken);
+
+    assertSame(expected, result);
+  }
+
+  @Test
   void testGetCollectionReason() {
     CollectionModelTaxonomyCollectionReasonDTO expected = new CollectionModelTaxonomyCollectionReasonDTO();
     when(client.getCollectionReason(Mockito.same(organizationType), Mockito.same(macroAreaCode), Mockito.same(serviceTypeCode), Mockito.same(accessToken)))

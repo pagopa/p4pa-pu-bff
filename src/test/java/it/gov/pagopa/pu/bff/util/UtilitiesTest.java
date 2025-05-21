@@ -37,7 +37,7 @@ public class UtilitiesTest {
     }
 
   @ParameterizedTest
-  @ValueSource(strings = {"", "12345", "12345abc123", "1234/abc123"})
+  @ValueSource(strings = {"", "12345", "12345abc123", "1234/abc123", "12345678910"})
   void testValidateEmptyPIVA(String piva){
     boolean result = Utilities.isValidPIVA(piva);
     assertFalse(result);
@@ -145,6 +145,16 @@ public class UtilitiesTest {
     // Then
     Assertions.assertSame(expectedResult, result);
     clearTraceIdContext();
+  }
+
+  @Test
+  void givenInvalidEmailWhenIsValidEmailThenFalse(){
+    Assertions.assertFalse(Utilities.isValidEmail("test"));
+  }
+
+  @Test
+  void givenValidEmailWhenIsValidEmailThenFalse(){
+    Assertions.assertTrue(Utilities.isValidEmail("test@test.test"));
   }
 
   public static void setTraceId(String traceId) {

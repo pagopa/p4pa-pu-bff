@@ -62,6 +62,206 @@
     "description" : "the Organizations API"
   } ],
   "paths" : {
+    "/bff/organization/{organizationId}/debt-position-type-orgs/{debtPositionTypeOrgId}" : {
+      "get" : {
+        "tags" : [ "DebtPositionTypeOrgs" ],
+        "summary" : "Retrieve a specific DebtPositionTypeOrg based on its ID",
+        "operationId" : "getDebtPositionTypeOrgById",
+        "parameters" : [ {
+          "name" : "organizationId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }, {
+          "name" : "debtPositionTypeOrgId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/DebtPositionTypeOrgDTO"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Unauthorized - Missing or invalid token",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/DebtPositionTypeOrgDTO"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Forbidden - Access denied",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/DebtPositionTypeOrgDTO"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Not Found - DebtPositionTypeOrg Not Found",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/DebtPositionTypeOrgDTO"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal Server Error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/DebtPositionTypeOrgDTO"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "BearerAuth" : [ ]
+        } ]
+      },
+      "put" : {
+        "tags" : [ "DebtPositionTypeOrgs" ],
+        "description" : "Updates a DebtPositionTypeOrg",
+        "operationId" : "updateDebtPositionTypeOrg",
+        "parameters" : [ {
+          "name" : "organizationId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }, {
+          "name" : "debtPositionTypeOrgId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/SaveDebtPositionTypeOrgDTO"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Ok",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/DebtPositionTypeOrg"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad request",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/DebtPositionTypeOrg"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Not Found",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/DebtPositionTypeOrg"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal server error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/DebtPositionTypeOrg"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "BearerAuth" : [ ]
+        } ]
+      },
+      "delete" : {
+        "tags" : [ "DebtPositionTypeOrgs" ],
+        "summary" : "Deletes DebtPositionTypeOrg",
+        "operationId" : "deleteDebtPositionTypeOrg",
+        "parameters" : [ {
+          "name" : "organizationId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }, {
+          "name" : "debtPositionTypeOrgId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          },
+          "401" : {
+            "description" : "Unauthorized - Missing or invalid token"
+          },
+          "403" : {
+            "description" : "Forbidden - Access denied"
+          },
+          "404" : {
+            "description" : "Not Found - DebtPositionTypeOrg Not Found"
+          },
+          "409" : {
+            "description" : "Conflict"
+          },
+          "500" : {
+            "description" : "Internal Server Error"
+          }
+        },
+        "security" : [ {
+          "BearerAuth" : [ ]
+        } ]
+      }
+    },
     "/bff/token" : {
       "post" : {
         "tags" : [ "Authentication" ],
@@ -3154,130 +3354,6 @@
         } ]
       }
     },
-    "/bff/organization/{organizationId}/debt-position-type-orgs/{debtPositionTypeOrgId}" : {
-      "get" : {
-        "tags" : [ "DebtPositionTypeOrgs" ],
-        "summary" : "Retrieve a specific DebtPositionTypeOrg based on its ID",
-        "operationId" : "getDebtPositionTypeOrgById",
-        "parameters" : [ {
-          "name" : "organizationId",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "type" : "integer",
-            "format" : "int64"
-          }
-        }, {
-          "name" : "debtPositionTypeOrgId",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "type" : "integer",
-            "format" : "int64"
-          }
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : "OK",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/DebtPositionTypeOrgDTO"
-                }
-              }
-            }
-          },
-          "401" : {
-            "description" : "Unauthorized - Missing or invalid token",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/DebtPositionTypeOrgDTO"
-                }
-              }
-            }
-          },
-          "403" : {
-            "description" : "Forbidden - Access denied",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/DebtPositionTypeOrgDTO"
-                }
-              }
-            }
-          },
-          "404" : {
-            "description" : "Not Found - DebtPositionTypeOrg Not Found",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/DebtPositionTypeOrgDTO"
-                }
-              }
-            }
-          },
-          "500" : {
-            "description" : "Internal Server Error",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/DebtPositionTypeOrgDTO"
-                }
-              }
-            }
-          }
-        },
-        "security" : [ {
-          "BearerAuth" : [ ]
-        } ]
-      },
-      "delete" : {
-        "tags" : [ "DebtPositionTypeOrgs" ],
-        "summary" : "Deletes DebtPositionTypeOrg",
-        "operationId" : "deleteDebtPositionTypeOrg",
-        "parameters" : [ {
-          "name" : "organizationId",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "type" : "integer",
-            "format" : "int64"
-          }
-        }, {
-          "name" : "debtPositionTypeOrgId",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "type" : "integer",
-            "format" : "int64"
-          }
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : "OK"
-          },
-          "401" : {
-            "description" : "Unauthorized - Missing or invalid token"
-          },
-          "403" : {
-            "description" : "Forbidden - Access denied"
-          },
-          "404" : {
-            "description" : "Not Found - DebtPositionTypeOrg Not Found"
-          },
-          "409" : {
-            "description" : "Conflict"
-          },
-          "500" : {
-            "description" : "Internal Server Error"
-          }
-        },
-        "security" : [ {
-          "BearerAuth" : [ ]
-        } ]
-      }
-    },
     "/bff/organization/{organizationId}/debt-position-type-orgs/operators" : {
       "get" : {
         "tags" : [ "DebtPositionTypeOrgs" ],
@@ -4042,22 +4118,6 @@
   },
   "components" : {
     "schemas" : {
-      "AccessToken" : {
-        "type" : "object",
-        "properties" : {
-          "access_token" : {
-            "type" : "string"
-          },
-          "token_type" : {
-            "type" : "string"
-          },
-          "expires_in" : {
-            "type" : "integer",
-            "format" : "int32"
-          }
-        },
-        "required" : [ "access_token", "expires_in", "token_type" ]
-      },
       "DebtPositionTypeOrg" : {
         "type" : "object",
         "properties" : {
@@ -4229,6 +4289,22 @@
           }
         },
         "required" : [ "debtPositionTypeOrg", "operatorsSelection" ]
+      },
+      "AccessToken" : {
+        "type" : "object",
+        "properties" : {
+          "access_token" : {
+            "type" : "string"
+          },
+          "token_type" : {
+            "type" : "string"
+          },
+          "expires_in" : {
+            "type" : "integer",
+            "format" : "int32"
+          }
+        },
+        "required" : [ "access_token", "expires_in", "token_type" ]
       },
       "ExportFileTypeEnum" : {
         "type" : "string",

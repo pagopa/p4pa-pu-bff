@@ -13,19 +13,24 @@ import it.gov.pagopa.pu.bff.dto.generated.PagedDebtPositionTypeOrgWithCount;
 import it.gov.pagopa.pu.bff.dto.generated.SaveDebtPositionTypeOrgDTO;
 import it.gov.pagopa.pu.bff.exception.ConflictException;
 import it.gov.pagopa.pu.bff.exception.InvalidDebtPositionTypeOrgException;
+import it.gov.pagopa.pu.bff.exception.ResourceNotFoundException;
 import it.gov.pagopa.pu.bff.mapper.DebtPositionTypeOrgDTOMapper;
 import it.gov.pagopa.pu.bff.mapper.DebtPositionTypeOrgMapper;
 import it.gov.pagopa.pu.bff.mapper.DebtPositionTypeOrgOperatorsMapper;
 import it.gov.pagopa.pu.bff.mapper.DebtPositionTypeOrgWithCountMapper;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
 import it.gov.pagopa.pu.debtpositions.dto.generated.*;
+import jakarta.validation.ValidationException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import static it.gov.pagopa.pu.bff.util.Utilities.checkImmutableField;
 
 
 @Service
@@ -160,6 +165,41 @@ public class DebtPositionTypeOrgRetrieverServiceImpl implements DebtPositionType
     }
     if(!debtPositionType.getBrokerId().equals(brokerId)){
       throw new InvalidDebtPositionTypeOrgException("The brokerId "+brokerId+" does not match the given DebtPositionType's brokerId");
+    }
+  }
+
+  @Override
+  public DebtPositionTypeOrg updateDebtPositionTypeOrg(Long organizationId, Long debtPositionTypeOrgId, SaveDebtPositionTypeOrgDTO saveDebtPositionTypeOrgDTO, UserInfo loggedUser, String accessToken) {
+    authorizationService.validateAdminRole(organizationId, loggedUser);
+    DebtPositionTypeOrg existingDebtPositionTypeOrg = debtPositionTypeOrgService.getDebtPositionTypeOrg(debtPositionTypeOrgId, accessToken);
+    if (existingDebtPositionTypeOrg == null) {
+      throw new ResourceNotFoundException("DebtPositionTypeOrg having ID %d not found".formatted(debtPositionTypeOrgId));
+    }
+    verifyDebtPositionTypeOrg(saveDebtPositionTypeOrgDTO.getDebtPositionTypeOrg(),existingDebtPositionTypeOrg);
+    return debtPositionTypeOrgService.saveDebtPositionTypeOrg(
+            debtPositionTypeOrgMapper.mapToSaveDebtPositionTypeOrgDTO(saveDebtPositionTypeOrgDTO,
+                    loggedUser.getMappedExternalUserId(), getUserOrganizationIpaCode(organizationId, loggedUser),accessToken),
+            accessToken
+    );
+  }
+
+  private void verifyDebtPositionTypeOrg(DebtPositionTypeOrg updatedDebtPositionTypeOrg, DebtPositionTypeOrg existingDebtPositionTypeOrg) {
+    List<String> modifiedFields = new ArrayList<>();
+    checkImmutableField("debtPositionTypeOrgId", existingDebtPositionTypeOrg.getDebtPositionTypeOrgId(), updatedDebtPositionTypeOrg.getDebtPositionTypeOrgId(), modifiedFields);
+    checkImmutableField("debtPositionTypeId", existingDebtPositionTypeOrg.getDebtPositionTypeId(), updatedDebtPositionTypeOrg.getDebtPositionTypeId(), modifiedFields);
+    checkImmutableField("organizationId", existingDebtPositionTypeOrg.getOrganizationId(), updatedDebtPositionTypeOrg.getOrganizationId(), modifiedFields);
+    checkImmutableField("balance", existingDebtPositionTypeOrg.getBalance(), updatedDebtPositionTypeOrg.getBalance(), modifiedFields);
+    checkImmutableField("code", existingDebtPositionTypeOrg.getCode(), updatedDebtPositionTypeOrg.getCode(), modifiedFields);
+    checkImmutableField("description", existingDebtPositionTypeOrg.getDescription(), updatedDebtPositionTypeOrg.getDescription(), modifiedFields);
+    checkImmutableField("orgSector", existingDebtPositionTypeOrg.getOrgSector(), updatedDebtPositionTypeOrg.getOrgSector(), modifiedFields);
+    checkImmutableField("flagAnonymousFiscalCode", existingDebtPositionTypeOrg.getFlagAnonymousFiscalCode(), updatedDebtPositionTypeOrg.getFlagAnonymousFiscalCode(), modifiedFields);
+    checkImmutableField("flagMandatoryDueDate", existingDebtPositionTypeOrg.getFlagMandatoryDueDate(), updatedDebtPositionTypeOrg.getFlagMandatoryDueDate(), modifiedFields);
+    checkImmutableField("flagNotifyIo", existingDebtPositionTypeOrg.getFlagNotifyIo(), updatedDebtPositionTypeOrg.getFlagNotifyIo(), modifiedFields);
+    checkImmutableField("flagActive", existingDebtPositionTypeOrg.getFlagActive(), updatedDebtPositionTypeOrg.getFlagActive(), modifiedFields);
+    checkImmutableField("flagAmountActualization", existingDebtPositionTypeOrg.getFlagAmountActualization(), updatedDebtPositionTypeOrg.getFlagAmountActualization(), modifiedFields);
+    checkImmutableField("flagExternal", existingDebtPositionTypeOrg.getFlagExternal(), updatedDebtPositionTypeOrg.getFlagExternal(), modifiedFields);
+    if(!CollectionUtils.isEmpty(modifiedFields)){
+      throw new ValidationException("The following DebtPositionTypeOrg fields are readOnly. "+modifiedFields);
     }
   }
 }

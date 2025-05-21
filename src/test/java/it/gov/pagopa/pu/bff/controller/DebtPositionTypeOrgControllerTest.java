@@ -190,6 +190,28 @@ class DebtPositionTypeOrgControllerTest {
     Assertions.assertSame(expectedResult, response.getBody());
   }
 
+  @Test
+  void givenCorrectRequestWhenUpdateDebtPositionTypeOrgThenOk() {
+    long organizationId = 1L;
+    long debtPositionTypeOrgId = 2L;
+    SaveDebtPositionTypeOrgDTO saveDebtPositionTypeOrgDTO = TestUtils.getPodamFactory().manufacturePojo(SaveDebtPositionTypeOrgDTO.class);
+    DebtPositionTypeOrg expectedResult = TestUtils.getPodamFactory().manufacturePojo(DebtPositionTypeOrg.class);
+
+    Mockito.when(debtPositionTypeOrgRetrieverServiceMock.updateDebtPositionTypeOrg(
+        Mockito.eq(organizationId),
+        Mockito.eq(debtPositionTypeOrgId),
+        Mockito.eq(saveDebtPositionTypeOrgDTO),
+        Mockito.same(loggedUser), Mockito.same(accessToken)
+      )).thenReturn(expectedResult);
+
+    ResponseEntity<DebtPositionTypeOrg> response = debtPositionTypeOrgController.updateDebtPositionTypeOrg(
+      organizationId, debtPositionTypeOrgId,saveDebtPositionTypeOrgDTO);
+
+    Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
+    Assertions.assertNotNull(response.getBody());
+    Assertions.assertSame(expectedResult, response.getBody());
+  }
+
 }
 
 

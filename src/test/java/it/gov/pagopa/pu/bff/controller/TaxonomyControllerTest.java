@@ -17,6 +17,8 @@ import it.gov.pagopa.pu.bff.service.taxonomy.TaxonomyRetrieverService;
 import it.gov.pagopa.pu.bff.util.TestUtils;
 import java.util.ArrayList;
 import java.util.List;
+
+import it.gov.pagopa.pu.organization.dto.generated.Taxonomy;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -45,6 +47,32 @@ class TaxonomyControllerTest {
 
   @MockitoBean
   private BrokerRetrieverService serviceBrokerMock;
+
+  @Test
+  void testGetTaxonomyDetail() throws Exception {
+    TestUtils.addSampleUserIntoSecurityContext();
+    Long taxonomyId = 123L;
+    Taxonomy taxonomy = new Taxonomy();
+
+    Mockito.when(serviceMock.getTaxonomyDetail(taxonomyId, "token")).thenReturn(taxonomy);
+
+    MvcResult result = mockMvc.perform(get("/bff/taxonomy/" + taxonomyId))
+      .andExpect(status().isOk())
+      .andReturn();
+
+    Assertions.assertEquals(objectMapper.writeValueAsString(taxonomy), result.getResponse().getContentAsString());
+  }
+
+  @Test
+  void testGetTaxonomyDetailNotFound() throws Exception {
+    TestUtils.addSampleUserIntoSecurityContext();
+    Long taxonomyId = 123L;
+
+    Mockito.when(serviceMock.getTaxonomyDetail(taxonomyId, "token")).thenReturn(null);
+
+    mockMvc.perform(get("/bff/taxonomy/" + taxonomyId))
+      .andExpect(status().isNotFound());
+  }
 
   @Test
   void testGetCollectionReason() throws Exception {

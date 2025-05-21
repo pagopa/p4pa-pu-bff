@@ -18,6 +18,11 @@ public class TaxonomyServiceImpl implements TaxonomyService {
   }
 
   @Override
+  public Taxonomy getTaxonomyDetail(Long taxonomyId, String accessToken) {
+    return taxonomyClient.getTaxonomyDetail(taxonomyId, accessToken);
+  }
+
+  @Override
   public Taxonomy getTaxonomyByTaxonomyCode(String taxonomyCode, String accessToken) {
     return taxonomyClient.getTaxonomyByTaxonomyCode(taxonomyCode, accessToken);
   }

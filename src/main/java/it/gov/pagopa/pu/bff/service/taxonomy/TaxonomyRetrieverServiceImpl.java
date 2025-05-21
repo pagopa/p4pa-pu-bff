@@ -46,6 +46,11 @@ public class TaxonomyRetrieverServiceImpl implements TaxonomyRetrieverService {
   }
 
   @Override
+  public Taxonomy getTaxonomyDetail(Long taxonomyId, String accessToken) {
+    return taxonomyService.getTaxonomyDetail(taxonomyId, accessToken);
+  }
+
+  @Override
   public Taxonomy getTaxonomyByTaxonomyCode(String taxonomyCode, String accessToken) {
     return taxonomyService.getTaxonomyByTaxonomyCode(taxonomyCode, accessToken);
   }

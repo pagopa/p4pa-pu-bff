@@ -434,7 +434,7 @@ class DebtPositionTypeRetrieverServiceImplTest {
 
     DebtPositionType unknownType = new DebtPositionType();
     unknownType.setDebtPositionTypeId(2L);
-    unknownType.setCode("UNKNOWN");
+    unknownType.setCode(DebtPositionTypeRetrieverServiceImpl.DEBT_POSITION_TYPE_CODE_UNKNOWN);
 
     List<DebtPositionType> inputList = List.of(validType, unknownType);
 

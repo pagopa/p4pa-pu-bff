@@ -1,6 +1,7 @@
 package it.gov.pagopa.pu.bff.controller;
 
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
+import it.gov.pagopa.pu.bff.dto.generated.DebtPositionTypeOrgDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedDebtPositionTypeOrgOperatorDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedDebtPositionTypeOrgWithCount;
 import it.gov.pagopa.pu.bff.dto.generated.SaveDebtPositionTypeOrgDTO;
@@ -8,7 +9,6 @@ import it.gov.pagopa.pu.bff.security.SecurityUtilsTest;
 import it.gov.pagopa.pu.bff.service.debt_position_type_org.DebtPositionTypeOrgRetrieverService;
 import it.gov.pagopa.pu.bff.util.TestUtils;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrg;
-import java.util.List;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -22,6 +22,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+
+import java.util.List;
 
 @ExtendWith(MockitoExtension.class)
 class DebtPositionTypeOrgControllerTest {
@@ -56,7 +58,7 @@ class DebtPositionTypeOrgControllerTest {
   void givenCorrectRequestWhenGetDebtPositionTypeOrgByIdThenOk() {
     long organizationId = 1L;
     long debtPositionTypeOrgId = 1L;
-    DebtPositionTypeOrg expectedResult = new DebtPositionTypeOrg();
+    DebtPositionTypeOrgDTO expectedResult = new DebtPositionTypeOrgDTO();
 
     Mockito.when(debtPositionTypeOrgRetrieverServiceMock.getDebtPositionTypeOrgById(
       organizationId,
@@ -64,7 +66,7 @@ class DebtPositionTypeOrgControllerTest {
       loggedUser, accessToken
     )).thenReturn(expectedResult);
 
-    ResponseEntity<DebtPositionTypeOrg> response = debtPositionTypeOrgController.getDebtPositionTypeOrgById(organizationId, debtPositionTypeOrgId);
+    ResponseEntity<DebtPositionTypeOrgDTO> response = debtPositionTypeOrgController.getDebtPositionTypeOrgById(organizationId, debtPositionTypeOrgId);
 
     Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
     Assertions.assertNotNull(response.getBody());
@@ -82,7 +84,7 @@ class DebtPositionTypeOrgControllerTest {
       loggedUser, accessToken
     )).thenReturn(null);
 
-    ResponseEntity<DebtPositionTypeOrg> response = debtPositionTypeOrgController.getDebtPositionTypeOrgById(organizationId, debtPositionTypeOrgId);
+    ResponseEntity<DebtPositionTypeOrgDTO> response = debtPositionTypeOrgController.getDebtPositionTypeOrgById(organizationId, debtPositionTypeOrgId);
 
     Assertions.assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     Assertions.assertNull(response.getBody());
@@ -184,6 +186,28 @@ class DebtPositionTypeOrgControllerTest {
       organizationId, saveDebtPositionTypeOrgDTO);
 
     Assertions.assertEquals(HttpStatus.CREATED, response.getStatusCode());
+    Assertions.assertNotNull(response.getBody());
+    Assertions.assertSame(expectedResult, response.getBody());
+  }
+
+  @Test
+  void givenCorrectRequestWhenUpdateDebtPositionTypeOrgThenOk() {
+    long organizationId = 1L;
+    long debtPositionTypeOrgId = 2L;
+    SaveDebtPositionTypeOrgDTO saveDebtPositionTypeOrgDTO = TestUtils.getPodamFactory().manufacturePojo(SaveDebtPositionTypeOrgDTO.class);
+    DebtPositionTypeOrg expectedResult = TestUtils.getPodamFactory().manufacturePojo(DebtPositionTypeOrg.class);
+
+    Mockito.when(debtPositionTypeOrgRetrieverServiceMock.updateDebtPositionTypeOrg(
+        Mockito.eq(organizationId),
+        Mockito.eq(debtPositionTypeOrgId),
+        Mockito.eq(saveDebtPositionTypeOrgDTO),
+        Mockito.same(loggedUser), Mockito.same(accessToken)
+      )).thenReturn(expectedResult);
+
+    ResponseEntity<DebtPositionTypeOrg> response = debtPositionTypeOrgController.updateDebtPositionTypeOrg(
+      organizationId, debtPositionTypeOrgId,saveDebtPositionTypeOrgDTO);
+
+    Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
     Assertions.assertNotNull(response.getBody());
     Assertions.assertSame(expectedResult, response.getBody());
   }

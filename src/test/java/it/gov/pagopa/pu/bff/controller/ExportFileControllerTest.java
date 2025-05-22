@@ -5,11 +5,23 @@ import it.gov.pagopa.pu.bff.dto.ExportFileFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.OffsetDateTimeIntervalFilter;
 import it.gov.pagopa.pu.bff.dto.generated.ExportFile;
 import it.gov.pagopa.pu.bff.dto.generated.PagedExportFile;
+import it.gov.pagopa.pu.bff.dto.generated.PaidExportFileRequest;
+import it.gov.pagopa.pu.bff.dto.generated.PaidExportFileRequestFilterFields;
+import it.gov.pagopa.pu.bff.dto.generated.ReceiptsArchivingExportFileRequest;
+import it.gov.pagopa.pu.bff.dto.generated.ReceiptsArchivingExportFileRequestFilterFields;
 import it.gov.pagopa.pu.bff.security.SecurityUtilsTest;
 import it.gov.pagopa.pu.bff.service.export_flow_file.ExportFileRetrieverService;
 import it.gov.pagopa.pu.bff.util.TestUtils;
-import it.gov.pagopa.pu.processexecutions.dto.generated.*;
+import it.gov.pagopa.pu.processexecutions.dto.generated.ClassificationsExportFileFilter;
+import it.gov.pagopa.pu.processexecutions.dto.generated.ClassificationsExportFileRequestDTO;
 import it.gov.pagopa.pu.processexecutions.dto.generated.ExportFile.ExportFileTypeEnum;
+import it.gov.pagopa.pu.processexecutions.dto.generated.ExportFileStatus;
+import it.gov.pagopa.pu.processexecutions.dto.generated.PaidExportFileRequestDTO;
+import it.gov.pagopa.pu.processexecutions.dto.generated.PaymentsReportingExportFileFilter;
+import it.gov.pagopa.pu.processexecutions.dto.generated.PaymentsReportingExportFileRequestDTO;
+import it.gov.pagopa.pu.processexecutions.dto.generated.ReceiptsArchivingExportFileRequestDTO;
+import java.time.OffsetDateTime;
+import java.util.List;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -22,10 +34,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-
-import java.time.LocalDate;
-import java.time.OffsetDateTime;
-import java.util.List;
 
 @ExtendWith(MockitoExtension.class)
 class ExportFileControllerTest {
@@ -98,13 +106,11 @@ class ExportFileControllerTest {
 
   @Test
   void givenCorrectRequestWhenCreatePaidExportFileThenOk() {
-    PaidExportFileRequestDTO requestDTO = PaidExportFileRequestDTO.builder()
+    PaidExportFileRequest requestDTO = PaidExportFileRequest.builder()
       .organizationId(1L)
-      .exportFileType(
-        it.gov.pagopa.pu.processexecutions.dto.generated.PaidExportFileRequestDTO.ExportFileTypeEnum.PAID)
+      .exportFileType(PaidExportFileRequestDTO.ExportFileTypeEnum.PAID)
       .fileVersion("version1")
-      .filterFields(PaidExportFileFilter.builder()
-        .build())
+      .filterFields(new PaidExportFileRequestFilterFields())
       .build();
 
     ResponseEntity<Void> response = exportFileController.createPaidExportFile(requestDTO);
@@ -152,22 +158,18 @@ class ExportFileControllerTest {
 
   @Test
   void givenCorrectRequestWhenCreateArchivingExportFileThenOk() {
-    LocalDate localDate = LocalDate.parse("2025-04-14");
-    LocalDateIntervalFilter localDateIntervalFilter = LocalDateIntervalFilter.builder().from(localDate).to(localDate).build();
-    ReceiptsArchivingExportFileFilter receiptsArchivingExportFileFilter = ReceiptsArchivingExportFileFilter.builder().paymentDate(localDateIntervalFilter).build();
-
-    ReceiptsArchivingExportFileRequestDTO receiptsArchivingExportFileRequestDTO = ReceiptsArchivingExportFileRequestDTO.builder()
+    ReceiptsArchivingExportFileRequest requestDTO = ReceiptsArchivingExportFileRequest.builder()
       .organizationId(1L)
       .exportFileType(ReceiptsArchivingExportFileRequestDTO.ExportFileTypeEnum.RECEIPTS_ARCHIVING)
       .fileVersion("V1_0")
-      .filterFields(receiptsArchivingExportFileFilter)
+      .filterFields(new ReceiptsArchivingExportFileRequestFilterFields())
       .build();
 
-    ResponseEntity<Void> response = exportFileController.createReceiptsArchivingExportFile(receiptsArchivingExportFileRequestDTO);
+    ResponseEntity<Void> response = exportFileController.createReceiptsArchivingExportFile(requestDTO);
 
     Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
     Mockito.verify(exportFileRetrieverServiceMock)
-      .createReceiptsArchivingExportFile(Mockito.eq(receiptsArchivingExportFileRequestDTO), Mockito.same(loggedUser), Mockito.same(accessToken));
+      .createReceiptsArchivingExportFile(Mockito.eq(requestDTO), Mockito.same(loggedUser), Mockito.same(accessToken));
   }
 
 }

@@ -1,13 +1,15 @@
 package it.gov.pagopa.pu.bff.service.taxonomy;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import it.gov.pagopa.pu.bff.connector.organization.TaxonomyService;
+import it.gov.pagopa.pu.bff.dto.generated.PagedTaxonomy;
 import it.gov.pagopa.pu.bff.dto.generated.TaxonomyCodeDTO;
 import it.gov.pagopa.pu.bff.dto.generated.TaxonomyCollectionReasonDTO;
 import it.gov.pagopa.pu.bff.dto.generated.TaxonomyMacroAreaCodeDTO;
 import it.gov.pagopa.pu.bff.dto.generated.TaxonomyOrganizationTypeDTO;
 import it.gov.pagopa.pu.bff.dto.generated.TaxonomyServiceTypeCodeDTO;
+import it.gov.pagopa.pu.bff.mapper.TaxonomyMapper;
 import it.gov.pagopa.pu.bff.mapper.taxonomy.TaxonomyCodeMapper;
 import it.gov.pagopa.pu.bff.mapper.taxonomy.TaxonomyCollectionReasonMapper;
 import it.gov.pagopa.pu.bff.mapper.taxonomy.TaxonomyMacroAreaCodeMapper;
@@ -23,6 +25,7 @@ import it.gov.pagopa.pu.organization.dto.generated.CollectionModelTaxonomyOrgani
 import it.gov.pagopa.pu.organization.dto.generated.CollectionModelTaxonomyOrganizationTypeDTOEmbedded;
 import it.gov.pagopa.pu.organization.dto.generated.CollectionModelTaxonomyServiceTypeCodeDTO;
 import it.gov.pagopa.pu.organization.dto.generated.CollectionModelTaxonomyServiceTypeCodeDTOEmbedded;
+import it.gov.pagopa.pu.organization.dto.generated.PagedModelTaxonomy;
 import it.gov.pagopa.pu.organization.dto.generated.Taxonomy;
 import java.util.List;
 import org.junit.jupiter.api.Test;
@@ -31,11 +34,14 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageRequest;
 
 @ExtendWith(MockitoExtension.class)
 class TaxonomyRetrieverServiceImplTest {
   @Mock
   private TaxonomyService taxonomyServiceMock;
+  @Mock
+  private TaxonomyMapper taxonomyMapperMock;
   @Mock
   private TaxonomyCodeMapper taxonomyCodeMapperMock;
   @Mock
@@ -49,6 +55,20 @@ class TaxonomyRetrieverServiceImplTest {
 
   @InjectMocks
   private TaxonomyRetrieverServiceImpl taxonomyService;
+
+  @Test
+  void testGetTaxonomyDetail() {
+    Long taxonomyId = 123L;
+    String token = "token";
+    Taxonomy expectedTaxonomy = new Taxonomy();
+
+    Mockito.when(taxonomyServiceMock.getTaxonomyDetail(taxonomyId, token))
+      .thenReturn(expectedTaxonomy);
+
+    Taxonomy result = taxonomyService.getTaxonomyDetail(taxonomyId, token);
+
+    assertEquals(expectedTaxonomy, result);
+  }
 
   @Test
   void testGetByTaxonomyCode() {
@@ -181,6 +201,23 @@ class TaxonomyRetrieverServiceImplTest {
     // Assert the result
     assertEquals(1, result.size());
     assertEquals(outputDTO, result.getFirst());
+  }
+
+  @Test
+  void testGetTaxonomies() {
+    PagedModelTaxonomy pagedModelTaxonomy = new PagedModelTaxonomy();
+
+    PagedTaxonomy expected = new PagedTaxonomy();
+
+    Mockito.when(taxonomyServiceMock.getTaxonomies("Type1", "Macro1", "ServiceCode1", "Reason1",
+        PageRequest.of(0,10), "token"))
+      .thenReturn(pagedModelTaxonomy);
+    Mockito.when(taxonomyMapperMock.mapToPagedTaxonomy(pagedModelTaxonomy)).thenReturn(expected);
+
+    PagedTaxonomy result = taxonomyService.getTaxonomies("Type1", "Macro1", "ServiceCode1", "Reason1",
+      PageRequest.of(0,10), "token");
+
+    assertEquals(expected, result);
   }
 
 }

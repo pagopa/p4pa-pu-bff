@@ -3,6 +3,7 @@ package it.gov.pagopa.pu.bff.connector.debt_position;
 import it.gov.pagopa.pu.bff.config.CacheConfig.Fields;
 import it.gov.pagopa.pu.bff.connector.debt_position.client.DebtPositionTypeOrgOperatorsClient;
 import it.gov.pagopa.pu.debtpositions.dto.generated.CollectionModelDebtPositionTypeOrgOperators;
+import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrgOperators;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.stereotype.Service;
 
@@ -20,5 +21,10 @@ public class DebtPositionTypeOrgOperatorsServiceImpl implements DebtPositionType
   @Override
   public CollectionModelDebtPositionTypeOrgOperators getDebtPositionTypeOrgOperators(Long debtPositionTypeOrgId, String accessToken) {
     return debtPositionTypeOrgOperatorsClient.getDebtPositionTypeOrgOperators(debtPositionTypeOrgId, accessToken);
+  }
+
+  @Override
+  public DebtPositionTypeOrgOperators findByDebtPositionTypeOrgIdAndOperatorExternalUserId(Long debtPositionTypeOrgId, String operatorExternalUserId, String accessToken) {
+    return debtPositionTypeOrgOperatorsClient.findByDebtPositionTypeOrgIdAndOperatorExternalUserId(debtPositionTypeOrgId,operatorExternalUserId, accessToken);
   }
 }

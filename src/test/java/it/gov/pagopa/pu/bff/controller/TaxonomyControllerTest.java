@@ -5,6 +5,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import it.gov.pagopa.pu.bff.controller.generated.TaxonomyApi;
+import it.gov.pagopa.pu.bff.dto.generated.PagedTaxonomy;
 import it.gov.pagopa.pu.bff.dto.generated.TaxonomyCodeDTO;
 import it.gov.pagopa.pu.bff.dto.generated.TaxonomyCollectionReasonDTO;
 import it.gov.pagopa.pu.bff.dto.generated.TaxonomyMacroAreaCodeDTO;
@@ -16,6 +17,8 @@ import it.gov.pagopa.pu.bff.service.taxonomy.TaxonomyRetrieverService;
 import it.gov.pagopa.pu.bff.util.TestUtils;
 import java.util.ArrayList;
 import java.util.List;
+
+import it.gov.pagopa.pu.organization.dto.generated.Taxonomy;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -44,6 +47,32 @@ class TaxonomyControllerTest {
 
   @MockitoBean
   private BrokerRetrieverService serviceBrokerMock;
+
+  @Test
+  void testGetTaxonomyDetail() throws Exception {
+    TestUtils.addSampleUserIntoSecurityContext();
+    Long taxonomyId = 123L;
+    Taxonomy taxonomy = new Taxonomy();
+
+    Mockito.when(serviceMock.getTaxonomyDetail(taxonomyId, "token")).thenReturn(taxonomy);
+
+    MvcResult result = mockMvc.perform(get("/bff/taxonomy/" + taxonomyId))
+      .andExpect(status().isOk())
+      .andReturn();
+
+    Assertions.assertEquals(objectMapper.writeValueAsString(taxonomy), result.getResponse().getContentAsString());
+  }
+
+  @Test
+  void testGetTaxonomyDetailNotFound() throws Exception {
+    TestUtils.addSampleUserIntoSecurityContext();
+    Long taxonomyId = 123L;
+
+    Mockito.when(serviceMock.getTaxonomyDetail(taxonomyId, "token")).thenReturn(null);
+
+    mockMvc.perform(get("/bff/taxonomy/" + taxonomyId))
+      .andExpect(status().isNotFound());
+  }
 
   @Test
   void testGetCollectionReason() throws Exception {
@@ -108,6 +137,21 @@ class TaxonomyControllerTest {
       .andExpect(status().isOk())
       .andReturn();
     Assertions.assertEquals(result.getResponse().getContentAsString(),objectMapper.writeValueAsString(res));
+  }
+  @Test
+  void testGetTaxonomies() throws Exception {
+    TestUtils.addSampleUserIntoSecurityContext();
+    PagedTaxonomy res = new PagedTaxonomy();
+    Mockito.when(serviceMock.getTaxonomies(Mockito.eq("organizationType"), Mockito.eq("macroAreaCode"), Mockito.eq("serviceTypeCode"), Mockito.eq("collectionReason"), Mockito.any(), Mockito.eq("token")))
+      .thenReturn(res);
+    MvcResult result = mockMvc.perform(get("/bff/taxonomy")
+        .queryParam("organizationType","organizationType")
+        .queryParam("macroAreaCode","macroAreaCode")
+        .queryParam("serviceTypeCode","serviceTypeCode")
+        .queryParam("collectionReason","collectionReason"))
+      .andExpect(status().isOk())
+      .andReturn();
+    Assertions.assertEquals(objectMapper.writeValueAsString(res), result.getResponse().getContentAsString());
   }
 
 }

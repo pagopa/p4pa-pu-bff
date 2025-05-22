@@ -4,6 +4,7 @@ import it.gov.pagopa.pu.bff.connector.organization.client.TaxonomyClient;
 import it.gov.pagopa.pu.organization.dto.generated.*;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -14,6 +15,11 @@ public class TaxonomyServiceImpl implements TaxonomyService {
 
   public TaxonomyServiceImpl(TaxonomyClient taxonomyClient) {
     this.taxonomyClient = taxonomyClient;
+  }
+
+  @Override
+  public Taxonomy getTaxonomyDetail(Long taxonomyId, String accessToken) {
+    return taxonomyClient.getTaxonomyDetail(taxonomyId, accessToken);
   }
 
   @Override
@@ -49,5 +55,12 @@ public class TaxonomyServiceImpl implements TaxonomyService {
   @Cacheable(key = "#organizationType + '-' + #macroAreaCode + '-' + #serviceTypeCode + '-' + #collectionReason", unless = "#result == null")
   public CollectionModelTaxonomyCodeDTO getTaxonomyCode(String organizationType, String macroAreaCode, String serviceTypeCode, String collectionReason, String accessToken) {
     return taxonomyClient.getTaxonomyCode(organizationType, macroAreaCode, serviceTypeCode, collectionReason, accessToken);
+  }
+
+  @Override
+  public PagedModelTaxonomy getTaxonomies(String organizationType,
+    String macroAreaCode, String serviceTypeCode, String collectionReason,
+    Pageable pageable, String accessToken) {
+    return taxonomyClient.getTaxonomies(organizationType, macroAreaCode, serviceTypeCode, collectionReason, pageable, accessToken);
   }
 }

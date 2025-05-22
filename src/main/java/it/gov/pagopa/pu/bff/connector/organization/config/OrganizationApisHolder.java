@@ -3,15 +3,7 @@ package it.gov.pagopa.pu.bff.connector.organization.config;
 import it.gov.pagopa.pu.bff.config.rest.RestTemplateConfig;
 import it.gov.pagopa.pu.organization.controller.ApiClient;
 import it.gov.pagopa.pu.organization.controller.BaseApi;
-import it.gov.pagopa.pu.organization.controller.generated.BrokerEntityControllerApi;
-import it.gov.pagopa.pu.organization.controller.generated.OrganizationEntityControllerApi;
-import it.gov.pagopa.pu.organization.controller.generated.OrganizationSearchControllerApi;
-import it.gov.pagopa.pu.organization.controller.generated.TaxonomyCodeDtoSearchControllerApi;
-import it.gov.pagopa.pu.organization.controller.generated.TaxonomyCollectionReasonDtoSearchControllerApi;
-import it.gov.pagopa.pu.organization.controller.generated.TaxonomyMacroAreaCodeDtoSearchControllerApi;
-import it.gov.pagopa.pu.organization.controller.generated.TaxonomyOrganizationTypeDtoSearchControllerApi;
-import it.gov.pagopa.pu.organization.controller.generated.TaxonomySearchControllerApi;
-import it.gov.pagopa.pu.organization.controller.generated.TaxonomyServiceTypeCodeDtoSearchControllerApi;
+import it.gov.pagopa.pu.organization.controller.generated.*;
 import jakarta.annotation.PreDestroy;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.stereotype.Service;
@@ -22,6 +14,7 @@ public class OrganizationApisHolder {
 
     private final OrganizationSearchControllerApi organizationSearchControllerApi;
     private final BrokerEntityControllerApi brokerEntityControllerApi;
+    private final TaxonomyEntityControllerApi taxonomyEntityControllerApi;
     private final TaxonomySearchControllerApi taxonomySearchControllerApi;
     private final TaxonomyCollectionReasonDtoSearchControllerApi taxonomyCollectionReasonDtoSearchControllerApi;
     private final TaxonomyMacroAreaCodeDtoSearchControllerApi taxonomyMacroAreaCodeDtoSearchControllerApi;
@@ -45,6 +38,7 @@ public class OrganizationApisHolder {
           restTemplate.setErrorHandler(RestTemplateConfig.bodyPrinterWhenError("ORGANIZATION"));
         }
 
+        this.taxonomyEntityControllerApi = new TaxonomyEntityControllerApi(apiClient);
         this.organizationSearchControllerApi = new OrganizationSearchControllerApi(apiClient);
         this.brokerEntityControllerApi = new BrokerEntityControllerApi(apiClient);
         this.taxonomySearchControllerApi = new TaxonomySearchControllerApi(apiClient);
@@ -69,6 +63,10 @@ public class OrganizationApisHolder {
     /** It will return a {@link BrokerEntityControllerApi} instrumented with the provided accessToken. Use null if auth is not required */
     public BrokerEntityControllerApi getBrokerEntityControllerApi(String accessToken){
         return getApi(accessToken, brokerEntityControllerApi);
+    }
+
+    public TaxonomyEntityControllerApi getTaxonomy(String accessToken) {
+      return getApi(accessToken, taxonomyEntityControllerApi);
     }
 
     public TaxonomySearchControllerApi getTaxonomySearchControllerApi(String accessToken){

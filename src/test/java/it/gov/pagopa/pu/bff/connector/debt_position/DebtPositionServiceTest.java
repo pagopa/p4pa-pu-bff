@@ -1,8 +1,5 @@
 package it.gov.pagopa.pu.bff.connector.debt_position;
 
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.mockito.Mockito.when;
-
 import it.gov.pagopa.pu.bff.connector.debt_position.client.DebtPositionClient;
 import it.gov.pagopa.pu.bff.connector.debt_position.client.DebtPositionSearchClient;
 import it.gov.pagopa.pu.bff.dto.DebtPositionViewFiltersDTO;
@@ -10,7 +7,6 @@ import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionDTO;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionOrigin;
 import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelDebtPosition;
 import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelDebtPositionView;
-import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,6 +15,12 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class DebtPositionServiceTest {
@@ -93,5 +95,18 @@ class DebtPositionServiceTest {
     PagedModelDebtPosition result = service.getDebtPositionByDebtPositionTypeOrgId(debtPositionTypeOrgId,pageRequest,accessToken);
 
     assertSame(expectedResult, result);
+  }
+
+  @Test
+  void whenDeleteDebtPositionByDebtPositionIdThenInvokeClient() {
+    Long debtPositionId = 1L;
+    String accessToken = "ACCESSTOKEN";
+
+    when(clientMock.deleteDebtPosition(debtPositionId,accessToken))
+      .thenReturn(false);
+
+    Boolean deletedDebtPositionPhysically = service.deleteDebtPosition(debtPositionId, accessToken);
+
+    assertFalse(deletedDebtPositionPhysically);
   }
 }

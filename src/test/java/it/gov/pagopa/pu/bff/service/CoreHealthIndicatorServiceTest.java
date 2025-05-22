@@ -3,9 +3,9 @@ package it.gov.pagopa.pu.bff.service;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
-import com.maciejwalkowiak.wiremock.spring.ConfigureWireMock;
-import com.maciejwalkowiak.wiremock.spring.EnableWireMock;
-import com.maciejwalkowiak.wiremock.spring.InjectWireMock;
+import org.wiremock.spring.ConfigureWireMock;
+import org.wiremock.spring.EnableWireMock;
+import org.wiremock.spring.InjectWireMock;
 import it.gov.pagopa.pu.bff.config.CoreServiceHealthStatusConfig;
 import it.gov.pagopa.pu.bff.config.MonitoringServiceConf;
 import it.gov.pagopa.pu.bff.dto.generated.ServiceStatus;
@@ -24,7 +24,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
   classes = {CoreHealthIndicatorService.class, CoreHealthIndicatorServiceTest.CoreHealthIndicatorServiceTestConfiguration.class},
   webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @EnableWireMock({
-  @ConfigureWireMock(name = "monitoring-server", port = 8888)
+  @ConfigureWireMock(name = "monitoring-server", filesUnderClasspath = "wiremock", port = 8888)
 })
 class CoreHealthIndicatorServiceTest {
 

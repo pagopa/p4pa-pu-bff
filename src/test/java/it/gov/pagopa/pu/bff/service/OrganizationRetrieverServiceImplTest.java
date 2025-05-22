@@ -73,7 +73,7 @@ class OrganizationRetrieverServiceImplTest {
       .organizationId(123L)
       .ipaCode("testIpaCode")
       .orgName("Test Organization")
-      .operatorRole(OrganizationDTO.OperatorRoleEnum.ADMIN)
+      .operatorRole(OrganizationDTO.OperatorRoleEnum.ROLE_ADMIN)
       .build();
 
     organizationService = new OrganizationRetrieverServiceImpl(
@@ -94,7 +94,7 @@ class OrganizationRetrieverServiceImplTest {
     assertEquals(123L, result.getFirst().getOrganizationId());
     assertEquals("testIpaCode", result.getFirst().getIpaCode());
     assertEquals("Test Organization", result.getFirst().getOrgName());
-    assertEquals(OrganizationDTO.OperatorRoleEnum.ADMIN, result.getFirst().getOperatorRole());
+    assertEquals(OrganizationDTO.OperatorRoleEnum.ROLE_ADMIN, result.getFirst().getOperatorRole());
   }
 
   @Test

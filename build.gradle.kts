@@ -2,12 +2,12 @@ import java.util.*
 
 plugins {
   java
-  id("org.springframework.boot") version "3.4.3"
+  id("org.springframework.boot") version "3.4.5"
   id("io.spring.dependency-management") version "1.1.7"
   jacoco
-  id("org.sonarqube") version "6.0.1.5171"
-  id("com.github.ben-manes.versions") version "0.51.0"
-  id("org.openapi.generator") version "7.10.0"
+  id("org.sonarqube") version "6.1.0.5360"
+  id("com.github.ben-manes.versions") version "0.52.0"
+  id("org.openapi.generator") version "7.13.0"
   id("org.ajoberstar.grgit") version "5.3.0"
   id("com.gorylenko.gradle-git-properties") version "2.5.0"
 }
@@ -32,15 +32,15 @@ repositories {
   mavenCentral()
 }
 
-val springDocOpenApiVersion = "2.8.5"
+val springDocOpenApiVersion = "2.8.6"
 val openApiToolsVersion = "0.2.6"
-val micrometerVersion = "1.4.3"
+val micrometerVersion = "1.4.6"
 val caffeineVersion = "3.2.0"
-val httpClientVersion = "5.4.2"
+val httpClientVersion = "5.4.4"
 val mapStructVersion = "1.6.3"
 
-val wiremockVersion = "3.12.0"
-val wiremockSpringBootVersion = "2.1.3"
+val wiremockVersion = "3.13.0"
+val wiremockSpringBootVersion = "3.10.0"
 val podamVersion = "8.0.2.RELEASE"
 
 dependencies {
@@ -73,7 +73,7 @@ dependencies {
   testImplementation("org.mockito:mockito-core")
   testImplementation("org.projectlombok:lombok")
   testImplementation("org.wiremock:wiremock-standalone:$wiremockVersion")
-  testImplementation("com.maciejwalkowiak.spring:wiremock-spring-boot:$wiremockSpringBootVersion")
+  testImplementation("org.wiremock.integrations:wiremock-spring-boot:$wiremockSpringBootVersion")
   testImplementation("uk.co.jemos.podam:podam:$podamVersion")
 }
 
@@ -132,7 +132,8 @@ tasks.register("dependenciesBuild") {
     "openApiGenerateORGANIZATION",
     "openApiGenerateDEBTPOSITIONS",
     "openApiGeneratePROCESSEXECUTIONS",
-    "openApiGenerateCLASSIFICATION"
+    "openApiGenerateCLASSIFICATION",
+    "openApiGeneratePAGOPAPAYMENTS"
   )
 }
 
@@ -167,6 +168,8 @@ tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>("ope
     "ClassificationsExportFileRequestDTO" to "it.gov.pagopa.pu.processexecutions.dto.generated.ClassificationsExportFileRequestDTO",
     "PaymentsReportingExportFileRequestDTO" to "it.gov.pagopa.pu.processexecutions.dto.generated.PaymentsReportingExportFileRequestDTO",
     "ReceiptsArchivingExportFileRequestDTO" to "it.gov.pagopa.pu.processexecutions.dto.generated.ReceiptsArchivingExportFileRequestDTO",
+    "PaidExportFileType" to "it.gov.pagopa.pu.processexecutions.dto.generated.PaidExportFileRequestDTO.ExportFileTypeEnum",
+    "ReceiptsArchivingExportFileType" to "it.gov.pagopa.pu.processexecutions.dto.generated.ReceiptsArchivingExportFileRequestDTO.ExportFileTypeEnum",
     "ReceiptView" to "it.gov.pagopa.pu.debtpositions.dto.generated.ReceiptView",
     "ReceiptOriginType" to "it.gov.pagopa.pu.debtpositions.dto.generated.ReceiptOriginType",
     "DebtPositionTypeOrg" to "it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrg",
@@ -184,9 +187,14 @@ tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>("ope
     "InstallmentDetailDTO" to "it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentDetailDTO",
     "InstallmentStatus" to "it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentStatus",
     "PaymentsReporting" to "it.gov.pagopa.pu.classification.dto.generated.PaymentsReporting",
-    "Transfer" to "it.gov.pagopa.pu.debtpositions.dto.generated.TransferResponse",
+    "Transfer" to "it.gov.pagopa.pu.debtpositions.dto.generated.Transfer",
     "UserInfo" to "it.gov.pagopa.pu.auth.dto.generated.UserInfo",
-    "DebtPositionTypeResponseBody" to "it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionType"
+    "DebtPositionTypeResponseBody" to "it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionType",
+    "PagedTreasuredClassification" to "it.gov.pagopa.pu.classification.dto.generated.PagedTreasuredClassification",
+    "ClassificationsEnum" to "it.gov.pagopa.pu.classification.dto.generated.ClassificationsEnum",
+    "DebtPositionOrigin" to "it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionOrigin",
+    "LocalDateInterval" to "it.gov.pagopa.pu.bff.dto.LocalDateIntervalFilter",
+    "Taxonomy" to "it.gov.pagopa.pu.organization.dto.generated.Taxonomy"
   ))
   configOptions.set(mapOf(
     "dateLibrary" to "java8",
@@ -340,6 +348,38 @@ tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>("ope
     "generateConstructorWithAllArgs" to "true",
     "generatedConstructorWithRequiredArgs" to "true",
     "additionalModelTypeAnnotations" to "@lombok.experimental.SuperBuilder(toBuilder = true)"
+  ))
+  library.set("resttemplate")
+}
+
+tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>("openApiGeneratePAGOPAPAYMENTS") {
+  group = "openapi"
+  description = "description"
+
+  generatorName.set("java")
+  remoteInputSpec.set("https://raw.githubusercontent.com/pagopa/p4pa-pagopa-payments/refs/heads/$targetEnv/openapi/p4pa-pagopa-payments.openapi.yaml")
+  outputDir.set("$projectDir/build/generated")
+  apiPackage.set("it.gov.pagopa.pu.pagopapayments.controller.generated")
+  modelPackage.set("it.gov.pagopa.pu.pagopapayments.dto.generated")
+  configOptions.set(mapOf(
+    "swaggerAnnotations" to "false",
+    "openApiNullable" to "false",
+    "dateLibrary" to "java8",
+    "useSpringBoot3" to "true",
+    "useJakartaEe" to "true",
+    "useBeanValidation" to "true",
+    "serializationLibrary" to "jackson",
+    "generateSupportingFiles" to "true",
+    "generateConstructorWithAllArgs" to "true",
+    "generatedConstructorWithRequiredArgs" to "true",
+    "additionalModelTypeAnnotations" to "@lombok.experimental.SuperBuilder(toBuilder = true)"
+  ))
+  typeMappings.set(mapOf(
+    "string+binary" to "Resource",
+    "DebtPositionDTO" to "it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionDTO"
+  ))
+  importMappings.set(mapOf(
+    "Resource" to "org.springframework.core.io.Resource"
   ))
   library.set("resttemplate")
 }

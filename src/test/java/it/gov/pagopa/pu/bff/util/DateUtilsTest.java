@@ -1,17 +1,23 @@
 package it.gov.pagopa.pu.bff.util;
 
-import it.gov.pagopa.pu.bff.dto.LocalDateIntervalFilter;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import it.gov.pagopa.pu.bff.dto.LocalDateIntervalFilter;
+import it.gov.pagopa.pu.bff.dto.OffsetDateTimeIntervalFilter;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.TimeZone;
-
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 class DateUtilsTest {
   @BeforeEach
@@ -83,4 +89,54 @@ class DateUtilsTest {
 
     assertTrue(actualMessage.contains(expectedMessage));
   }
+
+  @Test
+  void testToOffsetDateTimeEndOfTheDay() {
+    OffsetDateTime expected = LocalDateTime.of(LocalDate.now(),
+        LocalTime.MAX.truncatedTo(java.time.temporal.ChronoUnit.MILLIS))
+      .atZone(Constants.ZONEID).toOffsetDateTime();
+
+    OffsetDateTime result = DateUtils.toOffsetDateTimeEndOfTheDay(
+      LocalDate.now());
+
+    assertTrue(expected.isEqual(result));
+  }
+
+  @Test
+  void testToOffsetDateTimeStartOfTheDay() {
+    OffsetDateTime expected = LocalDate.now().atStartOfDay(Constants.ZONEID).toOffsetDateTime();
+
+    OffsetDateTime result = DateUtils.toOffsetDateTimeStartOfTheDay(
+      LocalDate.now());
+
+    assertTrue(expected.isEqual(result));
+  }
+
+  @Test
+  void givenNullLocalDateWhenToOffsetDateTimeEndOfTheDayThenReturnNull() {
+    assertNull(DateUtils.toOffsetDateTimeEndOfTheDay(null));
+  }
+
+  @Test
+  void givenNullLocalDateWhenToOffsetDateTimeStartOfTheDayThenReturnNull() {
+    assertNull(DateUtils.toOffsetDateTimeStartOfTheDay(null));
+  }
+
+  @Test
+  void testToRangeClosedOffsetDateTimeIntervalFilter() {
+    OffsetDateTime from = LocalDate.now().atStartOfDay(Constants.ZONEID).toOffsetDateTime();
+    OffsetDateTime to = LocalDateTime.of(LocalDate.now(),
+        LocalTime.MAX.truncatedTo(java.time.temporal.ChronoUnit.MILLIS))
+      .atZone(Constants.ZONEID).toOffsetDateTime();
+
+    OffsetDateTimeIntervalFilter expected = new OffsetDateTimeIntervalFilter(from, to);
+
+    it.gov.pagopa.pu.processexecutions.dto.generated.OffsetDateTimeIntervalFilter result = DateUtils.toRangeClosedOffsetDateTimeIntervalFilter(
+      new LocalDateIntervalFilter(LocalDate.now(), LocalDate.now()));
+
+    assertNotNull(result);
+    assertEquals(expected.getFrom(), result.getFrom());
+    assertEquals(expected.getTo(), result.getTo());
+  }
+
 }

@@ -1,5 +1,6 @@
 package it.gov.pagopa.pu.bff.service.taxonomy;
 
+import it.gov.pagopa.pu.bff.dto.generated.PagedTaxonomy;
 import it.gov.pagopa.pu.bff.dto.generated.TaxonomyCodeDTO;
 import it.gov.pagopa.pu.bff.dto.generated.TaxonomyCollectionReasonDTO;
 import it.gov.pagopa.pu.bff.dto.generated.TaxonomyMacroAreaCodeDTO;
@@ -7,8 +8,10 @@ import it.gov.pagopa.pu.bff.dto.generated.TaxonomyOrganizationTypeDTO;
 import it.gov.pagopa.pu.bff.dto.generated.TaxonomyServiceTypeCodeDTO;
 import it.gov.pagopa.pu.organization.dto.generated.Taxonomy;
 import java.util.List;
+import org.springframework.data.domain.Pageable;
 
 public interface TaxonomyRetrieverService {
+  Taxonomy getTaxonomyDetail(Long taxonomyId, String accessToken);
 
   Taxonomy getTaxonomyByTaxonomyCode(String taxonomyCode, String accessToken);
 
@@ -22,4 +25,6 @@ public interface TaxonomyRetrieverService {
 
   List<TaxonomyCodeDTO> getTaxonomyCode(String organizationType,
     String macroAreaCode, String serviceTypeCode, String collectionReason,String accessToken);
+
+  PagedTaxonomy getTaxonomies(String organizationType, String macroAreaCode, String serviceTypeCode, String collectionReason, Pageable pageable, String accessToken);
 }

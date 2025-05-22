@@ -3,6 +3,7 @@ package it.gov.pagopa.pu.bff.service.debt_position;
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.connector.debt_position.DebtPositionTypeOrgService;
 import it.gov.pagopa.pu.bff.connector.debt_position.DebtPositionTypeService;
+import it.gov.pagopa.pu.bff.connector.organization.OrganizationService;
 import it.gov.pagopa.pu.bff.dto.generated.DebtPositionTypeDetailDTO;
 import it.gov.pagopa.pu.bff.dto.generated.DebtPositionTypePatchRequestBody;
 import it.gov.pagopa.pu.bff.dto.generated.PagedDebtPositionTypeWithCount;
@@ -11,9 +12,11 @@ import it.gov.pagopa.pu.bff.mapper.DebtPositionTypeMapper;
 import it.gov.pagopa.pu.bff.mapper.DebtPositionTypeWithCountMapper;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
 import it.gov.pagopa.pu.bff.service.taxonomy.TaxonomyRetrieverService;
+import it.gov.pagopa.pu.debtpositions.dto.generated.CollectionModelDebtPositionType;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionType;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeRequestBody;
 import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelDebtPositionTypeOrg;
+import it.gov.pagopa.pu.organization.dto.generated.Organization;
 import it.gov.pagopa.pu.organization.dto.generated.Taxonomy;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.PageRequest;
@@ -21,9 +24,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import java.util.Collections;
+import java.util.List;
+
 @Service
-public class DebtPositionTypeRetrieverServiceImpl implements
-  DebtPositionTypeRetrieverService {
+public class DebtPositionTypeRetrieverServiceImpl implements DebtPositionTypeRetrieverService {
 
   private final AuthorizationService authorizationService;
   private final DebtPositionTypeService debtPositionTypeService;
@@ -31,6 +36,8 @@ public class DebtPositionTypeRetrieverServiceImpl implements
   private final DebtPositionTypeWithCountMapper debtPositionTypeWithCountMapper;
   private final TaxonomyRetrieverService taxonomyRetrieverService;
   private final DebtPositionTypeMapper debtPositionTypeMapper;
+  private final OrganizationService organizationService;
+  public static final String DEBT_POSITION_TYPE_CODE_UNKNOWN = "UNKNOWN";
 
   public DebtPositionTypeRetrieverServiceImpl(
     DebtPositionTypeService debtPositionTypeService,
@@ -38,13 +45,16 @@ public class DebtPositionTypeRetrieverServiceImpl implements
     TaxonomyRetrieverService taxonomyRetrieverService,
     AuthorizationService authorizationService,
     DebtPositionTypeMapper debtPositionTypeMapper,
-    DebtPositionTypeOrgService debtPositionTypeOrgService) {
+    DebtPositionTypeOrgService debtPositionTypeOrgService,
+    OrganizationService organizationService
+  ) {
     this.authorizationService = authorizationService;
     this.debtPositionTypeService = debtPositionTypeService;
     this.debtPositionTypeWithCountMapper = debtPositionTypeWithCountMapper;
     this.taxonomyRetrieverService = taxonomyRetrieverService;
     this.debtPositionTypeMapper = debtPositionTypeMapper;
     this.debtPositionTypeOrgService = debtPositionTypeOrgService;
+    this.organizationService = organizationService;
   }
 
   public DebtPositionType getDebtPositionTypeById(String accessToken, Long id) {
@@ -122,6 +132,25 @@ public class DebtPositionTypeRetrieverServiceImpl implements
       throw new ConflictException("Cannot delete DebtPositionType: it is associated with one or more DebtPositionTypeOrgs");
     }
     debtPositionTypeService.deleteDebtPositionType(debtPositionTypeId, accessToken);
+  }
+
+  @Override
+  public List<DebtPositionType> getDebtPositionTypesByOrganizationId(Long organizationId, UserInfo loggedUser, String accessToken) {
+    AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser);
+
+    Organization organization = organizationService.getOrganizationByOrganizationId(organizationId, accessToken);
+    Long brokerId = organization.getBrokerId();
+    String orgType = organization.getOrgTypeCode();
+
+    CollectionModelDebtPositionType collectionModel = debtPositionTypeService.getDebtPositionTypesByBrokerIdAndOrgType(brokerId, orgType, accessToken);
+
+    if (collectionModel != null && collectionModel.getEmbedded() != null && !CollectionUtils.isEmpty(collectionModel.getEmbedded().getDebtPositionTypes())) {
+      return collectionModel.getEmbedded().getDebtPositionTypes()
+        .stream()
+        .filter(debtPositionType -> !DEBT_POSITION_TYPE_CODE_UNKNOWN.equals(debtPositionType.getCode()))
+        .toList();
+    }
+    return Collections.emptyList();
   }
 
 }

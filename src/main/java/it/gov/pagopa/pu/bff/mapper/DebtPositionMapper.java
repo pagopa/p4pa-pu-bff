@@ -4,7 +4,11 @@ import it.gov.pagopa.pu.bff.dto.generated.DebtPositionDetailDTO;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionDTO;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrg;
 import it.gov.pagopa.pu.debtpositions.dto.generated.EntityTypeEnum;
+import it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentDTO;
+import it.gov.pagopa.pu.debtpositions.dto.generated.PaymentOptionDTO;
 import it.gov.pagopa.pu.debtpositions.dto.generated.PersonDTO;
+import java.util.Comparator;
+import java.util.List;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
@@ -16,11 +20,13 @@ public class DebtPositionMapper {
       DebtPositionDetailDTO debtPositionDetailDTO = DebtPositionDetailDTO.builder()
       		.debtPositionTypeOrgDescription(debtPositionTypeOrg!=null?debtPositionTypeOrg.getDescription():null)
       		.debtPositionTypeOrgCode(debtPositionTypeOrg!=null?debtPositionTypeOrg.getCode():null)
+          .debtPositionOrigin(debtPosition.getDebtPositionOrigin())
       		.iupd(debtPosition.getIupdOrg())
       		.status(debtPosition.getStatus())
-      		.paymentOptions(debtPosition.getPaymentOptions())
           .description(debtPosition.getDescription())
       		.build();
+      List<PaymentOptionDTO> paymentOptions = sortInstallments(debtPosition.getPaymentOptions());
+      debtPositionDetailDTO.setPaymentOptions(paymentOptions);
       debtPositionDetailDTO.setDebtor(buildDebtor(debtPosition));
       return debtPositionDetailDTO;
   }
@@ -38,5 +44,15 @@ public class DebtPositionMapper {
       debtor = debtPosition.getPaymentOptions().getFirst().getInstallments().getFirst().getDebtor();
     }
     return debtor;
+  }
+
+  private List<PaymentOptionDTO> sortInstallments(List<PaymentOptionDTO> paymentOptions) {
+    paymentOptions
+      .forEach(po -> po.setInstallments(po.getInstallments()
+        .stream()
+        .sorted(Comparator.comparing(InstallmentDTO::getDueDate, Comparator.nullsLast(Comparator.naturalOrder())))
+        .toList()));
+
+    return paymentOptions;
   }
 }

@@ -1,6 +1,7 @@
 package it.gov.pagopa.pu.bff.connector.debt_position;
 
 import it.gov.pagopa.pu.bff.connector.debt_position.client.DebtPositionTypeClient;
+import it.gov.pagopa.pu.debtpositions.dto.generated.CollectionModelDebtPositionType;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionType;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeRequestBody;
 import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelDebtPositionTypeWithCount;
@@ -44,5 +45,10 @@ public class DebtPositionTypeServiceImpl implements DebtPositionTypeService {
   @Override
   public void deleteDebtPositionType(Long debtPositionTypeId, String accessToken) {
     client.deleteDebtPositionType(debtPositionTypeId, accessToken);
+  }
+
+  @Override
+  public CollectionModelDebtPositionType getDebtPositionTypesByBrokerIdAndOrgType(Long brokerId, String orgType, String accessToken) {
+    return client.getDebtPositionTypesByBrokerIdAndOrgType(brokerId, orgType, accessToken);
   }
 }

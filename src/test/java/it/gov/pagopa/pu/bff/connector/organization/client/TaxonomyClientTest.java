@@ -3,6 +3,7 @@ package it.gov.pagopa.pu.bff.connector.organization.client;
 import it.gov.pagopa.pu.bff.connector.organization.config.OrganizationApisHolder;
 import it.gov.pagopa.pu.organization.controller.generated.*;
 import it.gov.pagopa.pu.organization.dto.generated.*;
+import java.util.Collections;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,6 +12,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.client.HttpClientErrorException;
 
 @ExtendWith(MockitoExtension.class)
 class TaxonomyClientTest {
@@ -30,6 +35,8 @@ class TaxonomyClientTest {
   private TaxonomyServiceTypeCodeDtoSearchControllerApi taxonomyServiceTypeCodeDtoSearchControllerApiMock;
   @Mock
   private TaxonomyCodeDtoSearchControllerApi taxonomyCodeDtoSearchControllerApiMock;
+  @Mock
+  private TaxonomyEntityControllerApi taxonomyEntityControllerApiMock;
 
   private TaxonomyClient taxonomyClient;
 
@@ -47,8 +54,42 @@ class TaxonomyClientTest {
       taxonomyMacroAreaCodeDtoSearchControllerApiMock,
       taxonomyOrganizationTypeDtoSearchControllerApiMock,
       taxonomyServiceTypeCodeDtoSearchControllerApiMock,
-      taxonomyCodeDtoSearchControllerApiMock
+      taxonomyCodeDtoSearchControllerApiMock,
+      taxonomyEntityControllerApiMock
     );
+  }
+
+  @Test
+  void whenGetTaxonomyDetailThenInvokeWithAccessToken() {
+    String accessToken = "ACCESSTOKEN";
+    Long taxonomyId = 123L;
+    Taxonomy expectedResult = new Taxonomy();
+
+    Mockito.when(organizationApisHolder.getTaxonomy(accessToken))
+      .thenReturn(taxonomyEntityControllerApiMock);
+    Mockito.when(taxonomyEntityControllerApiMock.crudGetTaxonomy(String.valueOf(taxonomyId)))
+      .thenReturn(expectedResult);
+
+    Taxonomy result = taxonomyClient.getTaxonomyDetail(taxonomyId, accessToken);
+
+    Assertions.assertSame(expectedResult, result);
+  }
+
+  @Test
+  void whenTaxonomyNotFoundThenReturnNull() {
+    String accessToken = "ACCESSTOKEN";
+    Long taxonomyId = 123L;
+
+    Mockito.when(organizationApisHolder.getTaxonomy(accessToken))
+      .thenReturn(taxonomyEntityControllerApiMock);
+    Mockito.when(taxonomyEntityControllerApiMock.crudGetTaxonomy(String.valueOf(taxonomyId)))
+      .thenThrow(HttpClientErrorException.create(
+        HttpStatus.NOT_FOUND, "Not Found", null, null, null));
+
+    Taxonomy result = taxonomyClient.getTaxonomyDetail(taxonomyId, accessToken);
+
+    Assertions.assertNull(result);
+    Mockito.verifyNoMoreInteractions(taxonomyEntityControllerApiMock, organizationApisHolder);
   }
 
   @Test
@@ -154,6 +195,27 @@ class TaxonomyClientTest {
 
     // When
     CollectionModelTaxonomyCodeDTO result = taxonomyClient.getTaxonomyCode(null, null, null, null, accessToken);
+
+    // Then
+    Assertions.assertSame(expectedResult, result);
+  }
+
+  @Test
+  void whenGetTaxonomiesThenInvokeWithAccessToken() {
+    // Given
+    String accessToken = "ACCESSTOKEN";
+    PagedModelTaxonomy expectedResult = new PagedModelTaxonomy();
+
+    Mockito.when(
+        organizationApisHolder.getTaxonomySearchControllerApi(accessToken))
+      .thenReturn(taxonomySearchControllerApiMock);
+    Mockito.when(taxonomySearchControllerApiMock.crudTaxonomiesFindTaxonomies("organizationType", "macroAreaCode", "serviceTypeCode",
+        "collectionReason", 0, 10, Collections.emptyList()))
+      .thenReturn(expectedResult);
+
+    // When
+    PagedModelTaxonomy result = taxonomyClient.getTaxonomies("organizationType", "macroAreaCode", "serviceTypeCode",
+      "collectionReason", PageRequest.of(0,10, Sort.unsorted()), accessToken);
 
     // Then
     Assertions.assertSame(expectedResult, result);

@@ -3,23 +3,7 @@ package it.gov.pagopa.pu.bff.connector.debt_position.config;
 import it.gov.pagopa.pu.bff.config.rest.RestTemplateConfig;
 import it.gov.pagopa.pu.debtpositions.controller.ApiClient;
 import it.gov.pagopa.pu.debtpositions.controller.BaseApi;
-import it.gov.pagopa.pu.debtpositions.controller.generated.DebtPositionApi;
-import it.gov.pagopa.pu.debtpositions.controller.generated.DebtPositionSearchControllerApi;
-import it.gov.pagopa.pu.debtpositions.controller.generated.DebtPositionTypeEntityControllerApi;
-import it.gov.pagopa.pu.debtpositions.controller.generated.DebtPositionTypeOrgApi;
-import it.gov.pagopa.pu.debtpositions.controller.generated.DebtPositionTypeOrgCountByOrganizationIdSearchControllerApi;
-import it.gov.pagopa.pu.debtpositions.controller.generated.DebtPositionTypeOrgEntityControllerApi;
-import it.gov.pagopa.pu.debtpositions.controller.generated.DebtPositionTypeOrgOperatorsSearchControllerApi;
-import it.gov.pagopa.pu.debtpositions.controller.generated.DebtPositionTypeOrgSearchControllerApi;
-import it.gov.pagopa.pu.debtpositions.controller.generated.DebtPositionTypeOrgWithCountSearchControllerApi;
-import it.gov.pagopa.pu.debtpositions.controller.generated.DebtPositionTypeWithCountSearchControllerApi;
-import it.gov.pagopa.pu.debtpositions.controller.generated.DebtPositionViewSearchControllerApi;
-import it.gov.pagopa.pu.debtpositions.controller.generated.InstallmentApi;
-import it.gov.pagopa.pu.debtpositions.controller.generated.InstallmentNoPiiSearchControllerApi;
-import it.gov.pagopa.pu.debtpositions.controller.generated.InstallmentViewSearchControllerApi;
-import it.gov.pagopa.pu.debtpositions.controller.generated.ReceiptApi;
-import it.gov.pagopa.pu.debtpositions.controller.generated.ReceiptViewSearchControllerApi;
-import it.gov.pagopa.pu.debtpositions.controller.generated.TransferSearchControllerApi;
+import it.gov.pagopa.pu.debtpositions.controller.generated.*;
 import jakarta.annotation.PreDestroy;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.stereotype.Service;
@@ -45,6 +29,7 @@ public class DebtPositionApisHolder {
   private final DebtPositionSearchControllerApi debtPositionSearchControllerApi;
   private final DebtPositionTypeOrgApi debtPositionTypeOrgApi;
   private final DebtPositionTypeOrgOperatorsSearchControllerApi debtPositionTypeOrgOperatorsSearchControllerApi;
+  private final DebtPositionTypeSearchControllerApi debtPositionTypeSearchControllerApi;
   private final ThreadLocal<String> bearerTokenHolder = new ThreadLocal<>();
 
   public DebtPositionApisHolder(
@@ -78,6 +63,7 @@ public class DebtPositionApisHolder {
     this.debtPositionSearchControllerApi = new DebtPositionSearchControllerApi(apiClient);
     this.debtPositionTypeOrgApi = new DebtPositionTypeOrgApi(apiClient);
     this.debtPositionTypeOrgOperatorsSearchControllerApi = new DebtPositionTypeOrgOperatorsSearchControllerApi(apiClient);
+    this.debtPositionTypeSearchControllerApi = new DebtPositionTypeSearchControllerApi(apiClient);
   }
 
   @PreDestroy
@@ -181,6 +167,13 @@ public class DebtPositionApisHolder {
    */
   public DebtPositionTypeOrgOperatorsSearchControllerApi getDebtPositionTypeOrgOperatorsSearchControllerApi(String accessToken) {
     return getApi(accessToken, debtPositionTypeOrgOperatorsSearchControllerApi);
+  }
+
+  /**
+   * It will return a {@link DebtPositionTypeSearchControllerApi} instrumented with the provided accessToken. Use null if auth is not required
+   */
+  public DebtPositionTypeSearchControllerApi getDebtPositionTypeSearchControllerApi(String accessToken) {
+    return getApi(accessToken, debtPositionTypeSearchControllerApi);
   }
 
   private <T extends BaseApi> T getApi(String accessToken, T api) {

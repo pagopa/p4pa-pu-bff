@@ -145,7 +145,10 @@ public class DebtPositionTypeRetrieverServiceImpl implements
     CollectionModelDebtPositionType collectionModel = debtPositionTypeService.getDebtPositionTypesByBrokerIdAndOrgType(brokerId, orgType, accessToken);
 
     if (collectionModel != null && collectionModel.getEmbedded() != null && !CollectionUtils.isEmpty(collectionModel.getEmbedded().getDebtPositionTypes())) {
-      return collectionModel.getEmbedded().getDebtPositionTypes();
+      return collectionModel.getEmbedded().getDebtPositionTypes()
+        .stream()
+        .filter(debtPositionType -> !"UNKNOWN".equals(debtPositionType.getCode()))
+        .toList();
     }
     return Collections.emptyList();
   }

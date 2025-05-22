@@ -399,7 +399,7 @@ class DebtPositionTypeRetrieverServiceImplTest {
   }
 
   @Test
-  void whenGetDebtPositionTypesByOrganizationIdThenReturnDebtPositionTypeList() {
+  void whenGetDebtPositionTypesByOrganizationIdThenReturnFilteredDebtPositionTypeList() {
     Long organizationId = 1L;
     UserInfo loggedUser = podamFactory.manufacturePojo(UserInfo.class);
 
@@ -407,13 +407,7 @@ class DebtPositionTypeRetrieverServiceImplTest {
     organization.setBrokerId(456L);
     organization.setOrgTypeCode("OrgType001");
 
-    List<DebtPositionType> expectedList = List.of(debtPositionType);
-
-    PagedModelDebtPositionTypeEmbedded embedded = new PagedModelDebtPositionTypeEmbedded();
-    embedded.setDebtPositionTypes(expectedList);
-
-    CollectionModelDebtPositionType collectionModel = new CollectionModelDebtPositionType();
-    collectionModel.setEmbedded(embedded);
+    CollectionModelDebtPositionType collectionModel = getCollectionModelDebtPositionType();
 
     try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
       authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)).thenAnswer(invocation -> null);
@@ -425,12 +419,31 @@ class DebtPositionTypeRetrieverServiceImplTest {
 
       assertNotNull(result);
       assertEquals(1, result.size());
-      assertEquals(debtPositionType.getDebtPositionTypeId(), result.get(0).getDebtPositionTypeId());
+      assertEquals("VALID", result.get(0).getCode());
 
       authorizationServiceMockedStatic.verify(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser));
       Mockito.verify(organizationServiceMock).getOrganizationByOrganizationId(organizationId, accessToken);
       Mockito.verify(debtPositionTypeServiceMock).getDebtPositionTypesByBrokerIdAndOrgType(456L, "OrgType001", accessToken);
     }
+  }
+
+  private static CollectionModelDebtPositionType getCollectionModelDebtPositionType() {
+    DebtPositionType validType = new DebtPositionType();
+    validType.setDebtPositionTypeId(1L);
+    validType.setCode("VALID");
+
+    DebtPositionType unknownType = new DebtPositionType();
+    unknownType.setDebtPositionTypeId(2L);
+    unknownType.setCode("UNKNOWN");
+
+    List<DebtPositionType> inputList = List.of(validType, unknownType);
+
+    PagedModelDebtPositionTypeEmbedded embedded = new PagedModelDebtPositionTypeEmbedded();
+    embedded.setDebtPositionTypes(inputList);
+
+    CollectionModelDebtPositionType collectionModel = new CollectionModelDebtPositionType();
+    collectionModel.setEmbedded(embedded);
+    return collectionModel;
   }
 
   @Test

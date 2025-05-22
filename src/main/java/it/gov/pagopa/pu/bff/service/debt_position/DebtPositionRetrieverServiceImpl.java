@@ -3,6 +3,7 @@ package it.gov.pagopa.pu.bff.service.debt_position;
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.connector.debt_position.DebtPositionService;
 import it.gov.pagopa.pu.bff.connector.debt_position.DebtPositionTypeOrgService;
+import it.gov.pagopa.pu.bff.connector.pagopapayments.PrintPaymentNoticeService;
 import it.gov.pagopa.pu.bff.dto.DebtPositionViewFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.FileResourceDTO;
 import it.gov.pagopa.pu.bff.dto.generated.DebtPositionDetailDTO;
@@ -31,7 +32,7 @@ public class DebtPositionRetrieverServiceImpl implements DebtPositionRetrieverSe
   private final DebtPositionTypeOrgService debtPositionTypeOrgService;
   private final DebtPositionViewMapper debtPositionViewMapper;
   private final DebtPositionMapper debtPositionMapper;
-  private final DebtPositionNoticeRetrieverService debtPositionNoticeRetrieverService;
+  private final PrintPaymentNoticeService printPaymentNoticeService;
   private final ZipFileService zipFileService;
 
   private static final List<String> debtPositionOriginFilterList = List.of(
@@ -44,13 +45,13 @@ public class DebtPositionRetrieverServiceImpl implements DebtPositionRetrieverSe
                                           DebtPositionTypeOrgService debtPositionTypeOrgService,
                                           DebtPositionViewMapper debtPositionViewMapper,
                                           DebtPositionMapper debtPositionMapper,
-                                          DebtPositionNoticeRetrieverService debtPositionNoticeRetrieverService,
+                                          PrintPaymentNoticeService printPaymentNoticeService,
                                           ZipFileService zipFileService) {
     this.debtPositionService = debtPositionService;
     this.debtPositionTypeOrgService = debtPositionTypeOrgService;
     this.debtPositionViewMapper = debtPositionViewMapper;
     this.debtPositionMapper = debtPositionMapper;
-    this.debtPositionNoticeRetrieverService = debtPositionNoticeRetrieverService;
+    this.printPaymentNoticeService = printPaymentNoticeService;
     this.zipFileService = zipFileService;
   }
 
@@ -114,7 +115,7 @@ public class DebtPositionRetrieverServiceImpl implements DebtPositionRetrieverSe
 
   @Override
   public Resource getDebtPositionNoticesZip(Long organizationId, Long debtPositionId, UserInfo loggedUser, String accessToken) {
-    AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser);
+    // TODO authorization depends on task https://pagopa.atlassian.net/browse/P4ADEV-2972
 
     DebtPositionDTO debtPosition = debtPositionService.getDebtPosition(debtPositionId, accessToken);
     if (debtPosition == null){
@@ -133,7 +134,7 @@ public class DebtPositionRetrieverServiceImpl implements DebtPositionRetrieverSe
                 InstallmentStatus.UNPAYABLE.equals(i.getStatus())))
       )
       .map(i ->
-        debtPositionNoticeRetrieverService.getNotice(organizationId, i.getIuv(), debtPositionId, loggedUser, accessToken))
+        printPaymentNoticeService.generateNotice(i.getIuv(), debtPosition, accessToken))
       .toList();
 
     if (pdfResources.isEmpty()){

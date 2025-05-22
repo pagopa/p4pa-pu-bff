@@ -6330,7 +6330,7 @@
       },
       "IngestionFlowFileStatus" : {
         "type" : "string",
-        "enum" : [ "UPLOADED", "PROCESSING", "COMPLETED", "ERROR" ]
+        "enum" : [ "UPLOADED", "PROCESSING", "COMPLETED", "ERROR", "WAITING_FILE" ]
       },
       "PagedIngestionFlowFile" : {
         "type" : "object",

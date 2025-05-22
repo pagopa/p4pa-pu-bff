@@ -3,6 +3,7 @@ package it.gov.pagopa.pu.bff.service;
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.connector.debt_position.DebtPositionService;
 import it.gov.pagopa.pu.bff.connector.debt_position.DebtPositionTypeOrgService;
+import it.gov.pagopa.pu.bff.connector.pagopapayments.PrintPaymentNoticeService;
 import it.gov.pagopa.pu.bff.dto.DebtPositionViewFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.FileResourceDTO;
 import it.gov.pagopa.pu.bff.dto.generated.DebtPositionDetailDTO;
@@ -10,7 +11,6 @@ import it.gov.pagopa.pu.bff.dto.generated.PagedDebtPositionView;
 import it.gov.pagopa.pu.bff.exception.InvalidDebtPositionException;
 import it.gov.pagopa.pu.bff.mapper.DebtPositionMapper;
 import it.gov.pagopa.pu.bff.mapper.DebtPositionViewMapper;
-import it.gov.pagopa.pu.bff.service.debt_position.DebtPositionNoticeRetrieverService;
 import it.gov.pagopa.pu.bff.service.debt_position.DebtPositionRetrieverService;
 import it.gov.pagopa.pu.bff.service.debt_position.DebtPositionRetrieverServiceImpl;
 import it.gov.pagopa.pu.bff.util.TestUtils;
@@ -44,7 +44,7 @@ class DebtPositionRetrieverServiceImplTest {
   @Mock
   private DebtPositionViewMapper debtPositionViewMapperMock;
   @Mock
-  private DebtPositionNoticeRetrieverService debtPositionNoticeRetrieverServiceMock;
+  private PrintPaymentNoticeService printPaymentNoticeServiceMock;
   @Mock
   private ZipFileService zipFileServiceMock;
   @Mock
@@ -58,7 +58,7 @@ class DebtPositionRetrieverServiceImplTest {
 
   @BeforeEach
   void setUp() {
-    debtPositionRetrieverService = new DebtPositionRetrieverServiceImpl(debtPositionServiceMock, debtPositionTypeOrgServiceMock, debtPositionViewMapperMock, debtPositionMapperMock, debtPositionNoticeRetrieverServiceMock, zipFileServiceMock);
+    debtPositionRetrieverService = new DebtPositionRetrieverServiceImpl(debtPositionServiceMock, debtPositionTypeOrgServiceMock, debtPositionViewMapperMock, debtPositionMapperMock, printPaymentNoticeServiceMock, zipFileServiceMock);
   }
 
   @AfterEach
@@ -67,7 +67,8 @@ class DebtPositionRetrieverServiceImplTest {
       debtPositionServiceMock,
       debtPositionTypeOrgServiceMock,
       debtPositionViewMapperMock,
-      debtPositionMapperMock
+      debtPositionMapperMock,
+      printPaymentNoticeServiceMock
     );
   }
 
@@ -418,20 +419,15 @@ class DebtPositionRetrieverServiceImplTest {
 
     FileResourceDTO fileResourceDTO = new FileResourceDTO(expectedResult, "filename");
 
-    try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
-      authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)).thenAnswer(a -> null);
+    Mockito.when(debtPositionServiceMock.getDebtPosition(debtPositionId, accessToken)).thenReturn(debtPositionDTO);
+    Mockito.when(printPaymentNoticeServiceMock.generateNotice(iuv, debtPositionDTO, accessToken)).thenReturn(fileResourceDTO);
 
-      Mockito.when(debtPositionServiceMock.getDebtPosition(debtPositionId, accessToken)).thenReturn(debtPositionDTO);
-      Mockito.when(debtPositionNoticeRetrieverServiceMock.getNotice(organizationId, iuv, debtPositionId, loggedUser, accessToken)).thenReturn(fileResourceDTO);
+    Mockito.when(zipFileServiceMock.zipper(List.of(fileResourceDTO, fileResourceDTO))).thenReturn(expectedResult);
+    Resource result = debtPositionRetrieverService.getDebtPositionNoticesZip(organizationId, debtPositionId, loggedUser, accessToken);
 
-      Mockito.when(zipFileServiceMock.zipper(List.of(fileResourceDTO, fileResourceDTO))).thenReturn(expectedResult);
-      Resource result = debtPositionRetrieverService.getDebtPositionNoticesZip(organizationId, debtPositionId, loggedUser, accessToken);
-
-      assertNotNull(result);
-      assertEquals(expectedResult, result);
-      Mockito.verify(debtPositionNoticeRetrieverServiceMock, Mockito.times(2)).getNotice(organizationId, iuv, debtPositionId, loggedUser, accessToken);
-      authorizationServiceMockedStatic.verify(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser));
-    }
+    assertNotNull(result);
+    assertEquals(expectedResult, result);
+    Mockito.verify(printPaymentNoticeServiceMock, Mockito.times(2)).generateNotice(iuv, debtPositionDTO, accessToken);
 
   }
 
@@ -444,16 +440,11 @@ class DebtPositionRetrieverServiceImplTest {
 
     DebtPositionDTO debtPositionDTO = new DebtPositionDTO();
 
-    try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
-      authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)).thenAnswer(a -> null);
+    Mockito.when(debtPositionServiceMock.getDebtPosition(debtPositionId, accessToken)).thenReturn(debtPositionDTO);
 
-      Mockito.when(debtPositionServiceMock.getDebtPosition(debtPositionId, accessToken)).thenReturn(debtPositionDTO);
+    Resource result = debtPositionRetrieverService.getDebtPositionNoticesZip(organizationId, debtPositionId, loggedUser, accessToken);
 
-      Resource result = debtPositionRetrieverService.getDebtPositionNoticesZip(organizationId, debtPositionId, loggedUser, accessToken);
-
-      assertNull(result);
-      authorizationServiceMockedStatic.verify(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser));
-    }
+    assertNull(result);
 
   }
 
@@ -464,17 +455,11 @@ class DebtPositionRetrieverServiceImplTest {
     Long organizationId = 1L;
     Long debtPositionId = 2L;
 
-    try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
-      authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)).thenAnswer(a -> null);
+    Mockito.when(debtPositionServiceMock.getDebtPosition(debtPositionId, accessToken)).thenReturn(null);
 
-      Mockito.when(debtPositionServiceMock.getDebtPosition(debtPositionId, accessToken)).thenReturn(null);
+    Resource result = debtPositionRetrieverService.getDebtPositionNoticesZip(organizationId, debtPositionId, loggedUser, accessToken);
 
-      Resource result = debtPositionRetrieverService.getDebtPositionNoticesZip(organizationId, debtPositionId, loggedUser, accessToken);
-
-      assertNull(result);
-      authorizationServiceMockedStatic.verify(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser));
-    }
-
+    assertNull(result);
   }
 
 }

@@ -28,8 +28,7 @@ import java.util.Collections;
 import java.util.List;
 
 @Service
-public class DebtPositionTypeRetrieverServiceImpl implements
-  DebtPositionTypeRetrieverService {
+public class DebtPositionTypeRetrieverServiceImpl implements DebtPositionTypeRetrieverService {
 
   private final AuthorizationService authorizationService;
   private final DebtPositionTypeService debtPositionTypeService;
@@ -38,6 +37,7 @@ public class DebtPositionTypeRetrieverServiceImpl implements
   private final TaxonomyRetrieverService taxonomyRetrieverService;
   private final DebtPositionTypeMapper debtPositionTypeMapper;
   private final OrganizationService organizationService;
+  public static final String CODE_UNKNOWN = "UNKNOWN";
 
   public DebtPositionTypeRetrieverServiceImpl(
     DebtPositionTypeService debtPositionTypeService,
@@ -147,7 +147,7 @@ public class DebtPositionTypeRetrieverServiceImpl implements
     if (collectionModel != null && collectionModel.getEmbedded() != null && !CollectionUtils.isEmpty(collectionModel.getEmbedded().getDebtPositionTypes())) {
       return collectionModel.getEmbedded().getDebtPositionTypes()
         .stream()
-        .filter(debtPositionType -> !"UNKNOWN".equals(debtPositionType.getCode()))
+        .filter(debtPositionType -> !DebtPositionTypeRetrieverServiceImpl.CODE_UNKNOWN.equals(debtPositionType.getCode()))
         .toList();
     }
     return Collections.emptyList();

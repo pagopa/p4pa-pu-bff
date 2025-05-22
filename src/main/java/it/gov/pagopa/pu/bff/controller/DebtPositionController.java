@@ -10,15 +10,13 @@ import it.gov.pagopa.pu.bff.service.debt_position.DebtPositionNoticeRetrieverSer
 import it.gov.pagopa.pu.bff.service.debt_position.DebtPositionRetrieverService;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionDTO;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionStatus;
-import java.time.OffsetDateTime;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.ContentDisposition;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.time.OffsetDateTime;
 
 
 @Slf4j
@@ -99,4 +97,30 @@ public class DebtPositionController implements DebtPositionsApi {
       .headers(headers)
       .body(fileResourceDTO.getResource());
   }
+
+  @Override
+  public ResponseEntity<Resource> getUnpaidPaymentNoticeZip(Long organizationId, Long debtPositionId) {
+    log.info("User requested getPaymentNoticeZip having organizationId {} and debtPositionId {} ", organizationId, debtPositionId);
+
+    Resource debtPositionPaymentNoticesZipped = debtPositionRetrieverService.getDebtPositionNoticesZip(organizationId, debtPositionId, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken());
+    if (debtPositionPaymentNoticesZipped != null){
+      HttpHeaders headers = new HttpHeaders();
+      headers.setContentDisposition(ContentDisposition.attachment()
+        .filename(buildZipFileName(organizationId, debtPositionId))
+        .build());
+
+      return ResponseEntity.ok()
+        .headers(headers)
+        .contentType(MediaType.APPLICATION_OCTET_STREAM)
+        .body(debtPositionPaymentNoticesZipped);
+    } else {
+      return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+  }
+
+  private String buildZipFileName(Long organizationId, Long debtPositionId) {
+    return organizationId + "_" + debtPositionId + "_NOTICES_PDF.zip";
+  }
+
 }

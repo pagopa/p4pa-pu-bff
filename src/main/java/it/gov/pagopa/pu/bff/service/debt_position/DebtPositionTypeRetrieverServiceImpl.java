@@ -37,7 +37,7 @@ public class DebtPositionTypeRetrieverServiceImpl implements DebtPositionTypeRet
   private final TaxonomyRetrieverService taxonomyRetrieverService;
   private final DebtPositionTypeMapper debtPositionTypeMapper;
   private final OrganizationService organizationService;
-  public static final String CODE_UNKNOWN = "UNKNOWN";
+  public static final String DEBT_POSITION_TYPE_CODE_UNKNOWN = "UNKNOWN";
 
   public DebtPositionTypeRetrieverServiceImpl(
     DebtPositionTypeService debtPositionTypeService,
@@ -147,7 +147,7 @@ public class DebtPositionTypeRetrieverServiceImpl implements DebtPositionTypeRet
     if (collectionModel != null && collectionModel.getEmbedded() != null && !CollectionUtils.isEmpty(collectionModel.getEmbedded().getDebtPositionTypes())) {
       return collectionModel.getEmbedded().getDebtPositionTypes()
         .stream()
-        .filter(debtPositionType -> !DebtPositionTypeRetrieverServiceImpl.CODE_UNKNOWN.equals(debtPositionType.getCode()))
+        .filter(debtPositionType -> !DebtPositionTypeRetrieverServiceImpl.DEBT_POSITION_TYPE_CODE_UNKNOWN.equals(debtPositionType.getCode()))
         .toList();
     }
     return Collections.emptyList();

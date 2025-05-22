@@ -10,6 +10,7 @@ import it.gov.pagopa.pu.organization.dto.generated.Taxonomy;
 import org.springframework.data.domain.Pageable;
 
 public interface TaxonomyService {
+  Taxonomy getTaxonomyDetail(Long taxonomyId, String accessToken);
 
   Taxonomy getTaxonomyByTaxonomyCode(String taxonomyCode, String accessToken);
 

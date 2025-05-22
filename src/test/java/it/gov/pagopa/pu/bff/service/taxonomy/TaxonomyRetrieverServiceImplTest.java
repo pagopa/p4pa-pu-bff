@@ -57,6 +57,20 @@ class TaxonomyRetrieverServiceImplTest {
   private TaxonomyRetrieverServiceImpl taxonomyService;
 
   @Test
+  void testGetTaxonomyDetail() {
+    Long taxonomyId = 123L;
+    String token = "token";
+    Taxonomy expectedTaxonomy = new Taxonomy();
+
+    Mockito.when(taxonomyServiceMock.getTaxonomyDetail(taxonomyId, token))
+      .thenReturn(expectedTaxonomy);
+
+    Taxonomy result = taxonomyService.getTaxonomyDetail(taxonomyId, token);
+
+    assertEquals(expectedTaxonomy, result);
+  }
+
+  @Test
   void testGetByTaxonomyCode() {
     Taxonomy taxonomy = new Taxonomy();
 

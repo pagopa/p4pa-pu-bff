@@ -1,9 +1,9 @@
 {
 	"info": {
-		"_postman_id": "42e4b61c-bf99-4cd6-94e5-0be92b40d0b8",
+		"_postman_id": "b0adac2e-35c5-40e6-ad5a-e63bde209578",
 		"name": "PU-BFF",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "28798913"
+		"_exporter_id": "17966353"
 	},
 	"item": [
 		{
@@ -1982,6 +1982,32 @@
 									"    pm.response.to.have.status(201);",
 									"})",
 									"",
+									"pm.test(\"[debt-position-type-org - createDebtPositionTypeOrg - operatorSelection ALL]\", () => {",
+									"    pm.expect(jsonResponse).to.have.property(\"balance\").and.to.not.be.null;",
+									"    pm.expect(jsonResponse).to.have.property(\"code\").and.to.not.be.null;",
+									"    pm.expect(jsonResponse).to.have.property(\"description\").and.to.not.be.null;",
+									"    pm.expect(jsonResponse).to.have.property(\"postalIban\").and.to.not.be.null;",
+									"    pm.expect(jsonResponse).to.have.property(\"postalAccountCode\").and.to.not.be.null;",
+									"    pm.expect(jsonResponse).to.have.property(\"holderPostalCc\").and.to.not.be.null;",
+									"    pm.expect(jsonResponse).to.have.property(\"orgSector\").and.to.not.be.null;",
+									"    pm.expect(jsonResponse).to.have.property(\"xsdDefinitionRef\").and.to.not.be.null;",
+									"    pm.expect(jsonResponse).to.have.property(\"amountCents\").and.to.not.be.null;",
+									"    pm.expect(jsonResponse).to.have.property(\"externalPaymentUrl\").and.to.not.be.null;",
+									"    pm.expect(jsonResponse).to.have.property(\"flagAnonymousFiscalCode\").and.to.not.be.null;",
+									"    pm.expect(jsonResponse).to.have.property(\"flagMandatoryDueDate\").and.to.not.be.null;",
+									"    pm.expect(jsonResponse).to.have.property(\"flagSpontaneous\").and.to.not.be.null;",
+									"    pm.expect(jsonResponse).to.have.property(\"flagNotifyIo\").and.to.not.be.null;",
+									"    pm.expect(jsonResponse).to.have.property(\"ioTemplateMessage\").and.to.not.be.null;",
+									"    pm.expect(jsonResponse).to.have.property(\"flagActive\").and.to.not.be.null;",
+									"    pm.expect(jsonResponse).to.have.property(\"flagNotifyOutcomePush\").and.to.not.be.null;",
+									"    pm.expect(jsonResponse).to.have.property(\"flagAmountActualization\").and.to.not.be.null;",
+									"    pm.expect(jsonResponse).to.have.property(\"flagExternal\").and.to.not.be.null;",
+									"    pm.expect(jsonResponse).to.have.property(\"debtPositionTypeOrgId\").and.to.not.be.null;",
+									"    pm.expect(jsonResponse).to.have.property(\"iban\").and.to.not.be.null;",
+									"    pm.expect(jsonResponse).to.have.property(\"debtPositionTypeId\").and.to.equal(Number(pm.variables.get(\"debtPositionTypeId\")));",
+									"    pm.expect(jsonResponse).to.have.property(\"organizationId\").and.to.equal(Number(pm.variables.get(\"organizationId\")));",
+									"})",
+									"",
 									"pm.collectionVariables.set(\"createdDebtPositionTypeOrgId\", jsonResponse.debtPositionTypeOrgId);",
 									""
 								],
@@ -2121,6 +2147,185 @@
 					"response": []
 				},
 				{
+					"name": "05_updateDebtPositionTypeOrg - operatorsSelection NONE",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let jsonResponse = pm.response.json();",
+									"",
+									"pm.test(\"[debt-position-type-org - updateDebtPositionTypeOrg - operatorSelection NONE], expected httpStatus: 200\", () => {",
+									"    pm.response.to.have.status(200);",
+									"})",
+									"",
+									"pm.test(\"[debt-position-type-org - updateDebtPositionTypeOrg - operatorSelection NONE]\", () => {",
+									"    pm.expect(jsonResponse).to.have.property(\"balance\").and.to.not.be.null;",
+									"    pm.expect(jsonResponse).to.have.property(\"code\").and.to.not.be.null;",
+									"    pm.expect(jsonResponse).to.have.property(\"description\").and.to.not.be.null;",
+									"    pm.expect(jsonResponse).to.have.property(\"postalIban\").and.to.not.be.null;",
+									"    pm.expect(jsonResponse).to.have.property(\"postalAccountCode\").and.to.not.be.null;",
+									"    pm.expect(jsonResponse).to.have.property(\"holderPostalCc\").and.to.not.be.null;",
+									"    pm.expect(jsonResponse).to.have.property(\"orgSector\").and.to.not.be.null;",
+									"    pm.expect(jsonResponse).to.have.property(\"xsdDefinitionRef\").and.to.not.be.null;",
+									"    pm.expect(jsonResponse).to.have.property(\"amountCents\").and.to.not.be.null;",
+									"    pm.expect(jsonResponse).to.have.property(\"externalPaymentUrl\").and.to.not.be.null;",
+									"    pm.expect(jsonResponse).to.have.property(\"flagAnonymousFiscalCode\").and.to.not.be.null;",
+									"    pm.expect(jsonResponse).to.have.property(\"flagMandatoryDueDate\").and.to.not.be.null;",
+									"    pm.expect(jsonResponse).to.have.property(\"flagSpontaneous\").and.to.not.be.null;",
+									"    pm.expect(jsonResponse).to.have.property(\"flagNotifyIo\").and.to.not.be.null;",
+									"    pm.expect(jsonResponse).to.have.property(\"ioTemplateMessage\").and.to.not.be.null;",
+									"    pm.expect(jsonResponse).to.have.property(\"flagActive\").and.to.not.be.null;",
+									"    pm.expect(jsonResponse).to.have.property(\"flagNotifyOutcomePush\").and.to.not.be.null;",
+									"    pm.expect(jsonResponse).to.have.property(\"flagAmountActualization\").and.to.not.be.null;",
+									"    pm.expect(jsonResponse).to.have.property(\"flagExternal\").and.to.not.be.null;",
+									"    pm.expect(jsonResponse).to.have.property(\"debtPositionTypeOrgId\").and.to.equal(Number(pm.variables.get(\"createdDebtPositionTypeOrgId\")));",
+									"    pm.expect(jsonResponse).to.have.property(\"debtPositionTypeId\").and.to.equal(Number(pm.variables.get(\"debtPositionTypeId\")));",
+									"    pm.expect(jsonResponse).to.have.property(\"organizationId\").and.to.equal(Number(pm.variables.get(\"organizationId\")));",
+									"    pm.expect(jsonResponse).to.have.property(\"iban\").and.to.equal(pm.variables.get(\"debtPositionTypeOrgIban\"));",
+									"})",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.variables.set(\"debtPositionTypeOrgIban\",\"TEST-UPDATE\")"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"debtPositionTypeOrg\":{\n        \"debtPositionTypeOrgId\": {{createdDebtPositionTypeOrgId}},\n        \"debtPositionTypeId\": {{debtPositionTypeId}},\n        \"organizationId\": {{organizationId}},\n        \"balance\": \"\",\n        \"code\": \"CODE-CREATE\",\n        \"description\": \"Test for Save Debt Position Type Org\",\n        \"iban\": \"{{debtPositionTypeOrgIban}}\",\n        \"postalIban\": \"IT60X0542811101000000123457\",\n        \"postalAccountCode\": \"1234567890\",\n        \"holderPostalCc\": \"Holder Postal CC\",\n        \"orgSector\": \"Public Sector\",\n        \"xsdDefinitionRef\": \"definitionRef123\",\n        \"amountCents\": 10000,\n        \"externalPaymentUrl\": \"https://example.com/payment\",\n        \"flagAnonymousFiscalCode\": false,\n        \"flagMandatoryDueDate\": false,\n        \"flagSpontaneous\": false,\n        \"flagNotifyIo\": true,\n        \"ioTemplateMessage\": \"Test IO Message Template\",\n        \"flagActive\": true,\n        \"flagNotifyOutcomePush\": false,\n        \"flagAmountActualization\": false,\n        \"flagExternal\": false\n    },\n    \"enabledOperators\":[\n    ],\n    \"disabledOperators\":[\n    ],\n    \"operatorsSelection\": \"NONE\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{puBffBaseUrl}}/bff/organization/:organizationId/debt-position-type-orgs/:debtPositionTypeOrgId",
+							"host": [
+								"{{puBffBaseUrl}}"
+							],
+							"path": [
+								"bff",
+								"organization",
+								":organizationId",
+								"debt-position-type-orgs",
+								":debtPositionTypeOrgId"
+							],
+							"variable": [
+								{
+									"key": "organizationId",
+									"value": "{{organizationId}}"
+								},
+								{
+									"key": "debtPositionTypeOrgId",
+									"value": "{{createdDebtPositionTypeOrgId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DebtPosition - findByDebtPositionTypeOrgId - afterUpdateOperatorsSelection NONE",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let jsonResponse = pm.response.json();",
+									"",
+									"pm.test(\"[debt-position-type-org - findByDebtPositionTypeOrgId - afterUpdateOperatorsSelection NONE], expected httpStatus: 200\", () => {",
+									"    pm.response.to.have.status(200);",
+									"    pm.expect(jsonResponse._embedded.debtPositionTypeOrgOperatorses.length).to.eql(1);",
+									"})",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"debtPositionTypeOrg\":{\n        \"debtPositionTypeId\": {{debtPositionTypeId}},\n        \"organizationId\": {{organizationId}},\n        \"balance\": \"\",\n        \"code\": \"CODE-CREATE\",\n        \"description\": \"Test for Save Debt Position Type Org\",\n        \"iban\": \"IT60X0542811101000000123456\",\n        \"postalIban\": \"IT60X0542811101000000123457\",\n        \"postalAccountCode\": \"1234567890\",\n        \"holderPostalCc\": \"Holder Postal CC\",\n        \"orgSector\": \"Public Sector\",\n        \"xsdDefinitionRef\": \"definitionRef123\",\n        \"amountCents\": 10000,\n        \"externalPaymentUrl\": \"https://example.com/payment\",\n        \"flagAnonymousFiscalCode\": false,\n        \"flagMandatoryDueDate\": false,\n        \"flagSpontaneous\": false,\n        \"flagNotifyIo\": true,\n        \"ioTemplateMessage\": \"Test IO Message Template\",\n        \"flagActive\": true,\n        \"flagNotifyOutcomePush\": false,\n        \"flagAmountActualization\": false,\n        \"flagExternal\": false\n    },\n    \"enabledOperators\":[\n    ],\n    \"disabledOperators\":[\n    ],\n    \"operatorsSelection\": \"ALL\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{debtPositionBaseUrl}}/crud/debt-position-type-org-operators/search/findByDebtPositionTypeOrgId?debtPositionTypeOrgId={{createdDebtPositionTypeOrgId}}",
+							"host": [
+								"{{debtPositionBaseUrl}}"
+							],
+							"path": [
+								"crud",
+								"debt-position-type-org-operators",
+								"search",
+								"findByDebtPositionTypeOrgId"
+							],
+							"query": [
+								{
+									"key": "debtPositionTypeOrgId",
+									"value": "{{createdDebtPositionTypeOrgId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "05_deleteDebtPositionTypeOrg - operatorSelection ALL",
 					"event": [
 						{
@@ -2193,6 +2398,32 @@
 									"",
 									"pm.test(\"[debt-position-type-org - createDebtPositionTypeOrg - operatorSelection SELECTED], expected httpStatus: 201\", () => {",
 									"    pm.response.to.have.status(201);",
+									"})",
+									"",
+									"pm.test(\"[debt-position-type-org - createDebtPositionTypeOrg - operatorSelection SELECTED]\", () => {",
+									"    pm.expect(jsonResponse).to.have.property(\"balance\").and.to.not.be.null;",
+									"    pm.expect(jsonResponse).to.have.property(\"code\").and.to.not.be.null;",
+									"    pm.expect(jsonResponse).to.have.property(\"description\").and.to.not.be.null;",
+									"    pm.expect(jsonResponse).to.have.property(\"postalIban\").and.to.not.be.null;",
+									"    pm.expect(jsonResponse).to.have.property(\"postalAccountCode\").and.to.not.be.null;",
+									"    pm.expect(jsonResponse).to.have.property(\"holderPostalCc\").and.to.not.be.null;",
+									"    pm.expect(jsonResponse).to.have.property(\"orgSector\").and.to.not.be.null;",
+									"    pm.expect(jsonResponse).to.have.property(\"xsdDefinitionRef\").and.to.not.be.null;",
+									"    pm.expect(jsonResponse).to.have.property(\"amountCents\").and.to.not.be.null;",
+									"    pm.expect(jsonResponse).to.have.property(\"externalPaymentUrl\").and.to.not.be.null;",
+									"    pm.expect(jsonResponse).to.have.property(\"flagAnonymousFiscalCode\").and.to.not.be.null;",
+									"    pm.expect(jsonResponse).to.have.property(\"flagMandatoryDueDate\").and.to.not.be.null;",
+									"    pm.expect(jsonResponse).to.have.property(\"flagSpontaneous\").and.to.not.be.null;",
+									"    pm.expect(jsonResponse).to.have.property(\"flagNotifyIo\").and.to.not.be.null;",
+									"    pm.expect(jsonResponse).to.have.property(\"ioTemplateMessage\").and.to.not.be.null;",
+									"    pm.expect(jsonResponse).to.have.property(\"flagActive\").and.to.not.be.null;",
+									"    pm.expect(jsonResponse).to.have.property(\"flagNotifyOutcomePush\").and.to.not.be.null;",
+									"    pm.expect(jsonResponse).to.have.property(\"flagAmountActualization\").and.to.not.be.null;",
+									"    pm.expect(jsonResponse).to.have.property(\"flagExternal\").and.to.not.be.null;",
+									"    pm.expect(jsonResponse).to.have.property(\"debtPositionTypeOrgId\").and.to.not.be.null;",
+									"    pm.expect(jsonResponse).to.have.property(\"iban\").and.to.not.be.null;",
+									"    pm.expect(jsonResponse).to.have.property(\"debtPositionTypeId\").and.to.equal(Number(pm.variables.get(\"debtPositionTypeId\")));",
+									"    pm.expect(jsonResponse).to.have.property(\"organizationId\").and.to.equal(Number(pm.variables.get(\"organizationId\")));",
 									"})",
 									"",
 									"pm.collectionVariables.set(\"createdDebtPositionTypeOrgId\", jsonResponse.debtPositionTypeOrgId);",
@@ -2337,6 +2568,177 @@
 					"response": []
 				},
 				{
+					"name": "05_updateDebtPositionTypeOrg - operatorsSelection SELECTED",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let jsonResponse = pm.response.json();",
+									"",
+									"pm.test(\"[debt-position-type-org - updateDebtPositionTypeOrg - operatorSelection SELECTED], expected httpStatus: 200\", () => {",
+									"    pm.response.to.have.status(200);",
+									"})",
+									"",
+									"pm.test(\"[debt-position-type-org - updateDebtPositionTypeOrg - operatorSelection SELECTED]\", () => {",
+									"    pm.expect(jsonResponse).to.have.property(\"balance\").and.to.not.be.null;",
+									"    pm.expect(jsonResponse).to.have.property(\"code\").and.to.not.be.null;",
+									"    pm.expect(jsonResponse).to.have.property(\"description\").and.to.not.be.null;",
+									"    pm.expect(jsonResponse).to.have.property(\"postalIban\").and.to.not.be.null;",
+									"    pm.expect(jsonResponse).to.have.property(\"postalAccountCode\").and.to.not.be.null;",
+									"    pm.expect(jsonResponse).to.have.property(\"holderPostalCc\").and.to.not.be.null;",
+									"    pm.expect(jsonResponse).to.have.property(\"orgSector\").and.to.not.be.null;",
+									"    pm.expect(jsonResponse).to.have.property(\"xsdDefinitionRef\").and.to.not.be.null;",
+									"    pm.expect(jsonResponse).to.have.property(\"amountCents\").and.to.not.be.null;",
+									"    pm.expect(jsonResponse).to.have.property(\"externalPaymentUrl\").and.to.not.be.null;",
+									"    pm.expect(jsonResponse).to.have.property(\"flagAnonymousFiscalCode\").and.to.not.be.null;",
+									"    pm.expect(jsonResponse).to.have.property(\"flagMandatoryDueDate\").and.to.not.be.null;",
+									"    pm.expect(jsonResponse).to.have.property(\"flagSpontaneous\").and.to.not.be.null;",
+									"    pm.expect(jsonResponse).to.have.property(\"flagNotifyIo\").and.to.not.be.null;",
+									"    pm.expect(jsonResponse).to.have.property(\"ioTemplateMessage\").and.to.not.be.null;",
+									"    pm.expect(jsonResponse).to.have.property(\"flagActive\").and.to.not.be.null;",
+									"    pm.expect(jsonResponse).to.have.property(\"flagNotifyOutcomePush\").and.to.not.be.null;",
+									"    pm.expect(jsonResponse).to.have.property(\"flagAmountActualization\").and.to.not.be.null;",
+									"    pm.expect(jsonResponse).to.have.property(\"flagExternal\").and.to.not.be.null;",
+									"    pm.expect(jsonResponse).to.have.property(\"debtPositionTypeOrgId\").and.to.equal(Number(pm.variables.get(\"createdDebtPositionTypeOrgId\")));",
+									"    pm.expect(jsonResponse).to.have.property(\"debtPositionTypeId\").and.to.equal(Number(pm.variables.get(\"debtPositionTypeId\")));",
+									"    pm.expect(jsonResponse).to.have.property(\"organizationId\").and.to.equal(Number(pm.variables.get(\"organizationId\")));",
+									"    pm.expect(jsonResponse).to.have.property(\"iban\").and.to.equal(pm.variables.get(\"debtPositionTypeOrgIban\"));",
+									"})",
+									"",
+									"let requestBody = JSON.parse(pm.request.body.raw);",
+									"pm.collectionVariables.set(\"enabledOperators\", pm.variables.get(\"enabledOperators\")+requestBody.enabledOperators.length-requestBody.disabledOperators.length);",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.variables.set(\"debtPositionTypeOrgIban\",\"TEST-UPDATE\")"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"debtPositionTypeOrg\":{\n        \"debtPositionTypeOrgId\": {{createdDebtPositionTypeOrgId}},\n        \"debtPositionTypeId\": {{debtPositionTypeId}},\n        \"organizationId\": {{organizationId}},\n        \"balance\": \"\",\n        \"code\": \"CODE-CREATE\",\n        \"description\": \"Test for Save Debt Position Type Org\",\n        \"iban\": \"{{debtPositionTypeOrgIban}}\",\n        \"postalIban\": \"IT60X0542811101000000123457\",\n        \"postalAccountCode\": \"1234567890\",\n        \"holderPostalCc\": \"Holder Postal CC\",\n        \"orgSector\": \"Public Sector\",\n        \"xsdDefinitionRef\": \"definitionRef123\",\n        \"amountCents\": 10000,\n        \"externalPaymentUrl\": \"https://example.com/payment\",\n        \"flagAnonymousFiscalCode\": false,\n        \"flagMandatoryDueDate\": false,\n        \"flagSpontaneous\": false,\n        \"flagNotifyIo\": true,\n        \"ioTemplateMessage\": \"Test IO Message Template\",\n        \"flagActive\": true,\n        \"flagNotifyOutcomePush\": false,\n        \"flagAmountActualization\": false,\n        \"flagExternal\": false\n    },\n    \"enabledOperators\":[\n        \"operator3\",\n        \"operator4\"\n    ],\n    \"disabledOperators\":[\n        \"operator2\"\n    ],\n    \"operatorsSelection\": \"SELECTED\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{puBffBaseUrl}}/bff/organization/:organizationId/debt-position-type-orgs/:debtPositionTypeOrgId",
+							"host": [
+								"{{puBffBaseUrl}}"
+							],
+							"path": [
+								"bff",
+								"organization",
+								":organizationId",
+								"debt-position-type-orgs",
+								":debtPositionTypeOrgId"
+							],
+							"variable": [
+								{
+									"key": "organizationId",
+									"value": "{{organizationId}}"
+								},
+								{
+									"key": "debtPositionTypeOrgId",
+									"value": "{{createdDebtPositionTypeOrgId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DebtPosition - findByDebtPositionTypeOrgId - afterUpdateOperatorsSelection SELECTED",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let jsonResponse = pm.response.json();",
+									"let enabledOperators = pm.collectionVariables.get(\"enabledOperators\");",
+									"",
+									"pm.test(\"[debt-position-type-org - findByDebtPositionTypeOrgId - operatorSelection SELECTED], expected httpStatus: 200\", () => {",
+									"    pm.response.to.have.status(200);",
+									"    pm.expect(jsonResponse._embedded.debtPositionTypeOrgOperatorses.length).to.eql(enabledOperators+1);",
+									"})",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{debtPositionBaseUrl}}/crud/debt-position-type-org-operators/search/findByDebtPositionTypeOrgId?debtPositionTypeOrgId={{createdDebtPositionTypeOrgId}}",
+							"host": [
+								"{{debtPositionBaseUrl}}"
+							],
+							"path": [
+								"crud",
+								"debt-position-type-org-operators",
+								"search",
+								"findByDebtPositionTypeOrgId"
+							],
+							"query": [
+								{
+									"key": "debtPositionTypeOrgId",
+									"value": "{{createdDebtPositionTypeOrgId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "05_deleteDebtPositionTypeOrg  - operatorSelection SELECTED",
 					"event": [
 						{
@@ -2409,6 +2811,32 @@
 									"",
 									"pm.test(\"[debt-position-type-org - createDebtPositionTypeOrg - operatorSelection NONE], expected httpStatus: 201\", () => {",
 									"    pm.response.to.have.status(201);",
+									"})",
+									"",
+									"pm.test(\"[debt-position-type-org - createDebtPositionTypeOrg - operatorSelection NONE]\", () => {",
+									"    pm.expect(jsonResponse).to.have.property(\"balance\").and.to.not.be.null;",
+									"    pm.expect(jsonResponse).to.have.property(\"code\").and.to.not.be.null;",
+									"    pm.expect(jsonResponse).to.have.property(\"description\").and.to.not.be.null;",
+									"    pm.expect(jsonResponse).to.have.property(\"postalIban\").and.to.not.be.null;",
+									"    pm.expect(jsonResponse).to.have.property(\"postalAccountCode\").and.to.not.be.null;",
+									"    pm.expect(jsonResponse).to.have.property(\"holderPostalCc\").and.to.not.be.null;",
+									"    pm.expect(jsonResponse).to.have.property(\"orgSector\").and.to.not.be.null;",
+									"    pm.expect(jsonResponse).to.have.property(\"xsdDefinitionRef\").and.to.not.be.null;",
+									"    pm.expect(jsonResponse).to.have.property(\"amountCents\").and.to.not.be.null;",
+									"    pm.expect(jsonResponse).to.have.property(\"externalPaymentUrl\").and.to.not.be.null;",
+									"    pm.expect(jsonResponse).to.have.property(\"flagAnonymousFiscalCode\").and.to.not.be.null;",
+									"    pm.expect(jsonResponse).to.have.property(\"flagMandatoryDueDate\").and.to.not.be.null;",
+									"    pm.expect(jsonResponse).to.have.property(\"flagSpontaneous\").and.to.not.be.null;",
+									"    pm.expect(jsonResponse).to.have.property(\"flagNotifyIo\").and.to.not.be.null;",
+									"    pm.expect(jsonResponse).to.have.property(\"ioTemplateMessage\").and.to.not.be.null;",
+									"    pm.expect(jsonResponse).to.have.property(\"flagActive\").and.to.not.be.null;",
+									"    pm.expect(jsonResponse).to.have.property(\"flagNotifyOutcomePush\").and.to.not.be.null;",
+									"    pm.expect(jsonResponse).to.have.property(\"flagAmountActualization\").and.to.not.be.null;",
+									"    pm.expect(jsonResponse).to.have.property(\"flagExternal\").and.to.not.be.null;",
+									"    pm.expect(jsonResponse).to.have.property(\"debtPositionTypeOrgId\").and.to.not.be.null;",
+									"    pm.expect(jsonResponse).to.have.property(\"iban\").and.to.not.be.null;",
+									"    pm.expect(jsonResponse).to.have.property(\"debtPositionTypeId\").and.to.equal(Number(pm.variables.get(\"debtPositionTypeId\")));",
+									"    pm.expect(jsonResponse).to.have.property(\"organizationId\").and.to.equal(Number(pm.variables.get(\"organizationId\")));",
 									"})",
 									"",
 									"pm.collectionVariables.set(\"createdDebtPositionTypeOrgId\", jsonResponse.debtPositionTypeOrgId);",
@@ -2484,6 +2912,186 @@
 									"pm.test(\"[debt-position-type-org - findByDebtPositionTypeOrgId - operatorSelection NONE], expected httpStatus: 200\", () => {",
 									"    pm.response.to.have.status(200);",
 									"    pm.expect(jsonResponse._embedded.debtPositionTypeOrgOperatorses.length).to.eql(1);",
+									"})",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"debtPositionTypeOrg\":{\n        \"debtPositionTypeId\": {{debtPositionTypeId}},\n        \"organizationId\": {{organizationId}},\n        \"balance\": \"\",\n        \"code\": \"CODE-CREATE\",\n        \"description\": \"Test for Save Debt Position Type Org\",\n        \"iban\": \"IT60X0542811101000000123456\",\n        \"postalIban\": \"IT60X0542811101000000123457\",\n        \"postalAccountCode\": \"1234567890\",\n        \"holderPostalCc\": \"Holder Postal CC\",\n        \"orgSector\": \"Public Sector\",\n        \"xsdDefinitionRef\": \"definitionRef123\",\n        \"amountCents\": 10000,\n        \"externalPaymentUrl\": \"https://example.com/payment\",\n        \"flagAnonymousFiscalCode\": false,\n        \"flagMandatoryDueDate\": false,\n        \"flagSpontaneous\": false,\n        \"flagNotifyIo\": true,\n        \"ioTemplateMessage\": \"Test IO Message Template\",\n        \"flagActive\": true,\n        \"flagNotifyOutcomePush\": false,\n        \"flagAmountActualization\": false,\n        \"flagExternal\": false\n    },\n    \"enabledOperators\":[\n    ],\n    \"disabledOperators\":[\n    ],\n    \"operatorsSelection\": \"ALL\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{debtPositionBaseUrl}}/crud/debt-position-type-org-operators/search/findByDebtPositionTypeOrgId?debtPositionTypeOrgId={{createdDebtPositionTypeOrgId}}",
+							"host": [
+								"{{debtPositionBaseUrl}}"
+							],
+							"path": [
+								"crud",
+								"debt-position-type-org-operators",
+								"search",
+								"findByDebtPositionTypeOrgId"
+							],
+							"query": [
+								{
+									"key": "debtPositionTypeOrgId",
+									"value": "{{createdDebtPositionTypeOrgId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "05_updateDebtPositionTypeOrg - operatorsSelection ALL",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let jsonResponse = pm.response.json();",
+									"",
+									"pm.test(\"[debt-position-type-org - updateDebtPositionTypeOrg - operatorSelection ALL], expected httpStatus: 201\", () => {",
+									"    pm.response.to.have.status(200);",
+									"})",
+									"",
+									"pm.test(\"[debt-position-type-org - updateDebtPositionTypeOrg - operatorSelection ALL]\", () => {",
+									"    pm.expect(jsonResponse).to.have.property(\"balance\").and.to.not.be.null;",
+									"    pm.expect(jsonResponse).to.have.property(\"code\").and.to.not.be.null;",
+									"    pm.expect(jsonResponse).to.have.property(\"description\").and.to.not.be.null;",
+									"    pm.expect(jsonResponse).to.have.property(\"postalIban\").and.to.not.be.null;",
+									"    pm.expect(jsonResponse).to.have.property(\"postalAccountCode\").and.to.not.be.null;",
+									"    pm.expect(jsonResponse).to.have.property(\"holderPostalCc\").and.to.not.be.null;",
+									"    pm.expect(jsonResponse).to.have.property(\"orgSector\").and.to.not.be.null;",
+									"    pm.expect(jsonResponse).to.have.property(\"xsdDefinitionRef\").and.to.not.be.null;",
+									"    pm.expect(jsonResponse).to.have.property(\"amountCents\").and.to.not.be.null;",
+									"    pm.expect(jsonResponse).to.have.property(\"externalPaymentUrl\").and.to.not.be.null;",
+									"    pm.expect(jsonResponse).to.have.property(\"flagAnonymousFiscalCode\").and.to.not.be.null;",
+									"    pm.expect(jsonResponse).to.have.property(\"flagMandatoryDueDate\").and.to.not.be.null;",
+									"    pm.expect(jsonResponse).to.have.property(\"flagSpontaneous\").and.to.not.be.null;",
+									"    pm.expect(jsonResponse).to.have.property(\"flagNotifyIo\").and.to.not.be.null;",
+									"    pm.expect(jsonResponse).to.have.property(\"ioTemplateMessage\").and.to.not.be.null;",
+									"    pm.expect(jsonResponse).to.have.property(\"flagActive\").and.to.not.be.null;",
+									"    pm.expect(jsonResponse).to.have.property(\"flagNotifyOutcomePush\").and.to.not.be.null;",
+									"    pm.expect(jsonResponse).to.have.property(\"flagAmountActualization\").and.to.not.be.null;",
+									"    pm.expect(jsonResponse).to.have.property(\"flagExternal\").and.to.not.be.null;",
+									"    pm.expect(jsonResponse).to.have.property(\"debtPositionTypeOrgId\").and.to.equal(Number(pm.variables.get(\"createdDebtPositionTypeOrgId\")));",
+									"    pm.expect(jsonResponse).to.have.property(\"debtPositionTypeId\").and.to.equal(Number(pm.variables.get(\"debtPositionTypeId\")));",
+									"    pm.expect(jsonResponse).to.have.property(\"organizationId\").and.to.equal(Number(pm.variables.get(\"organizationId\")));",
+									"    pm.expect(jsonResponse).to.have.property(\"iban\").and.to.equal(pm.variables.get(\"debtPositionTypeOrgIban\"));",
+									"})",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.variables.set(\"debtPositionTypeOrgIban\",\"TEST-UPDATE\")"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"debtPositionTypeOrg\":{\n        \"debtPositionTypeOrgId\": {{createdDebtPositionTypeOrgId}},\n        \"debtPositionTypeId\": {{debtPositionTypeId}},\n        \"organizationId\": {{organizationId}},\n        \"balance\": \"\",\n        \"code\": \"CODE-CREATE\",\n        \"description\": \"Test for Save Debt Position Type Org\",\n        \"iban\": \"{{debtPositionTypeOrgIban}}\",\n        \"postalIban\": \"IT60X0542811101000000123457\",\n        \"postalAccountCode\": \"1234567890\",\n        \"holderPostalCc\": \"Holder Postal CC\",\n        \"orgSector\": \"Public Sector\",\n        \"xsdDefinitionRef\": \"definitionRef123\",\n        \"amountCents\": 10000,\n        \"externalPaymentUrl\": \"https://example.com/payment\",\n        \"flagAnonymousFiscalCode\": false,\n        \"flagMandatoryDueDate\": false,\n        \"flagSpontaneous\": false,\n        \"flagNotifyIo\": true,\n        \"ioTemplateMessage\": \"Test IO Message Template\",\n        \"flagActive\": true,\n        \"flagNotifyOutcomePush\": false,\n        \"flagAmountActualization\": false,\n        \"flagExternal\": false\n    },\n    \"enabledOperators\":[\n    ],\n    \"disabledOperators\":[\n    ],\n    \"operatorsSelection\": \"ALL\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{puBffBaseUrl}}/bff/organization/:organizationId/debt-position-type-orgs/:debtPositionTypeOrgId",
+							"host": [
+								"{{puBffBaseUrl}}"
+							],
+							"path": [
+								"bff",
+								"organization",
+								":organizationId",
+								"debt-position-type-orgs",
+								":debtPositionTypeOrgId"
+							],
+							"variable": [
+								{
+									"key": "organizationId",
+									"value": "{{organizationId}}"
+								},
+								{
+									"key": "debtPositionTypeOrgId",
+									"value": "{{createdDebtPositionTypeOrgId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DebtPosition - findByDebtPositionTypeOrgId - afterUpdateOperatorsSelection ALL",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let jsonResponse = pm.response.json();",
+									"let organizationOperators = pm.collectionVariables.get(\"organizationOperators\");",
+									"",
+									"pm.test(\"[debt-position-type-org - findByDebtPositionTypeOrgId - operatorSelection ALL], expected httpStatus: 200\", () => {",
+									"    pm.response.to.have.status(200);",
+									"    pm.expect(jsonResponse._embedded.debtPositionTypeOrgOperatorses.length).to.eql(organizationOperators);",
 									"})",
 									""
 								],

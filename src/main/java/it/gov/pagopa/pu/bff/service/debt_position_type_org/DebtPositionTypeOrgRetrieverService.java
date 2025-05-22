@@ -22,4 +22,6 @@ public interface DebtPositionTypeOrgRetrieverService {
   PagedDebtPositionTypeOrgOperatorDTO getDebtPositionTypeOrgOperators(Long organizationId, Long debtPositionTypeOrgId, Pageable pageable, UserInfo loggedUser, String accessToken);
 
   DebtPositionTypeOrg createDebtPositionTypeOrg(Long organizationId, SaveDebtPositionTypeOrgDTO createDebtPositionTypeOrgDTO, UserInfo loggedUser, String accessToken);
+
+  DebtPositionTypeOrg updateDebtPositionTypeOrg(Long organizationId, Long debtPositionTypeOrgId, SaveDebtPositionTypeOrgDTO saveDebtPositionTypeOrgDTO, UserInfo loggedUser, String accessToken);
 }

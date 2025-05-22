@@ -11,6 +11,7 @@ import java.util.List;
 import org.springframework.data.domain.Pageable;
 
 public interface TaxonomyRetrieverService {
+  Taxonomy getTaxonomyDetail(Long taxonomyId, String accessToken);
 
   Taxonomy getTaxonomyByTaxonomyCode(String taxonomyCode, String accessToken);
 

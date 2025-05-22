@@ -13,6 +13,7 @@ import it.gov.pagopa.pu.bff.service.AuthorizationService;
 import it.gov.pagopa.pu.processexecutions.dto.generated.ClassificationsExportFileRequestDTO;
 import it.gov.pagopa.pu.processexecutions.dto.generated.PaymentsReportingExportFileRequestDTO;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -38,19 +39,28 @@ public class ExportFileRetrieverServiceImpl implements
   }
 
   @Override
-  public PagedExportFile getExportFiles(
-    ExportFileFiltersDTO exportFileFiltersDTO, Pageable pageable,
-    UserInfo loggedUser, String accessToken) {
+  public PagedExportFile getExportFiles(ExportFileFiltersDTO exportFileFiltersDTO, Pageable pageable, UserInfo loggedUser, String accessToken) {
     String operatorExternalUserId = null;
     if (!AuthorizationService.isAdminRole(
       exportFileFiltersDTO.getOrganizationId(), loggedUser)) {
       operatorExternalUserId = loggedUser.getMappedExternalUserId();
     }
 
+    validateExportFileFilters(exportFileFiltersDTO);
+
     return exportFileMapper.mapToPagedExportFile(
-      exportFileService.getExportFiles(
-        exportFileFiltersDTO, operatorExternalUserId, pageable, accessToken),
-      loggedUser, accessToken);
+      exportFileService.getExportFiles(exportFileFiltersDTO, operatorExternalUserId, pageable, accessToken), loggedUser, accessToken);
+  }
+
+  private void validateExportFileFilters(ExportFileFiltersDTO filtersDTO) {
+    boolean isCreationDateEmpty = filtersDTO.getCreationDate() == null ||
+      (filtersDTO.getCreationDate().getFrom() == null && filtersDTO.getCreationDate().getTo() == null);
+
+    if (isCreationDateEmpty &&
+      filtersDTO.getStatus() == null &&
+      StringUtils.isBlank(filtersDTO.getFileName())) {
+      throw new IllegalArgumentException("At least one of the research fields should be inserted");
+    }
   }
 
   @Override

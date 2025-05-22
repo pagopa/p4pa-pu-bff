@@ -34,6 +34,10 @@ import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
 class ExportFileRetrieverServiceImplTest {
@@ -86,8 +90,8 @@ class ExportFileRetrieverServiceImplTest {
       PagedExportFile result = exportFileRetrieverService.getExportFiles(
         exportFileFilters, null, userInfo, accessToken);
 
-      Assertions.assertNotNull(result);
-      Assertions.assertEquals(expectedResult, result);
+      assertNotNull(result);
+      assertEquals(expectedResult, result);
       authorizationServiceMockedStatic.verify(()->AuthorizationService.isAdminRole(organizationId, userInfo));
       Mockito.verifyNoMoreInteractions(exportFileServiceMock,
         exportFileMapperMock);
@@ -123,11 +127,87 @@ class ExportFileRetrieverServiceImplTest {
       PagedExportFile result = exportFileRetrieverService.getExportFiles(
         exportFileFilters, null, userInfo, accessToken);
 
-      Assertions.assertNotNull(result);
-      Assertions.assertEquals(expectedResult,result);
+      assertNotNull(result);
+      assertEquals(expectedResult,result);
       authorizationServiceMockedStatic.verify(()->AuthorizationService.isAdminRole(organizationId, userInfo));
       Mockito.verifyNoMoreInteractions(exportFileServiceMock,
         exportFileMapperMock);
+    }
+  }
+
+  @Test
+  void givenNoFiltersWhenGetExportFilesThenThrowIllegalArgumentException() {
+    String accessToken="ACCESSTOKEN";
+    long organizationId = 1L;
+    UserInfo loggedUser = new UserInfo();
+    loggedUser.setUserId("user-123");
+
+    ExportFileFiltersDTO filtersDTO = new ExportFileFiltersDTO(
+      organizationId, null, new OffsetDateTimeIntervalFilter(null, null), null, null
+    );
+    Pageable pageable = PageRequest.of(0, 10);
+
+    try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
+      authorizationServiceMockedStatic.when(() -> AuthorizationService.isAdminRole(filtersDTO.getOrganizationId(), loggedUser)).thenReturn(true);
+
+      IllegalArgumentException exception = Assertions.assertThrows(IllegalArgumentException.class, () ->
+        exportFileRetrieverService.getExportFiles(filtersDTO, pageable, loggedUser, accessToken));
+
+      assertEquals("At least one of the research fields should be inserted", exception.getMessage());
+
+      authorizationServiceMockedStatic.verify(() -> AuthorizationService.isAdminRole(filtersDTO.getOrganizationId(), loggedUser));
+    }
+    Mockito.verifyNoInteractions(exportFileMapperMock);
+  }
+
+  @Test
+  void givenCreationDateFromOnlyWhenGetExportFilesThenOk() {
+    OffsetDateTimeIntervalFilter creationDate = new OffsetDateTimeIntervalFilter(OffsetDateTime.now().minusDays(1), null);
+    ExportFileFiltersDTO filtersDTO = new ExportFileFiltersDTO(1L, null, creationDate, null, null);
+    testSingleExportFileFilterSuccess(filtersDTO);
+  }
+
+  @Test
+  void givenCreationDateToOnlyWhenGetExportFilesThenOk() {
+    OffsetDateTimeIntervalFilter creationDate = new OffsetDateTimeIntervalFilter(null, OffsetDateTime.now());
+    ExportFileFiltersDTO filtersDTO = new ExportFileFiltersDTO(1L, null, creationDate, null, null);
+    testSingleExportFileFilterSuccess(filtersDTO);
+  }
+
+  @Test
+  void givenStatusOnlyWhenGetExportFilesThenOk() {
+    ExportFileFiltersDTO filtersDTO = new ExportFileFiltersDTO(1L, null, null, ExportFileStatus.COMPLETED, null);
+    testSingleExportFileFilterSuccess(filtersDTO);
+  }
+
+  @Test
+  void givenFileNameOnlyWhenGetExportFilesThenOk() {
+    ExportFileFiltersDTO filtersDTO = new ExportFileFiltersDTO(1L, null, null, null, "report_2025.csv");
+    testSingleExportFileFilterSuccess(filtersDTO);
+  }
+
+  private void testSingleExportFileFilterSuccess(ExportFileFiltersDTO filtersDTO) {
+    String accessToken="ACCESSTOKEN";
+    UserInfo loggedUser = new UserInfo();
+    loggedUser.setUserId("user-123");
+    Pageable pageable = PageRequest.of(0, 10);
+
+    PagedModelExportFile pagedModelExportFile = new PagedModelExportFile();
+    PagedExportFile expectedPagedExportFile = new PagedExportFile();
+
+    try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
+      authorizationServiceMockedStatic.when(() -> AuthorizationService.isAdminRole(filtersDTO.getOrganizationId(), loggedUser)).thenReturn(true);
+
+      Mockito.when(exportFileServiceMock.getExportFiles(filtersDTO, null, pageable, accessToken))
+        .thenReturn(pagedModelExportFile);
+
+      Mockito.when(exportFileMapperMock.mapToPagedExportFile(pagedModelExportFile, loggedUser, accessToken))
+        .thenReturn(expectedPagedExportFile);
+
+      PagedExportFile result = exportFileRetrieverService.getExportFiles(filtersDTO, pageable, loggedUser, accessToken);
+
+      assertNotNull(result);
+      assertSame(expectedPagedExportFile, result);
     }
   }
 

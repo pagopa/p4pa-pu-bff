@@ -132,22 +132,22 @@ class DateUtilsTest {
   }
 
   @Test
-  void givenBothDatesNull_thenReturnTrue() {
+  void givenBothDatesNullWhenIsNullOrInvalidDateRangeThenReturnTrue() {
     assertTrue(DateUtils.isNullOrInvalidDateRange(null, null));
   }
 
   @Test
-  void givenOnlyFromDate_thenReturnTrue() {
+  void givenOnlyFromDateWhenIsNullOrInvalidDateRangeThenReturnTrue() {
     assertTrue(DateUtils.isNullOrInvalidDateRange(OffsetDateTime.now(), null));
   }
 
   @Test
-  void givenOnlyToDate_thenReturnTrue() {
+  void givenOnlyToDateWhenIsNullOrInvalidDateRangeThenReturnTrue() {
     assertTrue(DateUtils.isNullOrInvalidDateRange(null, OffsetDateTime.now()));
   }
 
   @Test
-  void givenBothDatesPresent_thenReturnFalse() {
+  void givenBothDatesPresentWhenIsNullOrInvalidDateRangeThenReturnFalse() {
     assertFalse(DateUtils.isNullOrInvalidDateRange(OffsetDateTime.now().minusDays(1), OffsetDateTime.now()));
   }
 

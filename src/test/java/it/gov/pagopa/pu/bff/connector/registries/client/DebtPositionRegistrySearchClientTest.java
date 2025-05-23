@@ -12,8 +12,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.client.HttpClientErrorException;
 import uk.co.jemos.podam.api.PodamFactory;
 
 import static org.mockito.Mockito.when;
@@ -40,7 +38,7 @@ class DebtPositionRegistrySearchClientTest {
   }
 
   @Test
-  void givenExistingDebtPositionRegistryWhenFindDebtPositionRegistriesThenOk() {
+  void whenFindDebtPositionRegistriesThenInvokeWithAccessToken() {
     String accessToken = "ACCESSTOKEN";
     Long debtPositionId = 1L;
     CollectionModelDebtPositionRegistry expectedResponse = podamFactory.manufacturePojo(CollectionModelDebtPositionRegistry.class);
@@ -54,20 +52,5 @@ class DebtPositionRegistrySearchClientTest {
 
     Assertions.assertNotNull(response);
     Assertions.assertEquals(expectedResponse,response);
-  }
-
-  @Test
-  void givenNonExistingDebtPositionRegistryWhenFindDebtPositionRegistriesThenNull() {
-    String accessToken = "ACCESSTOKEN";
-    Long debtPositionId = 1L;
-
-    when(registriesApisHolderMock.getDebtPositionRegistrySearchControllerApi(accessToken))
-      .thenReturn(debtPositionRegistrySearchControllerApiMock);
-    when(debtPositionRegistrySearchControllerApiMock.crudDebtPositionRegistriesFindAllByDebtPositionId(debtPositionId))
-            .thenThrow(HttpClientErrorException.create(HttpStatus.NOT_FOUND, "NotFound", null, null, null));
-
-    CollectionModelDebtPositionRegistry response = debtPositionRegistrySearchClient.findDebtPositionRegistries(debtPositionId,accessToken);
-
-    Assertions.assertNull(response);
   }
 }

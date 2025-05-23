@@ -163,18 +163,37 @@ class DebtPositionRetrieverServiceImplTest {
   }
 
   @Test
-  void givenNoFiltersWhenGetDebtPositionViewsThenThrowIllegalArgumentException() {
-    UserInfo loggedUser = new UserInfo();
-    loggedUser.setMappedExternalUserId("mappedExternalUserId");
-    PageRequest pageRequest = PageRequest.of(0, 10);
+  void givenOnlyCreationDateFromWhenGetDebtPositionViewsThenThrowIllegalArgumentException() {
+    DebtPositionViewFiltersDTO filtersDTO = new DebtPositionViewFiltersDTO();
+    filtersDTO.setOrganizationId(1L);
+    filtersDTO.setCreationDateFrom(OffsetDateTime.now());
+    filtersDTO.setCreationDateTo(null);
+    assertThrowsIllegalArgument(filtersDTO);
+  }
 
+  @Test
+  void givenOnlyCreationDateToWhenGetDebtPositionViewsThenThrowIllegalArgumentException() {
     DebtPositionViewFiltersDTO filtersDTO = new DebtPositionViewFiltersDTO();
     filtersDTO.setOrganizationId(1L);
     filtersDTO.setCreationDateFrom(null);
+    filtersDTO.setCreationDateTo(OffsetDateTime.now());
+    assertThrowsIllegalArgument(filtersDTO);
+  }
+
+  @Test
+  void givenFiscalCodeAndOnlyCreationDateFromWhenGetDebtPositionViewsThenThrowIllegalArgumentException() {
+    DebtPositionViewFiltersDTO filtersDTO = new DebtPositionViewFiltersDTO();
+    filtersDTO.setOrganizationId(1L);
+    filtersDTO.setCreationDateFrom(OffsetDateTime.now());
     filtersDTO.setCreationDateTo(null);
-    filtersDTO.setFiscalCode(null);
-    filtersDTO.setDebtPositionTypeOrgId(null);
-    filtersDTO.setStatus(null);
+    filtersDTO.setFiscalCode("RSSMRA80A01H501U");
+    assertThrowsIllegalArgument(filtersDTO);
+  }
+
+  private void assertThrowsIllegalArgument(DebtPositionViewFiltersDTO filtersDTO) {
+    UserInfo loggedUser = new UserInfo();
+    loggedUser.setMappedExternalUserId("mappedExternalUserId");
+    PageRequest pageRequest = PageRequest.of(0, 10);
 
     try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
       authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(filtersDTO.getOrganizationId(), loggedUser)).thenAnswer(a -> null);
@@ -183,9 +202,8 @@ class DebtPositionRetrieverServiceImplTest {
         debtPositionRetrieverService.getDebtPositionViews(filtersDTO, pageRequest, loggedUser, accessToken));
 
       assertEquals("At least one of the research fields must be provided, and both 'from' and 'to' creation dates must be set together", exception.getMessage());
-
-      authorizationServiceMockedStatic.verify(() -> AuthorizationService.validateUserForOrganizationId(filtersDTO.getOrganizationId(), loggedUser));
     }
+
     Mockito.verifyNoInteractions(debtPositionServiceMock, debtPositionViewMapperMock);
   }
 

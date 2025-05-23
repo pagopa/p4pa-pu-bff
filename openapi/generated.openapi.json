@@ -4774,7 +4774,7 @@
           "multiDebtor" : {
             "type" : "boolean"
           },
-          "flagPagoPaPayment" : {
+          "flagPuPagoPaPayment" : {
             "type" : "boolean"
           },
           "creationDate" : {
@@ -4798,7 +4798,7 @@
             }
           }
         },
-        "required" : [ "debtPositionOrigin", "debtPositionTypeOrgId", "flagPagoPaPayment", "organizationId", "paymentOptions" ]
+        "required" : [ "debtPositionOrigin", "debtPositionTypeOrgId", "flagPuPagoPaPayment", "organizationId", "paymentOptions" ]
       },
       "DebtPositionOrigin" : {
         "type" : "string",
@@ -4892,8 +4892,8 @@
             "type" : "integer",
             "format" : "int64"
           },
-          "ingestionFlowFileGenerateAdvice" : {
-            "type" : "boolean"
+          "sourceFlowName" : {
+            "type" : "string"
           },
           "receiptId" : {
             "type" : "integer",

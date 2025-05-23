@@ -6,6 +6,7 @@ import it.gov.pagopa.pu.bff.dto.InstallmentViewFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedInstallmentView;
 import it.gov.pagopa.pu.bff.mapper.InstallmentViewMapper;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
+import it.gov.pagopa.pu.bff.util.DateUtils;
 import it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentDetailDTO;
 import it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentNoPII;
 import it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentStatus;
@@ -41,8 +42,7 @@ public class InstallmentRetrieverServiceImpl implements InstallmentRetrieverServ
 
   private void validateInstallmentViewFilters(InstallmentViewFiltersDTO filtersDTO) {
     if ((filtersDTO.getDueDate() == null ||
-      (filtersDTO.getDueDate().getFrom() == null && filtersDTO.getDueDate().getTo() == null) ||
-      (filtersDTO.getDueDate().getFrom() == null ^ filtersDTO.getDueDate().getTo() == null)) &&
+      DateUtils.isInvalidRange(filtersDTO.getDueDate().getFrom(), filtersDTO.getDueDate().getTo())) &&
       StringUtils.isBlank(filtersDTO.getIuv()) &&
       StringUtils.isBlank(filtersDTO.getFiscalCode()) &&
       filtersDTO.getDebtPositionTypeOrgId() == null) {

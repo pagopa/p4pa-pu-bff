@@ -10,6 +10,7 @@ import it.gov.pagopa.pu.bff.mapper.ExportFileMapper;
 import it.gov.pagopa.pu.bff.mapper.export_file.PaidExportFileRequestDTOMapper;
 import it.gov.pagopa.pu.bff.mapper.export_file.ReceiptsArchivingExportFileRequestDTOMapper;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
+import it.gov.pagopa.pu.bff.util.DateUtils;
 import it.gov.pagopa.pu.processexecutions.dto.generated.ClassificationsExportFileRequestDTO;
 import it.gov.pagopa.pu.processexecutions.dto.generated.PaymentsReportingExportFileRequestDTO;
 import lombok.extern.slf4j.Slf4j;
@@ -53,11 +54,10 @@ public class ExportFileRetrieverServiceImpl implements
   }
 
   private void validateExportFileFilters(ExportFileFiltersDTO filtersDTO) {
-    if ((filtersDTO.getCreationDate() == null
-      || (filtersDTO.getCreationDate().getFrom() == null && filtersDTO.getCreationDate().getTo() == null)
-      || (filtersDTO.getCreationDate().getFrom() == null ^ filtersDTO.getCreationDate().getTo() == null)) // XOR: only one between getFrom e getTo is null
-      && filtersDTO.getStatus() == null
-      && StringUtils.isBlank(filtersDTO.getFileName())) {
+    if ((filtersDTO.getCreationDate() == null ||
+      DateUtils.isInvalidRange(filtersDTO.getCreationDate().getFrom(), filtersDTO.getCreationDate().getTo())) &&
+      filtersDTO.getStatus() == null &&
+      StringUtils.isBlank(filtersDTO.getFileName())) {
       throw new IllegalArgumentException("At least one of the research fields must be provided, and both 'from' and 'to' dates must be set together");
     }
   }

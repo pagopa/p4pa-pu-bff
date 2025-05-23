@@ -10,6 +10,7 @@ import it.gov.pagopa.pu.bff.exception.InvalidDebtPositionException;
 import it.gov.pagopa.pu.bff.mapper.DebtPositionMapper;
 import it.gov.pagopa.pu.bff.mapper.DebtPositionViewMapper;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
+import it.gov.pagopa.pu.bff.util.DateUtils;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionDTO;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionOrigin;
 import org.apache.commons.lang3.StringUtils;
@@ -68,12 +69,10 @@ public class DebtPositionRetrieverServiceImpl implements DebtPositionRetrieverSe
   }
 
   private void validateDebtPositionViewFilters(DebtPositionViewFiltersDTO filtersDTO) {
-    if (((filtersDTO.getCreationDateFrom() == null && filtersDTO.getCreationDateTo() == null) ||
-        (filtersDTO.getCreationDateFrom() == null ^ filtersDTO.getCreationDateTo() == null)) &&
-        StringUtils.isBlank(filtersDTO.getFiscalCode()) &&
-        filtersDTO.getDebtPositionTypeOrgId() == null &&
-        filtersDTO.getStatus() == null)
-    {
+    if (DateUtils.isInvalidRange(filtersDTO.getCreationDateFrom(), filtersDTO.getCreationDateTo()) &&
+      StringUtils.isBlank(filtersDTO.getFiscalCode()) &&
+      filtersDTO.getDebtPositionTypeOrgId() == null &&
+      filtersDTO.getStatus() == null) {
       throw new IllegalArgumentException("At least one of the research fields must be provided, and both 'from' and 'to' creation dates must be set together");
     }
   }

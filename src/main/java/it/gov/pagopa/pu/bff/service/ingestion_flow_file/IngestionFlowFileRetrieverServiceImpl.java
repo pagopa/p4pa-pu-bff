@@ -6,6 +6,7 @@ import it.gov.pagopa.pu.bff.dto.IngestionFlowFileFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedIngestionFlowFile;
 import it.gov.pagopa.pu.bff.mapper.IngestionFlowFileMapper;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
+import it.gov.pagopa.pu.bff.util.DateUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Pageable;
@@ -27,8 +28,8 @@ public class IngestionFlowFileRetrieverServiceImpl implements IngestionFlowFileR
   @Override
   public PagedIngestionFlowFile getIngestionFlowFiles(IngestionFlowFileFiltersDTO ingestionFlowFileFiltersDTO, Pageable pageable, UserInfo loggedUser, String accessToken) {
     String operatorExternalUserId = null;
-    if(!AuthorizationService.isAdminRole(
-        ingestionFlowFileFiltersDTO.getOrganizationId(), loggedUser)){
+    if (!AuthorizationService.isAdminRole(
+      ingestionFlowFileFiltersDTO.getOrganizationId(), loggedUser)) {
       operatorExternalUserId = loggedUser.getMappedExternalUserId();
     }
 
@@ -36,16 +37,14 @@ public class IngestionFlowFileRetrieverServiceImpl implements IngestionFlowFileR
 
     return ingestionFlowFileMapper.mapToPagedIngestionFlowFile(
       ingestionFlowFileService.getIngestionFlowFiles(
-          ingestionFlowFileFiltersDTO, operatorExternalUserId, pageable, accessToken),
-      loggedUser,accessToken);
+        ingestionFlowFileFiltersDTO, operatorExternalUserId, pageable, accessToken),
+      loggedUser, accessToken);
   }
 
   private void validateIngestionFlowFileFilters(IngestionFlowFileFiltersDTO filtersDTO) {
-    if (((filtersDTO.getCreationDateFrom() == null && filtersDTO.getCreationDateTo() == null)
-      || (filtersDTO.getCreationDateFrom() == null ^ filtersDTO.getCreationDateTo() == null)) // XOR: only one between getCreationDateFrom e getCreationDateTo is null
-      &&  filtersDTO.getStatus() == null
-      &&  StringUtils.isBlank(filtersDTO.getFileName()))
-    {
+    if (DateUtils.isInvalidRange(filtersDTO.getCreationDateFrom(), filtersDTO.getCreationDateTo()) &&
+      filtersDTO.getStatus() == null &&
+      StringUtils.isBlank(filtersDTO.getFileName())) {
       throw new IllegalArgumentException("At least one of the research fields must be provided, and both 'from' and 'to' dates must be set together");
     }
   }

@@ -138,21 +138,17 @@ class DateUtilsTest {
 
   @Test
   void givenOnlyFromDate_thenReturnTrue() {
-    OffsetDateTime from = OffsetDateTime.now();
-    assertTrue(DateUtils.isNullOrInvalidDateRange(from, null));
+    assertTrue(DateUtils.isNullOrInvalidDateRange(OffsetDateTime.now(), null));
   }
 
   @Test
   void givenOnlyToDate_thenReturnTrue() {
-    OffsetDateTime to = OffsetDateTime.now();
-    assertTrue(DateUtils.isNullOrInvalidDateRange(null, to));
+    assertTrue(DateUtils.isNullOrInvalidDateRange(null, OffsetDateTime.now()));
   }
 
   @Test
   void givenBothDatesPresent_thenReturnFalse() {
-    OffsetDateTime from = OffsetDateTime.now().minusDays(1);
-    OffsetDateTime to = OffsetDateTime.now();
-    assertFalse(DateUtils.isNullOrInvalidDateRange(from, to));
+    assertFalse(DateUtils.isNullOrInvalidDateRange(OffsetDateTime.now().minusDays(1), OffsetDateTime.now()));
   }
 
 }

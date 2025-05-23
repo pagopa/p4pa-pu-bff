@@ -3,7 +3,6 @@ package it.gov.pagopa.pu.bff.service.export_flow_file;
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.connector.process_executions.ExportFileService;
 import it.gov.pagopa.pu.bff.dto.ExportFileFiltersDTO;
-import it.gov.pagopa.pu.bff.dto.OffsetDateTimeIntervalFilter;
 import it.gov.pagopa.pu.bff.dto.generated.PagedExportFile;
 import it.gov.pagopa.pu.bff.dto.generated.PaidExportFileRequest;
 import it.gov.pagopa.pu.bff.dto.generated.ReceiptsArchivingExportFileRequest;
@@ -55,18 +54,17 @@ public class ExportFileRetrieverServiceImpl implements
 
   private void validateExportFileFilters(ExportFileFiltersDTO filtersDTO) {
     if ((filtersDTO.getCreationDate() == null
-        || (filtersDTO.getCreationDate().getFrom() == null && filtersDTO.getCreationDate().getTo() == null)
-        || (filtersDTO.getCreationDate().getFrom() == null ^ filtersDTO.getCreationDate().getTo() == null)) // XOR: only one between getFrom e getTo is null
-        && filtersDTO.getStatus() == null
-        && StringUtils.isBlank(filtersDTO.getFileName()))
-    {
+      || (filtersDTO.getCreationDate().getFrom() == null && filtersDTO.getCreationDate().getTo() == null)
+      || (filtersDTO.getCreationDate().getFrom() == null ^ filtersDTO.getCreationDate().getTo() == null)) // XOR: only one between getFrom e getTo is null
+      && filtersDTO.getStatus() == null
+      && StringUtils.isBlank(filtersDTO.getFileName())) {
       throw new IllegalArgumentException("At least one of the research fields must be provided, and both 'from' and 'to' dates must be set together");
     }
   }
 
   @Override
   public void createPaidExportFile(PaidExportFileRequest requestDTO,
-    UserInfo loggedUser, String accessToken) {
+                                   UserInfo loggedUser, String accessToken) {
     AuthorizationService.validateUserForOrganizationId(requestDTO.getOrganizationId(), loggedUser);
     exportFileService.createPaidExportFile(
       paidExportFileRequestDTOMapper.map2ProcessExecutionsDto(requestDTO),
@@ -75,14 +73,14 @@ public class ExportFileRetrieverServiceImpl implements
 
   @Override
   public void createClassificationsExportFile(ClassificationsExportFileRequestDTO requestDTO,
-    UserInfo loggedUser, String accessToken) {
+                                              UserInfo loggedUser, String accessToken) {
     AuthorizationService.validateUserForOrganizationId(requestDTO.getOrganizationId(), loggedUser);
     exportFileService.createClassificationsExportFile(requestDTO, accessToken);
   }
 
   @Override
   public void createPaymentsReportingExportFile(PaymentsReportingExportFileRequestDTO requestDTO,
-    UserInfo loggedUser, String accessToken) {
+                                                UserInfo loggedUser, String accessToken) {
     AuthorizationService.validateUserForOrganizationId(requestDTO.getOrganizationId(), loggedUser);
     exportFileService.createPaymentsReportingExportFile(requestDTO, accessToken);
   }

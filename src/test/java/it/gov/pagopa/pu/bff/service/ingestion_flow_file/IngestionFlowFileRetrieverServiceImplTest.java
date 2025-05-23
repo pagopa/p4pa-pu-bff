@@ -138,6 +138,38 @@ class IngestionFlowFileRetrieverServiceImplTest {
   }
 
   @Test
+  void givenOnlyCreationDateFromWhenGetIngestionFlowFilesThenThrowIllegalArgumentException() {
+    IngestionFlowFileFiltersDTO filtersDTO = new IngestionFlowFileFiltersDTO(
+      1L, null, OffsetDateTime.now().minusDays(2), null, null, null);
+    assertThrowsIllegalArgument(filtersDTO);
+  }
+
+  @Test
+  void givenOnlyCreationDateToWhenGetIngestionFlowFilesThenThrowIllegalArgumentException() {
+    IngestionFlowFileFiltersDTO filtersDTO = new IngestionFlowFileFiltersDTO(
+      1L, null, null, OffsetDateTime.now(), null, null);
+    assertThrowsIllegalArgument(filtersDTO);
+  }
+
+  private void assertThrowsIllegalArgument(IngestionFlowFileFiltersDTO filtersDTO) {
+    String accessToken = "ACCESSTOKEN";
+    UserInfo loggedUser = new UserInfo();
+    loggedUser.setUserId("user-123");
+    Pageable pageable = PageRequest.of(0, 10);
+
+    try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
+      authorizationServiceMockedStatic.when(() -> AuthorizationService.isAdminRole(filtersDTO.getOrganizationId(), loggedUser)).thenReturn(true);
+
+      IllegalArgumentException exception = Assertions.assertThrows(IllegalArgumentException.class, () ->
+        ingestionFlowFileRetrieverService.getIngestionFlowFiles(filtersDTO, pageable, loggedUser, accessToken));
+
+      assertEquals("At least one of the research fields must be provided, and both 'from' and 'to' dates must be set together", exception.getMessage());
+    }
+
+    Mockito.verifyNoInteractions(ingestionFlowFileMapperMock);
+  }
+
+  @Test
   void givenValidCreationDateRangeWhenGetIngestionFlowFilesThenOk() {
     IngestionFlowFileFiltersDTO filtersDTO = new IngestionFlowFileFiltersDTO(
       1L, null, OffsetDateTime.now().minusDays(2), OffsetDateTime.now(), null, null);

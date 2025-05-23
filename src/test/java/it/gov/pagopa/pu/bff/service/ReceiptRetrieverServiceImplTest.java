@@ -133,6 +133,44 @@ class ReceiptRetrieverServiceImplTest {
   }
 
   @Test
+  void givenOnlyPaymentDateTimeFromWhenGetReceiptsThenThrowIllegalArgumentException() {
+    OffsetDateTimeIntervalFilter paymentDateTime = new OffsetDateTimeIntervalFilter(OffsetDateTime.now().minusDays(2), null);
+    ReceiptViewFiltersDTO filtersDTO = new ReceiptViewFiltersDTO(1L, null, null, null, null, null, null, paymentDateTime);
+    assertThrowsIllegalArgument(filtersDTO);
+  }
+
+  @Test
+  void givenOnlyPaymentDateTimeToWhenGetReceiptsThenThrowIllegalArgumentException() {
+    OffsetDateTimeIntervalFilter paymentDateTime = new OffsetDateTimeIntervalFilter(null, OffsetDateTime.now());
+    ReceiptViewFiltersDTO filtersDTO = new ReceiptViewFiltersDTO(1L, null, null, null, null, null, null, paymentDateTime);
+    assertThrowsIllegalArgument(filtersDTO);
+  }
+
+  @Test
+  void givenEmptyPaymentDateTimeIntervalWhenGetReceiptsThenThrowIllegalArgumentException() {
+    OffsetDateTimeIntervalFilter paymentDateTime = new OffsetDateTimeIntervalFilter(null, null);
+    ReceiptViewFiltersDTO filtersDTO = new ReceiptViewFiltersDTO(1L, null, null, null, null, null, null, paymentDateTime);
+    assertThrowsIllegalArgument(filtersDTO);
+  }
+
+  private void assertThrowsIllegalArgument(ReceiptViewFiltersDTO filtersDTO) {
+    UserInfo loggedUser = new UserInfo();
+    loggedUser.setUserId("user-123");
+    Pageable pageable = PageRequest.of(0, 10);
+
+    try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
+      authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(filtersDTO.getOrganizationId(), loggedUser)).thenAnswer(a -> null);
+
+      IllegalArgumentException exception = Assertions.assertThrows(IllegalArgumentException.class, () ->
+        receiptViewService.getReceipts(filtersDTO, pageable, loggedUser, accessToken));
+
+      assertEquals("At least one of the research fields must be provided, and both 'from' and 'to' payment dates must be set together", exception.getMessage());
+    }
+
+    Mockito.verifyNoInteractions(receiptServiceMock, receiptViewMapperMock);
+  }
+
+  @Test
   void givenValidPaymentDateTimeRangeWhenGetReceiptsThenOk() {
     OffsetDateTimeIntervalFilter paymentDateTime = new OffsetDateTimeIntervalFilter(OffsetDateTime.now().minusDays(2), OffsetDateTime.now());
     ReceiptViewFiltersDTO filtersDTO = new ReceiptViewFiltersDTO(1L, null, null, null, null, null, null, paymentDateTime);

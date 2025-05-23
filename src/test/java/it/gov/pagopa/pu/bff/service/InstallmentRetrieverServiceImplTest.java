@@ -109,6 +109,49 @@ class InstallmentRetrieverServiceImplTest {
   }
 
   @Test
+  void givenOnlyDueDateFromWhenGetInstallmentsThenThrowIllegalArgumentException() {
+    InstallmentViewFiltersDTO filtersDTO = new InstallmentViewFiltersDTO();
+    filtersDTO.setOrganizationId(1L);
+    filtersDTO.setDueDate(new OffsetDateTimeIntervalFilter(OffsetDateTime.now().minusDays(5), null));
+    assertThrowsIllegalArgument(filtersDTO);
+  }
+
+  @Test
+  void givenOnlyDueDateToWhenGetInstallmentsThenThrowIllegalArgumentException() {
+    InstallmentViewFiltersDTO filtersDTO = new InstallmentViewFiltersDTO();
+    filtersDTO.setOrganizationId(1L);
+    filtersDTO.setDueDate(new OffsetDateTimeIntervalFilter(null, OffsetDateTime.now()));
+    assertThrowsIllegalArgument(filtersDTO);
+  }
+
+  @Test
+  void givenEmptyDueDateIntervalWhenGetInstallmentsThenThrowIllegalArgumentException() {
+    InstallmentViewFiltersDTO filtersDTO = new InstallmentViewFiltersDTO();
+    filtersDTO.setOrganizationId(1L);
+    filtersDTO.setDueDate(new OffsetDateTimeIntervalFilter(null, null));
+    assertThrowsIllegalArgument(filtersDTO);
+  }
+
+  private void assertThrowsIllegalArgument(InstallmentViewFiltersDTO filtersDTO) {
+    UserInfo loggedUser = new UserInfo();
+    loggedUser.setUserId("user-123");
+    Pageable pageable = PageRequest.of(0, 10);
+
+    try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
+      authorizationServiceMockedStatic
+        .when(() -> AuthorizationService.validateUserForOrganizationId(filtersDTO.getOrganizationId(), loggedUser))
+        .thenAnswer(a -> null);
+
+      IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () ->
+        installmentRetrieverService.getInstallments(filtersDTO, pageable, loggedUser, accessToken));
+
+      assertEquals("At least one of the research fields must be provided, and both 'from' and 'to' due dates must be set together", exception.getMessage());
+    }
+
+    Mockito.verifyNoInteractions(installmentServiceMock, installmentViewMapperMock);
+  }
+
+  @Test
   void givenValidDueDateRangeWhenGetInstallmentsThenOk() {
     InstallmentViewFiltersDTO filtersDTO = new InstallmentViewFiltersDTO();
     filtersDTO.setOrganizationId(1L);

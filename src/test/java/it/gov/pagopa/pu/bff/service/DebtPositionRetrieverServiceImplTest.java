@@ -163,6 +163,33 @@ class DebtPositionRetrieverServiceImplTest {
   }
 
   @Test
+  void givenNoFiltersWhenGetDebtPositionViewsThenThrowIllegalArgumentException() {
+    UserInfo loggedUser = new UserInfo();
+    loggedUser.setMappedExternalUserId("mappedExternalUserId");
+    PageRequest pageRequest = PageRequest.of(0, 10);
+
+    DebtPositionViewFiltersDTO filtersDTO = new DebtPositionViewFiltersDTO();
+    filtersDTO.setOrganizationId(1L);
+    filtersDTO.setCreationDateFrom(null);
+    filtersDTO.setCreationDateTo(null);
+    filtersDTO.setFiscalCode(null);
+    filtersDTO.setDebtPositionTypeOrgId(null);
+    filtersDTO.setStatus(null);
+
+    try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
+      authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(filtersDTO.getOrganizationId(), loggedUser)).thenAnswer(a -> null);
+
+      IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () ->
+        debtPositionRetrieverService.getDebtPositionViews(filtersDTO, pageRequest, loggedUser, accessToken));
+
+      assertEquals("At least one of the research fields must be provided, and both 'from' and 'to' creation dates must be set together", exception.getMessage());
+
+      authorizationServiceMockedStatic.verify(() -> AuthorizationService.validateUserForOrganizationId(filtersDTO.getOrganizationId(), loggedUser));
+    }
+    Mockito.verifyNoInteractions(debtPositionServiceMock, debtPositionViewMapperMock);
+  }
+
+  @Test
   void givenOnlyCreationDateFromWhenGetDebtPositionViewsThenThrowIllegalArgumentException() {
     DebtPositionViewFiltersDTO filtersDTO = new DebtPositionViewFiltersDTO();
     filtersDTO.setOrganizationId(1L);
@@ -177,16 +204,6 @@ class DebtPositionRetrieverServiceImplTest {
     filtersDTO.setOrganizationId(1L);
     filtersDTO.setCreationDateFrom(null);
     filtersDTO.setCreationDateTo(OffsetDateTime.now());
-    assertThrowsIllegalArgument(filtersDTO);
-  }
-
-  @Test
-  void givenFiscalCodeAndOnlyCreationDateFromWhenGetDebtPositionViewsThenThrowIllegalArgumentException() {
-    DebtPositionViewFiltersDTO filtersDTO = new DebtPositionViewFiltersDTO();
-    filtersDTO.setOrganizationId(1L);
-    filtersDTO.setCreationDateFrom(OffsetDateTime.now());
-    filtersDTO.setCreationDateTo(null);
-    filtersDTO.setFiscalCode("RSSMRA80A01H501U");
     assertThrowsIllegalArgument(filtersDTO);
   }
 

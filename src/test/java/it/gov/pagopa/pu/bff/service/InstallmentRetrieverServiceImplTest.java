@@ -57,7 +57,7 @@ class InstallmentRetrieverServiceImplTest {
 
     InstallmentViewFiltersDTO filtersDTO = new InstallmentViewFiltersDTO();
     filtersDTO.setOrganizationId(1L);
-    filtersDTO.setDueDate(new OffsetDateTimeIntervalFilter(OffsetDateTime.now().minusDays(5), null));
+    filtersDTO.setDueDate(new OffsetDateTimeIntervalFilter(OffsetDateTime.now().minusDays(5), OffsetDateTime.now().plusDays(5)));
     Pageable pageable = PageRequest.of(0, 10);
 
     PagedModelInstallmentView pagedModelInstallmentView = new PagedModelInstallmentView();
@@ -101,7 +101,7 @@ class InstallmentRetrieverServiceImplTest {
       IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () ->
         installmentRetrieverService.getInstallments(filtersDTO, pageable, loggedUser, accessToken));
 
-      assertEquals("At least one of the research fields should be inserted", exception.getMessage());
+      assertEquals("At least one of the research fields must be provided, and both 'from' and 'to' due dates must be set together", exception.getMessage());
 
       authorizationServiceMockedStatic.verify(() -> AuthorizationService.validateUserForOrganizationId(filtersDTO.getOrganizationId(), loggedUser));
     }
@@ -109,64 +109,105 @@ class InstallmentRetrieverServiceImplTest {
   }
 
   @Test
-  void givenDueDateToOnlyWhenGetInstallmentsThenOk() {
-    UserInfo loggedUser = new UserInfo();
-    loggedUser.setUserId("user-123");
-
+  void givenOnlyDueDateFromWhenGetInstallmentsThenThrowIllegalArgumentException() {
     InstallmentViewFiltersDTO filtersDTO = new InstallmentViewFiltersDTO();
     filtersDTO.setOrganizationId(1L);
-    filtersDTO.setDueDate(new OffsetDateTimeIntervalFilter(null, OffsetDateTime.now().plusDays(5)));
+    filtersDTO.setDueDate(new OffsetDateTimeIntervalFilter(OffsetDateTime.now().minusDays(5), null));
+    assertThrowsIllegalArgument(filtersDTO);
+  }
+
+  @Test
+  void givenOnlyDueDateToWhenGetInstallmentsThenThrowIllegalArgumentException() {
+    InstallmentViewFiltersDTO filtersDTO = new InstallmentViewFiltersDTO();
+    filtersDTO.setOrganizationId(1L);
+    filtersDTO.setDueDate(new OffsetDateTimeIntervalFilter(null, OffsetDateTime.now()));
+    assertThrowsIllegalArgument(filtersDTO);
+  }
+
+  @Test
+  void givenEmptyDueDateIntervalWhenGetInstallmentsThenThrowIllegalArgumentException() {
+    InstallmentViewFiltersDTO filtersDTO = new InstallmentViewFiltersDTO();
+    filtersDTO.setOrganizationId(1L);
+    filtersDTO.setDueDate(new OffsetDateTimeIntervalFilter(null, null));
+    assertThrowsIllegalArgument(filtersDTO);
+  }
+
+  private void assertThrowsIllegalArgument(InstallmentViewFiltersDTO filtersDTO) {
+    UserInfo loggedUser = new UserInfo();
+    loggedUser.setUserId("user-123");
     Pageable pageable = PageRequest.of(0, 10);
 
-    PagedModelInstallmentView pagedModelInstallmentView = new PagedModelInstallmentView();
-    PagedInstallmentView expectedPagedInstallmentView = new PagedInstallmentView();
-
     try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
-      authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(filtersDTO.getOrganizationId(), loggedUser)).thenAnswer(a -> null);
+      authorizationServiceMockedStatic
+        .when(() -> AuthorizationService.validateUserForOrganizationId(filtersDTO.getOrganizationId(), loggedUser))
+        .thenAnswer(a -> null);
 
-      Mockito.when(installmentServiceMock.getInstallments(filtersDTO, pageable, accessToken))
-        .thenReturn(pagedModelInstallmentView);
+      IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () ->
+        installmentRetrieverService.getInstallments(filtersDTO, pageable, loggedUser, accessToken));
 
-      Mockito.when(installmentViewMapperMock.mapToPagedInstallmentView(pagedModelInstallmentView))
-        .thenReturn(expectedPagedInstallmentView);
-
-      PagedInstallmentView result = installmentRetrieverService.getInstallments(filtersDTO, pageable, loggedUser, accessToken);
-
-      assertNotNull(result);
-      assertSame(expectedPagedInstallmentView, result);
+      assertEquals("At least one of the research fields must be provided, and both 'from' and 'to' due dates must be set together", exception.getMessage());
     }
+
+    Mockito.verifyNoInteractions(installmentServiceMock, installmentViewMapperMock);
+  }
+
+  @Test
+  void givenValidDueDateRangeWhenGetInstallmentsThenOk() {
+    InstallmentViewFiltersDTO filtersDTO = new InstallmentViewFiltersDTO();
+    filtersDTO.setOrganizationId(1L);
+    filtersDTO.setDueDate(new OffsetDateTimeIntervalFilter(OffsetDateTime.now().minusDays(3), OffsetDateTime.now().plusDays(3)));
+    testSingleInstallmentFilterSuccess(filtersDTO);
   }
 
   @Test
   void givenIuvOnlyWhenGetInstallmentsThenOk() {
-    UserInfo loggedUser = new UserInfo();
-    loggedUser.setUserId("user-123");
-
     InstallmentViewFiltersDTO filtersDTO = new InstallmentViewFiltersDTO();
     filtersDTO.setOrganizationId(1L);
     filtersDTO.setIuv("IUV123");
+    testSingleInstallmentFilterSuccess(filtersDTO);
+  }
+
+  @Test
+  void givenFiscalCodeOnlyWhenGetInstallmentsThenOk() {
+    InstallmentViewFiltersDTO filtersDTO = new InstallmentViewFiltersDTO();
+    filtersDTO.setOrganizationId(1L);
+    filtersDTO.setFiscalCode("RSSMRA80A01H501U");
+    testSingleInstallmentFilterSuccess(filtersDTO);
+  }
+
+  @Test
+  void givenDebtPositionTypeOrgIdOnlyWhenGetInstallmentsThenOk() {
+    InstallmentViewFiltersDTO filtersDTO = new InstallmentViewFiltersDTO();
+    filtersDTO.setOrganizationId(1L);
+    filtersDTO.setDebtPositionTypeOrgId(99L);
+    testSingleInstallmentFilterSuccess(filtersDTO);
+  }
+
+  private void testSingleInstallmentFilterSuccess(InstallmentViewFiltersDTO filtersDTO) {
+    UserInfo loggedUser = new UserInfo();
+    loggedUser.setUserId("user-123");
 
     Pageable pageable = PageRequest.of(0, 10);
-
-    PagedModelInstallmentView pagedModelInstallmentView = new PagedModelInstallmentView();
-    PagedInstallmentView expectedPagedInstallmentView = new PagedInstallmentView();
+    PagedModelInstallmentView pagedModel = new PagedModelInstallmentView();
+    PagedInstallmentView expected = new PagedInstallmentView();
 
     try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
-      authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(filtersDTO.getOrganizationId(), loggedUser)).thenAnswer(a -> null);
+      authorizationServiceMockedStatic
+        .when(() -> AuthorizationService.validateUserForOrganizationId(filtersDTO.getOrganizationId(), loggedUser))
+        .thenAnswer(a -> null);
 
       Mockito.when(installmentServiceMock.getInstallments(filtersDTO, pageable, accessToken))
-        .thenReturn(pagedModelInstallmentView);
+        .thenReturn(pagedModel);
 
-      Mockito.when(installmentViewMapperMock.mapToPagedInstallmentView(pagedModelInstallmentView))
-        .thenReturn(expectedPagedInstallmentView);
+      Mockito.when(installmentViewMapperMock.mapToPagedInstallmentView(pagedModel))
+        .thenReturn(expected);
 
       PagedInstallmentView result = installmentRetrieverService.getInstallments(filtersDTO, pageable, loggedUser, accessToken);
 
       assertNotNull(result);
-      assertSame(expectedPagedInstallmentView, result);
+      assertSame(expected, result);
     }
   }
-
 
   @Test
   void givenInvalidUserWhenGetInstallmentsThenAuthorizationDeniedException() {

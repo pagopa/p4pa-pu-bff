@@ -153,7 +153,7 @@ class ExportFileRetrieverServiceImplTest {
       IllegalArgumentException exception = Assertions.assertThrows(IllegalArgumentException.class, () ->
         exportFileRetrieverService.getExportFiles(filtersDTO, pageable, loggedUser, accessToken));
 
-      assertEquals("At least one of the research fields should be inserted", exception.getMessage());
+      assertEquals("At least one of the research fields must be provided, and both 'from' and 'to' dates must be set together", exception.getMessage());
 
       authorizationServiceMockedStatic.verify(() -> AuthorizationService.isAdminRole(filtersDTO.getOrganizationId(), loggedUser));
     }
@@ -161,15 +161,8 @@ class ExportFileRetrieverServiceImplTest {
   }
 
   @Test
-  void givenCreationDateFromOnlyWhenGetExportFilesThenOk() {
-    OffsetDateTimeIntervalFilter creationDate = new OffsetDateTimeIntervalFilter(OffsetDateTime.now().minusDays(1), null);
-    ExportFileFiltersDTO filtersDTO = new ExportFileFiltersDTO(1L, null, creationDate, null, null);
-    testSingleExportFileFilterSuccess(filtersDTO);
-  }
-
-  @Test
-  void givenCreationDateToOnlyWhenGetExportFilesThenOk() {
-    OffsetDateTimeIntervalFilter creationDate = new OffsetDateTimeIntervalFilter(null, OffsetDateTime.now());
+  void givenValidCreationDateRangeWhenGetExportFilesThenOk() {
+    OffsetDateTimeIntervalFilter creationDate = new OffsetDateTimeIntervalFilter(OffsetDateTime.now().minusDays(2), OffsetDateTime.now());
     ExportFileFiltersDTO filtersDTO = new ExportFileFiltersDTO(1L, null, creationDate, null, null);
     testSingleExportFileFilterSuccess(filtersDTO);
   }

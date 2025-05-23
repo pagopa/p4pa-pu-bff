@@ -129,7 +129,7 @@ class IngestionFlowFileRetrieverServiceImplTest {
       IllegalArgumentException exception = Assertions.assertThrows(IllegalArgumentException.class, () ->
         ingestionFlowFileRetrieverService.getIngestionFlowFiles(filtersDTO, pageable, loggedUser, accessToken));
 
-      assertEquals("At least one of the research fields should be inserted", exception.getMessage());
+      assertEquals("At least one of the research fields must be provided, and both 'from' and 'to' dates must be set together", exception.getMessage());
 
       authorizationServiceMockedStatic.verify(() -> AuthorizationService.isAdminRole(filtersDTO.getOrganizationId(), loggedUser));
     }
@@ -138,16 +138,9 @@ class IngestionFlowFileRetrieverServiceImplTest {
   }
 
   @Test
-  void givenCreationDateFromOnlyWhenGetIngestionFlowFilesThenOk() {
+  void givenValidCreationDateRangeWhenGetIngestionFlowFilesThenOk() {
     IngestionFlowFileFiltersDTO filtersDTO = new IngestionFlowFileFiltersDTO(
-      1L, null, OffsetDateTime.now().minusDays(1), null, null, null);
-    testSingleIngestionFlowFileFilterSuccess(filtersDTO);
-  }
-
-  @Test
-  void givenCreationDateToOnlyWhenGetIngestionFlowFilesThenOk() {
-    IngestionFlowFileFiltersDTO filtersDTO = new IngestionFlowFileFiltersDTO(
-      1L, null, null, OffsetDateTime.now(), null, null);
+      1L, null, OffsetDateTime.now().minusDays(2), OffsetDateTime.now(), null, null);
     testSingleIngestionFlowFileFilterSuccess(filtersDTO);
   }
 

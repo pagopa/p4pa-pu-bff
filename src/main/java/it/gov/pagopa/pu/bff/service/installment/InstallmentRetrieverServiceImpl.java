@@ -1,6 +1,6 @@
 package it.gov.pagopa.pu.bff.service.installment;
 
-import  it.gov.pagopa.pu.auth.dto.generated.UserInfo;
+import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.connector.debt_position.InstallmentService;
 import it.gov.pagopa.pu.bff.dto.InstallmentViewFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedInstallmentView;
@@ -41,11 +41,12 @@ public class InstallmentRetrieverServiceImpl implements InstallmentRetrieverServ
 
   private void validateInstallmentViewFilters(InstallmentViewFiltersDTO filtersDTO) {
     if ((filtersDTO.getDueDate() == null ||
-      (filtersDTO.getDueDate().getFrom() == null && filtersDTO.getDueDate().getTo() == null)) &&
+      (filtersDTO.getDueDate().getFrom() == null && filtersDTO.getDueDate().getTo() == null) ||
+      (filtersDTO.getDueDate().getFrom() == null ^ filtersDTO.getDueDate().getTo() == null)) &&
       StringUtils.isBlank(filtersDTO.getIuv()) &&
       StringUtils.isBlank(filtersDTO.getFiscalCode()) &&
       filtersDTO.getDebtPositionTypeOrgId() == null) {
-      throw new IllegalArgumentException("At least one of the research fields should be inserted");
+      throw new IllegalArgumentException("At least one of the research fields must be provided, and both 'from' and 'to' due dates must be set together");
     }
   }
 

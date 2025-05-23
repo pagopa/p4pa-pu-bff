@@ -3,6 +3,7 @@ package it.gov.pagopa.pu.bff.service.export_flow_file;
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.connector.process_executions.ExportFileService;
 import it.gov.pagopa.pu.bff.dto.ExportFileFiltersDTO;
+import it.gov.pagopa.pu.bff.dto.OffsetDateTimeIntervalFilter;
 import it.gov.pagopa.pu.bff.dto.generated.PagedExportFile;
 import it.gov.pagopa.pu.bff.dto.generated.PaidExportFileRequest;
 import it.gov.pagopa.pu.bff.dto.generated.ReceiptsArchivingExportFileRequest;
@@ -53,13 +54,13 @@ public class ExportFileRetrieverServiceImpl implements
   }
 
   private void validateExportFileFilters(ExportFileFiltersDTO filtersDTO) {
-    boolean isCreationDateEmpty = filtersDTO.getCreationDate() == null ||
-      (filtersDTO.getCreationDate().getFrom() == null && filtersDTO.getCreationDate().getTo() == null);
-
-    if (isCreationDateEmpty &&
-      filtersDTO.getStatus() == null &&
-      StringUtils.isBlank(filtersDTO.getFileName())) {
-      throw new IllegalArgumentException("At least one of the research fields should be inserted");
+    if ((filtersDTO.getCreationDate() == null
+        || (filtersDTO.getCreationDate().getFrom() == null && filtersDTO.getCreationDate().getTo() == null)
+        || (filtersDTO.getCreationDate().getFrom() == null ^ filtersDTO.getCreationDate().getTo() == null)) // XOR: only one between getFrom e getTo is null
+        && filtersDTO.getStatus() == null
+        && StringUtils.isBlank(filtersDTO.getFileName()))
+    {
+      throw new IllegalArgumentException("At least one of the research fields must be provided, and both 'from' and 'to' dates must be set together");
     }
   }
 

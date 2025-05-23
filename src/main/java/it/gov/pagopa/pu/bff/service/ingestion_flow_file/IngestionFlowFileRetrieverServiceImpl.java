@@ -41,12 +41,13 @@ public class IngestionFlowFileRetrieverServiceImpl implements IngestionFlowFileR
   }
 
   private void validateIngestionFlowFileFilters(IngestionFlowFileFiltersDTO filtersDTO) {
-    boolean isCreationDateEmpty = filtersDTO.getCreationDateFrom() == null && filtersDTO.getCreationDateTo() == null;
-
-    if (isCreationDateEmpty &&
-      filtersDTO.getStatus() == null &&
-      StringUtils.isBlank(filtersDTO.getFileName())) {
-      throw new IllegalArgumentException("At least one of the research fields should be inserted");
+    if (((filtersDTO.getCreationDateFrom() == null && filtersDTO.getCreationDateTo() == null)
+      || (filtersDTO.getCreationDateFrom() == null ^ filtersDTO.getCreationDateTo() == null)) // XOR: only one between getCreationDateFrom e getCreationDateTo is null
+      &&  filtersDTO.getStatus() == null
+      &&  StringUtils.isBlank(filtersDTO.getFileName()))
+    {
+      throw new IllegalArgumentException("At least one of the research fields must be provided, and both 'from' and 'to' dates must be set together");
     }
   }
+
 }

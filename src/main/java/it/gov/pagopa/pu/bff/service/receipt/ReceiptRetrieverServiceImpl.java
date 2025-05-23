@@ -36,15 +36,17 @@ public class ReceiptRetrieverServiceImpl implements ReceiptRetrieverService {
   }
 
   private void validateReceiptViewFilters(ReceiptViewFiltersDTO filtersDTO) {
-    if (filtersDTO.getReceiptOrigin() == null &&
-      StringUtils.isBlank(filtersDTO.getIuv()) &&
-      StringUtils.isBlank(filtersDTO.getIur()) &&
-      StringUtils.isBlank(filtersDTO.getIud()) &&
-      filtersDTO.getDebtPositionTypeOrgId() == null &&
-      (filtersDTO.getPaymentDateTime() == null ||
-        (filtersDTO.getPaymentDateTime().getFrom() == null &&
-          filtersDTO.getPaymentDateTime().getTo() == null))) {
-      throw new IllegalArgumentException("At least one of the research fields should be inserted");
+    if (
+      filtersDTO.getReceiptOrigin() == null &&
+        StringUtils.isBlank(filtersDTO.getIuv()) &&
+        StringUtils.isBlank(filtersDTO.getIur()) &&
+        StringUtils.isBlank(filtersDTO.getIud()) &&
+        filtersDTO.getDebtPositionTypeOrgId() == null &&
+        (filtersDTO.getPaymentDateTime() == null ||
+          (filtersDTO.getPaymentDateTime().getFrom() == null && filtersDTO.getPaymentDateTime().getTo() == null) ||
+          (filtersDTO.getPaymentDateTime().getFrom() == null ^ filtersDTO.getPaymentDateTime().getTo() == null))) // XOR: only one between getFrom e getTo is null
+    {
+      throw new IllegalArgumentException("At least one of the research fields must be provided, and both 'from' and 'to' payment dates must be set together");
     }
   }
 

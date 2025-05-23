@@ -182,7 +182,7 @@ class DebtPositionRetrieverServiceImplTest {
       IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () ->
         debtPositionRetrieverService.getDebtPositionViews(filtersDTO, pageRequest, loggedUser, accessToken));
 
-      assertEquals("At least one of the research fields should be inserted", exception.getMessage());
+      assertEquals("At least one of the research fields must be provided, and both 'from' and 'to' creation dates must be set together", exception.getMessage());
 
       authorizationServiceMockedStatic.verify(() -> AuthorizationService.validateUserForOrganizationId(filtersDTO.getOrganizationId(), loggedUser));
     }
@@ -190,17 +190,10 @@ class DebtPositionRetrieverServiceImplTest {
   }
 
   @Test
-  void givenCreationDateFromOnlyWhenGetDebtPositionViewsThenOk() {
+  void givenValidCreationDateRangeWhenGetDebtPositionViewsThenOk() {
     DebtPositionViewFiltersDTO filtersDTO = new DebtPositionViewFiltersDTO();
     filtersDTO.setOrganizationId(1L);
     filtersDTO.setCreationDateFrom(OffsetDateTime.now().minusDays(5));
-    testSingleFilterSuccess(filtersDTO);
-  }
-
-  @Test
-  void givenCreationDateToOnlyWhenGetDebtPositionViewsThenOk() {
-    DebtPositionViewFiltersDTO filtersDTO = new DebtPositionViewFiltersDTO();
-    filtersDTO.setOrganizationId(1L);
     filtersDTO.setCreationDateTo(OffsetDateTime.now());
     testSingleFilterSuccess(filtersDTO);
   }

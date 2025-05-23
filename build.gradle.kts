@@ -133,7 +133,8 @@ tasks.register("dependenciesBuild") {
     "openApiGenerateDEBTPOSITIONS",
     "openApiGeneratePROCESSEXECUTIONS",
     "openApiGenerateCLASSIFICATION",
-    "openApiGeneratePAGOPAPAYMENTS"
+    "openApiGeneratePAGOPAPAYMENTS",
+    "openApiGenerateREGISTRIES"
   )
 }
 
@@ -194,7 +195,8 @@ tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>("ope
     "ClassificationsEnum" to "it.gov.pagopa.pu.classification.dto.generated.ClassificationsEnum",
     "DebtPositionOrigin" to "it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionOrigin",
     "LocalDateInterval" to "it.gov.pagopa.pu.bff.dto.LocalDateIntervalFilter",
-    "Taxonomy" to "it.gov.pagopa.pu.organization.dto.generated.Taxonomy"
+    "Taxonomy" to "it.gov.pagopa.pu.organization.dto.generated.Taxonomy",
+    "DebtPositionRegistry" to "it.gov.pagopa.pu.registries.dto.generated.DebtPositionRegistry"
   ))
   configOptions.set(mapOf(
     "dateLibrary" to "java8",
@@ -380,6 +382,31 @@ tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>("ope
   ))
   importMappings.set(mapOf(
     "Resource" to "org.springframework.core.io.Resource"
+  ))
+  library.set("resttemplate")
+}
+
+tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>("openApiGenerateREGISTRIES") {
+  group = "openapi"
+  description = "description"
+
+  generatorName.set("java")
+  remoteInputSpec.set("https://raw.githubusercontent.com/pagopa/p4pa-registries/refs/heads/$targetEnv/openapi/generated.openapi.json")
+  outputDir.set("$projectDir/build/generated")
+  apiPackage.set("it.gov.pagopa.pu.registries.controller.generated")
+  modelPackage.set("it.gov.pagopa.pu.registries.dto.generated")
+  configOptions.set(mapOf(
+    "swaggerAnnotations" to "false",
+    "openApiNullable" to "false",
+    "dateLibrary" to "java8",
+    "useSpringBoot3" to "true",
+    "useJakartaEe" to "true",
+    "useBeanValidation" to "true",
+    "serializationLibrary" to "jackson",
+    "generateSupportingFiles" to "true",
+    "generateConstructorWithAllArgs" to "true",
+    "generatedConstructorWithRequiredArgs" to "true",
+    "additionalModelTypeAnnotations" to "@lombok.experimental.SuperBuilder(toBuilder = true)"
   ))
   library.set("resttemplate")
 }

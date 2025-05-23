@@ -127,6 +127,11 @@ rest:
     max-attempts: "\${PAGOPA_PAYMENTS_MAX_ATTEMPTS:3}" # It's counting also the first attempt
     wait-time-millis: "\${PAGOPA_PAYMENTS_WAIT_TIME_MILLIS:500}"
     print-body-when-error: "\${PAGOPA_PAYMENTS_PRINT_BODY_WHEN_ERROR:true}"
+  registries:
+    base-url: "\${REGISTRIES_BASE_URL:}"
+    max-attempts: "\${REGISTRIES_MAX_ATTEMPTS:3}" # It's counting also the first attempt
+    wait-time-millis: "\${REGISTRIES_WAIT_TIME_MILLIS:500}"
+    print-body-when-error: "\${REGISTRIES_PRINT_BODY_WHEN_ERROR:true}"
 
 cache:
   organization:

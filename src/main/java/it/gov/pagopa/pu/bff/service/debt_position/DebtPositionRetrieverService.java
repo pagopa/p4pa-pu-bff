@@ -5,6 +5,7 @@ import it.gov.pagopa.pu.bff.dto.DebtPositionViewFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.generated.DebtPositionDetailDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedDebtPositionView;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionDTO;
+import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Pageable;
 
 public interface DebtPositionRetrieverService {
@@ -27,5 +28,7 @@ public interface DebtPositionRetrieverService {
    * @return {@code true} if physically deleted, {@code false} if logically deleted
    */
   boolean deleteDebtPosition(Long organizationId, Long debtPositionId, UserInfo loggedUser, String accessToken);
+
+  Resource getDebtPositionNoticesZip(Long organizationId, Long debtPositionId, UserInfo loggedUser, String accessToken);
 
 }

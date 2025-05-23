@@ -55,7 +55,7 @@ public class ExportFileRetrieverServiceImpl implements
 
   private void validateExportFileFilters(ExportFileFiltersDTO filtersDTO) {
     if ((filtersDTO.getCreationDate() == null ||
-      DateUtils.isInvalidRange(filtersDTO.getCreationDate().getFrom(), filtersDTO.getCreationDate().getTo())) &&
+      DateUtils.isNullOrInvalidDateRange(filtersDTO.getCreationDate().getFrom(), filtersDTO.getCreationDate().getTo())) &&
       filtersDTO.getStatus() == null &&
       StringUtils.isBlank(filtersDTO.getFileName())) {
       throw new IllegalArgumentException("At least one of the research fields must be provided, and both 'from' and 'to' dates must be set together");

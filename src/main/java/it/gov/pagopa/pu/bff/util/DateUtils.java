@@ -48,7 +48,7 @@ public class DateUtils {
   /**
    * Returns true if both dates are null or only one is null
    */
-  public static boolean isInvalidRange(OffsetDateTime from, OffsetDateTime to) {
+  public static boolean isNullOrInvalidDateRange(OffsetDateTime from, OffsetDateTime to) {
     return (from == null && to == null) || (from == null ^ to == null);
   }
 

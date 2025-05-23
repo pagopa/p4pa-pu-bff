@@ -1,23 +1,15 @@
 package it.gov.pagopa.pu.bff.util;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import it.gov.pagopa.pu.bff.dto.LocalDateIntervalFilter;
 import it.gov.pagopa.pu.bff.dto.OffsetDateTimeIntervalFilter;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
-import java.util.TimeZone;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.time.*;
+import java.util.TimeZone;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 class DateUtilsTest {
   @BeforeEach
@@ -137,6 +129,30 @@ class DateUtilsTest {
     assertNotNull(result);
     assertEquals(expected.getFrom(), result.getFrom());
     assertEquals(expected.getTo(), result.getTo());
+  }
+
+  @Test
+  void givenBothDatesNull_thenReturnTrue() {
+    assertTrue(DateUtils.isNullOrInvalidDateRange(null, null));
+  }
+
+  @Test
+  void givenOnlyFromDate_thenReturnTrue() {
+    OffsetDateTime from = OffsetDateTime.now();
+    assertTrue(DateUtils.isNullOrInvalidDateRange(from, null));
+  }
+
+  @Test
+  void givenOnlyToDate_thenReturnTrue() {
+    OffsetDateTime to = OffsetDateTime.now();
+    assertTrue(DateUtils.isNullOrInvalidDateRange(null, to));
+  }
+
+  @Test
+  void givenBothDatesPresent_thenReturnFalse() {
+    OffsetDateTime from = OffsetDateTime.now().minusDays(1);
+    OffsetDateTime to = OffsetDateTime.now();
+    assertFalse(DateUtils.isNullOrInvalidDateRange(from, to));
   }
 
 }

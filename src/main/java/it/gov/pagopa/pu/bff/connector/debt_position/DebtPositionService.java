@@ -28,4 +28,6 @@ public interface DebtPositionService {
    * @return {@code true} if physically deleted, {@code false} if logically deleted
    */
   boolean deleteDebtPosition(Long debtPositionId, String accessToken);
+
+  Long validateOperator(Long debtPositionId, Long organizationId, String operatorExternalUserId, String accessToken);
 }

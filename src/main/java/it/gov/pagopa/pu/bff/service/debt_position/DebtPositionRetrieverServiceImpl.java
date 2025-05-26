@@ -115,7 +115,7 @@ public class DebtPositionRetrieverServiceImpl implements DebtPositionRetrieverSe
 
   @Override
   public Resource getDebtPositionNoticesZip(Long organizationId, Long debtPositionId, UserInfo loggedUser, String accessToken) {
-    // TODO authorization depends on task https://pagopa.atlassian.net/browse/P4ADEV-2972
+    validateOperator(debtPositionId, organizationId, loggedUser, accessToken);
 
     DebtPositionDTO debtPosition = debtPositionService.getDebtPosition(debtPositionId, accessToken);
     if (debtPosition == null) {
@@ -142,6 +142,19 @@ public class DebtPositionRetrieverServiceImpl implements DebtPositionRetrieverSe
     }
 
     return zipFileService.zipper(pdfResources);
+  }
+
+  public void validateOperator(Long debtPositionId, Long organizationId, UserInfo loggedUser, String accessToken) {
+    Long result = debtPositionService.validateOperator(
+      debtPositionId,
+      organizationId,
+      loggedUser.getMappedExternalUserId(),
+      accessToken
+    );
+
+    if (!Long.valueOf(1L).equals(result)) {
+      throw AuthorizationService.buildAuthorizationDeniedException(organizationId, loggedUser);
+    }
   }
 
 }

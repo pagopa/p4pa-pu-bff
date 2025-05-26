@@ -50,4 +50,10 @@ public class DebtPositionServiceImpl implements DebtPositionService {
   public boolean deleteDebtPosition(Long debtPositionId, String accessToken) {
     return client.deleteDebtPosition(debtPositionId, accessToken);
   }
+
+  @Override
+  public Long validateOperator(Long debtPositionId, Long organizationId, String operatorExternalUserId, String accessToken) {
+    return debtPositionSearchClient.validateOperator(debtPositionId, organizationId, operatorExternalUserId, accessToken);
+  }
+
 }

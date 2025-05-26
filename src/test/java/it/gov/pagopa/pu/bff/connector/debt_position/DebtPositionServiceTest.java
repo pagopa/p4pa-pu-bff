@@ -1,5 +1,6 @@
 package it.gov.pagopa.pu.bff.connector.debt_position;
 
+import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.connector.debt_position.client.DebtPositionClient;
 import it.gov.pagopa.pu.bff.connector.debt_position.client.DebtPositionSearchClient;
 import it.gov.pagopa.pu.bff.dto.DebtPositionViewFiltersDTO;
@@ -18,8 +19,8 @@ import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -39,7 +40,7 @@ class DebtPositionServiceTest {
   @Test
   void whenCreateDebtPositionThenInvokeClient() {
     DebtPositionDTO debtPositionDTO = new DebtPositionDTO();
-    Boolean massive = true;
+    boolean massive = true;
     String accessToken = "ACCESSTOKEN";
     DebtPositionDTO expectedResult = new DebtPositionDTO();
 
@@ -105,8 +106,27 @@ class DebtPositionServiceTest {
     when(clientMock.deleteDebtPosition(debtPositionId,accessToken))
       .thenReturn(false);
 
-    Boolean deletedDebtPositionPhysically = service.deleteDebtPosition(debtPositionId, accessToken);
+    boolean deletedDebtPositionPhysically = service.deleteDebtPosition(debtPositionId, accessToken);
 
     assertFalse(deletedDebtPositionPhysically);
+  }
+
+  @Test
+  void whenValidateOperatorThenInvokeClient() {
+    Long debtPositionId = 1L;
+    String accessToken = "ACCESSTOKEN";
+    UserInfo loggedUser = new UserInfo();
+    loggedUser.setMappedExternalUserId("mappedExternalUserId");
+    Long organizationId = 1L;
+
+
+
+    when(debtPositionSearchClientMock.validateOperator(debtPositionId, organizationId, loggedUser.getMappedExternalUserId(), accessToken))
+      .thenReturn(1L);
+
+    Long result = service.validateOperator(debtPositionId, organizationId, loggedUser.getMappedExternalUserId(), accessToken);
+
+    assertNotNull(result);
+    assertEquals(1L, result);
   }
 }

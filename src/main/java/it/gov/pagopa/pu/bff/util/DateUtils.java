@@ -1,21 +1,18 @@
 package it.gov.pagopa.pu.bff.util;
 
+import it.gov.pagopa.pu.bff.dto.LocalDateIntervalFilter;
+import it.gov.pagopa.pu.processexecutions.dto.generated.OffsetDateTimeIntervalFilter;
+
+import java.time.*;
+
 import static it.gov.pagopa.pu.bff.util.Constants.ZONEID;
 
-import it.gov.pagopa.pu.bff.dto.LocalDateIntervalFilter;
-
-import it.gov.pagopa.pu.processexecutions.dto.generated.OffsetDateTimeIntervalFilter;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.OffsetDateTime;
-import java.time.ZoneId;
-
 public class DateUtils {
-  private DateUtils(){}
+  private DateUtils() {
+  }
 
-  public static LocalDateTime toLocalDateTime(OffsetDateTime date){
-    return date!=null?date.atZoneSameInstant(ZoneId.systemDefault()).toLocalDateTime():null;
+  public static LocalDateTime toLocalDateTime(OffsetDateTime date) {
+    return date != null ? date.atZoneSameInstant(ZoneId.systemDefault()).toLocalDateTime() : null;
   }
 
   public static void validateDateFilters(LocalDateIntervalFilter dateFilter, String filterName) {
@@ -47,4 +44,12 @@ public class DateUtils {
       .to(toOffsetDateTimeEndOfTheDay(localDateIntervalFilter.getTo()))
       .build();
   }
+
+  /**
+   * Returns true if both dates are null or only one is null
+   */
+  public static boolean isNullOrInvalidDateRange(OffsetDateTime from, OffsetDateTime to) {
+    return (from == null && to == null) || (from == null ^ to == null);
+  }
+
 }

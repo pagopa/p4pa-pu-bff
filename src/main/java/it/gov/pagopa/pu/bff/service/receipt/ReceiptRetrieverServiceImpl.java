@@ -8,6 +8,7 @@ import it.gov.pagopa.pu.bff.dto.generated.ReceiptDetailDTO;
 import it.gov.pagopa.pu.bff.mapper.ReceiptDetailDTOMapper;
 import it.gov.pagopa.pu.bff.mapper.ReceiptViewMapper;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
+import it.gov.pagopa.pu.bff.util.DateUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -42,9 +43,8 @@ public class ReceiptRetrieverServiceImpl implements ReceiptRetrieverService {
       StringUtils.isBlank(filtersDTO.getIud()) &&
       filtersDTO.getDebtPositionTypeOrgId() == null &&
       (filtersDTO.getPaymentDateTime() == null ||
-        (filtersDTO.getPaymentDateTime().getFrom() == null &&
-          filtersDTO.getPaymentDateTime().getTo() == null))) {
-      throw new IllegalArgumentException("At least one of the research fields should be inserted");
+        DateUtils.isNullOrInvalidDateRange(filtersDTO.getPaymentDateTime().getFrom(), filtersDTO.getPaymentDateTime().getTo()))) {
+      throw new IllegalArgumentException("At least one of the research fields must be provided, and both 'from' and 'to' payment dates must be set together");
     }
   }
 

@@ -17,9 +17,13 @@ import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.time.OffsetDateTime;
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
 class IngestionFlowFileRetrieverServiceImplTest {
@@ -32,7 +36,7 @@ class IngestionFlowFileRetrieverServiceImplTest {
 
   @BeforeEach
   void setUp() {
-    ingestionFlowFileRetrieverService = new IngestionFlowFileRetrieverServiceImpl(ingestionFlowFileServiceMock,ingestionFlowFileMapperMock);
+    ingestionFlowFileRetrieverService = new IngestionFlowFileRetrieverServiceImpl(ingestionFlowFileServiceMock, ingestionFlowFileMapperMock);
   }
 
   @Test
@@ -53,7 +57,7 @@ class IngestionFlowFileRetrieverServiceImplTest {
 
     try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(
       AuthorizationService.class)) {
-      authorizationServiceMockedStatic.when(()->AuthorizationService.isAdminRole(organizationId, userInfo))
+      authorizationServiceMockedStatic.when(() -> AuthorizationService.isAdminRole(organizationId, userInfo))
         .thenReturn(true);
       Mockito.when(ingestionFlowFileServiceMock.getIngestionFlowFiles(
           ingestionFlowFileFilters, null, null, accessToken))
@@ -65,17 +69,17 @@ class IngestionFlowFileRetrieverServiceImplTest {
       PagedIngestionFlowFile result = ingestionFlowFileRetrieverService.getIngestionFlowFiles(
         ingestionFlowFileFilters, null, userInfo, accessToken);
 
-      Assertions.assertNotNull(result);
-      Assertions.assertEquals(expectedResult, result);
-      authorizationServiceMockedStatic.verify(()->AuthorizationService.isAdminRole(organizationId, userInfo));
+      assertNotNull(result);
+      assertEquals(expectedResult, result);
+      authorizationServiceMockedStatic.verify(() -> AuthorizationService.isAdminRole(organizationId, userInfo));
       Mockito.verifyNoMoreInteractions(ingestionFlowFileServiceMock,
         ingestionFlowFileMapperMock);
     }
   }
 
   @Test
-  void givenNoAdminUserWhenGetIngestionFlowFilesThenOk(){
-    String accessToken="ACCESSTOKEN";
+  void givenNoAdminUserWhenGetIngestionFlowFilesThenOk() {
+    String accessToken = "ACCESSTOKEN";
     long organizationId = 1L;
     List<IngestionFlowFileTypeEnum> ingestionFlowFileTypes = List.of(IngestionFlowFileTypeEnum.TREASURY_OPI);
     OffsetDateTime creationDateFrom = OffsetDateTime.now().minusDays(10);
@@ -92,20 +96,122 @@ class IngestionFlowFileRetrieverServiceImplTest {
     PagedIngestionFlowFile expectedResult = new PagedIngestionFlowFile();
 
     try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
-      authorizationServiceMockedStatic.when(()->AuthorizationService.isAdminRole(organizationId, userInfo))
+      authorizationServiceMockedStatic.when(() -> AuthorizationService.isAdminRole(organizationId, userInfo))
         .thenReturn(false);
-      Mockito.when(ingestionFlowFileServiceMock.getIngestionFlowFiles(ingestionFlowFileFilters,operatorExternalId,null,accessToken))
+      Mockito.when(ingestionFlowFileServiceMock.getIngestionFlowFiles(ingestionFlowFileFilters, operatorExternalId, null, accessToken))
         .thenReturn(pagedModelIngestionFlowFile);
-      Mockito.when(ingestionFlowFileMapperMock.mapToPagedIngestionFlowFile(pagedModelIngestionFlowFile,userInfo,accessToken))
+      Mockito.when(ingestionFlowFileMapperMock.mapToPagedIngestionFlowFile(pagedModelIngestionFlowFile, userInfo, accessToken))
         .thenReturn(expectedResult);
 
       PagedIngestionFlowFile result = ingestionFlowFileRetrieverService.getIngestionFlowFiles(
         ingestionFlowFileFilters, null, userInfo, accessToken);
 
-      Assertions.assertNotNull(result);
-      Assertions.assertEquals(expectedResult,result);
-      authorizationServiceMockedStatic.verify(()->AuthorizationService.isAdminRole(organizationId, userInfo));
-      Mockito.verifyNoMoreInteractions(ingestionFlowFileServiceMock,ingestionFlowFileMapperMock);
+      assertNotNull(result);
+      assertEquals(expectedResult, result);
+      authorizationServiceMockedStatic.verify(() -> AuthorizationService.isAdminRole(organizationId, userInfo));
+      Mockito.verifyNoMoreInteractions(ingestionFlowFileServiceMock, ingestionFlowFileMapperMock);
+    }
+  }
+
+  @Test
+  void givenNoFiltersWhenGetIngestionFlowFilesThenThrowIllegalArgumentException() {
+    String accessToken = "ACCESSTOKEN";
+    UserInfo loggedUser = new UserInfo();
+    loggedUser.setUserId("user-123");
+
+    IngestionFlowFileFiltersDTO filtersDTO = new IngestionFlowFileFiltersDTO(
+      1L, null, null, null, null, null);
+    Pageable pageable = PageRequest.of(0, 10);
+
+    try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
+      authorizationServiceMockedStatic.when(() -> AuthorizationService.isAdminRole(filtersDTO.getOrganizationId(), loggedUser)).thenReturn(true);
+
+      IllegalArgumentException exception = Assertions.assertThrows(IllegalArgumentException.class, () ->
+        ingestionFlowFileRetrieverService.getIngestionFlowFiles(filtersDTO, pageable, loggedUser, accessToken));
+
+      assertEquals("At least one of the research fields must be provided, and both 'from' and 'to' dates must be set together", exception.getMessage());
+
+      authorizationServiceMockedStatic.verify(() -> AuthorizationService.isAdminRole(filtersDTO.getOrganizationId(), loggedUser));
+    }
+
+    Mockito.verifyNoInteractions(ingestionFlowFileMapperMock);
+  }
+
+  @Test
+  void givenOnlyCreationDateFromWhenGetIngestionFlowFilesThenThrowIllegalArgumentException() {
+    IngestionFlowFileFiltersDTO filtersDTO = new IngestionFlowFileFiltersDTO(
+      1L, null, OffsetDateTime.now().minusDays(2), null, null, null);
+    assertThrowsIllegalArgument(filtersDTO);
+  }
+
+  @Test
+  void givenOnlyCreationDateToWhenGetIngestionFlowFilesThenThrowIllegalArgumentException() {
+    IngestionFlowFileFiltersDTO filtersDTO = new IngestionFlowFileFiltersDTO(
+      1L, null, null, OffsetDateTime.now(), null, null);
+    assertThrowsIllegalArgument(filtersDTO);
+  }
+
+  private void assertThrowsIllegalArgument(IngestionFlowFileFiltersDTO filtersDTO) {
+    String accessToken = "ACCESSTOKEN";
+    UserInfo loggedUser = new UserInfo();
+    loggedUser.setUserId("user-123");
+    Pageable pageable = PageRequest.of(0, 10);
+
+    try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
+      authorizationServiceMockedStatic.when(() -> AuthorizationService.isAdminRole(filtersDTO.getOrganizationId(), loggedUser)).thenReturn(true);
+
+      IllegalArgumentException exception = Assertions.assertThrows(IllegalArgumentException.class, () ->
+        ingestionFlowFileRetrieverService.getIngestionFlowFiles(filtersDTO, pageable, loggedUser, accessToken));
+
+      assertEquals("At least one of the research fields must be provided, and both 'from' and 'to' dates must be set together", exception.getMessage());
+    }
+
+    Mockito.verifyNoInteractions(ingestionFlowFileMapperMock);
+  }
+
+  @Test
+  void givenValidCreationDateRangeWhenGetIngestionFlowFilesThenOk() {
+    IngestionFlowFileFiltersDTO filtersDTO = new IngestionFlowFileFiltersDTO(
+      1L, null, OffsetDateTime.now().minusDays(2), OffsetDateTime.now(), null, null);
+    testSingleIngestionFlowFileFilterSuccess(filtersDTO);
+  }
+
+  @Test
+  void givenStatusOnlyWhenGetIngestionFlowFilesThenOk() {
+    IngestionFlowFileFiltersDTO filtersDTO = new IngestionFlowFileFiltersDTO(
+      1L, null, null, null, IngestionFlowFileStatus.COMPLETED, null);
+    testSingleIngestionFlowFileFilterSuccess(filtersDTO);
+  }
+
+  @Test
+  void givenFileNameOnlyWhenGetIngestionFlowFilesThenOk() {
+    IngestionFlowFileFiltersDTO filtersDTO = new IngestionFlowFileFiltersDTO(
+      1L, null, null, null, null, "flow_2025.csv");
+    testSingleIngestionFlowFileFilterSuccess(filtersDTO);
+  }
+
+  private void testSingleIngestionFlowFileFilterSuccess(IngestionFlowFileFiltersDTO filtersDTO) {
+    String accessToken = "ACCESSTOKEN";
+    UserInfo loggedUser = new UserInfo();
+    loggedUser.setUserId("user-123");
+    Pageable pageable = PageRequest.of(0, 10);
+
+    PagedModelIngestionFlowFile pagedModel = new PagedModelIngestionFlowFile();
+    PagedIngestionFlowFile expectedPaged = new PagedIngestionFlowFile();
+
+    try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
+      authorizationServiceMockedStatic.when(() -> AuthorizationService.isAdminRole(filtersDTO.getOrganizationId(), loggedUser)).thenReturn(true);
+
+      Mockito.when(ingestionFlowFileServiceMock.getIngestionFlowFiles(filtersDTO, null, pageable, accessToken))
+        .thenReturn(pagedModel);
+
+      Mockito.when(ingestionFlowFileMapperMock.mapToPagedIngestionFlowFile(pagedModel, loggedUser, accessToken))
+        .thenReturn(expectedPaged);
+
+      PagedIngestionFlowFile result = ingestionFlowFileRetrieverService.getIngestionFlowFiles(filtersDTO, pageable, loggedUser, accessToken);
+
+      assertNotNull(result);
+      assertSame(expectedPaged, result);
     }
   }
 }

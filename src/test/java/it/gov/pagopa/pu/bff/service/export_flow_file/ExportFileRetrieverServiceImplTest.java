@@ -5,27 +5,14 @@ import it.gov.pagopa.pu.auth.dto.generated.UserOrganizationRoles;
 import it.gov.pagopa.pu.bff.connector.process_executions.ExportFileService;
 import it.gov.pagopa.pu.bff.dto.ExportFileFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.OffsetDateTimeIntervalFilter;
-import it.gov.pagopa.pu.bff.dto.generated.PagedExportFile;
-import it.gov.pagopa.pu.bff.dto.generated.PaidExportFileRequest;
-import it.gov.pagopa.pu.bff.dto.generated.PaidExportFileRequestFilterFields;
-import it.gov.pagopa.pu.bff.dto.generated.ReceiptsArchivingExportFileRequest;
-import it.gov.pagopa.pu.bff.dto.generated.ReceiptsArchivingExportFileRequestFilterFields;
+import it.gov.pagopa.pu.bff.dto.generated.*;
 import it.gov.pagopa.pu.bff.mapper.ExportFileMapper;
 import it.gov.pagopa.pu.bff.mapper.export_file.PaidExportFileRequestDTOMapper;
 import it.gov.pagopa.pu.bff.mapper.export_file.ReceiptsArchivingExportFileRequestDTOMapper;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
 import it.gov.pagopa.pu.bff.util.TestUtils;
-import it.gov.pagopa.pu.processexecutions.dto.generated.ClassificationsExportFileFilter;
-import it.gov.pagopa.pu.processexecutions.dto.generated.ClassificationsExportFileRequestDTO;
+import it.gov.pagopa.pu.processexecutions.dto.generated.*;
 import it.gov.pagopa.pu.processexecutions.dto.generated.ExportFile.ExportFileTypeEnum;
-import it.gov.pagopa.pu.processexecutions.dto.generated.ExportFileStatus;
-import it.gov.pagopa.pu.processexecutions.dto.generated.PagedModelExportFile;
-import it.gov.pagopa.pu.processexecutions.dto.generated.PaidExportFileRequestDTO;
-import it.gov.pagopa.pu.processexecutions.dto.generated.PaymentsReportingExportFileFilter;
-import it.gov.pagopa.pu.processexecutions.dto.generated.PaymentsReportingExportFileRequestDTO;
-import it.gov.pagopa.pu.processexecutions.dto.generated.ReceiptsArchivingExportFileRequestDTO;
-import java.time.OffsetDateTime;
-import java.util.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -34,6 +21,13 @@ import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+
+import java.time.OffsetDateTime;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
 class ExportFileRetrieverServiceImplTest {
@@ -74,7 +68,7 @@ class ExportFileRetrieverServiceImplTest {
 
     try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(
       AuthorizationService.class)) {
-      authorizationServiceMockedStatic.when(()->AuthorizationService.isAdminRole(organizationId, userInfo))
+      authorizationServiceMockedStatic.when(() -> AuthorizationService.isAdminRole(organizationId, userInfo))
         .thenReturn(true);
       Mockito.when(exportFileServiceMock.getExportFiles(
           exportFileFilters, null, null, accessToken))
@@ -86,17 +80,17 @@ class ExportFileRetrieverServiceImplTest {
       PagedExportFile result = exportFileRetrieverService.getExportFiles(
         exportFileFilters, null, userInfo, accessToken);
 
-      Assertions.assertNotNull(result);
-      Assertions.assertEquals(expectedResult, result);
-      authorizationServiceMockedStatic.verify(()->AuthorizationService.isAdminRole(organizationId, userInfo));
+      assertNotNull(result);
+      assertEquals(expectedResult, result);
+      authorizationServiceMockedStatic.verify(() -> AuthorizationService.isAdminRole(organizationId, userInfo));
       Mockito.verifyNoMoreInteractions(exportFileServiceMock,
         exportFileMapperMock);
     }
   }
 
   @Test
-  void givenNoAdminUserWhenGetExportFilesThenOk(){
-    String accessToken="ACCESSTOKEN";
+  void givenNoAdminUserWhenGetExportFilesThenOk() {
+    String accessToken = "ACCESSTOKEN";
     long organizationId = 1L;
     ExportFileTypeEnum exportFileType = ExportFileTypeEnum.CLASSIFICATIONS;
     OffsetDateTime creationDateFrom = OffsetDateTime.now().minusDays(10);
@@ -113,21 +107,129 @@ class ExportFileRetrieverServiceImplTest {
     PagedExportFile expectedResult = new PagedExportFile();
 
     try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
-      authorizationServiceMockedStatic.when(()->AuthorizationService.isAdminRole(organizationId, userInfo))
+      authorizationServiceMockedStatic.when(() -> AuthorizationService.isAdminRole(organizationId, userInfo))
         .thenReturn(false);
-      Mockito.when(exportFileServiceMock.getExportFiles(exportFileFilters,operatorExternalId,null,accessToken))
+      Mockito.when(exportFileServiceMock.getExportFiles(exportFileFilters, operatorExternalId, null, accessToken))
         .thenReturn(pagedModelExportFile);
-      Mockito.when(exportFileMapperMock.mapToPagedExportFile(pagedModelExportFile,userInfo,accessToken))
+      Mockito.when(exportFileMapperMock.mapToPagedExportFile(pagedModelExportFile, userInfo, accessToken))
         .thenReturn(expectedResult);
 
       PagedExportFile result = exportFileRetrieverService.getExportFiles(
         exportFileFilters, null, userInfo, accessToken);
 
-      Assertions.assertNotNull(result);
-      Assertions.assertEquals(expectedResult,result);
-      authorizationServiceMockedStatic.verify(()->AuthorizationService.isAdminRole(organizationId, userInfo));
+      assertNotNull(result);
+      assertEquals(expectedResult, result);
+      authorizationServiceMockedStatic.verify(() -> AuthorizationService.isAdminRole(organizationId, userInfo));
       Mockito.verifyNoMoreInteractions(exportFileServiceMock,
         exportFileMapperMock);
+    }
+  }
+
+  @Test
+  void givenNoFiltersWhenGetExportFilesThenThrowIllegalArgumentException() {
+    String accessToken = "ACCESSTOKEN";
+    long organizationId = 1L;
+    UserInfo loggedUser = new UserInfo();
+    loggedUser.setUserId("user-123");
+
+    ExportFileFiltersDTO filtersDTO = new ExportFileFiltersDTO(
+      organizationId, null, new OffsetDateTimeIntervalFilter(null, null), null, null
+    );
+    Pageable pageable = PageRequest.of(0, 10);
+
+    try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
+      authorizationServiceMockedStatic.when(() -> AuthorizationService.isAdminRole(filtersDTO.getOrganizationId(), loggedUser)).thenReturn(true);
+
+      IllegalArgumentException exception = Assertions.assertThrows(IllegalArgumentException.class, () ->
+        exportFileRetrieverService.getExportFiles(filtersDTO, pageable, loggedUser, accessToken));
+
+      assertEquals("At least one of the research fields must be provided, and both 'from' and 'to' dates must be set together", exception.getMessage());
+
+      authorizationServiceMockedStatic.verify(() -> AuthorizationService.isAdminRole(filtersDTO.getOrganizationId(), loggedUser));
+    }
+    Mockito.verifyNoInteractions(exportFileMapperMock);
+  }
+
+  @Test
+  void givenOnlyCreationDateFromWhenGetExportFilesThenThrowIllegalArgumentException() {
+    OffsetDateTimeIntervalFilter creationDate = new OffsetDateTimeIntervalFilter(OffsetDateTime.now().minusDays(2), null);
+    ExportFileFiltersDTO filtersDTO = new ExportFileFiltersDTO(1L, null, creationDate, null, null);
+    assertThrowsIllegalArgument(filtersDTO);
+  }
+
+  @Test
+  void givenOnlyCreationDateToWhenGetExportFilesThenThrowIllegalArgumentException() {
+    OffsetDateTimeIntervalFilter creationDate = new OffsetDateTimeIntervalFilter(null, OffsetDateTime.now());
+    ExportFileFiltersDTO filtersDTO = new ExportFileFiltersDTO(1L, null, creationDate, null, null);
+    assertThrowsIllegalArgument(filtersDTO);
+  }
+
+  @Test
+  void givenEmptyCreationDateIntervalWhenGetExportFilesThenThrowIllegalArgumentException() {
+    OffsetDateTimeIntervalFilter creationDate = new OffsetDateTimeIntervalFilter(null, null);
+    ExportFileFiltersDTO filtersDTO = new ExportFileFiltersDTO(1L, null, creationDate, null, null);
+    assertThrowsIllegalArgument(filtersDTO);
+  }
+
+  private void assertThrowsIllegalArgument(ExportFileFiltersDTO filtersDTO) {
+    String accessToken = "ACCESSTOKEN";
+    UserInfo loggedUser = new UserInfo();
+    loggedUser.setUserId("user-123");
+    Pageable pageable = PageRequest.of(0, 10);
+
+    try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
+      authorizationServiceMockedStatic.when(() -> AuthorizationService.isAdminRole(filtersDTO.getOrganizationId(), loggedUser)).thenReturn(true);
+
+      IllegalArgumentException exception = Assertions.assertThrows(IllegalArgumentException.class, () ->
+        exportFileRetrieverService.getExportFiles(filtersDTO, pageable, loggedUser, accessToken));
+
+      assertEquals("At least one of the research fields must be provided, and both 'from' and 'to' dates must be set together", exception.getMessage());
+    }
+
+    Mockito.verifyNoInteractions(exportFileMapperMock);
+  }
+
+  @Test
+  void givenValidCreationDateRangeWhenGetExportFilesThenOk() {
+    OffsetDateTimeIntervalFilter creationDate = new OffsetDateTimeIntervalFilter(OffsetDateTime.now().minusDays(2), OffsetDateTime.now());
+    ExportFileFiltersDTO filtersDTO = new ExportFileFiltersDTO(1L, null, creationDate, null, null);
+    testSingleExportFileFilterSuccess(filtersDTO);
+  }
+
+  @Test
+  void givenStatusOnlyWhenGetExportFilesThenOk() {
+    ExportFileFiltersDTO filtersDTO = new ExportFileFiltersDTO(1L, null, null, ExportFileStatus.COMPLETED, null);
+    testSingleExportFileFilterSuccess(filtersDTO);
+  }
+
+  @Test
+  void givenFileNameOnlyWhenGetExportFilesThenOk() {
+    ExportFileFiltersDTO filtersDTO = new ExportFileFiltersDTO(1L, null, null, null, "report_2025.csv");
+    testSingleExportFileFilterSuccess(filtersDTO);
+  }
+
+  private void testSingleExportFileFilterSuccess(ExportFileFiltersDTO filtersDTO) {
+    String accessToken = "ACCESSTOKEN";
+    UserInfo loggedUser = new UserInfo();
+    loggedUser.setUserId("user-123");
+    Pageable pageable = PageRequest.of(0, 10);
+
+    PagedModelExportFile pagedModelExportFile = new PagedModelExportFile();
+    PagedExportFile expectedPagedExportFile = new PagedExportFile();
+
+    try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
+      authorizationServiceMockedStatic.when(() -> AuthorizationService.isAdminRole(filtersDTO.getOrganizationId(), loggedUser)).thenReturn(true);
+
+      Mockito.when(exportFileServiceMock.getExportFiles(filtersDTO, null, pageable, accessToken))
+        .thenReturn(pagedModelExportFile);
+
+      Mockito.when(exportFileMapperMock.mapToPagedExportFile(pagedModelExportFile, loggedUser, accessToken))
+        .thenReturn(expectedPagedExportFile);
+
+      PagedExportFile result = exportFileRetrieverService.getExportFiles(filtersDTO, pageable, loggedUser, accessToken);
+
+      assertNotNull(result);
+      assertSame(expectedPagedExportFile, result);
     }
   }
 

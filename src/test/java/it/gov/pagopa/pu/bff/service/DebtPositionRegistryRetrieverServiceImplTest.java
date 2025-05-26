@@ -2,6 +2,7 @@ package it.gov.pagopa.pu.bff.service;
 
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.connector.registries.DebtPositionRegistryService;
+import it.gov.pagopa.pu.bff.service.debt_position.DebtPositionRetrieverService;
 import it.gov.pagopa.pu.bff.service.debt_position_registry.DebtPositionRegistryRetrieverService;
 import it.gov.pagopa.pu.bff.service.debt_position_registry.DebtPositionRegistryRetrieverServiceImpl;
 import it.gov.pagopa.pu.bff.util.TestUtils;
@@ -13,7 +14,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.authorization.AuthorizationDeniedException;
@@ -30,6 +30,8 @@ public class DebtPositionRegistryRetrieverServiceImplTest {
     public static final PodamFactory podamFactory = TestUtils.getPodamFactory();
     @Mock
     private DebtPositionRegistryService debtPositionRegistryServiceMock;
+    @Mock
+    private DebtPositionRetrieverService debtPositionRetrieverServiceMock;
 
     private DebtPositionRegistryRetrieverService debtPositionRegistryRetrieverService;
 
@@ -37,13 +39,14 @@ public class DebtPositionRegistryRetrieverServiceImplTest {
 
     @BeforeEach
     void setUp() {
-        debtPositionRegistryRetrieverService = new DebtPositionRegistryRetrieverServiceImpl(debtPositionRegistryServiceMock);
+        debtPositionRegistryRetrieverService = new DebtPositionRegistryRetrieverServiceImpl(debtPositionRegistryServiceMock, debtPositionRetrieverServiceMock);
     }
 
     @AfterEach
     void verifyNoMoreInteractions(){
         Mockito.verifyNoMoreInteractions(
-                debtPositionRegistryServiceMock
+                debtPositionRegistryServiceMock,
+                debtPositionRetrieverServiceMock
         );
     }
 
@@ -58,20 +61,16 @@ public class DebtPositionRegistryRetrieverServiceImplTest {
         CollectionModelDebtPositionRegistry collectionModelDebtPositionRegistry = podamFactory.manufacturePojo(CollectionModelDebtPositionRegistry.class);
         List<DebtPositionRegistry> expectedResult = collectionModelDebtPositionRegistry.getEmbedded().getDebtPositionRegistries();
 
-        try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
-            authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)).thenAnswer(a->null);
+        Mockito.doNothing().when(debtPositionRetrieverServiceMock).validateOperator(debtPositionId, organizationId, loggedUser, accessToken);
+        Mockito.when(debtPositionRegistryServiceMock.findDebtPositionRegistries(debtPositionId,accessToken))
+                .thenReturn(collectionModelDebtPositionRegistry);
 
-            Mockito.when(debtPositionRegistryServiceMock.findDebtPositionRegistries(debtPositionId,accessToken))
-                    .thenReturn(collectionModelDebtPositionRegistry);
+        List<DebtPositionRegistry> result = debtPositionRegistryRetrieverService.getDebtPositionRegistry(organizationId, debtPositionId, loggedUser, accessToken);
 
-            List<DebtPositionRegistry> result = debtPositionRegistryRetrieverService.getDebtPositionRegistry(organizationId, debtPositionId, loggedUser, accessToken);
+        assertNotNull(result);
+        assertSame(expectedResult, result);
 
-            assertNotNull(result);
-            assertSame(expectedResult, result);
-
-            authorizationServiceMockedStatic.verify(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser));
-            Mockito.verifyNoMoreInteractions(debtPositionRegistryServiceMock);
-        }
+        Mockito.verifyNoMoreInteractions(debtPositionRegistryServiceMock);
     }
 
     @Test
@@ -85,20 +84,17 @@ public class DebtPositionRegistryRetrieverServiceImplTest {
         CollectionModelDebtPositionRegistry collectionModelDebtPositionRegistry = podamFactory.manufacturePojo(CollectionModelDebtPositionRegistry.class);
         collectionModelDebtPositionRegistry.setEmbedded(null);
 
-        try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
-            authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)).thenAnswer(a->null);
+        Mockito.doNothing().when(debtPositionRetrieverServiceMock).validateOperator(debtPositionId, organizationId, loggedUser, accessToken);
+        Mockito.when(debtPositionRegistryServiceMock.findDebtPositionRegistries(debtPositionId,accessToken))
+                .thenReturn(collectionModelDebtPositionRegistry);
 
-            Mockito.when(debtPositionRegistryServiceMock.findDebtPositionRegistries(debtPositionId,accessToken))
-                    .thenReturn(collectionModelDebtPositionRegistry);
+        List<DebtPositionRegistry> result = debtPositionRegistryRetrieverService.getDebtPositionRegistry(organizationId, debtPositionId, loggedUser, accessToken);
 
-            List<DebtPositionRegistry> result = debtPositionRegistryRetrieverService.getDebtPositionRegistry(organizationId, debtPositionId, loggedUser, accessToken);
+        assertNotNull(result);
+        assertTrue(CollectionUtils.isEmpty(result));
 
-            assertNotNull(result);
-            assertTrue(CollectionUtils.isEmpty(result));
+        Mockito.verifyNoMoreInteractions(debtPositionRegistryServiceMock);
 
-            authorizationServiceMockedStatic.verify(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser));
-            Mockito.verifyNoMoreInteractions(debtPositionRegistryServiceMock);
-        }
     }
 
     @Test
@@ -110,20 +106,17 @@ public class DebtPositionRegistryRetrieverServiceImplTest {
         Long organizationId=1L;
         Long debtPositionId=2L;
 
-        try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
-            authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)).thenAnswer(a->null);
+        Mockito.doNothing().when(debtPositionRetrieverServiceMock).validateOperator(debtPositionId, organizationId, loggedUser, accessToken);
+        Mockito.when(debtPositionRegistryServiceMock.findDebtPositionRegistries(debtPositionId,accessToken))
+                .thenReturn(null);
 
-            Mockito.when(debtPositionRegistryServiceMock.findDebtPositionRegistries(debtPositionId,accessToken))
-                    .thenReturn(null);
+        List<DebtPositionRegistry> result = debtPositionRegistryRetrieverService.getDebtPositionRegistry(organizationId, debtPositionId, loggedUser, accessToken);
 
-            List<DebtPositionRegistry> result = debtPositionRegistryRetrieverService.getDebtPositionRegistry(organizationId, debtPositionId, loggedUser, accessToken);
+        assertNotNull(result);
+        assertTrue(CollectionUtils.isEmpty(result));
 
-            assertNotNull(result);
-            assertTrue(CollectionUtils.isEmpty(result));
+        Mockito.verifyNoMoreInteractions(debtPositionRegistryServiceMock);
 
-            authorizationServiceMockedStatic.verify(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser));
-            Mockito.verifyNoMoreInteractions(debtPositionRegistryServiceMock);
-        }
     }
 
     @Test
@@ -135,15 +128,11 @@ public class DebtPositionRegistryRetrieverServiceImplTest {
         Long organizationId=1L;
         Long debtPositionId=2L;
 
-        try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
-            authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser))
-                    .thenThrow(new AuthorizationDeniedException("Access denied"));
+      Mockito.doThrow(new AuthorizationDeniedException("Access denied")).when(debtPositionRetrieverServiceMock).validateOperator(debtPositionId, organizationId, loggedUser, accessToken);
 
-            Assertions.assertThrows(AuthorizationDeniedException.class, () ->
-                    debtPositionRegistryRetrieverService.getDebtPositionRegistry(organizationId, debtPositionId, loggedUser, accessToken));
+      Assertions.assertThrows(AuthorizationDeniedException.class, () ->
+              debtPositionRegistryRetrieverService.getDebtPositionRegistry(organizationId, debtPositionId, loggedUser, accessToken));
 
-            authorizationServiceMockedStatic.verify(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser));
-        }
         Mockito.verifyNoInteractions(debtPositionRegistryServiceMock);
     }
 }

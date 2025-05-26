@@ -447,6 +447,7 @@ class DebtPositionRetrieverServiceImplTest {
 
     FileResourceDTO fileResourceDTO = new FileResourceDTO(expectedResult, "filename");
 
+    Mockito.when(debtPositionServiceMock.validateOperator(debtPositionId, organizationId, loggedUser.getMappedExternalUserId(), accessToken)).thenReturn(1L);
     Mockito.when(debtPositionServiceMock.getDebtPosition(debtPositionId, accessToken)).thenReturn(debtPositionDTO);
     Mockito.when(printPaymentNoticeServiceMock.generateNotice(iuv, debtPositionDTO, accessToken)).thenReturn(fileResourceDTO);
 
@@ -468,6 +469,7 @@ class DebtPositionRetrieverServiceImplTest {
 
     DebtPositionDTO debtPositionDTO = new DebtPositionDTO();
 
+    Mockito.when(debtPositionServiceMock.validateOperator(debtPositionId, organizationId, loggedUser.getMappedExternalUserId(), accessToken)).thenReturn(1L);
     Mockito.when(debtPositionServiceMock.getDebtPosition(debtPositionId, accessToken)).thenReturn(debtPositionDTO);
 
     Resource result = debtPositionRetrieverService.getDebtPositionNoticesZip(organizationId, debtPositionId, loggedUser, accessToken);
@@ -483,11 +485,27 @@ class DebtPositionRetrieverServiceImplTest {
     Long organizationId = 1L;
     Long debtPositionId = 2L;
 
+    Mockito.when(debtPositionServiceMock.validateOperator(debtPositionId, organizationId, loggedUser.getMappedExternalUserId(), accessToken)).thenReturn(1L);
     Mockito.when(debtPositionServiceMock.getDebtPosition(debtPositionId, accessToken)).thenReturn(null);
 
     Resource result = debtPositionRetrieverService.getDebtPositionNoticesZip(organizationId, debtPositionId, loggedUser, accessToken);
 
     assertNull(result);
+  }
+
+  @Test
+  void givenInvalidUserWhenGetDebtPositionNoticesZipThenThrowAuthorizationException() {
+    UserInfo loggedUser = new UserInfo();
+    loggedUser.setMappedExternalUserId("mappedExternalUserId");
+    Long organizationId = 1L;
+    Long debtPositionId = 2L;
+
+    Mockito.when(debtPositionServiceMock.validateOperator(debtPositionId, organizationId, loggedUser.getMappedExternalUserId(), accessToken)).thenReturn(0L);
+
+    AuthorizationDeniedException ex = assertThrows(AuthorizationDeniedException.class, () ->
+      debtPositionRetrieverService.getDebtPositionNoticesZip(organizationId, debtPositionId, loggedUser, accessToken));
+
+    assertEquals("Access denied on organizationId 1 to user mappedExternalUserId", ex.getMessage());
   }
 
 }

@@ -34,6 +34,7 @@ import java.time.OffsetDateTime;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.verifyNoInteractions;
 
 @ExtendWith(MockitoExtension.class)
 class DebtPositionRetrieverServiceImplTest {
@@ -193,7 +194,7 @@ class DebtPositionRetrieverServiceImplTest {
 
       authorizationServiceMockedStatic.verify(() -> AuthorizationService.validateUserForOrganizationId(filtersDTO.getOrganizationId(), loggedUser));
     }
-    Mockito.verifyNoInteractions(debtPositionServiceMock, debtPositionViewMapperMock);
+    verifyNoInteractions(debtPositionServiceMock, debtPositionViewMapperMock);
   }
 
   @Test
@@ -228,7 +229,7 @@ class DebtPositionRetrieverServiceImplTest {
       assertEquals("At least one of the research fields must be provided, and both 'from' and 'to' creation dates must be set together", exception.getMessage());
     }
 
-    Mockito.verifyNoInteractions(debtPositionServiceMock, debtPositionViewMapperMock);
+    verifyNoInteractions(debtPositionServiceMock, debtPositionViewMapperMock);
   }
 
   @Test
@@ -575,5 +576,172 @@ class DebtPositionRetrieverServiceImplTest {
 
     AuthorizationDeniedException ex = assertThrows(AuthorizationDeniedException.class, () -> debtPositionRetrieverService.validateOperator(debtPositionId, organizationId, loggedUser, accessToken));
     assertEquals("Access denied on organizationId 1 to user operatorExternalUserId", ex.getMessage());
+  }
+  @Test
+  void givenValidUserWhenManageDebtPositionInstallmentsThenOk() {
+    UserInfo loggedUser = new UserInfo();
+    loggedUser.setMappedExternalUserId("mappedExternalUserId");
+    Long organizationId = 1L;
+    Long debtPositionId = 2L;
+    ManageDebtPositionDTO manageDebtPositionDTO = podamFactory.manufacturePojo(ManageDebtPositionDTO.class);
+    DebtPositionDTO updatedDebtPosition = podamFactory.manufacturePojo(DebtPositionDTO.class);
+    updatedDebtPosition.setStatus(DebtPositionStatus.DRAFT);
+    DebtPositionDTO expectedResult = podamFactory.manufacturePojo(DebtPositionDTO.class);
+
+    try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
+      authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)).thenAnswer(a -> null);
+      Mockito.when(debtPositionServiceMock.hasOperatorGrantOnDebtPosition(debtPositionId, organizationId, loggedUser.getMappedExternalUserId(), accessToken)).thenReturn(true);
+
+      Mockito.when(debtPositionServiceMock.manageDebtPositionInstallments(debtPositionId, manageDebtPositionDTO, accessToken))
+              .thenReturn(updatedDebtPosition);
+      Mockito.when(debtPositionServiceMock.publishDebtPosition(debtPositionId, accessToken))
+              .thenReturn(expectedResult);
+
+      DebtPositionDTO result = debtPositionRetrieverService.manageDebtPositionInstallments(organizationId,debtPositionId,manageDebtPositionDTO,true,loggedUser, accessToken);
+
+      assertNotNull(result);
+      assertEquals(expectedResult,result);
+      authorizationServiceMockedStatic.verify(() -> AuthorizationService.validateUserForOrganizationId(
+              organizationId, loggedUser));
+    }
+  }
+
+  @Test
+  void givenValidUserAndNoPublishingDebtPositionWhenManageDebtPositionInstallmentsThenReturnUpdatedDebtPosition() {
+    UserInfo loggedUser = new UserInfo();
+    loggedUser.setMappedExternalUserId("mappedExternalUserId");
+    Long organizationId = 1L;
+    Long debtPositionId = 2L;
+    ManageDebtPositionDTO manageDebtPositionDTO = podamFactory.manufacturePojo(ManageDebtPositionDTO.class);
+    DebtPositionDTO expectedResult = podamFactory.manufacturePojo(DebtPositionDTO.class);
+    expectedResult.setStatus(DebtPositionStatus.DRAFT);
+
+    try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
+      authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)).thenAnswer(a -> null);
+      Mockito.when(debtPositionServiceMock.hasOperatorGrantOnDebtPosition(debtPositionId, organizationId, loggedUser.getMappedExternalUserId(), accessToken)).thenReturn(true);
+
+      Mockito.when(debtPositionServiceMock.manageDebtPositionInstallments(debtPositionId, manageDebtPositionDTO, accessToken))
+              .thenReturn(expectedResult);
+
+      DebtPositionDTO result = debtPositionRetrieverService.manageDebtPositionInstallments(organizationId,debtPositionId,manageDebtPositionDTO,false,loggedUser, accessToken);
+
+      assertNotNull(result);
+      assertEquals(expectedResult,result);
+      authorizationServiceMockedStatic.verify(() -> AuthorizationService.validateUserForOrganizationId(
+              organizationId, loggedUser));
+    }
+  }
+
+  @Test
+  void givenValidUserAndWrongPublishStatusWhenManageDebtPositionInstallmentsThenReturnUpdatedDebtPosition() {
+    UserInfo loggedUser = new UserInfo();
+    loggedUser.setMappedExternalUserId("mappedExternalUserId");
+    Long organizationId = 1L;
+    Long debtPositionId = 2L;
+    ManageDebtPositionDTO manageDebtPositionDTO = podamFactory.manufacturePojo(ManageDebtPositionDTO.class);
+    DebtPositionDTO expectedResult = podamFactory.manufacturePojo(DebtPositionDTO.class);
+    expectedResult.setStatus(DebtPositionStatus.UNPAID);
+
+    try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
+      authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)).thenAnswer(a -> null);
+      Mockito.when(debtPositionServiceMock.hasOperatorGrantOnDebtPosition(debtPositionId, organizationId, loggedUser.getMappedExternalUserId(), accessToken)).thenReturn(true);
+
+      Mockito.when(debtPositionServiceMock.manageDebtPositionInstallments(debtPositionId, manageDebtPositionDTO, accessToken))
+              .thenReturn(expectedResult);
+
+      DebtPositionDTO result = debtPositionRetrieverService.manageDebtPositionInstallments(organizationId,debtPositionId,manageDebtPositionDTO,true,loggedUser, accessToken);
+
+      assertNotNull(result);
+      assertEquals(expectedResult,result);
+      authorizationServiceMockedStatic.verify(() -> AuthorizationService.validateUserForOrganizationId(
+              organizationId, loggedUser));
+    }
+  }
+
+  @Test
+  void givenValidUserAndErrorPublishingDebtPositionWhenManageDebtPositionInstallmentsThenReturnUpdatedDebtPosition() {
+    UserInfo loggedUser = new UserInfo();
+    loggedUser.setMappedExternalUserId("mappedExternalUserId");
+    Long organizationId = 1L;
+    Long debtPositionId = 2L;
+    ManageDebtPositionDTO manageDebtPositionDTO = podamFactory.manufacturePojo(ManageDebtPositionDTO.class);
+    DebtPositionDTO expectedResult = podamFactory.manufacturePojo(DebtPositionDTO.class);
+    expectedResult.setStatus(DebtPositionStatus.DRAFT);
+
+    try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
+      authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)).thenAnswer(a -> null);
+      Mockito.when(debtPositionServiceMock.hasOperatorGrantOnDebtPosition(debtPositionId, organizationId, loggedUser.getMappedExternalUserId(), accessToken)).thenReturn(true);
+
+      Mockito.when(debtPositionServiceMock.manageDebtPositionInstallments(debtPositionId, manageDebtPositionDTO, accessToken))
+              .thenReturn(expectedResult);
+      Mockito.when(debtPositionServiceMock.publishDebtPosition(debtPositionId, accessToken))
+              .thenReturn(null);
+
+      DebtPositionDTO result = debtPositionRetrieverService.manageDebtPositionInstallments(organizationId,debtPositionId,manageDebtPositionDTO,true,loggedUser, accessToken);
+
+      assertNotNull(result);
+      assertEquals(expectedResult,result);
+      authorizationServiceMockedStatic.verify(() -> AuthorizationService.validateUserForOrganizationId(
+              organizationId, loggedUser));
+    }
+  }
+
+  @Test
+  void givenValidUserAndNoDebtPositionWhenManageDebtPositionInstallmentsThenReturnNull() {
+    UserInfo loggedUser = new UserInfo();
+    loggedUser.setMappedExternalUserId("mappedExternalUserId");
+    Long organizationId = 1L;
+    Long debtPositionId = 2L;
+    ManageDebtPositionDTO manageDebtPositionDTO = podamFactory.manufacturePojo(ManageDebtPositionDTO.class);
+
+    try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
+      authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)).thenAnswer(a -> null);
+      Mockito.when(debtPositionServiceMock.hasOperatorGrantOnDebtPosition(debtPositionId, organizationId, loggedUser.getMappedExternalUserId(), accessToken)).thenReturn(true);
+
+      Mockito.when(debtPositionServiceMock.manageDebtPositionInstallments(debtPositionId, manageDebtPositionDTO, accessToken))
+              .thenReturn(null);
+
+      DebtPositionDTO result = debtPositionRetrieverService.manageDebtPositionInstallments(organizationId,debtPositionId,manageDebtPositionDTO,true,loggedUser, accessToken);
+
+      assertNull(result);
+
+      authorizationServiceMockedStatic.verify(() -> AuthorizationService.validateUserForOrganizationId(
+              organizationId, loggedUser));
+    }
+  }
+
+  @Test
+  void givenInvalidUserWhenManageDebtPositionInstallmentsThenAuthorizationDeniedException() {
+    UserInfo loggedUser = new UserInfo();
+    Long organizationId = 1L;
+    Long debtPositionId = 2L;
+    ManageDebtPositionDTO manageDebtPositionDTO = podamFactory.manufacturePojo(ManageDebtPositionDTO.class);
+
+    try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
+      authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser))
+              .thenThrow(new AuthorizationDeniedException("Access denied"));
+
+      assertThrows(AuthorizationDeniedException.class, () ->
+              debtPositionRetrieverService.manageDebtPositionInstallments(organizationId, debtPositionId, manageDebtPositionDTO, true, loggedUser, accessToken));
+
+      authorizationServiceMockedStatic.verify(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser));
+    }
+  }
+
+  @Test
+  void givenInvalidOperatorWhenManageDebtPositionInstallmentsThenAuthorizationDeniedException() {
+    UserInfo loggedUser = new UserInfo();
+    Long organizationId = 1L;
+    Long debtPositionId = 2L;
+    ManageDebtPositionDTO manageDebtPositionDTO = podamFactory.manufacturePojo(ManageDebtPositionDTO.class);
+
+    try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
+      authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)).thenAnswer(a -> null);
+      authorizationServiceMockedStatic.when(() -> AuthorizationService.buildAuthorizationDeniedException(organizationId, loggedUser)).thenReturn(new AuthorizationDeniedException(""));
+      Mockito.when(debtPositionServiceMock.hasOperatorGrantOnDebtPosition(debtPositionId, organizationId, loggedUser.getMappedExternalUserId(), accessToken)).thenReturn(false);
+
+      assertThrows(AuthorizationDeniedException.class, () ->
+              debtPositionRetrieverService.manageDebtPositionInstallments(organizationId, debtPositionId, manageDebtPositionDTO, true, loggedUser, accessToken));
+    }
   }
 }

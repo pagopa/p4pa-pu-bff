@@ -5,6 +5,7 @@ import it.gov.pagopa.pu.bff.dto.DebtPositionViewFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.generated.DebtPositionDetailDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedDebtPositionView;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionDTO;
+import it.gov.pagopa.pu.debtpositions.dto.generated.ManageDebtPositionDTO;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Pageable;
 
@@ -32,4 +33,5 @@ public interface DebtPositionRetrieverService {
   Resource getDebtPositionNoticesZip(Long organizationId, Long debtPositionId, UserInfo loggedUser, String accessToken);
 
   void validateOperator(Long debtPositionId, Long organizationId, UserInfo loggedUser, String accessToken);
+  DebtPositionDTO manageDebtPositionInstallments(Long organizationId, Long debtPositionId, ManageDebtPositionDTO manageDebtPositionDTO, Boolean publish, UserInfo loggedUser, String accessToken);
 }

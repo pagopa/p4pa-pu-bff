@@ -10,7 +10,7 @@ import it.gov.pagopa.pu.bff.service.debt_position.DebtPositionRetrieverService;
 import it.gov.pagopa.pu.bff.util.TestUtils;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionDTO;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionStatus;
-import java.time.OffsetDateTime;
+import it.gov.pagopa.pu.debtpositions.dto.generated.ManageDebtPositionDTO;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,6 +26,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import uk.co.jemos.podam.api.PodamFactory;
+
+import java.time.OffsetDateTime;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -247,6 +249,50 @@ class DebtPositionControllerTest {
     ResponseEntity<Resource> response = debtPositionController.getUnpaidPaymentNoticeZip(organizationId, debtPositionId);
 
     assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+    assertNull(response.getBody());
+  }
+
+  @Test
+  void givenExistingDebtPositionWhenManageDebtPositionInstallmentsThenOk() {
+    long organizationId = 1L;
+    Long debtPositionId = 2L;
+    ManageDebtPositionDTO manageDebtPositionDTO = podamFactory.manufacturePojo(ManageDebtPositionDTO.class);
+    DebtPositionDTO expectedResult = podamFactory.manufacturePojo(DebtPositionDTO.class);
+
+    Mockito.when(debtPositionRetrieverServiceMock.manageDebtPositionInstallments(
+                    organizationId,
+                    debtPositionId,
+                    manageDebtPositionDTO,true, loggedUser,accessToken))
+            .thenReturn(expectedResult);
+
+    ResponseEntity<DebtPositionDTO> response = debtPositionController.manageDebtPositionInstallments(
+            organizationId,
+            debtPositionId,
+            manageDebtPositionDTO,true);
+
+    Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
+    Assertions.assertNotNull(response.getBody());
+    Assertions.assertSame(expectedResult, response.getBody());
+  }
+
+  @Test
+  void givenNoDebtPositionWhenManageDebtPositionInstallmentsThenNotFound() {
+    long organizationId = 1L;
+    Long debtPositionId = 2L;
+    ManageDebtPositionDTO manageDebtPositionDTO = podamFactory.manufacturePojo(ManageDebtPositionDTO.class);
+
+    Mockito.when(debtPositionRetrieverServiceMock.manageDebtPositionInstallments(
+                    organizationId,
+                    debtPositionId,
+                    manageDebtPositionDTO,true, loggedUser,accessToken))
+            .thenReturn(null);
+
+    ResponseEntity<DebtPositionDTO> response = debtPositionController.manageDebtPositionInstallments(
+            organizationId,
+            debtPositionId,
+            manageDebtPositionDTO,true);
+
+    Assertions.assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     assertNull(response.getBody());
   }
 }

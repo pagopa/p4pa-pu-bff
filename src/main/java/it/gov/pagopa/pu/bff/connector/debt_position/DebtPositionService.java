@@ -2,6 +2,7 @@ package it.gov.pagopa.pu.bff.connector.debt_position;
 
 import it.gov.pagopa.pu.bff.dto.DebtPositionViewFiltersDTO;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionDTO;
+import it.gov.pagopa.pu.debtpositions.dto.generated.ManageDebtPositionDTO;
 import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelDebtPosition;
 import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelDebtPositionView;
 import org.springframework.data.domain.Pageable;
@@ -30,4 +31,7 @@ public interface DebtPositionService {
   boolean deleteDebtPosition(Long debtPositionId, String accessToken);
 
   boolean hasOperatorGrantOnDebtPosition(Long debtPositionId, Long organizationId, String operatorExternalUserId, String accessToken);
+
+  DebtPositionDTO manageDebtPositionInstallments(Long debtPositionId, ManageDebtPositionDTO manageDebtPositionDTO, String accessToken);
+  DebtPositionDTO publishDebtPosition(Long debtPositionId, String accessToken);
 }

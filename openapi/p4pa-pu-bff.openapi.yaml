@@ -129,6 +129,27 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/ServiceStatus'
+  /workflow/taxonomy/synchronize:
+    get:
+      tags:
+        - Taxonomy
+      operationId: synchronizeTaxonomy
+      description: Synchronize Taxonomy with PagoPa
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: 'WorkflowCreatedDTO'
+        '401':
+          description: Unauthorized - Missing or invalid token
+        '403':
+          description: Forbidden - Access denied
+        '409':
+          description: Conflict
+        '500':
+          description: Internal Server Error
   /taxonomy/{taxonomyId}:
     get:
       tags:

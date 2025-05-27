@@ -28,6 +28,8 @@ import it.gov.pagopa.pu.organization.dto.generated.CollectionModelTaxonomyServic
 import it.gov.pagopa.pu.organization.dto.generated.PagedModelTaxonomy;
 import it.gov.pagopa.pu.organization.dto.generated.Taxonomy;
 import java.util.List;
+
+import it.gov.pagopa.pu.workflowhub.dto.generated.WorkflowCreatedDTO;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -220,4 +222,14 @@ class TaxonomyRetrieverServiceImplTest {
     assertEquals(expected, result);
   }
 
+  @Test
+  void testSynchronizeTaxonomy() {
+    WorkflowCreatedDTO expected = new WorkflowCreatedDTO();
+
+    Mockito.when(taxonomyServiceMock.synchronizeTaxonomy("token")).thenReturn(expected);
+
+    WorkflowCreatedDTO result = taxonomyService.synchronizeTaxonomy("token");
+
+    assertEquals(expected, result);
+  }
 }

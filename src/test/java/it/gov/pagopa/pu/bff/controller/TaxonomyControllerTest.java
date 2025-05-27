@@ -1,24 +1,14 @@
 package it.gov.pagopa.pu.bff.controller;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import it.gov.pagopa.pu.bff.controller.generated.TaxonomyApi;
-import it.gov.pagopa.pu.bff.dto.generated.PagedTaxonomy;
-import it.gov.pagopa.pu.bff.dto.generated.TaxonomyCodeDTO;
-import it.gov.pagopa.pu.bff.dto.generated.TaxonomyCollectionReasonDTO;
-import it.gov.pagopa.pu.bff.dto.generated.TaxonomyMacroAreaCodeDTO;
-import it.gov.pagopa.pu.bff.dto.generated.TaxonomyOrganizationTypeDTO;
-import it.gov.pagopa.pu.bff.dto.generated.TaxonomyServiceTypeCodeDTO;
+import it.gov.pagopa.pu.bff.dto.generated.*;
 import it.gov.pagopa.pu.bff.security.JwtAuthenticationFilter;
 import it.gov.pagopa.pu.bff.service.broker.BrokerRetrieverService;
 import it.gov.pagopa.pu.bff.service.taxonomy.TaxonomyRetrieverService;
 import it.gov.pagopa.pu.bff.util.TestUtils;
-import java.util.ArrayList;
-import java.util.List;
-
 import it.gov.pagopa.pu.organization.dto.generated.Taxonomy;
+import it.gov.pagopa.pu.workflowhub.dto.generated.WorkflowCreatedDTO;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -31,7 +21,13 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
-@WebMvcTest(value = TaxonomyApi.class,excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE,
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+@WebMvcTest(value = TaxonomyApi.class, excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE,
   classes = JwtAuthenticationFilter.class))
 @AutoConfigureMockMvc(addFilters = false)
 class TaxonomyControllerTest {
@@ -78,26 +74,26 @@ class TaxonomyControllerTest {
   void testGetCollectionReason() throws Exception {
     TestUtils.addSampleUserIntoSecurityContext();
     List<TaxonomyCollectionReasonDTO> res = new ArrayList<>();
-    Mockito.when(serviceMock.getCollectionReason("organizationType","macroAreaCode","serviceTypeCode","token")).thenReturn(res);
+    Mockito.when(serviceMock.getCollectionReason("organizationType", "macroAreaCode", "serviceTypeCode", "token")).thenReturn(res);
     MvcResult result = mockMvc.perform(get("/bff/taxonomy/getCollectionReason")
-        .queryParam("organizationType","organizationType")
-        .queryParam("macroAreaCode","macroAreaCode")
-        .queryParam("serviceTypeCode","serviceTypeCode"))
+        .queryParam("organizationType", "organizationType")
+        .queryParam("macroAreaCode", "macroAreaCode")
+        .queryParam("serviceTypeCode", "serviceTypeCode"))
       .andExpect(status().isOk())
       .andReturn();
-    Assertions.assertEquals(result.getResponse().getContentAsString(),objectMapper.writeValueAsString(res));
+    Assertions.assertEquals(result.getResponse().getContentAsString(), objectMapper.writeValueAsString(res));
   }
 
   @Test
   void testGetMacroArea() throws Exception {
     TestUtils.addSampleUserIntoSecurityContext();
     List<TaxonomyMacroAreaCodeDTO> res = new ArrayList<>();
-    Mockito.when(serviceMock.getMacroArea("organizationType","token")).thenReturn(res);
+    Mockito.when(serviceMock.getMacroArea("organizationType", "token")).thenReturn(res);
     MvcResult result = mockMvc.perform(get("/bff/taxonomy/getMacroArea")
-        .queryParam("organizationType","organizationType"))
+        .queryParam("organizationType", "organizationType"))
       .andExpect(status().isOk())
       .andReturn();
-    Assertions.assertEquals(result.getResponse().getContentAsString(),objectMapper.writeValueAsString(res));
+    Assertions.assertEquals(result.getResponse().getContentAsString(), objectMapper.writeValueAsString(res));
   }
 
   @Test
@@ -108,36 +104,37 @@ class TaxonomyControllerTest {
     MvcResult result = mockMvc.perform(get("/bff/taxonomy/getOrganizationTypes"))
       .andExpect(status().isOk())
       .andReturn();
-    Assertions.assertEquals(result.getResponse().getContentAsString(),objectMapper.writeValueAsString(res));
+    Assertions.assertEquals(result.getResponse().getContentAsString(), objectMapper.writeValueAsString(res));
   }
 
   @Test
   void testGetServiceType() throws Exception {
     TestUtils.addSampleUserIntoSecurityContext();
     List<TaxonomyServiceTypeCodeDTO> res = new ArrayList<>();
-    Mockito.when(serviceMock.getServiceType("organizationType","macroAreaCode","token")).thenReturn(res);
+    Mockito.when(serviceMock.getServiceType("organizationType", "macroAreaCode", "token")).thenReturn(res);
     MvcResult result = mockMvc.perform(get("/bff/taxonomy/getServiceType")
-        .queryParam("organizationType","organizationType")
-        .queryParam("macroAreaCode","macroAreaCode"))
+        .queryParam("organizationType", "organizationType")
+        .queryParam("macroAreaCode", "macroAreaCode"))
       .andExpect(status().isOk())
       .andReturn();
-    Assertions.assertEquals(result.getResponse().getContentAsString(),objectMapper.writeValueAsString(res));
+    Assertions.assertEquals(result.getResponse().getContentAsString(), objectMapper.writeValueAsString(res));
   }
 
   @Test
   void testGetTaxonomyCode() throws Exception {
     TestUtils.addSampleUserIntoSecurityContext();
     List<TaxonomyCodeDTO> res = new ArrayList<>();
-    Mockito.when(serviceMock.getTaxonomyCode("organizationType","macroAreaCode","serviceTypeCode","collectionReason","token")).thenReturn(res);
+    Mockito.when(serviceMock.getTaxonomyCode("organizationType", "macroAreaCode", "serviceTypeCode", "collectionReason", "token")).thenReturn(res);
     MvcResult result = mockMvc.perform(get("/bff/taxonomy/getTaxonomyCode")
-        .queryParam("organizationType","organizationType")
-        .queryParam("macroAreaCode","macroAreaCode")
-        .queryParam("serviceTypeCode","serviceTypeCode")
-        .queryParam("collectionReason","collectionReason"))
+        .queryParam("organizationType", "organizationType")
+        .queryParam("macroAreaCode", "macroAreaCode")
+        .queryParam("serviceTypeCode", "serviceTypeCode")
+        .queryParam("collectionReason", "collectionReason"))
       .andExpect(status().isOk())
       .andReturn();
-    Assertions.assertEquals(result.getResponse().getContentAsString(),objectMapper.writeValueAsString(res));
+    Assertions.assertEquals(result.getResponse().getContentAsString(), objectMapper.writeValueAsString(res));
   }
+
   @Test
   void testGetTaxonomies() throws Exception {
     TestUtils.addSampleUserIntoSecurityContext();
@@ -145,13 +142,28 @@ class TaxonomyControllerTest {
     Mockito.when(serviceMock.getTaxonomies(Mockito.eq("organizationType"), Mockito.eq("macroAreaCode"), Mockito.eq("serviceTypeCode"), Mockito.eq("collectionReason"), Mockito.any(), Mockito.eq("token")))
       .thenReturn(res);
     MvcResult result = mockMvc.perform(get("/bff/taxonomy")
-        .queryParam("organizationType","organizationType")
-        .queryParam("macroAreaCode","macroAreaCode")
-        .queryParam("serviceTypeCode","serviceTypeCode")
-        .queryParam("collectionReason","collectionReason"))
+        .queryParam("organizationType", "organizationType")
+        .queryParam("macroAreaCode", "macroAreaCode")
+        .queryParam("serviceTypeCode", "serviceTypeCode")
+        .queryParam("collectionReason", "collectionReason"))
       .andExpect(status().isOk())
       .andReturn();
     Assertions.assertEquals(objectMapper.writeValueAsString(res), result.getResponse().getContentAsString());
+  }
+
+  @Test
+  void testSynchronizeTaxonomy() throws Exception {
+    TestUtils.addSampleUserIntoSecurityContext();
+    WorkflowCreatedDTO mockResponse = new WorkflowCreatedDTO();
+
+    Mockito.when(serviceMock.synchronizeTaxonomy(Mockito.eq("token")))
+      .thenReturn(mockResponse);
+
+    MvcResult result = mockMvc.perform(get("/bff/workflow/taxonomy/synchronize"))
+      .andExpect(status().isOk())
+      .andReturn();
+
+    Assertions.assertEquals(objectMapper.writeValueAsString(mockResponse), result.getResponse().getContentAsString());
   }
 
 }

@@ -15,6 +15,8 @@ import it.gov.pagopa.pu.bff.mapper.taxonomy.TaxonomyOrganizationTypeMapper;
 import it.gov.pagopa.pu.bff.mapper.taxonomy.TaxonomyServiceTypeCodeMapper;
 import it.gov.pagopa.pu.organization.dto.generated.Taxonomy;
 import java.util.List;
+
+import it.gov.pagopa.pu.workflowhub.dto.generated.WorkflowCreatedDTO;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -117,5 +119,10 @@ public class TaxonomyRetrieverServiceImpl implements TaxonomyRetrieverService {
     return taxonomyMapper.mapToPagedTaxonomy(
       taxonomyService.getTaxonomies(organizationType, macroAreaCode, serviceTypeCode, collectionReason, pageable, accessToken)
     );
+  }
+
+  @Override
+  public WorkflowCreatedDTO synchronizeTaxonomy(String accessToken) {
+    return taxonomyService.synchronizeTaxonomy(accessToken);
   }
 }

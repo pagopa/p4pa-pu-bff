@@ -1,8 +1,10 @@
 package it.gov.pagopa.pu.bff.connector.organization.client;
 
 import it.gov.pagopa.pu.bff.connector.organization.config.OrganizationApisHolder;
+import it.gov.pagopa.pu.bff.connector.workflow_hub.config.WorkflowHubApisHolder;
 import it.gov.pagopa.pu.bff.util.PageUtils;
 import it.gov.pagopa.pu.organization.dto.generated.*;
+import it.gov.pagopa.pu.workflowhub.dto.generated.WorkflowCreatedDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -12,9 +14,11 @@ import org.springframework.web.client.HttpClientErrorException;
 @Slf4j
 public class TaxonomyClient {
   private final OrganizationApisHolder organizationApisHolder;
+  private final WorkflowHubApisHolder workflowHubApisHolder;
 
-  public TaxonomyClient(OrganizationApisHolder organizationApisHolder) {
+  public TaxonomyClient(OrganizationApisHolder organizationApisHolder, WorkflowHubApisHolder workflowHubApisHolder) {
     this.organizationApisHolder = organizationApisHolder;
+    this.workflowHubApisHolder = workflowHubApisHolder;
   }
 
   public Taxonomy getTaxonomyDetail(Long taxonomyId, String accessToken) {
@@ -70,6 +74,11 @@ public class TaxonomyClient {
         PageUtils.getPageNumber(pageable),
         PageUtils.getPageSize(pageable),
         PageUtils.getSortList(pageable));
+  }
+
+  public WorkflowCreatedDTO synchronizeTaxonomy(String accessToken) {
+    return workflowHubApisHolder.getTaxonomyApi(accessToken)
+      .synchronizeTaxonomy();
   }
 
 }

@@ -1,9 +1,13 @@
 package it.gov.pagopa.pu.bff.connector.organization.client;
 
 import it.gov.pagopa.pu.bff.connector.organization.config.OrganizationApisHolder;
+import it.gov.pagopa.pu.bff.connector.workflow_hub.config.WorkflowHubApisHolder;
 import it.gov.pagopa.pu.organization.controller.generated.*;
 import it.gov.pagopa.pu.organization.dto.generated.*;
 import java.util.Collections;
+
+import it.gov.pagopa.pu.workflowhub.controller.generated.TaxonomyApi;
+import it.gov.pagopa.pu.workflowhub.dto.generated.WorkflowCreatedDTO;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -21,8 +25,9 @@ import org.springframework.web.client.HttpClientErrorException;
 class TaxonomyClientTest {
 
   @Mock
-  private OrganizationApisHolder organizationApisHolder;
-
+  private OrganizationApisHolder organizationApisHolderMock;
+  @Mock
+  private WorkflowHubApisHolder workflowHubApisHolderMock;
   @Mock
   private TaxonomySearchControllerApi taxonomySearchControllerApiMock;
   @Mock
@@ -37,18 +42,20 @@ class TaxonomyClientTest {
   private TaxonomyCodeDtoSearchControllerApi taxonomyCodeDtoSearchControllerApiMock;
   @Mock
   private TaxonomyEntityControllerApi taxonomyEntityControllerApiMock;
+  @Mock
+  private TaxonomyApi taxonomyApiMock;
 
   private TaxonomyClient taxonomyClient;
 
   @BeforeEach
   void setUp() {
-    taxonomyClient = new TaxonomyClient(organizationApisHolder);
+    taxonomyClient = new TaxonomyClient(organizationApisHolderMock, workflowHubApisHolderMock);
   }
 
   @AfterEach
   void verifyNoMoreInteractions() {
     Mockito.verifyNoMoreInteractions(
-      organizationApisHolder,
+      organizationApisHolderMock,
       taxonomySearchControllerApiMock,
       taxonomyCollectionReasonDtoSearchControllerApiMock,
       taxonomyMacroAreaCodeDtoSearchControllerApiMock,
@@ -65,7 +72,7 @@ class TaxonomyClientTest {
     Long taxonomyId = 123L;
     Taxonomy expectedResult = new Taxonomy();
 
-    Mockito.when(organizationApisHolder.getTaxonomy(accessToken))
+    Mockito.when(organizationApisHolderMock.getTaxonomy(accessToken))
       .thenReturn(taxonomyEntityControllerApiMock);
     Mockito.when(taxonomyEntityControllerApiMock.crudGetTaxonomy(String.valueOf(taxonomyId)))
       .thenReturn(expectedResult);
@@ -80,7 +87,7 @@ class TaxonomyClientTest {
     String accessToken = "ACCESSTOKEN";
     Long taxonomyId = 123L;
 
-    Mockito.when(organizationApisHolder.getTaxonomy(accessToken))
+    Mockito.when(organizationApisHolderMock.getTaxonomy(accessToken))
       .thenReturn(taxonomyEntityControllerApiMock);
     Mockito.when(taxonomyEntityControllerApiMock.crudGetTaxonomy(String.valueOf(taxonomyId)))
       .thenThrow(HttpClientErrorException.create(
@@ -89,7 +96,7 @@ class TaxonomyClientTest {
     Taxonomy result = taxonomyClient.getTaxonomyDetail(taxonomyId, accessToken);
 
     Assertions.assertNull(result);
-    Mockito.verifyNoMoreInteractions(taxonomyEntityControllerApiMock, organizationApisHolder);
+    Mockito.verifyNoMoreInteractions(taxonomyEntityControllerApiMock, organizationApisHolderMock);
   }
 
   @Test
@@ -98,7 +105,7 @@ class TaxonomyClientTest {
     String accessToken = "ACCESSTOKEN";
     Taxonomy expectedResult = new Taxonomy();
 
-    Mockito.when(organizationApisHolder.getTaxonomySearchControllerApi(accessToken))
+    Mockito.when(organizationApisHolderMock.getTaxonomySearchControllerApi(accessToken))
       .thenReturn(taxonomySearchControllerApiMock);
     Mockito.when(taxonomySearchControllerApiMock.crudTaxonomiesFindByTaxonomyCode("TAX"))
       .thenReturn(expectedResult);
@@ -116,7 +123,7 @@ class TaxonomyClientTest {
     String accessToken = "ACCESSTOKEN";
     CollectionModelTaxonomyCollectionReasonDTO expectedResult = new CollectionModelTaxonomyCollectionReasonDTO();
 
-    Mockito.when(organizationApisHolder.getTaxonomyEntityControllerApi(accessToken))
+    Mockito.when(organizationApisHolderMock.getTaxonomyEntityControllerApi(accessToken))
       .thenReturn(taxonomyCollectionReasonDtoSearchControllerApiMock);
     Mockito.when(taxonomyCollectionReasonDtoSearchControllerApiMock.crudTaxonomiesCollectionReasonFindCollectionReasons(null, null, null))
       .thenReturn(expectedResult);
@@ -134,7 +141,7 @@ class TaxonomyClientTest {
     String accessToken = "ACCESSTOKEN";
     CollectionModelTaxonomyMacroAreaCodeDTO expectedResult = new CollectionModelTaxonomyMacroAreaCodeDTO();
 
-    Mockito.when(organizationApisHolder.getMacroArea(accessToken))
+    Mockito.when(organizationApisHolderMock.getMacroArea(accessToken))
       .thenReturn(taxonomyMacroAreaCodeDtoSearchControllerApiMock);
     Mockito.when(taxonomyMacroAreaCodeDtoSearchControllerApiMock.crudTaxonomiesMacroAreaFindMacroAreaCodes(null))
       .thenReturn(expectedResult);
@@ -152,7 +159,7 @@ class TaxonomyClientTest {
     String accessToken = "ACCESSTOKEN";
     CollectionModelTaxonomyOrganizationTypeDTO expectedResult = new CollectionModelTaxonomyOrganizationTypeDTO();
 
-    Mockito.when(organizationApisHolder.getOrganizationTypes(accessToken))
+    Mockito.when(organizationApisHolderMock.getOrganizationTypes(accessToken))
       .thenReturn(taxonomyOrganizationTypeDtoSearchControllerApiMock);
     Mockito.when(taxonomyOrganizationTypeDtoSearchControllerApiMock.crudTaxonomiesOrganizationTypesFindOrganizationTypes())
       .thenReturn(expectedResult);
@@ -170,7 +177,7 @@ class TaxonomyClientTest {
     String accessToken = "ACCESSTOKEN";
     CollectionModelTaxonomyServiceTypeCodeDTO expectedResult = new CollectionModelTaxonomyServiceTypeCodeDTO();
 
-    Mockito.when(organizationApisHolder.getServiceType(accessToken))
+    Mockito.when(organizationApisHolderMock.getServiceType(accessToken))
       .thenReturn(taxonomyServiceTypeCodeDtoSearchControllerApiMock);
     Mockito.when(taxonomyServiceTypeCodeDtoSearchControllerApiMock.crudTaxonomiesServiceTypeFindServiceTypeCodes(null, null))
       .thenReturn(expectedResult);
@@ -188,7 +195,7 @@ class TaxonomyClientTest {
     String accessToken = "ACCESSTOKEN";
     CollectionModelTaxonomyCodeDTO expectedResult = new CollectionModelTaxonomyCodeDTO();
 
-    Mockito.when(organizationApisHolder.getTaxonomyCode(accessToken))
+    Mockito.when(organizationApisHolderMock.getTaxonomyCode(accessToken))
       .thenReturn(taxonomyCodeDtoSearchControllerApiMock);
     Mockito.when(taxonomyCodeDtoSearchControllerApiMock.crudTaxonomiesTaxonomyCodeFindTaxonomyCodes(null, null, null, null))
       .thenReturn(expectedResult);
@@ -207,7 +214,7 @@ class TaxonomyClientTest {
     PagedModelTaxonomy expectedResult = new PagedModelTaxonomy();
 
     Mockito.when(
-        organizationApisHolder.getTaxonomySearchControllerApi(accessToken))
+        organizationApisHolderMock.getTaxonomySearchControllerApi(accessToken))
       .thenReturn(taxonomySearchControllerApiMock);
     Mockito.when(taxonomySearchControllerApiMock.crudTaxonomiesFindTaxonomies("organizationType", "macroAreaCode", "serviceTypeCode",
         "collectionReason", 0, 10, Collections.emptyList()))
@@ -218,6 +225,21 @@ class TaxonomyClientTest {
       "collectionReason", PageRequest.of(0,10, Sort.unsorted()), accessToken);
 
     // Then
+    Assertions.assertSame(expectedResult, result);
+  }
+
+  @Test
+  void whenSynchronizeTaxonomyThenInvokeWithAccessToken() {
+    String accessToken = "ACCESSTOKEN";
+    WorkflowCreatedDTO expectedResult = new WorkflowCreatedDTO();
+
+    Mockito.when(workflowHubApisHolderMock.getTaxonomyApi(accessToken))
+      .thenReturn(taxonomyApiMock);
+    Mockito.when(taxonomyApiMock.synchronizeTaxonomy())
+      .thenReturn(expectedResult);
+
+    WorkflowCreatedDTO result = taxonomyClient.synchronizeTaxonomy(accessToken);
+
     Assertions.assertSame(expectedResult, result);
   }
 

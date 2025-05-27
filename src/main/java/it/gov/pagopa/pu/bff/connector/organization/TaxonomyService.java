@@ -7,7 +7,6 @@ import it.gov.pagopa.pu.organization.dto.generated.CollectionModelTaxonomyOrgani
 import it.gov.pagopa.pu.organization.dto.generated.CollectionModelTaxonomyServiceTypeCodeDTO;
 import it.gov.pagopa.pu.organization.dto.generated.PagedModelTaxonomy;
 import it.gov.pagopa.pu.organization.dto.generated.Taxonomy;
-import it.gov.pagopa.pu.workflowhub.dto.generated.WorkflowCreatedDTO;
 import org.springframework.data.domain.Pageable;
 
 public interface TaxonomyService {
@@ -26,6 +25,4 @@ public interface TaxonomyService {
   CollectionModelTaxonomyCodeDTO getTaxonomyCode(String organizationType, String macroAreaCode, String serviceTypeCode, String collectionReason, String accessToken);
 
   PagedModelTaxonomy getTaxonomies(String organizationType, String macroAreaCode, String serviceTypeCode, String collectionReason, Pageable pageable, String accessToken);
-
-  WorkflowCreatedDTO synchronizeTaxonomy(String accessToken);
 }

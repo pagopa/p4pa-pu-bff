@@ -2,7 +2,6 @@ package it.gov.pagopa.pu.bff.connector.organization;
 
 import it.gov.pagopa.pu.bff.connector.organization.client.TaxonomyClient;
 import it.gov.pagopa.pu.organization.dto.generated.*;
-import it.gov.pagopa.pu.workflowhub.dto.generated.WorkflowCreatedDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -109,17 +108,6 @@ class TaxonomyServiceTest {
     when(taxonomyClientMock.getTaxonomies(Mockito.same(organizationType), Mockito.same(macroAreaCode), Mockito.same(serviceTypeCode), Mockito.same(collectionReason), Mockito.same(pageable), Mockito.same(accessToken)))
       .thenReturn(expected);
     PagedModelTaxonomy result = service.getTaxonomies(organizationType, macroAreaCode, serviceTypeCode, collectionReason, pageable, accessToken);
-    assertSame(expected, result);
-  }
-
-  @Test
-  void testSynchronizeTaxonomy() {
-    WorkflowCreatedDTO expected = new WorkflowCreatedDTO();
-    when(taxonomyClientMock.synchronizeTaxonomy(Mockito.same(accessToken)))
-      .thenReturn(expected);
-
-    WorkflowCreatedDTO result = service.synchronizeTaxonomy(accessToken);
-
     assertSame(expected, result);
   }
 }

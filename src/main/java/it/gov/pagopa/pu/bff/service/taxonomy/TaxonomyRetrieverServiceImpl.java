@@ -1,24 +1,16 @@
 package it.gov.pagopa.pu.bff.service.taxonomy;
 
 import it.gov.pagopa.pu.bff.connector.organization.TaxonomyService;
-import it.gov.pagopa.pu.bff.dto.generated.PagedTaxonomy;
-import it.gov.pagopa.pu.bff.dto.generated.TaxonomyCodeDTO;
-import it.gov.pagopa.pu.bff.dto.generated.TaxonomyCollectionReasonDTO;
-import it.gov.pagopa.pu.bff.dto.generated.TaxonomyMacroAreaCodeDTO;
-import it.gov.pagopa.pu.bff.dto.generated.TaxonomyOrganizationTypeDTO;
-import it.gov.pagopa.pu.bff.dto.generated.TaxonomyServiceTypeCodeDTO;
+import it.gov.pagopa.pu.bff.connector.workflow_hub.WorkflowTaxonomyService;
+import it.gov.pagopa.pu.bff.dto.generated.*;
 import it.gov.pagopa.pu.bff.mapper.TaxonomyMapper;
-import it.gov.pagopa.pu.bff.mapper.taxonomy.TaxonomyCodeMapper;
-import it.gov.pagopa.pu.bff.mapper.taxonomy.TaxonomyCollectionReasonMapper;
-import it.gov.pagopa.pu.bff.mapper.taxonomy.TaxonomyMacroAreaCodeMapper;
-import it.gov.pagopa.pu.bff.mapper.taxonomy.TaxonomyOrganizationTypeMapper;
-import it.gov.pagopa.pu.bff.mapper.taxonomy.TaxonomyServiceTypeCodeMapper;
+import it.gov.pagopa.pu.bff.mapper.taxonomy.*;
 import it.gov.pagopa.pu.organization.dto.generated.Taxonomy;
-import java.util.List;
-
 import it.gov.pagopa.pu.workflowhub.dto.generated.WorkflowCreatedDTO;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class TaxonomyRetrieverServiceImpl implements TaxonomyRetrieverService {
@@ -30,14 +22,16 @@ public class TaxonomyRetrieverServiceImpl implements TaxonomyRetrieverService {
   private final TaxonomyCollectionReasonMapper taxonomyCollectionReasonMapper;
   private final TaxonomyServiceTypeCodeMapper taxonomyServiceTypeCodeMapper;
   private final TaxonomyCodeMapper taxonomyCodeMapper;
+  private final WorkflowTaxonomyService workflowTaxonomyService;
 
   public TaxonomyRetrieverServiceImpl(TaxonomyService taxonomyService,
-    TaxonomyMapper taxonomyMapper,
+                                      TaxonomyMapper taxonomyMapper,
                                       TaxonomyOrganizationTypeMapper taxonomyOrganizationTypeMapper,
                                       TaxonomyMacroAreaCodeMapper taxonomyMacroAreaCodeMapper,
                                       TaxonomyCollectionReasonMapper taxonomyCollectionReasonMapper,
                                       TaxonomyServiceTypeCodeMapper taxonomyServiceTypeCodeMapper,
-                                      TaxonomyCodeMapper taxonomyCodeMapper){
+                                      TaxonomyCodeMapper taxonomyCodeMapper,
+                                      WorkflowTaxonomyService workflowTaxonomyService) {
     this.taxonomyService = taxonomyService;
     this.taxonomyMapper = taxonomyMapper;
     this.taxonomyOrganizationTypeMapper = taxonomyOrganizationTypeMapper;
@@ -45,6 +39,7 @@ public class TaxonomyRetrieverServiceImpl implements TaxonomyRetrieverService {
     this.taxonomyCollectionReasonMapper = taxonomyCollectionReasonMapper;
     this.taxonomyServiceTypeCodeMapper = taxonomyServiceTypeCodeMapper;
     this.taxonomyCodeMapper = taxonomyCodeMapper;
+    this.workflowTaxonomyService = workflowTaxonomyService;
   }
 
   @Override
@@ -58,9 +53,9 @@ public class TaxonomyRetrieverServiceImpl implements TaxonomyRetrieverService {
   }
 
   @Override
-  public List<TaxonomyCollectionReasonDTO> getCollectionReason (
+  public List<TaxonomyCollectionReasonDTO> getCollectionReason(
     String organizationType,
-    String macroAreaCode, String serviceTypeCode, String accessToken){
+    String macroAreaCode, String serviceTypeCode, String accessToken) {
     return taxonomyService.getCollectionReason(organizationType, macroAreaCode, serviceTypeCode, accessToken)
       .getEmbedded().getTaxonomyCollectionReasonDTOes()
       .stream()
@@ -69,10 +64,10 @@ public class TaxonomyRetrieverServiceImpl implements TaxonomyRetrieverService {
   }
 
   @Override
-  public List<TaxonomyMacroAreaCodeDTO> getMacroArea (
+  public List<TaxonomyMacroAreaCodeDTO> getMacroArea(
     String organizationType,
     String accessToken) {
-    return taxonomyService.getMacroArea(organizationType,accessToken).getEmbedded()
+    return taxonomyService.getMacroArea(organizationType, accessToken).getEmbedded()
       .getTaxonomyMacroAreaCodeDTOes()
       .stream()
       .map(taxonomyMacroAreaCodeMapper::map)
@@ -80,7 +75,7 @@ public class TaxonomyRetrieverServiceImpl implements TaxonomyRetrieverService {
   }
 
   @Override
-  public List<TaxonomyOrganizationTypeDTO> getOrganizationTypes (
+  public List<TaxonomyOrganizationTypeDTO> getOrganizationTypes(
     String accessToken) {
     return taxonomyService.getOrganizationType(accessToken).getEmbedded()
       .getTaxonomyOrganizationTypeDTOes()
@@ -90,10 +85,10 @@ public class TaxonomyRetrieverServiceImpl implements TaxonomyRetrieverService {
   }
 
   @Override
-  public List<TaxonomyServiceTypeCodeDTO> getServiceType (
+  public List<TaxonomyServiceTypeCodeDTO> getServiceType(
     String organizationType,
     String macroAreaCode, String accessToken) {
-    return taxonomyService.getServiceType(organizationType,macroAreaCode,accessToken).getEmbedded()
+    return taxonomyService.getServiceType(organizationType, macroAreaCode, accessToken).getEmbedded()
       .getTaxonomyServiceTypeCodeDTOes()
       .stream()
       .map(taxonomyServiceTypeCodeMapper::map)
@@ -101,11 +96,11 @@ public class TaxonomyRetrieverServiceImpl implements TaxonomyRetrieverService {
   }
 
   @Override
-  public List<TaxonomyCodeDTO> getTaxonomyCode (
+  public List<TaxonomyCodeDTO> getTaxonomyCode(
     String organizationType,
     String macroAreaCode, String serviceTypeCode, String collectionReason,
     String accessToken) {
-    return taxonomyService.getTaxonomyCode(organizationType,macroAreaCode,serviceTypeCode,collectionReason,accessToken).getEmbedded()
+    return taxonomyService.getTaxonomyCode(organizationType, macroAreaCode, serviceTypeCode, collectionReason, accessToken).getEmbedded()
       .getTaxonomyCodeDTOes()
       .stream()
       .map(taxonomyCodeMapper::map)
@@ -114,8 +109,8 @@ public class TaxonomyRetrieverServiceImpl implements TaxonomyRetrieverService {
 
   @Override
   public PagedTaxonomy getTaxonomies(String organizationType,
-    String macroAreaCode, String serviceTypeCode, String collectionReason,
-    Pageable pageable, String accessToken) {
+                                     String macroAreaCode, String serviceTypeCode, String collectionReason,
+                                     Pageable pageable, String accessToken) {
     return taxonomyMapper.mapToPagedTaxonomy(
       taxonomyService.getTaxonomies(organizationType, macroAreaCode, serviceTypeCode, collectionReason, pageable, accessToken)
     );
@@ -123,6 +118,6 @@ public class TaxonomyRetrieverServiceImpl implements TaxonomyRetrieverService {
 
   @Override
   public WorkflowCreatedDTO synchronizeTaxonomy(String accessToken) {
-    return taxonomyService.synchronizeTaxonomy(accessToken);
+    return workflowTaxonomyService.synchronizeTaxonomy(accessToken);
   }
 }

@@ -1,7 +1,7 @@
 package it.gov.pagopa.pu.bff.connector.workflow_hub.client;
 
-import it.gov.pagopa.pu.bff.connector.workflow_hub.client.WorkflowHubClient;
 import it.gov.pagopa.pu.bff.connector.workflow_hub.config.WorkflowHubApisHolder;
+import it.gov.pagopa.pu.workflowhub.controller.generated.TaxonomyApi;
 import it.gov.pagopa.pu.workflowhub.dto.generated.WorkflowCreatedDTO;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -11,7 +11,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import it.gov.pagopa.pu.workflowhub.controller.generated.TaxonomyApi;
 
 @ExtendWith(MockitoExtension.class)
 class WorkflowHubClientTest {

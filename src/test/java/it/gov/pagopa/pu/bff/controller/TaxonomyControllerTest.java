@@ -156,7 +156,7 @@ class TaxonomyControllerTest {
     TestUtils.addSampleUserIntoSecurityContext();
     WorkflowCreatedDTO mockResponse = new WorkflowCreatedDTO();
 
-    Mockito.when(serviceMock.synchronizeTaxonomy(Mockito.eq("token")))
+    Mockito.when(serviceMock.synchronizeTaxonomy("token"))
       .thenReturn(mockResponse);
 
     MvcResult result = mockMvc.perform(get("/bff/workflow/taxonomy/synchronize"))

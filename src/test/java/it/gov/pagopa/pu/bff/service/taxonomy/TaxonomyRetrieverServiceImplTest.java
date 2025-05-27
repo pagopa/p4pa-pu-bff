@@ -3,6 +3,7 @@ package it.gov.pagopa.pu.bff.service.taxonomy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import it.gov.pagopa.pu.bff.connector.organization.TaxonomyService;
+import it.gov.pagopa.pu.bff.connector.workflow_hub.WorkflowTaxonomyService;
 import it.gov.pagopa.pu.bff.dto.generated.PagedTaxonomy;
 import it.gov.pagopa.pu.bff.dto.generated.TaxonomyCodeDTO;
 import it.gov.pagopa.pu.bff.dto.generated.TaxonomyCollectionReasonDTO;
@@ -54,6 +55,8 @@ class TaxonomyRetrieverServiceImplTest {
   private TaxonomyOrganizationTypeMapper taxonomyOrganizationTypeMapperMock;
   @Mock
   private TaxonomyMacroAreaCodeMapper taxonomyMacroAreaCodeMapperMock;
+  @Mock
+  private WorkflowTaxonomyService workflowTaxonomyServiceMock;
 
   @InjectMocks
   private TaxonomyRetrieverServiceImpl taxonomyService;
@@ -226,7 +229,7 @@ class TaxonomyRetrieverServiceImplTest {
   void testSynchronizeTaxonomy() {
     WorkflowCreatedDTO expected = new WorkflowCreatedDTO();
 
-    Mockito.when(taxonomyServiceMock.synchronizeTaxonomy("token")).thenReturn(expected);
+    Mockito.when(workflowTaxonomyServiceMock.synchronizeTaxonomy("token")).thenReturn(expected);
 
     WorkflowCreatedDTO result = taxonomyService.synchronizeTaxonomy("token");
 

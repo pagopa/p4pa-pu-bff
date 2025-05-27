@@ -31,4 +31,5 @@ public interface DebtPositionRetrieverService {
 
   Resource getDebtPositionNoticesZip(Long organizationId, Long debtPositionId, UserInfo loggedUser, String accessToken);
 
+  void validateOperator(Long debtPositionId, Long organizationId, UserInfo loggedUser, String accessToken);
 }

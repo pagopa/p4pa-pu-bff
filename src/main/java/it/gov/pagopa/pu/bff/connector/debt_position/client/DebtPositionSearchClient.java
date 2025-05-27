@@ -26,5 +26,10 @@ public class DebtPositionSearchClient {
         PageUtils.getSortList(pageable)
       );
   }
+
+  public Long validateOperator(Long debtPositionId, Long organizationId, String operatorExternalUserId, String accessToken){
+    return debtPositionApisHolder.getDebtPositionSearchControllerApi(accessToken).crudDebtPositionsValidateOperator(debtPositionId, organizationId, operatorExternalUserId);
+  }
+
 }
 

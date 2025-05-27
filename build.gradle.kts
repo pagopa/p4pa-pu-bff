@@ -198,7 +198,8 @@ tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>("ope
     "LocalDateInterval" to "it.gov.pagopa.pu.bff.dto.LocalDateIntervalFilter",
     "Taxonomy" to "it.gov.pagopa.pu.organization.dto.generated.Taxonomy",
     "DebtPositionRegistry" to "it.gov.pagopa.pu.registries.dto.generated.DebtPositionRegistry",
-    "WorkflowCreatedDTO" to "it.gov.pagopa.pu.workflowhub.dto.generated.WorkflowCreatedDTO"
+    "WorkflowCreatedDTO" to "it.gov.pagopa.pu.workflowhub.dto.generated.WorkflowCreatedDTO",
+    "ManageDebtPositionDTO" to "it.gov.pagopa.pu.debtpositions.dto.generated.ManageDebtPositionDTO"
   ))
   configOptions.set(mapOf(
     "dateLibrary" to "java8",

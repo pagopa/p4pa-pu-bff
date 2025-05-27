@@ -14,9 +14,7 @@ import it.gov.pagopa.pu.bff.mapper.DebtPositionViewMapper;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
 import it.gov.pagopa.pu.bff.service.ZipFileService;
 import it.gov.pagopa.pu.bff.util.DateUtils;
-import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionDTO;
-import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionOrigin;
-import it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentStatus;
+import it.gov.pagopa.pu.debtpositions.dto.generated.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.io.Resource;
@@ -156,6 +154,26 @@ public class DebtPositionRetrieverServiceImpl implements DebtPositionRetrieverSe
     if (!hasOperatorGrantOnDebtPosition) {
       throw AuthorizationService.buildAuthorizationDeniedException(organizationId, loggedUser);
     }
+  }
+
+  @Override
+  public DebtPositionDTO manageDebtPositionInstallments(Long organizationId, Long debtPositionId, ManageDebtPositionDTO manageDebtPositionDTO, Boolean publish, UserInfo loggedUser, String accessToken) {
+    AuthorizationService.validateUserForOrganizationId(organizationId,loggedUser);
+    validateOperator(debtPositionId, organizationId, loggedUser, accessToken);
+
+    DebtPositionDTO updatedDebtPosition = debtPositionService.manageDebtPositionInstallments(debtPositionId,manageDebtPositionDTO,accessToken);
+    if(checkDebtPositionPublishCondition(publish, updatedDebtPosition)){
+      DebtPositionDTO publishedDebtPosition = debtPositionService.publishDebtPosition(debtPositionId,accessToken);
+      return publishedDebtPosition!=null?publishedDebtPosition:updatedDebtPosition;
+    }else{
+      return updatedDebtPosition;
+    }
+  }
+
+  private static boolean checkDebtPositionPublishCondition(Boolean publish, DebtPositionDTO updatedDebtPosition) {
+    return Boolean.TRUE.equals(publish)
+            && updatedDebtPosition != null
+            && DebtPositionStatus.DRAFT.equals(updatedDebtPosition.getStatus());
   }
 
 }

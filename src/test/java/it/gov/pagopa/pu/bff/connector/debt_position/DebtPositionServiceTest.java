@@ -4,10 +4,7 @@ import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.connector.debt_position.client.DebtPositionClient;
 import it.gov.pagopa.pu.bff.connector.debt_position.client.DebtPositionSearchClient;
 import it.gov.pagopa.pu.bff.dto.DebtPositionViewFiltersDTO;
-import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionDTO;
-import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionOrigin;
-import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelDebtPosition;
-import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelDebtPositionView;
+import it.gov.pagopa.pu.debtpositions.dto.generated.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -140,5 +137,34 @@ class DebtPositionServiceTest {
     boolean hasOperatorGrantOnDebtPosition = service.hasOperatorGrantOnDebtPosition(debtPositionId, organizationId, loggedUser.getMappedExternalUserId(), accessToken);
 
     assertFalse(hasOperatorGrantOnDebtPosition);
+  }
+
+  @Test
+  void whenManageDebtPositionInstallmentsThenInvokeClient() {
+    Long debtPositionId = 1L;
+    ManageDebtPositionDTO manageDebtPositionDTO = new ManageDebtPositionDTO();
+    String accessToken = "ACCESSTOKEN";
+    DebtPositionDTO expectedResult = new DebtPositionDTO();
+
+    when(clientMock.manageDebtPositionInstallments(debtPositionId, manageDebtPositionDTO,accessToken))
+      .thenReturn(expectedResult);
+
+    DebtPositionDTO result = service.manageDebtPositionInstallments(debtPositionId, manageDebtPositionDTO, accessToken);
+
+    assertEquals(expectedResult,result);
+  }
+
+  @Test
+  void whenPublishDebtPositionThenInvokeClient() {
+    Long debtPositionId = 1L;
+    String accessToken = "ACCESSTOKEN";
+    DebtPositionDTO expectedResult = new DebtPositionDTO();
+
+    when(clientMock.publishDebtPosition(debtPositionId,accessToken))
+            .thenReturn(expectedResult);
+
+    DebtPositionDTO result = service.publishDebtPosition(debtPositionId,accessToken);
+
+    assertEquals(expectedResult,result);
   }
 }

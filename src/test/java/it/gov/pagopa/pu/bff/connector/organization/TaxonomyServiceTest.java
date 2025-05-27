@@ -1,17 +1,7 @@
 package it.gov.pagopa.pu.bff.connector.organization;
 
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.mockito.Mockito.when;
-
 import it.gov.pagopa.pu.bff.connector.organization.client.TaxonomyClient;
-import it.gov.pagopa.pu.bff.connector.workflow_hub.client.WorkflowHubClient;
-import it.gov.pagopa.pu.organization.dto.generated.CollectionModelTaxonomyCodeDTO;
-import it.gov.pagopa.pu.organization.dto.generated.CollectionModelTaxonomyCollectionReasonDTO;
-import it.gov.pagopa.pu.organization.dto.generated.CollectionModelTaxonomyMacroAreaCodeDTO;
-import it.gov.pagopa.pu.organization.dto.generated.CollectionModelTaxonomyOrganizationTypeDTO;
-import it.gov.pagopa.pu.organization.dto.generated.CollectionModelTaxonomyServiceTypeCodeDTO;
-import it.gov.pagopa.pu.organization.dto.generated.PagedModelTaxonomy;
-import it.gov.pagopa.pu.organization.dto.generated.Taxonomy;
+import it.gov.pagopa.pu.organization.dto.generated.*;
 import it.gov.pagopa.pu.workflowhub.dto.generated.WorkflowCreatedDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -21,6 +11,9 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class TaxonomyServiceTest {
@@ -32,14 +25,12 @@ class TaxonomyServiceTest {
 
   @Mock
   private TaxonomyClient taxonomyClientMock;
-  @Mock
-  private WorkflowHubClient workflowHubClientMock;
 
   private TaxonomyService service;
 
   @BeforeEach
   void setUp() {
-    service = new TaxonomyServiceImpl(taxonomyClientMock, workflowHubClientMock);
+    service = new TaxonomyServiceImpl(taxonomyClientMock);
   }
 
   @Test
@@ -114,7 +105,7 @@ class TaxonomyServiceTest {
   void testGetTaxonomies() {
     PagedModelTaxonomy expected = new PagedModelTaxonomy();
     String collectionReason = "collectionReason";
-    Pageable pageable = PageRequest.of(0,10);
+    Pageable pageable = PageRequest.of(0, 10);
     when(taxonomyClientMock.getTaxonomies(Mockito.same(organizationType), Mockito.same(macroAreaCode), Mockito.same(serviceTypeCode), Mockito.same(collectionReason), Mockito.same(pageable), Mockito.same(accessToken)))
       .thenReturn(expected);
     PagedModelTaxonomy result = service.getTaxonomies(organizationType, macroAreaCode, serviceTypeCode, collectionReason, pageable, accessToken);
@@ -124,7 +115,7 @@ class TaxonomyServiceTest {
   @Test
   void testSynchronizeTaxonomy() {
     WorkflowCreatedDTO expected = new WorkflowCreatedDTO();
-    when(workflowHubClientMock.synchronizeTaxonomy(Mockito.same(accessToken)))
+    when(taxonomyClientMock.synchronizeTaxonomy(Mockito.same(accessToken)))
       .thenReturn(expected);
 
     WorkflowCreatedDTO result = service.synchronizeTaxonomy(accessToken);

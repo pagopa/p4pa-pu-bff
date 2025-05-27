@@ -52,8 +52,8 @@ public class DebtPositionServiceImpl implements DebtPositionService {
   }
 
   @Override
-  public Long validateOperator(Long debtPositionId, Long organizationId, String operatorExternalUserId, String accessToken) {
-    return debtPositionSearchClient.validateOperator(debtPositionId, organizationId, operatorExternalUserId, accessToken);
+  public boolean hasOperatorGrantOnDebtPosition(Long debtPositionId, Long organizationId, String operatorExternalUserId, String accessToken) {
+    return debtPositionSearchClient.validateOperator(debtPositionId, organizationId, operatorExternalUserId, accessToken) == 1L;
   }
 
 }

@@ -146,14 +146,14 @@ public class DebtPositionRetrieverServiceImpl implements DebtPositionRetrieverSe
   }
 
   public void validateOperator(Long debtPositionId, Long organizationId, UserInfo loggedUser, String accessToken) {
-    Long result = debtPositionService.validateOperator(
+    boolean hasOperatorGrantOnDebtPosition = debtPositionService.hasOperatorGrantOnDebtPosition(
       debtPositionId,
       organizationId,
       loggedUser.getMappedExternalUserId(),
       accessToken
     );
 
-    if (!Long.valueOf(1L).equals(result)) {
+    if (!hasOperatorGrantOnDebtPosition) {
       throw AuthorizationService.buildAuthorizationDeniedException(organizationId, loggedUser);
     }
   }

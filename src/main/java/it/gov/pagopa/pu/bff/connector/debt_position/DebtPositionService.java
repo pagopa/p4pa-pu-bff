@@ -29,5 +29,5 @@ public interface DebtPositionService {
    */
   boolean deleteDebtPosition(Long debtPositionId, String accessToken);
 
-  Long validateOperator(Long debtPositionId, Long organizationId, String operatorExternalUserId, String accessToken);
+  boolean hasOperatorGrantOnDebtPosition(Long debtPositionId, Long organizationId, String operatorExternalUserId, String accessToken);
 }

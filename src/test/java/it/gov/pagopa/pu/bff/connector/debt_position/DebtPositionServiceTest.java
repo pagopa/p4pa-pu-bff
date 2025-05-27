@@ -20,7 +20,6 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -112,21 +111,34 @@ class DebtPositionServiceTest {
   }
 
   @Test
-  void whenValidateOperatorThenInvokeClient() {
+  void whenHasOperatorGrantOnDebtPositionThenInvokeClient() {
     Long debtPositionId = 1L;
     String accessToken = "ACCESSTOKEN";
     UserInfo loggedUser = new UserInfo();
     loggedUser.setMappedExternalUserId("mappedExternalUserId");
     Long organizationId = 1L;
 
-
-
     when(debtPositionSearchClientMock.validateOperator(debtPositionId, organizationId, loggedUser.getMappedExternalUserId(), accessToken))
       .thenReturn(1L);
 
-    Long result = service.validateOperator(debtPositionId, organizationId, loggedUser.getMappedExternalUserId(), accessToken);
+    boolean hasOperatorGrantOnDebtPosition = service.hasOperatorGrantOnDebtPosition(debtPositionId, organizationId, loggedUser.getMappedExternalUserId(), accessToken);
 
-    assertNotNull(result);
-    assertEquals(1L, result);
+    assertTrue(hasOperatorGrantOnDebtPosition);
+  }
+
+  @Test
+  void whenNotHasOperatorGrantOnDebtPositionThenInvokeClient() {
+    Long debtPositionId = 1L;
+    String accessToken = "ACCESSTOKEN";
+    UserInfo loggedUser = new UserInfo();
+    loggedUser.setMappedExternalUserId("mappedExternalUserId");
+    Long organizationId = 1L;
+
+    when(debtPositionSearchClientMock.validateOperator(debtPositionId, organizationId, loggedUser.getMappedExternalUserId(), accessToken))
+      .thenReturn(0L);
+
+    boolean hasOperatorGrantOnDebtPosition = service.hasOperatorGrantOnDebtPosition(debtPositionId, organizationId, loggedUser.getMappedExternalUserId(), accessToken);
+
+    assertFalse(hasOperatorGrantOnDebtPosition);
   }
 }

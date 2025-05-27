@@ -59,8 +59,8 @@ public class TaxonomyServiceImpl implements TaxonomyService {
 
   @Override
   public PagedModelTaxonomy getTaxonomies(String organizationType,
-    String macroAreaCode, String serviceTypeCode, String collectionReason,
-    Pageable pageable, String accessToken) {
+                                          String macroAreaCode, String serviceTypeCode, String collectionReason,
+                                          Pageable pageable, String accessToken) {
     return taxonomyClient.getTaxonomies(organizationType, macroAreaCode, serviceTypeCode, collectionReason, pageable, accessToken);
   }
 }

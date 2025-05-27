@@ -5,6 +5,7 @@ import it.gov.pagopa.pu.bff.dto.generated.*;
 import it.gov.pagopa.pu.bff.security.SecurityUtils;
 import it.gov.pagopa.pu.bff.service.taxonomy.TaxonomyRetrieverService;
 import it.gov.pagopa.pu.organization.dto.generated.Taxonomy;
+import it.gov.pagopa.pu.workflowhub.dto.generated.WorkflowCreatedDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -70,5 +71,11 @@ public class TaxonomyController implements TaxonomyApi {
     log.info("User requested getTaxonomyCode");
     return new ResponseEntity<>(taxonomyRetrieverService.getTaxonomyCode(
       organizationType, macroAreaCode, serviceTypeCode, collectionReason, SecurityUtils.getAccessToken()), HttpStatus.OK);
+  }
+
+  @Override
+  public ResponseEntity<WorkflowCreatedDTO> synchronizeTaxonomy() {
+    log.info("User requested synchronizeTaxonomy");
+    return ResponseEntity.ok(taxonomyRetrieverService.synchronizeTaxonomy(SecurityUtils.getAccessToken()));
   }
 }

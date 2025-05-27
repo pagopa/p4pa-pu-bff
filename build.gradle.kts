@@ -134,7 +134,8 @@ tasks.register("dependenciesBuild") {
     "openApiGeneratePROCESSEXECUTIONS",
     "openApiGenerateCLASSIFICATION",
     "openApiGeneratePAGOPAPAYMENTS",
-    "openApiGenerateREGISTRIES"
+    "openApiGenerateREGISTRIES",
+    "openApiGenerateWORKFLOWHUB"
   )
 }
 
@@ -196,7 +197,8 @@ tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>("ope
     "DebtPositionOrigin" to "it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionOrigin",
     "LocalDateInterval" to "it.gov.pagopa.pu.bff.dto.LocalDateIntervalFilter",
     "Taxonomy" to "it.gov.pagopa.pu.organization.dto.generated.Taxonomy",
-    "DebtPositionRegistry" to "it.gov.pagopa.pu.registries.dto.generated.DebtPositionRegistry"
+    "DebtPositionRegistry" to "it.gov.pagopa.pu.registries.dto.generated.DebtPositionRegistry",
+    "WorkflowCreatedDTO" to "it.gov.pagopa.pu.workflowhub.dto.generated.WorkflowCreatedDTO"
   ))
   configOptions.set(mapOf(
     "dateLibrary" to "java8",
@@ -407,6 +409,30 @@ tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>("ope
     "generateConstructorWithAllArgs" to "true",
     "generatedConstructorWithRequiredArgs" to "true",
     "additionalModelTypeAnnotations" to "@lombok.experimental.SuperBuilder(toBuilder = true)"
+  ))
+  library.set("resttemplate")
+}
+
+tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>("openApiGenerateWORKFLOWHUB") {
+  group = "openapi"
+  description = "description"
+
+  generatorName.set("java")
+  remoteInputSpec.set("https://raw.githubusercontent.com/pagopa/p4pa-workflow-hub/refs/heads/$targetEnv/openapi/generated.openapi.json")
+  outputDir.set("$projectDir/build/generated")
+  apiPackage.set("it.gov.pagopa.pu.workflowhub.controller.generated")
+  modelPackage.set("it.gov.pagopa.pu.workflowhub.dto.generated")
+  configOptions.set(mapOf(
+    "swaggerAnnotations" to "false",
+    "openApiNullable" to "false",
+    "dateLibrary" to "java8",
+    "useSpringBoot3" to "true",
+    "useJakartaEe" to "true",
+    "serializationLibrary" to "jackson",
+    "generateSupportingFiles" to "true",
+    "generateConstructorWithAllArgs" to "true",
+    "generatedConstructorWithRequiredArgs" to "true",
+    "additionalModelTypeAnnotations" to "@lombok.experimental.SuperBuilder"
   ))
   library.set("resttemplate")
 }

@@ -1,7 +1,6 @@
 package it.gov.pagopa.pu.bff.connector.organization;
 
 import it.gov.pagopa.pu.bff.connector.organization.client.TaxonomyClient;
-import it.gov.pagopa.pu.bff.connector.workflow_hub.client.WorkflowHubClient;
 import it.gov.pagopa.pu.organization.dto.generated.*;
 import it.gov.pagopa.pu.workflowhub.dto.generated.WorkflowCreatedDTO;
 import org.springframework.cache.annotation.CacheConfig;
@@ -14,11 +13,9 @@ import org.springframework.stereotype.Service;
 public class TaxonomyServiceImpl implements TaxonomyService {
 
   private final TaxonomyClient taxonomyClient;
-  private final WorkflowHubClient workflowHubClient;
 
-  public TaxonomyServiceImpl(TaxonomyClient taxonomyClient, WorkflowHubClient workflowHubClient) {
+  public TaxonomyServiceImpl(TaxonomyClient taxonomyClient) {
     this.taxonomyClient = taxonomyClient;
-    this.workflowHubClient = workflowHubClient;
   }
 
   @Override
@@ -63,13 +60,13 @@ public class TaxonomyServiceImpl implements TaxonomyService {
 
   @Override
   public PagedModelTaxonomy getTaxonomies(String organizationType,
-    String macroAreaCode, String serviceTypeCode, String collectionReason,
-    Pageable pageable, String accessToken) {
+                                          String macroAreaCode, String serviceTypeCode, String collectionReason,
+                                          Pageable pageable, String accessToken) {
     return taxonomyClient.getTaxonomies(organizationType, macroAreaCode, serviceTypeCode, collectionReason, pageable, accessToken);
   }
 
   @Override
   public WorkflowCreatedDTO synchronizeTaxonomy(String accessToken) {
-    return workflowHubClient.synchronizeTaxonomy(accessToken);
+    return taxonomyClient.synchronizeTaxonomy(accessToken);
   }
 }

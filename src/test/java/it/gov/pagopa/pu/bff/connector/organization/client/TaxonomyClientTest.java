@@ -56,6 +56,7 @@ class TaxonomyClientTest {
   void verifyNoMoreInteractions() {
     Mockito.verifyNoMoreInteractions(
       organizationApisHolderMock,
+      workflowHubApisHolderMock,
       taxonomySearchControllerApiMock,
       taxonomyCollectionReasonDtoSearchControllerApiMock,
       taxonomyMacroAreaCodeDtoSearchControllerApiMock,

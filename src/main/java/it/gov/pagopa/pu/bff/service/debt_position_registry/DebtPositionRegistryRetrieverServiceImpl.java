@@ -2,6 +2,7 @@ package it.gov.pagopa.pu.bff.service.debt_position_registry;
 
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.connector.registries.DebtPositionRegistryService;
+import it.gov.pagopa.pu.bff.service.AuthorizationService;
 import it.gov.pagopa.pu.bff.service.debt_position.DebtPositionRetrieverService;
 import it.gov.pagopa.pu.registries.dto.generated.CollectionModelDebtPositionRegistry;
 import it.gov.pagopa.pu.registries.dto.generated.DebtPositionRegistry;
@@ -23,7 +24,8 @@ public class DebtPositionRegistryRetrieverServiceImpl implements DebtPositionReg
 
     @Override
     public List<DebtPositionRegistry> getDebtPositionRegistry(Long organizationId, Long debtPositionId, UserInfo loggedUser, String accessToken) {
-        debtPositionRetrieverService.validateOperator(debtPositionId, organizationId, loggedUser, accessToken);
+      AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser);
+      debtPositionRetrieverService.validateOperator(debtPositionId, organizationId, loggedUser, accessToken);
 
         CollectionModelDebtPositionRegistry collection = debtPositionRegistryService.findDebtPositionRegistries(debtPositionId, accessToken);
         if (collection == null || collection.getEmbedded() == null) {

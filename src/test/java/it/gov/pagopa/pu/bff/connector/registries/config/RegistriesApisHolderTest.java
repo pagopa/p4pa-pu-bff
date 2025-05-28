@@ -46,4 +46,12 @@ class RegistriesApisHolderTest  extends BaseApiHolderTest {
             registriesApisHolder::unload);
     }
 
+  @Test
+  void whenGetInstallmentRegistrySearchControllerApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
+    assertAuthenticationShouldBeSetInThreadSafeMode(
+      accessToken -> registriesApisHolder.getInstallmentRegistrySearchControllerApi(accessToken)
+        .crudInstallmentRegistriesFindAllByDebtPositionId(null),
+      new ParameterizedTypeReference<>() {},
+      registriesApisHolder::unload);
+  }
 }

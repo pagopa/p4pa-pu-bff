@@ -146,6 +146,7 @@ class InstallmentRegistryRetrieverServiceImplTest {
       Assertions.assertThrows(AuthorizationDeniedException.class, () ->
         installmentRegistryRetrieverService.getInstallmentRegistries(organizationId, debtPositionId, loggedUser, accessToken));
 
+      Mockito.verifyNoInteractions(installmentRegistryServiceMock);
       authorizationServiceMockedStatic.verify(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser));
     }
   }
@@ -169,5 +170,6 @@ class InstallmentRegistryRetrieverServiceImplTest {
 
       authorizationServiceMockedStatic.verify(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser));
     }
+    Mockito.verifyNoInteractions(installmentRegistryServiceMock);
   }
 }

@@ -2863,7 +2863,6 @@ components:
           type: boolean
         flagNotifyIo:
           type: boolean
-          readOnly: true
         serviceId:
           type: string
         ioTemplateSubject:

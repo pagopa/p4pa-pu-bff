@@ -6984,8 +6984,7 @@
             "type" : "boolean"
           },
           "flagNotifyIo" : {
-            "type" : "boolean",
-            "readOnly" : true
+            "type" : "boolean"
           },
           "serviceId" : {
             "type" : "string"

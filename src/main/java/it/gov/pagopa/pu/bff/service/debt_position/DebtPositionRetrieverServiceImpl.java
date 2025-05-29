@@ -8,7 +8,9 @@ import it.gov.pagopa.pu.bff.dto.DebtPositionViewFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.FileResourceDTO;
 import it.gov.pagopa.pu.bff.dto.generated.DebtPositionDetailDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedDebtPositionView;
+import it.gov.pagopa.pu.bff.exception.ConflictException;
 import it.gov.pagopa.pu.bff.exception.InvalidDebtPositionException;
+import it.gov.pagopa.pu.bff.exception.ResourceNotFoundException;
 import it.gov.pagopa.pu.bff.mapper.DebtPositionMapper;
 import it.gov.pagopa.pu.bff.mapper.DebtPositionViewMapper;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
@@ -113,7 +115,7 @@ public class DebtPositionRetrieverServiceImpl implements DebtPositionRetrieverSe
 
   @Override
   public Resource getDebtPositionNoticesZip(Long organizationId, Long debtPositionId, UserInfo loggedUser, String accessToken) {
-    AuthorizationService.validateUserForOrganizationId(organizationId,loggedUser);
+    AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser);
     validateOperator(debtPositionId, organizationId, loggedUser, accessToken);
 
     DebtPositionDTO debtPosition = debtPositionService.getDebtPosition(debtPositionId, accessToken);
@@ -158,27 +160,29 @@ public class DebtPositionRetrieverServiceImpl implements DebtPositionRetrieverSe
 
   @Override
   public DebtPositionDTO manageDebtPositionInstallments(Long organizationId, Long debtPositionId, ManageDebtPositionDTO manageDebtPositionDTO, Boolean publish, UserInfo loggedUser, String accessToken) {
-    AuthorizationService.validateUserForOrganizationId(organizationId,loggedUser);
+    AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser);
     validateOperator(debtPositionId, organizationId, loggedUser, accessToken);
 
-    DebtPositionDTO updatedDebtPosition = debtPositionService.manageDebtPositionInstallments(debtPositionId,manageDebtPositionDTO,accessToken);
-    if(checkDebtPositionPublishCondition(publish, updatedDebtPosition)){
-      DebtPositionDTO publishedDebtPosition = debtPositionService.publishDebtPosition(debtPositionId,accessToken);
-      return publishedDebtPosition!=null?publishedDebtPosition:updatedDebtPosition;
-    }else{
-      return updatedDebtPosition;
+    DebtPositionDTO updatedDebtPosition = debtPositionService.manageDebtPositionInstallments(debtPositionId, manageDebtPositionDTO, accessToken);
+    if (checkDebtPositionPublishCondition(publish, updatedDebtPosition)) {
+      try {
+        return debtPositionService.publishDebtPosition(debtPositionId, accessToken);
+      } catch (ResourceNotFoundException | ConflictException e) {
+        log.warn(e.getMessage());
+      }
     }
+    return updatedDebtPosition;
   }
 
   private static boolean checkDebtPositionPublishCondition(Boolean publish, DebtPositionDTO updatedDebtPosition) {
     return Boolean.TRUE.equals(publish)
-            && updatedDebtPosition != null
-            && DebtPositionStatus.DRAFT.equals(updatedDebtPosition.getStatus());
+      && updatedDebtPosition != null
+      && DebtPositionStatus.DRAFT.equals(updatedDebtPosition.getStatus());
   }
 
   @Override
   public DebtPositionDTO publishDebtPosition(Long organizationId, Long debtPositionId, UserInfo loggedUser, String accessToken) {
-    AuthorizationService.validateUserForOrganizationId(organizationId,loggedUser);
+    AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser);
     validateOperator(debtPositionId, organizationId, loggedUser, accessToken);
 
     return debtPositionService.publishDebtPosition(debtPositionId, accessToken);

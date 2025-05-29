@@ -176,4 +176,11 @@ public class DebtPositionRetrieverServiceImpl implements DebtPositionRetrieverSe
             && DebtPositionStatus.DRAFT.equals(updatedDebtPosition.getStatus());
   }
 
+  @Override
+  public DebtPositionDTO publishDebtPosition(Long organizationId, Long debtPositionId, UserInfo loggedUser, String accessToken) {
+    AuthorizationService.validateUserForOrganizationId(organizationId,loggedUser);
+    validateOperator(debtPositionId, organizationId, loggedUser, accessToken);
+
+    return debtPositionService.publishDebtPosition(debtPositionId, accessToken);
+  }
 }

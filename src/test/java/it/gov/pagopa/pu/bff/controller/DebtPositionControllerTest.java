@@ -295,4 +295,20 @@ class DebtPositionControllerTest {
     Assertions.assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     assertNull(response.getBody());
   }
+
+  @Test
+  void givenExistingDebtPositionIdWhenPublishDebtPositionThenOk() {
+    long organizationId = 1L;
+    Long debtPositionId = 3L;
+    DebtPositionDTO expectedResult = podamFactory.manufacturePojo(DebtPositionDTO.class);
+
+    Mockito.when(debtPositionRetrieverServiceMock.publishDebtPosition(organizationId, debtPositionId, loggedUser,accessToken))
+      .thenReturn(expectedResult);
+
+    ResponseEntity<DebtPositionDTO> response = debtPositionController.publishDebtPosition(organizationId, debtPositionId);
+
+    Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
+    Assertions.assertNotNull(response.getBody());
+    Assertions.assertSame(expectedResult, response.getBody());
+  }
 }

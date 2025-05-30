@@ -2,6 +2,7 @@ package it.gov.pagopa.pu.bff.service;
 
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.connector.registries.DebtPositionRegistryService;
+import it.gov.pagopa.pu.bff.exception.ResourceNotFoundException;
 import it.gov.pagopa.pu.bff.service.debt_position.DebtPositionRetrieverService;
 import it.gov.pagopa.pu.bff.service.debt_position_registry.DebtPositionRegistryRetrieverService;
 import it.gov.pagopa.pu.bff.service.debt_position_registry.DebtPositionRegistryRetrieverServiceImpl;
@@ -134,7 +135,7 @@ public class DebtPositionRegistryRetrieverServiceImplTest {
     }
 
     @Test
-    void givenInvalidUserWhenGetDebtPositionRegistryThenAuthorizationDeniedException() {
+    void givenInvalidUserWhenGetDebtPositionRegistryThenResourceNotFoundException() {
         UserInfo loggedUser = new UserInfo();
         loggedUser.setUserId("user-123");
         loggedUser.setMappedExternalUserId("operatorExternalUserId");
@@ -143,9 +144,9 @@ public class DebtPositionRegistryRetrieverServiceImplTest {
         Long debtPositionId=2L;
       try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
         authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)).thenAnswer(a -> null);
-        Mockito.doThrow(new AuthorizationDeniedException("Access denied")).when(debtPositionRetrieverServiceMock).validateOperator(debtPositionId, organizationId, loggedUser, accessToken);
+        Mockito.doThrow(new ResourceNotFoundException("")).when(debtPositionRetrieverServiceMock).validateOperator(debtPositionId, organizationId, loggedUser, accessToken);
 
-        Assertions.assertThrows(AuthorizationDeniedException.class, () ->
+        Assertions.assertThrows(ResourceNotFoundException.class, () ->
           debtPositionRegistryRetrieverService.getDebtPositionRegistry(organizationId, debtPositionId, loggedUser, accessToken));
 
         Mockito.verifyNoInteractions(debtPositionRegistryServiceMock);

@@ -2,6 +2,7 @@ package it.gov.pagopa.pu.bff.service;
 
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.connector.registries.InstallmentRegistryService;
+import it.gov.pagopa.pu.bff.exception.ResourceNotFoundException;
 import it.gov.pagopa.pu.bff.service.debt_position.DebtPositionRetrieverService;
 import it.gov.pagopa.pu.bff.service.installment_registry.InstallmentRegistryRetrieverService;
 import it.gov.pagopa.pu.bff.service.installment_registry.InstallmentRegistryRetrieverServiceImpl;
@@ -132,7 +133,7 @@ class InstallmentRegistryRetrieverServiceImplTest {
   }
 
   @Test
-  void givenInvalidUserWhenGetInstallmentRegistriesThenAuthorizationDeniedException() {
+  void givenInvalidUserWhenGetInstallmentRegistriesThenResourceNotFoundException() {
     UserInfo loggedUser = new UserInfo();
     loggedUser.setUserId("user-123");
     loggedUser.setMappedExternalUserId("operatorExternalUserId");
@@ -141,9 +142,9 @@ class InstallmentRegistryRetrieverServiceImplTest {
     Long debtPositionId = 2L;
     try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
       authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)).thenAnswer(a -> null);
-      Mockito.doThrow(new AuthorizationDeniedException("Access denied")).when(debtPositionRetrieverServiceMock).validateOperator(debtPositionId, organizationId, loggedUser, accessToken);
+      Mockito.doThrow(new ResourceNotFoundException("")).when(debtPositionRetrieverServiceMock).validateOperator(debtPositionId, organizationId, loggedUser, accessToken);
 
-      Assertions.assertThrows(AuthorizationDeniedException.class, () ->
+      Assertions.assertThrows(ResourceNotFoundException.class, () ->
         installmentRegistryRetrieverService.getInstallmentRegistries(organizationId, debtPositionId, loggedUser, accessToken));
 
       Mockito.verifyNoInteractions(installmentRegistryServiceMock);

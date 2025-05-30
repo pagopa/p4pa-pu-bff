@@ -2,6 +2,7 @@ package it.gov.pagopa.pu.bff.connector.debt_position.client;
 
 import it.gov.pagopa.pu.bff.connector.debt_position.config.DebtPositionApisHolder;
 import it.gov.pagopa.pu.bff.dto.DebtPositionViewFiltersDTO;
+import it.gov.pagopa.pu.bff.exception.ConflictException;
 import it.gov.pagopa.pu.bff.exception.ResourceNotFoundException;
 import it.gov.pagopa.pu.bff.util.TestUtils;
 import it.gov.pagopa.pu.debtpositions.controller.generated.DebtPositionApi;
@@ -245,9 +246,7 @@ class DebtPositionClientTest {
             .thenThrow(
                     HttpClientErrorException.create(HttpStatus.NOT_FOUND, "NotFound", null, null, null));
 
-    DebtPositionDTO result = debtPositionClient.publishDebtPosition(debtPositionId, accessToken);
-
-    Assertions.assertNull(result);
+    Assertions.assertThrows(ResourceNotFoundException.class, () -> debtPositionClient.publishDebtPosition(debtPositionId, accessToken));
   }
 
   @Test
@@ -261,8 +260,6 @@ class DebtPositionClientTest {
             .thenThrow(
                     HttpClientErrorException.create(HttpStatus.CONFLICT, "Conflict", null, null, null));
 
-    DebtPositionDTO result = debtPositionClient.publishDebtPosition(debtPositionId, accessToken);
-
-    Assertions.assertNull(result);
+    Assertions.assertThrows(ConflictException.class, () -> debtPositionClient.publishDebtPosition(debtPositionId, accessToken));
   }
 }

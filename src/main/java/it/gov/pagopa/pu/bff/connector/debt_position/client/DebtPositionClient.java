@@ -2,6 +2,7 @@ package it.gov.pagopa.pu.bff.connector.debt_position.client;
 
 import it.gov.pagopa.pu.bff.connector.debt_position.config.DebtPositionApisHolder;
 import it.gov.pagopa.pu.bff.dto.DebtPositionViewFiltersDTO;
+import it.gov.pagopa.pu.bff.exception.ConflictException;
 import it.gov.pagopa.pu.bff.exception.ResourceNotFoundException;
 import it.gov.pagopa.pu.bff.util.DateUtils;
 import it.gov.pagopa.pu.bff.util.PageUtils;
@@ -100,11 +101,9 @@ public class DebtPositionClient {
     try {
       return debtPositionApisHolder.getDebtPositionApi(accessToken).publishDebtPosition(debtPositionId);
     } catch (HttpClientErrorException.NotFound e) {
-      log.warn(DEBT_POSITION_NOT_FOUND.formatted(debtPositionId));
-      return null;
+      throw new ResourceNotFoundException(DEBT_POSITION_NOT_FOUND.formatted(debtPositionId));
     } catch (HttpClientErrorException.Conflict e) {
-      log.warn("Conflict detected publishing DebtPosition with ID %d".formatted(debtPositionId));
-      return null;
+      throw new ConflictException("Conflict detected publishing DebtPosition with ID %d".formatted(debtPositionId));
     }
   }
 }

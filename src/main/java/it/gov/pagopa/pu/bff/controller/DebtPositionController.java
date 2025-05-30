@@ -129,4 +129,10 @@ public class DebtPositionController implements DebtPositionsApi {
     log.info("User requested manageDebtPositionInstallments having organizationId {} and debtPositionId {} ", organizationId, debtPositionId);
     return ResponseEntity.ofNullable(debtPositionRetrieverService.manageDebtPositionInstallments(organizationId,debtPositionId,manageDebtPositionDTO,publish,SecurityUtils.getLoggedUser(),SecurityUtils.getAccessToken()));
   }
+
+  @Override
+  public ResponseEntity<DebtPositionDTO> publishDebtPosition(Long organizationId, Long debtPositionId) {
+    log.info("User requested publishDebtPosition having organizationId {} and debtPositionId {} ", organizationId, debtPositionId);
+    return ResponseEntity.ok(debtPositionRetrieverService.publishDebtPosition(organizationId, debtPositionId, SecurityUtils.getLoggedUser(),SecurityUtils.getAccessToken()));
+  }
 }

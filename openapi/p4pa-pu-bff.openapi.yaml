@@ -2014,6 +2014,8 @@ paths:
           description: Unauthorized - Missing or invalid token
         '403':
           description: Forbidden - Access denied
+        '404':
+          description: Not Found
         '500':
           description: Internal Server Error
   /organization/{organizationId}/debt-position-registries/{debtPositionId}:
@@ -2047,6 +2049,8 @@ paths:
           description: Unauthorized - Missing or invalid token
         '403':
           description: Forbidden - Access denied
+        '404':
+          description: Not Found
         '500':
           description: Internal Server Error
 security:

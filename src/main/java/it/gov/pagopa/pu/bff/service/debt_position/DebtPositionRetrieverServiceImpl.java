@@ -154,7 +154,7 @@ public class DebtPositionRetrieverServiceImpl implements DebtPositionRetrieverSe
     );
 
     if (!hasOperatorGrantOnDebtPosition) {
-      throw AuthorizationService.buildAuthorizationDeniedException(organizationId, loggedUser);
+      throw new ResourceNotFoundException("DebtPosition with debtPositionId "+debtPositionId+" and organizationId "+organizationId+" not found");
     }
   }
 

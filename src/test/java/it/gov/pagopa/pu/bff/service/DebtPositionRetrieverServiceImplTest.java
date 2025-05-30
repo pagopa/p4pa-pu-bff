@@ -517,14 +517,13 @@ class DebtPositionRetrieverServiceImplTest {
 
     try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
       authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)).thenAnswer(a -> null);
-      authorizationServiceMockedStatic.when(() -> AuthorizationService.buildAuthorizationDeniedException(organizationId, loggedUser)).thenReturn(new AuthorizationDeniedException("Access denied on organizationId 1 to user mappedExternalUserId"));
 
       Mockito.when(debtPositionServiceMock.hasOperatorGrantOnDebtPosition(debtPositionId, organizationId, loggedUser.getMappedExternalUserId(), accessToken)).thenReturn(false);
 
-      AuthorizationDeniedException ex = assertThrows(AuthorizationDeniedException.class, () ->
+      ResourceNotFoundException ex = assertThrows(ResourceNotFoundException.class, () ->
         debtPositionRetrieverService.getDebtPositionNoticesZip(organizationId, debtPositionId, loggedUser, accessToken));
 
-      assertEquals("Access denied on organizationId 1 to user mappedExternalUserId", ex.getMessage());
+      assertEquals("DebtPosition with debtPositionId "+debtPositionId+" and organizationId "+organizationId+" not found", ex.getMessage());
       authorizationServiceMockedStatic.verify(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser));
     }
   }
@@ -566,7 +565,7 @@ class DebtPositionRetrieverServiceImplTest {
   }
 
   @Test
-  void givenInvalidUserWhenValidateOperatorThenThrowException(){
+  void givenInvalidUserWhenValidateOperatorThenThrowResourceNotFoundException(){
     UserInfo loggedUser = new UserInfo();
     loggedUser.setUserId("user-123");
     loggedUser.setMappedExternalUserId("operatorExternalUserId");
@@ -576,8 +575,8 @@ class DebtPositionRetrieverServiceImplTest {
 
     Mockito.when(debtPositionServiceMock.hasOperatorGrantOnDebtPosition(debtPositionId,organizationId, loggedUser.getMappedExternalUserId(), accessToken)).thenReturn(false);
 
-    AuthorizationDeniedException ex = assertThrows(AuthorizationDeniedException.class, () -> debtPositionRetrieverService.validateOperator(debtPositionId, organizationId, loggedUser, accessToken));
-    assertEquals("Access denied on organizationId 1 to user operatorExternalUserId", ex.getMessage());
+    ResourceNotFoundException ex = assertThrows(ResourceNotFoundException.class, () -> debtPositionRetrieverService.validateOperator(debtPositionId, organizationId, loggedUser, accessToken));
+    assertEquals("DebtPosition with debtPositionId "+debtPositionId+" and organizationId "+organizationId+" not found", ex.getMessage());
   }
   @Test
   void givenValidUserWhenManageDebtPositionInstallmentsThenOk() {
@@ -759,7 +758,7 @@ class DebtPositionRetrieverServiceImplTest {
   }
 
   @Test
-  void givenInvalidOperatorWhenManageDebtPositionInstallmentsThenAuthorizationDeniedException() {
+  void givenInvalidOperatorWhenManageDebtPositionInstallmentsThenResourceNotFoundException() {
     UserInfo loggedUser = new UserInfo();
     Long organizationId = 1L;
     Long debtPositionId = 2L;
@@ -767,10 +766,9 @@ class DebtPositionRetrieverServiceImplTest {
 
     try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
       authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)).thenAnswer(a -> null);
-      authorizationServiceMockedStatic.when(() -> AuthorizationService.buildAuthorizationDeniedException(organizationId, loggedUser)).thenReturn(new AuthorizationDeniedException(""));
       Mockito.when(debtPositionServiceMock.hasOperatorGrantOnDebtPosition(debtPositionId, organizationId, loggedUser.getMappedExternalUserId(), accessToken)).thenReturn(false);
 
-      assertThrows(AuthorizationDeniedException.class, () ->
+      assertThrows(ResourceNotFoundException.class, () ->
               debtPositionRetrieverService.manageDebtPositionInstallments(organizationId, debtPositionId, manageDebtPositionDTO, true, loggedUser, accessToken));
     }
   }
@@ -814,7 +812,7 @@ class DebtPositionRetrieverServiceImplTest {
   }
 
   @Test
-  void givenInvalidOperatorWhenPublishDebtPositionThenAuthorizationDeniedException() {
+  void givenInvalidOperatorWhenPublishDebtPositionThenResourceNotFoundException() {
     UserInfo loggedUser = new UserInfo();
     loggedUser.setMappedExternalUserId("mappedExternalUserId");
     Long organizationId = 1L;
@@ -822,11 +820,10 @@ class DebtPositionRetrieverServiceImplTest {
 
     try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
       authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)).thenAnswer(a -> null);
-      authorizationServiceMockedStatic.when(() -> AuthorizationService.buildAuthorizationDeniedException(organizationId, loggedUser)).thenReturn(new AuthorizationDeniedException(""));
 
       Mockito.when(debtPositionServiceMock.hasOperatorGrantOnDebtPosition(debtPositionId, organizationId, loggedUser.getMappedExternalUserId(), accessToken)).thenReturn(false);
 
-      assertThrows(AuthorizationDeniedException.class, () ->
+      assertThrows(ResourceNotFoundException.class, () ->
         debtPositionRetrieverService.publishDebtPosition(organizationId, debtPositionId, loggedUser, accessToken));
     }
   }

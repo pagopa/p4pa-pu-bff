@@ -38,6 +38,7 @@ val micrometerVersion = "1.4.6"
 val caffeineVersion = "3.2.0"
 val httpClientVersion = "5.4.4"
 val mapStructVersion = "1.6.3"
+val openHtmlToPdfVersion = "1.0.10"
 
 val wiremockVersion = "3.13.0"
 val wiremockSpringBootVersion = "3.10.0"
@@ -59,6 +60,8 @@ dependencies {
   implementation("com.github.ben-manes.caffeine:caffeine:$caffeineVersion")
   implementation("org.apache.httpcomponents.client5:httpclient5:$httpClientVersion")
   implementation ("org.mapstruct:mapstruct:${mapStructVersion}")
+  implementation("org.springframework.boot:spring-boot-starter-freemarker")
+  implementation("com.openhtmltopdf:openhtmltopdf-pdfbox:${openHtmlToPdfVersion}")
 
 
   compileOnly("org.projectlombok:lombok")
@@ -278,7 +281,8 @@ tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>("ope
   description = "description"
 
   generatorName.set("java")
-  remoteInputSpec.set("https://raw.githubusercontent.com/pagopa/p4pa-debt-positions/refs/heads/$targetEnv/openapi/generated.openapi.json")
+//  remoteInputSpec.set("https://raw.githubusercontent.com/pagopa/p4pa-debt-positions/refs/heads/$targetEnv/openapi/generated.openapi.json")
+  inputSpec.set("$rootDir/../p4pa-debt-positions/openapi/generated.openapi.json")
   outputDir.set("$projectDir/build/generated")
   apiPackage.set("it.gov.pagopa.pu.debtpositions.controller.generated")
   modelPackage.set("it.gov.pagopa.pu.debtpositions.dto.generated")

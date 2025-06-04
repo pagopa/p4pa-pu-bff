@@ -2,6 +2,7 @@ package it.gov.pagopa.pu.bff.controller;
 
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.controller.generated.ReceiptsApi;
+import it.gov.pagopa.pu.bff.dto.FileResourceDTO;
 import it.gov.pagopa.pu.bff.dto.OffsetDateTimeIntervalFilter;
 import it.gov.pagopa.pu.bff.dto.ReceiptViewFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedReceiptView;
@@ -10,7 +11,11 @@ import it.gov.pagopa.pu.bff.security.SecurityUtils;
 import it.gov.pagopa.pu.bff.service.receipt.ReceiptRetrieverService;
 import it.gov.pagopa.pu.debtpositions.dto.generated.ReceiptOriginType;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ContentDisposition;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -41,5 +46,21 @@ public class ReceiptController implements ReceiptsApi {
   public ResponseEntity<ReceiptDetailDTO> getReceiptDetail(Long organizationId, Long receiptId) {
     log.info("User requested getReceiptDetail having organizationId {} and receiptId {}", organizationId, receiptId);
     return ResponseEntity.ofNullable(receiptRetrieverService.getReceiptDetail(organizationId, receiptId, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken()));
+  }
+
+  @Override
+  public ResponseEntity<Resource> getReceiptPdf(Long organizationId, Long receiptId) {
+    log.info("User requested getReceiptPdf having organizationId {} and receiptId {}", organizationId, receiptId);
+    FileResourceDTO fileResourceDTO = receiptRetrieverService.getReceiptPdf(
+            organizationId,receiptId,SecurityUtils.getLoggedUser(),SecurityUtils.getAccessToken());
+    HttpHeaders headers = new HttpHeaders();
+    headers.setContentDisposition(ContentDisposition.attachment()
+            .filename(fileResourceDTO.getFileName())
+            .build());
+
+    return ResponseEntity.ok()
+            .contentType(MediaType.APPLICATION_PDF)
+            .headers(headers)
+            .body(fileResourceDTO.getResource());
   }
 }

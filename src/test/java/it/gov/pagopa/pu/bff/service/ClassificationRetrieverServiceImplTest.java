@@ -3,6 +3,7 @@ package it.gov.pagopa.pu.bff.service;
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.connector.classification.ClassificationService;
 import it.gov.pagopa.pu.bff.dto.LocalDateIntervalFilter;
+import it.gov.pagopa.pu.bff.dto.OffsetDateTimeIntervalFilter;
 import it.gov.pagopa.pu.bff.dto.TreasuredClassificationFiltersDTO;
 import it.gov.pagopa.pu.bff.service.classification.ClassificationRetrieverServiceImpl;
 import it.gov.pagopa.pu.classification.dto.generated.ClassificationDetailViewDTO;
@@ -22,8 +23,7 @@ import org.springframework.security.authorization.AuthorizationDeniedException;
 
 import java.time.LocalDate;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -93,6 +93,54 @@ class ClassificationRetrieverServiceImplTest {
   void givenValidLastClassificationDateWhenGetTreasuredClassificationThenOk() {
     LocalDateIntervalFilter lastClassificationDate = new LocalDateIntervalFilter(LocalDate.now().minusDays(2), LocalDate.now());
     testSingleFilterSuccess(TreasuredClassificationFiltersDTO.builder().lastClassificationDate(lastClassificationDate).build());
+  }
+
+  @Test
+  void givenAllDateRangesEmptyWhenGetTreasuredClassificationThenThrowIllegalArgumentException() {
+    TreasuredClassificationFiltersDTO filtersDTO = new TreasuredClassificationFiltersDTO(
+      null, null, null, null,
+      new LocalDateIntervalFilter(null, null),
+      new OffsetDateTimeIntervalFilter(null, null),
+      new OffsetDateTimeIntervalFilter(null, null),
+      new LocalDateIntervalFilter(null, null),
+      new LocalDateIntervalFilter(null, null),
+      new LocalDateIntervalFilter(null, null),
+      null, null, null, null, null,
+      null, null, null, null, null,
+      null, null, null, null, null
+    );
+    assertThrowsIllegalArgument(filtersDTO);
+  }
+
+  private void assertThrowsIllegalArgument(TreasuredClassificationFiltersDTO filtersDTO) {
+    UserInfo loggedUser = new UserInfo();
+    loggedUser.setUserId("user-123");
+    Pageable pageable = PageRequest.of(0, 10);
+    long organizationId = 1L;
+
+    try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
+      authorizationServiceMockedStatic.when(() ->
+        AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)).thenAnswer(a -> null);
+
+      IllegalArgumentException exception = Assertions.assertThrows(IllegalArgumentException.class, () ->
+        classificationRetrieverService.getTreasuredClassification(organizationId, filtersDTO, pageable, loggedUser, accessToken));
+
+      assertEquals("At least one filter must be provided, and all date intervals must have both 'from' and 'to' set or be null", exception.getMessage());
+    }
+
+    Mockito.verifyNoInteractions(classificationServiceMock);
+  }
+
+  @Test
+  void givenOnlyIuvWhenGetTreasuredClassificationThenOk() {
+    TreasuredClassificationFiltersDTO filtersDTO = new TreasuredClassificationFiltersDTO(
+      null, null, "IUV123", null,
+      null, null, null, null, null, null,
+      null, null, null, null, null,
+      null, null, null, null, null,
+      null, null, null, null, null
+    );
+    testSingleFilterSuccess(filtersDTO);
   }
 
   private void testSingleFilterSuccess(TreasuredClassificationFiltersDTO filtersDTO) {

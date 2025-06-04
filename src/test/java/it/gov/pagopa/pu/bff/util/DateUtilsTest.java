@@ -41,45 +41,23 @@ class DateUtilsTest {
   }
 
   @Test
-  void whenBothDatesAreSetThenNoException() {
-    LocalDate from = LocalDate.now().minusDays(10);
-    LocalDate to = LocalDate.now();
-    LocalDateIntervalFilter dateFilter = new LocalDateIntervalFilter(from, to);
-
-    assertDoesNotThrow(() -> DateUtils.validateDateFilters(dateFilter, "testDate"));
+  void givenBothLocalDatesNullWhenIsNullOrInvalidLocalDateRangeThenReturnTrue() {
+    assertTrue(DateUtils.isNullOrInvalidLocalDateRange(null, null));
   }
 
   @Test
-  void whenBothDatesAreNullThenNoException() {
-    LocalDateIntervalFilter dateFilter = new LocalDateIntervalFilter(null, null);
-
-    assertDoesNotThrow(() -> DateUtils.validateDateFilters(dateFilter, "testDate"));
+  void givenOnlyLocalFromDateWhenIsNullOrInvalidLocalDateRangeThenReturnTrue() {
+    assertTrue(DateUtils.isNullOrInvalidLocalDateRange(LocalDate.now(), null));
   }
 
   @Test
-  void whenOnlyFromDateIsSetThenThrowException() {
-    LocalDate from = LocalDate.now().minusDays(10);
-    LocalDateIntervalFilter dateFilter = new LocalDateIntervalFilter(from, null);
-
-    Exception exception = assertThrows(IllegalArgumentException.class, () -> DateUtils.validateDateFilters(dateFilter, "testDate"));
-
-    String expectedMessage = "Both testDateFrom and testDateTo must be set or both must be null";
-    String actualMessage = exception.getMessage();
-
-    assertTrue(actualMessage.contains(expectedMessage));
+  void givenOnlyLocalToDateWhenIsNullOrInvalidLocalDateRangeThenReturnTrue() {
+    assertTrue(DateUtils.isNullOrInvalidLocalDateRange(null, LocalDate.now()));
   }
 
   @Test
-  void whenOnlyToDateIsSetThenThrowException() {
-    LocalDate to = LocalDate.now();
-    LocalDateIntervalFilter dateFilter = new LocalDateIntervalFilter(null, to);
-
-    Exception exception = assertThrows(IllegalArgumentException.class, () -> DateUtils.validateDateFilters(dateFilter, "testDate"));
-
-    String expectedMessage = "Both testDateFrom and testDateTo must be set or both must be null";
-    String actualMessage = exception.getMessage();
-
-    assertTrue(actualMessage.contains(expectedMessage));
+  void givenBothLocalDatesPresentWhenIsNullOrInvalidLocalDateRangeThenReturnFalse() {
+    assertFalse(DateUtils.isNullOrInvalidLocalDateRange(LocalDate.now().minusDays(1), LocalDate.now()));
   }
 
   @Test
@@ -132,23 +110,43 @@ class DateUtilsTest {
   }
 
   @Test
-  void givenBothDatesNullWhenIsNullOrInvalidDateRangeThenReturnTrue() {
-    assertTrue(DateUtils.isNullOrInvalidDateRange(null, null));
+  void givenBothDatesNullWhenIsNullOrInvalidOffsetDateTimeRangeThenReturnTrue() {
+    assertTrue(DateUtils.isNullOrInvalidOffsetDateTimeRange(null, null));
   }
 
   @Test
-  void givenOnlyFromDateWhenIsNullOrInvalidDateRangeThenReturnTrue() {
-    assertTrue(DateUtils.isNullOrInvalidDateRange(OffsetDateTime.now(), null));
+  void givenOnlyFromDateWhenIsNullOrInvalidOffsetDateTimeRangeThenReturnTrue() {
+    assertTrue(DateUtils.isNullOrInvalidOffsetDateTimeRange(OffsetDateTime.now(), null));
   }
 
   @Test
-  void givenOnlyToDateWhenIsNullOrInvalidDateRangeThenReturnTrue() {
-    assertTrue(DateUtils.isNullOrInvalidDateRange(null, OffsetDateTime.now()));
+  void givenOnlyToDateWhenIsNullOrInvalidOffsetDateTimeRangeThenReturnTrue() {
+    assertTrue(DateUtils.isNullOrInvalidOffsetDateTimeRange(null, OffsetDateTime.now()));
   }
 
   @Test
-  void givenBothDatesPresentWhenIsNullOrInvalidDateRangeThenReturnFalse() {
-    assertFalse(DateUtils.isNullOrInvalidDateRange(OffsetDateTime.now().minusDays(1), OffsetDateTime.now()));
+  void givenBothDatesPresentWhenIsNullOrInvalidOffsetDateTimeRangeThenReturnFalse() {
+    assertFalse(DateUtils.isNullOrInvalidOffsetDateTimeRange(OffsetDateTime.now().minusDays(1), OffsetDateTime.now()));
+  }
+
+  @Test
+  void givenBothLocalDateTimesNullWhenIsNullOrInvalidLocalDateTimeRangeThenReturnTrue() {
+    assertTrue(DateUtils.isNullOrInvalidLocalDateTimeRange(null, null));
+  }
+
+  @Test
+  void givenOnlyLocalDateTimeFromWhenIsNullOrInvalidLocalDateTimeRangeThenReturnTrue() {
+    assertTrue(DateUtils.isNullOrInvalidLocalDateTimeRange(LocalDateTime.now(), null));
+  }
+
+  @Test
+  void givenOnlyLocalDateTimeToWhenIsNullOrInvalidLocalDateTimeRangeThenReturnTrue() {
+    assertTrue(DateUtils.isNullOrInvalidLocalDateTimeRange(null, LocalDateTime.now()));
+  }
+
+  @Test
+  void givenBothLocalDateTimesPresentWhenIsNullOrInvalidLocalDateTimeRangeThenReturnFalse() {
+    assertFalse(DateUtils.isNullOrInvalidLocalDateTimeRange(LocalDateTime.now().minusDays(1), LocalDateTime.now()));
   }
 
 }

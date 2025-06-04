@@ -1,9 +1,5 @@
 package it.gov.pagopa.pu.bff.controller;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.dto.TreasuredClassificationFiltersDTO;
 import it.gov.pagopa.pu.bff.security.SecurityUtilsTest;
@@ -24,6 +20,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import uk.co.jemos.podam.api.PodamFactory;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class ClassificationControllerTest {
@@ -66,11 +66,11 @@ class ClassificationControllerTest {
 
     ResponseEntity<PagedTreasuredClassification> response = classificationController.getTreasuredClassifications(organizationId,
       treasuredClassificationFiltersDTO.getLabel(),
-      treasuredClassificationFiltersDTO.getLastClassificationDate().getFrom(),
-      treasuredClassificationFiltersDTO.getLastClassificationDate().getTo(),
       treasuredClassificationFiltersDTO.getIud(),
       treasuredClassificationFiltersDTO.getIuv(),
       treasuredClassificationFiltersDTO.getIur(),
+      treasuredClassificationFiltersDTO.getLastClassificationDate().getFrom(),
+      treasuredClassificationFiltersDTO.getLastClassificationDate().getTo(),
       treasuredClassificationFiltersDTO.getPayDate().getFrom(),
       treasuredClassificationFiltersDTO.getPayDate().getTo(),
       treasuredClassificationFiltersDTO.getPaymentDateTime().getFrom(),
@@ -88,6 +88,14 @@ class ClassificationControllerTest {
       treasuredClassificationFiltersDTO.getAccountRegistryCode(),
       treasuredClassificationFiltersDTO.getBillAmountCents(),
       treasuredClassificationFiltersDTO.getRemittanceInformation(),
+      treasuredClassificationFiltersDTO.getDebtorFiscalCode(),
+      treasuredClassificationFiltersDTO.getDebtPositionTypeOrgCode(),
+      treasuredClassificationFiltersDTO.getBillYear(),
+      treasuredClassificationFiltersDTO.getBillCode(),
+      treasuredClassificationFiltersDTO.getDocumentYear(),
+      treasuredClassificationFiltersDTO.getDocumentCode(),
+      treasuredClassificationFiltersDTO.getProvisionalAe(),
+      treasuredClassificationFiltersDTO.getProvisionalCode(),
       pageable);
 
     assertEquals(HttpStatus.OK, response.getStatusCode());

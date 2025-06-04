@@ -83,7 +83,7 @@ public class DebtPositionRetrieverServiceImpl implements DebtPositionRetrieverSe
   }
 
   private void validateDebtPositionViewFilters(DebtPositionViewFiltersDTO filtersDTO) {
-    if (DateUtils.isNullOrInvalidDateRange(filtersDTO.getCreationDateFrom(), filtersDTO.getCreationDateTo()) &&
+    if (DateUtils.isNullOrInvalidOffsetDateTimeRange(filtersDTO.getCreationDateFrom(), filtersDTO.getCreationDateTo()) &&
       StringUtils.isBlank(filtersDTO.getFiscalCode()) &&
       filtersDTO.getDebtPositionTypeOrgId() == null &&
       filtersDTO.getStatus() == null) {

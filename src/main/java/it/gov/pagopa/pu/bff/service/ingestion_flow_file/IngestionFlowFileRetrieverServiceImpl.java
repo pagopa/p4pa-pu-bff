@@ -42,7 +42,7 @@ public class IngestionFlowFileRetrieverServiceImpl implements IngestionFlowFileR
   }
 
   private void validateIngestionFlowFileFilters(IngestionFlowFileFiltersDTO filtersDTO) {
-    if (DateUtils.isNullOrInvalidDateRange(filtersDTO.getCreationDateFrom(), filtersDTO.getCreationDateTo()) &&
+    if (DateUtils.isNullOrInvalidOffsetDateTimeRange(filtersDTO.getCreationDateFrom(), filtersDTO.getCreationDateTo()) &&
       filtersDTO.getStatus() == null &&
       StringUtils.isBlank(filtersDTO.getFileName())) {
       throw new IllegalArgumentException("At least one of the research fields must be provided, and both 'from' and 'to' dates must be set together");

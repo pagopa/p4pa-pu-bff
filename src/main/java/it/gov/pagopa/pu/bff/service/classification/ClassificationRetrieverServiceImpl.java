@@ -4,9 +4,11 @@ import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.connector.classification.ClassificationService;
 import it.gov.pagopa.pu.bff.dto.TreasuredClassificationFiltersDTO;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
-import it.gov.pagopa.pu.classification.dto.generated.PagedTreasuredClassification;
-import org.springframework.data.domain.Pageable;
+import it.gov.pagopa.pu.bff.util.DateUtils;
 import it.gov.pagopa.pu.classification.dto.generated.ClassificationDetailViewDTO;
+import it.gov.pagopa.pu.classification.dto.generated.PagedTreasuredClassification;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -20,12 +22,43 @@ public class ClassificationRetrieverServiceImpl implements ClassificationRetriev
   }
 
   @Override
-  public PagedTreasuredClassification getTreasuredClassification(
-    Long organizationId, TreasuredClassificationFiltersDTO treasuredClassificationFiltersDTO,
-    Pageable pageable, UserInfo loggedUser, String accessToken) {
+  public PagedTreasuredClassification getTreasuredClassification(Long organizationId, TreasuredClassificationFiltersDTO treasuredClassificationFiltersDTO, Pageable pageable, UserInfo loggedUser, String accessToken) {
     AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser);
-    return classificationService.getTreasuredClassifications(organizationId,
-      treasuredClassificationFiltersDTO, pageable, accessToken);
+
+    validateTreasuredClassificationFilters(treasuredClassificationFiltersDTO);
+
+    return classificationService.getTreasuredClassifications(organizationId, treasuredClassificationFiltersDTO, pageable, accessToken);
+  }
+
+  private void validateTreasuredClassificationFilters(TreasuredClassificationFiltersDTO filters) {
+    if (filters.getLabel() == null &&
+      StringUtils.isBlank(filters.getIud()) &&
+      StringUtils.isBlank(filters.getIuv()) &&
+      StringUtils.isBlank(filters.getIur()) &&
+      DateUtils.isNullOrInvalidLocalDateRange(filters.getLastClassificationDate().getFrom(), filters.getLastClassificationDate().getTo()) &&
+      DateUtils.isNullOrInvalidOffsetDateTimeRange(filters.getPayDate().getFrom(), filters.getPayDate().getTo()) &&
+      DateUtils.isNullOrInvalidOffsetDateTimeRange(filters.getPaymentDateTime().getFrom(), filters.getPaymentDateTime().getTo()) &&
+      DateUtils.isNullOrInvalidLocalDateRange(filters.getRegulationDate().getFrom(), filters.getRegulationDate().getTo()) &&
+      DateUtils.isNullOrInvalidLocalDateRange(filters.getBillDate().getFrom(), filters.getBillDate().getTo()) &&
+      DateUtils.isNullOrInvalidLocalDateRange(filters.getRegionValueDate().getFrom(), filters.getRegionValueDate().getTo()) &&
+      StringUtils.isBlank(filters.getPspCompanyName()) &&
+      StringUtils.isBlank(filters.getPspLastName()) &&
+      StringUtils.isBlank(filters.getIuf()) &&
+      StringUtils.isBlank(filters.getRegulationUniqueIdentifier()) &&
+      StringUtils.isBlank(filters.getAccountRegistryCode()) &&
+      filters.getBillAmountCents() == null &&
+      StringUtils.isBlank(filters.getRemittanceInformation()) &&
+      StringUtils.isBlank(filters.getDebtorFiscalCode()) &&
+      StringUtils.isBlank(filters.getDebtPositionTypeOrgCode()) &&
+      StringUtils.isBlank(filters.getBillYear()) &&
+      StringUtils.isBlank(filters.getBillCode()) &&
+      StringUtils.isBlank(filters.getDocumentYear()) &&
+      StringUtils.isBlank(filters.getDocumentCode()) &&
+      StringUtils.isBlank(filters.getProvisionalAe()) &&
+      StringUtils.isBlank(filters.getProvisionalCode())) {
+
+      throw new IllegalArgumentException("At least one filter must be provided, and all date intervals must have both 'from' and 'to' set or be null");
+    }
   }
 
   @Override

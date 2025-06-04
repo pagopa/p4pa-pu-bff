@@ -1724,7 +1724,6 @@ paths:
           description: The ID of the organization
         - name: label
           in: query
-          required: true
           schema:
             type: 'ClassificationsEnum'
         - name: iud
@@ -1741,13 +1740,11 @@ paths:
             type: string
         - name: lastClassificationDateFrom
           in: query
-          required: true
           schema:
             type: string
             format: date
         - name: lastClassificationDateTo
           in: query
-          required: true
           schema:
             type: string
             format: date
@@ -1827,6 +1824,38 @@ paths:
             type: integer
             format: int64
         - name: remittanceInformation
+          in: query
+          schema:
+            type: string
+        - name: debtorFiscalCode
+          in: query
+          schema:
+            type: string
+        - name: debtPositionTypeOrgCode
+          in: query
+          schema:
+            type: string
+        - name: billYear
+          in: query
+          schema:
+            type: string
+        - name: billCode
+          in: query
+          schema:
+            type: string
+        - name: documentYear
+          in: query
+          schema:
+            type: string
+        - name: documentCode
+          in: query
+          schema:
+            type: string
+        - name: provisionalAe
+          in: query
+          schema:
+            type: string
+        - name: provisionalCode
           in: query
           schema:
             type: string

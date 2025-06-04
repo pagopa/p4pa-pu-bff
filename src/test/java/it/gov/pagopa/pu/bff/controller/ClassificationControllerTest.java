@@ -1,10 +1,12 @@
 package it.gov.pagopa.pu.bff.controller;
 
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
+import it.gov.pagopa.pu.bff.dto.TreasuredClassificationFiltersDTO;
 import it.gov.pagopa.pu.bff.security.SecurityUtilsTest;
 import it.gov.pagopa.pu.bff.service.classification.ClassificationRetrieverService;
 import it.gov.pagopa.pu.bff.util.TestUtils;
 import it.gov.pagopa.pu.classification.dto.generated.ClassificationDetailViewDTO;
+import it.gov.pagopa.pu.classification.dto.generated.PagedTreasuredClassification;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,6 +16,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import uk.co.jemos.podam.api.PodamFactory;
@@ -51,7 +54,7 @@ class ClassificationControllerTest {
     SecurityUtilsTest.clearSecurityContext();
   }
 
-  /*@Test
+  @Test
   void givenCorrectRequestWhenGetTreasuredClassificationThenOK() {
     Long organizationId = 1L;
     TreasuredClassificationFiltersDTO treasuredClassificationFiltersDTO = podamFactory.manufacturePojo(TreasuredClassificationFiltersDTO.class);
@@ -63,11 +66,11 @@ class ClassificationControllerTest {
 
     ResponseEntity<PagedTreasuredClassification> response = classificationController.getTreasuredClassifications(organizationId,
       treasuredClassificationFiltersDTO.getLabel(),
-      treasuredClassificationFiltersDTO.getLastClassificationDate().getFrom(),
-      treasuredClassificationFiltersDTO.getLastClassificationDate().getTo(),
       treasuredClassificationFiltersDTO.getIud(),
       treasuredClassificationFiltersDTO.getIuv(),
       treasuredClassificationFiltersDTO.getIur(),
+      treasuredClassificationFiltersDTO.getLastClassificationDate().getFrom(),
+      treasuredClassificationFiltersDTO.getLastClassificationDate().getTo(),
       treasuredClassificationFiltersDTO.getPayDate().getFrom(),
       treasuredClassificationFiltersDTO.getPayDate().getTo(),
       treasuredClassificationFiltersDTO.getPaymentDateTime().getFrom(),
@@ -85,13 +88,21 @@ class ClassificationControllerTest {
       treasuredClassificationFiltersDTO.getAccountRegistryCode(),
       treasuredClassificationFiltersDTO.getBillAmountCents(),
       treasuredClassificationFiltersDTO.getRemittanceInformation(),
+      treasuredClassificationFiltersDTO.getDebtorFiscalCode(),
+      treasuredClassificationFiltersDTO.getDebtPositionTypeOrgCode(),
+      treasuredClassificationFiltersDTO.getBillYear(),
+      treasuredClassificationFiltersDTO.getBillCode(),
+      treasuredClassificationFiltersDTO.getDocumentYear(),
+      treasuredClassificationFiltersDTO.getDocumentCode(),
+      treasuredClassificationFiltersDTO.getProvisionalAe(),
+      treasuredClassificationFiltersDTO.getProvisionalCode(),
       pageable);
 
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertEquals(mockPagedTreasuredClassification, response.getBody());
     verify(classificationRetrieverServiceMock).getTreasuredClassification(
       organizationId, treasuredClassificationFiltersDTO, pageable, loggedUser, accessToken);
-  }*/
+  }
 
   @Test
   void givenCorrectRequestWhenGetClassificationDetailThenOK() {

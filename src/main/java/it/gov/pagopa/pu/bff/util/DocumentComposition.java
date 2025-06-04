@@ -99,13 +99,12 @@ public class DocumentComposition {
     public String executeTextTemplate(TemplateType templateType, Object model) throws
             IOException, TemplateException {
         log.info("Execute templateType={} START", templateType);
-        StringWriter stringWriter = new StringWriter();
-
-        Template template = freemarker.getTemplate(templateType.name());
-        template.process(model, stringWriter);
-
-        log.info("Execute templateType={} END", templateType);
-        return stringWriter.getBuffer().toString();
+        try(StringWriter stringWriter = new StringWriter()){
+            Template template = freemarker.getTemplate(templateType.name());
+            template.process(model, stringWriter);
+            log.info("Execute templateType={} END", templateType);
+            return stringWriter.getBuffer().toString();
+        }
     }
 
     public byte[] executePdfTemplate(TemplateType templateType, Object model) throws IOException, TemplateException {
@@ -121,18 +120,15 @@ public class DocumentComposition {
     }
 
     private byte[] html2Pdf(String baseUri, String html) throws IOException {
-
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-
-        PdfRendererBuilder builder = new PdfRendererBuilder();
-        builder.usePdfUaAccessbility(true);
-        builder.usePdfAConformance(PdfRendererBuilder.PdfAConformance.PDFA_3_A);
-        builder.withHtmlContent(html, baseUri);
-        builder.toStream(baos);
-        builder.run();
-        baos.close();
-
-        return baos.toByteArray();
+        try(ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+            PdfRendererBuilder builder = new PdfRendererBuilder();
+            builder.usePdfUaAccessbility(true);
+            builder.usePdfAConformance(PdfRendererBuilder.PdfAConformance.PDFA_3_A);
+            builder.withHtmlContent(html, baseUri);
+            builder.toStream(baos);
+            builder.run();
+            return baos.toByteArray();
+        }
     }
 
 }

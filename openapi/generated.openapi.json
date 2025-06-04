@@ -2360,7 +2360,7 @@
           "200" : {
             "description" : "Ok",
             "content" : {
-              "application/octet-stream" : {
+              "application/pdf" : {
                 "schema" : {
                   "type" : "string",
                   "format" : "binary"
@@ -2371,7 +2371,7 @@
           "400" : {
             "description" : "Invalid request",
             "content" : {
-              "application/octet-stream" : {
+              "application/pdf" : {
                 "schema" : {
                   "type" : "string",
                   "format" : "binary"
@@ -2382,7 +2382,7 @@
           "404" : {
             "description" : "Not Found",
             "content" : {
-              "application/octet-stream" : {
+              "application/pdf" : {
                 "schema" : {
                   "type" : "string",
                   "format" : "binary"
@@ -2393,7 +2393,7 @@
           "500" : {
             "description" : "Internal server error",
             "content" : {
-              "application/octet-stream" : {
+              "application/pdf" : {
                 "schema" : {
                   "type" : "string",
                   "format" : "binary"

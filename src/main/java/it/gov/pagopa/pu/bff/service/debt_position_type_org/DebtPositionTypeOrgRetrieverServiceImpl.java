@@ -194,7 +194,6 @@ public class DebtPositionTypeOrgRetrieverServiceImpl implements DebtPositionType
     checkImmutableField("orgSector", existingDebtPositionTypeOrg.getOrgSector(), updatedDebtPositionTypeOrg.getOrgSector(), modifiedFields);
     checkImmutableField("flagAnonymousFiscalCode", existingDebtPositionTypeOrg.getFlagAnonymousFiscalCode(), updatedDebtPositionTypeOrg.getFlagAnonymousFiscalCode(), modifiedFields);
     checkImmutableField("flagMandatoryDueDate", existingDebtPositionTypeOrg.getFlagMandatoryDueDate(), updatedDebtPositionTypeOrg.getFlagMandatoryDueDate(), modifiedFields);
-    checkImmutableField("flagNotifyIo", existingDebtPositionTypeOrg.getFlagNotifyIo(), updatedDebtPositionTypeOrg.getFlagNotifyIo(), modifiedFields);
     checkImmutableField("flagActive", existingDebtPositionTypeOrg.getFlagActive(), updatedDebtPositionTypeOrg.getFlagActive(), modifiedFields);
     checkImmutableField("flagAmountActualization", existingDebtPositionTypeOrg.getFlagAmountActualization(), updatedDebtPositionTypeOrg.getFlagAmountActualization(), modifiedFields);
     checkImmutableField("flagExternal", existingDebtPositionTypeOrg.getFlagExternal(), updatedDebtPositionTypeOrg.getFlagExternal(), modifiedFields);

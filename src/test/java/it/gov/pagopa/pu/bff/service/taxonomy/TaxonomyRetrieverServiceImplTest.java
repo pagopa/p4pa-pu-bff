@@ -3,6 +3,7 @@ package it.gov.pagopa.pu.bff.service.taxonomy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import it.gov.pagopa.pu.bff.connector.organization.TaxonomyService;
+import it.gov.pagopa.pu.bff.connector.workflow_hub.WorkflowTaxonomyService;
 import it.gov.pagopa.pu.bff.dto.generated.PagedTaxonomy;
 import it.gov.pagopa.pu.bff.dto.generated.TaxonomyCodeDTO;
 import it.gov.pagopa.pu.bff.dto.generated.TaxonomyCollectionReasonDTO;
@@ -28,6 +29,8 @@ import it.gov.pagopa.pu.organization.dto.generated.CollectionModelTaxonomyServic
 import it.gov.pagopa.pu.organization.dto.generated.PagedModelTaxonomy;
 import it.gov.pagopa.pu.organization.dto.generated.Taxonomy;
 import java.util.List;
+
+import it.gov.pagopa.pu.workflowhub.dto.generated.WorkflowCreatedDTO;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -52,6 +55,8 @@ class TaxonomyRetrieverServiceImplTest {
   private TaxonomyOrganizationTypeMapper taxonomyOrganizationTypeMapperMock;
   @Mock
   private TaxonomyMacroAreaCodeMapper taxonomyMacroAreaCodeMapperMock;
+  @Mock
+  private WorkflowTaxonomyService workflowTaxonomyServiceMock;
 
   @InjectMocks
   private TaxonomyRetrieverServiceImpl taxonomyService;
@@ -220,4 +225,14 @@ class TaxonomyRetrieverServiceImplTest {
     assertEquals(expected, result);
   }
 
+  @Test
+  void testSynchronizeTaxonomy() {
+    WorkflowCreatedDTO expected = new WorkflowCreatedDTO();
+
+    Mockito.when(workflowTaxonomyServiceMock.synchronizeTaxonomy("token")).thenReturn(expected);
+
+    WorkflowCreatedDTO result = taxonomyService.synchronizeTaxonomy("token");
+
+    assertEquals(expected, result);
+  }
 }

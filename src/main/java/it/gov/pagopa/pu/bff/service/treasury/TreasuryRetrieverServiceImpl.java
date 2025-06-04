@@ -24,8 +24,12 @@ public class TreasuryRetrieverServiceImpl implements TreasuryRetrieverService {
 
   @Override
   public PagedTreasuryView getTreasuries(TreasuryViewFiltersDTO treasuryViewFiltersDTO, Pageable pageable, UserInfo loggedUser, String accessToken) {
-    DateUtils.validateDateFilters(treasuryViewFiltersDTO.getBillDateFilter(), "billDate");
-    DateUtils.validateDateFilters(treasuryViewFiltersDTO.getRegionValueDateFilter(), "regionValueDate");
+    if (DateUtils.isNullOrInvalidLocalDateRange(
+      treasuryViewFiltersDTO.getBillDateFilter().getFrom(),
+      treasuryViewFiltersDTO.getBillDateFilter().getTo())) {
+      throw new IllegalArgumentException("Both billDateFrom and billDateTo must be set or both must be null");
+    }
+
     AuthorizationService.validateUserForOrganizationId(treasuryViewFiltersDTO.getOrganizationId(), loggedUser);
 
     return treasuryViewMapper.mapToPagedTreasury(

@@ -93,7 +93,7 @@ public class AuthorizationService {
     }
   }
 
-  private static AuthorizationDeniedException buildAuthorizationDeniedException(Long organizationId, UserInfo loggedUser){
+  public static AuthorizationDeniedException buildAuthorizationDeniedException(Long organizationId, UserInfo loggedUser){
     log.debug("Unauthorized user. [organizationId:{}]", organizationId);
     return new AuthorizationDeniedException("Access denied on organizationId " + organizationId + " to user " + loggedUser.getMappedExternalUserId());
   }

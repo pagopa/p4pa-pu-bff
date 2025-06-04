@@ -28,4 +28,12 @@ public class TreasuredClassificationFiltersDTO {
   private String accountRegistryCode;
   private Long billAmountCents;
   private String remittanceInformation;
+  private String debtorFiscalCode;
+  private String debtPositionTypeOrgCode;
+  private String billYear;
+  private String billCode;
+  private String documentYear;
+  private String documentCode;
+  private String provisionalAe;
+  private String provisionalCode;
 }

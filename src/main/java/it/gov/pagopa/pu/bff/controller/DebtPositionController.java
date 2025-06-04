@@ -10,6 +10,7 @@ import it.gov.pagopa.pu.bff.service.debt_position.DebtPositionNoticeRetrieverSer
 import it.gov.pagopa.pu.bff.service.debt_position.DebtPositionRetrieverService;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionDTO;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionStatus;
+import it.gov.pagopa.pu.debtpositions.dto.generated.ManageDebtPositionDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Pageable;
@@ -123,4 +124,15 @@ public class DebtPositionController implements DebtPositionsApi {
     return organizationId + "_" + debtPositionId + "_NOTICES_PDF.zip";
   }
 
+  @Override
+  public ResponseEntity<DebtPositionDTO> manageDebtPositionInstallments(Long organizationId, Long debtPositionId, ManageDebtPositionDTO manageDebtPositionDTO, Boolean publish) {
+    log.info("User requested manageDebtPositionInstallments having organizationId {} and debtPositionId {} ", organizationId, debtPositionId);
+    return ResponseEntity.ofNullable(debtPositionRetrieverService.manageDebtPositionInstallments(organizationId,debtPositionId,manageDebtPositionDTO,publish,SecurityUtils.getLoggedUser(),SecurityUtils.getAccessToken()));
+  }
+
+  @Override
+  public ResponseEntity<DebtPositionDTO> publishDebtPosition(Long organizationId, Long debtPositionId) {
+    log.info("User requested publishDebtPosition having organizationId {} and debtPositionId {} ", organizationId, debtPositionId);
+    return ResponseEntity.ok(debtPositionRetrieverService.publishDebtPosition(organizationId, debtPositionId, SecurityUtils.getLoggedUser(),SecurityUtils.getAccessToken()));
+  }
 }

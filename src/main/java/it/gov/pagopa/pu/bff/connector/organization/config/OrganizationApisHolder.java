@@ -22,6 +22,7 @@ public class OrganizationApisHolder {
     private final TaxonomyServiceTypeCodeDtoSearchControllerApi taxonomyServiceTypeCodeDtoSearchControllerApi;
     private final TaxonomyCodeDtoSearchControllerApi taxonomyCodeDtoSearchControllerApi;
     private final OrganizationEntityControllerApi organizationEntityControllerApi;
+    private final OrgSilServiceSearchControllerApi orgSilServiceSearchControllerApi;
     private final ThreadLocal<String> bearerTokenHolder = new ThreadLocal<>();
 
     public OrganizationApisHolder(
@@ -48,6 +49,7 @@ public class OrganizationApisHolder {
         this.taxonomyServiceTypeCodeDtoSearchControllerApi = new TaxonomyServiceTypeCodeDtoSearchControllerApi(apiClient);
         this.taxonomyCodeDtoSearchControllerApi = new TaxonomyCodeDtoSearchControllerApi(apiClient);
         this.organizationEntityControllerApi = new OrganizationEntityControllerApi(apiClient);
+        this.orgSilServiceSearchControllerApi = new OrgSilServiceSearchControllerApi(apiClient);
     }
 
     @PreDestroy
@@ -95,6 +97,10 @@ public class OrganizationApisHolder {
 
     public OrganizationEntityControllerApi getOrganizationEntityControllerApi(String accessToken){
       return getApi(accessToken,organizationEntityControllerApi);
+    }
+
+    public OrgSilServiceSearchControllerApi getOrgSilServiceSearchControllerApi(String accessToken){
+      return getApi(accessToken,orgSilServiceSearchControllerApi);
     }
 
     private <T extends BaseApi> T getApi(String accessToken, T api) {

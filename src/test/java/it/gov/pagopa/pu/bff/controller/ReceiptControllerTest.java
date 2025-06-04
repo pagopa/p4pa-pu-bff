@@ -1,6 +1,7 @@
 package it.gov.pagopa.pu.bff.controller;
 
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
+import it.gov.pagopa.pu.bff.dto.FileResourceDTO;
 import it.gov.pagopa.pu.bff.dto.OffsetDateTimeIntervalFilter;
 import it.gov.pagopa.pu.bff.dto.ReceiptViewFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedReceiptView;
@@ -19,13 +20,19 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
 import java.time.OffsetDateTime;
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @ExtendWith(MockitoExtension.class)
 class ReceiptControllerTest {
@@ -127,6 +134,27 @@ class ReceiptControllerTest {
     Assertions.assertNull(response.getBody());
     Mockito.verify(receiptRetrieverServiceMock).getReceiptDetail(Mockito.eq(organizationId),Mockito.eq(receiptId),
       Mockito.any(), Mockito.anyString());
+  }
+
+
+  @Test
+  void givenCorrectRequestWhenGetReceiptPdfThenOk() {
+    Long organizationId = 1L;
+    Long receiptId = 2L;
+    FileResourceDTO fileResourceDTO = new FileResourceDTO();
+    fileResourceDTO.setResource(new ByteArrayResource("PDF-DATA".getBytes()));
+    fileResourceDTO.setFileName("filename");
+
+    Mockito.when(receiptRetrieverServiceMock.getReceiptPdf(organizationId, receiptId, loggedUser, accessToken))
+            .thenReturn(fileResourceDTO);
+
+    ResponseEntity<Resource> response = receiptController.getReceiptPdf(organizationId,receiptId);
+
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertEquals(MediaType.APPLICATION_PDF,response.getHeaders().getContentType());
+    assertNotNull(response.getBody());
+    assertEquals(fileResourceDTO.getResource(), response.getBody());
+    assertEquals(fileResourceDTO.getFileName(), response.getHeaders().getContentDisposition().getFilename());
   }
 }
 

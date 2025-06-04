@@ -4,6 +4,7 @@ import it.gov.pagopa.pu.bff.connector.debt_position.client.DebtPositionClient;
 import it.gov.pagopa.pu.bff.connector.debt_position.client.DebtPositionSearchClient;
 import it.gov.pagopa.pu.bff.dto.DebtPositionViewFiltersDTO;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionDTO;
+import it.gov.pagopa.pu.debtpositions.dto.generated.ManageDebtPositionDTO;
 import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelDebtPosition;
 import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelDebtPositionView;
 import org.springframework.data.domain.Pageable;
@@ -49,5 +50,20 @@ public class DebtPositionServiceImpl implements DebtPositionService {
   @Override
   public boolean deleteDebtPosition(Long debtPositionId, String accessToken) {
     return client.deleteDebtPosition(debtPositionId, accessToken);
+  }
+
+  @Override
+  public boolean hasOperatorGrantOnDebtPosition(Long debtPositionId, Long organizationId, String operatorExternalUserId, String accessToken) {
+    return debtPositionSearchClient.validateOperator(debtPositionId, organizationId, operatorExternalUserId, accessToken) == 1L;
+  }
+
+  @Override
+  public DebtPositionDTO manageDebtPositionInstallments(Long debtPositionId, ManageDebtPositionDTO manageDebtPositionDTO, String accessToken) {
+    return client.manageDebtPositionInstallments(debtPositionId,manageDebtPositionDTO,accessToken);
+  }
+
+  @Override
+  public DebtPositionDTO publishDebtPosition(Long debtPositionId, String accessToken) {
+    return client.publishDebtPosition(debtPositionId,accessToken);
   }
 }

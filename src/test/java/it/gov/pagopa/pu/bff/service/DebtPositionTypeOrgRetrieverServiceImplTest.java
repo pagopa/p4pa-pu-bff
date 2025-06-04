@@ -734,6 +734,7 @@ class DebtPositionTypeOrgRetrieverServiceImplTest {
             .ioTemplateMessage(debtPositionTypeOrg.getIoTemplateMessage()+1)
             .amountActualizationOrgSilServiceId(debtPositionTypeOrg.getAmountActualizationOrgSilServiceId()+1)
             .notifyOutcomePushOrgSilServiceId(debtPositionTypeOrg.getNotifyOutcomePushOrgSilServiceId()+1)
+            .flagNotifyIo(!debtPositionTypeOrg.getFlagNotifyIo())
             .build();
   }
 

@@ -4,17 +4,14 @@ import it.gov.pagopa.pu.bff.config.CacheConfig.Fields;
 import it.gov.pagopa.pu.bff.connector.debt_position.client.DebtPositionTypeOrgClient;
 import it.gov.pagopa.pu.bff.connector.debt_position.client.DebtPositionTypeOrgSearchClient;
 import it.gov.pagopa.pu.bff.connector.debt_position.client.DebtPositionTypeOrgWithCountClient;
-import it.gov.pagopa.pu.debtpositions.dto.generated.CollectionModelDebtPositionTypeOrg;
-import it.gov.pagopa.pu.debtpositions.dto.generated.CollectionModelDebtPositionTypeOrgCountByOrganizationId;
-import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrg;
-import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelDebtPositionTypeOrg;
-import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelDebtPositionTypeOrgWithCount;
-import it.gov.pagopa.pu.debtpositions.dto.generated.SaveDebtPositionTypeOrgDTO;
-import java.util.List;
+import it.gov.pagopa.pu.debtpositions.dto.generated.*;
 import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @CacheConfig(cacheNames = Fields.debtPositionTypeOrg)
@@ -63,6 +60,8 @@ public class DebtPositionTypeOrgServiceImpl implements DebtPositionTypeOrgServic
   }
 
   @Override
+  @CacheEvict(key = "#saveDebtPositionTypeOrg.debtPositionTypeOrg.debtPositionTypeOrgId",
+          condition = "#saveDebtPositionTypeOrg!=null && #saveDebtPositionTypeOrg.debtPositionTypeOrg!=null && #saveDebtPositionTypeOrg.debtPositionTypeOrg.debtPositionTypeOrgId!=null")
   public DebtPositionTypeOrg saveDebtPositionTypeOrg(
     SaveDebtPositionTypeOrgDTO saveDebtPositionTypeOrg, String accessToken) {
     return debtPositionTypeOrgClient.saveDebtPositionTypeOrg(saveDebtPositionTypeOrg,accessToken);

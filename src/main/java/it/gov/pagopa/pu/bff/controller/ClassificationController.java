@@ -29,25 +29,25 @@ public class ClassificationController implements ClassificationsApi {
 
   @Override
   public ResponseEntity<PagedTreasuredClassification> getTreasuredClassifications(
-    Long organizationId, ClassificationsEnum label,
-    LocalDate lastClassificationDateFrom,
-    LocalDate lastClassificationDateTo, String iud, String iuv, String iur,
-    OffsetDateTime payDateFrom, OffsetDateTime payDateTo,
-    OffsetDateTime paymentDateTimeFrom,
-    OffsetDateTime paymentDateTimeTo, LocalDate regulationDateFrom,
-    LocalDate regulationDateTo, LocalDate billDateFrom, LocalDate billDateTo,
-    LocalDate regionValueDateFrom,
-    LocalDate regionValueDateTo, String pspCompanyName, String pspLastName,
-    String iuf, String regulationUniqueIdentifier, String accountRegistryCode,
-    Long billAmountCents,
-    String remittanceInformation, Pageable pageable) {
+    Long organizationId, ClassificationsEnum label, String iud, String iuv, String iur,
+    LocalDate lastClassificationDateFrom, LocalDate lastClassificationDateTo,
+    OffsetDateTime payDateFrom, OffsetDateTime payDateTo, OffsetDateTime paymentDateTimeFrom,
+    OffsetDateTime paymentDateTimeTo, LocalDate regulationDateFrom, LocalDate regulationDateTo,
+    LocalDate billDateFrom, LocalDate billDateTo, LocalDate regionValueDateFrom,
+    LocalDate regionValueDateTo, String pspCompanyName, String pspLastName, String iuf,
+    String regulationUniqueIdentifier, String accountRegistryCode, Long billAmountCents,
+    String remittanceInformation, String debtorFiscalCode, String debtPositionTypeOrgCode,
+    String billYear, String billCode, String documentYear, String documentCode,
+    String provisionalAe, String provisionalCode, Pageable pageable) {
+
     log.info("User requested getTreasuredClassifications having organizationId {}", organizationId);
+
     LocalDateIntervalFilter lastClassificationDateFilter = new LocalDateIntervalFilter(lastClassificationDateFrom, lastClassificationDateTo);
     OffsetDateTimeIntervalFilter payDateTimeFilter = new OffsetDateTimeIntervalFilter(payDateFrom, payDateTo);
     OffsetDateTimeIntervalFilter paymentDateTimeFilter = new OffsetDateTimeIntervalFilter(paymentDateTimeFrom, paymentDateTimeTo);
     LocalDateIntervalFilter regulationDateFilter = new LocalDateIntervalFilter(regulationDateFrom, regulationDateTo);
     LocalDateIntervalFilter billDateFilter = new LocalDateIntervalFilter(billDateFrom, billDateTo);
-    LocalDateIntervalFilter regionValueDateFilter = new LocalDateIntervalFilter(regionValueDateFrom, regulationDateTo);
+    LocalDateIntervalFilter regionValueDateFilter = new LocalDateIntervalFilter(regionValueDateFrom, regionValueDateTo);
 
     TreasuredClassificationFiltersDTO treasuredClassificationFiltersDTO = TreasuredClassificationFiltersDTO.builder()
       .label(label)
@@ -67,6 +67,14 @@ public class ClassificationController implements ClassificationsApi {
       .accountRegistryCode(accountRegistryCode)
       .billAmountCents(billAmountCents)
       .remittanceInformation(remittanceInformation)
+      .debtorFiscalCode(debtorFiscalCode)
+      .debtPositionTypeOrgCode(debtPositionTypeOrgCode)
+      .billYear(billYear)
+      .billCode(billCode)
+      .documentYear(documentYear)
+      .documentCode(documentCode)
+      .provisionalAe(provisionalAe)
+      .provisionalCode(provisionalCode)
       .build();
 
     return ResponseEntity.ok(classificationRetrieverService.getTreasuredClassification(organizationId, treasuredClassificationFiltersDTO, pageable,

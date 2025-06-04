@@ -8,15 +8,15 @@ import it.gov.pagopa.pu.bff.dto.DebtPositionViewFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.FileResourceDTO;
 import it.gov.pagopa.pu.bff.dto.generated.DebtPositionDetailDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedDebtPositionView;
+import it.gov.pagopa.pu.bff.exception.ConflictException;
 import it.gov.pagopa.pu.bff.exception.InvalidDebtPositionException;
+import it.gov.pagopa.pu.bff.exception.ResourceNotFoundException;
 import it.gov.pagopa.pu.bff.mapper.DebtPositionMapper;
 import it.gov.pagopa.pu.bff.mapper.DebtPositionViewMapper;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
 import it.gov.pagopa.pu.bff.service.ZipFileService;
 import it.gov.pagopa.pu.bff.util.DateUtils;
-import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionDTO;
-import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionOrigin;
-import it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentStatus;
+import it.gov.pagopa.pu.debtpositions.dto.generated.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.io.Resource;
@@ -83,7 +83,7 @@ public class DebtPositionRetrieverServiceImpl implements DebtPositionRetrieverSe
   }
 
   private void validateDebtPositionViewFilters(DebtPositionViewFiltersDTO filtersDTO) {
-    if (DateUtils.isNullOrInvalidDateRange(filtersDTO.getCreationDateFrom(), filtersDTO.getCreationDateTo()) &&
+    if (DateUtils.isNullOrInvalidOffsetDateTimeRange(filtersDTO.getCreationDateFrom(), filtersDTO.getCreationDateTo()) &&
       StringUtils.isBlank(filtersDTO.getFiscalCode()) &&
       filtersDTO.getDebtPositionTypeOrgId() == null &&
       filtersDTO.getStatus() == null) {
@@ -115,7 +115,8 @@ public class DebtPositionRetrieverServiceImpl implements DebtPositionRetrieverSe
 
   @Override
   public Resource getDebtPositionNoticesZip(Long organizationId, Long debtPositionId, UserInfo loggedUser, String accessToken) {
-    // TODO authorization depends on task https://pagopa.atlassian.net/browse/P4ADEV-2972
+    AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser);
+    validateOperator(debtPositionId, organizationId, loggedUser, accessToken);
 
     DebtPositionDTO debtPosition = debtPositionService.getDebtPosition(debtPositionId, accessToken);
     if (debtPosition == null) {
@@ -144,4 +145,46 @@ public class DebtPositionRetrieverServiceImpl implements DebtPositionRetrieverSe
     return zipFileService.zipper(pdfResources);
   }
 
+  public void validateOperator(Long debtPositionId, Long organizationId, UserInfo loggedUser, String accessToken) {
+    boolean hasOperatorGrantOnDebtPosition = debtPositionService.hasOperatorGrantOnDebtPosition(
+      debtPositionId,
+      organizationId,
+      loggedUser.getMappedExternalUserId(),
+      accessToken
+    );
+
+    if (!hasOperatorGrantOnDebtPosition) {
+      throw new ResourceNotFoundException("DebtPosition with debtPositionId "+debtPositionId+" and organizationId "+organizationId+" not found");
+    }
+  }
+
+  @Override
+  public DebtPositionDTO manageDebtPositionInstallments(Long organizationId, Long debtPositionId, ManageDebtPositionDTO manageDebtPositionDTO, Boolean publish, UserInfo loggedUser, String accessToken) {
+    AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser);
+    validateOperator(debtPositionId, organizationId, loggedUser, accessToken);
+
+    DebtPositionDTO updatedDebtPosition = debtPositionService.manageDebtPositionInstallments(debtPositionId, manageDebtPositionDTO, accessToken);
+    if (checkDebtPositionPublishCondition(publish, updatedDebtPosition)) {
+      try {
+        return debtPositionService.publishDebtPosition(debtPositionId, accessToken);
+      } catch (ResourceNotFoundException | ConflictException e) {
+        log.warn(e.getMessage());
+      }
+    }
+    return updatedDebtPosition;
+  }
+
+  private static boolean checkDebtPositionPublishCondition(Boolean publish, DebtPositionDTO updatedDebtPosition) {
+    return Boolean.TRUE.equals(publish)
+      && updatedDebtPosition != null
+      && DebtPositionStatus.DRAFT.equals(updatedDebtPosition.getStatus());
+  }
+
+  @Override
+  public DebtPositionDTO publishDebtPosition(Long organizationId, Long debtPositionId, UserInfo loggedUser, String accessToken) {
+    AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser);
+    validateOperator(debtPositionId, organizationId, loggedUser, accessToken);
+
+    return debtPositionService.publishDebtPosition(debtPositionId, accessToken);
+  }
 }

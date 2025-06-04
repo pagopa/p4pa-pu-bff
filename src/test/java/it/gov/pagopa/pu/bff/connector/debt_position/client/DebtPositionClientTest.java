@@ -2,13 +2,16 @@ package it.gov.pagopa.pu.bff.connector.debt_position.client;
 
 import it.gov.pagopa.pu.bff.connector.debt_position.config.DebtPositionApisHolder;
 import it.gov.pagopa.pu.bff.dto.DebtPositionViewFiltersDTO;
+import it.gov.pagopa.pu.bff.exception.ConflictException;
 import it.gov.pagopa.pu.bff.exception.ResourceNotFoundException;
 import it.gov.pagopa.pu.bff.util.TestUtils;
 import it.gov.pagopa.pu.debtpositions.controller.generated.DebtPositionApi;
 import it.gov.pagopa.pu.debtpositions.controller.generated.DebtPositionViewSearchControllerApi;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionDTO;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionOrigin;
+import it.gov.pagopa.pu.debtpositions.dto.generated.ManageDebtPositionDTO;
 import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelDebtPositionView;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -46,6 +49,15 @@ class DebtPositionClientTest {
     debtPositionClient = new DebtPositionClient(debtPositionApisHolderMock);
   }
 
+  @AfterEach
+  void verifyNoMoreInteractions() {
+    Mockito.verifyNoMoreInteractions(
+            debtPositionApisHolderMock,
+            debtPositionViewSearchControllerApiMock,
+            debtPositionApiMock
+    );
+  }
+
   @Test
   void whenCreateDebtPositionThenInvokeWithAccessToken() {
     DebtPositionDTO debtPositionDTO = podamFactory.manufacturePojo(DebtPositionDTO.class);
@@ -61,8 +73,6 @@ class DebtPositionClientTest {
     DebtPositionDTO result = debtPositionClient.createDebtPosition(debtPositionDTO, massive, accessToken);
 
     Assertions.assertSame(expectedResult, result);
-    Mockito.verify(debtPositionApisHolderMock).getDebtPositionApi(accessToken);
-    Mockito.verify(debtPositionApiMock).createDebtPosition(debtPositionDTO, massive);
   }
 
   @Test
@@ -94,20 +104,6 @@ class DebtPositionClientTest {
     PagedModelDebtPositionView result = debtPositionClient.getDebtPositionViews(filtersDTO, debtPositionOrigins, operatorExternalUserId, PageRequest.of(1, 10), accessToken);
 
     Assertions.assertSame(expectedResult, result);
-    Mockito.verify(debtPositionApisHolderMock).getDebtPositionViewSearchControllerApi(accessToken);
-    Mockito.verify(debtPositionViewSearchControllerApiMock).crudDebtPositionsViewFindDebtPositionViews(
-      filtersDTO.getOrganizationId(),
-      operatorExternalUserId,
-      List.of(DebtPositionOrigin.ORDINARY.getValue(), DebtPositionOrigin.RECEIPT_FILE.getValue()),
-      filtersDTO.getCreationDateFrom().toLocalDateTime(),
-      filtersDTO.getCreationDateTo().toLocalDateTime(),
-      filtersDTO.getFiscalCode(),
-      filtersDTO.getDebtPositionTypeOrgId(),
-      filtersDTO.getStatus(),
-      1,
-      10,
-      Collections.emptyList()
-    );
   }
 
   @Test
@@ -124,7 +120,6 @@ class DebtPositionClientTest {
     DebtPositionDTO result = debtPositionClient.getDebtPosition(debtPositionId, accessToken);
 
     Assertions.assertSame(expectedResult, result);
-    Mockito.verifyNoMoreInteractions(debtPositionApiMock, debtPositionApisHolderMock);
   }
 
   @Test
@@ -141,7 +136,6 @@ class DebtPositionClientTest {
     DebtPositionDTO result = debtPositionClient.getDebtPosition(debtPositionId, accessToken);
 
     Assertions.assertNull(result);
-    Mockito.verifyNoMoreInteractions(debtPositionApiMock, debtPositionApisHolderMock);
   }
 
   @Test
@@ -158,7 +152,6 @@ class DebtPositionClientTest {
     Boolean deletedDebtPositionPhysically = debtPositionClient.deleteDebtPosition(debtPositionId, accessToken);
 
     Assertions.assertFalse(deletedDebtPositionPhysically);
-    Mockito.verifyNoMoreInteractions(debtPositionApiMock, debtPositionApisHolderMock);
   }
 
   @Test
@@ -175,7 +168,6 @@ class DebtPositionClientTest {
     Boolean deletedDebtPositionPhysically = debtPositionClient.deleteDebtPosition(debtPositionId, accessToken);
 
     Assertions.assertTrue(deletedDebtPositionPhysically);
-    Mockito.verifyNoMoreInteractions(debtPositionApiMock, debtPositionApisHolderMock);
   }
 
   @Test
@@ -191,7 +183,83 @@ class DebtPositionClientTest {
     ResourceNotFoundException ex = Assertions.assertThrows(ResourceNotFoundException.class, () -> debtPositionClient.deleteDebtPosition(debtPositionId, accessToken));
 
     Assertions.assertEquals("DebtPosition with ID 1 not found", ex.getMessage());
-    Mockito.verifyNoMoreInteractions(debtPositionApiMock, debtPositionApisHolderMock);
   }
 
+  @Test
+  void givenExistingDebtPositionWhenManageDebtPositionInstallmentsThenInvokeWithAccessToken() {
+    Long debtPositionId = 1L;
+    ManageDebtPositionDTO manageDebtPositionDTO = new ManageDebtPositionDTO();
+    String accessToken = "ACCESSTOKEN";
+    DebtPositionDTO expectedResult = new DebtPositionDTO();
+
+    when(debtPositionApisHolderMock.getDebtPositionApi(accessToken))
+            .thenReturn(debtPositionApiMock);
+    when(debtPositionApiMock.manageDebtPositionInstallments(debtPositionId,manageDebtPositionDTO))
+            .thenReturn(expectedResult);
+
+    DebtPositionDTO result = debtPositionClient.manageDebtPositionInstallments(debtPositionId, manageDebtPositionDTO, accessToken);
+
+    Assertions.assertSame(expectedResult, result);
+  }
+
+  @Test
+  void givenNoDebtPositionWhenManageDebtPositionInstallmentsThenReturnNull() {
+    Long debtPositionId = 1L;
+    ManageDebtPositionDTO manageDebtPositionDTO = new ManageDebtPositionDTO();
+    String accessToken = "ACCESSTOKEN";
+
+    when(debtPositionApisHolderMock.getDebtPositionApi(accessToken))
+            .thenReturn(debtPositionApiMock);
+    when(debtPositionApiMock.manageDebtPositionInstallments(debtPositionId,manageDebtPositionDTO))
+            .thenThrow(
+                    HttpClientErrorException.create(HttpStatus.NOT_FOUND, "NotFound", null, null, null));
+
+    ResourceNotFoundException ex = Assertions.assertThrows(ResourceNotFoundException.class, () -> debtPositionClient.manageDebtPositionInstallments(debtPositionId, manageDebtPositionDTO, accessToken));
+
+    Assertions.assertEquals("DebtPosition with ID 1 not found", ex.getMessage());
+  }
+
+  @Test
+  void givenExistingDebtPositionWhenPublishDebtPositionThenInvokeWithAccessToken() {
+    Long debtPositionId = 1L;
+    String accessToken = "ACCESSTOKEN";
+    DebtPositionDTO expectedResult = new DebtPositionDTO();
+
+    when(debtPositionApisHolderMock.getDebtPositionApi(accessToken))
+            .thenReturn(debtPositionApiMock);
+    when(debtPositionApiMock.publishDebtPosition(debtPositionId))
+            .thenReturn(expectedResult);
+
+    DebtPositionDTO result = debtPositionClient.publishDebtPosition(debtPositionId, accessToken);
+
+    Assertions.assertSame(expectedResult, result);
+  }
+
+  @Test
+  void givenNoDebtPositionWhenPublishDebtPositionThenReturnNull() {
+    Long debtPositionId = 1L;
+    String accessToken = "ACCESSTOKEN";
+
+    when(debtPositionApisHolderMock.getDebtPositionApi(accessToken))
+            .thenReturn(debtPositionApiMock);
+    when(debtPositionApiMock.publishDebtPosition(debtPositionId))
+            .thenThrow(
+                    HttpClientErrorException.create(HttpStatus.NOT_FOUND, "NotFound", null, null, null));
+
+    Assertions.assertThrows(ResourceNotFoundException.class, () -> debtPositionClient.publishDebtPosition(debtPositionId, accessToken));
+  }
+
+  @Test
+  void givenConflictWhenPublishDebtPositionThenReturnNull() {
+    Long debtPositionId = 1L;
+    String accessToken = "ACCESSTOKEN";
+
+    when(debtPositionApisHolderMock.getDebtPositionApi(accessToken))
+            .thenReturn(debtPositionApiMock);
+    when(debtPositionApiMock.publishDebtPosition(debtPositionId))
+            .thenThrow(
+                    HttpClientErrorException.create(HttpStatus.CONFLICT, "Conflict", null, null, null));
+
+    Assertions.assertThrows(ConflictException.class, () -> debtPositionClient.publishDebtPosition(debtPositionId, accessToken));
+  }
 }

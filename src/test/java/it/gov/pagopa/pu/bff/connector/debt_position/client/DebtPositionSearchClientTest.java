@@ -1,8 +1,9 @@
 package it.gov.pagopa.pu.bff.connector.debt_position.client;
 
-import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
+import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.connector.debt_position.config.DebtPositionApisHolder;
 import it.gov.pagopa.pu.debtpositions.controller.generated.DebtPositionSearchControllerApi;
 import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelDebtPosition;
@@ -53,5 +54,27 @@ class DebtPositionSearchClientTest {
       PageRequest.of(1,1), accessToken);
 
     assertSame(expectedResult, result);
+  }
+
+  @Test
+  void givenParamsWhenValidateOperatorThenInvokeWithAccessToken() {
+    //given
+    String accessToken = "ACCESSTOKEN";
+    UserInfo loggedUser = new UserInfo();
+    loggedUser.setMappedExternalUserId("mappedExternalUserId");
+    Long organizationId = 1L;
+    Long debtPositionId = 2L;
+
+    when(debtPositionApisHolderMock.getDebtPositionSearchControllerApi(accessToken))
+      .thenReturn(debtPositionSearchControllerApiMock);
+
+    when(debtPositionSearchControllerApiMock.crudDebtPositionsValidateOperator(debtPositionId, organizationId, loggedUser.getMappedExternalUserId())).thenReturn(1L);
+    //when
+
+    Long result = debtPositionSearchClient.validateOperator(debtPositionId, organizationId, loggedUser.getMappedExternalUserId(), accessToken);
+
+    //then
+    assertNotNull(result);
+    assertEquals(1L, result);
   }
 }

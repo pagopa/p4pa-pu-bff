@@ -38,6 +38,7 @@ val micrometerVersion = "1.4.6"
 val caffeineVersion = "3.2.0"
 val httpClientVersion = "5.4.4"
 val mapStructVersion = "1.6.3"
+val openHtmlToPdfVersion = "1.0.10"
 
 val wiremockVersion = "3.13.0"
 val wiremockSpringBootVersion = "3.10.0"
@@ -59,6 +60,8 @@ dependencies {
   implementation("com.github.ben-manes.caffeine:caffeine:$caffeineVersion")
   implementation("org.apache.httpcomponents.client5:httpclient5:$httpClientVersion")
   implementation ("org.mapstruct:mapstruct:${mapStructVersion}")
+  implementation("org.springframework.boot:spring-boot-starter-freemarker")
+  implementation("com.openhtmltopdf:openhtmltopdf-pdfbox:${openHtmlToPdfVersion}")
 
 
   compileOnly("org.projectlombok:lombok")

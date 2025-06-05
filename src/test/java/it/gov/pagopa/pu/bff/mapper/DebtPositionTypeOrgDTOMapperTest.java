@@ -17,7 +17,7 @@ class DebtPositionTypeOrgDTOMapperTest {
     DebtPositionTypeOrg dto = TestUtils.getPodamFactory().manufacturePojo(DebtPositionTypeOrg.class);
 
     // When
-    DebtPositionTypeOrgDTO result = mapper.map(dto);
+    DebtPositionTypeOrgDTO result = mapper.map(dto, "DebtPositionTypeDescription", "DebtPositionTypeCode");
 
     // Then
     TestUtils.reflectionEqualsByName(dto, result);

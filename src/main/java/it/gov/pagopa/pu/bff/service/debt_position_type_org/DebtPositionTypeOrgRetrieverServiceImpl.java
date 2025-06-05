@@ -72,7 +72,19 @@ public class DebtPositionTypeOrgRetrieverServiceImpl implements DebtPositionType
   @Override
   public DebtPositionTypeOrgDTO getDebtPositionTypeOrgById(Long organizationId, Long debtPositionTypeOrgId, UserInfo loggedUser, String accessToken) {
     AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser);
-    return debtPositionTypeOrgDTOMapper.map(debtPositionTypeOrgService.getDebtPositionTypeOrg(debtPositionTypeOrgId, accessToken));
+
+    DebtPositionTypeOrg debtPositionTypeOrg = debtPositionTypeOrgService.getDebtPositionTypeOrg(debtPositionTypeOrgId, accessToken);
+    if (debtPositionTypeOrg != null) {
+      Long debtPositionTypeId = debtPositionTypeOrg.getDebtPositionTypeId();
+      DebtPositionType debtPositionType = debtPositionTypeService.getDebtPositionTypeById(debtPositionTypeId, accessToken);
+      if (debtPositionType != null) {
+        return debtPositionTypeOrgDTOMapper.map(debtPositionTypeOrg, debtPositionType.getDescription(), debtPositionType.getCode());
+      } else {
+        throw new ResourceNotFoundException("DebtPositionType not found for ID: " + debtPositionTypeId);
+      }
+    } else {
+      throw new ResourceNotFoundException("DebtPositionTypeOrg not found for ID: " + debtPositionTypeOrgId);
+    }
   }
 
   @Override

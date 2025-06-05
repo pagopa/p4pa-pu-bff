@@ -30,6 +30,8 @@ public class CacheConfig {
     private CacheConfigurationProperties broker;
     @NestedConfigurationProperty
     private CacheConfigurationProperties debtPositionTypeOrg;
+    @NestedConfigurationProperty
+    private CacheConfigurationProperties debtPositionType;
 
     @Data
     @NoArgsConstructor

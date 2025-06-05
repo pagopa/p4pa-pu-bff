@@ -7558,6 +7558,12 @@
           "flagExternal" : {
             "type" : "boolean",
             "readOnly" : true
+          },
+          "debtPositionTypeDescription" : {
+            "type" : "string"
+          },
+          "debtPositionTypeCode" : {
+            "type" : "string"
           }
         },
         "required" : [ "code", "debtPositionTypeId", "description", "organizationId" ]

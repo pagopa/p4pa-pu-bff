@@ -2552,8 +2552,6 @@ components:
           type: string
         debtor:
           type: 'PersonDTO'
-        payer:
-          type: 'PersonDTO'
         paymentDateTime:
           type: string
           format: date-time
@@ -3054,6 +3052,10 @@ components:
         flagExternal:
           type: boolean
           readOnly: true
+        debtPositionTypeDescription:
+          type: string
+        debtPositionTypeCode:
+          type: string
     PaidExportFileRequest:
       type: object
       required:

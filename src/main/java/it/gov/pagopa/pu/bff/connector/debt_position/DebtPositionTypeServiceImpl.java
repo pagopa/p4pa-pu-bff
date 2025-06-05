@@ -5,10 +5,13 @@ import it.gov.pagopa.pu.debtpositions.dto.generated.CollectionModelDebtPositionT
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionType;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeRequestBody;
 import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelDebtPositionTypeWithCount;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
+@CacheConfig(cacheNames = it.gov.pagopa.pu.bff.config.CacheConfig.Fields.debtPositionType)
 public class DebtPositionTypeServiceImpl implements DebtPositionTypeService {
 
   private final DebtPositionTypeClient client;
@@ -18,6 +21,7 @@ public class DebtPositionTypeServiceImpl implements DebtPositionTypeService {
   }
 
   @Override
+  @Cacheable(key = "#id", unless="#result == null")
   public DebtPositionType getDebtPositionTypeById(Long id, String accessToken) {
     return client.getDebtPositionTypeById(id, accessToken);
   }

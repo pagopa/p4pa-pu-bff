@@ -18,7 +18,6 @@ public class ReceiptDetailDTOMapper {
       .remittanceInformation(receiptDetailDTO.getRemittanceInformation())
       .debtPositionTypeOrgDescription(receiptDetailDTO.getDebtPositionTypeOrgDescription())
       .debtor(receiptDetailDTO.getDebtor())
-      .payer(receiptDetailDTO.getPayer())
       .paymentDateTime(receiptDetailDTO.getPaymentDateTime())
       .pspCompanyName(receiptDetailDTO.getPspCompanyName())
       .iud(receiptDetailDTO.getIud())

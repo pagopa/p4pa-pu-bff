@@ -26,12 +26,10 @@ class ReceiptDetailDTOMapperTest {
     ReceiptDetailDTO result = mapper.mapToReceiptDetailDTO(receiptDetailDTO);
 
     Assertions.assertNotNull(result);
-    TestUtils.reflectionEqualsByName(receiptDetailDTO, result, "debtor", "payer");
+    TestUtils.reflectionEqualsByName(receiptDetailDTO, result, "debtor");
     TestUtils.reflectionEqualsByName(receiptDetailDTO.getDebtor(), result.getDebtor());
-    TestUtils.reflectionEqualsByName(receiptDetailDTO.getPayer(), result.getPayer());
     TestUtils.checkNotNullFields(result);
     TestUtils.checkNotNullFields(result.getDebtor());
-    TestUtils.checkNotNullFields(result.getPayer());
   }
 
   @Test

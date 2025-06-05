@@ -80,9 +80,15 @@ public class DebtPositionTypeOrgRetrieverServiceImpl implements DebtPositionType
     Long debtPositionTypeId = debtPositionTypeOrg.getDebtPositionTypeId();
     DebtPositionType debtPositionType = debtPositionTypeService.getDebtPositionTypeById(debtPositionTypeId, accessToken);
 
-    String description = debtPositionType != null ? debtPositionType.getDescription() : null;
-    String code = debtPositionType != null ? debtPositionType.getCode() : null;
-
+    String description;
+    String code;
+    if (debtPositionType != null) {
+      description = debtPositionType.getDescription();
+      code = debtPositionType.getCode();
+    } else {
+      description = null;
+      code = null;
+    }
     return debtPositionTypeOrgDTOMapper.map(debtPositionTypeOrg, description, code);
   }
 

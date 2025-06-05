@@ -2552,8 +2552,6 @@ components:
           type: string
         debtor:
           type: 'PersonDTO'
-        payer:
-          type: 'PersonDTO'
         paymentDateTime:
           type: string
           format: date-time

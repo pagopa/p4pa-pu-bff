@@ -51,12 +51,10 @@ class DebtPositionTypeOrgRetrieverServiceImplTest {
   private DebtPositionTypeOrgService debtPositionTypeOrgServiceMock;
   @Mock
   private DebtPositionTypeOrgOperatorsService debtPositionTypeOrgOperatorsServiceMock;
-
   @Mock
   private DebtPositionTypeOrgWithCountMapper debtPositionTypeOrgWithCountMapperMock;
   @Mock
   private DebtPositionTypeOrgOperatorsMapper debtPositionTypeOrgOperatorsMapperMock;
-
   @Mock
   private AuthorizationService authorizationServiceMock;
   @Mock

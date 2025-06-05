@@ -1,18 +1,19 @@
 package it.gov.pagopa.pu.bff.mapper;
 
-
 import it.gov.pagopa.pu.bff.dto.generated.DebtPositionTypeOrgDTO;
 import it.gov.pagopa.pu.bff.util.TestUtils;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrg;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 class DebtPositionTypeOrgDTOMapperTest {
 
   private final DebtPositionTypeOrgDTOMapper mapper = Mappers.getMapper(DebtPositionTypeOrgDTOMapper.class);
 
   @Test
-  void givenDtoWhenMapThenMapIt(){
+  void givenDtoWhenMapThenMapIt() {
     // Given
     DebtPositionTypeOrg dto = TestUtils.getPodamFactory().manufacturePojo(DebtPositionTypeOrg.class);
 
@@ -22,5 +23,8 @@ class DebtPositionTypeOrgDTOMapperTest {
     // Then
     TestUtils.reflectionEqualsByName(dto, result);
     TestUtils.checkNotNullFields(result);
+
+    assertEquals("DebtPositionTypeDescription", result.getDebtPositionTypeDescription());
+    assertEquals("DebtPositionTypeCode", result.getDebtPositionTypeCode());
   }
 }

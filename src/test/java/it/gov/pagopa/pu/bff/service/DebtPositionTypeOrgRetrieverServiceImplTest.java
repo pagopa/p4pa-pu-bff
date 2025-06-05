@@ -130,7 +130,7 @@ class DebtPositionTypeOrgRetrieverServiceImplTest {
   }
 
   @Test
-  void givenNullDebtPositionTypeOrgWhenGetDebtPositionTypeOrgByIdThenThrowsException() {
+  void givenNullDebtPositionTypeOrgWhenGetDebtPositionTypeOrgByIdThenThrowsResourceNotFoundException() {
     UserInfo loggedUser = new UserInfo();
     loggedUser.setUserId("user-123");
     loggedUser.setMappedExternalUserId("mappedExternalUserId");
@@ -152,7 +152,7 @@ class DebtPositionTypeOrgRetrieverServiceImplTest {
   }
 
   @Test
-  void givenValidDebtPositionTypeOrgButMissingDebtPositionTypeWhenGetByIdThenThrowsException() {
+  void givenValidDebtPositionTypeOrgButMissingDebtPositionTypeWhenGetByIdThenReturnsDTOWithNullFields() {
     UserInfo loggedUser = new UserInfo();
     loggedUser.setUserId("user-123");
     loggedUser.setMappedExternalUserId("mappedExternalUserId");
@@ -163,6 +163,8 @@ class DebtPositionTypeOrgRetrieverServiceImplTest {
 
     DebtPositionTypeOrg debtPositionTypeOrg = new DebtPositionTypeOrg();
     debtPositionTypeOrg.setDebtPositionTypeId(debtPositionTypeId);
+
+    DebtPositionTypeOrgDTO expectedDTO = new DebtPositionTypeOrgDTO();
 
     try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
       authorizationServiceMockedStatic
@@ -175,7 +177,14 @@ class DebtPositionTypeOrgRetrieverServiceImplTest {
       Mockito.when(debtPositionTypeServiceMock.getDebtPositionTypeById(debtPositionTypeId, accessToken))
         .thenReturn(null);
 
-      assertThrows(ResourceNotFoundException.class, () -> debtPositionTypeOrgService.getDebtPositionTypeOrgById(organizationId, debtPositionTypeOrgId, loggedUser, accessToken));
+      Mockito.when(debtPositionTypeOrgMapperDTOMock.map(debtPositionTypeOrg, null, null))
+        .thenReturn(expectedDTO);
+
+      DebtPositionTypeOrgDTO result = debtPositionTypeOrgService.getDebtPositionTypeOrgById(organizationId, debtPositionTypeOrgId, loggedUser, accessToken);
+
+      assertNotNull(result);
+      assertNull(result.getDescription());
+      assertNull(result.getCode());
 
       authorizationServiceMockedStatic.verify(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser));
       Mockito.verify(debtPositionTypeOrgServiceMock).getDebtPositionTypeOrg(debtPositionTypeOrgId, accessToken);

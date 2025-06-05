@@ -32,7 +32,6 @@ import java.util.List;
 
 import static it.gov.pagopa.pu.bff.util.Utilities.checkImmutableField;
 
-
 @Service
 public class DebtPositionTypeOrgRetrieverServiceImpl implements DebtPositionTypeOrgRetrieverService {
 
@@ -74,17 +73,17 @@ public class DebtPositionTypeOrgRetrieverServiceImpl implements DebtPositionType
     AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser);
 
     DebtPositionTypeOrg debtPositionTypeOrg = debtPositionTypeOrgService.getDebtPositionTypeOrg(debtPositionTypeOrgId, accessToken);
-    if (debtPositionTypeOrg != null) {
-      Long debtPositionTypeId = debtPositionTypeOrg.getDebtPositionTypeId();
-      DebtPositionType debtPositionType = debtPositionTypeService.getDebtPositionTypeById(debtPositionTypeId, accessToken);
-      if (debtPositionType != null) {
-        return debtPositionTypeOrgDTOMapper.map(debtPositionTypeOrg, debtPositionType.getDescription(), debtPositionType.getCode());
-      } else {
-        throw new ResourceNotFoundException("DebtPositionType not found for ID: " + debtPositionTypeId);
-      }
-    } else {
+    if (debtPositionTypeOrg == null) {
       throw new ResourceNotFoundException("DebtPositionTypeOrg not found for ID: " + debtPositionTypeOrgId);
     }
+
+    Long debtPositionTypeId = debtPositionTypeOrg.getDebtPositionTypeId();
+    DebtPositionType debtPositionType = debtPositionTypeService.getDebtPositionTypeById(debtPositionTypeId, accessToken);
+
+    String description = debtPositionType != null ? debtPositionType.getDescription() : null;
+    String code = debtPositionType != null ? debtPositionType.getCode() : null;
+
+    return debtPositionTypeOrgDTOMapper.map(debtPositionTypeOrg, description, code);
   }
 
   @Override

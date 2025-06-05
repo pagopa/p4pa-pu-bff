@@ -37,6 +37,7 @@ class DebtPositionTypeOrgDTOMapperTest {
     DebtPositionTypeOrgDTO result = mapper.map(debtPositionTypeOrg, debtPositionType);
 
     TestUtils.reflectionEqualsByName(debtPositionTypeOrg, result);
+    TestUtils.checkNotNullFields(result);
 
     assertEquals("Test Description", result.getDebtPositionTypeDescription());
     assertEquals("Test Code", result.getDebtPositionTypeCode());

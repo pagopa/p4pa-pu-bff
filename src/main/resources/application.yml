@@ -151,6 +151,9 @@ cache:
   debtPositionTypeOrg:
     size: "\${CACHE_DEBT_POSITION_TYPE_ORG_MAXIMUM_SIZE:100}"
     expire-in: "\${CACHE_DEBT_POSITION_TYPE_ORG_MINUTES:60}"
+  debtPositionType:
+    size: "\${CACHE_DEBT_POSITION_TYPE_MAXIMUM_SIZE:100}"
+    expire-in: "\${CACHE_DEBT_POSITION_TYPE_MINUTES:60}"
 
 page:
   debtPositionTypeOrg:

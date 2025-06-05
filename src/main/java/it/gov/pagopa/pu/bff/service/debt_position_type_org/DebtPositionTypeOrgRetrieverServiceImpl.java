@@ -32,7 +32,6 @@ import java.util.List;
 
 import static it.gov.pagopa.pu.bff.util.Utilities.checkImmutableField;
 
-
 @Service
 public class DebtPositionTypeOrgRetrieverServiceImpl implements DebtPositionTypeOrgRetrieverService {
 
@@ -72,7 +71,15 @@ public class DebtPositionTypeOrgRetrieverServiceImpl implements DebtPositionType
   @Override
   public DebtPositionTypeOrgDTO getDebtPositionTypeOrgById(Long organizationId, Long debtPositionTypeOrgId, UserInfo loggedUser, String accessToken) {
     AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser);
-    return debtPositionTypeOrgDTOMapper.map(debtPositionTypeOrgService.getDebtPositionTypeOrg(debtPositionTypeOrgId, accessToken));
+
+    DebtPositionTypeOrg debtPositionTypeOrg = debtPositionTypeOrgService.getDebtPositionTypeOrg(debtPositionTypeOrgId, accessToken);
+    if (debtPositionTypeOrg == null) {
+      throw new ResourceNotFoundException("DebtPositionTypeOrg not found for ID: " + debtPositionTypeOrgId);
+    }
+
+    DebtPositionType debtPositionType = debtPositionTypeService.getDebtPositionTypeById(debtPositionTypeOrg.getDebtPositionTypeId(), accessToken);
+
+    return debtPositionTypeOrgDTOMapper.map(debtPositionTypeOrg, debtPositionType);
   }
 
   @Override

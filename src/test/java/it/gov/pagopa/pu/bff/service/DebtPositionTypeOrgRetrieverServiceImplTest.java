@@ -43,7 +43,6 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-
 @ExtendWith(MockitoExtension.class)
 class DebtPositionTypeOrgRetrieverServiceImplTest {
 
@@ -106,6 +105,8 @@ class DebtPositionTypeOrgRetrieverServiceImplTest {
     debtPositionType.setCode("Code");
 
     DebtPositionTypeOrgDTO expectedResult = new DebtPositionTypeOrgDTO();
+    expectedResult.setDebtPositionTypeDescription("Description");
+    expectedResult.setDebtPositionTypeCode("Code");
 
     try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
       authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)).thenAnswer(a -> null);
@@ -114,13 +115,15 @@ class DebtPositionTypeOrgRetrieverServiceImplTest {
         .thenReturn(debtPositionTypeOrg);
       Mockito.when(debtPositionTypeServiceMock.getDebtPositionTypeById(debtPositionTypeId, accessToken))
         .thenReturn(debtPositionType);
-      Mockito.when(debtPositionTypeOrgMapperDTOMock.map(debtPositionTypeOrg, "Description", "Code"))
+      Mockito.when(debtPositionTypeOrgMapperDTOMock.map(debtPositionTypeOrg, debtPositionType))
         .thenReturn(expectedResult);
 
       DebtPositionTypeOrgDTO result = debtPositionTypeOrgService.getDebtPositionTypeOrgById(organizationId, debtPositionTypeOrgId, loggedUser, accessToken);
 
       assertNotNull(result);
       assertSame(expectedResult, result);
+      assertEquals("Description", result.getDebtPositionTypeDescription());
+      assertEquals("Code", result.getDebtPositionTypeCode());
 
       authorizationServiceMockedStatic.verify(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser));
     }
@@ -161,6 +164,8 @@ class DebtPositionTypeOrgRetrieverServiceImplTest {
     debtPositionTypeOrg.setDebtPositionTypeId(debtPositionTypeId);
 
     DebtPositionTypeOrgDTO expectedDTO = new DebtPositionTypeOrgDTO();
+    expectedDTO.setDebtPositionTypeDescription(null);
+    expectedDTO.setDebtPositionTypeCode(null);
 
     try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
       authorizationServiceMockedStatic
@@ -173,14 +178,14 @@ class DebtPositionTypeOrgRetrieverServiceImplTest {
       Mockito.when(debtPositionTypeServiceMock.getDebtPositionTypeById(debtPositionTypeId, accessToken))
         .thenReturn(null);
 
-      Mockito.when(debtPositionTypeOrgMapperDTOMock.map(debtPositionTypeOrg, null, null))
+      Mockito.when(debtPositionTypeOrgMapperDTOMock.map(debtPositionTypeOrg, null))
         .thenReturn(expectedDTO);
 
       DebtPositionTypeOrgDTO result = debtPositionTypeOrgService.getDebtPositionTypeOrgById(organizationId, debtPositionTypeOrgId, loggedUser, accessToken);
 
       assertNotNull(result);
-      assertNull(result.getDescription());
-      assertNull(result.getCode());
+      assertNull(result.getDebtPositionTypeDescription());
+      assertNull(result.getDebtPositionTypeCode());
 
       authorizationServiceMockedStatic.verify(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser));
     }

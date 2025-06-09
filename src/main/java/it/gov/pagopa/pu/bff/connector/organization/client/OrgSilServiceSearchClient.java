@@ -6,6 +6,7 @@ import it.gov.pagopa.pu.organization.dto.generated.OrgSilService;
 import it.gov.pagopa.pu.organization.dto.generated.OrgSilServiceType;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 
 @Service
 @Slf4j
@@ -23,7 +24,13 @@ public class OrgSilServiceSearchClient {
   }
 
   public OrgSilService getOrgSilServiceById(Long orgSilServiceId, String accessToken) {
-    return organizationApisHolder.getOrgSilServiceEntityControllerApi(accessToken)
-      .crudGetOrgsilservice(String.valueOf(orgSilServiceId));
+    try {
+      return organizationApisHolder.getOrgSilServiceEntityControllerApi(accessToken)
+        .crudGetOrgsilservice(String.valueOf(orgSilServiceId));
+    } catch (HttpClientErrorException.NotFound e) {
+      log.info("OrgSilService with ID {} not found", orgSilServiceId);
+      return null;
+    }
   }
+
 }

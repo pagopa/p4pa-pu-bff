@@ -31,4 +31,12 @@ public class OrgSilServiceRetrieverServiceImpl implements OrgSilServiceRetriever
     }
     return collection.getEmbedded().getOrgSilServices();
   }
+
+  @Override
+  public String getOrgSilServiceApplicationName(Long serviceId, String accessToken) {
+    if (serviceId == null) return null;
+    OrgSilService service = orgSilServiceService.getOrgSilServiceById(serviceId, accessToken);
+    return service != null ? service.getApplicationName() : null;
+  }
+
 }

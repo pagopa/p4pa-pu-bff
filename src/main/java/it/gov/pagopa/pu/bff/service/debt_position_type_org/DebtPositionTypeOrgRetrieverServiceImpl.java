@@ -7,7 +7,6 @@ import it.gov.pagopa.pu.bff.connector.debt_position.DebtPositionService;
 import it.gov.pagopa.pu.bff.connector.debt_position.DebtPositionTypeOrgOperatorsService;
 import it.gov.pagopa.pu.bff.connector.debt_position.DebtPositionTypeOrgService;
 import it.gov.pagopa.pu.bff.connector.debt_position.DebtPositionTypeService;
-import it.gov.pagopa.pu.bff.connector.organization.OrgSilServiceService;
 import it.gov.pagopa.pu.bff.dto.generated.DebtPositionTypeOrgDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedDebtPositionTypeOrgOperatorDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedDebtPositionTypeOrgWithCount;
@@ -20,8 +19,8 @@ import it.gov.pagopa.pu.bff.mapper.DebtPositionTypeOrgMapper;
 import it.gov.pagopa.pu.bff.mapper.DebtPositionTypeOrgOperatorsMapper;
 import it.gov.pagopa.pu.bff.mapper.DebtPositionTypeOrgWithCountMapper;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
+import it.gov.pagopa.pu.bff.service.org_sil_service.OrgSilServiceRetrieverService;
 import it.gov.pagopa.pu.debtpositions.dto.generated.*;
-import it.gov.pagopa.pu.organization.dto.generated.OrgSilService;
 import jakarta.validation.ValidationException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -47,7 +46,7 @@ public class DebtPositionTypeOrgRetrieverServiceImpl implements DebtPositionType
   private final DebtPositionTypeOrgOperatorsMapper debtPositionTypeOrgOperatorsMapper;
   private final DebtPositionTypeOrgMapper debtPositionTypeOrgMapper;
   private final DebtPositionTypeOrgDTOMapper debtPositionTypeOrgDTOMapper;
-  private final OrgSilServiceService orgSilServiceService;
+  private final OrgSilServiceRetrieverService orgSilServiceRetrieverService;
 
   public DebtPositionTypeOrgRetrieverServiceImpl(
           DebtPositionTypeOrgService debtPositionTypeOrgService,
@@ -59,7 +58,7 @@ public class DebtPositionTypeOrgRetrieverServiceImpl implements DebtPositionType
           DebtPositionTypeOrgOperatorsMapper debtPositionTypeOrgOperatorsMapper,
           DebtPositionTypeOrgMapper debtPositionTypeOrgMapper,
           DebtPositionTypeOrgDTOMapper debtPositionTypeOrgDTOMapper,
-          OrgSilServiceService orgSilServiceService) {
+          OrgSilServiceRetrieverService orgSilServiceRetrieverService) {
     this.debtPositionTypeOrgService = debtPositionTypeOrgService;
     this.debtPositionTypeOrgOperatorsService = debtPositionTypeOrgOperatorsService;
     this.debtPositionService = debtPositionService;
@@ -70,7 +69,7 @@ public class DebtPositionTypeOrgRetrieverServiceImpl implements DebtPositionType
     this.debtPositionTypeOrgOperatorsMapper = debtPositionTypeOrgOperatorsMapper;
     this.debtPositionTypeOrgMapper = debtPositionTypeOrgMapper;
     this.debtPositionTypeOrgDTOMapper = debtPositionTypeOrgDTOMapper;
-    this.orgSilServiceService = orgSilServiceService;
+    this.orgSilServiceRetrieverService = orgSilServiceRetrieverService;
   }
 
   @Override
@@ -84,17 +83,11 @@ public class DebtPositionTypeOrgRetrieverServiceImpl implements DebtPositionType
 
     DebtPositionType debtPositionType = debtPositionTypeService.getDebtPositionTypeById(debtPositionTypeOrg.getDebtPositionTypeId(), accessToken);
 
-    String notifyOutcomePushOrgSilServiceApplicationName = getOrgSilServiceApplicationName(debtPositionTypeOrg.getNotifyOutcomePushOrgSilServiceId(), accessToken);
+    String notifyOutcomePushOrgSilServiceApplicationName = orgSilServiceRetrieverService.getOrgSilServiceApplicationName(debtPositionTypeOrg.getNotifyOutcomePushOrgSilServiceId(), accessToken);
 
-    String amountActualizationOrgSilServiceApplicationName = getOrgSilServiceApplicationName(debtPositionTypeOrg.getAmountActualizationOrgSilServiceId(), accessToken);
+    String amountActualizationOrgSilServiceApplicationName = orgSilServiceRetrieverService.getOrgSilServiceApplicationName(debtPositionTypeOrg.getAmountActualizationOrgSilServiceId(), accessToken);
 
     return debtPositionTypeOrgDTOMapper.map(debtPositionTypeOrg, debtPositionType, notifyOutcomePushOrgSilServiceApplicationName, amountActualizationOrgSilServiceApplicationName);
-  }
-
-  private String getOrgSilServiceApplicationName(Long serviceId, String accessToken) {
-    if (serviceId == null) return null;
-    OrgSilService service = orgSilServiceService.getOrgSilServiceById(serviceId, accessToken);
-    return service != null ? service.getApplicationName() : null;
   }
 
   @Override

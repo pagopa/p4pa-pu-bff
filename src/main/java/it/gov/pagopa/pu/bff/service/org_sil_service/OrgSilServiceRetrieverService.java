@@ -7,5 +7,7 @@ import it.gov.pagopa.pu.organization.dto.generated.OrgSilServiceType;
 import java.util.List;
 
 public interface OrgSilServiceRetrieverService {
-    List<OrgSilService> getOrgSilServices(Long organizationId, OrgSilServiceType serviceType, UserInfo loggedUser, String accessToken);
+  List<OrgSilService> getOrgSilServices(Long organizationId, OrgSilServiceType serviceType, UserInfo loggedUser, String accessToken);
+
+  String getOrgSilServiceApplicationName(Long serviceId, String accessToken);
 }

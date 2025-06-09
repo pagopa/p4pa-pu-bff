@@ -15,8 +15,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.client.HttpClientErrorException;
 import uk.co.jemos.podam.api.PodamFactory;
 
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -39,7 +42,7 @@ class OrgSilServiceSearchClientTest {
 
   @AfterEach
   void verifyNoMoreInteractions() {
-    Mockito.verifyNoMoreInteractions(organizationApisHolderMock,orgSilServiceSearchControllerApiMock,orgSilServiceEntityControllerApiMock);
+    Mockito.verifyNoMoreInteractions(organizationApisHolderMock, orgSilServiceSearchControllerApiMock, orgSilServiceEntityControllerApiMock);
   }
 
   @Test
@@ -51,13 +54,13 @@ class OrgSilServiceSearchClientTest {
 
     when(organizationApisHolderMock.getOrgSilServiceSearchControllerApi(accessToken))
       .thenReturn(orgSilServiceSearchControllerApiMock);
-    when(orgSilServiceSearchControllerApiMock.crudOrgSilServicesFindAllByOrganizationIdAndServiceType(organizationId,serviceType)).thenReturn(
+    when(orgSilServiceSearchControllerApiMock.crudOrgSilServicesFindAllByOrganizationIdAndServiceType(organizationId, serviceType)).thenReturn(
       expectedResponse);
 
-    CollectionModelOrgSilService response = orgSilServiceSearchClient.getOrgSilServices(organizationId,serviceType,accessToken);
+    CollectionModelOrgSilService response = orgSilServiceSearchClient.getOrgSilServices(organizationId, serviceType, accessToken);
 
     Assertions.assertNotNull(response);
-    Assertions.assertEquals(expectedResponse,response);
+    Assertions.assertEquals(expectedResponse, response);
   }
 
   @Test
@@ -71,9 +74,24 @@ class OrgSilServiceSearchClientTest {
     when(orgSilServiceEntityControllerApiMock.crudGetOrgsilservice(String.valueOf(orgSilServiceId)))
       .thenReturn(expectedResponse);
 
-    OrgSilService response = orgSilServiceSearchClient.getOrgSilServiceById(orgSilServiceId,accessToken);
+    OrgSilService response = orgSilServiceSearchClient.getOrgSilServiceById(orgSilServiceId, accessToken);
 
     Assertions.assertNotNull(response);
-    Assertions.assertEquals(expectedResponse,response);
+    Assertions.assertEquals(expectedResponse, response);
+  }
+
+  @Test
+  void givenNonExistentOrgSilServiceIdIdWhenGetOrgSilServiceByIdThenReturnNull() {
+    Long orgSilServiceId = 1L;
+    String accessToken = "ACCESSTOKEN";
+
+    when(organizationApisHolderMock.getOrgSilServiceEntityControllerApi(accessToken))
+      .thenReturn(orgSilServiceEntityControllerApiMock);
+    when(orgSilServiceEntityControllerApiMock.crudGetOrgsilservice(String.valueOf(orgSilServiceId)))
+      .thenThrow(HttpClientErrorException.create(HttpStatus.NOT_FOUND, "NotFound", null, null, null));
+
+    OrgSilService response = orgSilServiceSearchClient.getOrgSilServiceById(orgSilServiceId, accessToken);
+
+    assertNull(response);
   }
 }

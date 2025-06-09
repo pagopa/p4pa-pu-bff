@@ -6898,7 +6898,7 @@
             "type" : "boolean"
           },
           "authConfig" : {
-            "$ref" : "#/components/schemas/SilServiceLegacyAuthConfig"
+            "$ref" : "#/components/schemas/OrgSilServiceRequestBodyAuthConfig"
           },
           "_links" : {
             "type" : "object",
@@ -6909,26 +6909,25 @@
         },
         "required" : [ "applicationName", "organizationId", "serviceType", "serviceUrl" ]
       },
-      "OrgSilServiceType" : {
-        "type" : "string",
-        "enum" : [ "PAID_NOTIFICATION_OUTCOME", "ACTUALIZATION" ]
-      },
-      "SilServiceLegacyAuthConfig" : {
+      "OrgSilServiceRequestBodyAuthConfig" : {
         "type" : "object",
         "discriminator" : {
           "propertyName" : "authConfig"
         },
         "properties" : {
-          "legacyJwtId" : {
+          "kid" : {
             "type" : "string"
           },
-          "legacyJwtMail" : {
+          "subject" : {
             "type" : "string"
           },
-          "legacyJwtSecretKeyId" : {
+          "issuer" : {
             "type" : "string"
           },
-          "legacyJwtSecretKey" : {
+          "algorithm" : {
+            "type" : "string"
+          },
+          "signingKey" : {
             "type" : "string",
             "format" : "byte"
           },
@@ -6937,6 +6936,10 @@
           }
         },
         "required" : [ "authConfig" ]
+      },
+      "OrgSilServiceType" : {
+        "type" : "string",
+        "enum" : [ "PAID_NOTIFICATION_OUTCOME", "ACTUALIZATION" ]
       },
       "InstallmentView" : {
         "type" : "object",
@@ -7544,6 +7547,9 @@
             "type" : "integer",
             "format" : "int64"
           },
+          "notifyOutcomePushOrgSilServiceApplicationName" : {
+            "type" : "string"
+          },
           "flagAmountActualization" : {
             "type" : "boolean",
             "readOnly" : true
@@ -7551,6 +7557,9 @@
           "amountActualizationOrgSilServiceId" : {
             "type" : "integer",
             "format" : "int64"
+          },
+          "amountActualizationOrgSilServiceApplicationName" : {
+            "type" : "string"
           },
           "flagExternal" : {
             "type" : "boolean",

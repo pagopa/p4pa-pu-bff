@@ -3043,12 +3043,16 @@ components:
         notifyOutcomePushOrgSilServiceId:
           type: integer
           format: int64
+        notifyOutcomePushOrgSilServiceApplicationName:
+          type: string
         flagAmountActualization:
           type: boolean
           readOnly: true
         amountActualizationOrgSilServiceId:
           type: integer
           format: int64
+        amountActualizationOrgSilServiceApplicationName:
+          type: string
         flagExternal:
           type: boolean
           readOnly: true

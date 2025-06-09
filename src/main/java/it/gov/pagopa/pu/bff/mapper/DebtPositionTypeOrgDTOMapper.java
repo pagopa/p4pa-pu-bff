@@ -11,9 +11,13 @@ public interface DebtPositionTypeOrgDTOMapper {
 
   @Mapping(target = "debtPositionTypeDescription", source = "debtPositionTypeDescription")
   @Mapping(target = "debtPositionTypeCode", source = "debtPositionTypeCode")
-  DebtPositionTypeOrgDTO map(DebtPositionTypeOrg debtPositionTypeOrg, String debtPositionTypeDescription, String debtPositionTypeCode);
+  @Mapping(target = "notifyOutcomePushOrgSilServiceApplicationName", source = "notifyOutcomePushOrgSilServiceApplicationName")
+  @Mapping(target = "amountActualizationOrgSilServiceApplicationName", source = "amountActualizationOrgSilServiceApplicationName")
+  DebtPositionTypeOrgDTO map(DebtPositionTypeOrg debtPositionTypeOrg, String debtPositionTypeDescription, String debtPositionTypeCode,
+                             String notifyOutcomePushOrgSilServiceApplicationName, String amountActualizationOrgSilServiceApplicationName);
 
-  default DebtPositionTypeOrgDTO map(DebtPositionTypeOrg debtPositionTypeOrg, DebtPositionType debtPositionType) {
+  default DebtPositionTypeOrgDTO map(DebtPositionTypeOrg debtPositionTypeOrg, DebtPositionType debtPositionType,
+                                     String notifyOutcomePushOrgSilServiceApplicationName, String amountActualizationOrgSilServiceApplicationName) {
     String description = null;
     String code = null;
 
@@ -22,7 +26,7 @@ public interface DebtPositionTypeOrgDTOMapper {
       code = debtPositionType.getCode();
     }
 
-    return map(debtPositionTypeOrg, description, code);
+    return map(debtPositionTypeOrg, description, code, notifyOutcomePushOrgSilServiceApplicationName, amountActualizationOrgSilServiceApplicationName);
   }
 }
 

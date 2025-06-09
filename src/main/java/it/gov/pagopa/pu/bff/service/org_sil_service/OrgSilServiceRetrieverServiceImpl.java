@@ -34,7 +34,9 @@ public class OrgSilServiceRetrieverServiceImpl implements OrgSilServiceRetriever
 
   @Override
   public String getOrgSilServiceApplicationName(Long serviceId, String accessToken) {
-    if (serviceId == null) return null;
+    if (serviceId == null) {
+      return null;
+    }
     OrgSilService service = orgSilServiceService.getOrgSilServiceById(serviceId, accessToken);
     return service != null ? service.getApplicationName() : null;
   }

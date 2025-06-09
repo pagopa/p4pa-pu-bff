@@ -141,4 +141,32 @@ public class OrgSilServiceRetrieverServiceImplTest {
         }
         Mockito.verifyNoInteractions(orgSilServiceServiceMock);
     }
+
+  @Test
+  void givenNullServiceIdWhenGetOrgSilServiceApplicationNameThenReturnNull() {
+    String result = orgSilServiceRetrieverService.getOrgSilServiceApplicationName(null, accessToken);
+    assertNull(result);
+  }
+
+  @Test
+  void givenValidServiceIdButServiceNotFoundWhenGetOrgSilServiceApplicationNameThenReturnNull() {
+    Mockito.when(orgSilServiceServiceMock.getOrgSilServiceById(1L, accessToken))
+      .thenReturn(null);
+
+    String result = orgSilServiceRetrieverService.getOrgSilServiceApplicationName(1L, accessToken);
+    assertNull(result);
+  }
+
+  @Test
+  void givenValidServiceIdWhenGetOrgSilServiceApplicationNameThenReturnApplicationName() {
+    OrgSilService service = new OrgSilService();
+    service.setApplicationName("TestApp");
+
+    Mockito.when(orgSilServiceServiceMock.getOrgSilServiceById(1L, accessToken))
+      .thenReturn(service);
+
+    String result = orgSilServiceRetrieverService.getOrgSilServiceApplicationName(1L, accessToken);
+    assertEquals("TestApp", result);
+  }
+
 }

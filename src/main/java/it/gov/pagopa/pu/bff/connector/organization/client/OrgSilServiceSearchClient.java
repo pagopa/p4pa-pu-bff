@@ -2,9 +2,11 @@ package it.gov.pagopa.pu.bff.connector.organization.client;
 
 import it.gov.pagopa.pu.bff.connector.organization.config.OrganizationApisHolder;
 import it.gov.pagopa.pu.organization.dto.generated.CollectionModelOrgSilService;
+import it.gov.pagopa.pu.organization.dto.generated.OrgSilService;
 import it.gov.pagopa.pu.organization.dto.generated.OrgSilServiceType;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 
 @Service
 @Slf4j
@@ -20,4 +22,15 @@ public class OrgSilServiceSearchClient {
     return organizationApisHolder.getOrgSilServiceSearchControllerApi(accessToken)
       .crudOrgSilServicesFindAllByOrganizationIdAndServiceType(organizationId,serviceType);
   }
+
+  public OrgSilService getOrgSilServiceById(Long orgSilServiceId, String accessToken) {
+    try {
+      return organizationApisHolder.getOrgSilServiceEntityControllerApi(accessToken)
+        .crudGetOrgsilservice(String.valueOf(orgSilServiceId));
+    } catch (HttpClientErrorException.NotFound e) {
+      log.info("OrgSilService with ID {} not found", orgSilServiceId);
+      return null;
+    }
+  }
+
 }

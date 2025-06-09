@@ -3,6 +3,7 @@ package it.gov.pagopa.pu.bff.connector.organization;
 import it.gov.pagopa.pu.bff.connector.organization.client.OrgSilServiceSearchClient;
 import it.gov.pagopa.pu.bff.util.TestUtils;
 import it.gov.pagopa.pu.organization.dto.generated.CollectionModelOrgSilService;
+import it.gov.pagopa.pu.organization.dto.generated.OrgSilService;
 import it.gov.pagopa.pu.organization.dto.generated.OrgSilServiceType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -39,6 +40,18 @@ class OrgSilServiceServiceTest {
       .thenReturn(expectedResult);
 
     CollectionModelOrgSilService result = service.getOrgSilServices(organizationId,serviceType, accessToken);
+
+    assertSame(expectedResult, result);
+  }
+
+  @Test
+  void whenGetOrgSilServiceByIdThenInvokeClient() {
+    Long orgSilServiceId = 1L;
+    OrgSilService expectedResult = podamFactory.manufacturePojo(OrgSilService.class);
+    when(orgSilServiceSearchClientMock.getOrgSilServiceById(orgSilServiceId, accessToken))
+      .thenReturn(expectedResult);
+
+    OrgSilService result = service.getOrgSilServiceById(orgSilServiceId, accessToken);
 
     assertSame(expectedResult, result);
   }

@@ -48,7 +48,7 @@ class DebtPositionTypeOrgDTOMapperTest {
   }
 
   @Test
-  void givenNullDebtPositionTypeWhenMapThenMapWithNullFieldsAndNullApplicationNames() {
+  void givenNullDebtPositionTypeAndNullApplicationNamesWhenMapThenMapWithNullFields() {
     DebtPositionTypeOrg debtPositionTypeOrg = TestUtils.getPodamFactory().manufacturePojo(DebtPositionTypeOrg.class);
 
     DebtPositionTypeOrgDTO result = mapper.map(debtPositionTypeOrg, null, null, null);

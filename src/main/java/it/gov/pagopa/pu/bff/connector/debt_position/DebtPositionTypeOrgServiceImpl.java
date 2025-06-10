@@ -66,4 +66,9 @@ public class DebtPositionTypeOrgServiceImpl implements DebtPositionTypeOrgServic
     SaveDebtPositionTypeOrgDTO saveDebtPositionTypeOrg, String accessToken) {
     return debtPositionTypeOrgClient.saveDebtPositionTypeOrg(saveDebtPositionTypeOrg,accessToken);
   }
+
+  @Override
+  public DebtPositionTypeOrg findDebtPositionTypeOrg(Long organizationId, String debtPositionTypeOrgCode, String mappedExternalUserId, String accessToken) {
+    return debtPositionTypeOrgSearchClient.findDebtPositionTypeOrg(organizationId, debtPositionTypeOrgCode, mappedExternalUserId, accessToken);
+  }
 }

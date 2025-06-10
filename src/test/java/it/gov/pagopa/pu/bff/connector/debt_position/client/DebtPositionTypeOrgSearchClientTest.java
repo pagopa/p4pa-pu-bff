@@ -2,6 +2,7 @@ package it.gov.pagopa.pu.bff.connector.debt_position.client;
 
 import it.gov.pagopa.pu.bff.connector.debt_position.config.DebtPositionApisHolder;
 import it.gov.pagopa.pu.debtpositions.controller.generated.DebtPositionTypeOrgSearchControllerApi;
+import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrg;
 import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelDebtPositionTypeOrg;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,6 +15,7 @@ import org.springframework.data.domain.PageRequest;
 
 import java.util.Collections;
 
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.Mockito.when;
 
@@ -54,5 +56,42 @@ class DebtPositionTypeOrgSearchClientTest {
       PageRequest.of(1, 1), accessToken);
 
     assertSame(expectedResult, result);
+  }
+
+  @Test
+  void givenExistingDebtPositionTypeOrgWhenFindDebtPositionTypeOrgThenInvokeWithAccessToken() {
+    Long organizationId = 1L;
+    String debtPositionTypeOrgCode="debtPositionTypeOrgCode";
+    String mappedExternalUserId = "mappedExternalUserId";
+    String accessToken = "ACCESS_TOKEN";
+    DebtPositionTypeOrg expectedResult = new DebtPositionTypeOrg();
+
+    when(debtPositionApisHolderMock.getDebtPositionTypeOrgSearchControllerApi(accessToken))
+      .thenReturn(debtPositionTypeOrgSearchControllerApiMock);
+    when(debtPositionTypeOrgSearchControllerApiMock.crudDebtPositionTypeOrgsFindDebtPositionTypeOrg(
+      organizationId,debtPositionTypeOrgCode,mappedExternalUserId))
+      .thenReturn(expectedResult);
+
+    DebtPositionTypeOrg result = debtPositionTypeOrgSearchClient.findDebtPositionTypeOrg(organizationId,debtPositionTypeOrgCode,mappedExternalUserId, accessToken);
+
+    assertSame(expectedResult, result);
+  }
+
+  @Test
+  void givenNoExistingDebtPositionTypeOrgWhenFindDebtPositionTypeOrgThenInvokeWithAccessToken() {
+    Long organizationId = 1L;
+    String debtPositionTypeOrgCode="debtPositionTypeOrgCode";
+    String mappedExternalUserId = "mappedExternalUserId";
+    String accessToken = "ACCESS_TOKEN";
+
+    when(debtPositionApisHolderMock.getDebtPositionTypeOrgSearchControllerApi(accessToken))
+      .thenReturn(debtPositionTypeOrgSearchControllerApiMock);
+    when(debtPositionTypeOrgSearchControllerApiMock.crudDebtPositionTypeOrgsFindDebtPositionTypeOrg(
+      organizationId,debtPositionTypeOrgCode,mappedExternalUserId))
+      .thenReturn(null);
+
+    DebtPositionTypeOrg result = debtPositionTypeOrgSearchClient.findDebtPositionTypeOrg(organizationId,debtPositionTypeOrgCode,mappedExternalUserId, accessToken);
+
+    assertNull(result);
   }
 }

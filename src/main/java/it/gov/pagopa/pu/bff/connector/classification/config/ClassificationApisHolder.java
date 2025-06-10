@@ -3,11 +3,7 @@ package it.gov.pagopa.pu.bff.connector.classification.config;
 import it.gov.pagopa.pu.bff.config.rest.RestTemplateConfig;
 import it.gov.pagopa.pu.classification.controller.ApiClient;
 import it.gov.pagopa.pu.classification.controller.BaseApi;
-import it.gov.pagopa.pu.classification.controller.generated.ClassificationsApi;
-import it.gov.pagopa.pu.classification.controller.generated.PaymentsReportingSearchControllerApi;
-import it.gov.pagopa.pu.classification.controller.generated.PaymentsReportingViewSearchControllerApi;
-import it.gov.pagopa.pu.classification.controller.generated.TreasurySearchControllerApi;
-import it.gov.pagopa.pu.classification.controller.generated.TreasuryViewSearchControllerApi;
+import it.gov.pagopa.pu.classification.controller.generated.*;
 import jakarta.annotation.PreDestroy;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.stereotype.Service;
@@ -21,6 +17,7 @@ public class ClassificationApisHolder {
   private final TreasuryViewSearchControllerApi treasuryViewSearchControllerApi;
   private final TreasurySearchControllerApi treasurySearchControllerApi;
   private final ClassificationsApi classificationsApi;
+  private final AssessmentsRegistrySearchControllerApi assessmentsRegistrySearchControllerApi;
   private final ThreadLocal<String> bearerTokenHolder = new ThreadLocal<>();
 
   public ClassificationApisHolder(ClassificationApiClientConfig clientConfig,
@@ -40,6 +37,7 @@ public class ClassificationApisHolder {
     this.treasuryViewSearchControllerApi = new TreasuryViewSearchControllerApi(apiClient);
     this.treasurySearchControllerApi = new TreasurySearchControllerApi(apiClient);
     this.classificationsApi = new ClassificationsApi(apiClient);
+    this.assessmentsRegistrySearchControllerApi = new AssessmentsRegistrySearchControllerApi(apiClient);
   }
 
   @PreDestroy
@@ -65,6 +63,10 @@ public class ClassificationApisHolder {
 
   public ClassificationsApi getClassificationsApi(String accessToken) {
     return getApi(accessToken, classificationsApi);
+  }
+
+  public AssessmentsRegistrySearchControllerApi getAssessmentsRegistrySearchControllerApi(String accessToken) {
+    return getApi(accessToken, assessmentsRegistrySearchControllerApi);
   }
 
   private <T extends BaseApi> T getApi(String accessToken, T api) {

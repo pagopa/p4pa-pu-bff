@@ -216,4 +216,11 @@ public class DebtPositionTypeOrgRetrieverServiceImpl implements DebtPositionType
       throw new ValidationException("The following DebtPositionTypeOrg fields are readOnly. "+modifiedFields);
     }
   }
+
+  public void validateOperator(Long organizationId, String debtPositionTypeOrgCode, String mappedExternalUserId, String accessToken) {
+    DebtPositionTypeOrg debtPositionTypeOrg = debtPositionTypeOrgService.findDebtPositionTypeOrg(organizationId, debtPositionTypeOrgCode, mappedExternalUserId, accessToken);
+    if(debtPositionTypeOrg==null){
+      throw new ResourceNotFoundException("DebtPositionTypeOrg with organizationId "+organizationId+" and code "+debtPositionTypeOrgCode+" not found");
+    }
+  }
 }

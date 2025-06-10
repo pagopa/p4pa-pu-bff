@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "b0adac2e-35c5-40e6-ad5a-e63bde209578",
+		"_postman_id": "8265adf9-98e3-4f80-884a-803f147bd436",
 		"name": "PU-BFF",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "17966353"
@@ -1900,6 +1900,132 @@
 								"organization",
 								":organizationId",
 								"treasuries"
+							],
+							"variable": [
+								{
+									"key": "organizationId",
+									"value": "{{organizationId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "04_getAssessmentRegistries",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let jsonResponse = pm.response.json();\r",
+									"pm.test(\"[getAssessmentRegistries], expected httpStatus: 200\", () => {\r",
+									"    pm.response.to.have.status(200);\r",
+									"})\r",
+									"pm.test(\"[AssessmentRegistries getAssessmentRegistries] - getAssessmentRegistries\", () => {\r",
+									"    pm.expect(jsonResponse).to.have.property(\"content\").and.to.be.an(\"array\");\r",
+									"    pm.expect(jsonResponse).to.have.property(\"size\").and.to.be.a(\"number\");\r",
+									"    pm.expect(jsonResponse).to.have.property(\"totalElements\").and.to.be.a(\"number\");\r",
+									"    pm.expect(jsonResponse).to.have.property(\"totalPages\").and.to.be.a(\"number\");\r",
+									"    pm.expect(jsonResponse).to.have.property(\"number\").and.to.be.a(\"number\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{puBffBaseUrl}}/bff/organization/:organizationId/assessments-registries",
+							"host": [
+								"{{puBffBaseUrl}}"
+							],
+							"path": [
+								"bff",
+								"organization",
+								":organizationId",
+								"assessments-registries"
+							],
+							"variable": [
+								{
+									"key": "organizationId",
+									"value": "{{organizationId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "04_getAssessmentRegistries",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let jsonResponse = pm.response.json();\r",
+									"pm.test(\"[getTreasuries], expected httpStatus: 200\", () => {\r",
+									"    pm.response.to.have.status(200);\r",
+									"})\r",
+									"pm.test(\"[Treasury getTreasuries] - getTreasuries\", () => {\r",
+									"    pm.expect(jsonResponse).to.have.property(\"content\").and.to.be.an(\"array\");\r",
+									"    pm.expect(jsonResponse).to.have.property(\"size\").and.to.be.a(\"number\");\r",
+									"    pm.expect(jsonResponse).to.have.property(\"totalElements\").and.to.be.a(\"number\");\r",
+									"    pm.expect(jsonResponse).to.have.property(\"totalPages\").and.to.be.a(\"number\");\r",
+									"    pm.expect(jsonResponse).to.have.property(\"number\").and.to.be.a(\"number\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{puBffBaseUrl}}/bff/organization/:organizationId/assessments-registries",
+							"host": [
+								"{{puBffBaseUrl}}"
+							],
+							"path": [
+								"bff",
+								"organization",
+								":organizationId",
+								"assessments-registries"
 							],
 							"variable": [
 								{

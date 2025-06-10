@@ -879,5 +879,31 @@ class DebtPositionTypeOrgRetrieverServiceImplTest {
 
     Mockito.verifyNoInteractions(debtPositionTypeOrgMapperMock, debtPositionTypeOrgServiceMock);
   }
+
+  @Test
+  void givenAuthorizedUserWhenValidateOperatorThenOk() {
+    Long organizationId = 1L;
+    String debtPositionTypeOrgCode = "debtPositionTypeOrgCode";
+    String mappedExternalUserId = "mappedExternalUserId";
+    DebtPositionTypeOrg debtPositionTypeOrg = podamFactory.manufacturePojo(DebtPositionTypeOrg.class);
+
+    Mockito.when(debtPositionTypeOrgServiceMock.findDebtPositionTypeOrg(organizationId,debtPositionTypeOrgCode,mappedExternalUserId,accessToken))
+                    .thenReturn(debtPositionTypeOrg);
+
+    debtPositionTypeOrgService.validateOperator(organizationId,debtPositionTypeOrgCode,mappedExternalUserId,accessToken);
+  }
+
+  @Test
+  void givenUnauthorizedUserWhenValidateOperatorThenResourceNotFound() {
+    Long organizationId = 1L;
+    String debtPositionTypeOrgCode = "debtPositionTypeOrgCode";
+    String mappedExternalUserId = "mappedExternalUserId";
+
+    Mockito.when(debtPositionTypeOrgServiceMock.findDebtPositionTypeOrg(organizationId,debtPositionTypeOrgCode,mappedExternalUserId,accessToken))
+            .thenReturn(null);
+
+    Assertions.assertThrows(ResourceNotFoundException.class, () ->
+            debtPositionTypeOrgService.validateOperator(organizationId,debtPositionTypeOrgCode,mappedExternalUserId,accessToken));
+  }
 }
 

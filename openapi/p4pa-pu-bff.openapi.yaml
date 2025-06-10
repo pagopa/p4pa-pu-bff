@@ -2114,6 +2114,68 @@ paths:
           description: Not Found
         '500':
           description: Internal Server Error
+  /organization/{organizationId}/assessments-registries:
+    get:
+      tags:
+        - AssessmentsRegistry
+      operationId: getAssessmentsRegistries
+      parameters:
+        - name: organizationId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: debtPositionTypeOrgCode
+          in: query
+          schema:
+            type: string
+        - name: sectionCode
+          in: query
+          schema:
+            type: string
+        - name: sectionDescription
+          in: query
+          schema:
+            type: string
+        - name: officeCode
+          in: query
+          schema:
+            type: string
+        - name: officeDescription
+          in: query
+          schema:
+            type: string
+        - name: assessmentCode
+          in: query
+          schema:
+            type: string
+        - name: assessmentDescription
+          in: query
+          schema:
+            type: string
+        - name: operatingYear
+          in: query
+          schema:
+            type: string
+        - name: status
+          in: query
+          schema:
+            type: 'AssessmentsRegistryStatus'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PagedAssessmentsRegistry'
+        '401':
+          description: Unauthorized - Missing or invalid token
+        '403':
+          description: Forbidden - Access denied
+        '500':
+          description: Internal Server Error
+      x-spring-paginated: true
 security:
   - BearerAuth: [ ]
 components:
@@ -3116,6 +3178,31 @@ components:
           type: array
           items:
             type: 'Taxonomy'
+        size:
+          type: integer
+          format: int64
+        totalElements:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer
+          format: int64
+        number:
+          type: integer
+          format: int64
+    PagedAssessmentsRegistry:
+      type: object
+      required:
+        - content
+        - size
+        - totalElements
+        - totalPages
+        - number
+      properties:
+        content:
+          type: array
+          items:
+            type: 'AssessmentsRegistry'
         size:
           type: integer
           format: int64

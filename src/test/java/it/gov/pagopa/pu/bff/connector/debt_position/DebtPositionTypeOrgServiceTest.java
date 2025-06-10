@@ -1,21 +1,10 @@
 package it.gov.pagopa.pu.bff.connector.debt_position;
 
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
-
 import it.gov.pagopa.pu.bff.connector.debt_position.client.DebtPositionTypeOrgClient;
 import it.gov.pagopa.pu.bff.connector.debt_position.client.DebtPositionTypeOrgSearchClient;
 import it.gov.pagopa.pu.bff.connector.debt_position.client.DebtPositionTypeOrgWithCountClient;
 import it.gov.pagopa.pu.bff.util.TestUtils;
-import it.gov.pagopa.pu.debtpositions.dto.generated.CollectionModelDebtPositionTypeOrg;
-import it.gov.pagopa.pu.debtpositions.dto.generated.CollectionModelDebtPositionTypeOrgCountByOrganizationId;
-import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrg;
-import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelDebtPositionTypeOrg;
-import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelDebtPositionTypeOrgWithCount;
-import it.gov.pagopa.pu.debtpositions.dto.generated.SaveDebtPositionTypeOrgDTO;
-import java.util.List;
+import it.gov.pagopa.pu.debtpositions.dto.generated.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,6 +13,11 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class DebtPositionTypeOrgServiceTest {
@@ -138,6 +132,22 @@ class DebtPositionTypeOrgServiceTest {
       .thenReturn(expectedResult);
 
     DebtPositionTypeOrg result = service.saveDebtPositionTypeOrg(saveDebtPositionTypeOrgDTO,accessToken);
+
+    assertSame(expectedResult, result);
+  }
+
+  @Test
+  void whenFindDebtPositionTypeOrgThenInvokeClient() {
+    Long organizationId = 1L;
+    String debtPositionTypeOrgCode="debtPositionTypeOrgCode";
+    String mappedExternalUserId = "mappedExternalUserId";
+    String accessToken = "ACCESSTOKEN";
+    DebtPositionTypeOrg expectedResult = new DebtPositionTypeOrg();
+
+    when(debtPositionTypeOrgSearchClientMock.findDebtPositionTypeOrg(organizationId,debtPositionTypeOrgCode,mappedExternalUserId,accessToken))
+      .thenReturn(expectedResult);
+
+    DebtPositionTypeOrg result = service.findDebtPositionTypeOrg(organizationId,debtPositionTypeOrgCode,mappedExternalUserId,accessToken);
 
     assertSame(expectedResult, result);
   }

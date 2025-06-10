@@ -24,4 +24,6 @@ public interface DebtPositionTypeOrgRetrieverService {
   DebtPositionTypeOrg createDebtPositionTypeOrg(Long organizationId, SaveDebtPositionTypeOrgDTO createDebtPositionTypeOrgDTO, UserInfo loggedUser, String accessToken);
 
   DebtPositionTypeOrg updateDebtPositionTypeOrg(Long organizationId, Long debtPositionTypeOrgId, SaveDebtPositionTypeOrgDTO saveDebtPositionTypeOrgDTO, UserInfo loggedUser, String accessToken);
+
+  void validateOperator(Long organizationId, String debtPositionTypeOrgCode, String mappedExternalUserId, String accessToken);
 }

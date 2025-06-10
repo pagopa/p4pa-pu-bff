@@ -38,6 +38,13 @@ public class DateUtils {
       .build();
   }
 
+  public static void validateDateFilters(LocalDateIntervalFilter dateFilter, String filterName) {
+    if ((dateFilter.getFrom() != null && dateFilter.getTo() == null) ||
+      (dateFilter.getFrom() == null && dateFilter.getTo() != null)) {
+      throw new IllegalArgumentException("Both " + filterName + "From and " + filterName + "To must be set or both must be null");
+    }
+  }
+
   /**
    * Returns true if both dates are null or only one is null
    */

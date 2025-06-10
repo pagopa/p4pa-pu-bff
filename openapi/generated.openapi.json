@@ -4863,6 +4863,16 @@
               }
             }
           },
+          "404" : {
+            "description" : "Not Found",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/PagedAssessmentsRegistry"
+                }
+              }
+            }
+          },
           "500" : {
             "description" : "Internal Server Error",
             "content" : {

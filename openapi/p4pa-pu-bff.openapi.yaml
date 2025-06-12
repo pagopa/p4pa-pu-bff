@@ -2114,6 +2114,39 @@ paths:
           description: Not Found
         '500':
           description: Internal Server Error
+  /organization/{organizationId}/assessments-registries/{assessmentRegistryId}:
+    get:
+      tags:
+        - AssessmentsRegistry
+      operationId: getAssessmentsRegistry
+      parameters:
+        - name: organizationId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: assessmentRegistryId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AssessmentsRegistryDTO'
+        '401':
+          description: Unauthorized - Missing or invalid token
+        '403':
+          description: Forbidden - Access denied
+        '404':
+          description: Not Found
+        '500':
+          description: Internal Server Error
   /organization/{organizationId}/assessments-registries:
     get:
       tags:
@@ -3217,3 +3250,39 @@ components:
         number:
           type: integer
           format: int64
+    AssessmentsRegistryDTO:
+      type: object
+      required:
+        - assessmentRegistryId
+        - organizationId
+        - debtPositionTypeOrgCode
+        - sectionCode
+        - operatingYear
+        - status
+      properties:
+        assessmentRegistryId:
+          type: integer
+          format: int64
+          readOnly: true
+        organizationId:
+          type: integer
+          format: int64
+        debtPositionTypeOrgCode:
+          type: string
+          readOnly: true
+        sectionCode:
+          type: string
+        sectionDescription:
+          type: string
+        officeCode:
+          type: string
+        officeDescription:
+          type: string
+        assessmentCode:
+          type: string
+        assessmentDescription:
+          type: string
+        operatingYear:
+          type: string
+        status:
+          type: 'AssessmentsRegistryStatus'

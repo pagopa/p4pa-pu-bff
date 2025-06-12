@@ -2,6 +2,7 @@ package it.gov.pagopa.pu.bff.connector.classification;
 
 import it.gov.pagopa.pu.bff.connector.classification.client.AssessmentsRegistrySearchClient;
 import it.gov.pagopa.pu.bff.dto.AssessmentsRegistryFiltersDTO;
+import it.gov.pagopa.pu.classification.dto.generated.AssessmentsRegistry;
 import it.gov.pagopa.pu.classification.dto.generated.PagedModelAssessmentsRegistry;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -28,23 +29,37 @@ class AssessmentsRegistryServiceImplTest {
   }
 
   @AfterEach
-  void verifyNoMoreInteractions(){
+  void verifyNoMoreInteractions() {
     Mockito.verifyNoMoreInteractions(
-            assessmentsRegistrySearchClientMock
+      assessmentsRegistrySearchClientMock
     );
   }
 
   @Test
-  void whenGetTreasuredClassificationThenInvokeClient() {
+  void whenFindAssessmentsRegistriesByFiltersThenInvokeClient() {
     AssessmentsRegistryFiltersDTO assessmentsRegistryFiltersDTO = new AssessmentsRegistryFiltersDTO();
     PageRequest pageable = PageRequest.of(0, 10);
     String accessToken = "ACCESSTOKEN";
     PagedModelAssessmentsRegistry expectedResult = new PagedModelAssessmentsRegistry();
 
-    when(assessmentsRegistrySearchClientMock.findAssessmentsRegistriesByFilters(assessmentsRegistryFiltersDTO,pageable,accessToken))
+    when(assessmentsRegistrySearchClientMock.findAssessmentsRegistriesByFilters(assessmentsRegistryFiltersDTO, pageable, accessToken))
       .thenReturn(expectedResult);
 
-    PagedModelAssessmentsRegistry result = assessmentsRegistryService.findAssessmentsRegistriesByFilters(assessmentsRegistryFiltersDTO,pageable,accessToken);
+    PagedModelAssessmentsRegistry result = assessmentsRegistryService.findAssessmentsRegistriesByFilters(assessmentsRegistryFiltersDTO, pageable, accessToken);
+
+    assertSame(expectedResult, result);
+  }
+
+  @Test
+  void whenGetAssessmentsRegistryThenInvokeClient() {
+    long assessmentRegistryId = 1L;
+    String accessToken = "ACCESSTOKEN";
+    AssessmentsRegistry expectedResult = new AssessmentsRegistry();
+
+    when(assessmentsRegistrySearchClientMock.getAssessmentsRegistry(assessmentRegistryId, accessToken))
+      .thenReturn(expectedResult);
+
+    AssessmentsRegistry result = assessmentsRegistryService.getAssessmentsRegistry(assessmentRegistryId, accessToken);
 
     assertSame(expectedResult, result);
   }

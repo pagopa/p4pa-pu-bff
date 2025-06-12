@@ -5101,6 +5101,10 @@
   },
   "components" : {
     "schemas" : {
+      "Action" : {
+        "type" : "string",
+        "enum" : [ "I", "M", "A" ]
+      },
       "DebtPositionDTO" : {
         "type" : "object",
         "properties" : {
@@ -5255,6 +5259,9 @@
           "ingestionFlowFileLineNumber" : {
             "type" : "integer",
             "format" : "int64"
+          },
+          "ingestionFlowFileAction" : {
+            "$ref" : "#/components/schemas/Action"
           },
           "sourceFlowName" : {
             "type" : "string"
@@ -5457,10 +5464,6 @@
         },
         "required" : [ "amountCents", "category", "orgFiscalCode", "orgName", "remittanceInformation", "transferIndex" ]
       },
-      "ActionEnum" : {
-        "type" : "string",
-        "enum" : [ "I", "M", "A" ]
-      },
       "ManageDebtPositionDTO" : {
         "type" : "object",
         "properties" : {
@@ -5491,7 +5494,7 @@
         "type" : "object",
         "properties" : {
           "action" : {
-            "$ref" : "#/components/schemas/ActionEnum"
+            "$ref" : "#/components/schemas/Action"
           },
           "installment" : {
             "$ref" : "#/components/schemas/InstallmentDTO"

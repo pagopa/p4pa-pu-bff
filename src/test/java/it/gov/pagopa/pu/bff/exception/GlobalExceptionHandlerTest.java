@@ -1,8 +1,5 @@
 package it.gov.pagopa.pu.bff.exception;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doThrow;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import it.gov.pagopa.pu.bff.config.json.JsonConfig;
 import jakarta.servlet.ServletException;
@@ -10,9 +7,6 @@ import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
-import java.time.LocalDateTime;
-import java.util.Map;
-import java.util.Set;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -42,6 +36,13 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.server.ServerErrorException;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter;
+
+import java.time.LocalDateTime;
+import java.util.Map;
+import java.util.Set;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doThrow;
 
 @ExtendWith({SpringExtension.class})
 @WebMvcTest(value = {GlobalExceptionHandlerTest.TestController.class}, excludeAutoConfiguration = SecurityAutoConfiguration.class)
@@ -282,4 +283,13 @@ class GlobalExceptionHandlerTest {
       .andExpect(MockMvcResultMatchers.jsonPath("$.description").value("Error"));
   }
 
+  @Test
+  void handleInvalidAssessmentsRegistryException() throws Exception {
+    doThrow(new InvalidAssessmentsRegistryException("Error")).when(testControllerSpy).testEndpoint(DATA, BODY);
+
+    performRequest(DATA, MediaType.APPLICATION_JSON)
+            .andExpect(MockMvcResultMatchers.status().isBadRequest())
+            .andExpect(MockMvcResultMatchers.jsonPath("$.title").value("BAD_REQUEST"))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.description").value("Error"));
+  }
 }

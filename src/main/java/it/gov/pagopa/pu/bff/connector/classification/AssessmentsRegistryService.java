@@ -7,6 +7,6 @@ import org.springframework.data.domain.Pageable;
 
 public interface AssessmentsRegistryService {
   PagedModelAssessmentsRegistry findAssessmentsRegistriesByFilters(AssessmentsRegistryFiltersDTO filters, Pageable pageable, String accessToken);
-
   AssessmentsRegistry getAssessmentsRegistry(Long assessmentRegistryId, String accessToken);
+  AssessmentsRegistry createAssessmentsRegistry(AssessmentsRegistry assessmentsRegistry, String accessToken);
 }

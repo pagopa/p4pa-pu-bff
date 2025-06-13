@@ -1,5 +1,6 @@
 package it.gov.pagopa.pu.bff.connector.classification;
 
+import it.gov.pagopa.pu.bff.connector.classification.client.AssessmentsRegistryClient;
 import it.gov.pagopa.pu.bff.connector.classification.client.AssessmentsRegistrySearchClient;
 import it.gov.pagopa.pu.bff.dto.AssessmentsRegistryFiltersDTO;
 import it.gov.pagopa.pu.classification.dto.generated.AssessmentsRegistry;
@@ -21,17 +22,19 @@ class AssessmentsRegistryServiceImplTest {
 
   @Mock
   private AssessmentsRegistrySearchClient assessmentsRegistrySearchClientMock;
+  @Mock
+  private AssessmentsRegistryClient assessmentsRegistryClientMock;
   private AssessmentsRegistryService assessmentsRegistryService;
 
   @BeforeEach
   void setUp() {
-    assessmentsRegistryService = new AssessmentsRegistryServiceImpl(assessmentsRegistrySearchClientMock);
+    assessmentsRegistryService = new AssessmentsRegistryServiceImpl(assessmentsRegistrySearchClientMock, assessmentsRegistryClientMock);
   }
 
   @AfterEach
   void verifyNoMoreInteractions() {
     Mockito.verifyNoMoreInteractions(
-      assessmentsRegistrySearchClientMock
+            assessmentsRegistrySearchClientMock, assessmentsRegistryClientMock
     );
   }
 
@@ -60,6 +63,20 @@ class AssessmentsRegistryServiceImplTest {
       .thenReturn(expectedResult);
 
     AssessmentsRegistry result = assessmentsRegistryService.getAssessmentsRegistry(assessmentRegistryId, accessToken);
+
+    assertSame(expectedResult, result);
+  }
+
+  @Test
+  void whenCreateAssessmentsRegistryThenInvokeClient() {
+    AssessmentsRegistry assessmentsRegistry = new AssessmentsRegistry();
+    String accessToken = "ACCESSTOKEN";
+    AssessmentsRegistry expectedResult = new AssessmentsRegistry();
+
+    when(assessmentsRegistryClientMock.createAssessmentsRegistry(assessmentsRegistry, accessToken))
+      .thenReturn(expectedResult);
+
+    AssessmentsRegistry result = assessmentsRegistryService.createAssessmentsRegistry(assessmentsRegistry,accessToken);
 
     assertSame(expectedResult, result);
   }

@@ -200,9 +200,10 @@ class AssessmentsRegistryRetrieverServiceImplTest {
     AssessmentsRegistryDTO expectedDTO = new AssessmentsRegistryDTO();
     expectedDTO.setDebtPositionTypeOrgCode("CODE123");
 
+    AssessmentsRegistry assessmentsRegistry = new AssessmentsRegistry();
     Mockito.when(assessmentsRegistryServiceMock.getAssessmentsRegistry(assessmentRegistryId, accessToken))
-      .thenReturn(new AssessmentsRegistry());
-    Mockito.when(assessmentsRegistryDTOMapperMock.map(Mockito.any()))
+      .thenReturn(assessmentsRegistry);
+    Mockito.when(assessmentsRegistryDTOMapperMock.map(assessmentsRegistry))
       .thenReturn(expectedDTO);
 
     try (MockedStatic<AuthorizationService> authMock = Mockito.mockStatic(AuthorizationService.class)) {
@@ -250,9 +251,10 @@ class AssessmentsRegistryRetrieverServiceImplTest {
     AssessmentsRegistryDTO dto = new AssessmentsRegistryDTO();
     dto.setDebtPositionTypeOrgCode("INVALID_CODE");
 
+    AssessmentsRegistry assessmentsRegistry = new AssessmentsRegistry();
     Mockito.when(assessmentsRegistryServiceMock.getAssessmentsRegistry(assessmentRegistryId, accessToken))
-      .thenReturn(new AssessmentsRegistry());
-    Mockito.when(assessmentsRegistryDTOMapperMock.map(Mockito.any()))
+      .thenReturn(assessmentsRegistry);
+    Mockito.when(assessmentsRegistryDTOMapperMock.map(assessmentsRegistry))
       .thenReturn(dto);
 
     try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {

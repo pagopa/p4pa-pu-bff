@@ -2211,6 +2211,36 @@ paths:
         '500':
           description: Internal Server Error
       x-spring-paginated: true
+    post:
+      tags:
+        - AssessmentsRegistry
+      operationId: createAssessmentsRegistry
+      parameters:
+        - name: organizationId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: 'AssessmentsRegistry'
+        required: true
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: 'AssessmentsRegistry'
+        '401':
+          description: Unauthorized - Missing or invalid token
+        '403':
+          description: Forbidden - Access denied
+        '500':
+          description: Internal Server Error
 security:
   - BearerAuth: [ ]
 components:

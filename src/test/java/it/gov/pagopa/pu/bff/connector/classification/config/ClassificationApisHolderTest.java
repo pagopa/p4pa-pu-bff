@@ -71,10 +71,12 @@ class ClassificationApisHolderTest extends BaseApiHolderTest {
           "2025", "lastName", LocalDate.now().minusDays(5), LocalDate.now(),
           "doc123", "2025", 0, 10, Collections.emptyList()
         ),
-      new ParameterizedTypeReference<>() {},
+      new ParameterizedTypeReference<>() {
+      },
       classificationApisHolder::unload
     );
   }
+
   @Test
   void whenGetTreasurySearchControllerApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
     assertAuthenticationShouldBeSetInThreadSafeMode(
@@ -100,10 +102,20 @@ class ClassificationApisHolderTest extends BaseApiHolderTest {
     assertAuthenticationShouldBeSetInThreadSafeMode(
       accessToken -> classificationApisHolder.getAssessmentsRegistrySearchControllerApi(accessToken)
         .crudAssessmentsRegistriesFindAssessmentsRegistriesByFilters(
-                1L,
-                Collections.singleton("code"),"sectionCode","sectionDescription",
-                "officeCode","officeDescription","assessmentCode", "assessmentDescription",
-                "operatingYear", AssessmentsRegistryStatus.ACTIVE, 0, 0, Collections.emptyList()),
+          1L,
+          Collections.singleton("code"), "sectionCode", "sectionDescription",
+          "officeCode", "officeDescription", "assessmentCode", "assessmentDescription",
+          "operatingYear", AssessmentsRegistryStatus.ACTIVE, 0, 0, Collections.emptyList()),
+      new ParameterizedTypeReference<>() {
+      },
+      classificationApisHolder::unload);
+  }
+
+  @Test
+  void whenGetAssessmentsRegistryEntityControllerApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
+    assertAuthenticationShouldBeSetInThreadSafeMode(
+      accessToken -> classificationApisHolder.getAssessmentsRegistryEntityControllerApi(accessToken)
+        .crudGetAssessmentsregistry("1"),
       new ParameterizedTypeReference<>() {
       },
       classificationApisHolder::unload);

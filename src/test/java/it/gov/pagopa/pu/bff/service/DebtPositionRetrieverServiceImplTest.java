@@ -36,6 +36,8 @@ import java.time.OffsetDateTime;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.argThat;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verifyNoInteractions;
 
 @ExtendWith(MockitoExtension.class)
@@ -79,6 +81,7 @@ class DebtPositionRetrieverServiceImplTest {
   @Test
   void givenValidDebtPositionWhenCreateDebtPositionThenOk() {
     DebtPositionDTO debtPositionDTO = podamFactory.manufacturePojo(DebtPositionDTO.class);
+    debtPositionDTO.setDebtPositionOrigin(DebtPositionOrigin.SPONTANEOUS);
     debtPositionDTO.setDebtPositionId(null);
     UserInfo loggedUser = new UserInfo();
     loggedUser.setMappedExternalUserId("mappedExternalUserId");
@@ -87,7 +90,11 @@ class DebtPositionRetrieverServiceImplTest {
     try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
       authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(debtPositionDTO.getOrganizationId(), loggedUser)).thenAnswer(a -> null);
 
-      Mockito.when(debtPositionServiceMock.createDebtPosition(debtPositionDTO, false, accessToken))
+      Mockito.when(debtPositionServiceMock.createDebtPosition(argThat(d->{
+                      TestUtils.reflectionEqualsByName(d,debtPositionDTO);
+                      assertEquals(DebtPositionOrigin.ORDINARY,d.getDebtPositionOrigin());
+                      return true;
+        } ), eq(false), eq(accessToken)))
         .thenReturn(expectedResult);
 
       DebtPositionDTO result = debtPositionRetrieverService.createDebtPosition(debtPositionDTO, loggedUser, accessToken);

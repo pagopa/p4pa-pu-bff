@@ -6,6 +6,7 @@ import it.gov.pagopa.pu.bff.connector.debt_position.DebtPositionTypeOrgService;
 import it.gov.pagopa.pu.bff.dto.AssessmentsRegistryFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.generated.AssessmentsRegistryDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedAssessmentsRegistry;
+import it.gov.pagopa.pu.bff.exception.InvalidAssessmentsRegistryException;
 import it.gov.pagopa.pu.bff.exception.ResourceNotFoundException;
 import it.gov.pagopa.pu.bff.mapper.AssessmentsRegistryDTOMapper;
 import it.gov.pagopa.pu.bff.mapper.AssessmentsRegistryMapper;
@@ -37,6 +38,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.verifyNoInteractions;
 
 @ExtendWith(MockitoExtension.class)
 class AssessmentsRegistryRetrieverServiceImplTest {
@@ -98,7 +100,7 @@ class AssessmentsRegistryRetrieverServiceImplTest {
       assertNotNull(result);
       assertSame(expectedResult, result);
 
-      Mockito.verifyNoInteractions(debtPositionTypeOrgServiceMock);
+      verifyNoInteractions(debtPositionTypeOrgServiceMock);
       authorizationServiceMockedStatic.verify(() -> AuthorizationService.validateUserForOrganizationId(filters.getOrganizationId(), loggedUser));
     }
   }
@@ -139,7 +141,7 @@ class AssessmentsRegistryRetrieverServiceImplTest {
       TestUtils.reflectionEqualsByName(filters, filterValues.get(0), "debtPositionTypeOrgCodes");
       assertEquals(expectedDebtPositionTypeOrgCodes, filterValues.get(0).getDebtPositionTypeOrgCodes());
 
-      Mockito.verifyNoInteractions(debtPositionTypeOrgRetrieverServiceMock);
+      verifyNoInteractions(debtPositionTypeOrgRetrieverServiceMock);
       authorizationServiceMockedStatic.verify(() -> AuthorizationService.validateUserForOrganizationId(filters.getOrganizationId(), loggedUser));
     }
   }
@@ -163,7 +165,7 @@ class AssessmentsRegistryRetrieverServiceImplTest {
 
       assertThrows(ResourceNotFoundException.class, () -> assessmentsRegistryRetrieverService.getAssessmentsRegistries(filters, null, pageable, loggedUser, accessToken));
 
-      Mockito.verifyNoInteractions(debtPositionTypeOrgRetrieverServiceMock, assessmentsRegistryServiceMock, assessmentsRegistryMapperMock);
+      verifyNoInteractions(debtPositionTypeOrgRetrieverServiceMock,assessmentsRegistryServiceMock,assessmentsRegistryMapperMock);
       authorizationServiceMockedStatic.verify(() -> AuthorizationService.validateUserForOrganizationId(filters.getOrganizationId(), loggedUser));
     }
   }
@@ -185,7 +187,73 @@ class AssessmentsRegistryRetrieverServiceImplTest {
         assessmentsRegistryRetrieverService.getAssessmentsRegistries(filters, null, pageable, loggedUser, accessToken));
 
       authorizationServiceMockedStatic.verify(() -> AuthorizationService.validateUserForOrganizationId(filters.getOrganizationId(), loggedUser));
-      Mockito.verifyNoInteractions(debtPositionTypeOrgServiceMock);
+      verifyNoInteractions(debtPositionTypeOrgServiceMock);
+    }
+  }
+
+  @Test
+  void givenValidAssessmentRegistryWhenCreateAssessmentsRegistryThenOk() {
+    UserInfo loggedUser = new UserInfo();
+    loggedUser.setUserId("user-123");
+    loggedUser.setMappedExternalUserId("mappedExternalUserId");
+    Long organizationId = 1L;
+    AssessmentsRegistry assessmentsRegistry = podamFactory.manufacturePojo(AssessmentsRegistry.class);
+    assessmentsRegistry.setAssessmentRegistryId(null);
+    assessmentsRegistry.setOrganizationId(organizationId);
+    AssessmentsRegistry expectedResult = podamFactory.manufacturePojo(AssessmentsRegistry.class);
+
+    try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
+      authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)).thenAnswer(a -> null);
+
+      Mockito.doNothing().when(debtPositionTypeOrgRetrieverServiceMock).validateOperator(organizationId,assessmentsRegistry.getDebtPositionTypeOrgCode(),loggedUser.getMappedExternalUserId(),accessToken);
+      Mockito.when(assessmentsRegistryServiceMock.createAssessmentsRegistry(assessmentsRegistry, accessToken))
+              .thenReturn(expectedResult);
+
+      AssessmentsRegistry result = assessmentsRegistryRetrieverService.createAssessmentsRegistry(organizationId,assessmentsRegistry,loggedUser,accessToken);
+
+      assertNotNull(result);
+      assertSame(expectedResult, result);
+
+      authorizationServiceMockedStatic.verify(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser));
+    }
+  }
+
+  @Test
+  void givenInvalidAssessmentRegistryWhenCreateAssessmentsRegistryThenResourceNotFoundException() {
+    UserInfo loggedUser = new UserInfo();
+    loggedUser.setUserId("user-123");
+    loggedUser.setMappedExternalUserId("mappedExternalUserId");
+    Long organizationId = 1L;
+    AssessmentsRegistry assessmentsRegistry = podamFactory.manufacturePojo(AssessmentsRegistry.class);
+    assessmentsRegistry.setOrganizationId(organizationId);
+
+    try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
+      authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)).thenAnswer(a -> null);
+
+      assertThrows(InvalidAssessmentsRegistryException.class, ()-> assessmentsRegistryRetrieverService.createAssessmentsRegistry(organizationId,assessmentsRegistry,loggedUser,accessToken));
+
+      verifyNoInteractions(debtPositionTypeOrgRetrieverServiceMock,assessmentsRegistryServiceMock);
+      authorizationServiceMockedStatic.verify(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser));
+    }
+  }
+
+  @Test
+  void givenWrongOrganizationIdWhenCreateAssessmentsRegistryThenResourceNotFoundException() {
+    UserInfo loggedUser = new UserInfo();
+    loggedUser.setUserId("user-123");
+    loggedUser.setMappedExternalUserId("mappedExternalUserId");
+    Long organizationId = 1L;
+    AssessmentsRegistry assessmentsRegistry = podamFactory.manufacturePojo(AssessmentsRegistry.class);
+    assessmentsRegistry.setAssessmentRegistryId(null);
+    assessmentsRegistry.setOrganizationId(organizationId+1);
+
+    try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
+      authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)).thenAnswer(a -> null);
+
+      assertThrows(InvalidAssessmentsRegistryException.class, ()-> assessmentsRegistryRetrieverService.createAssessmentsRegistry(organizationId,assessmentsRegistry,loggedUser,accessToken));
+
+      verifyNoInteractions(debtPositionTypeOrgRetrieverServiceMock,assessmentsRegistryServiceMock);
+      authorizationServiceMockedStatic.verify(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser));
     }
   }
 

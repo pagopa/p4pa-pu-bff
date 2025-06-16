@@ -7,11 +7,14 @@ import it.gov.pagopa.pu.bff.connector.debt_position.DebtPositionTypeOrgService;
 import it.gov.pagopa.pu.bff.dto.AssessmentsRegistryFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.generated.AssessmentsRegistryDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedAssessmentsRegistry;
+import it.gov.pagopa.pu.bff.exception.InvalidAssessmentsRegistryException;
 import it.gov.pagopa.pu.bff.exception.ResourceNotFoundException;
 import it.gov.pagopa.pu.bff.mapper.AssessmentsRegistryDTOMapper;
 import it.gov.pagopa.pu.bff.mapper.AssessmentsRegistryMapper;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
 import it.gov.pagopa.pu.bff.service.debt_position_type_org.DebtPositionTypeOrgRetrieverService;
+import it.gov.pagopa.pu.classification.dto.generated.AssessmentsRegistry;
+import it.gov.pagopa.pu.classification.dto.generated.AssessmentsRegistryStatus;
 import it.gov.pagopa.pu.debtpositions.dto.generated.CollectionModelDebtPositionTypeOrg;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrg;
 import lombok.extern.slf4j.Slf4j;
@@ -78,4 +81,23 @@ public class AssessmentsRegistryRetrieverServiceImpl implements AssessmentsRegis
 
     return assessmentRegistryDTO;
   }
+
+    @Override
+    public AssessmentsRegistry createAssessmentsRegistry(Long organizationId, AssessmentsRegistry assessmentsRegistry, UserInfo loggedUser, String accessToken) {
+        AuthorizationService.validateUserForOrganizationId(organizationId,loggedUser);
+        validateAssessmentRegistry(organizationId,assessmentsRegistry,loggedUser.getMappedExternalUserId(),accessToken);
+        assessmentsRegistry.setStatus(AssessmentsRegistryStatus.ACTIVE);
+        return assessmentsRegistryService.createAssessmentsRegistry(assessmentsRegistry, accessToken);
+    }
+
+    private void validateAssessmentRegistry(Long organizationId, AssessmentsRegistry assessmentsRegistry, String mappedExternalUserId, String accessToken) {
+        if(!organizationId.equals(assessmentsRegistry.getOrganizationId())){
+            throw new InvalidAssessmentsRegistryException("The AssessmentsRegistry's organizationId "+ assessmentsRegistry.getOrganizationId()+
+                    " does not match the given organizationId "+ organizationId);
+        }
+        if(assessmentsRegistry.getAssessmentRegistryId()!=null){
+            throw new InvalidAssessmentsRegistryException("assessmentRegistryId should not be provided");
+        }
+        debtPositionTypeOrgRetrieverService.validateOperator(assessmentsRegistry.getOrganizationId(), assessmentsRegistry.getDebtPositionTypeOrgCode(), mappedExternalUserId, accessToken);
+    }
 }

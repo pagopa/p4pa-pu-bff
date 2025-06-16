@@ -7,6 +7,7 @@ import it.gov.pagopa.pu.bff.dto.generated.PagedAssessmentsRegistry;
 import it.gov.pagopa.pu.bff.security.SecurityUtilsTest;
 import it.gov.pagopa.pu.bff.service.assessments_registry.AssessmentsRegistryRetrieverService;
 import it.gov.pagopa.pu.bff.util.TestUtils;
+import it.gov.pagopa.pu.classification.dto.generated.AssessmentsRegistry;
 import it.gov.pagopa.pu.classification.dto.generated.AssessmentsRegistryStatus;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -20,6 +21,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import uk.co.jemos.podam.api.PodamFactory;
 
 @ExtendWith(MockitoExtension.class)
 class AssessmentsRegistryControllerTest {
@@ -32,6 +34,7 @@ class AssessmentsRegistryControllerTest {
 
   private final String accessToken = "fakeAccessToken";
   private final UserInfo loggedUser = TestUtils.getPodamFactory().manufacturePojo(UserInfo.class);
+  private final PodamFactory podamFactory = TestUtils.getPodamFactory();
 
   @BeforeEach
   void setUp() {
@@ -128,6 +131,26 @@ class AssessmentsRegistryControllerTest {
     Assertions.assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     Assertions.assertNull(response.getBody());
   }
+
+  @Test
+  void whenCreateAssessmentsRegistryThenOk() {
+    long organizationId = 1L;
+    AssessmentsRegistry assessmentsRegistry = podamFactory.manufacturePojo(AssessmentsRegistry.class);
+
+    AssessmentsRegistry expectedResult = new AssessmentsRegistry();
+
+    Mockito.when(assessmentsRegistryRetrieverServiceMock.createAssessmentsRegistry(organizationId,assessmentsRegistry,
+            loggedUser,accessToken)).thenReturn(expectedResult);
+
+    ResponseEntity<AssessmentsRegistry> response = assessmentsRegistryController.createAssessmentsRegistry(
+            organizationId, assessmentsRegistry);
+
+    Assertions.assertEquals(HttpStatus.CREATED, response.getStatusCode());
+    Assertions.assertNotNull(response.getBody());
+    Assertions.assertSame(expectedResult, response.getBody());
+  }
+
+
 }
 
 

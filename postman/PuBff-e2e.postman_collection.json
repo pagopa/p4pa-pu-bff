@@ -1273,6 +1273,16 @@
 								"type": "text/javascript",
 								"packages": {}
 							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
 						}
 					],
 					"request": {
@@ -1922,13 +1932,23 @@
 									"pm.test(\"[getAssessmentRegistries], expected httpStatus: 200\", () => {\r",
 									"    pm.response.to.have.status(200);\r",
 									"})\r",
-									"pm.test(\"[AssessmentRegistries getAssessmentRegistries] - getAssessmentRegistries\", () => {\r",
+									"pm.test(\"[AssessmentsRegistries getAssessmentRegistries] - getAssessmentRegistries\", () => {\r",
 									"    pm.expect(jsonResponse).to.have.property(\"content\").and.to.be.an(\"array\");\r",
 									"    pm.expect(jsonResponse).to.have.property(\"size\").and.to.be.a(\"number\");\r",
 									"    pm.expect(jsonResponse).to.have.property(\"totalElements\").and.to.be.a(\"number\");\r",
 									"    pm.expect(jsonResponse).to.have.property(\"totalPages\").and.to.be.a(\"number\");\r",
 									"    pm.expect(jsonResponse).to.have.property(\"number\").and.to.be.a(\"number\");\r",
 									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
 								],
 								"type": "text/javascript",
 								"packages": {}
@@ -1975,23 +1995,189 @@
 					"response": []
 				},
 				{
-					"name": "04_getAssessmentRegistries",
+					"name": "createDebtPositionTypeOrg",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let jsonResponse = pm.response.json();",
+									"pm.collectionVariables.set(\"createdDebtPositionTypeOrgId\", jsonResponse.debtPositionTypeOrgId);",
+									"pm.collectionVariables.set(\"debtPositionTypeOrgCode\", jsonResponse.code);",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"debtPositionTypeOrg\":{\n        \"debtPositionTypeId\": {{debtPositionTypeId}},\n        \"organizationId\": {{organizationId}},\n        \"balance\": \"\",\n        \"code\": \"CODE-ASSESSMENTS-REGISTRY\",\n        \"description\": \"Test for Assessments Registry\",\n        \"iban\": \"IT60X0542811101000000123456\",\n        \"postalIban\": \"IT60X0542811101000000123457\",\n        \"postalAccountCode\": \"1234567890\",\n        \"holderPostalCc\": \"Holder Postal CC\",\n        \"orgSector\": \"Public Sector\",\n        \"xsdDefinitionRef\": \"definitionRef123\",\n        \"amountCents\": 10000,\n        \"externalPaymentUrl\": \"https://example.com/payment\",\n        \"flagAnonymousFiscalCode\": false,\n        \"flagMandatoryDueDate\": false,\n        \"flagSpontaneous\": false,\n        \"flagNotifyIo\": true,\n        \"ioTemplateMessage\": \"Test IO Message Template\",\n        \"flagActive\": true,\n        \"flagNotifyOutcomePush\": false,\n        \"flagAmountActualization\": false,\n        \"flagExternal\": false\n    },\n    \"enabledOperators\":[\n    ],\n    \"disabledOperators\":[\n    ],\n    \"operatorsSelection\": \"NONE\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{puBffBaseUrl}}/bff/organization/:organizationId/debt-position-type-orgs",
+							"host": [
+								"{{puBffBaseUrl}}"
+							],
+							"path": [
+								"bff",
+								"organization",
+								":organizationId",
+								"debt-position-type-orgs"
+							],
+							"variable": [
+								{
+									"key": "organizationId",
+									"value": "{{organizationId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "04_createAssessmentRegistries",
 					"event": [
 						{
 							"listen": "test",
 							"script": {
 								"exec": [
 									"let jsonResponse = pm.response.json();\r",
-									"pm.test(\"[getTreasuries], expected httpStatus: 200\", () => {\r",
+									"pm.test(\"[createAssessmentRegistry], expected httpStatus: 201\", () => {\r",
+									"    pm.response.to.have.status(201);\r",
+									"})\r",
+									"pm.test(\"[AssessmentsRegistries createAssessmentRegistry] - createAssessmentRegistry\", () => {\r",
+									"    pm.expect(jsonResponse).to.have.property(\"organizationId\").and.to.equal(Number(pm.variables.get(\"organizationId\")));\r",
+									"    pm.expect(jsonResponse).to.have.property(\"debtPositionTypeOrgCode\").and.to.equal(pm.variables.get(\"debtPositionTypeOrgCode\"));\r",
+									"    pm.expect(jsonResponse).to.have.property(\"sectionCode\").and.to.not.be.null;\r",
+									"    pm.expect(jsonResponse).to.have.property(\"operatingYear\").and.to.equal(pm.variables.get(\"assessmentRegistryOperatingYear\"));\r",
+									"    pm.expect(jsonResponse).to.have.property(\"status\").and.equal(\"ACTIVE\");\r",
+									"});\r",
+									"\r",
+									"pm.collectionVariables.set(\"createdAssessmentRegistryId\", jsonResponse.assessmentRegistryId);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.collectionVariables.set(\"assessmentRegistryOperatingYear\",\"2050\")"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n                \"organizationId\": {{organizationId}},\n                \"debtPositionTypeOrgCode\": \"{{debtPositionTypeOrgCode}}\",\n                \"sectionCode\": \"sectionCode\",\n                \"sectionDescription\": \"sectionDescription\",\n                \"officeCode\": \"officeCode\",\n                \"officeDescription\": \"officeDescription\",\n                \"assessmentCode\": \"assessmentCode\",\n                \"assessmentDescription\": \"assessmentDescription\",\n                \"operatingYear\": \"{{assessmentRegistryOperatingYear}}\",\n                \"status\": \"ACTIVE\"\n            }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{puBffBaseUrl}}/bff/organization/:organizationId/assessments-registries",
+							"host": [
+								"{{puBffBaseUrl}}"
+							],
+							"path": [
+								"bff",
+								"organization",
+								":organizationId",
+								"assessments-registries"
+							],
+							"variable": [
+								{
+									"key": "organizationId",
+									"value": "{{organizationId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "04_getAssessmentRegistries - afterCreateAssessmentsRegistry",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let jsonResponse = pm.response.json();\r",
+									"pm.test(\"[getAssessmentRegistries], expected httpStatus: 200\", () => {\r",
 									"    pm.response.to.have.status(200);\r",
 									"})\r",
-									"pm.test(\"[Treasury getTreasuries] - getTreasuries\", () => {\r",
-									"    pm.expect(jsonResponse).to.have.property(\"content\").and.to.be.an(\"array\");\r",
-									"    pm.expect(jsonResponse).to.have.property(\"size\").and.to.be.a(\"number\");\r",
-									"    pm.expect(jsonResponse).to.have.property(\"totalElements\").and.to.be.a(\"number\");\r",
-									"    pm.expect(jsonResponse).to.have.property(\"totalPages\").and.to.be.a(\"number\");\r",
-									"    pm.expect(jsonResponse).to.have.property(\"number\").and.to.be.a(\"number\");\r",
+									"pm.test(\"[AssessmentsRegistries getAssessmentRegistries - afterCreateAssessmentRegistry] - getAssessmentRegistries\", () => {\r",
+									"    pm.expect(jsonResponse).to.have.property(\"totalElements\").and.to.equal(Number(1));\r",
+									"    jsonResponse.content.forEach((item)=> {\r",
+									"        pm.expect(item).to.have.property(\"organizationId\").and.to.equal(Number(pm.variables.get(\"organizationId\")));\r",
+									"        pm.expect(item).to.have.property(\"debtPositionTypeOrgCode\").and.to.equal(pm.variables.get(\"debtPositionTypeOrgCode\"));\r",
+									"        pm.expect(item).to.have.property(\"operatingYear\").and.to.equal(pm.variables.get(\"assessmentRegistryOperatingYear\"));\r",
+									"        pm.expect(item).to.have.property(\"status\").and.to.equal(\"ACTIVE\");\r",
+									"    });\r",
 									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
 								],
 								"type": "text/javascript",
 								"packages": {}
@@ -2017,7 +2203,7 @@
 							}
 						],
 						"url": {
-							"raw": "{{puBffBaseUrl}}/bff/organization/:organizationId/assessments-registries",
+							"raw": "{{puBffBaseUrl}}/bff/organization/:organizationId/assessments-registries?debtPositionTypeOrgCode={{debtPositionTypeOrgCode}}&operatingYear={{assessmentRegistryOperatingYear}}&status=ACTIVE",
 							"host": [
 								"{{puBffBaseUrl}}"
 							],
@@ -2026,6 +2212,108 @@
 								"organization",
 								":organizationId",
 								"assessments-registries"
+							],
+							"query": [
+								{
+									"key": "debtPositionTypeOrgCode",
+									"value": "{{debtPositionTypeOrgCode}}"
+								},
+								{
+									"key": "operatingYear",
+									"value": "{{assessmentRegistryOperatingYear}}"
+								},
+								{
+									"key": "status",
+									"value": "ACTIVE"
+								}
+							],
+							"variable": [
+								{
+									"key": "organizationId",
+									"value": "{{organizationId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deleteAssessmentRegistry",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{classificationBaseUrl}}/crud/assessments-registries/{{createdAssessmentRegistryId}}",
+							"host": [
+								"{{classificationBaseUrl}}"
+							],
+							"path": [
+								"crud",
+								"assessments-registries",
+								"{{createdAssessmentRegistryId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deleteDebtPositionTypeOrg",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{puBffBaseUrl}}/bff/organization/:organizationId/debt-position-type-orgs/{{createdDebtPositionTypeOrgId}}",
+							"host": [
+								"{{puBffBaseUrl}}"
+							],
+							"path": [
+								"bff",
+								"organization",
+								":organizationId",
+								"debt-position-type-orgs",
+								"{{createdDebtPositionTypeOrgId}}"
 							],
 							"variable": [
 								{
@@ -3495,6 +3783,22 @@
 		},
 		{
 			"key": "collectionReason",
+			"value": ""
+		},
+		{
+			"key": "debtPositionTypeOrgCode",
+			"value": ""
+		},
+		{
+			"key": "createdAssessmentRegistryId",
+			"value": ""
+		},
+		{
+			"key": "creeatedDebtPositionTypeOrgId",
+			"value": ""
+		},
+		{
+			"key": "assessmentRegistryOperatingYear",
 			"value": ""
 		}
 	]

@@ -22,6 +22,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
@@ -36,6 +37,9 @@ import java.time.OffsetDateTime;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 
 @ExtendWith(MockitoExtension.class)
@@ -79,6 +83,7 @@ class DebtPositionRetrieverServiceImplTest {
   @Test
   void givenValidDebtPositionWhenCreateDebtPositionThenOk() {
     DebtPositionDTO debtPositionDTO = podamFactory.manufacturePojo(DebtPositionDTO.class);
+    debtPositionDTO.setDebtPositionOrigin(DebtPositionOrigin.SPONTANEOUS);
     debtPositionDTO.setDebtPositionId(null);
     UserInfo loggedUser = new UserInfo();
     loggedUser.setMappedExternalUserId("mappedExternalUserId");
@@ -87,13 +92,20 @@ class DebtPositionRetrieverServiceImplTest {
     try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
       authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(debtPositionDTO.getOrganizationId(), loggedUser)).thenAnswer(a -> null);
 
-      Mockito.when(debtPositionServiceMock.createDebtPosition(debtPositionDTO, false, accessToken))
+      Mockito.when(debtPositionServiceMock.createDebtPosition(any(), eq(false), eq(accessToken)))
         .thenReturn(expectedResult);
 
       DebtPositionDTO result = debtPositionRetrieverService.createDebtPosition(debtPositionDTO, loggedUser, accessToken);
 
       assertNotNull(result);
       assertSame(expectedResult, result);
+
+      ArgumentCaptor<DebtPositionDTO> captor = ArgumentCaptor.forClass(DebtPositionDTO.class);
+      verify(debtPositionServiceMock).createDebtPosition(captor.capture(),eq(false),eq(accessToken));
+      List<DebtPositionDTO> captures = captor.getAllValues();
+      assertEquals(1,captures.size());
+      TestUtils.reflectionEqualsByName(debtPositionDTO,captures.getFirst());
+      assertEquals(DebtPositionOrigin.ORDINARY,captures.getFirst().getDebtPositionOrigin());
 
       authorizationServiceMockedStatic.verify(() -> AuthorizationService.validateUserForOrganizationId(debtPositionDTO.getOrganizationId(), loggedUser));
     }

@@ -1,5 +1,6 @@
 package it.gov.pagopa.pu.bff.connector.classification;
 
+import it.gov.pagopa.pu.bff.connector.classification.client.AssessmentsRegistryClient;
 import it.gov.pagopa.pu.bff.connector.classification.client.AssessmentsRegistrySearchClient;
 import it.gov.pagopa.pu.bff.dto.AssessmentsRegistryFiltersDTO;
 import it.gov.pagopa.pu.classification.dto.generated.AssessmentsRegistry;
@@ -11,9 +12,11 @@ import org.springframework.stereotype.Service;
 public class AssessmentsRegistryServiceImpl implements AssessmentsRegistryService {
 
   private final AssessmentsRegistrySearchClient assessmentsRegistrySearchClient;
+  private final AssessmentsRegistryClient assessmentsRegistryClient;
 
-  public AssessmentsRegistryServiceImpl(AssessmentsRegistrySearchClient assessmentsRegistrySearchClient) {
+  public AssessmentsRegistryServiceImpl(AssessmentsRegistrySearchClient assessmentsRegistrySearchClient, AssessmentsRegistryClient assessmentsRegistryClient) {
     this.assessmentsRegistrySearchClient = assessmentsRegistrySearchClient;
+      this.assessmentsRegistryClient = assessmentsRegistryClient;
   }
 
   @Override
@@ -24,5 +27,10 @@ public class AssessmentsRegistryServiceImpl implements AssessmentsRegistryServic
   @Override
   public AssessmentsRegistry getAssessmentsRegistry(Long assessmentRegistryId, String accessToken) {
     return assessmentsRegistrySearchClient.getAssessmentsRegistry(assessmentRegistryId, accessToken);
+  }
+
+  @Override
+  public AssessmentsRegistry createAssessmentsRegistry(AssessmentsRegistry assessmentsRegistry, String accessToken) {
+    return assessmentsRegistryClient.createAssessmentsRegistry(assessmentsRegistry, accessToken);
   }
 }

@@ -6,9 +6,11 @@ import it.gov.pagopa.pu.bff.dto.generated.AssessmentsRegistryDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedAssessmentsRegistry;
 import it.gov.pagopa.pu.bff.security.SecurityUtils;
 import it.gov.pagopa.pu.bff.service.assessments_registry.AssessmentsRegistryRetrieverService;
+import it.gov.pagopa.pu.classification.dto.generated.AssessmentsRegistry;
 import it.gov.pagopa.pu.classification.dto.generated.AssessmentsRegistryStatus;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -44,5 +46,14 @@ public class AssessmentsRegistryController implements AssessmentsRegistryApi {
     log.info("User requested getAssessmentsRegistry having organizationId {} and assessmentRegistryId {}", organizationId, assessmentRegistryId);
     return ResponseEntity.ofNullable(assessmentsRegistryRetrieverService.getAssessmentsRegistry(
       organizationId, assessmentRegistryId, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken()));
+  }
+
+  @Override
+  public ResponseEntity<AssessmentsRegistry> createAssessmentsRegistry(Long organizationId, AssessmentsRegistry body) {
+    log.info("User requested createAssessmentsRegistry with organizationId {}", organizationId);
+    return ResponseEntity
+      .status(HttpStatus.CREATED)
+      .body(assessmentsRegistryRetrieverService.createAssessmentsRegistry(organizationId,body,
+        SecurityUtils.getLoggedUser(),SecurityUtils.getAccessToken()));
   }
 }

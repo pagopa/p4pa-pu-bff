@@ -8810,6 +8810,9 @@
             "additionalProperties" : {
               "$ref" : "#/components/schemas/Link"
             }
+          },
+          "descriptionDebtPositionTypeOrgCode" : {
+            "type" : "string"
           }
         },
         "required" : [ "assessmentName", "debtPositionTypeOrgCode", "flagManualGeneration", "organizationId", "printed", "status" ]

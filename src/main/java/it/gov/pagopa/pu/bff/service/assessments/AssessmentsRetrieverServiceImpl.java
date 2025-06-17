@@ -2,18 +2,19 @@ package it.gov.pagopa.pu.bff.service.assessments;
 
 import io.micrometer.common.util.StringUtils;
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
-import it.gov.pagopa.pu.bff.connector.classification.client.AssessmentsClient;
+import it.gov.pagopa.pu.bff.connector.classification.AssessmentsService;
 import it.gov.pagopa.pu.bff.connector.debt_position.DebtPositionTypeOrgService;
 import it.gov.pagopa.pu.bff.dto.AssessmentsFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedAssessmentsExtendedDTO;
 import it.gov.pagopa.pu.bff.exception.ResourceNotFoundException;
-import it.gov.pagopa.pu.bff.mapper.PagedAssessmentExtendedDTOMapper;
+import it.gov.pagopa.pu.bff.mapper.AssessmentExtendedDTOMapper;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
 import it.gov.pagopa.pu.bff.service.debt_position_type_org.DebtPositionTypeOrgRetrieverService;
 import it.gov.pagopa.pu.classification.dto.generated.PagedAssessmentsView;
 import it.gov.pagopa.pu.debtpositions.dto.generated.CollectionModelDebtPositionTypeOrg;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrg;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -24,16 +25,16 @@ import java.util.stream.Collectors;
 @Service
 public class AssessmentsRetrieverServiceImpl implements AssessmentsRetrieverService {
 
-  private final AssessmentsClient assessmentsClient;
+  private final AssessmentsService assessmentsService;
   private final DebtPositionTypeOrgRetrieverService debtPositionTypeOrgRetrieverService;
   private final DebtPositionTypeOrgService debtPositionTypeOrgService;
-  private final PagedAssessmentExtendedDTOMapper pagedAssessmentExtendedDTOMapper;
+  private final AssessmentExtendedDTOMapper assessmentExtendedDTOMapper;
 
-  public AssessmentsRetrieverServiceImpl(AssessmentsClient assessmentsClient, DebtPositionTypeOrgRetrieverService debtPositionTypeOrgRetrieverService, DebtPositionTypeOrgService debtPositionTypeOrgService, PagedAssessmentExtendedDTOMapper pagedAssessmentExtendedDTOMapper) {
-    this.assessmentsClient = assessmentsClient;
+  public AssessmentsRetrieverServiceImpl(AssessmentsService assessmentsService, DebtPositionTypeOrgRetrieverService debtPositionTypeOrgRetrieverService, DebtPositionTypeOrgService debtPositionTypeOrgService, AssessmentExtendedDTOMapper assessmentExtendedDTOMapper) {
+    this.assessmentsService = assessmentsService;
     this.debtPositionTypeOrgRetrieverService = debtPositionTypeOrgRetrieverService;
-      this.debtPositionTypeOrgService = debtPositionTypeOrgService;
-      this.pagedAssessmentExtendedDTOMapper = pagedAssessmentExtendedDTOMapper;
+    this.debtPositionTypeOrgService = debtPositionTypeOrgService;
+    this.assessmentExtendedDTOMapper = assessmentExtendedDTOMapper;
   }
 
   @Override
@@ -41,33 +42,40 @@ public class AssessmentsRetrieverServiceImpl implements AssessmentsRetrieverServ
     AuthorizationService.validateUserForOrganizationId(assessmentsFiltersDTO.getOrganizationId(), loggedUser);
     Map<String, String> debtPositionTypeOrgMap;
 
-    if (StringUtils.isNotBlank(debtPositionTypeOrgCode)){
-      debtPositionTypeOrgRetrieverService.validateOperator(assessmentsFiltersDTO.getOrganizationId(), debtPositionTypeOrgCode, loggedUser.getMappedExternalUserId(), accessToken);
+    if (StringUtils.isNotBlank(debtPositionTypeOrgCode)) {
+      debtPositionTypeOrgRetrieverService.validateOperator(
+        assessmentsFiltersDTO.getOrganizationId(),
+        debtPositionTypeOrgCode,
+        loggedUser.getMappedExternalUserId(),
+        accessToken
+      );
+
+      String description = getDebtPositionTypeOrgDescription(
+        assessmentsFiltersDTO.getOrganizationId(),
+        debtPositionTypeOrgCode,
+        loggedUser.getMappedExternalUserId(),
+        accessToken
+      );
+
       assessmentsFiltersDTO.setDebtPositionTypeOrgCodes(Collections.singleton(debtPositionTypeOrgCode));
-
-      String description = getDebtPositionTypeOrgMap(
-              assessmentsFiltersDTO.getOrganizationId(),
-              loggedUser.getMappedExternalUserId(),
-              accessToken
-      ).getOrDefault(debtPositionTypeOrgCode, "");
-
       debtPositionTypeOrgMap = Map.of(debtPositionTypeOrgCode, description);
-    }else{
+
+    } else {
       debtPositionTypeOrgMap = getDebtPositionTypeOrgMap(
-              assessmentsFiltersDTO.getOrganizationId(),
-              loggedUser.getMappedExternalUserId(),
-              accessToken
+        assessmentsFiltersDTO.getOrganizationId(),
+        loggedUser.getMappedExternalUserId(),
+        accessToken
       );
       assessmentsFiltersDTO.setDebtPositionTypeOrgCodes(debtPositionTypeOrgMap.keySet());
     }
 
-    PagedAssessmentsView pagedAssessmentsView = assessmentsClient.findPagedAssessmentsView(
-            assessmentsFiltersDTO,
-            pageable,
-            accessToken
+    PagedAssessmentsView pagedAssessmentsView = assessmentsService.findPagedAssessmentsView(
+      assessmentsFiltersDTO,
+      pageable,
+      accessToken
     );
-    return pagedAssessmentExtendedDTOMapper.map(pagedAssessmentsView, debtPositionTypeOrgMap);
 
+    return assessmentExtendedDTOMapper.mapToPagedAssessmentsExtendedDTO(pagedAssessmentsView, debtPositionTypeOrgMap);
   }
 
   private Map<String, String> getDebtPositionTypeOrgMap(Long organizationId, String mappedExternalUserId, String accessToken) {
@@ -84,5 +92,14 @@ public class AssessmentsRetrieverServiceImpl implements AssessmentsRetrieverServ
     }
   }
 
+  private String getDebtPositionTypeOrgDescription(Long organizationId,String debtPositionTypeOrgCode, String mappedExternalUserId, String accessToken){
+    DebtPositionTypeOrg debtPositionTypeOrg = debtPositionTypeOrgService.findDebtPositionTypeOrg(organizationId, debtPositionTypeOrgCode, mappedExternalUserId, accessToken);
+
+    if (debtPositionTypeOrg == null){
+      throw new AuthorizationDeniedException("Access denied on debtPositionTypeOrg " + debtPositionTypeOrgCode + " to user " + mappedExternalUserId);
+    }
+
+    return debtPositionTypeOrg.getDescription();
+  }
 }
 

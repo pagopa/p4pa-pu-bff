@@ -35,7 +35,7 @@ class AssessmentsServiceImplTest {
   }
 
   @Test
-  void givenWhenFindPagedAssessmentsViewThen() {
+  void givenParametersWhenFindPagedAssessmentsViewThenReturnPagedAssessmentsView() {
     //given
     String accessToken = "accessToken";
     AssessmentsFiltersDTO assessmentsFiltersDTO = podamFactory.manufacturePojo(AssessmentsFiltersDTO.class);

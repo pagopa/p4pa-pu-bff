@@ -259,7 +259,6 @@ class AssessmentsRetrieverServiceImplTest {
 
     @Test
     void givenValidDebtPositionTypeOrgCodeWhenGetPagedAssessmentsExtendedDTOThenDescriptionIsUsed() {
-        // Setup
         UserInfo loggedUser = new UserInfo();
         loggedUser.setMappedExternalUserId("external-user");
 
@@ -302,10 +301,8 @@ class AssessmentsRetrieverServiceImplTest {
             Mockito.when(assessmentsServiceMock.findPagedAssessmentsView(filters, Pageable.ofSize(1), accessToken)).thenReturn(pagedView);
             Mockito.when(assessmentExtendedDTOMapperMock.mapToPagedAssessmentsExtendedDTO(pagedView, Map.of(code, description))).thenReturn(expected);
 
-            // Act
             PagedAssessmentsExtendedDTO result = assessmentsRetrieverService.getPagedAssessmentsExtendedDTO(filters, code, Pageable.ofSize(1), loggedUser, accessToken);
 
-            // Assert
             Assertions.assertNotNull(result);
             Assertions.assertEquals(expected, result);
         }
@@ -313,7 +310,6 @@ class AssessmentsRetrieverServiceImplTest {
 
     @Test
     void givenInvalidDebtPositionTypeOrgCodeWhenGetPagedAssessmentsExtendedDTOThenThrowsAuthorizationDeniedException() {
-        // Setup
         UserInfo loggedUser = new UserInfo();
         loggedUser.setMappedExternalUserId("external-user");
 
@@ -330,10 +326,9 @@ class AssessmentsRetrieverServiceImplTest {
             Mockito.doNothing().when(debtPositionTypeOrgRetrieverServiceMock).validateOperator(filters.getOrganizationId(), code, loggedUser.getMappedExternalUserId(), accessToken);
             Mockito.when(debtPositionTypeOrgServiceMock.findDebtPositionTypeOrg(filters.getOrganizationId(), code, loggedUser.getMappedExternalUserId(), accessToken)).thenReturn(null);
 
-            // Act & Assert
-            Assertions.assertThrows(AuthorizationDeniedException.class, () ->
-                    assessmentsRetrieverService.getPagedAssessmentsExtendedDTO(filters, code, Pageable.ofSize(1), loggedUser, accessToken)
-            );
+            Executable executable = () -> assessmentsRetrieverService.getPagedAssessmentsExtendedDTO(filters, code, Pageable.ofSize(1), loggedUser, accessToken);
+
+            Assertions.assertThrows(AuthorizationDeniedException.class, executable);
         }
     }
 

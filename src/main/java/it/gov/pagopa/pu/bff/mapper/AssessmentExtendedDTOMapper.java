@@ -22,13 +22,12 @@ public interface AssessmentExtendedDTOMapper {
   PagedAssessmentsExtendedDTO mapToPagedAssessmentsExtendedDTO(PagedAssessmentsView source, Map<String, String> debtPositionTypeOrgMap);
 
   default List<AssessmentsExtendedDTO> mapContentWithDescriptions(List<Assessments> content, Map<String, String> debtPositionTypeOrgMap) {
-   if (content == null) return Collections.emptyList();
+   if (content == null) { return Collections.emptyList();}
 
    return content.stream().map(assessment -> {
        AssessmentsExtendedDTO dto = map(assessment);
        String code = assessment.getDebtPositionTypeOrgCode();
-       String description = debtPositionTypeOrgMap.get(code);
-       dto.setDescriptionDebtPositionTypeOrgCode(description);
+       dto.setDescriptionDebtPositionTypeOrgCode(debtPositionTypeOrgMap.get(code));
        return dto;
      }).toList();
    }

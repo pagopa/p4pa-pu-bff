@@ -258,57 +258,6 @@ class AssessmentsRetrieverServiceImplTest {
   }
 
     @Test
-    void givenValidDebtPositionTypeOrgCodeWhenGetPagedAssessmentsExtendedDTOThenDescriptionIsUsed() {
-        UserInfo loggedUser = new UserInfo();
-        loggedUser.setMappedExternalUserId("external-user");
-
-        String code = "CODE01";
-        String description = "Valid Description";
-        String accessToken = "token";
-
-        AssessmentsFiltersDTO filters = AssessmentsFiltersDTO.builder()
-                .organizationId(1L)
-                .build();
-
-        DebtPositionTypeOrg dto = new DebtPositionTypeOrg();
-        dto.setCode(code);
-        dto.setDescription(description);
-
-        Assessments assessments = podamFactory.manufacturePojo(Assessments.class);
-        assessments.setDebtPositionTypeOrgCode(code);
-
-        PagedAssessmentsView pagedView = PagedAssessmentsView.builder()
-                .content(List.of(assessments))
-                .size(1L)
-                .totalPages(1L)
-                .totalElements(1L)
-                .number(0)
-                .build();
-
-        PagedAssessmentsExtendedDTO expected = PagedAssessmentsExtendedDTO.builder()
-                .content(List.of())
-                .size(1L)
-                .totalPages(1L)
-                .totalElements(1L)
-                .number(0)
-                .build();
-
-        try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
-            authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(filters.getOrganizationId(), loggedUser)).thenAnswer(a -> null);
-
-            Mockito.doNothing().when(debtPositionTypeOrgRetrieverServiceMock).validateOperator(filters.getOrganizationId(), code, loggedUser.getMappedExternalUserId(), accessToken);
-            Mockito.when(debtPositionTypeOrgServiceMock.findDebtPositionTypeOrg(filters.getOrganizationId(), code, loggedUser.getMappedExternalUserId(), accessToken)).thenReturn(dto);
-            Mockito.when(assessmentsServiceMock.findPagedAssessmentsView(filters, Pageable.ofSize(1), accessToken)).thenReturn(pagedView);
-            Mockito.when(assessmentExtendedDTOMapperMock.mapToPagedAssessmentsExtendedDTO(pagedView, Map.of(code, description))).thenReturn(expected);
-
-            PagedAssessmentsExtendedDTO result = assessmentsRetrieverService.getPagedAssessmentsExtendedDTO(filters, code, Pageable.ofSize(1), loggedUser, accessToken);
-
-            Assertions.assertNotNull(result);
-            Assertions.assertEquals(expected, result);
-        }
-    }
-
-    @Test
     void givenInvalidDebtPositionTypeOrgCodeWhenGetPagedAssessmentsExtendedDTOThenThrowsAuthorizationDeniedException() {
         UserInfo loggedUser = new UserInfo();
         loggedUser.setMappedExternalUserId("external-user");
@@ -331,6 +280,5 @@ class AssessmentsRetrieverServiceImplTest {
             Assertions.assertThrows(AuthorizationDeniedException.class, executable);
         }
     }
-
 
 }

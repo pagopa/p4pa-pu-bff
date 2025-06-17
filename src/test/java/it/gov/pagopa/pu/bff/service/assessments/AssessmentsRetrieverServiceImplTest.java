@@ -18,6 +18,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.function.Executable;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
@@ -187,9 +188,14 @@ class AssessmentsRetrieverServiceImplTest {
       authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(filters.getOrganizationId(), loggedUser)).thenAnswer(a -> null);
 
       Mockito.when(debtPositionTypeOrgServiceMock.getDebtPositionTypeOrgs(filters.getOrganizationId(), loggedUser.getMappedExternalUserId(), accessToken)).thenReturn(null);
+      Executable executable = () -> assessmentsRetrieverService.getPagedAssessmentsExtendedDTO(
+              filters,
+              null,
+              Pageable.ofSize(1),
+              loggedUser,
+              accessToken);
 
-      Assertions.assertThrows(ResourceNotFoundException.class, () ->
-              assessmentsRetrieverService.getPagedAssessmentsExtendedDTO(filters, null, Pageable.ofSize(1), loggedUser, accessToken));
+      Assertions.assertThrows(ResourceNotFoundException.class, executable);
     }
   }
 
@@ -207,8 +213,47 @@ class AssessmentsRetrieverServiceImplTest {
       authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(filters.getOrganizationId(), loggedUser))
               .thenThrow(new SecurityException("Unauthorized"));
 
-      Assertions.assertThrows(SecurityException.class, () ->
-              assessmentsRetrieverService.getPagedAssessmentsExtendedDTO(filters, null, Pageable.ofSize(1), loggedUser, accessToken));
+      Executable executable = () -> assessmentsRetrieverService.getPagedAssessmentsExtendedDTO(
+              filters,
+              null,
+              Pageable.ofSize(1),
+              loggedUser,
+              accessToken);
+
+      Assertions.assertThrows(SecurityException.class, executable);
+    }
+  }
+
+  @Test
+  void givenDebtPositionTypeOrgsWithNullEmbeddedWhenGetPagedAssessmentsExtendedDTOThenThrowsException() {
+    UserInfo loggedUser = new UserInfo();
+    loggedUser.setMappedExternalUserId("external-id");
+    String accessToken = "accessToken";
+
+    AssessmentsFiltersDTO filters = AssessmentsFiltersDTO.builder()
+            .organizationId(1L)
+            .build();
+
+    CollectionModelDebtPositionTypeOrg debtPositionTypeOrgs = new CollectionModelDebtPositionTypeOrg();
+    debtPositionTypeOrgs.setEmbedded(null);
+
+    try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
+      authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(filters.getOrganizationId(), loggedUser)).thenAnswer(a -> null);
+
+      Mockito.when(debtPositionTypeOrgServiceMock.getDebtPositionTypeOrgs(filters.getOrganizationId(), loggedUser.getMappedExternalUserId(), accessToken)).thenReturn(debtPositionTypeOrgs);
+
+      Pageable pageable = Pageable.ofSize(1);
+
+      Executable executable = () -> assessmentsRetrieverService.getPagedAssessmentsExtendedDTO(
+              filters,
+              null,
+              pageable,
+              loggedUser,
+              accessToken
+      );
+
+      Assertions.assertThrows(ResourceNotFoundException.class, executable);
+
     }
   }
 

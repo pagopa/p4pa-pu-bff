@@ -20,6 +20,7 @@ public class ClassificationApisHolder {
   private final AssessmentsRegistrySearchControllerApi assessmentsRegistrySearchControllerApi;
   private final AssessmentsRegistryEntityControllerApi assessmentsRegistryEntityControllerApi;
   private final AssessmentsRegistryApi assessmentsRegistryApi;
+  private final AssessmentsControllerApi assessmentsControllerApi;
   private final ThreadLocal<String> bearerTokenHolder = new ThreadLocal<>();
 
   public ClassificationApisHolder(ClassificationApiClientConfig clientConfig,
@@ -40,6 +41,7 @@ public class ClassificationApisHolder {
     this.treasurySearchControllerApi = new TreasurySearchControllerApi(apiClient);
     this.classificationsApi = new ClassificationsApi(apiClient);
     this.assessmentsRegistrySearchControllerApi = new AssessmentsRegistrySearchControllerApi(apiClient);
+    this.assessmentsControllerApi = new AssessmentsControllerApi(apiClient);
     this.assessmentsRegistryEntityControllerApi = new AssessmentsRegistryEntityControllerApi(apiClient);
     this.assessmentsRegistryApi = new AssessmentsRegistryApi(apiClient);
   }
@@ -79,6 +81,10 @@ public class ClassificationApisHolder {
 
   public AssessmentsRegistryApi getAssessmentsRegistryApi(String accessToken) {
     return getApi(accessToken, assessmentsRegistryApi);
+  }
+
+  public AssessmentsControllerApi getAssessmentsControllerApi(String accessToken) {
+    return getApi(accessToken, assessmentsControllerApi);
   }
 
   private <T extends BaseApi> T getApi(String accessToken, T api) {

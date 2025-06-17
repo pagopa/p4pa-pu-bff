@@ -39,7 +39,7 @@ public class AssessmentsRetrieverServiceImpl implements AssessmentsRetrieverServ
   @Override
   public PagedAssessmentsExtendedDTO getPagedAssessmentsExtendedDTO(AssessmentsFiltersDTO assessmentsFiltersDTO, String debtPositionTypeOrgCode, Pageable pageable, UserInfo loggedUser, String accessToken) {
     AuthorizationService.validateUserForOrganizationId(assessmentsFiltersDTO.getOrganizationId(), loggedUser);
-    Map<String, String> debtPositionTypeOrgMap;
+    Map<String, String> debtPositionTypeOrgCode2DescriptionMap;
 
     if (StringUtils.isNotBlank(debtPositionTypeOrgCode)) {
       debtPositionTypeOrgRetrieverService.validateOperator(
@@ -57,15 +57,15 @@ public class AssessmentsRetrieverServiceImpl implements AssessmentsRetrieverServ
       );
 
       assessmentsFiltersDTO.setDebtPositionTypeOrgCodes(Collections.singleton(debtPositionTypeOrgCode));
-      debtPositionTypeOrgMap = Map.of(debtPositionTypeOrgCode, description);
+      debtPositionTypeOrgCode2DescriptionMap = Map.of(debtPositionTypeOrgCode, description);
 
     } else {
-      debtPositionTypeOrgMap = getDebtPositionTypeOrgMap(
+      debtPositionTypeOrgCode2DescriptionMap = getDebtPositionTypeOrgMap(
         assessmentsFiltersDTO.getOrganizationId(),
         loggedUser.getMappedExternalUserId(),
         accessToken
       );
-      assessmentsFiltersDTO.setDebtPositionTypeOrgCodes(debtPositionTypeOrgMap.keySet());
+      assessmentsFiltersDTO.setDebtPositionTypeOrgCodes(debtPositionTypeOrgCode2DescriptionMap.keySet());
     }
 
     PagedAssessmentsView pagedAssessmentsView = assessmentsService.findPagedAssessmentsView(
@@ -74,7 +74,7 @@ public class AssessmentsRetrieverServiceImpl implements AssessmentsRetrieverServ
       accessToken
     );
 
-    return assessmentExtendedDTOMapper.mapToPagedAssessmentsExtendedDTO(pagedAssessmentsView, debtPositionTypeOrgMap);
+    return assessmentExtendedDTOMapper.mapToPagedAssessmentsExtendedDTO(pagedAssessmentsView, debtPositionTypeOrgCode2DescriptionMap);
   }
 
   private Map<String, String> getDebtPositionTypeOrgMap(Long organizationId, String mappedExternalUserId, String accessToken) {

@@ -8,6 +8,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+
 @Service
 @Slf4j
 public class AssessmentsClient {
@@ -25,7 +27,7 @@ public class AssessmentsClient {
         filters.getUpdateDateFrom(),
         filters.getUpdateDateTo(),
         filters.getIuv(),
-        filters.getDebtPositionTypeOrgCodes().stream().toList(),
+        new ArrayList<>(filters.getDebtPositionTypeOrgCodes()),
         filters.getStatus(),
         PageUtils.getPageNumber(pageable),
         PageUtils.getPageSize(pageable),

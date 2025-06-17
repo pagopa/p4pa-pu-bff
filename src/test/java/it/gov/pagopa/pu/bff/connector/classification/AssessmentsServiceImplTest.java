@@ -2,6 +2,7 @@ package it.gov.pagopa.pu.bff.connector.classification;
 
 import it.gov.pagopa.pu.bff.connector.classification.client.AssessmentsClient;
 import it.gov.pagopa.pu.bff.dto.AssessmentsFiltersDTO;
+import it.gov.pagopa.pu.bff.util.TestUtils;
 import it.gov.pagopa.pu.classification.dto.generated.PagedAssessmentsView;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -13,20 +14,20 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Pageable;
 import uk.co.jemos.podam.api.PodamFactory;
-import uk.co.jemos.podam.api.PodamFactoryImpl;
 
 @ExtendWith(MockitoExtension.class)
 class AssessmentsServiceImplTest {
 
   @Mock
   private AssessmentsClient assessmentsClientMock;
-  private PodamFactory podamFactory;
+
+  private final PodamFactory podamFactory = TestUtils.getPodamFactory();
+
   private AssessmentsService assessmentsService;
 
   @BeforeEach
   void setUp() {
     assessmentsService = new AssessmentsServiceImpl(assessmentsClientMock);
-    podamFactory = new PodamFactoryImpl();
   }
 
   @AfterEach

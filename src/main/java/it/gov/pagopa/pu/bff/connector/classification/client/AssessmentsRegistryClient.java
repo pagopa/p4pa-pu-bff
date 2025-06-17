@@ -18,4 +18,9 @@ public class AssessmentsRegistryClient {
     return classificationApisHolder.getAssessmentsRegistryApi(accessToken)
       .createAssessmentsRegistry(assessmentsRegistry);
   }
+
+  public AssessmentsRegistry updateAssessmentsRegistry(AssessmentsRegistry body, String accessToken) {
+    return classificationApisHolder.getAssessmentsRegistryEntityControllerApi(accessToken)
+      .crudUpdateAssessmentsregistry(String.valueOf(body.getAssessmentRegistryId()), body);
+  }
 }

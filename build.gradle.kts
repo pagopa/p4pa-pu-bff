@@ -349,6 +349,9 @@ tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>("ope
   typeMappings.set(mapOf(
     "LocalDateTime" to "java.time.LocalDateTime"
   ))
+  schemaMappings.set(mapOf(
+    "AssessmentsRegistryRequestBody" to "it.gov.pagopa.pu.classification.dto.generated.AssessmentsRegistry"
+  ))
   configOptions.set(mapOf(
     "swaggerAnnotations" to "false",
     "openApiNullable" to "false",

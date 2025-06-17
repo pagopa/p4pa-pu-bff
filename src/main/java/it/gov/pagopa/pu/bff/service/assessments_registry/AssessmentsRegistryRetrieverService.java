@@ -9,6 +9,10 @@ import org.springframework.data.domain.Pageable;
 
 public interface AssessmentsRegistryRetrieverService {
   PagedAssessmentsRegistry getAssessmentsRegistries(AssessmentsRegistryFiltersDTO filters, String debtPositionTypeOrgCode, Pageable pageable, UserInfo loggedUser, String accessToken);
+
   AssessmentsRegistryDTO getAssessmentsRegistry(Long organizationId, Long assessmentRegistryId, UserInfo loggedUser, String accessToken);
+
   AssessmentsRegistry createAssessmentsRegistry(Long organizationId, AssessmentsRegistry assessmentsRegistry, UserInfo loggedUser, String accessToken);
+
+  AssessmentsRegistry updateAssessmentsRegistry(Long organizationId, AssessmentsRegistry body, UserInfo loggedUser, String accessToken);
 }

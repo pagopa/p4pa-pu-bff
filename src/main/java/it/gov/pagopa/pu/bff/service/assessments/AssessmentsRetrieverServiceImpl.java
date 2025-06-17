@@ -14,7 +14,6 @@ import it.gov.pagopa.pu.classification.dto.generated.PagedAssessmentsView;
 import it.gov.pagopa.pu.debtpositions.dto.generated.CollectionModelDebtPositionTypeOrg;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrg;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -96,7 +95,7 @@ public class AssessmentsRetrieverServiceImpl implements AssessmentsRetrieverServ
     DebtPositionTypeOrg debtPositionTypeOrg = debtPositionTypeOrgService.findDebtPositionTypeOrg(organizationId, debtPositionTypeOrgCode, mappedExternalUserId, accessToken);
 
     if (debtPositionTypeOrg == null){
-      throw new AuthorizationDeniedException("Access denied on debtPositionTypeOrg " + debtPositionTypeOrgCode + " to user " + mappedExternalUserId);
+      throw new ResourceNotFoundException("DebtPositionTypeOrg " + debtPositionTypeOrgCode + " not found for user " + mappedExternalUserId);
     }
 
     return debtPositionTypeOrg.getDescription();

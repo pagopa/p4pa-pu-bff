@@ -23,7 +23,6 @@ import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.authorization.AuthorizationDeniedException;
 import uk.co.jemos.podam.api.PodamFactory;
 import uk.co.jemos.podam.api.PodamFactoryImpl;
 
@@ -277,7 +276,7 @@ class AssessmentsRetrieverServiceImplTest {
 
             Executable executable = () -> assessmentsRetrieverService.getPagedAssessmentsExtendedDTO(filters, code, Pageable.ofSize(1), loggedUser, accessToken);
 
-            Assertions.assertThrows(AuthorizationDeniedException.class, executable);
+            Assertions.assertThrows(ResourceNotFoundException.class, executable);
         }
     }
 

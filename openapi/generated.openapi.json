@@ -8655,6 +8655,22 @@
           "debtorFiscalCodeHash" : {
             "type" : "string",
             "format" : "byte"
+          },
+          "paymentNotificationDebtor" : {
+            "$ref" : "#/components/schemas/Person"
+          },
+          "paymentNotificationRemittanceInformation" : {
+            "type" : "string"
+          },
+          "paymentNotificationIud" : {
+            "type" : "string"
+          },
+          "paymentNotificationAmountPaidCents" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "paymentNotificationDebtPositionTypeOrgCode" : {
+            "type" : "string"
           }
         }
       },

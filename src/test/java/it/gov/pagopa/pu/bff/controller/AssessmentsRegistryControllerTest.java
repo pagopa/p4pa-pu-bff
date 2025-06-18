@@ -150,7 +150,21 @@ class AssessmentsRegistryControllerTest {
     Assertions.assertSame(expectedResult, response.getBody());
   }
 
+  @Test
+  void whenUpdateAssessmentsRegistryThenOk() {
+    long organizationId = 1L;
+    long assessmentRegistryId = 1L;
+    AssessmentsRegistry assessmentsRegistry = podamFactory.manufacturePojo(AssessmentsRegistry.class);
 
+    AssessmentsRegistry expectedResult = new AssessmentsRegistry();
+
+    Mockito.when(assessmentsRegistryRetrieverServiceMock.updateAssessmentsRegistry(organizationId, assessmentRegistryId, assessmentsRegistry, loggedUser,accessToken))
+      .thenReturn(expectedResult);
+
+    ResponseEntity<AssessmentsRegistry> response = assessmentsRegistryController.updateAssessmentsRegistry(organizationId, assessmentRegistryId, assessmentsRegistry);
+
+    Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
+    Assertions.assertNotNull(response.getBody());
+    Assertions.assertSame(expectedResult, response.getBody());
+  }
 }
-
-

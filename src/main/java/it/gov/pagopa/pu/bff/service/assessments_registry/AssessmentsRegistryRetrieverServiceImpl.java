@@ -95,8 +95,13 @@ public class AssessmentsRegistryRetrieverServiceImpl implements AssessmentsRegis
   }
 
   @Override
-  public AssessmentsRegistry updateAssessmentsRegistry(Long organizationId, AssessmentsRegistry body, UserInfo loggedUser, String accessToken) {
+  public AssessmentsRegistry updateAssessmentsRegistry(Long organizationId,  Long assessmentRegistryId, AssessmentsRegistry body, UserInfo loggedUser, String accessToken) {
     AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser);
+
+    if (!Objects.equals(assessmentRegistryId, body.getAssessmentRegistryId())) {
+      throw new IllegalArgumentException("assessmentRegistryId in path and body must match");
+    }
+
     AssessmentsRegistry existingRegistry = assessmentsRegistryService.getAssessmentsRegistry(body.getAssessmentRegistryId(), accessToken);
 
     if (!Objects.equals(body.getDebtPositionTypeOrgCode(), existingRegistry.getDebtPositionTypeOrgCode())) {
@@ -108,7 +113,6 @@ public class AssessmentsRegistryRetrieverServiceImpl implements AssessmentsRegis
     if (AssessmentsRegistryStatus.ACTIVE.equals(body.getStatus())) {
       checkActiveRegistryUniqueness(organizationId, body, accessToken);
     }
-
     return assessmentsRegistryService.updateAssessmentsRegistry(body, accessToken);
   }
 

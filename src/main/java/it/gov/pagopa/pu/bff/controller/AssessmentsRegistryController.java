@@ -58,9 +58,9 @@ public class AssessmentsRegistryController implements AssessmentsRegistryApi {
   }
 
   @Override
-  public ResponseEntity<AssessmentsRegistry> updateAssessmentsRegistry(Long organizationId, AssessmentsRegistry body) {
-    log.info("User requested updateAssessmentsRegistry with organizationId {}", organizationId);
+  public ResponseEntity<AssessmentsRegistry> updateAssessmentsRegistry(Long organizationId, Long assessmentRegistryId, AssessmentsRegistry body) {
+    log.info("User requested updateAssessmentsRegistry with organizationId {} and assessmentRegistryId {}", organizationId, assessmentRegistryId);
     return ResponseEntity.ok(assessmentsRegistryRetrieverService.updateAssessmentsRegistry(
-      organizationId, body, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken()));
+      organizationId, assessmentRegistryId, body, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken()));
   }
 }

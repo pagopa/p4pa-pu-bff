@@ -2115,6 +2115,48 @@ paths:
         '500':
           description: Internal Server Error
   /organization/{organizationId}/assessments-registries/{assessmentRegistryId}:
+    put:
+      tags:
+        - AssessmentsRegistry
+      operationId: updateAssessmentsRegistry
+      parameters:
+        - name: organizationId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: assessmentRegistryId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: 'AssessmentsRegistry'
+        required: true
+      responses:
+        '200':
+          description: Updated successfully
+          content:
+            application/json:
+              schema:
+                type: 'AssessmentsRegistry'
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized - Missing or invalid token
+        '403':
+          description: Forbidden - Access denied
+        '404':
+          description: Not Found
+        '409':
+          description: Conflict
+        '500':
+          description: Internal Server Error
     get:
       tags:
         - AssessmentsRegistry
@@ -2241,10 +2283,11 @@ paths:
           description: Forbidden - Access denied
         '500':
           description: Internal Server Error
-    put:
+  /organization/{organizationId}/assessments:
+    get:
       tags:
-        - AssessmentsRegistry
-      operationId: updateAssessmentsRegistry
+        - Assessments
+      operationId: getPagedAssessmentsExtendedDTO
       parameters:
         - name: organizationId
           in: path
@@ -2252,31 +2295,46 @@ paths:
           schema:
             type: integer
             format: int64
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: 'AssessmentsRegistry'
-        required: true
+        - name: assessmentName
+          in: query
+          schema:
+            type: string
+        - name: updateDateFrom
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: updateDateTo
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: iuv
+          in: query
+          schema:
+            type: string
+        - name: debtPositionTypeOrgCode
+          in: query
+          schema:
+            type: string
+        - name: status
+          in: query
+          schema:
+            type: 'AssessmentsStatusEnum'
       responses:
-        '200':
-          description: Updated successfully
+        "200":
+          description: List of assessments
           content:
             application/json:
               schema:
-                type: 'AssessmentsRegistry'
-        '400':
-          description: Bad Request
+                $ref: '#/components/schemas/PagedAssessmentsExtendedDTO'
         '401':
           description: Unauthorized - Missing or invalid token
-        '403':
-          description: Forbidden - Access denied
-        '404':
-          description: Not Found
-        '409':
-          description: Conflict
+        "400":
+          description: Invalid request
         '500':
           description: Internal Server Error
+      x-spring-paginated: true
 security:
   - BearerAuth: [ ]
 components:
@@ -3352,3 +3410,28 @@ components:
           type: string
         status:
           type: 'AssessmentsRegistryStatus'
+    PagedAssessmentsExtendedDTO:
+      type: object
+      required:
+        - content
+        - size
+        - totalElements
+        - totalPages
+        - number
+      properties:
+        content:
+          type: array
+          items:
+            type: 'AssessmentsExtendedDTO'
+        size:
+          type: integer
+          format: int64
+        totalElements:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer
+          format: int64
+        number:
+          type: integer
+      format: int64

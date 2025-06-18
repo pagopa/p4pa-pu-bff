@@ -14,5 +14,5 @@ public interface AssessmentsRegistryRetrieverService {
 
   AssessmentsRegistry createAssessmentsRegistry(Long organizationId, AssessmentsRegistry assessmentsRegistry, UserInfo loggedUser, String accessToken);
 
-  AssessmentsRegistry updateAssessmentsRegistry(Long organizationId, AssessmentsRegistry body, UserInfo loggedUser, String accessToken);
+  AssessmentsRegistry updateAssessmentsRegistry(Long organizationId, Long assessmentRegistryId, AssessmentsRegistry body, UserInfo loggedUser, String accessToken);
 }

@@ -5,12 +5,14 @@ import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.connector.classification.AssessmentsService;
 import it.gov.pagopa.pu.bff.connector.debt_position.DebtPositionTypeOrgService;
 import it.gov.pagopa.pu.bff.dto.AssessmentsFiltersDTO;
+import it.gov.pagopa.pu.bff.dto.AssessmentsRowsDetailFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedAssessmentsExtendedDTO;
 import it.gov.pagopa.pu.bff.exception.ResourceNotFoundException;
 import it.gov.pagopa.pu.bff.mapper.AssessmentExtendedDTOMapper;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
 import it.gov.pagopa.pu.bff.service.debt_position_type_org.DebtPositionTypeOrgRetrieverService;
 import it.gov.pagopa.pu.classification.dto.generated.PagedAssessmentsView;
+import it.gov.pagopa.pu.classification.dto.generated.PagedModelAssessmentsDetail;
 import it.gov.pagopa.pu.debtpositions.dto.generated.CollectionModelDebtPositionTypeOrg;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrg;
 import org.springframework.data.domain.Pageable;
@@ -100,5 +102,12 @@ public class AssessmentsRetrieverServiceImpl implements AssessmentsRetrieverServ
 
     return debtPositionTypeOrg.getDescription();
   }
+
+  @Override
+  public PagedModelAssessmentsDetail getPagedModelAssessmentsDetail(AssessmentsRowsDetailFiltersDTO assessmentsRowsDetailFiltersDTO, Pageable pageable, UserInfo loggedUser, String accessToken) {
+    AuthorizationService.validateUserForOrganizationId(assessmentsRowsDetailFiltersDTO.getOrganizationId(), loggedUser);
+    return assessmentsService.findPagedModelAssessmentsDetail(assessmentsRowsDetailFiltersDTO, pageable, accessToken);
+  }
+
 }
 

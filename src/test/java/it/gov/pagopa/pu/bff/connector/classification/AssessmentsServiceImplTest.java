@@ -2,8 +2,10 @@ package it.gov.pagopa.pu.bff.connector.classification;
 
 import it.gov.pagopa.pu.bff.connector.classification.client.AssessmentsClient;
 import it.gov.pagopa.pu.bff.dto.AssessmentsFiltersDTO;
+import it.gov.pagopa.pu.bff.dto.AssessmentsRowsDetailFiltersDTO;
 import it.gov.pagopa.pu.bff.util.TestUtils;
 import it.gov.pagopa.pu.classification.dto.generated.PagedAssessmentsView;
+import it.gov.pagopa.pu.classification.dto.generated.PagedModelAssessmentsDetail;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -48,5 +50,20 @@ class AssessmentsServiceImplTest {
     //then
     Assertions.assertNotNull(result);
     Assertions.assertEquals(pagedAssessmentsView, result);
+  }
+
+  @Test
+  void givenParametersWhenFindPagedModelAssessmentsDetailThenReturnPagedModelAssessmentsDetail() {
+    //given
+    String accessToken = "accessToken";
+    AssessmentsRowsDetailFiltersDTO assessmentsRowsDetailFiltersDTO = podamFactory.manufacturePojo(AssessmentsRowsDetailFiltersDTO.class);
+    PagedModelAssessmentsDetail pagedModelAssessmentsDetail = podamFactory.manufacturePojo(PagedModelAssessmentsDetail.class);
+
+    Mockito.when(assessmentsClientMock.findPagedModelAssessmentsDetail(assessmentsRowsDetailFiltersDTO, Pageable.ofSize(1), accessToken)).thenReturn(pagedModelAssessmentsDetail);
+    //when
+    PagedModelAssessmentsDetail result = assessmentsService.findPagedModelAssessmentsDetail(assessmentsRowsDetailFiltersDTO, Pageable.ofSize(1), accessToken);
+    //then
+    Assertions.assertNotNull(result);
+    Assertions.assertEquals(pagedModelAssessmentsDetail, result);
   }
 }

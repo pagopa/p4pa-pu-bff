@@ -4,6 +4,7 @@ import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.connector.classification.AssessmentsService;
 import it.gov.pagopa.pu.bff.connector.debt_position.DebtPositionTypeOrgService;
 import it.gov.pagopa.pu.bff.dto.AssessmentsFiltersDTO;
+import it.gov.pagopa.pu.bff.dto.AssessmentsRowsDetailFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedAssessmentsExtendedDTO;
 import it.gov.pagopa.pu.bff.exception.ResourceNotFoundException;
 import it.gov.pagopa.pu.bff.mapper.AssessmentExtendedDTOMapper;
@@ -11,6 +12,7 @@ import it.gov.pagopa.pu.bff.service.AuthorizationService;
 import it.gov.pagopa.pu.bff.service.debt_position_type_org.DebtPositionTypeOrgRetrieverService;
 import it.gov.pagopa.pu.classification.dto.generated.Assessments;
 import it.gov.pagopa.pu.classification.dto.generated.PagedAssessmentsView;
+import it.gov.pagopa.pu.classification.dto.generated.PagedModelAssessmentsDetail;
 import it.gov.pagopa.pu.debtpositions.dto.generated.CollectionModelDebtPositionTypeOrg;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrg;
 import org.junit.jupiter.api.Assertions;
@@ -280,4 +282,47 @@ class AssessmentsRetrieverServiceImplTest {
         }
     }
 
+  @Test
+  void givenFiltersWhenGetPagedModelAssessmentsDetailThenPagedModelAssessmentsDetail() {
+    UserInfo loggedUser = new UserInfo();
+    loggedUser.setUserId("user-123");
+    loggedUser.setMappedExternalUserId("mappedExternalUserId");
+
+    String accessToken = "accessToken";
+
+    AssessmentsRowsDetailFiltersDTO assessmentsRowsDetailFiltersDTO = podamFactory.manufacturePojo(AssessmentsRowsDetailFiltersDTO.class);
+    PagedModelAssessmentsDetail pagedModelAssessmentsDetail = podamFactory.manufacturePojo(PagedModelAssessmentsDetail.class);
+
+    try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
+      authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(assessmentsRowsDetailFiltersDTO.getOrganizationId(), loggedUser)).thenAnswer(a -> null);
+      Mockito.when(assessmentsServiceMock.findPagedModelAssessmentsDetail(assessmentsRowsDetailFiltersDTO, Pageable.ofSize(1), accessToken)).thenReturn(pagedModelAssessmentsDetail);
+
+      PagedModelAssessmentsDetail result = assessmentsRetrieverService.getPagedModelAssessmentsDetail(assessmentsRowsDetailFiltersDTO, Pageable.ofSize(1), loggedUser, accessToken);
+
+      Assertions.assertNotNull(result);
+      Assertions.assertEquals(pagedModelAssessmentsDetail, result);
+    }
+  }
+
+  @Test
+  void givenInvalidUserWhenPagedModelAssessmentsDetailThenThrowsException() {
+    UserInfo loggedUser = new UserInfo();
+    loggedUser.setMappedExternalUserId("external-id");
+    String accessToken = "accessToken";
+
+    AssessmentsRowsDetailFiltersDTO filters = podamFactory.manufacturePojo(AssessmentsRowsDetailFiltersDTO.class);
+
+    try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
+      authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(filters.getOrganizationId(), loggedUser))
+        .thenThrow(new SecurityException("Unauthorized"));
+
+      Executable executable = () -> assessmentsRetrieverService.getPagedModelAssessmentsDetail(
+        filters,
+        Pageable.ofSize(1),
+        loggedUser,
+        accessToken);
+
+      Assertions.assertThrows(SecurityException.class, executable);
+    }
+  }
 }

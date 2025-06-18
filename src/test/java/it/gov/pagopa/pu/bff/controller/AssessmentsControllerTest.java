@@ -2,11 +2,13 @@ package it.gov.pagopa.pu.bff.controller;
 
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.dto.AssessmentsFiltersDTO;
+import it.gov.pagopa.pu.bff.dto.AssessmentsRowsDetailFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedAssessmentsExtendedDTO;
 import it.gov.pagopa.pu.bff.security.SecurityUtilsTest;
 import it.gov.pagopa.pu.bff.service.assessments.AssessmentsRetrieverService;
 import it.gov.pagopa.pu.bff.util.TestUtils;
 import it.gov.pagopa.pu.classification.dto.generated.AssessmentStatus;
+import it.gov.pagopa.pu.classification.dto.generated.PagedModelAssessmentsDetail;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -57,5 +59,26 @@ class AssessmentsControllerTest {
     Assertions.assertEquals(HttpStatus.OK, result.getStatusCode());
     Assertions.assertNotNull(result);
     Assertions.assertEquals(pagedAssessmentsExtendedDTO, result.getBody());
+  }
+
+  @Test
+  void givenParametersWhenGetPagedAssessmentDetailThenOk() {
+    //given
+    Long organizationId = 1L;
+    Long assessmentId = 1L;
+    String iuv = "iuv";
+    String iud = "iud";
+    OffsetDateTime offsetDateTime = OffsetDateTime.now();
+    String fiscalCode = "fiscalCode";
+
+    AssessmentsRowsDetailFiltersDTO assessmentsRowsDetailFiltersDTO = new AssessmentsRowsDetailFiltersDTO(organizationId, assessmentId, iud, iuv, offsetDateTime, offsetDateTime, offsetDateTime, offsetDateTime, fiscalCode);
+    PagedModelAssessmentsDetail pagedModelAssessmentsDetail = new PagedModelAssessmentsDetail();
+    Mockito.when(assessmentsRetrieverServiceMock.getPagedModelAssessmentsDetail(assessmentsRowsDetailFiltersDTO, Pageable.ofSize(1),loggedUser, accessToken)).thenReturn(pagedModelAssessmentsDetail);
+    //when
+    ResponseEntity<PagedModelAssessmentsDetail> result = assessmentsController.getPagedAssessmentDetail(organizationId, assessmentId, iuv, iud, offsetDateTime, offsetDateTime, offsetDateTime, offsetDateTime, fiscalCode, Pageable.ofSize(1));
+    //then
+    Assertions.assertEquals(HttpStatus.OK, result.getStatusCode());
+    Assertions.assertNotNull(result);
+    Assertions.assertEquals(pagedModelAssessmentsDetail, result.getBody());
   }
 }

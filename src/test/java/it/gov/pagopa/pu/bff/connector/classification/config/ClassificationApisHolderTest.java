@@ -144,4 +144,14 @@ class ClassificationApisHolderTest extends BaseApiHolderTest {
       },
       classificationApisHolder::unload);
   }
+
+  @Test
+  void whenGetAssessmentsDetailSearchControllerApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
+    assertAuthenticationShouldBeSetInThreadSafeMode(
+      accessToken -> classificationApisHolder.getAssessmentsDetailSearchControllerApi(accessToken)
+        .crudAssessmentsDetailsFindAssessmentsRowsDetail(1L, "iud", "iuv",  OffsetDateTime.now(), OffsetDateTime.now() , OffsetDateTime.now(), OffsetDateTime.now(), "fiscalCode", 1,1, Collections.emptyList()),
+      new ParameterizedTypeReference<>() {
+      },
+      classificationApisHolder::unload);
+  }
 }

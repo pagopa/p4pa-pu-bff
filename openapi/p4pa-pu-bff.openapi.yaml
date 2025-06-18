@@ -2293,6 +2293,70 @@ paths:
         '500':
           description: Internal Server Error
       x-spring-paginated: true
+  /organization/{organizationId}/assessments/{assessmentId}:
+    get:
+      tags:
+        - Assessments
+      operationId: getPagedAssessmentDetail
+      parameters:
+        - name: organizationId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: assessmentId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: iuv
+          in: query
+          schema:
+            type: string
+        - name: iud
+          in: query
+          schema:
+            type: string
+        - name: updateDateTimeFrom
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: updateDateTimeTo
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: paymentDateTimeFrom
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: paymentDateTimeTo
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: fiscalCode
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Assessment detail list
+          content:
+            application/json:
+              schema:
+                type: 'PagedModelAssessmentsDetail'
+        '401':
+          description: Unauthorized - Missing or invalid token
+        "400":
+          description: Invalid request
+        '500':
+          description: Internal Server Error
+      x-spring-paginated: true
 security:
   - BearerAuth: [ ]
 components:

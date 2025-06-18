@@ -547,5 +547,43 @@ class AssessmentsRegistryRetrieverServiceImplTest {
       authMock.verify(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser));
     }
   }
+
+  @Test
+  void givenStatusInactiveWhenUpdateAssessmentsRegistryThenSkipCheckActiveRegistryUniqueness() {
+    UserInfo loggedUser = new UserInfo();
+    loggedUser.setUserId("user-123");
+    loggedUser.setMappedExternalUserId("mappedExternalUserId");
+    Long organizationId = 1L;
+    Long assessmentRegistryId = 10L;
+
+    AssessmentsRegistry body = podamFactory.manufacturePojo(AssessmentsRegistry.class);
+    body.setAssessmentRegistryId(assessmentRegistryId);
+    body.setOrganizationId(organizationId);
+    body.setStatus(AssessmentsRegistryStatus.INACTIVE);
+
+    AssessmentsRegistry existing = new AssessmentsRegistry();
+    existing.setAssessmentRegistryId(assessmentRegistryId);
+    existing.setDebtPositionTypeOrgCode(body.getDebtPositionTypeOrgCode());
+
+    AssessmentsRegistry expected = podamFactory.manufacturePojo(AssessmentsRegistry.class);
+
+    try (MockedStatic<AuthorizationService> authMock = Mockito.mockStatic(AuthorizationService.class)) {
+      authMock.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)).thenAnswer(a -> null);
+
+      Mockito.when(assessmentsRegistryServiceMock.getAssessmentsRegistry(assessmentRegistryId, accessToken)).thenReturn(existing);
+      Mockito.doNothing().when(debtPositionTypeOrgRetrieverServiceMock).validateOperator(
+        organizationId, body.getDebtPositionTypeOrgCode(), loggedUser.getMappedExternalUserId(), accessToken);
+      Mockito.when(assessmentsRegistryServiceMock.updateAssessmentsRegistry(body, accessToken)).thenReturn(expected);
+
+      AssessmentsRegistry result = assessmentsRegistryRetrieverService.updateAssessmentsRegistry(
+        organizationId, assessmentRegistryId, body, loggedUser, accessToken);
+
+      assertNotNull(result);
+      assertSame(expected, result);
+
+      Mockito.verify(assessmentsRegistryServiceMock, Mockito.never())
+        .findAssessmentsRegistriesByFilters(Mockito.any(), Mockito.any(), Mockito.eq(accessToken));
+    }
+  }
 }
 

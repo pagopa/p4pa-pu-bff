@@ -2266,8 +2266,18 @@
 									"    pm.expect(jsonResponse).to.have.property(\"assessmentCode\").and.to.not.be.null;\r",
 									"    pm.expect(jsonResponse).to.have.property(\"assessmentDescription\").and.to.not.be.null;\r",
 									"    pm.expect(jsonResponse).to.have.property(\"operatingYear\").and.to.not.be.null;\r",
-									"    pm.expect(jsonResponse).to.have.property(\"status\").and.to.not.be.null;\r",
+									"    pm.expect(jsonResponse).to.have.property(\"status\").and.to.equal(pm.variables.get(\"assessmentsRegistryStatus\"));\r",
 									"})"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.variables.set(\"assessmentsRegistryStatus\",\"INACTIVE\")"
 								],
 								"type": "text/javascript",
 								"packages": {}
@@ -2300,7 +2310,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n                \"organizationId\": {{organizationId}},\n                \"assessmentRegistryId\": {{createdAssessmentRegistryId}},\n                \"debtPositionTypeOrgCode\": \"{{debtPositionTypeOrgCode}}\",\n                \"sectionCode\": \"sectionCode\",\n                \"sectionDescription\": \"sectionDescription\",\n                \"officeCode\": \"officeCode\",\n                \"officeDescription\": \"officeDescription\",\n                \"assessmentCode\": \"assessmentCode\",\n                \"assessmentDescription\": \"assessmentDescription\",\n                \"operatingYear\": \"{{assessmentRegistryOperatingYear}}\",\n                \"status\": \"INACTIVE\"\n            }",
+							"raw": "{\n                \"organizationId\": {{organizationId}},\n                \"assessmentRegistryId\": {{createdAssessmentRegistryId}},\n                \"debtPositionTypeOrgCode\": \"{{debtPositionTypeOrgCode}}\",\n                \"sectionCode\": \"sectionCode\",\n                \"sectionDescription\": \"sectionDescription\",\n                \"officeCode\": \"officeCode\",\n                \"officeDescription\": \"officeDescription\",\n                \"assessmentCode\": \"assessmentCode\",\n                \"assessmentDescription\": \"assessmentDescription\",\n                \"operatingYear\": \"{{assessmentRegistryOperatingYear}}\",\n                \"status\": \"{{assessmentsRegistryStatus}}\"\n            }",
 							"options": {
 								"raw": {
 									"language": "json"

@@ -37,6 +37,7 @@ class PagedAssessmentsRowsDetailMapperTest {
     assertEquals(
       pagedModelAssessmentsDetail.getEmbedded().getAssessmentsDetails(),
       result.getContent());
+    TestUtils.checkNotNullFields(result);
   }
 
   @Test
@@ -58,6 +59,7 @@ class PagedAssessmentsRowsDetailMapperTest {
     assertEquals(pagedModelAssessmentsDetail.getPage().getSize(),
       result.getSize());
     assertTrue(CollectionUtils.isEmpty(result.getContent()));
+    TestUtils.checkNotNullFields(result);
   }
 
   @Test
@@ -77,5 +79,6 @@ class PagedAssessmentsRowsDetailMapperTest {
     assertEquals(
       pagedModelAssessmentsDetail.getEmbedded().getAssessmentsDetails(),
       result.getContent());
+    TestUtils.checkNotNullFields(result, "size", "totalElements", "totalPages", "number");
   }
 }

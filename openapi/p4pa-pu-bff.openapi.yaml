@@ -2339,7 +2339,7 @@ paths:
     get:
       tags:
         - Assessments
-      operationId: getPagedAssessmentsRowsDetail
+      operationId: getPagedAssessmentsRows
       parameters:
         - name: organizationId
           in: path

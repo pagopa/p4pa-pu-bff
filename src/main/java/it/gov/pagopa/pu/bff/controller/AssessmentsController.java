@@ -44,7 +44,7 @@ public class AssessmentsController implements AssessmentsApi {
   }
 
   @Override
-  public ResponseEntity<PagedAssessmentsRowsDetail> getPagedAssessmentsRowsDetail(Long organizationId, Long assessmentId, String iuv, String iud, OffsetDateTime updateDateTimeFrom, OffsetDateTime updateDateTimeTo, OffsetDateTime paymentDateTimeFrom, OffsetDateTime paymentDateTimeTo, String fiscalCode, Pageable pageable) {
+  public ResponseEntity<PagedAssessmentsRowsDetail> getPagedAssessmentsRows(Long organizationId, Long assessmentId, String iuv, String iud, OffsetDateTime updateDateTimeFrom, OffsetDateTime updateDateTimeTo, OffsetDateTime paymentDateTimeFrom, OffsetDateTime paymentDateTimeTo, String fiscalCode, Pageable pageable) {
     log.info("User requested getPagedAssessmentDetail having organizationId {} and assessmentId {}", organizationId, assessmentId);
 
     OffsetDateTimeIntervalFilter updateDateTimeIntervalFilter = new OffsetDateTimeIntervalFilter(updateDateTimeFrom, updateDateTimeTo);

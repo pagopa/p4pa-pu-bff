@@ -2115,6 +2115,48 @@ paths:
         '500':
           description: Internal Server Error
   /organization/{organizationId}/assessments-registries/{assessmentRegistryId}:
+    put:
+      tags:
+        - AssessmentsRegistry
+      operationId: updateAssessmentsRegistry
+      parameters:
+        - name: organizationId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: assessmentRegistryId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: 'AssessmentsRegistry'
+        required: true
+      responses:
+        '200':
+          description: Updated successfully
+          content:
+            application/json:
+              schema:
+                type: 'AssessmentsRegistry'
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized - Missing or invalid token
+        '403':
+          description: Forbidden - Access denied
+        '404':
+          description: Not Found
+        '409':
+          description: Conflict
+        '500':
+          description: Internal Server Error
     get:
       tags:
         - AssessmentsRegistry

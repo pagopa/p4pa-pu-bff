@@ -63,7 +63,7 @@ class AssessmentsControllerTest {
   }
 
   @Test
-  void givenParametersWhenGetPagedAssessmentDetailThenOk() {
+  void givenParametersWhenGetPagedAssessmentsRowsThenOk() {
     //given
     Long organizationId = 1L;
     Long assessmentId = 1L;

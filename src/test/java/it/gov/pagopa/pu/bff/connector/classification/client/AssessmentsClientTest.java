@@ -69,7 +69,7 @@ class AssessmentsClientTest {
     PagedModelAssessmentsDetail pagedModelAssessmentsDetail = podamFactory.manufacturePojo(PagedModelAssessmentsDetail.class);
 
     Mockito.when(classificationApisHolderMock.getAssessmentsDetailSearchControllerApi(accessToken)).thenReturn(assessmentsDetailSearchControllerApiMock);
-    Mockito.when(assessmentsDetailSearchControllerApiMock.crudAssessmentsDetailsFindAssessmentsRowsDetail(assessmentsRowsDetailFiltersDTO.getAssessmentId(), assessmentsRowsDetailFiltersDTO.getIud(), assessmentsRowsDetailFiltersDTO.getIuv(), assessmentsRowsDetailFiltersDTO.getUpdateDateTimeFrom(), assessmentsRowsDetailFiltersDTO.getUpdateDateTimeTo(), assessmentsRowsDetailFiltersDTO.getPaymentDateTimeFrom(), assessmentsRowsDetailFiltersDTO.getPaymentDateTimeTo(), assessmentsRowsDetailFiltersDTO.getFiscalCode(), 0, 1, Collections.emptyList())).thenReturn(pagedModelAssessmentsDetail);
+    Mockito.when(assessmentsDetailSearchControllerApiMock.crudAssessmentsDetailsFindAssessmentsRowsDetail(assessmentsRowsDetailFiltersDTO.getAssessmentId(), assessmentsRowsDetailFiltersDTO.getIud(), assessmentsRowsDetailFiltersDTO.getIuv(), assessmentsRowsDetailFiltersDTO.getUpdateDateTimeIntervalFilter().getFrom(), assessmentsRowsDetailFiltersDTO.getUpdateDateTimeIntervalFilter().getTo(), assessmentsRowsDetailFiltersDTO.getPaymentDateTimeIntervalFilter().getFrom(), assessmentsRowsDetailFiltersDTO.getPaymentDateTimeIntervalFilter().getTo(), assessmentsRowsDetailFiltersDTO.getFiscalCode(), 0, 1, Collections.emptyList())).thenReturn(pagedModelAssessmentsDetail);
     //when
     PagedModelAssessmentsDetail result = assessmentsClient.findPagedModelAssessmentsDetail(assessmentsRowsDetailFiltersDTO, Pageable.ofSize(1), accessToken);
     //then

@@ -5098,7 +5098,7 @@
     "/bff/organization/{organizationId}/assessments/{assessmentId}" : {
       "get" : {
         "tags" : [ "Assessments" ],
-        "operationId" : "getPagedAssessmentDetail",
+        "operationId" : "getPagedAssessmentsRowsDetail",
         "parameters" : [ {
           "name" : "organizationId",
           "in" : "path",
@@ -5202,11 +5202,11 @@
         } ],
         "responses" : {
           "200" : {
-            "description" : "Assessment detail list",
+            "description" : "Assessments Rows Detail",
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/PagedModelAssessmentsDetail"
+                  "$ref" : "#/components/schemas/PagedAssessmentsRowsDetail"
                 }
               }
             }
@@ -5216,7 +5216,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/PagedModelAssessmentsDetail"
+                  "$ref" : "#/components/schemas/PagedAssessmentsRowsDetail"
                 }
               }
             }
@@ -5226,7 +5226,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/PagedModelAssessmentsDetail"
+                  "$ref" : "#/components/schemas/PagedAssessmentsRowsDetail"
                 }
               }
             }
@@ -5236,7 +5236,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/PagedModelAssessmentsDetail"
+                  "$ref" : "#/components/schemas/PagedAssessmentsRowsDetail"
                 }
               }
             }
@@ -9220,9 +9220,15 @@
         },
         "required" : [ "amountCents", "amountSubmitted", "assessmentId", "debtPositionTypeOrgCode", "debtorFiscalCodeHash", "iud", "iur", "iuv", "organizationId", "sectionCode" ]
       },
-      "PageMetadata" : {
+      "PagedAssessmentsRowsDetail" : {
         "type" : "object",
         "properties" : {
+          "content" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/AssessmentsDetail"
+            }
+          },
           "size" : {
             "type" : "integer",
             "format" : "int64"
@@ -9239,35 +9245,8 @@
             "type" : "integer",
             "format" : "int64"
           }
-        }
-      },
-      "PagedModelAssessmentsDetail" : {
-        "type" : "object",
-        "properties" : {
-          "_embedded" : {
-            "$ref" : "#/components/schemas/PagedModelAssessmentsDetailEmbedded"
-          },
-          "_links" : {
-            "type" : "object",
-            "additionalProperties" : {
-              "$ref" : "#/components/schemas/Link"
-            }
-          },
-          "page" : {
-            "$ref" : "#/components/schemas/PageMetadata"
-          }
-        }
-      },
-      "PagedModelAssessmentsDetailEmbedded" : {
-        "type" : "object",
-        "properties" : {
-          "assessmentsDetails" : {
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/components/schemas/AssessmentsDetail"
-            }
-          }
-        }
+        },
+        "required" : [ "content", "number", "size", "totalElements", "totalPages" ]
       },
       "PagedAssessmentsRegistry" : {
         "type" : "object",

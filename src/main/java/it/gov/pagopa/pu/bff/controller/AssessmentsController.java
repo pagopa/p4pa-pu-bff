@@ -3,11 +3,12 @@ package it.gov.pagopa.pu.bff.controller;
 import it.gov.pagopa.pu.bff.controller.generated.AssessmentsApi;
 import it.gov.pagopa.pu.bff.dto.AssessmentsFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.AssessmentsRowsDetailFiltersDTO;
+import it.gov.pagopa.pu.bff.dto.OffsetDateTimeIntervalFilter;
 import it.gov.pagopa.pu.bff.dto.generated.PagedAssessmentsExtendedDTO;
+import it.gov.pagopa.pu.bff.dto.generated.PagedAssessmentsRowsDetail;
 import it.gov.pagopa.pu.bff.security.SecurityUtils;
 import it.gov.pagopa.pu.bff.service.assessments.AssessmentsRetrieverService;
 import it.gov.pagopa.pu.classification.dto.generated.AssessmentStatus;
-import it.gov.pagopa.pu.classification.dto.generated.PagedModelAssessmentsDetail;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -43,18 +44,20 @@ public class AssessmentsController implements AssessmentsApi {
   }
 
   @Override
-  public ResponseEntity<PagedModelAssessmentsDetail> getPagedAssessmentDetail(Long organizationId, Long assessmentId, String iuv, String iud, OffsetDateTime updateDateTimeFrom, OffsetDateTime updateDateTimeTo, OffsetDateTime paymentDateTimeFrom, OffsetDateTime paymentDateTimeTo, String fiscalCode, Pageable pageable) {
+  public ResponseEntity<PagedAssessmentsRowsDetail> getPagedAssessmentsRowsDetail(Long organizationId, Long assessmentId, String iuv, String iud, OffsetDateTime updateDateTimeFrom, OffsetDateTime updateDateTimeTo, OffsetDateTime paymentDateTimeFrom, OffsetDateTime paymentDateTimeTo, String fiscalCode, Pageable pageable) {
     log.info("User requested getPagedAssessmentDetail having organizationId {} and assessmentId {}", organizationId, assessmentId);
-    return ResponseEntity.ok(assessmentsRetrieverService.getPagedModelAssessmentsDetail(
+
+    OffsetDateTimeIntervalFilter updateDateTimeIntervalFilter = new OffsetDateTimeIntervalFilter(updateDateTimeFrom, updateDateTimeTo);
+    OffsetDateTimeIntervalFilter paymentDateTimeIntervalFilter = new OffsetDateTimeIntervalFilter(paymentDateTimeFrom, paymentDateTimeTo);
+
+    return ResponseEntity.ok(assessmentsRetrieverService.getPagedAssessmentsRowsDetail(
       AssessmentsRowsDetailFiltersDTO.builder()
         .organizationId(organizationId)
         .assessmentId(assessmentId)
         .iud(iud)
         .iuv(iuv)
-        .updateDateTimeFrom(updateDateTimeFrom)
-        .updateDateTimeTo(updateDateTimeTo)
-        .paymentDateTimeFrom(paymentDateTimeFrom)
-        .paymentDateTimeTo(paymentDateTimeTo)
+        .updateDateTimeIntervalFilter(updateDateTimeIntervalFilter)
+        .paymentDateTimeIntervalFilter(paymentDateTimeIntervalFilter)
         .fiscalCode(fiscalCode)
         .build(),
       pageable,

@@ -5,8 +5,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.OffsetDateTime;
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -16,9 +14,7 @@ public class AssessmentsRowsDetailFiltersDTO {
   private Long assessmentId;
   private String iud;
   private String iuv;
-  private OffsetDateTime updateDateTimeFrom;
-  private OffsetDateTime updateDateTimeTo;
-  private OffsetDateTime paymentDateTimeFrom;
-  private OffsetDateTime paymentDateTimeTo;
+  private OffsetDateTimeIntervalFilter updateDateTimeIntervalFilter;
+  private OffsetDateTimeIntervalFilter paymentDateTimeIntervalFilter;
   private String fiscalCode;
 }

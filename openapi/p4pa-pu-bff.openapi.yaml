@@ -2297,7 +2297,7 @@ paths:
     get:
       tags:
         - Assessments
-      operationId: getPagedAssessmentDetail
+      operationId: getPagedAssessmentsRowsDetail
       parameters:
         - name: organizationId
           in: path
@@ -2345,11 +2345,11 @@ paths:
             type: string
       responses:
         "200":
-          description: Assessment detail list
+          description: Assessments Rows Detail
           content:
             application/json:
               schema:
-                type: 'PagedModelAssessmentsDetail'
+                $ref: '#/components/schemas/PagedAssessmentsRowsDetail'
         '401':
           description: Unauthorized - Missing or invalid token
         "400":
@@ -3432,6 +3432,31 @@ components:
           type: string
         status:
           type: 'AssessmentsRegistryStatus'
+    PagedAssessmentsRowsDetail:
+      type: object
+      required:
+        - content
+        - size
+        - totalElements
+        - totalPages
+        - number
+      properties:
+        content:
+          type: array
+          items:
+            type: 'AssessmentsDetail'
+        size:
+          type: integer
+          format: int64
+        totalElements:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer
+          format: int64
+        number:
+          type: integer
+          format: int64
     PagedAssessmentsExtendedDTO:
       type: object
       required:

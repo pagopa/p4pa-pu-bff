@@ -6,8 +6,10 @@ import it.gov.pagopa.pu.bff.connector.debt_position.DebtPositionTypeOrgService;
 import it.gov.pagopa.pu.bff.dto.AssessmentsFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.AssessmentsRowsDetailFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedAssessmentsExtendedDTO;
+import it.gov.pagopa.pu.bff.dto.generated.PagedAssessmentsRowsDetail;
 import it.gov.pagopa.pu.bff.exception.ResourceNotFoundException;
 import it.gov.pagopa.pu.bff.mapper.AssessmentExtendedDTOMapper;
+import it.gov.pagopa.pu.bff.mapper.PagedAssessmentsRowsDetailMapper;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
 import it.gov.pagopa.pu.bff.service.debt_position_type_org.DebtPositionTypeOrgRetrieverService;
 import it.gov.pagopa.pu.classification.dto.generated.Assessments;
@@ -44,16 +46,16 @@ class AssessmentsRetrieverServiceImplTest {
   private DebtPositionTypeOrgService debtPositionTypeOrgServiceMock;
   @Mock
   private AssessmentExtendedDTOMapper assessmentExtendedDTOMapperMock;
-
+  @Mock
+  private PagedAssessmentsRowsDetailMapper pagedAssessmentsRowsDetailMapperMock;
   private AssessmentsRetrieverService assessmentsRetrieverService;
   private PodamFactory podamFactory;
 
   @BeforeEach
   void setUp() {
-    assessmentsRetrieverService = new AssessmentsRetrieverServiceImpl(assessmentsServiceMock, debtPositionTypeOrgRetrieverServiceMock, debtPositionTypeOrgServiceMock, assessmentExtendedDTOMapperMock);
+    assessmentsRetrieverService = new AssessmentsRetrieverServiceImpl(assessmentsServiceMock, debtPositionTypeOrgRetrieverServiceMock, debtPositionTypeOrgServiceMock, assessmentExtendedDTOMapperMock, pagedAssessmentsRowsDetailMapperMock);
     podamFactory = new PodamFactoryImpl();
   }
-
 
   @Test
   void givenDebtPositionTypeOrgCodePresentWhenGetPagedAssessmentsExtendedDTOThenReturnsMappedDTO() {
@@ -283,7 +285,7 @@ class AssessmentsRetrieverServiceImplTest {
     }
 
   @Test
-  void givenFiltersWhenGetPagedModelAssessmentsDetailThenPagedModelAssessmentsDetail() {
+  void givenFiltersWhenGetPagedModelAssessmentsDetailThenPagedAssessmentsRowsDetail() {
     UserInfo loggedUser = new UserInfo();
     loggedUser.setUserId("user-123");
     loggedUser.setMappedExternalUserId("mappedExternalUserId");
@@ -292,15 +294,16 @@ class AssessmentsRetrieverServiceImplTest {
 
     AssessmentsRowsDetailFiltersDTO assessmentsRowsDetailFiltersDTO = podamFactory.manufacturePojo(AssessmentsRowsDetailFiltersDTO.class);
     PagedModelAssessmentsDetail pagedModelAssessmentsDetail = podamFactory.manufacturePojo(PagedModelAssessmentsDetail.class);
+    PagedAssessmentsRowsDetail pagedAssessmentsRowsDetail = podamFactory.manufacturePojo(PagedAssessmentsRowsDetail.class);
 
     try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
       authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(assessmentsRowsDetailFiltersDTO.getOrganizationId(), loggedUser)).thenAnswer(a -> null);
       Mockito.when(assessmentsServiceMock.findPagedModelAssessmentsDetail(assessmentsRowsDetailFiltersDTO, Pageable.ofSize(1), accessToken)).thenReturn(pagedModelAssessmentsDetail);
-
-      PagedModelAssessmentsDetail result = assessmentsRetrieverService.getPagedModelAssessmentsDetail(assessmentsRowsDetailFiltersDTO, Pageable.ofSize(1), loggedUser, accessToken);
+      Mockito.when(pagedAssessmentsRowsDetailMapperMock.map(pagedModelAssessmentsDetail)).thenReturn(pagedAssessmentsRowsDetail);
+      PagedAssessmentsRowsDetail result = assessmentsRetrieverService.getPagedAssessmentsRowsDetail(assessmentsRowsDetailFiltersDTO, Pageable.ofSize(1), loggedUser, accessToken);
 
       Assertions.assertNotNull(result);
-      Assertions.assertEquals(pagedModelAssessmentsDetail, result);
+      Assertions.assertEquals(pagedAssessmentsRowsDetail, result);
     }
   }
 
@@ -316,7 +319,7 @@ class AssessmentsRetrieverServiceImplTest {
       authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(filters.getOrganizationId(), loggedUser))
         .thenThrow(new SecurityException("Unauthorized"));
 
-      Executable executable = () -> assessmentsRetrieverService.getPagedModelAssessmentsDetail(
+      Executable executable = () -> assessmentsRetrieverService.getPagedAssessmentsRowsDetail(
         filters,
         Pageable.ofSize(1),
         loggedUser,

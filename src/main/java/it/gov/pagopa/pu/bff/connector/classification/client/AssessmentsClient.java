@@ -2,8 +2,10 @@ package it.gov.pagopa.pu.bff.connector.classification.client;
 
 import it.gov.pagopa.pu.bff.connector.classification.config.ClassificationApisHolder;
 import it.gov.pagopa.pu.bff.dto.AssessmentsFiltersDTO;
+import it.gov.pagopa.pu.bff.dto.AssessmentsRowsDetailFiltersDTO;
 import it.gov.pagopa.pu.bff.util.PageUtils;
 import it.gov.pagopa.pu.classification.dto.generated.PagedAssessmentsView;
+import it.gov.pagopa.pu.classification.dto.generated.PagedModelAssessmentsDetail;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -33,4 +35,21 @@ public class AssessmentsClient {
         PageUtils.getPageSize(pageable),
         PageUtils.getSortList(pageable));
   }
+
+  public PagedModelAssessmentsDetail findPagedModelAssessmentsDetail(AssessmentsRowsDetailFiltersDTO assessmentsRowsDetailFiltersDTO, Pageable pageable, String accessToken){
+    return classificationApisHolder.getAssessmentsDetailSearchControllerApi(accessToken)
+      .crudAssessmentsDetailsFindAssessmentsRowsDetail(
+        assessmentsRowsDetailFiltersDTO.getAssessmentId(),
+        assessmentsRowsDetailFiltersDTO.getIud(),
+        assessmentsRowsDetailFiltersDTO.getIuv(),
+        assessmentsRowsDetailFiltersDTO.getUpdateDateTimeIntervalFilter().getFrom(),
+        assessmentsRowsDetailFiltersDTO.getUpdateDateTimeIntervalFilter().getTo(),
+        assessmentsRowsDetailFiltersDTO.getPaymentDateTimeIntervalFilter().getFrom(),
+        assessmentsRowsDetailFiltersDTO.getPaymentDateTimeIntervalFilter().getTo(),
+        assessmentsRowsDetailFiltersDTO.getFiscalCode(),
+        PageUtils.getPageNumber(pageable),
+        PageUtils.getPageSize(pageable),
+        PageUtils.getSortList(pageable));
+  }
+
 }

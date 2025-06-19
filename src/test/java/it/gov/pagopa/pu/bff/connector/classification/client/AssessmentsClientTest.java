@@ -2,8 +2,11 @@ package it.gov.pagopa.pu.bff.connector.classification.client;
 
 import it.gov.pagopa.pu.bff.connector.classification.config.ClassificationApisHolder;
 import it.gov.pagopa.pu.bff.dto.AssessmentsFiltersDTO;
+import it.gov.pagopa.pu.bff.dto.AssessmentsRowsDetailFiltersDTO;
 import it.gov.pagopa.pu.classification.controller.generated.AssessmentsControllerApi;
+import it.gov.pagopa.pu.classification.controller.generated.AssessmentsDetailSearchControllerApi;
 import it.gov.pagopa.pu.classification.dto.generated.PagedAssessmentsView;
+import it.gov.pagopa.pu.classification.dto.generated.PagedModelAssessmentsDetail;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -25,6 +28,8 @@ class AssessmentsClientTest {
   private ClassificationApisHolder classificationApisHolderMock;
   @Mock
   private AssessmentsControllerApi assessmentsControllerApiMock;
+  @Mock
+  private AssessmentsDetailSearchControllerApi assessmentsDetailSearchControllerApiMock;
 
   private AssessmentsClient assessmentsClient;
   private PodamFactory podamFactory;
@@ -54,5 +59,21 @@ class AssessmentsClientTest {
     //then
     Assertions.assertNotNull(result);
     Assertions.assertEquals(pagedAssessmentsView.getContent(), result.getContent());
+  }
+
+  @Test
+  void givenFiltersWhenFindPagedModelAssessmentsDetailThenReturnPagedModelAssessmentsDetail() {
+    //given
+    String accessToken = "accessToken";
+    AssessmentsRowsDetailFiltersDTO assessmentsRowsDetailFiltersDTO = podamFactory.manufacturePojo(AssessmentsRowsDetailFiltersDTO.class);
+    PagedModelAssessmentsDetail pagedModelAssessmentsDetail = podamFactory.manufacturePojo(PagedModelAssessmentsDetail.class);
+
+    Mockito.when(classificationApisHolderMock.getAssessmentsDetailSearchControllerApi(accessToken)).thenReturn(assessmentsDetailSearchControllerApiMock);
+    Mockito.when(assessmentsDetailSearchControllerApiMock.crudAssessmentsDetailsFindAssessmentsRowsDetail(assessmentsRowsDetailFiltersDTO.getAssessmentId(), assessmentsRowsDetailFiltersDTO.getIud(), assessmentsRowsDetailFiltersDTO.getIuv(), assessmentsRowsDetailFiltersDTO.getUpdateDateTimeIntervalFilter().getFrom(), assessmentsRowsDetailFiltersDTO.getUpdateDateTimeIntervalFilter().getTo(), assessmentsRowsDetailFiltersDTO.getPaymentDateTimeIntervalFilter().getFrom(), assessmentsRowsDetailFiltersDTO.getPaymentDateTimeIntervalFilter().getTo(), assessmentsRowsDetailFiltersDTO.getFiscalCode(), 0, 1, Collections.emptyList())).thenReturn(pagedModelAssessmentsDetail);
+    //when
+    PagedModelAssessmentsDetail result = assessmentsClient.findPagedModelAssessmentsDetail(assessmentsRowsDetailFiltersDTO, Pageable.ofSize(1), accessToken);
+    //then
+    Assertions.assertNotNull(result);
+    Assertions.assertEquals(pagedModelAssessmentsDetail.getEmbedded().getAssessmentsDetails(), result.getEmbedded().getAssessmentsDetails());
   }
 }

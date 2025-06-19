@@ -2,7 +2,10 @@ package it.gov.pagopa.pu.bff.controller;
 
 import it.gov.pagopa.pu.bff.controller.generated.AssessmentsApi;
 import it.gov.pagopa.pu.bff.dto.AssessmentsFiltersDTO;
+import it.gov.pagopa.pu.bff.dto.AssessmentsRowsDetailFiltersDTO;
+import it.gov.pagopa.pu.bff.dto.OffsetDateTimeIntervalFilter;
 import it.gov.pagopa.pu.bff.dto.generated.PagedAssessmentsExtendedDTO;
+import it.gov.pagopa.pu.bff.dto.generated.PagedAssessmentsRowsDetail;
 import it.gov.pagopa.pu.bff.security.SecurityUtils;
 import it.gov.pagopa.pu.bff.service.assessments.AssessmentsRetrieverService;
 import it.gov.pagopa.pu.classification.dto.generated.AssessmentStatus;
@@ -40,4 +43,25 @@ public class AssessmentsController implements AssessmentsApi {
             SecurityUtils.getAccessToken()));
   }
 
+  @Override
+  public ResponseEntity<PagedAssessmentsRowsDetail> getPagedAssessmentsRows(Long organizationId, Long assessmentId, String iuv, String iud, OffsetDateTime updateDateTimeFrom, OffsetDateTime updateDateTimeTo, OffsetDateTime paymentDateTimeFrom, OffsetDateTime paymentDateTimeTo, String fiscalCode, Pageable pageable) {
+    log.info("User requested getPagedAssessmentDetail having organizationId {} and assessmentId {}", organizationId, assessmentId);
+
+    OffsetDateTimeIntervalFilter updateDateTimeIntervalFilter = new OffsetDateTimeIntervalFilter(updateDateTimeFrom, updateDateTimeTo);
+    OffsetDateTimeIntervalFilter paymentDateTimeIntervalFilter = new OffsetDateTimeIntervalFilter(paymentDateTimeFrom, paymentDateTimeTo);
+
+    return ResponseEntity.ok(assessmentsRetrieverService.getPagedAssessmentsRowsDetail(
+      AssessmentsRowsDetailFiltersDTO.builder()
+        .organizationId(organizationId)
+        .assessmentId(assessmentId)
+        .iud(iud)
+        .iuv(iuv)
+        .updateDateTimeIntervalFilter(updateDateTimeIntervalFilter)
+        .paymentDateTimeIntervalFilter(paymentDateTimeIntervalFilter)
+        .fiscalCode(fiscalCode)
+        .build(),
+      pageable,
+      SecurityUtils.getLoggedUser(),
+      SecurityUtils.getAccessToken()));
+  }
 }

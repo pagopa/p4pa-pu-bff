@@ -2,7 +2,10 @@ package it.gov.pagopa.pu.bff.controller;
 
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.dto.AssessmentsFiltersDTO;
+import it.gov.pagopa.pu.bff.dto.AssessmentsRowsDetailFiltersDTO;
+import it.gov.pagopa.pu.bff.dto.OffsetDateTimeIntervalFilter;
 import it.gov.pagopa.pu.bff.dto.generated.PagedAssessmentsExtendedDTO;
+import it.gov.pagopa.pu.bff.dto.generated.PagedAssessmentsRowsDetail;
 import it.gov.pagopa.pu.bff.security.SecurityUtilsTest;
 import it.gov.pagopa.pu.bff.service.assessments.AssessmentsRetrieverService;
 import it.gov.pagopa.pu.bff.util.TestUtils;
@@ -57,5 +60,27 @@ class AssessmentsControllerTest {
     Assertions.assertEquals(HttpStatus.OK, result.getStatusCode());
     Assertions.assertNotNull(result);
     Assertions.assertEquals(pagedAssessmentsExtendedDTO, result.getBody());
+  }
+
+  @Test
+  void givenParametersWhenGetPagedAssessmentsRowsThenOk() {
+    //given
+    Long organizationId = 1L;
+    Long assessmentId = 1L;
+    String iuv = "iuv";
+    String iud = "iud";
+    OffsetDateTime offsetDateTime = OffsetDateTime.now();
+    OffsetDateTimeIntervalFilter offsetDateTimeIntervalFilter = new OffsetDateTimeIntervalFilter(offsetDateTime, offsetDateTime);
+    String fiscalCode = "fiscalCode";
+
+    AssessmentsRowsDetailFiltersDTO assessmentsRowsDetailFiltersDTO = new AssessmentsRowsDetailFiltersDTO(organizationId, assessmentId, iud, iuv, offsetDateTimeIntervalFilter, offsetDateTimeIntervalFilter, fiscalCode);
+    PagedAssessmentsRowsDetail pagedAssessmentsRowsDetail = new PagedAssessmentsRowsDetail();
+    Mockito.when(assessmentsRetrieverServiceMock.getPagedAssessmentsRowsDetail(assessmentsRowsDetailFiltersDTO, Pageable.ofSize(1),loggedUser, accessToken)).thenReturn(pagedAssessmentsRowsDetail);
+    //when
+    ResponseEntity<PagedAssessmentsRowsDetail> result = assessmentsController.getPagedAssessmentsRows(organizationId, assessmentId, iuv, iud, offsetDateTime, offsetDateTime, offsetDateTime, offsetDateTime, fiscalCode, Pageable.ofSize(1));
+    //then
+    Assertions.assertEquals(HttpStatus.OK, result.getStatusCode());
+    Assertions.assertNotNull(result);
+    Assertions.assertEquals(pagedAssessmentsRowsDetail, result.getBody());
   }
 }

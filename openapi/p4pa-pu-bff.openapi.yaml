@@ -2335,6 +2335,70 @@ paths:
         '500':
           description: Internal Server Error
       x-spring-paginated: true
+  /organization/{organizationId}/assessments/{assessmentId}:
+    get:
+      tags:
+        - Assessments
+      operationId: getPagedAssessmentsRows
+      parameters:
+        - name: organizationId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: assessmentId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: iuv
+          in: query
+          schema:
+            type: string
+        - name: iud
+          in: query
+          schema:
+            type: string
+        - name: updateDateTimeFrom
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: updateDateTimeTo
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: paymentDateTimeFrom
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: paymentDateTimeTo
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: fiscalCode
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Assessments Rows Detail
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PagedAssessmentsRowsDetail'
+        '401':
+          description: Unauthorized - Missing or invalid token
+        "400":
+          description: Invalid request
+        '500':
+          description: Internal Server Error
+      x-spring-paginated: true
 security:
   - BearerAuth: [ ]
 components:
@@ -3410,6 +3474,31 @@ components:
           type: string
         status:
           type: 'AssessmentsRegistryStatus'
+    PagedAssessmentsRowsDetail:
+      type: object
+      required:
+        - content
+        - size
+        - totalElements
+        - totalPages
+        - number
+      properties:
+        content:
+          type: array
+          items:
+            type: 'AssessmentsDetail'
+        size:
+          type: integer
+          format: int64
+        totalElements:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer
+          format: int64
+        number:
+          type: integer
+          format: int64
     PagedAssessmentsExtendedDTO:
       type: object
       required:

@@ -5,11 +5,15 @@ import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.connector.classification.AssessmentsService;
 import it.gov.pagopa.pu.bff.connector.debt_position.DebtPositionTypeOrgService;
 import it.gov.pagopa.pu.bff.dto.AssessmentsFiltersDTO;
+import it.gov.pagopa.pu.bff.dto.AssessmentsRowsDetailFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedAssessmentsExtendedDTO;
+import it.gov.pagopa.pu.bff.dto.generated.PagedAssessmentsRowsDetail;
 import it.gov.pagopa.pu.bff.exception.ResourceNotFoundException;
 import it.gov.pagopa.pu.bff.mapper.AssessmentExtendedDTOMapper;
+import it.gov.pagopa.pu.bff.mapper.PagedAssessmentsRowsDetailMapper;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
 import it.gov.pagopa.pu.bff.service.debt_position_type_org.DebtPositionTypeOrgRetrieverService;
+import it.gov.pagopa.pu.bff.util.DateUtils;
 import it.gov.pagopa.pu.classification.dto.generated.PagedAssessmentsView;
 import it.gov.pagopa.pu.debtpositions.dto.generated.CollectionModelDebtPositionTypeOrg;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrg;
@@ -28,12 +32,14 @@ public class AssessmentsRetrieverServiceImpl implements AssessmentsRetrieverServ
   private final DebtPositionTypeOrgRetrieverService debtPositionTypeOrgRetrieverService;
   private final DebtPositionTypeOrgService debtPositionTypeOrgService;
   private final AssessmentExtendedDTOMapper assessmentExtendedDTOMapper;
+  private final PagedAssessmentsRowsDetailMapper pagedAssessmentsRowsDetailMapper;
 
-  public AssessmentsRetrieverServiceImpl(AssessmentsService assessmentsService, DebtPositionTypeOrgRetrieverService debtPositionTypeOrgRetrieverService, DebtPositionTypeOrgService debtPositionTypeOrgService, AssessmentExtendedDTOMapper assessmentExtendedDTOMapper) {
+  public AssessmentsRetrieverServiceImpl(AssessmentsService assessmentsService, DebtPositionTypeOrgRetrieverService debtPositionTypeOrgRetrieverService, DebtPositionTypeOrgService debtPositionTypeOrgService, AssessmentExtendedDTOMapper assessmentExtendedDTOMapper, PagedAssessmentsRowsDetailMapper pagedAssessmentsRowsDetailMapper) {
     this.assessmentsService = assessmentsService;
     this.debtPositionTypeOrgRetrieverService = debtPositionTypeOrgRetrieverService;
     this.debtPositionTypeOrgService = debtPositionTypeOrgService;
     this.assessmentExtendedDTOMapper = assessmentExtendedDTOMapper;
+    this.pagedAssessmentsRowsDetailMapper = pagedAssessmentsRowsDetailMapper;
   }
 
   @Override
@@ -100,5 +106,16 @@ public class AssessmentsRetrieverServiceImpl implements AssessmentsRetrieverServ
 
     return debtPositionTypeOrg.getDescription();
   }
+
+  @Override
+  public PagedAssessmentsRowsDetail getPagedAssessmentsRowsDetail(AssessmentsRowsDetailFiltersDTO assessmentsRowsDetailFiltersDTO, Pageable pageable, UserInfo loggedUser, String accessToken) {
+    AuthorizationService.validateUserForOrganizationId(assessmentsRowsDetailFiltersDTO.getOrganizationId(), loggedUser);
+
+    DateUtils.validateDateFilters(assessmentsRowsDetailFiltersDTO.getUpdateDateTimeIntervalFilter(),"updateDateTime");
+    DateUtils.validateDateFilters(assessmentsRowsDetailFiltersDTO.getPaymentDateTimeIntervalFilter(),"paymentDateTime");
+
+    return pagedAssessmentsRowsDetailMapper.map(assessmentsService.findPagedModelAssessmentsDetail(assessmentsRowsDetailFiltersDTO, pageable, accessToken));
+  }
+
 }
 

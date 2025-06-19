@@ -2399,6 +2399,37 @@ paths:
         '500':
           description: Internal Server Error
       x-spring-paginated: true
+  /organization/{organizationId}/assessments/{assessmentDetailId}:
+    get:
+      tags:
+        - Assessments
+      operationId: getAssessmentDetail
+      parameters:
+        - name: organizationId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: assessmentDetailId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: Assessments Detail
+          content:
+            application/json:
+              schema:
+                type: 'AssessmentsDetail'
+        '401':
+          description: Unauthorized - Missing or invalid token
+        "400":
+          description: Invalid request
+        '500':
+          description: Internal Server Error
 security:
   - BearerAuth: [ ]
 components:

@@ -53,7 +53,14 @@ public class AssessmentsRegistryController implements AssessmentsRegistryApi {
     log.info("User requested createAssessmentsRegistry with organizationId {}", organizationId);
     return ResponseEntity
       .status(HttpStatus.CREATED)
-      .body(assessmentsRegistryRetrieverService.createAssessmentsRegistry(organizationId,body,
-        SecurityUtils.getLoggedUser(),SecurityUtils.getAccessToken()));
+      .body(assessmentsRegistryRetrieverService.createAssessmentsRegistry(organizationId, body,
+        SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken()));
+  }
+
+  @Override
+  public ResponseEntity<AssessmentsRegistry> updateAssessmentsRegistry(Long organizationId, Long assessmentRegistryId, AssessmentsRegistry body) {
+    log.info("User requested updateAssessmentsRegistry with organizationId {} and assessmentRegistryId {}", organizationId, assessmentRegistryId);
+    return ResponseEntity.ok(assessmentsRegistryRetrieverService.updateAssessmentsRegistry(
+      organizationId, assessmentRegistryId, body, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken()));
   }
 }

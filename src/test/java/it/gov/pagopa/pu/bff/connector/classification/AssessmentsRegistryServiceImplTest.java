@@ -80,5 +80,19 @@ class AssessmentsRegistryServiceImplTest {
 
     assertSame(expectedResult, result);
   }
+
+  @Test
+  void whenUpdateAssessmentsRegistryThenInvokeClient() {
+    AssessmentsRegistry assessmentsRegistry = new AssessmentsRegistry();
+    String accessToken = "ACCESSTOKEN";
+    AssessmentsRegistry expectedResult = new AssessmentsRegistry();
+
+    when(assessmentsRegistryClientMock.updateAssessmentsRegistry(assessmentsRegistry, accessToken))
+      .thenReturn(expectedResult);
+
+    AssessmentsRegistry result = assessmentsRegistryService.updateAssessmentsRegistry(assessmentsRegistry,accessToken);
+
+    assertSame(expectedResult, result);
+  }
 }
 

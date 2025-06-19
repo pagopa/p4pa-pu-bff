@@ -16,7 +16,7 @@ public class AssessmentsRegistryServiceImpl implements AssessmentsRegistryServic
 
   public AssessmentsRegistryServiceImpl(AssessmentsRegistrySearchClient assessmentsRegistrySearchClient, AssessmentsRegistryClient assessmentsRegistryClient) {
     this.assessmentsRegistrySearchClient = assessmentsRegistrySearchClient;
-      this.assessmentsRegistryClient = assessmentsRegistryClient;
+    this.assessmentsRegistryClient = assessmentsRegistryClient;
   }
 
   @Override
@@ -32,5 +32,10 @@ public class AssessmentsRegistryServiceImpl implements AssessmentsRegistryServic
   @Override
   public AssessmentsRegistry createAssessmentsRegistry(AssessmentsRegistry assessmentsRegistry, String accessToken) {
     return assessmentsRegistryClient.createAssessmentsRegistry(assessmentsRegistry, accessToken);
+  }
+
+  @Override
+  public AssessmentsRegistry updateAssessmentsRegistry(AssessmentsRegistry body, String accessToken) {
+    return assessmentsRegistryClient.updateAssessmentsRegistry(body, accessToken);
   }
 }

@@ -108,10 +108,7 @@ class AssessmentsClientTest {
     Mockito.when(assessmentsDetailEntityControllerApiMock.crudGetAssessmentsdetail(String.valueOf(assessmentDetailId)))
       .thenThrow(HttpClientErrorException.create(HttpStatus.NOT_FOUND, "NotFound", null, null, null));
 
-    //when
-    AssessmentsDetail result = assessmentsClient.findAssessmentsDetail(assessmentDetailId, accessToken);
-    //then
-    Assertions.assertNull(result);
+
     ResourceNotFoundException ex = Assertions.assertThrows(ResourceNotFoundException.class, () -> assessmentsClient.findAssessmentsDetail(assessmentDetailId, accessToken));
     Assertions.assertEquals("Assessment detail with id 1 not found", ex.getMessage());
   }

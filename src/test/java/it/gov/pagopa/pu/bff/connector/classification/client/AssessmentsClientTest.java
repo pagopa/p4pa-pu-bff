@@ -3,6 +3,7 @@ package it.gov.pagopa.pu.bff.connector.classification.client;
 import it.gov.pagopa.pu.bff.connector.classification.config.ClassificationApisHolder;
 import it.gov.pagopa.pu.bff.dto.AssessmentsFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.AssessmentsRowsDetailFiltersDTO;
+import it.gov.pagopa.pu.bff.exception.ResourceNotFoundException;
 import it.gov.pagopa.pu.classification.controller.generated.AssessmentsControllerApi;
 import it.gov.pagopa.pu.classification.controller.generated.AssessmentsDetailEntityControllerApi;
 import it.gov.pagopa.pu.classification.controller.generated.AssessmentsDetailSearchControllerApi;
@@ -99,7 +100,7 @@ class AssessmentsClientTest {
   }
 
   @Test
-  void givenIdWhenFindAssessmentsDetailThenReturnNull() {
+  void givenIdWhenFindAssessmentsDetailThenThrowException() {
     //given
     String accessToken = "accessToken";
     Long assessmentDetailId = 1L;
@@ -111,6 +112,8 @@ class AssessmentsClientTest {
     AssessmentsDetail result = assessmentsClient.findAssessmentsDetail(assessmentDetailId, accessToken);
     //then
     Assertions.assertNull(result);
+    ResourceNotFoundException ex = Assertions.assertThrows(ResourceNotFoundException.class, () -> assessmentsClient.findAssessmentsDetail(assessmentDetailId, accessToken));
+    Assertions.assertEquals("Assessment detail with id 1 not found", ex.getMessage());
   }
 
 }

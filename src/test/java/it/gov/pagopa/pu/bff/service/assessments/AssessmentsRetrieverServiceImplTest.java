@@ -7,6 +7,7 @@ import it.gov.pagopa.pu.bff.dto.AssessmentsFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.AssessmentsRowsDetailFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedAssessmentsExtendedDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedAssessmentsRowsDetail;
+import it.gov.pagopa.pu.bff.exception.InvalidAssessmentsDetailException;
 import it.gov.pagopa.pu.bff.exception.ResourceNotFoundException;
 import it.gov.pagopa.pu.bff.mapper.AssessmentExtendedDTOMapper;
 import it.gov.pagopa.pu.bff.mapper.PagedAssessmentsRowsDetailMapper;
@@ -370,7 +371,7 @@ class AssessmentsRetrieverServiceImplTest {
     try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
       authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)).thenAnswer(a -> null);
 
-      Mockito.when(assessmentsServiceMock.findAssessmentsDetail(assessmentDetailId, accessToken)).thenReturn(null);
+      Mockito.when(assessmentsServiceMock.findAssessmentsDetail(assessmentDetailId, accessToken)).thenThrow(ResourceNotFoundException.class);
 
       Executable executable = () -> assessmentsRetrieverService.getAssessmentsDetail(organizationId, assessmentId, assessmentDetailId, loggedUser, accessToken);
 
@@ -398,8 +399,8 @@ class AssessmentsRetrieverServiceImplTest {
 
       Executable executable = () -> assessmentsRetrieverService.getAssessmentsDetail(organizationId, assessmentId, assessmentDetailId, loggedUser, accessToken);
 
-      ResourceNotFoundException ex = Assertions.assertThrows(ResourceNotFoundException.class, executable);
-      Assertions.assertEquals("Assessment detail with id 1 not found", ex.getMessage());
+      InvalidAssessmentsDetailException ex = Assertions.assertThrows(InvalidAssessmentsDetailException.class, executable);
+      Assertions.assertEquals("The assessment detail with ID 1 is either invalid or does not belong to the assessment with ID 1", ex.getMessage());
     }
 
   }

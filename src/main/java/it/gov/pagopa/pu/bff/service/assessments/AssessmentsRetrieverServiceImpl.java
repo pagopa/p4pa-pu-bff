@@ -8,6 +8,7 @@ import it.gov.pagopa.pu.bff.dto.AssessmentsFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.AssessmentsRowsDetailFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedAssessmentsExtendedDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedAssessmentsRowsDetail;
+import it.gov.pagopa.pu.bff.exception.InvalidAssessmentsDetailException;
 import it.gov.pagopa.pu.bff.exception.ResourceNotFoundException;
 import it.gov.pagopa.pu.bff.mapper.AssessmentExtendedDTOMapper;
 import it.gov.pagopa.pu.bff.mapper.PagedAssessmentsRowsDetailMapper;
@@ -126,7 +127,7 @@ public class AssessmentsRetrieverServiceImpl implements AssessmentsRetrieverServ
     if (assessmentsDetail != null && assessmentsDetail.getAssessmentId().equals(assessmentId)){
       return assessmentsDetail;
     }else {
-      throw new ResourceNotFoundException("Assessment detail with id %s not found".formatted(assessmentDetailId));
+      throw new InvalidAssessmentsDetailException("The assessment detail with ID %s is either invalid or does not belong to the assessment with ID %s".formatted(assessmentDetailId, assessmentId));
     }
 
   }

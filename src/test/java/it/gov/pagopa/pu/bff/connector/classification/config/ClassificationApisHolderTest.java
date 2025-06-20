@@ -154,4 +154,14 @@ class ClassificationApisHolderTest extends BaseApiHolderTest {
       },
       classificationApisHolder::unload);
   }
+
+  @Test
+  void whenGetAssessmentsDetailEntityControllerApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
+    assertAuthenticationShouldBeSetInThreadSafeMode(
+      accessToken -> classificationApisHolder.getAssessmentsDetailEntityControllerApi(accessToken)
+        .crudGetAssessmentsdetail("1"),
+      new ParameterizedTypeReference<>() {
+      },
+      classificationApisHolder::unload);
+  }
 }

@@ -80,6 +80,11 @@ public class GlobalExceptionHandler {
     return handleException(ex, request, ex.getStatusCode(), TitleEnum.GENERIC_ERROR);
   }
 
+  @ExceptionHandler({InvalidAssessmentsDetailException.class})
+  public ResponseEntity<ErrorDTO> handleInvalidAssessmentsDetailException(InvalidAssessmentsDetailException ex, HttpServletRequest request) {
+    return handleException(ex, request, HttpStatus.BAD_REQUEST, TitleEnum.BAD_REQUEST);
+  }
+
   @ExceptionHandler({ServletException.class, ErrorResponseException.class})
   public ResponseEntity<ErrorDTO> handleServletException(Exception ex, HttpServletRequest request) {
     HttpStatusCode httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;

@@ -5279,10 +5279,10 @@
         } ]
       }
     },
-    "/bff/organization/{organizationId}/assessments/{assessmentId}" : {
+    "/bff/organization/{organizationId}/assessments/{assessmentId}/details" : {
       "get" : {
         "tags" : [ "Assessments" ],
-        "operationId" : "getPagedAssessmentsRows",
+        "operationId" : "getPagedAssessmentsDetails",
         "parameters" : [ {
           "name" : "organizationId",
           "in" : "path",
@@ -5421,6 +5421,92 @@
               "application/json" : {
                 "schema" : {
                   "$ref" : "#/components/schemas/PagedAssessmentsRowsDetail"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "BearerAuth" : [ ]
+        } ]
+      }
+    },
+    "/bff/organization/{organizationId}/assessments/{assessmentId}/details/{assessmentDetailId}" : {
+      "get" : {
+        "tags" : [ "Assessments" ],
+        "operationId" : "getAssessmentsDetail",
+        "parameters" : [ {
+          "name" : "organizationId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }, {
+          "name" : "assessmentId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }, {
+          "name" : "assessmentDetailId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Assessments Detail",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/AssessmentsDetail"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Unauthorized - Missing or invalid token",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/AssessmentsDetail"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Invalid request",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/AssessmentsDetail"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Not Found",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/AssessmentsDetail"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal Server Error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/AssessmentsDetail"
                 }
               }
             }

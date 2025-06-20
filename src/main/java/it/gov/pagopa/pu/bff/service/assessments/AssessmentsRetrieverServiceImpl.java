@@ -8,12 +8,14 @@ import it.gov.pagopa.pu.bff.dto.AssessmentsFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.AssessmentsRowsDetailFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedAssessmentsExtendedDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedAssessmentsRowsDetail;
+import it.gov.pagopa.pu.bff.exception.InvalidAssessmentsDetailException;
 import it.gov.pagopa.pu.bff.exception.ResourceNotFoundException;
 import it.gov.pagopa.pu.bff.mapper.AssessmentExtendedDTOMapper;
 import it.gov.pagopa.pu.bff.mapper.PagedAssessmentsRowsDetailMapper;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
 import it.gov.pagopa.pu.bff.service.debt_position_type_org.DebtPositionTypeOrgRetrieverService;
 import it.gov.pagopa.pu.bff.util.DateUtils;
+import it.gov.pagopa.pu.classification.dto.generated.AssessmentsDetail;
 import it.gov.pagopa.pu.classification.dto.generated.PagedAssessmentsView;
 import it.gov.pagopa.pu.debtpositions.dto.generated.CollectionModelDebtPositionTypeOrg;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrg;
@@ -115,6 +117,19 @@ public class AssessmentsRetrieverServiceImpl implements AssessmentsRetrieverServ
     DateUtils.validateDateFilters(assessmentsRowsDetailFiltersDTO.getPaymentDateTimeIntervalFilter(),"paymentDateTime");
 
     return pagedAssessmentsRowsDetailMapper.map(assessmentsService.findPagedModelAssessmentsDetail(assessmentsRowsDetailFiltersDTO, pageable, accessToken));
+  }
+
+  @Override
+  public AssessmentsDetail getAssessmentsDetail(Long organizationId, Long assessmentId, Long assessmentDetailId, UserInfo loggedUser, String accessToken) {
+    AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser);
+
+    AssessmentsDetail assessmentsDetail = assessmentsService.findAssessmentsDetail(assessmentDetailId, accessToken);
+    if (assessmentsDetail != null && assessmentsDetail.getAssessmentId().equals(assessmentId)){
+      return assessmentsDetail;
+    }else {
+      throw new InvalidAssessmentsDetailException("The assessment detail with ID %s is either invalid or does not belong to the assessment with ID %s".formatted(assessmentDetailId, assessmentId));
+    }
+
   }
 
 }

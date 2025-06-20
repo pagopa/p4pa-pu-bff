@@ -9,6 +9,7 @@ import it.gov.pagopa.pu.bff.dto.generated.PagedAssessmentsRowsDetail;
 import it.gov.pagopa.pu.bff.security.SecurityUtils;
 import it.gov.pagopa.pu.bff.service.assessments.AssessmentsRetrieverService;
 import it.gov.pagopa.pu.classification.dto.generated.AssessmentStatus;
+import it.gov.pagopa.pu.classification.dto.generated.AssessmentsDetail;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -44,8 +45,8 @@ public class AssessmentsController implements AssessmentsApi {
   }
 
   @Override
-  public ResponseEntity<PagedAssessmentsRowsDetail> getPagedAssessmentsRows(Long organizationId, Long assessmentId, String iuv, String iud, OffsetDateTime updateDateTimeFrom, OffsetDateTime updateDateTimeTo, OffsetDateTime paymentDateTimeFrom, OffsetDateTime paymentDateTimeTo, String fiscalCode, Pageable pageable) {
-    log.info("User requested getPagedAssessmentDetail having organizationId {} and assessmentId {}", organizationId, assessmentId);
+  public ResponseEntity<PagedAssessmentsRowsDetail> getPagedAssessmentsDetails(Long organizationId, Long assessmentId, String iuv, String iud, OffsetDateTime updateDateTimeFrom, OffsetDateTime updateDateTimeTo, OffsetDateTime paymentDateTimeFrom, OffsetDateTime paymentDateTimeTo, String fiscalCode, Pageable pageable) {
+    log.info("User requested getPagedAssessmentsDetails having organizationId {} and assessmentId {}", organizationId, assessmentId);
 
     OffsetDateTimeIntervalFilter updateDateTimeIntervalFilter = new OffsetDateTimeIntervalFilter(updateDateTimeFrom, updateDateTimeTo);
     OffsetDateTimeIntervalFilter paymentDateTimeIntervalFilter = new OffsetDateTimeIntervalFilter(paymentDateTimeFrom, paymentDateTimeTo);
@@ -62,6 +63,13 @@ public class AssessmentsController implements AssessmentsApi {
         .build(),
       pageable,
       SecurityUtils.getLoggedUser(),
+      SecurityUtils.getAccessToken()));
+  }
+
+  @Override
+  public ResponseEntity<AssessmentsDetail> getAssessmentsDetail(Long organizationId, Long assessmentId, Long assessmentDetailId) {
+    log.info("User requested getAssessmentsDetail having organizationId {}, assessmentId {} and assessmentDetailId {}", organizationId, assessmentId, assessmentDetailId);
+    return ResponseEntity.ok(assessmentsRetrieverService.getAssessmentsDetail(organizationId, assessmentId, assessmentDetailId, SecurityUtils.getLoggedUser(),
       SecurityUtils.getAccessToken()));
   }
 }

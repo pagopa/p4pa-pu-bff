@@ -68,7 +68,7 @@ public class AssessmentsController implements AssessmentsApi {
 
   @Override
   public ResponseEntity<AssessmentsDetail> getAssessmentsDetail(Long organizationId, Long assessmentId, Long assessmentDetailId) {
-    log.info("User requested getAssessmentDetail having organizationId {}, assessmentId {} and assessmentDetailId {}", organizationId, assessmentId, assessmentDetailId);
+    log.info("User requested getAssessmentsDetail having organizationId {}, assessmentId {} and assessmentDetailId {}", organizationId, assessmentId, assessmentDetailId);
     return ResponseEntity.ok(assessmentsRetrieverService.getAssessmentsDetail(organizationId, assessmentId, assessmentDetailId, SecurityUtils.getLoggedUser(),
       SecurityUtils.getAccessToken()));
   }

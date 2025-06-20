@@ -10,6 +10,7 @@ import it.gov.pagopa.pu.bff.security.SecurityUtilsTest;
 import it.gov.pagopa.pu.bff.service.assessments.AssessmentsRetrieverService;
 import it.gov.pagopa.pu.bff.util.TestUtils;
 import it.gov.pagopa.pu.classification.dto.generated.AssessmentStatus;
+import it.gov.pagopa.pu.classification.dto.generated.AssessmentsDetail;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -82,5 +83,22 @@ class AssessmentsControllerTest {
     Assertions.assertEquals(HttpStatus.OK, result.getStatusCode());
     Assertions.assertNotNull(result);
     Assertions.assertEquals(pagedAssessmentsRowsDetail, result.getBody());
+  }
+
+  @Test
+  void givenParametersWhenGetAssessmentDetailThenOk() {
+    //given
+    Long organizationId = 1L;
+    Long assessmentId = 1L;
+    Long assessmentDetailId = 1L;
+    AssessmentsDetail assessmentsDetail = new AssessmentsDetail();
+
+    Mockito.when(assessmentsRetrieverServiceMock.getAssessmentsDetail(organizationId, assessmentId, assessmentDetailId, loggedUser, accessToken)).thenReturn(assessmentsDetail);
+    //when
+    ResponseEntity<AssessmentsDetail> result = assessmentsController.getAssessmentsDetail(organizationId, assessmentId, assessmentDetailId);
+    //then
+    Assertions.assertEquals(HttpStatus.OK, result.getStatusCode());
+    Assertions.assertNotNull(result);
+    Assertions.assertEquals(assessmentsDetail, result.getBody());
   }
 }

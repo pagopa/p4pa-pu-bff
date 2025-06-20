@@ -13,6 +13,7 @@ import it.gov.pagopa.pu.bff.mapper.PagedAssessmentsRowsDetailMapper;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
 import it.gov.pagopa.pu.bff.service.debt_position_type_org.DebtPositionTypeOrgRetrieverService;
 import it.gov.pagopa.pu.classification.dto.generated.Assessments;
+import it.gov.pagopa.pu.classification.dto.generated.AssessmentsDetail;
 import it.gov.pagopa.pu.classification.dto.generated.PagedAssessmentsView;
 import it.gov.pagopa.pu.classification.dto.generated.PagedModelAssessmentsDetail;
 import it.gov.pagopa.pu.debtpositions.dto.generated.CollectionModelDebtPositionTypeOrg;
@@ -328,4 +329,80 @@ class AssessmentsRetrieverServiceImplTest {
       Assertions.assertThrows(SecurityException.class, executable);
     }
   }
+
+  @Test
+  void givenIdWhenGetAssessmentsDetailThenReturnAssessmentsDetail() {
+    UserInfo loggedUser = new UserInfo();
+    loggedUser.setMappedExternalUserId("external-id");
+    String accessToken = "accessToken";
+
+    Long organizationId = 1L;
+    Long assessmentId = 1L;
+    Long assessmentDetailId = 1L;
+
+    AssessmentsDetail assessmentsDetail = podamFactory.manufacturePojo(AssessmentsDetail.class);
+    assessmentsDetail.assessmentId(assessmentId);
+    assessmentsDetail.assessmentDetailId(assessmentDetailId);
+
+    try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
+      authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)).thenAnswer(a -> null);
+
+      Mockito.when(assessmentsServiceMock.findAssessmentsDetail(assessmentDetailId, accessToken)).thenReturn(assessmentsDetail);
+
+      AssessmentsDetail result = assessmentsRetrieverService.getAssessmentsDetail(organizationId, assessmentId, assessmentDetailId, loggedUser, accessToken);
+
+      Assertions.assertNotNull(result);
+      Assertions.assertEquals(assessmentsDetail, result);
+    }
+
+  }
+
+  @Test
+  void givenNullWhenGetAssessmentsDetailThenThrowException() {
+    UserInfo loggedUser = new UserInfo();
+    loggedUser.setMappedExternalUserId("external-id");
+    String accessToken = "accessToken";
+
+    Long organizationId = 1L;
+    Long assessmentId = 1L;
+    Long assessmentDetailId = 1L;
+
+    try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
+      authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)).thenAnswer(a -> null);
+
+      Mockito.when(assessmentsServiceMock.findAssessmentsDetail(assessmentDetailId, accessToken)).thenReturn(null);
+
+      Executable executable = () -> assessmentsRetrieverService.getAssessmentsDetail(organizationId, assessmentId, assessmentDetailId, loggedUser, accessToken);
+
+      Assertions.assertThrows(ResourceNotFoundException.class, executable);
+    }
+
+  }
+
+  @Test
+  void givenUnrelatedIdWhenGetAssessmentsDetailThenThrowException() {
+    UserInfo loggedUser = new UserInfo();
+    loggedUser.setMappedExternalUserId("external-id");
+    String accessToken = "accessToken";
+
+    Long organizationId = 1L;
+    Long assessmentId = 1L;
+    Long assessmentDetailId = 1L;
+
+    AssessmentsDetail assessmentsDetail = podamFactory.manufacturePojo(AssessmentsDetail.class);
+
+    try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
+      authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)).thenAnswer(a -> null);
+
+      Mockito.when(assessmentsServiceMock.findAssessmentsDetail(assessmentDetailId, accessToken)).thenReturn(assessmentsDetail);
+
+      Executable executable = () -> assessmentsRetrieverService.getAssessmentsDetail(organizationId, assessmentId, assessmentDetailId, loggedUser, accessToken);
+
+      ResourceNotFoundException ex = Assertions.assertThrows(ResourceNotFoundException.class, executable);
+      Assertions.assertEquals("Assessment detail with id 1 not found", ex.getMessage());
+    }
+
+  }
+
+
 }

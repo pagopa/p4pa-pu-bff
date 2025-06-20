@@ -5279,10 +5279,10 @@
         } ]
       }
     },
-    "/bff/organization/{organizationId}/assessments/{assessmentId}/rows" : {
+    "/bff/organization/{organizationId}/assessments/{assessmentId}/details" : {
       "get" : {
         "tags" : [ "Assessments" ],
-        "operationId" : "getPagedAssessmentsRows",
+        "operationId" : "getPagedAssessmentsDetails",
         "parameters" : [ {
           "name" : "organizationId",
           "in" : "path",
@@ -5431,7 +5431,7 @@
         } ]
       }
     },
-    "/bff/organization/{organizationId}/assessments/{assessmentId}/rows/{assessmentDetailId}" : {
+    "/bff/organization/{organizationId}/assessments/{assessmentId}/details/{assessmentDetailId}" : {
       "get" : {
         "tags" : [ "Assessments" ],
         "operationId" : "getAssessmentsDetail",

@@ -124,7 +124,7 @@ public class AssessmentsRetrieverServiceImpl implements AssessmentsRetrieverServ
     AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser);
 
     AssessmentsDetail assessmentsDetail = assessmentsService.findAssessmentsDetail(assessmentDetailId, accessToken);
-    if (assessmentsDetail.getAssessmentId().equals(assessmentId)){
+    if (assessmentsDetail != null && assessmentsDetail.getAssessmentId().equals(assessmentId)){
       return assessmentsDetail;
     }else {
       throw new InvalidAssessmentsDetailException("The assessment detail with ID %s is either invalid or does not belong to the assessment with ID %s".formatted(assessmentDetailId, assessmentId));

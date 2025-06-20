@@ -371,11 +371,12 @@ class AssessmentsRetrieverServiceImplTest {
     try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
       authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)).thenAnswer(a -> null);
 
-      Mockito.when(assessmentsServiceMock.findAssessmentsDetail(assessmentDetailId, accessToken)).thenThrow(ResourceNotFoundException.class);
+      Mockito.when(assessmentsServiceMock.findAssessmentsDetail(assessmentDetailId, accessToken)).thenReturn(null);
 
       Executable executable = () -> assessmentsRetrieverService.getAssessmentsDetail(organizationId, assessmentId, assessmentDetailId, loggedUser, accessToken);
 
-      Assertions.assertThrows(ResourceNotFoundException.class, executable);
+      InvalidAssessmentsDetailException ex = Assertions.assertThrows(InvalidAssessmentsDetailException.class, executable);
+      Assertions.assertEquals("The assessment detail with ID 1 is either invalid or does not belong to the assessment with ID 1", ex.getMessage());
     }
 
   }

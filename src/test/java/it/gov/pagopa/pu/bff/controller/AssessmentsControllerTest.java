@@ -64,7 +64,7 @@ class AssessmentsControllerTest {
   }
 
   @Test
-  void givenParametersWhenGetPagedAssessmentsRowsThenOk() {
+  void givenParametersWhenGetPagedAssessmentsDetailsThenOk() {
     //given
     Long organizationId = 1L;
     Long assessmentId = 1L;
@@ -78,7 +78,7 @@ class AssessmentsControllerTest {
     PagedAssessmentsRowsDetail pagedAssessmentsRowsDetail = new PagedAssessmentsRowsDetail();
     Mockito.when(assessmentsRetrieverServiceMock.getPagedAssessmentsRowsDetail(assessmentsRowsDetailFiltersDTO, Pageable.ofSize(1),loggedUser, accessToken)).thenReturn(pagedAssessmentsRowsDetail);
     //when
-    ResponseEntity<PagedAssessmentsRowsDetail> result = assessmentsController.getPagedAssessmentsRows(organizationId, assessmentId, iuv, iud, offsetDateTime, offsetDateTime, offsetDateTime, offsetDateTime, fiscalCode, Pageable.ofSize(1));
+    ResponseEntity<PagedAssessmentsRowsDetail> result = assessmentsController.getPagedAssessmentsDetails(organizationId, assessmentId, iuv, iud, offsetDateTime, offsetDateTime, offsetDateTime, offsetDateTime, fiscalCode, Pageable.ofSize(1));
     //then
     Assertions.assertEquals(HttpStatus.OK, result.getStatusCode());
     Assertions.assertNotNull(result);

@@ -3,7 +3,6 @@ package it.gov.pagopa.pu.bff.connector.classification.client;
 import it.gov.pagopa.pu.bff.connector.classification.config.ClassificationApisHolder;
 import it.gov.pagopa.pu.bff.dto.AssessmentsFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.AssessmentsRowsDetailFiltersDTO;
-import it.gov.pagopa.pu.bff.exception.ResourceNotFoundException;
 import it.gov.pagopa.pu.bff.util.PageUtils;
 import it.gov.pagopa.pu.classification.dto.generated.AssessmentsDetail;
 import it.gov.pagopa.pu.classification.dto.generated.PagedAssessmentsView;
@@ -59,7 +58,8 @@ public class AssessmentsClient {
     try{
       return classificationApisHolder.getAssessmentsDetailEntityControllerApi(accessToken).crudGetAssessmentsdetail(assessmentDetailId.toString());
     } catch (HttpClientErrorException.NotFound e) {
-      throw new ResourceNotFoundException("Assessment detail with id %s not found".formatted(assessmentDetailId));
+      log.warn("Assessment detail with id %s not found".formatted(assessmentDetailId));
+      return null;
     }
   }
 

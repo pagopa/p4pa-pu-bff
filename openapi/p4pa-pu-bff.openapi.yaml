@@ -2335,11 +2335,11 @@ paths:
         '500':
           description: Internal Server Error
       x-spring-paginated: true
-  /organization/{organizationId}/assessments/{assessmentId}/rows:
+  /organization/{organizationId}/assessments/{assessmentId}/details:
     get:
       tags:
         - Assessments
-      operationId: getPagedAssessmentsRows
+      operationId: getPagedAssessmentsDetails
       parameters:
         - name: organizationId
           in: path
@@ -2399,7 +2399,7 @@ paths:
         '500':
           description: Internal Server Error
       x-spring-paginated: true
-  /organization/{organizationId}/assessments/{assessmentId}/rows/{assessmentDetailId}:
+  /organization/{organizationId}/assessments/{assessmentId}/details/{assessmentDetailId}:
     get:
       tags:
         - Assessments

@@ -14,6 +14,7 @@ import it.gov.pagopa.pu.bff.mapper.PagedAssessmentsRowsDetailMapper;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
 import it.gov.pagopa.pu.bff.service.debt_position_type_org.DebtPositionTypeOrgRetrieverService;
 import it.gov.pagopa.pu.bff.util.DateUtils;
+import it.gov.pagopa.pu.classification.dto.generated.AssessmentsDetail;
 import it.gov.pagopa.pu.classification.dto.generated.PagedAssessmentsView;
 import it.gov.pagopa.pu.debtpositions.dto.generated.CollectionModelDebtPositionTypeOrg;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrg;
@@ -115,6 +116,19 @@ public class AssessmentsRetrieverServiceImpl implements AssessmentsRetrieverServ
     DateUtils.validateDateFilters(assessmentsRowsDetailFiltersDTO.getPaymentDateTimeIntervalFilter(),"paymentDateTime");
 
     return pagedAssessmentsRowsDetailMapper.map(assessmentsService.findPagedModelAssessmentsDetail(assessmentsRowsDetailFiltersDTO, pageable, accessToken));
+  }
+
+  @Override
+  public AssessmentsDetail getAssessmentsDetail(Long organizationId, Long assessmentId, Long assessmentDetailId, UserInfo loggedUser, String accessToken) {
+    AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser);
+
+    AssessmentsDetail assessmentsDetail = assessmentsService.findAssessmentsDetail(assessmentDetailId, accessToken);
+    if (assessmentsDetail != null && assessmentsDetail.getAssessmentId().equals(assessmentId)){
+      return assessmentsDetail;
+    }else {
+      throw new ResourceNotFoundException("Assessment detail with id %s not found".formatted(assessmentDetailId));
+    }
+
   }
 
 }

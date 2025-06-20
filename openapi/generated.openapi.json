@@ -5279,7 +5279,7 @@
         } ]
       }
     },
-    "/bff/organization/{organizationId}/assessments/{assessmentId}" : {
+    "/bff/organization/{organizationId}/assessments/{assessmentId}/rows" : {
       "get" : {
         "tags" : [ "Assessments" ],
         "operationId" : "getPagedAssessmentsRows",
@@ -5431,12 +5431,20 @@
         } ]
       }
     },
-    "/bff/organization/{organizationId}/assessments/{assessmentDetailId}" : {
+    "/bff/organization/{organizationId}/assessments/{assessmentId}/rows/{assessmentDetailId}" : {
       "get" : {
         "tags" : [ "Assessments" ],
-        "operationId" : "getAssessmentDetail",
+        "operationId" : "getAssessmentsDetail",
         "parameters" : [ {
           "name" : "organizationId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }, {
+          "name" : "assessmentId",
           "in" : "path",
           "required" : true,
           "schema" : {
@@ -5454,7 +5462,7 @@
         } ],
         "responses" : {
           "200" : {
-            "description" : "Assessments Rows Detail",
+            "description" : "Assessments Detail",
             "content" : {
               "application/json" : {
                 "schema" : {

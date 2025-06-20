@@ -9,6 +9,7 @@ import it.gov.pagopa.pu.bff.dto.generated.PagedAssessmentsRowsDetail;
 import it.gov.pagopa.pu.bff.security.SecurityUtils;
 import it.gov.pagopa.pu.bff.service.assessments.AssessmentsRetrieverService;
 import it.gov.pagopa.pu.classification.dto.generated.AssessmentStatus;
+import it.gov.pagopa.pu.classification.dto.generated.AssessmentsDetail;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -62,6 +63,13 @@ public class AssessmentsController implements AssessmentsApi {
         .build(),
       pageable,
       SecurityUtils.getLoggedUser(),
+      SecurityUtils.getAccessToken()));
+  }
+
+  @Override
+  public ResponseEntity<AssessmentsDetail> getAssessmentsDetail(Long organizationId, Long assessmentId, Long assessmentDetailId) {
+    log.info("User requested getAssessmentDetail having organizationId {}, assessmentId {} and assessmentDetailId {}", organizationId, assessmentId, assessmentDetailId);
+    return ResponseEntity.ok(assessmentsRetrieverService.getAssessmentsDetail(organizationId, assessmentId, assessmentDetailId, SecurityUtils.getLoggedUser(),
       SecurityUtils.getAccessToken()));
   }
 }

@@ -3,6 +3,7 @@ package it.gov.pagopa.pu.bff.connector.classification;
 import it.gov.pagopa.pu.bff.connector.classification.client.AssessmentsClient;
 import it.gov.pagopa.pu.bff.dto.AssessmentsRowsDetailFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.AssessmentsFiltersDTO;
+import it.gov.pagopa.pu.classification.dto.generated.AssessmentsDetail;
 import it.gov.pagopa.pu.classification.dto.generated.PagedAssessmentsView;
 import it.gov.pagopa.pu.classification.dto.generated.PagedModelAssessmentsDetail;
 import org.springframework.data.domain.Pageable;
@@ -26,4 +27,10 @@ public class AssessmentsServiceImpl implements AssessmentsService{
   public PagedModelAssessmentsDetail findPagedModelAssessmentsDetail(AssessmentsRowsDetailFiltersDTO filters, Pageable pageable, String accessToken) {
     return assessmentsClient.findPagedModelAssessmentsDetail(filters, pageable, accessToken);
   }
+
+  @Override
+  public AssessmentsDetail findAssessmentsDetail(Long assessmentDetailId, String accessToken) {
+    return assessmentsClient.findAssessmentsDetail(assessmentDetailId, accessToken);
+  }
+
 }

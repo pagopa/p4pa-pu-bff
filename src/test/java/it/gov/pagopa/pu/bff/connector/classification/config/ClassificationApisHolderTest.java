@@ -1,6 +1,9 @@
 package it.gov.pagopa.pu.bff.connector.classification.config;
 
 import it.gov.pagopa.pu.bff.connector.BaseApiHolderTest;
+import it.gov.pagopa.pu.classification.dto.generated.AssessmentsRegistry;
+import it.gov.pagopa.pu.classification.dto.generated.AssessmentStatus;
+import it.gov.pagopa.pu.classification.dto.generated.AssessmentsRegistryStatus;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -13,7 +16,9 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.web.util.DefaultUriBuilderFactory;
 
 import java.time.LocalDate;
+import java.time.OffsetDateTime;
 import java.util.Collections;
+import java.util.List;
 
 @ExtendWith(MockitoExtension.class)
 class ClassificationApisHolderTest extends BaseApiHolderTest {
@@ -70,10 +75,12 @@ class ClassificationApisHolderTest extends BaseApiHolderTest {
           "2025", "lastName", LocalDate.now().minusDays(5), LocalDate.now(),
           "doc123", "2025", 0, 10, Collections.emptyList()
         ),
-      new ParameterizedTypeReference<>() {},
+      new ParameterizedTypeReference<>() {
+      },
       classificationApisHolder::unload
     );
   }
+
   @Test
   void whenGetTreasurySearchControllerApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
     assertAuthenticationShouldBeSetInThreadSafeMode(
@@ -94,4 +101,67 @@ class ClassificationApisHolderTest extends BaseApiHolderTest {
       classificationApisHolder::unload);
   }
 
+  @Test
+  void whenGetAssessmentsRegistrySearchControllerApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
+    assertAuthenticationShouldBeSetInThreadSafeMode(
+      accessToken -> classificationApisHolder.getAssessmentsRegistrySearchControllerApi(accessToken)
+        .crudAssessmentsRegistriesFindAssessmentsRegistriesByFilters(
+          1L,
+          Collections.singleton("code"), "sectionCode", "sectionDescription",
+          "officeCode", "officeDescription", "assessmentCode", "assessmentDescription",
+          "operatingYear", AssessmentsRegistryStatus.ACTIVE, 0, 0, Collections.emptyList()),
+      new ParameterizedTypeReference<>() {
+      },
+      classificationApisHolder::unload);
+  }
+
+  @Test
+  void whenGetAssessmentsRegistryEntityControllerApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
+    assertAuthenticationShouldBeSetInThreadSafeMode(
+      accessToken -> classificationApisHolder.getAssessmentsRegistryEntityControllerApi(accessToken)
+        .crudGetAssessmentsregistry("1"),
+      new ParameterizedTypeReference<>() {
+      },
+      classificationApisHolder::unload);
+  }
+
+  @Test
+  void whenGetAssessmentsRegistryApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
+    assertAuthenticationShouldBeSetInThreadSafeMode(
+      accessToken -> classificationApisHolder.getAssessmentsRegistryApi(accessToken)
+        .createAssessmentsRegistry(new AssessmentsRegistry()),
+      new ParameterizedTypeReference<>() {
+      },
+      classificationApisHolder::unload);
+  }
+
+  @Test
+  void whenGetAssessmentsControllerApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
+    assertAuthenticationShouldBeSetInThreadSafeMode(
+      accessToken -> classificationApisHolder.getAssessmentsControllerApi(accessToken)
+        .getPagedAssessmentsList("assessmentName", OffsetDateTime.now(), OffsetDateTime.now() , "iuv", List.of("code"), AssessmentStatus.NEW, 0, 1, Collections.emptyList()),
+      new ParameterizedTypeReference<>() {
+      },
+      classificationApisHolder::unload);
+  }
+
+  @Test
+  void whenGetAssessmentsDetailSearchControllerApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
+    assertAuthenticationShouldBeSetInThreadSafeMode(
+      accessToken -> classificationApisHolder.getAssessmentsDetailSearchControllerApi(accessToken)
+        .crudAssessmentsDetailsFindAssessmentsRowsDetail(1L, "iud", "iuv",  OffsetDateTime.now(), OffsetDateTime.now() , OffsetDateTime.now(), OffsetDateTime.now(), "fiscalCode", 1,1, Collections.emptyList()),
+      new ParameterizedTypeReference<>() {
+      },
+      classificationApisHolder::unload);
+  }
+
+  @Test
+  void whenGetAssessmentsDetailEntityControllerApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
+    assertAuthenticationShouldBeSetInThreadSafeMode(
+      accessToken -> classificationApisHolder.getAssessmentsDetailEntityControllerApi(accessToken)
+        .crudGetAssessmentsdetail("1"),
+      new ParameterizedTypeReference<>() {
+      },
+      classificationApisHolder::unload);
+  }
 }

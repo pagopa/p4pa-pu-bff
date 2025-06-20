@@ -7,7 +7,6 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.ValidationException;
-import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.event.Level;
 import org.springframework.http.HttpStatus;
@@ -24,9 +23,16 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
+import java.util.stream.Collectors;
+
 @RestControllerAdvice
 @Slf4j
 public class GlobalExceptionHandler {
+
+  @ExceptionHandler(InvalidAssessmentsRegistryException.class)
+  public ResponseEntity<ErrorDTO> handleInvalidAssessmentRegistryException(InvalidAssessmentsRegistryException ex, HttpServletRequest request) {
+    return handleException(ex, request, HttpStatus.BAD_REQUEST, ErrorDTO.TitleEnum.BAD_REQUEST);
+  }
 
   @ExceptionHandler(InvalidDebtPositionTypeOrgException.class)
   public ResponseEntity<ErrorDTO> handleInvalidDebtPositionTypeOrgException(InvalidDebtPositionTypeOrgException ex, HttpServletRequest request) {
@@ -72,6 +78,11 @@ public class GlobalExceptionHandler {
   @ExceptionHandler({HttpClientErrorException.class})
   public ResponseEntity<ErrorDTO> handleHttpClientErrorException(HttpClientErrorException ex, HttpServletRequest request) {
     return handleException(ex, request, ex.getStatusCode(), TitleEnum.GENERIC_ERROR);
+  }
+
+  @ExceptionHandler({InvalidAssessmentsDetailException.class})
+  public ResponseEntity<ErrorDTO> handleInvalidAssessmentsDetailException(InvalidAssessmentsDetailException ex, HttpServletRequest request) {
+    return handleException(ex, request, HttpStatus.BAD_REQUEST, TitleEnum.BAD_REQUEST);
   }
 
   @ExceptionHandler({ServletException.class, ErrorResponseException.class})

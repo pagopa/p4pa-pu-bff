@@ -19,6 +19,7 @@ import it.gov.pagopa.pu.bff.mapper.DebtPositionTypeOrgMapper;
 import it.gov.pagopa.pu.bff.mapper.DebtPositionTypeOrgOperatorsMapper;
 import it.gov.pagopa.pu.bff.mapper.DebtPositionTypeOrgWithCountMapper;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
+import it.gov.pagopa.pu.bff.service.org_sil_service.OrgSilServiceRetrieverService;
 import it.gov.pagopa.pu.debtpositions.dto.generated.*;
 import jakarta.validation.ValidationException;
 import org.springframework.data.domain.PageRequest;
@@ -45,6 +46,7 @@ public class DebtPositionTypeOrgRetrieverServiceImpl implements DebtPositionType
   private final DebtPositionTypeOrgOperatorsMapper debtPositionTypeOrgOperatorsMapper;
   private final DebtPositionTypeOrgMapper debtPositionTypeOrgMapper;
   private final DebtPositionTypeOrgDTOMapper debtPositionTypeOrgDTOMapper;
+  private final OrgSilServiceRetrieverService orgSilServiceRetrieverService;
 
   public DebtPositionTypeOrgRetrieverServiceImpl(
           DebtPositionTypeOrgService debtPositionTypeOrgService,
@@ -55,7 +57,8 @@ public class DebtPositionTypeOrgRetrieverServiceImpl implements DebtPositionType
           DebtPositionTypeOrgWithCountMapper debtPositionTypeOrgWithCountMapper,
           DebtPositionTypeOrgOperatorsMapper debtPositionTypeOrgOperatorsMapper,
           DebtPositionTypeOrgMapper debtPositionTypeOrgMapper,
-          DebtPositionTypeOrgDTOMapper debtPositionTypeOrgDTOMapper) {
+          DebtPositionTypeOrgDTOMapper debtPositionTypeOrgDTOMapper,
+          OrgSilServiceRetrieverService orgSilServiceRetrieverService) {
     this.debtPositionTypeOrgService = debtPositionTypeOrgService;
     this.debtPositionTypeOrgOperatorsService = debtPositionTypeOrgOperatorsService;
     this.debtPositionService = debtPositionService;
@@ -66,6 +69,7 @@ public class DebtPositionTypeOrgRetrieverServiceImpl implements DebtPositionType
     this.debtPositionTypeOrgOperatorsMapper = debtPositionTypeOrgOperatorsMapper;
     this.debtPositionTypeOrgMapper = debtPositionTypeOrgMapper;
     this.debtPositionTypeOrgDTOMapper = debtPositionTypeOrgDTOMapper;
+    this.orgSilServiceRetrieverService = orgSilServiceRetrieverService;
   }
 
   @Override
@@ -79,7 +83,11 @@ public class DebtPositionTypeOrgRetrieverServiceImpl implements DebtPositionType
 
     DebtPositionType debtPositionType = debtPositionTypeService.getDebtPositionTypeById(debtPositionTypeOrg.getDebtPositionTypeId(), accessToken);
 
-    return debtPositionTypeOrgDTOMapper.map(debtPositionTypeOrg, debtPositionType);
+    String notifyOutcomePushOrgSilServiceApplicationName = orgSilServiceRetrieverService.getOrgSilServiceApplicationName(debtPositionTypeOrg.getNotifyOutcomePushOrgSilServiceId(), accessToken);
+
+    String amountActualizationOrgSilServiceApplicationName = orgSilServiceRetrieverService.getOrgSilServiceApplicationName(debtPositionTypeOrg.getAmountActualizationOrgSilServiceId(), accessToken);
+
+    return debtPositionTypeOrgDTOMapper.map(debtPositionTypeOrg, debtPositionType, notifyOutcomePushOrgSilServiceApplicationName, amountActualizationOrgSilServiceApplicationName);
   }
 
   @Override
@@ -206,6 +214,13 @@ public class DebtPositionTypeOrgRetrieverServiceImpl implements DebtPositionType
     checkImmutableField("flagExternal", existingDebtPositionTypeOrg.getFlagExternal(), updatedDebtPositionTypeOrg.getFlagExternal(), modifiedFields);
     if(!CollectionUtils.isEmpty(modifiedFields)){
       throw new ValidationException("The following DebtPositionTypeOrg fields are readOnly. "+modifiedFields);
+    }
+  }
+
+  public void validateOperator(Long organizationId, String debtPositionTypeOrgCode, String mappedExternalUserId, String accessToken) {
+    DebtPositionTypeOrg debtPositionTypeOrg = debtPositionTypeOrgService.findDebtPositionTypeOrg(organizationId, debtPositionTypeOrgCode, mappedExternalUserId, accessToken);
+    if(debtPositionTypeOrg==null){
+      throw new ResourceNotFoundException("DebtPositionTypeOrg with organizationId "+organizationId+" and code "+debtPositionTypeOrgCode+" not found");
     }
   }
 }

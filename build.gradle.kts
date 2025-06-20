@@ -2,7 +2,7 @@ import java.util.*
 
 plugins {
   java
-  id("org.springframework.boot") version "3.4.5"
+  id("org.springframework.boot") version "3.5.0"
   id("io.spring.dependency-management") version "1.1.7"
   jacoco
   id("org.sonarqube") version "6.1.0.5360"
@@ -32,11 +32,11 @@ repositories {
   mavenCentral()
 }
 
-val springDocOpenApiVersion = "2.8.6"
+val springDocOpenApiVersion = "2.8.9"
 val openApiToolsVersion = "0.2.6"
-val micrometerVersion = "1.4.6"
+val micrometerVersion = "1.5.1"
 val caffeineVersion = "3.2.0"
-val httpClientVersion = "5.4.4"
+val httpClientVersion = "5.5"
 val mapStructVersion = "1.6.3"
 val openHtmlToPdfVersion = "1.0.10"
 
@@ -205,7 +205,12 @@ tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>("ope
     "WorkflowCreatedDTO" to "it.gov.pagopa.pu.workflowhub.dto.generated.WorkflowCreatedDTO",
     "ManageDebtPositionDTO" to "it.gov.pagopa.pu.debtpositions.dto.generated.ManageDebtPositionDTO",
     "OrgSilServiceType" to "it.gov.pagopa.pu.organization.dto.generated.OrgSilServiceType",
-    "OrgSilService" to "it.gov.pagopa.pu.organization.dto.generated.OrgSilService"
+    "OrgSilService" to "it.gov.pagopa.pu.organization.dto.generated.OrgSilService",
+    "AssessmentsRegistryStatus" to "it.gov.pagopa.pu.classification.dto.generated.AssessmentsRegistryStatus",
+    "AssessmentsRegistry" to "it.gov.pagopa.pu.classification.dto.generated.AssessmentsRegistry",
+    "AssessmentsExtendedDTO" to "it.gov.pagopa.pu.bff.dto.AssessmentsExtendedDTO",
+    "AssessmentsStatusEnum" to "it.gov.pagopa.pu.classification.dto.generated.AssessmentStatus",
+    "AssessmentsDetail" to "it.gov.pagopa.pu.classification.dto.generated.AssessmentsDetail"
   ))
   configOptions.set(mapOf(
     "dateLibrary" to "java8",
@@ -346,6 +351,9 @@ tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>("ope
   modelPackage.set("it.gov.pagopa.pu.classification.dto.generated")
   typeMappings.set(mapOf(
     "LocalDateTime" to "java.time.LocalDateTime"
+  ))
+  schemaMappings.set(mapOf(
+    "AssessmentsRegistryRequestBody" to "it.gov.pagopa.pu.classification.dto.generated.AssessmentsRegistry"
   ))
   configOptions.set(mapOf(
     "swaggerAnnotations" to "false",

@@ -18,13 +18,15 @@ class DebtPositionTypeOrgDTOMapperTest {
   void givenDtoWhenMapThenMapIt() {
     DebtPositionTypeOrg dto = TestUtils.getPodamFactory().manufacturePojo(DebtPositionTypeOrg.class);
 
-    DebtPositionTypeOrgDTO result = mapper.map(dto, "DebtPositionTypeDescription", "DebtPositionTypeCode");
+    DebtPositionTypeOrgDTO result = mapper.map(dto, "DebtPositionTypeDescription", "DebtPositionTypeCode", "NotifyOutcomePushOrgSilServiceApplicationName", "AmountActualizationOrgSilServiceApplicationName");
 
     TestUtils.reflectionEqualsByName(dto, result);
     TestUtils.checkNotNullFields(result);
 
     assertEquals("DebtPositionTypeDescription", result.getDebtPositionTypeDescription());
     assertEquals("DebtPositionTypeCode", result.getDebtPositionTypeCode());
+    assertEquals("NotifyOutcomePushOrgSilServiceApplicationName", result.getNotifyOutcomePushOrgSilServiceApplicationName());
+    assertEquals("AmountActualizationOrgSilServiceApplicationName", result.getAmountActualizationOrgSilServiceApplicationName());
   }
 
   @Test
@@ -34,24 +36,28 @@ class DebtPositionTypeOrgDTOMapperTest {
     debtPositionType.setDescription("Test Description");
     debtPositionType.setCode("Test Code");
 
-    DebtPositionTypeOrgDTO result = mapper.map(debtPositionTypeOrg, debtPositionType);
+    DebtPositionTypeOrgDTO result = mapper.map(debtPositionTypeOrg, debtPositionType, "NotifyOutcomePushOrgSilServiceApplicationName", "AmountActualizationOrgSilServiceApplicationName");
 
     TestUtils.reflectionEqualsByName(debtPositionTypeOrg, result);
     TestUtils.checkNotNullFields(result);
 
     assertEquals("Test Description", result.getDebtPositionTypeDescription());
     assertEquals("Test Code", result.getDebtPositionTypeCode());
+    assertEquals("NotifyOutcomePushOrgSilServiceApplicationName", result.getNotifyOutcomePushOrgSilServiceApplicationName());
+    assertEquals("AmountActualizationOrgSilServiceApplicationName", result.getAmountActualizationOrgSilServiceApplicationName());
   }
 
   @Test
-  void givenNullDebtPositionTypeWhenMapThenMapWithNullFields() {
+  void givenNullDebtPositionTypeAndNullApplicationNamesWhenMapThenMapWithNullFields() {
     DebtPositionTypeOrg debtPositionTypeOrg = TestUtils.getPodamFactory().manufacturePojo(DebtPositionTypeOrg.class);
 
-    DebtPositionTypeOrgDTO result = mapper.map(debtPositionTypeOrg, null);
+    DebtPositionTypeOrgDTO result = mapper.map(debtPositionTypeOrg, null, null, null);
 
     TestUtils.reflectionEqualsByName(debtPositionTypeOrg, result);
 
     assertNull(result.getDebtPositionTypeDescription());
     assertNull(result.getDebtPositionTypeCode());
+    assertNull(result.getNotifyOutcomePushOrgSilServiceApplicationName());
+    assertNull(result.getAmountActualizationOrgSilServiceApplicationName());
   }
 }

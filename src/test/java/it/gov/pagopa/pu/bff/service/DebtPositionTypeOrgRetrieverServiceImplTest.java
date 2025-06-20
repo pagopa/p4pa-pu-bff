@@ -20,6 +20,7 @@ import it.gov.pagopa.pu.bff.mapper.DebtPositionTypeOrgMapper;
 import it.gov.pagopa.pu.bff.mapper.DebtPositionTypeOrgOperatorsMapper;
 import it.gov.pagopa.pu.bff.mapper.DebtPositionTypeOrgWithCountMapper;
 import it.gov.pagopa.pu.bff.service.debt_position_type_org.DebtPositionTypeOrgRetrieverServiceImpl;
+import it.gov.pagopa.pu.bff.service.org_sil_service.OrgSilServiceRetrieverService;
 import it.gov.pagopa.pu.bff.util.TestUtils;
 import it.gov.pagopa.pu.debtpositions.dto.generated.*;
 import jakarta.validation.ValidationException;
@@ -66,6 +67,8 @@ class DebtPositionTypeOrgRetrieverServiceImplTest {
   private DebtPositionTypeOrgMapper debtPositionTypeOrgMapperMock;
   @Mock
   private DebtPositionTypeOrgDTOMapper debtPositionTypeOrgMapperDTOMock;
+  @Mock
+  private OrgSilServiceRetrieverService orgSilServiceRetrieverServiceMock;
 
   private DebtPositionTypeOrgRetrieverServiceImpl debtPositionTypeOrgService;
 
@@ -77,14 +80,14 @@ class DebtPositionTypeOrgRetrieverServiceImplTest {
   void setUp() {
     debtPositionTypeOrgService = new DebtPositionTypeOrgRetrieverServiceImpl(debtPositionTypeOrgServiceMock, debtPositionTypeOrgOperatorsServiceMock,
       debtPositionServiceMock, authorizationServiceMock, authzServiceMock, debtPositionTypeServiceMock, debtPositionTypeOrgWithCountMapperMock,
-      debtPositionTypeOrgOperatorsMapperMock, debtPositionTypeOrgMapperMock, debtPositionTypeOrgMapperDTOMock);
+      debtPositionTypeOrgOperatorsMapperMock, debtPositionTypeOrgMapperMock, debtPositionTypeOrgMapperDTOMock, orgSilServiceRetrieverServiceMock);
   }
 
   @AfterEach
   void verifyNoMoreInteractions() {
     Mockito.verifyNoMoreInteractions(debtPositionTypeOrgServiceMock, debtPositionTypeOrgOperatorsServiceMock,
       debtPositionServiceMock, authorizationServiceMock, authzServiceMock, debtPositionTypeServiceMock, debtPositionTypeOrgWithCountMapperMock,
-      debtPositionTypeOrgOperatorsMapperMock, debtPositionTypeOrgMapperMock, debtPositionTypeOrgMapperDTOMock);
+      debtPositionTypeOrgOperatorsMapperMock, debtPositionTypeOrgMapperMock, debtPositionTypeOrgMapperDTOMock, orgSilServiceRetrieverServiceMock);
   }
 
   @Test
@@ -96,9 +99,13 @@ class DebtPositionTypeOrgRetrieverServiceImplTest {
     long organizationId = 1L;
     long debtPositionTypeOrgId = 1L;
     long debtPositionTypeId = 10L;
+    long notifyServiceId = 200L;
+    long amountServiceId = 300L;
 
     DebtPositionTypeOrg debtPositionTypeOrg = new DebtPositionTypeOrg();
     debtPositionTypeOrg.setDebtPositionTypeId(debtPositionTypeId);
+    debtPositionTypeOrg.setNotifyOutcomePushOrgSilServiceId(notifyServiceId);
+    debtPositionTypeOrg.setAmountActualizationOrgSilServiceId(amountServiceId);
 
     DebtPositionType debtPositionType = new DebtPositionType();
     debtPositionType.setDescription("Description");
@@ -107,23 +114,34 @@ class DebtPositionTypeOrgRetrieverServiceImplTest {
     DebtPositionTypeOrgDTO expectedResult = new DebtPositionTypeOrgDTO();
     expectedResult.setDebtPositionTypeDescription("Description");
     expectedResult.setDebtPositionTypeCode("Code");
+    expectedResult.setNotifyOutcomePushOrgSilServiceApplicationName("NotifyApp");
+    expectedResult.setAmountActualizationOrgSilServiceApplicationName("AmountApp");
 
     try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
-      authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)).thenAnswer(a -> null);
+      authorizationServiceMockedStatic
+        .when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser))
+        .thenAnswer(a -> null);
 
       Mockito.when(debtPositionTypeOrgServiceMock.getDebtPositionTypeOrg(debtPositionTypeOrgId, accessToken))
         .thenReturn(debtPositionTypeOrg);
       Mockito.when(debtPositionTypeServiceMock.getDebtPositionTypeById(debtPositionTypeId, accessToken))
         .thenReturn(debtPositionType);
-      Mockito.when(debtPositionTypeOrgMapperDTOMock.map(debtPositionTypeOrg, debtPositionType))
+      Mockito.when(orgSilServiceRetrieverServiceMock.getOrgSilServiceApplicationName(notifyServiceId, accessToken))
+        .thenReturn("NotifyApp");
+      Mockito.when(orgSilServiceRetrieverServiceMock.getOrgSilServiceApplicationName(amountServiceId, accessToken))
+        .thenReturn("AmountApp");
+      Mockito.when(debtPositionTypeOrgMapperDTOMock.map(debtPositionTypeOrg, debtPositionType, "NotifyApp", "AmountApp"))
         .thenReturn(expectedResult);
 
-      DebtPositionTypeOrgDTO result = debtPositionTypeOrgService.getDebtPositionTypeOrgById(organizationId, debtPositionTypeOrgId, loggedUser, accessToken);
+      DebtPositionTypeOrgDTO result = debtPositionTypeOrgService.getDebtPositionTypeOrgById(
+        organizationId, debtPositionTypeOrgId, loggedUser, accessToken);
 
       assertNotNull(result);
       assertSame(expectedResult, result);
       assertEquals("Description", result.getDebtPositionTypeDescription());
       assertEquals("Code", result.getDebtPositionTypeCode());
+      assertEquals("NotifyApp", result.getNotifyOutcomePushOrgSilServiceApplicationName());
+      assertEquals("AmountApp", result.getAmountActualizationOrgSilServiceApplicationName());
 
       authorizationServiceMockedStatic.verify(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser));
     }
@@ -159,13 +177,19 @@ class DebtPositionTypeOrgRetrieverServiceImplTest {
     long organizationId = 1L;
     long debtPositionTypeOrgId = 1L;
     long debtPositionTypeId = 10L;
+    long notifyServiceId = 200L;
+    long amountServiceId = 300L;
 
     DebtPositionTypeOrg debtPositionTypeOrg = new DebtPositionTypeOrg();
     debtPositionTypeOrg.setDebtPositionTypeId(debtPositionTypeId);
+    debtPositionTypeOrg.setNotifyOutcomePushOrgSilServiceId(notifyServiceId);
+    debtPositionTypeOrg.setAmountActualizationOrgSilServiceId(amountServiceId);
 
     DebtPositionTypeOrgDTO expectedDTO = new DebtPositionTypeOrgDTO();
     expectedDTO.setDebtPositionTypeDescription(null);
     expectedDTO.setDebtPositionTypeCode(null);
+    expectedDTO.setNotifyOutcomePushOrgSilServiceApplicationName(null);
+    expectedDTO.setAmountActualizationOrgSilServiceApplicationName(null);
 
     try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
       authorizationServiceMockedStatic
@@ -174,18 +198,75 @@ class DebtPositionTypeOrgRetrieverServiceImplTest {
 
       Mockito.when(debtPositionTypeOrgServiceMock.getDebtPositionTypeOrg(debtPositionTypeOrgId, accessToken))
         .thenReturn(debtPositionTypeOrg);
-
       Mockito.when(debtPositionTypeServiceMock.getDebtPositionTypeById(debtPositionTypeId, accessToken))
         .thenReturn(null);
-
-      Mockito.when(debtPositionTypeOrgMapperDTOMock.map(debtPositionTypeOrg, null))
+      Mockito.when(orgSilServiceRetrieverServiceMock.getOrgSilServiceApplicationName(notifyServiceId, accessToken))
+        .thenReturn(null);
+      Mockito.when(orgSilServiceRetrieverServiceMock.getOrgSilServiceApplicationName(amountServiceId, accessToken))
+        .thenReturn(null);
+      Mockito.when(debtPositionTypeOrgMapperDTOMock.map(debtPositionTypeOrg, null, null, null))
         .thenReturn(expectedDTO);
 
-      DebtPositionTypeOrgDTO result = debtPositionTypeOrgService.getDebtPositionTypeOrgById(organizationId, debtPositionTypeOrgId, loggedUser, accessToken);
+      DebtPositionTypeOrgDTO result = debtPositionTypeOrgService.getDebtPositionTypeOrgById(
+        organizationId, debtPositionTypeOrgId, loggedUser, accessToken);
 
       assertNotNull(result);
       assertNull(result.getDebtPositionTypeDescription());
       assertNull(result.getDebtPositionTypeCode());
+      assertNull(result.getNotifyOutcomePushOrgSilServiceApplicationName());
+      assertNull(result.getAmountActualizationOrgSilServiceApplicationName());
+
+      authorizationServiceMockedStatic.verify(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser));
+    }
+  }
+
+  @Test
+  void givenNullServiceIdsWhenGetByIdThenReturnWithNullServiceApplicationNames() {
+    UserInfo loggedUser = new UserInfo();
+    loggedUser.setUserId("user-123");
+    loggedUser.setMappedExternalUserId("mappedExternalUserId");
+
+    long organizationId = 1L;
+    long debtPositionTypeOrgId = 1L;
+    long debtPositionTypeId = 10L;
+
+    DebtPositionTypeOrg debtPositionTypeOrg = new DebtPositionTypeOrg();
+    debtPositionTypeOrg.setDebtPositionTypeId(debtPositionTypeId);
+    debtPositionTypeOrg.setNotifyOutcomePushOrgSilServiceId(null);
+    debtPositionTypeOrg.setAmountActualizationOrgSilServiceId(null);
+
+    DebtPositionType debtPositionType = new DebtPositionType();
+    debtPositionType.setDescription("Description");
+    debtPositionType.setCode("Code");
+
+    DebtPositionTypeOrgDTO expectedDTO = new DebtPositionTypeOrgDTO();
+    expectedDTO.setDebtPositionTypeDescription("Description");
+    expectedDTO.setDebtPositionTypeCode("Code");
+    expectedDTO.setNotifyOutcomePushOrgSilServiceApplicationName(null);
+    expectedDTO.setAmountActualizationOrgSilServiceApplicationName(null);
+
+    try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
+      authorizationServiceMockedStatic
+        .when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser))
+        .thenAnswer(a -> null);
+
+      Mockito.when(debtPositionTypeOrgServiceMock.getDebtPositionTypeOrg(debtPositionTypeOrgId, accessToken))
+        .thenReturn(debtPositionTypeOrg);
+      Mockito.when(debtPositionTypeServiceMock.getDebtPositionTypeById(debtPositionTypeId, accessToken))
+        .thenReturn(debtPositionType);
+      Mockito.when(orgSilServiceRetrieverServiceMock.getOrgSilServiceApplicationName(null, accessToken))
+        .thenReturn(null);
+      Mockito.when(debtPositionTypeOrgMapperDTOMock.map(debtPositionTypeOrg, debtPositionType, null, null))
+        .thenReturn(expectedDTO);
+
+      DebtPositionTypeOrgDTO result = debtPositionTypeOrgService.getDebtPositionTypeOrgById(
+        organizationId, debtPositionTypeOrgId, loggedUser, accessToken);
+
+      assertNotNull(result);
+      assertEquals("Description", result.getDebtPositionTypeDescription());
+      assertEquals("Code", result.getDebtPositionTypeCode());
+      assertNull(result.getNotifyOutcomePushOrgSilServiceApplicationName());
+      assertNull(result.getAmountActualizationOrgSilServiceApplicationName());
 
       authorizationServiceMockedStatic.verify(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser));
     }
@@ -797,6 +878,32 @@ class DebtPositionTypeOrgRetrieverServiceImplTest {
         organizationId, debtPositionTypeOrgId, saveDebtPositionTypeOrgDTO, loggedUser, accessToken));
 
     Mockito.verifyNoInteractions(debtPositionTypeOrgMapperMock, debtPositionTypeOrgServiceMock);
+  }
+
+  @Test
+  void givenAuthorizedUserWhenValidateOperatorThenOk() {
+    Long organizationId = 1L;
+    String debtPositionTypeOrgCode = "debtPositionTypeOrgCode";
+    String mappedExternalUserId = "mappedExternalUserId";
+    DebtPositionTypeOrg debtPositionTypeOrg = podamFactory.manufacturePojo(DebtPositionTypeOrg.class);
+
+    Mockito.when(debtPositionTypeOrgServiceMock.findDebtPositionTypeOrg(organizationId,debtPositionTypeOrgCode,mappedExternalUserId,accessToken))
+                    .thenReturn(debtPositionTypeOrg);
+
+    debtPositionTypeOrgService.validateOperator(organizationId,debtPositionTypeOrgCode,mappedExternalUserId,accessToken);
+  }
+
+  @Test
+  void givenUnauthorizedUserWhenValidateOperatorThenResourceNotFound() {
+    Long organizationId = 1L;
+    String debtPositionTypeOrgCode = "debtPositionTypeOrgCode";
+    String mappedExternalUserId = "mappedExternalUserId";
+
+    Mockito.when(debtPositionTypeOrgServiceMock.findDebtPositionTypeOrg(organizationId,debtPositionTypeOrgCode,mappedExternalUserId,accessToken))
+            .thenReturn(null);
+
+    Assertions.assertThrows(ResourceNotFoundException.class, () ->
+            debtPositionTypeOrgService.validateOperator(organizationId,debtPositionTypeOrgCode,mappedExternalUserId,accessToken));
   }
 }
 

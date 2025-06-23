@@ -2,13 +2,13 @@ import java.util.*
 
 plugins {
   java
-  id("org.springframework.boot") version "3.5.0"
+  id("org.springframework.boot") version "3.5.3"
   id("io.spring.dependency-management") version "1.1.7"
   jacoco
-  id("org.sonarqube") version "6.1.0.5360"
+  id("org.sonarqube") version "6.2.0.5505"
   id("com.github.ben-manes.versions") version "0.52.0"
   id("org.openapi.generator") version "7.13.0"
-  id("org.ajoberstar.grgit") version "5.3.0"
+  id("org.ajoberstar.grgit") version "5.3.2"
   id("com.gorylenko.gradle-git-properties") version "2.5.0"
 }
 
@@ -35,12 +35,12 @@ repositories {
 val springDocOpenApiVersion = "2.8.9"
 val openApiToolsVersion = "0.2.6"
 val micrometerVersion = "1.5.1"
-val caffeineVersion = "3.2.0"
+val caffeineVersion = "3.2.1"
 val httpClientVersion = "5.5"
 val mapStructVersion = "1.6.3"
 val openHtmlToPdfVersion = "1.0.10"
 
-val wiremockVersion = "3.13.0"
+val wiremockVersion = "3.13.1"
 val wiremockSpringBootVersion = "3.10.0"
 val podamVersion = "8.0.2.RELEASE"
 

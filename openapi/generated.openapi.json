@@ -7761,7 +7761,7 @@
             "type" : "boolean"
           },
           "authConfig" : {
-            "$ref" : "#/components/schemas/OrgSilServiceRequestBodyAuthConfig"
+            "$ref" : "#/components/schemas/SilServiceAuthConfig"
           },
           "_links" : {
             "type" : "object",
@@ -7772,7 +7772,11 @@
         },
         "required" : [ "applicationName", "organizationId", "serviceType", "serviceUrl" ]
       },
-      "OrgSilServiceRequestBodyAuthConfig" : {
+      "OrgSilServiceType" : {
+        "type" : "string",
+        "enum" : [ "PAID_NOTIFICATION_OUTCOME", "ACTUALIZATION" ]
+      },
+      "SilServiceAuthConfig" : {
         "type" : "object",
         "discriminator" : {
           "propertyName" : "authConfig"
@@ -7794,15 +7798,22 @@
             "type" : "string",
             "format" : "byte"
           },
+          "authUrl" : {
+            "type" : "string"
+          },
+          "user" : {
+            "type" : "string",
+            "format" : "byte"
+          },
+          "psw" : {
+            "type" : "string",
+            "format" : "byte"
+          },
           "authConfig" : {
             "type" : "string"
           }
         },
         "required" : [ "authConfig" ]
-      },
-      "OrgSilServiceType" : {
-        "type" : "string",
-        "enum" : [ "PAID_NOTIFICATION_OUTCOME", "ACTUALIZATION" ]
       },
       "InstallmentView" : {
         "type" : "object",

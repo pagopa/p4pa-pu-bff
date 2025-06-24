@@ -1,16 +1,12 @@
 package it.gov.pagopa.pu.bff.mapper;
 
 import it.gov.pagopa.pu.bff.dto.generated.DebtPositionDetailDTO;
-import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionDTO;
-import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrg;
-import it.gov.pagopa.pu.debtpositions.dto.generated.EntityTypeEnum;
-import it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentDTO;
-import it.gov.pagopa.pu.debtpositions.dto.generated.PaymentOptionDTO;
-import it.gov.pagopa.pu.debtpositions.dto.generated.PersonDTO;
-import java.util.Comparator;
-import java.util.List;
+import it.gov.pagopa.pu.debtpositions.dto.generated.*;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
+
+import java.util.Comparator;
+import java.util.List;
 
 @Component
 public class DebtPositionMapper {
@@ -36,7 +32,7 @@ public class DebtPositionMapper {
     if(Boolean.TRUE.equals(debtPosition.getMultiDebtor())){
       debtor = it.gov.pagopa.pu.debtpositions.dto.generated.PersonDTO.builder()
         .fullName(MULTI_DEBTOR_NAME)
-        .entityType(EntityTypeEnum.F)
+        .entityType(PersonEntityType.F)
         .fiscalCode("")
         .build();
     }else if(!CollectionUtils.isEmpty(debtPosition.getPaymentOptions())

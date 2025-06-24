@@ -22,11 +22,11 @@ public class InstallmentRegistryRetrieverServiceImpl implements InstallmentRegis
   }
 
   @Override
-  public List<InstallmentRegistry> getInstallmentRegistries(Long organizationId, Long debtPositionId, UserInfo loggedUser, String accessToken) {
+  public List<InstallmentRegistry> getInstallmentRegistries(Long organizationId, Long debtPositionId, String nav, UserInfo loggedUser, String accessToken) {
     AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser);
     debtPositionRetrieverService.validateOperator(debtPositionId, organizationId, loggedUser, accessToken);
 
-    CollectionModelInstallmentRegistry collection = installmentRegistryService.getInstallmentRegistries(debtPositionId, accessToken);
+    CollectionModelInstallmentRegistry collection = installmentRegistryService.getInstallmentRegistries(debtPositionId, nav, accessToken);
     if (collection == null || collection.getEmbedded() == null) {
       return Collections.emptyList();
     }

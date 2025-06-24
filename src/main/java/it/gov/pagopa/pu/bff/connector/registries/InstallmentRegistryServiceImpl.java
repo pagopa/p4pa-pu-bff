@@ -13,7 +13,7 @@ public class InstallmentRegistryServiceImpl implements InstallmentRegistryServic
   }
 
   @Override
-  public CollectionModelInstallmentRegistry getInstallmentRegistries(Long debtPositionId, String accessToken) {
-    return installmentRegistrySearchClient.getInstallmentRegistries(debtPositionId, accessToken);
+  public CollectionModelInstallmentRegistry getInstallmentRegistries(Long debtPositionId, String nav, String accessToken) {
+    return installmentRegistrySearchClient.getInstallmentRegistries(debtPositionId, nav, accessToken);
   }
 }

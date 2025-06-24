@@ -5804,10 +5804,6 @@
         "type" : "string",
         "enum" : [ "TO_SYNC", "REPORTED", "PAID", "PARTIALLY_PAID", "CANCELLED", "EXPIRED", "UNPAID", "DRAFT" ]
       },
-      "EntityTypeEnum" : {
-        "type" : "string",
-        "enum" : [ "F", "G" ]
-      },
       "InstallmentDTO" : {
         "type" : "object",
         "properties" : {
@@ -5997,7 +5993,7 @@
         "type" : "object",
         "properties" : {
           "entityType" : {
-            "$ref" : "#/components/schemas/EntityTypeEnum"
+            "$ref" : "#/components/schemas/PersonEntityType"
           },
           "fiscalCode" : {
             "type" : "string"
@@ -6028,6 +6024,10 @@
           }
         },
         "required" : [ "entityType", "fiscalCode", "fullName" ]
+      },
+      "PersonEntityType" : {
+        "type" : "string",
+        "enum" : [ "F", "G" ]
       },
       "TransferDTO" : {
         "type" : "object",
@@ -7761,7 +7761,7 @@
             "type" : "boolean"
           },
           "authConfig" : {
-            "$ref" : "#/components/schemas/SilServiceAuthConfig"
+            "$ref" : "#/components/schemas/OrgSilServiceRequestBodyAuthConfig"
           },
           "_links" : {
             "type" : "object",
@@ -7772,11 +7772,7 @@
         },
         "required" : [ "applicationName", "organizationId", "serviceType", "serviceUrl" ]
       },
-      "OrgSilServiceType" : {
-        "type" : "string",
-        "enum" : [ "PAID_NOTIFICATION_OUTCOME", "ACTUALIZATION" ]
-      },
-      "SilServiceAuthConfig" : {
+      "OrgSilServiceRequestBodyAuthConfig" : {
         "type" : "object",
         "discriminator" : {
           "propertyName" : "authConfig"
@@ -7798,22 +7794,15 @@
             "type" : "string",
             "format" : "byte"
           },
-          "authUrl" : {
-            "type" : "string"
-          },
-          "user" : {
-            "type" : "string",
-            "format" : "byte"
-          },
-          "psw" : {
-            "type" : "string",
-            "format" : "byte"
-          },
           "authConfig" : {
             "type" : "string"
           }
         },
         "required" : [ "authConfig" ]
+      },
+      "OrgSilServiceType" : {
+        "type" : "string",
+        "enum" : [ "PAID_NOTIFICATION_OUTCOME", "ACTUALIZATION" ]
       },
       "InstallmentView" : {
         "type" : "object",
@@ -7831,6 +7820,9 @@
           },
           "status" : {
             "$ref" : "#/components/schemas/InstallmentStatus"
+          },
+          "nav" : {
+            "type" : "string"
           },
           "dueDate" : {
             "type" : "string",
@@ -8961,10 +8953,6 @@
             "type" : "string"
           }
         }
-      },
-      "PersonEntityType" : {
-        "type" : "string",
-        "enum" : [ "F", "G" ]
       },
       "PagedTreasuredClassification" : {
         "type" : "object",

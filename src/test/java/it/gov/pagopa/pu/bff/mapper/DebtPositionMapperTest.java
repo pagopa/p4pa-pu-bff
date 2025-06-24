@@ -106,7 +106,7 @@ class DebtPositionMapperTest {
     if(Boolean.TRUE.equals(debtPositionDTO.getMultiDebtor())){
       Assertions.assertEquals("CO-OBBLIGATO",debtor.getFullName());
       Assertions.assertTrue(StringUtils.isEmpty(debtor.getFiscalCode()));
-      Assertions.assertEquals(EntityTypeEnum.F,debtor.getEntityType());
+      Assertions.assertEquals(PersonEntityType.F,debtor.getEntityType());
     }else{
       TestUtils.reflectionEqualsByName(debtor,debtPositionDTO.getPaymentOptions().getFirst().getInstallments().getFirst().getDebtor());
     }

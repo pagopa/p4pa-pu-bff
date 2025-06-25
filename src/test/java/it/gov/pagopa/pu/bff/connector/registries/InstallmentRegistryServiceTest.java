@@ -31,12 +31,13 @@ class InstallmentRegistryServiceTest {
   @Test
   void whenGetInstallmentRegistriesThenInvokeClient() {
     Long debtPositionId = 1L;
+    String nav = "nav";
     CollectionModelInstallmentRegistry expectedResult = new CollectionModelInstallmentRegistry();
 
-    when(installmentRegistrySearchClientMock.getInstallmentRegistries(debtPositionId, ACCESS_TOKEN))
+    when(installmentRegistrySearchClientMock.getInstallmentRegistries(debtPositionId, nav, ACCESS_TOKEN))
       .thenReturn(expectedResult);
 
-    CollectionModelInstallmentRegistry result = service.getInstallmentRegistries(debtPositionId, ACCESS_TOKEN);
+    CollectionModelInstallmentRegistry result = service.getInstallmentRegistries(debtPositionId, nav, ACCESS_TOKEN);
 
     assertSame(expectedResult, result);
   }

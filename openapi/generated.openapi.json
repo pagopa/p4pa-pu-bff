@@ -7760,7 +7760,11 @@
             "type" : "boolean"
           },
           "authConfig" : {
-            "$ref" : "#/components/schemas/OrgSilServiceRequestBodyAuthConfig"
+            "oneOf" : [ {
+              "$ref" : "#/components/schemas/SilServiceLegacyBasicAuthConfig"
+            }, {
+              "$ref" : "#/components/schemas/SilServiceLegacyJwtAuthConfig"
+            } ]
           },
           "_links" : {
             "type" : "object",
@@ -7772,27 +7776,10 @@
         "required" : [ "applicationName", "organizationId", "serviceType", "serviceUrl" ]
       },
       "OrgSilServiceRequestBodyAuthConfig" : {
-        "type" : "object",
         "discriminator" : {
           "propertyName" : "authConfig"
         },
         "properties" : {
-          "kid" : {
-            "type" : "string"
-          },
-          "subject" : {
-            "type" : "string"
-          },
-          "issuer" : {
-            "type" : "string"
-          },
-          "algorithm" : {
-            "type" : "string"
-          },
-          "signingKey" : {
-            "type" : "string",
-            "format" : "byte"
-          },
           "authConfig" : {
             "type" : "string"
           }
@@ -7802,6 +7789,65 @@
       "OrgSilServiceType" : {
         "type" : "string",
         "enum" : [ "PAID_NOTIFICATION_OUTCOME", "ACTUALIZATION" ]
+      },
+      "SilServiceLegacyBasicAuthConfig" : {
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/OrgSilServiceRequestBodyAuthConfig"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "authUrl" : {
+              "type" : "string"
+            },
+            "user" : {
+              "type" : "string",
+              "format" : "byte"
+            },
+            "psw" : {
+              "type" : "string",
+              "format" : "byte"
+            },
+            "authConfig" : {
+              "type" : "string"
+            }
+          }
+        } ],
+        "discriminator" : {
+          "propertyName" : "authConfig"
+        },
+        "required" : [ "authConfig" ]
+      },
+      "SilServiceLegacyJwtAuthConfig" : {
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/OrgSilServiceRequestBodyAuthConfig"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "kid" : {
+              "type" : "string"
+            },
+            "subject" : {
+              "type" : "string"
+            },
+            "issuer" : {
+              "type" : "string"
+            },
+            "algorithm" : {
+              "type" : "string"
+            },
+            "signingKey" : {
+              "type" : "string",
+              "format" : "byte"
+            },
+            "authConfig" : {
+              "type" : "string"
+            }
+          }
+        } ],
+        "discriminator" : {
+          "propertyName" : "authConfig"
+        },
+        "required" : [ "authConfig" ]
       },
       "InstallmentView" : {
         "type" : "object",

@@ -1784,12 +1784,12 @@ paths:
           in: query
           schema:
             type: string
-            format: date-time
+            format: date
         - name: payDateTo
           in: query
           schema:
             type: string
-            format: date-time
+            format: date
         - name: paymentDateTimeFrom
           in: query
           schema:

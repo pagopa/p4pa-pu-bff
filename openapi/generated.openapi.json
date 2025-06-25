@@ -4892,7 +4892,7 @@
           "required" : false,
           "schema" : {
             "type" : "string",
-            "format" : "date-time"
+            "format" : "date"
           }
         }, {
           "name" : "payDateTo",
@@ -4900,7 +4900,7 @@
           "required" : false,
           "schema" : {
             "type" : "string",
-            "format" : "date-time"
+            "format" : "date"
           }
         }, {
           "name" : "paymentDateTimeFrom",
@@ -6029,8 +6029,7 @@
           "email" : {
             "type" : "string"
           }
-        },
-        "required" : [ "entityType", "fiscalCode", "fullName" ]
+        }
       },
       "PersonEntityType" : {
         "type" : "string",
@@ -8713,10 +8712,10 @@
             "type" : "string"
           },
           "receiptPayer" : {
-            "$ref" : "#/components/schemas/Person"
+            "$ref" : "#/components/schemas/PersonDTO"
           },
           "receiptDebtor" : {
-            "$ref" : "#/components/schemas/Person"
+            "$ref" : "#/components/schemas/PersonDTO"
           },
           "receiptPaymentOutcomeCode" : {
             "type" : "string"
@@ -8905,7 +8904,7 @@
             "format" : "byte"
           },
           "paymentNotificationDebtor" : {
-            "$ref" : "#/components/schemas/Person"
+            "$ref" : "#/components/schemas/PersonDTO"
           },
           "paymentNotificationRemittanceInformation" : {
             "type" : "string"
@@ -8925,41 +8924,6 @@
       "ClassificationsEnum" : {
         "type" : "string",
         "enum" : [ "DOPPI", "RT_NO_IUF", "RT_NO_IUD", "IUV_NO_RT", "TES_NO_IUF_OR_IUV", "IUF_NO_TES", "IUD_RT_IUF", "RT_IUF", "RT_TES", "IUD_RT_IUF_TES", "RT_IUF_TES", "IUF_TES_DIV_IMP", "IUD_NO_RT", "TES_NO_MATCH", "UNKNOWN" ]
-      },
-      "Person" : {
-        "type" : "object",
-        "properties" : {
-          "entityType" : {
-            "$ref" : "#/components/schemas/PersonEntityType"
-          },
-          "fiscalCode" : {
-            "type" : "string"
-          },
-          "fullName" : {
-            "type" : "string"
-          },
-          "address" : {
-            "type" : "string"
-          },
-          "civic" : {
-            "type" : "string"
-          },
-          "postalCode" : {
-            "type" : "string"
-          },
-          "location" : {
-            "type" : "string"
-          },
-          "province" : {
-            "type" : "string"
-          },
-          "nation" : {
-            "type" : "string"
-          },
-          "email" : {
-            "type" : "string"
-          }
-        }
       },
       "PagedTreasuredClassification" : {
         "type" : "object",

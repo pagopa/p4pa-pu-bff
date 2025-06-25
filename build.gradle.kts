@@ -271,16 +271,13 @@ tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>("ope
     "dateLibrary" to "java8",
     "useSpringBoot3" to "true",
     "useJakartaEe" to "true",
+    "useOneOfInterfaces" to "true",
     "useBeanValidation" to "true",
     "serializationLibrary" to "jackson",
     "generateSupportingFiles" to "true",
     "generateConstructorWithAllArgs" to "true",
     "generatedConstructorWithRequiredArgs" to "true",
     "additionalModelTypeAnnotations" to "@lombok.experimental.SuperBuilder(toBuilder = true)"
-  ))
-  schemaMappings.set(mapOf(
-    "SilServiceLegacyJwtAuthConfig" to "it.gov.pagopa.pu.organization.dto.generated.SilServiceAuthConfig",
-    "SilServiceLegacyBasicAuthConfig" to "it.gov.pagopa.pu.organization.dto.generated.SilServiceAuthConfig"
   ))
   library.set("resttemplate")
 }

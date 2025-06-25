@@ -20,9 +20,9 @@ public class InstallmentRegistryController implements InstallmentRegistryApi {
   }
 
   @Override
-  public ResponseEntity<List<InstallmentRegistry>> getInstallmentRegistries(Long organizationId, Long debtPositionId) {
-    log.info("User requested getInstallmentRegistries having organizationId {} and debtPositionId {}", organizationId, debtPositionId);
+  public ResponseEntity<List<InstallmentRegistry>> getInstallmentRegistries(Long organizationId, Long debtPositionId, String nav) {
+    log.info("User requested getInstallmentRegistries having organizationId {} and debtPositionId {} and nav {}", organizationId, debtPositionId, nav);
     return ResponseEntity.ok(installmentRegistryRetrieverService.getInstallmentRegistries(
-      organizationId, debtPositionId, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken()));
+      organizationId, debtPositionId, nav, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken()));
   }
 }

@@ -14,8 +14,8 @@ public class InstallmentRegistrySearchClient {
     this.registriesApisHolder = registriesApisHolder;
   }
 
-  public CollectionModelInstallmentRegistry getInstallmentRegistries(Long debtPositionId, String accessToken) {
+  public CollectionModelInstallmentRegistry getInstallmentRegistries(Long debtPositionId, String nav, String accessToken) {
     return registriesApisHolder.getInstallmentRegistrySearchControllerApi(accessToken)
-      .crudInstallmentRegistriesFindAllByDebtPositionId(debtPositionId);
+      .crudInstallmentRegistriesFindAllByDebtPositionIdAndNav(debtPositionId, nav);
   }
 }

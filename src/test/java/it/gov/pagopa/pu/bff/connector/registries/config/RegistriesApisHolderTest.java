@@ -54,4 +54,13 @@ class RegistriesApisHolderTest  extends BaseApiHolderTest {
       new ParameterizedTypeReference<>() {},
       registriesApisHolder::unload);
   }
+
+  @Test
+  void whenGetSilRegistryApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
+    assertAuthenticationShouldBeSetInThreadSafeMode(
+      accessToken -> registriesApisHolder.getSilRegistryApi(accessToken)
+        .getSilRegistry("666"),
+      new ParameterizedTypeReference<>() {},
+      registriesApisHolder::unload);
+  }
 }

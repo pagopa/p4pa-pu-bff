@@ -2114,6 +2114,34 @@ paths:
           description: Not Found
         '500':
           description: Internal Server Error
+  /sil-registries/{registryId}:
+    get:
+      tags:
+        - SilRegistry
+      operationId: getSilRegistry
+      parameters:
+        - name: registryId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: 'SilRegistryDTO'
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized - Missing or invalid token
+        '403':
+          description: Forbidden - Access denied
+        '404':
+          description: Not Found
+        '500':
+          description: Internal Server Error
   /organization/{organizationId}/assessments-registries/{assessmentRegistryId}:
     put:
       tags:

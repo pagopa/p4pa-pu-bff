@@ -28,6 +28,9 @@
     "name" : "OrgSilService",
     "description" : "the OrgSilService API"
   }, {
+    "name" : "SilRegistry",
+    "description" : "the SilRegistry API"
+  }, {
     "name" : "Installments",
     "description" : "the Installments API"
   }, {
@@ -2009,6 +2012,85 @@
                   "items" : {
                     "$ref" : "#/components/schemas/TaxonomyCollectionReasonDTO"
                   }
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "BearerAuth" : [ ]
+        } ]
+      }
+    },
+    "/bff/sil-registries/{registryId}" : {
+      "get" : {
+        "tags" : [ "SilRegistry" ],
+        "operationId" : "getSilRegistry",
+        "parameters" : [ {
+          "name" : "registryId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Ok",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/SilRegistryDTO"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad Request",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/SilRegistryDTO"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Unauthorized - Missing or invalid token",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/SilRegistryDTO"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Forbidden - Access denied",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/SilRegistryDTO"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Not Found",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/SilRegistryDTO"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal Server Error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/SilRegistryDTO"
                 }
               }
             }
@@ -6938,6 +7020,64 @@
           }
         },
         "required" : [ "collectionReason", "macroAreaCode", "macroAreaDescription", "macroAreaName", "organizationType", "organizationTypeDescription", "serviceType", "serviceTypeCode", "serviceTypeDescription" ]
+      },
+      "RegistryEventSubType" : {
+        "type" : "string",
+        "enum" : [ "REQ", "RESP" ]
+      },
+      "RegistryOutcome" : {
+        "type" : "string",
+        "enum" : [ "OK", "KO" ]
+      },
+      "RegistrySilEventType" : {
+        "type" : "string",
+        "enum" : [ "paaSILAutorizzaImportFlusso", "paaSILChiediStatoImportFlusso", "paaSILImportaDovuto", "paaSILPrenotaExportFlusso", "paaSILPrenotaExportFlussoIncrementaleConRicevuta", "paaSILChiediStatoExportFlusso", "paaSILInviaDovuti", "paaSILVerificaAvviso", "paaSILChiediPagati", "paaSILChiediPagatiConRicevuta", "paaSILInviaCarrelloDovuti", "paaSILChiediEsitoCarrelloDovuti", "pivotSILAutorizzaImportFlusso", "pivotSILChiediStatoImportFlusso", "pivotSILAutorizzaImportFlussoTesoreria", "pivotSILChiediStatoImportFlussoTesoreria", "pivotSILPrenotaExportFlussoRiconciliazione", "pivotSILChiediStatoExportFlussoRiconciliazione", "pivotSILChiediAccertamento", "attualizzazioneImporti", "notificaPagamento" ]
+      },
+      "SilRegistryDTO" : {
+        "type" : "object",
+        "properties" : {
+          "registryId" : {
+            "type" : "string"
+          },
+          "dateTime" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "traceId" : {
+            "type" : "string"
+          },
+          "brokerFiscalCode" : {
+            "type" : "string"
+          },
+          "orgFiscalCode" : {
+            "type" : "string"
+          },
+          "iuv" : {
+            "type" : "string"
+          },
+          "nav" : {
+            "type" : "string"
+          },
+          "eventType" : {
+            "$ref" : "#/components/schemas/RegistrySilEventType"
+          },
+          "eventSubType" : {
+            "$ref" : "#/components/schemas/RegistryEventSubType"
+          },
+          "requestorId" : {
+            "type" : "string"
+          },
+          "grantorId" : {
+            "type" : "string"
+          },
+          "outcome" : {
+            "$ref" : "#/components/schemas/RegistryOutcome"
+          },
+          "body" : {
+            "type" : "string"
+          }
+        },
+        "required" : [ "dateTime", "eventSubType", "eventType", "grantorId", "orgFiscalCode", "outcome", "registryId", "requestorId", "traceId" ]
       },
       "OperatorRoleEnum" : {
         "type" : "string",

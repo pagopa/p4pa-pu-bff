@@ -11,6 +11,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.client.HttpClientErrorException;
 
 import static org.mockito.Mockito.when;
 
@@ -23,6 +25,8 @@ class SilRegistryClientTest {
   private SilRegistryApi silRegistryApiMock;
 
   private SilRegistryClient silRegistryClient;
+
+  String accessToken = "ACCESSTOKEN";
 
   @BeforeEach
   void setUp() {
@@ -39,7 +43,6 @@ class SilRegistryClientTest {
   @Test
   void whenGetSilRegistryThenReturnSilRegistryDTO() {
     String registryId = "123";
-    String accessToken = "ACCESSTOKEN";
     SilRegistryDTO expectedResult = new SilRegistryDTO();
     expectedResult.setRegistryId(registryId);
 
@@ -51,5 +54,19 @@ class SilRegistryClientTest {
     SilRegistryDTO result = silRegistryClient.getSilRegistry(registryId, accessToken);
 
     Assertions.assertSame(expectedResult, result);
+  }
+
+  @Test
+  void whenGetSilRegistryAndNotFoundThenReturnNull() {
+    String registryId = "123";
+
+    when(registriesApisHolderMock.getSilRegistryApi(accessToken))
+      .thenReturn(silRegistryApiMock);
+    when(silRegistryApiMock.getSilRegistry(registryId))
+      .thenThrow(HttpClientErrorException.create(HttpStatus.NOT_FOUND, "NotFound", null, null, null));
+
+    SilRegistryDTO result = silRegistryClient.getSilRegistry(registryId, accessToken);
+
+    Assertions.assertNull(result);
   }
 }

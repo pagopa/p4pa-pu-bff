@@ -36,7 +36,7 @@ public class ClassificationRetrieverServiceImpl implements ClassificationRetriev
       StringUtils.isBlank(filters.getIuv()) &&
       StringUtils.isBlank(filters.getIur()) &&
       DateUtils.isNullOrInvalidLocalDateRange(filters.getLastClassificationDate().getFrom(), filters.getLastClassificationDate().getTo()) &&
-      DateUtils.isNullOrInvalidOffsetDateTimeRange(filters.getPayDate().getFrom(), filters.getPayDate().getTo()) &&
+      DateUtils.isNullOrInvalidLocalDateRange(filters.getPayDate().getFrom(), filters.getPayDate().getTo()) &&
       DateUtils.isNullOrInvalidOffsetDateTimeRange(filters.getPaymentDateTime().getFrom(), filters.getPaymentDateTime().getTo()) &&
       DateUtils.isNullOrInvalidLocalDateRange(filters.getRegulationDate().getFrom(), filters.getRegulationDate().getTo()) &&
       DateUtils.isNullOrInvalidLocalDateRange(filters.getBillDate().getFrom(), filters.getBillDate().getTo()) &&

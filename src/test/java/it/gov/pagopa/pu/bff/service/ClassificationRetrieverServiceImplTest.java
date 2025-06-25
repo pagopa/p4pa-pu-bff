@@ -100,7 +100,7 @@ class ClassificationRetrieverServiceImplTest {
     TreasuredClassificationFiltersDTO filtersDTO = new TreasuredClassificationFiltersDTO(
       null, null, null, null,
       new LocalDateIntervalFilter(null, null),
-      new OffsetDateTimeIntervalFilter(null, null),
+      new LocalDateIntervalFilter(null, null),
       new OffsetDateTimeIntervalFilter(null, null),
       new LocalDateIntervalFilter(null, null),
       new LocalDateIntervalFilter(null, null),

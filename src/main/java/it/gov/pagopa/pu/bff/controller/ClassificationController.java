@@ -31,7 +31,7 @@ public class ClassificationController implements ClassificationsApi {
   public ResponseEntity<PagedTreasuredClassification> getTreasuredClassifications(
     Long organizationId, ClassificationsEnum label, String iud, String iuv, String iur,
     LocalDate lastClassificationDateFrom, LocalDate lastClassificationDateTo,
-    OffsetDateTime payDateFrom, OffsetDateTime payDateTo, OffsetDateTime paymentDateTimeFrom,
+    LocalDate payDateFrom, LocalDate payDateTo, OffsetDateTime paymentDateTimeFrom,
     OffsetDateTime paymentDateTimeTo, LocalDate regulationDateFrom, LocalDate regulationDateTo,
     LocalDate billDateFrom, LocalDate billDateTo, LocalDate regionValueDateFrom,
     LocalDate regionValueDateTo, String pspCompanyName, String pspLastName, String iuf,
@@ -43,7 +43,7 @@ public class ClassificationController implements ClassificationsApi {
     log.info("User requested getTreasuredClassifications having organizationId {}", organizationId);
 
     LocalDateIntervalFilter lastClassificationDateFilter = new LocalDateIntervalFilter(lastClassificationDateFrom, lastClassificationDateTo);
-    OffsetDateTimeIntervalFilter payDateTimeFilter = new OffsetDateTimeIntervalFilter(payDateFrom, payDateTo);
+    LocalDateIntervalFilter payDateTimeFilter = new LocalDateIntervalFilter(payDateFrom, payDateTo);
     OffsetDateTimeIntervalFilter paymentDateTimeFilter = new OffsetDateTimeIntervalFilter(paymentDateTimeFrom, paymentDateTimeTo);
     LocalDateIntervalFilter regulationDateFilter = new LocalDateIntervalFilter(regulationDateFrom, regulationDateTo);
     LocalDateIntervalFilter billDateFilter = new LocalDateIntervalFilter(billDateFrom, billDateTo);

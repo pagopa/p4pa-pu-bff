@@ -18,7 +18,7 @@ class AssessmentsRegistryMapperTest {
   private final PodamFactory podamFactory= TestUtils.getPodamFactory();
 
   @Test
-  void givenPopulatedPagedModelWhenMapToPagedPaymentsReportingThenCorrectMapping() {
+  void givenPopulatedPagedModelWhenMapToPagedAssessmentsRegistryThenCorrectMapping() {
     PagedModelAssessmentsRegistry pagedModelAssessmentsRegistry = podamFactory.manufacturePojo(
             PagedModelAssessmentsRegistry.class);
 
@@ -41,7 +41,7 @@ class AssessmentsRegistryMapperTest {
   }
 
   @Test
-  void givenNoContentWhenMapToPagedDebtPositionViewThenPartialMapping() {
+  void givenNoContentWhenMapToPagedAssessmentsRegistryThenPartialMapping() {
     PagedModelAssessmentsRegistry pagedModelAssessmentsRegistry = podamFactory.manufacturePojo(
             PagedModelAssessmentsRegistry.class);
     pagedModelAssessmentsRegistry.getEmbedded()
@@ -63,7 +63,7 @@ class AssessmentsRegistryMapperTest {
   }
 
   @Test
-  void givenNoPageWhenMapToPagedDebtPositionViewThenPartialMapping() {
+  void givenNoPageWhenMapToPagedAssessmentsRegistryThenPartialMapping() {
     PagedModelAssessmentsRegistry pagedModelAssessmentsRegistry = podamFactory.manufacturePojo(
             PagedModelAssessmentsRegistry.class);
     pagedModelAssessmentsRegistry.setPage(null);

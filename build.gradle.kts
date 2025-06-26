@@ -211,7 +211,8 @@ tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>("ope
     "AssessmentsExtendedDTO" to "it.gov.pagopa.pu.bff.dto.AssessmentsExtendedDTO",
     "AssessmentsStatusEnum" to "it.gov.pagopa.pu.classification.dto.generated.AssessmentStatus",
     "AssessmentsDetail" to "it.gov.pagopa.pu.classification.dto.generated.AssessmentsDetail",
-    "SilRegistryDTO" to "it.gov.pagopa.pu.registries.dto.generated.SilRegistryDTO"
+    "RegistryPagoPaEventType" to "it.gov.pagopa.pu.registries.dto.generated.RegistryPagoPaEventType",
+    "PagoPaRegistry" to "it.gov.pagopa.pu.registries.dto.generated.PagoPaRegistry"
   ))
   configOptions.set(mapOf(
     "dateLibrary" to "java8",
@@ -272,16 +273,13 @@ tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>("ope
     "dateLibrary" to "java8",
     "useSpringBoot3" to "true",
     "useJakartaEe" to "true",
+    "useOneOfInterfaces" to "true",
     "useBeanValidation" to "true",
     "serializationLibrary" to "jackson",
     "generateSupportingFiles" to "true",
     "generateConstructorWithAllArgs" to "true",
     "generatedConstructorWithRequiredArgs" to "true",
     "additionalModelTypeAnnotations" to "@lombok.experimental.SuperBuilder(toBuilder = true)"
-  ))
-  schemaMappings.set(mapOf(
-    "SilServiceLegacyJwtAuthConfig" to "it.gov.pagopa.pu.organization.dto.generated.SilServiceAuthConfig",
-    "SilServiceLegacyBasicAuthConfig" to "it.gov.pagopa.pu.organization.dto.generated.SilServiceAuthConfig"
   ))
   library.set("resttemplate")
 }
@@ -428,7 +426,8 @@ tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>("ope
     "generateSupportingFiles" to "true",
     "generateConstructorWithAllArgs" to "true",
     "generatedConstructorWithRequiredArgs" to "true",
-    "additionalModelTypeAnnotations" to "@lombok.experimental.SuperBuilder(toBuilder = true)"
+    "additionalModelTypeAnnotations" to "@lombok.experimental.SuperBuilder(toBuilder = true)",
+    "enumPropertyNaming" to "original"
   ))
   library.set("resttemplate")
 }

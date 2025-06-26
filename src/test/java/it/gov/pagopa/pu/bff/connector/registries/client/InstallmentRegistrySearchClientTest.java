@@ -44,14 +44,15 @@ class InstallmentRegistrySearchClientTest {
   void whenGetInstallmentRegistriesThenInvokeWithAccessToken() {
     String accessToken = "TOKEN";
     Long debtPositionId = 1L;
+    String nav = "nav";
     CollectionModelInstallmentRegistry expectedResponse = podamFactory.manufacturePojo(CollectionModelInstallmentRegistry.class);
 
     when(registriesApisHolderMock.getInstallmentRegistrySearchControllerApi(accessToken))
       .thenReturn(installmentRegistrySearchControllerApiMock);
-    when(installmentRegistrySearchControllerApiMock.crudInstallmentRegistriesFindAllByDebtPositionId(debtPositionId))
+    when(installmentRegistrySearchControllerApiMock.crudInstallmentRegistriesFindAllByDebtPositionIdAndNav(debtPositionId, nav))
       .thenReturn(expectedResponse);
 
-    CollectionModelInstallmentRegistry response = installmentRegistrySearchClient.getInstallmentRegistries(debtPositionId, accessToken);
+    CollectionModelInstallmentRegistry response = installmentRegistrySearchClient.getInstallmentRegistries(debtPositionId, nav, accessToken);
 
     Assertions.assertNotNull(response);
     Assertions.assertEquals(expectedResponse, response);

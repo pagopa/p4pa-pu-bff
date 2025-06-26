@@ -1,10 +1,11 @@
 package it.gov.pagopa.pu.bff.controller;
 
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
+import it.gov.pagopa.pu.bff.dto.PagoPaRegistryFiltersDTO;
+import it.gov.pagopa.pu.bff.dto.generated.PagedPagoPaRegistry;
 import it.gov.pagopa.pu.bff.security.SecurityUtilsTest;
-import it.gov.pagopa.pu.bff.service.installment_registry.InstallmentRegistryRetrieverService;
+import it.gov.pagopa.pu.bff.service.pagopa_registry.PagoPaRegistryRetrieverService;
 import it.gov.pagopa.pu.bff.util.TestUtils;
-import it.gov.pagopa.pu.registries.dto.generated.InstallmentRegistry;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,19 +15,18 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-
-import java.util.ArrayList;
-import java.util.List;
+import uk.co.jemos.podam.api.PodamFactory;
 
 @ExtendWith(MockitoExtension.class)
-class InstallmentRegistryControllerTest {
+class PagoPaRegistryControllerTest {
+  private static final PodamFactory podamFactory = TestUtils.getPodamFactory();
   @Mock
-  private InstallmentRegistryRetrieverService installmentRegistryRetrieverServiceMock;
-
+  private PagoPaRegistryRetrieverService pagoPaRegistryRetrieverService;
   @InjectMocks
-  private InstallmentRegistryController installmentRegistryController;
+  private PagoPaRegistryController pagoPaRegistryController;
 
   private final String accessToken = "fakeAccessToken";
   private final UserInfo loggedUser = TestUtils.getPodamFactory().manufacturePojo(UserInfo.class);
@@ -39,7 +39,7 @@ class InstallmentRegistryControllerTest {
   @AfterEach
   void verifyNoMoreInteractions() {
     Mockito.verifyNoMoreInteractions(
-      installmentRegistryRetrieverServiceMock
+            pagoPaRegistryRetrieverService
     );
   }
 
@@ -49,17 +49,22 @@ class InstallmentRegistryControllerTest {
   }
 
   @Test
-  void givenCorrectRequestWhenGetInstallmentRegistriesThenOk() {
+  void givenCorrectRequestWhenGetPagoPaRegistriesThenOk() {
     long organizationId = 1L;
-    long debtPositionId = 2L;
-    String nav = "nav";
-    List<InstallmentRegistry> expectedResult = new ArrayList<>();
-    expectedResult.add(new InstallmentRegistry());
+    PagoPaRegistryFiltersDTO filters = podamFactory.manufacturePojo(PagoPaRegistryFiltersDTO.class);
+    PagedPagoPaRegistry expectedResult = podamFactory.manufacturePojo(PagedPagoPaRegistry.class);
 
-    Mockito.when(installmentRegistryRetrieverServiceMock.getInstallmentRegistries(organizationId, debtPositionId, nav, loggedUser, accessToken))
+    Mockito.when(pagoPaRegistryRetrieverService.getPagoPaRegistries(
+                    organizationId, filters, Pageable.ofSize(10), loggedUser, accessToken))
       .thenReturn(expectedResult);
 
-    ResponseEntity<List<InstallmentRegistry>> response = installmentRegistryController.getInstallmentRegistries(organizationId, debtPositionId, nav);
+    ResponseEntity<PagedPagoPaRegistry> response = pagoPaRegistryController.getPagoPaRegistries(
+            organizationId,
+            filters.getEventType(),
+            filters.getEventDate().getFrom(),
+            filters.getEventDate().getTo(),
+            filters.getIuv(),
+            Pageable.ofSize(10));
 
     Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
     Assertions.assertNotNull(response.getBody());

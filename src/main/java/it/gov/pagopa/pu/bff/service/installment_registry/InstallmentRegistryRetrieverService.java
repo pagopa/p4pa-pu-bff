@@ -6,5 +6,5 @@ import it.gov.pagopa.pu.registries.dto.generated.InstallmentRegistry;
 import java.util.List;
 
 public interface InstallmentRegistryRetrieverService {
-  List<InstallmentRegistry> getInstallmentRegistries(Long organizationId, Long debtPositionId, UserInfo loggedUser, String accessToken);
+  List<InstallmentRegistry> getInstallmentRegistries(Long organizationId, Long debtPositionId, String nav, UserInfo loggedUser, String accessToken);
 }

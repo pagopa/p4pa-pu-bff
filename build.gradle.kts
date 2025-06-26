@@ -212,7 +212,8 @@ tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>("ope
     "AssessmentsStatusEnum" to "it.gov.pagopa.pu.classification.dto.generated.AssessmentStatus",
     "AssessmentsDetail" to "it.gov.pagopa.pu.classification.dto.generated.AssessmentsDetail",
     "RegistryPagoPaEventType" to "it.gov.pagopa.pu.registries.dto.generated.RegistryPagoPaEventType",
-    "PagoPaRegistry" to "it.gov.pagopa.pu.registries.dto.generated.PagoPaRegistry"
+    "PagoPaRegistry" to "it.gov.pagopa.pu.registries.dto.generated.PagoPaRegistry",
+    "SilRegistryDTO" to "it.gov.pagopa.pu.registries.dto.generated.SilRegistryDTO"
   ))
   configOptions.set(mapOf(
     "dateLibrary" to "java8",

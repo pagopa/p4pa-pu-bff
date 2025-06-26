@@ -36,9 +36,7 @@ class SilRegistryControllerTest {
 
   @AfterEach
   void verifyNoMoreInteractions() {
-    Mockito.verifyNoMoreInteractions(
-      silRegistryRetrieverServiceMock
-    );
+    Mockito.verifyNoMoreInteractions(silRegistryRetrieverServiceMock);
   }
 
   @AfterEach
@@ -48,18 +46,20 @@ class SilRegistryControllerTest {
 
   @Test
   void givenCorrectRequestWhenGetSilRegistryThenOk() {
+    long organizationId = 1L;
     String registryId = "200";
 
     SilRegistryDTO expectedDTO = new SilRegistryDTO();
     expectedDTO.setRegistryId(registryId);
 
     Mockito.when(silRegistryRetrieverServiceMock.getSilRegistry(
+        Mockito.eq(organizationId),
         Mockito.eq(registryId),
         Mockito.same(loggedUser),
         Mockito.same(accessToken)))
       .thenReturn(expectedDTO);
 
-    ResponseEntity<SilRegistryDTO> response = silRegistryController.getSilRegistry(registryId);
+    ResponseEntity<SilRegistryDTO> response = silRegistryController.getSilRegistry(organizationId, registryId);
 
     Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
     Assertions.assertNotNull(response.getBody());
@@ -68,15 +68,17 @@ class SilRegistryControllerTest {
 
   @Test
   void givenIncorrectRequestWhenGetSilRegistryThenNotFound() {
+    long organizationId = 1L;
     String registryId = "999";
 
     Mockito.when(silRegistryRetrieverServiceMock.getSilRegistry(
-        registryId, loggedUser, accessToken))
+        organizationId, registryId, loggedUser, accessToken))
       .thenReturn(null);
 
-    ResponseEntity<SilRegistryDTO> response = silRegistryController.getSilRegistry(registryId);
+    ResponseEntity<SilRegistryDTO> response = silRegistryController.getSilRegistry(organizationId, registryId);
 
     Assertions.assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     Assertions.assertNull(response.getBody());
   }
 }
+

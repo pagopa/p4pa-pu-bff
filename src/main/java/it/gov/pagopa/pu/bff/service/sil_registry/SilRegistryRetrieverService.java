@@ -4,5 +4,5 @@ import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.registries.dto.generated.SilRegistryDTO;
 
 public interface SilRegistryRetrieverService {
-  SilRegistryDTO getSilRegistry(String registryId, UserInfo loggedUser, String accessToken);
+  SilRegistryDTO getSilRegistry(Long organizationId, String registryId, UserInfo loggedUser, String accessToken);
 }

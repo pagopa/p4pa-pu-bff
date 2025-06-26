@@ -2119,12 +2119,18 @@ paths:
           description: Not Found
         '500':
           description: Internal Server Error
-  /sil-registries/{registryId}:
+  /organization/{organizationId}/sil-registries/{registryId}:
     get:
       tags:
         - SilRegistry
       operationId: getSilRegistry
       parameters:
+        - name: organizationId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
         - name: registryId
           in: path
           required: true

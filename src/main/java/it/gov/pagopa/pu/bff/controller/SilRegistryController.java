@@ -18,9 +18,9 @@ public class SilRegistryController implements SilRegistryApi {
   }
 
   @Override
-  public ResponseEntity<SilRegistryDTO> getSilRegistry(String registryId) {
-    log.info("User requested getSilRegistry having and registryId {}", registryId);
+  public ResponseEntity<SilRegistryDTO> getSilRegistry(Long organizationId, String registryId) {
+    log.info("User requested getSilRegistry having organizationId {} and registryId {}", organizationId, registryId);
     return ResponseEntity.ofNullable(silRegistryRetrieverService.getSilRegistry(
-      registryId, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken()));
+      organizationId, registryId, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken()));
   }
 }

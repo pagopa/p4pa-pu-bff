@@ -2443,6 +2443,52 @@ paths:
           description: Not Found
         '500':
           description: Internal Server Error
+  /organization/{organizationId}/pagopa-registries:
+    get:
+      tags:
+        - PagoPaRegistry
+      operationId: getPagoPaRegistries
+      parameters:
+        - name: organizationId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: eventType
+          in: query
+          schema:
+            type: 'RegistryPagoPaEventType'
+        - name: eventDateFrom
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: eventDateTo
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: iuv
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/hal+json:
+              schema:
+                $ref: '#/components/schemas/PagedPagoPaRegistry'
+        '401':
+          description: Unauthorized - Missing or invalid token
+        "400":
+          description: Invalid request
+        '404':
+          description: Not Found
+        '500':
+          description: Internal Server Error
+      x-spring-paginated: true
 security:
   - BearerAuth: [ ]
 components:
@@ -3568,3 +3614,28 @@ components:
         number:
           type: integer
       format: int64
+    PagedPagoPaRegistry:
+      type: object
+      required:
+        - content
+        - size
+        - totalElements
+        - totalPages
+        - number
+      properties:
+        content:
+          type: array
+          items:
+            type: 'PagoPaRegistry'
+        size:
+          type: integer
+          format: int64
+        totalElements:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer
+          format: int64
+        number:
+          type: integer
+          format: int64

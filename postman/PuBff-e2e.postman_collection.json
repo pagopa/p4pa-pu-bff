@@ -1,10 +1,9 @@
 {
 	"info": {
-		"_postman_id": "920d10f4-3aed-4091-88c9-da852881e583",
+		"_postman_id": "f5b635cf-fccf-4076-b138-49a32b7f7f16",
 		"name": "PU-BFF",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "29647564",
-		"_collection_link": "https://galactic-eclipse-948669.postman.co/workspace/New-Team-Workspace~be56c5f1-de0c-4252-95d0-ee80f35e2474/collection/29647564-920d10f4-3aed-4091-88c9-da852881e583?action=share&source=collection_link&creator=29647564"
+		"_exporter_id": "17966353"
 	},
 	"item": [
 		{
@@ -3727,6 +3726,90 @@
 								":organizationId",
 								"debt-position-type-orgs",
 								"{{createdDebtPositionTypeOrgId}}"
+							],
+							"variable": [
+								{
+									"key": "organizationId",
+									"value": "{{organizationId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "06_Registry",
+			"item": [
+				{
+					"name": "06_getPagoPaRegistries",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let jsonResponse = pm.response.json();",
+									"pm.test(\"[PagoPaRegistry getPagoPaRegistries], expected httpStatus: 200\", () => {",
+									"    pm.response.to.have.status(200);",
+									"})",
+									"pm.test(\"[PagoPaRegistry getPagoPaRegistries] - getPagoPaRegistries\", () => {",
+									"    pm.expect(jsonResponse).to.have.property(\"content\").and.to.be.an(\"array\");",
+									"    pm.expect(jsonResponse).to.have.property(\"size\").and.to.be.a(\"number\");",
+									"    pm.expect(jsonResponse).to.have.property(\"totalElements\").and.to.be.a(\"number\");",
+									"    pm.expect(jsonResponse).to.have.property(\"totalPages\").and.to.be.a(\"number\");",
+									"    pm.expect(jsonResponse).to.have.property(\"number\").and.to.be.a(\"number\");",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{puBffBaseUrl}}/bff/organization/:organizationId/pagopa-registries?eventDateFrom=2025-01-01T00:00:00Z&eventDateTo=2026-01-01T00:00:00Z",
+							"host": [
+								"{{puBffBaseUrl}}"
+							],
+							"path": [
+								"bff",
+								"organization",
+								":organizationId",
+								"pagopa-registries"
+							],
+							"query": [
+								{
+									"key": "eventDateFrom",
+									"value": "2025-01-01T00:00:00Z"
+								},
+								{
+									"key": "eventDateTo",
+									"value": "2026-01-01T00:00:00Z"
+								}
 							],
 							"variable": [
 								{

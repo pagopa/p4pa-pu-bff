@@ -1,6 +1,7 @@
 package it.gov.pagopa.pu.bff.connector.registries.config;
 
 import it.gov.pagopa.pu.bff.connector.BaseApiHolderTest;
+import it.gov.pagopa.pu.registries.dto.generated.RegistryPagoPaEventType;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -11,6 +12,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.web.util.DefaultUriBuilderFactory;
+
+import java.time.OffsetDateTime;
+import java.util.Collections;
 
 @ExtendWith(MockitoExtension.class)
 class RegistriesApisHolderTest  extends BaseApiHolderTest {
@@ -51,6 +55,15 @@ class RegistriesApisHolderTest  extends BaseApiHolderTest {
     assertAuthenticationShouldBeSetInThreadSafeMode(
       accessToken -> registriesApisHolder.getInstallmentRegistrySearchControllerApi(accessToken)
         .crudInstallmentRegistriesFindAllByDebtPositionId(null),
+      new ParameterizedTypeReference<>() {},
+      registriesApisHolder::unload);
+  }
+
+  @Test
+  void whenGetPagoPaRegistrySearchControllerApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
+    assertAuthenticationShouldBeSetInThreadSafeMode(
+      accessToken -> registriesApisHolder.getPagoPaRegistrySearchControllerApi(accessToken)
+        .crudPagopaRegistriesSearchByFilters(RegistryPagoPaEventType.createPosition, OffsetDateTime.now(),OffsetDateTime.now(),"orgFiscalCode","iuv",0,10, Collections.emptyList()),
       new ParameterizedTypeReference<>() {},
       registriesApisHolder::unload);
   }

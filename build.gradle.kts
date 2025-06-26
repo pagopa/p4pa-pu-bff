@@ -210,7 +210,9 @@ tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>("ope
     "AssessmentsRegistry" to "it.gov.pagopa.pu.classification.dto.generated.AssessmentsRegistry",
     "AssessmentsExtendedDTO" to "it.gov.pagopa.pu.bff.dto.AssessmentsExtendedDTO",
     "AssessmentsStatusEnum" to "it.gov.pagopa.pu.classification.dto.generated.AssessmentStatus",
-    "AssessmentsDetail" to "it.gov.pagopa.pu.classification.dto.generated.AssessmentsDetail"
+    "AssessmentsDetail" to "it.gov.pagopa.pu.classification.dto.generated.AssessmentsDetail",
+    "RegistryPagoPaEventType" to "it.gov.pagopa.pu.registries.dto.generated.RegistryPagoPaEventType",
+    "PagoPaRegistry" to "it.gov.pagopa.pu.registries.dto.generated.PagoPaRegistry"
   ))
   configOptions.set(mapOf(
     "dateLibrary" to "java8",
@@ -424,7 +426,8 @@ tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>("ope
     "generateSupportingFiles" to "true",
     "generateConstructorWithAllArgs" to "true",
     "generatedConstructorWithRequiredArgs" to "true",
-    "additionalModelTypeAnnotations" to "@lombok.experimental.SuperBuilder(toBuilder = true)"
+    "additionalModelTypeAnnotations" to "@lombok.experimental.SuperBuilder(toBuilder = true)",
+    "enumPropertyNaming" to "original"
   ))
   library.set("resttemplate")
 }

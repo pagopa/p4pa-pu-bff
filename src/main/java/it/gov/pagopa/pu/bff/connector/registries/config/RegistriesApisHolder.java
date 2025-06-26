@@ -6,6 +6,7 @@ import it.gov.pagopa.pu.registries.controller.BaseApi;
 import it.gov.pagopa.pu.registries.controller.generated.DebtPositionRegistrySearchControllerApi;
 import it.gov.pagopa.pu.registries.controller.generated.InstallmentRegistrySearchControllerApi;
 import it.gov.pagopa.pu.registries.controller.generated.PagoPaRegistrySearchControllerApi;
+import it.gov.pagopa.pu.registries.controller.generated.SilRegistryApi;
 import jakarta.annotation.PreDestroy;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,7 @@ public class RegistriesApisHolder {
   private final DebtPositionRegistrySearchControllerApi debtPositionRegistrySearchControllerApi;
   private final InstallmentRegistrySearchControllerApi installmentRegistrySearchControllerApi;
   private final PagoPaRegistrySearchControllerApi pagoPaRegistrySearchControllerApi;
+  private final SilRegistryApi silRegistryApi;
   private final ThreadLocal<String> bearerTokenHolder = new ThreadLocal<>();
 
   public RegistriesApisHolder(
@@ -36,6 +38,7 @@ public class RegistriesApisHolder {
     this.debtPositionRegistrySearchControllerApi = new DebtPositionRegistrySearchControllerApi(apiClient);
     this.installmentRegistrySearchControllerApi = new InstallmentRegistrySearchControllerApi(apiClient);
     this.pagoPaRegistrySearchControllerApi = new PagoPaRegistrySearchControllerApi(apiClient);
+    this.silRegistryApi = new SilRegistryApi(apiClient);
   }
 
   @PreDestroy
@@ -62,6 +65,13 @@ public class RegistriesApisHolder {
    */
   public PagoPaRegistrySearchControllerApi getPagoPaRegistrySearchControllerApi(String accessToken) {
     return getApi(accessToken, pagoPaRegistrySearchControllerApi);
+  }
+
+  /**
+   * It will return a {@link SilRegistryApi} instrumented with the provided accessToken. Use null if auth is not required
+   */
+  public SilRegistryApi getSilRegistryApi(String accessToken) {
+    return getApi(accessToken, silRegistryApi);
   }
 
   private <T extends BaseApi> T getApi(String accessToken, T api) {

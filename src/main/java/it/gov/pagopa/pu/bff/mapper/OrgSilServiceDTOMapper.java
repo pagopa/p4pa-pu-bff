@@ -13,8 +13,8 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface OrgSilServiceDTOMapper {
   @Mapping(target = "authConfig", ignore = true)
-  @Mapping(target = "legacyBasicAuthConfig", conditionExpression = "java(orgSilService.getAuthConfig()!=null && \"legacyBasic\".equals(orgSilService.getAuthConfig().getAuthConfig()))", source = "authConfig", qualifiedByName = "mapAuthConfig")
-  @Mapping(target = "legacyJwtAuthConfig", conditionExpression = "java(orgSilService.getAuthConfig()!=null && \"legacyJwt\".equals(orgSilService.getAuthConfig().getAuthConfig()))", source = "authConfig", qualifiedByName = "mapAuthConfig")
+  @Mapping(target = "legacyBasicAuthConfig", conditionExpression = "java(orgSilService.getAuthConfig()!=null && Boolean.TRUE.equals(orgSilService.getFlagLegacy()) && \"legacyBasic\".equals(orgSilService.getAuthConfig().getAuthConfig()))", source = "authConfig", qualifiedByName = "mapAuthConfig")
+  @Mapping(target = "legacyJwtAuthConfig", conditionExpression = "java(orgSilService.getAuthConfig()!=null && Boolean.TRUE.equals(orgSilService.getFlagLegacy()) && \"legacyJwt\".equals(orgSilService.getAuthConfig().getAuthConfig()))", source = "authConfig", qualifiedByName = "mapAuthConfig")
   OrgSilServiceDTO map(OrgSilService orgSilService);
 
   List<OrgSilServiceDTO> map(List<OrgSilService> orgSilServiceList);

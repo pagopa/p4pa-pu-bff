@@ -1,10 +1,10 @@
 package it.gov.pagopa.pu.bff.controller;
 
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
+import it.gov.pagopa.pu.bff.dto.OrgSilServiceDTO;
 import it.gov.pagopa.pu.bff.security.SecurityUtilsTest;
 import it.gov.pagopa.pu.bff.service.org_sil_service.OrgSilServiceRetrieverService;
 import it.gov.pagopa.pu.bff.util.TestUtils;
-import it.gov.pagopa.pu.organization.dto.generated.OrgSilService;
 import it.gov.pagopa.pu.organization.dto.generated.OrgSilServiceType;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -59,13 +59,13 @@ class OrgSilServiceControllerTest {
     long organizationId = 1L;
     OrgSilServiceType serviceType = OrgSilServiceType.ACTUALIZATION;
 
-    List<OrgSilService> expectedResult = new ArrayList<>();
-    expectedResult.add(podamFactory.manufacturePojo(OrgSilService.class));
+    List<OrgSilServiceDTO> expectedResult = new ArrayList<>();
+    expectedResult.add(new OrgSilServiceDTO());
 
     when(orgSilServiceRetrieverServiceMock.getOrgSilServices(organizationId,serviceType, loggedUser, accessToken))
       .thenReturn(expectedResult);
 
-    ResponseEntity<List<OrgSilService>> response = orgSilServiceController.getOrgSilServices(organizationId,serviceType);
+    ResponseEntity<List<OrgSilServiceDTO>> response = orgSilServiceController.getOrgSilServices(organizationId,serviceType);
 
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertNotNull(response.getBody());

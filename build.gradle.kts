@@ -205,7 +205,7 @@ tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>("ope
     "WorkflowCreatedDTO" to "it.gov.pagopa.pu.workflowhub.dto.generated.WorkflowCreatedDTO",
     "ManageDebtPositionDTO" to "it.gov.pagopa.pu.debtpositions.dto.generated.ManageDebtPositionDTO",
     "OrgSilServiceType" to "it.gov.pagopa.pu.organization.dto.generated.OrgSilServiceType",
-    "OrgSilService" to "it.gov.pagopa.pu.organization.dto.generated.OrgSilService",
+    "OrgSilServiceDTO" to "it.gov.pagopa.pu.bff.dto.OrgSilServiceDTO",
     "AssessmentsRegistryStatus" to "it.gov.pagopa.pu.classification.dto.generated.AssessmentsRegistryStatus",
     "AssessmentsRegistry" to "it.gov.pagopa.pu.classification.dto.generated.AssessmentsRegistry",
     "AssessmentsExtendedDTO" to "it.gov.pagopa.pu.bff.dto.AssessmentsExtendedDTO",

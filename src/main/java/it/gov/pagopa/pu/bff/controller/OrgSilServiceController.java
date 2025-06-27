@@ -1,9 +1,9 @@
 package it.gov.pagopa.pu.bff.controller;
 
 import it.gov.pagopa.pu.bff.controller.generated.OrgSilServiceApi;
+import it.gov.pagopa.pu.bff.dto.OrgSilServiceDTO;
 import it.gov.pagopa.pu.bff.security.SecurityUtils;
 import it.gov.pagopa.pu.bff.service.org_sil_service.OrgSilServiceRetrieverService;
-import it.gov.pagopa.pu.organization.dto.generated.OrgSilService;
 import it.gov.pagopa.pu.organization.dto.generated.OrgSilServiceType;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +22,7 @@ public class OrgSilServiceController implements OrgSilServiceApi {
   }
 
   @Override
-  public ResponseEntity<List<OrgSilService>> getOrgSilServices(Long organizationId, OrgSilServiceType serviceType) {
+  public ResponseEntity<List<OrgSilServiceDTO>> getOrgSilServices(Long organizationId, OrgSilServiceType serviceType) {
     log.info("User requested getOrgSilServices having organizationId {} and serviceType {}",organizationId,serviceType);
     return ResponseEntity.ok(orgSilServiceRetrieverService.getOrgSilServices(organizationId,serviceType,
             SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken()));

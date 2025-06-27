@@ -124,4 +124,19 @@ class OrgSilServiceDTOMapperTest {
     assertNull(result.getLegacyBasicAuthConfig());
     assertNull(result.getLegacyJwtAuthConfig());
   }
+
+  @Test
+  void givenNullAuthConfigWhenMapToPagedAssessmentsRegistryThenCorrectMapping() {
+    OrgSilService orgSilService = podamFactory.manufacturePojo(
+            OrgSilService.class);
+    orgSilService.setAuthConfig(null);
+
+    OrgSilServiceDTO result = mapper.map(orgSilService);
+
+    assertNotNull(result);
+    TestUtils.checkNotNullFields(result,"authConfig","legacyJwtAuthConfig","legacyBasicAuthConfig");
+    TestUtils.reflectionEqualsByName(orgSilService,result,"authConfig");
+    assertNull(result.getLegacyBasicAuthConfig());
+    assertNull(result.getLegacyJwtAuthConfig());
+  }
 }

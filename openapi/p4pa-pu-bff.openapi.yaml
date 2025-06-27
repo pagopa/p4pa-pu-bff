@@ -1701,7 +1701,7 @@ paths:
               schema:
                 type: array
                 items:
-                  type: 'OrgSilService'
+                  type: 'OrgSilServiceDTO'
         '401':
           description: Unauthorized - Missing or invalid token
         '403':

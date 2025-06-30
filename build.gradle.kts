@@ -214,7 +214,9 @@ tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>("ope
     "RegistryPagoPaEventType" to "it.gov.pagopa.pu.registries.dto.generated.RegistryPagoPaEventType",
     "PagoPaRegistry" to "it.gov.pagopa.pu.registries.dto.generated.PagoPaRegistry",
     "SilRegistryDTO" to "it.gov.pagopa.pu.registries.dto.generated.SilRegistryDTO",
-    "PagoPaRegistryDTO" to "it.gov.pagopa.pu.registries.dto.generated.PagoPaRegistryDTO"
+    "PagoPaRegistryDTO" to "it.gov.pagopa.pu.registries.dto.generated.PagoPaRegistryDTO",
+    "SilRegistry" to "it.gov.pagopa.pu.registries.dto.generated.SilRegistry",
+    "RegistrySilEventType" to "it.gov.pagopa.pu.registries.dto.generated.RegistrySilEventType"
   ))
   configOptions.set(mapOf(
     "dateLibrary" to "java8",

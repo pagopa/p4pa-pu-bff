@@ -31,15 +31,18 @@ public class SilRegistryRetrieverServiceImpl implements SilRegistryRetrieverServ
   @Override
   public SilRegistryDTO getSilRegistry(Long organizationId, String registryId, UserInfo loggedUser, String accessToken) {
     authorizationService.validateBrokerAdminRole(loggedUser);
-
-    String orgFiscalCode = organizationRetrieverService.getOrgFiscalCode(organizationId, loggedUser, accessToken);
-
     SilRegistryDTO silRegistry = silRegistryService.getSilRegistry(registryId, accessToken);
-
-    if (silRegistry == null || !orgFiscalCode.equals(silRegistry.getOrgFiscalCode())) {
-      throw new ResourceNotFoundException("SilRegistry with ID " + registryId + " not found or fiscal code mismatch.");
+    if (silRegistry != null) {
+      validateSilRegistry(organizationId, silRegistry, loggedUser, accessToken);
     }
     return silRegistry;
+  }
+
+  private void validateSilRegistry(Long organizationId, SilRegistryDTO silRegistryDTO, UserInfo loggedUser, String accessToken) {
+    String orgFiscalCode = organizationRetrieverService.getOrgFiscalCode(organizationId, loggedUser, accessToken);
+    if (StringUtils.isBlank(orgFiscalCode) || !orgFiscalCode.equals(silRegistryDTO.getOrgFiscalCode())) {
+      throw new ResourceNotFoundException("SilRegistry having id " + silRegistryDTO.getRegistryId() + " not found");
+    }
   }
 
   @Override

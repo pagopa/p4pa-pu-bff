@@ -5,6 +5,7 @@ import it.gov.pagopa.pu.bff.connector.debt_position.DebtPositionTypeOrgService;
 import it.gov.pagopa.pu.bff.connector.organization.OrganizationService;
 import it.gov.pagopa.pu.bff.dto.generated.OrganizationDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedOrganizationWithDebtPositionTypeOrgCount;
+import it.gov.pagopa.pu.bff.exception.ResourceNotFoundException;
 import it.gov.pagopa.pu.bff.mapper.OrganizationDTOMapper;
 import it.gov.pagopa.pu.bff.mapper.OrganizationWithDebtPositionTypeOrgCountMapper;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
@@ -12,14 +13,15 @@ import it.gov.pagopa.pu.debtpositions.dto.generated.CollectionModelDebtPositionT
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrgCountByOrganizationId;
 import it.gov.pagopa.pu.organization.dto.generated.Organization;
 import it.gov.pagopa.pu.organization.dto.generated.PagedModelOrganization;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -98,4 +100,12 @@ public class OrganizationRetrieverServiceImpl implements OrganizationRetrieverSe
     return collection.getEmbedded().getDebtPositionTypeOrgCountByOrganizationIds();
   }
 
+  public String getOrgFiscalCode(Long organizationId, UserInfo loggedUser, String accessToken) {
+    Organization organization = organizationService.getOrganizationByOrganizationId(organizationId, accessToken);
+    if(organization!=null && organization.getBrokerId()!=null && organization.getBrokerId().equals(loggedUser.getBrokerId())){
+      return organization.getOrgFiscalCode();
+    }else{
+      throw new ResourceNotFoundException("Organization having organizationId "+ organizationId +" not found");
+    }
+  }
 }

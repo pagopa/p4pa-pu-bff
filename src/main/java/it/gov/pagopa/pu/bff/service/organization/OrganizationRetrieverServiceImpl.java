@@ -105,7 +105,7 @@ public class OrganizationRetrieverServiceImpl implements OrganizationRetrieverSe
     if(organization!=null && organization.getBrokerId()!=null && organization.getBrokerId().equals(loggedUser.getBrokerId())){
       return organization.getOrgFiscalCode();
     }else{
-      throw new ResourceNotFoundException("Organization having organizationId "+ organizationId +" not found");
+      throw new ResourceNotFoundException("Organization having organizationId "+ organizationId +" and brokerId "+loggedUser.getBrokerId()+" not found");
     }
   }
 }

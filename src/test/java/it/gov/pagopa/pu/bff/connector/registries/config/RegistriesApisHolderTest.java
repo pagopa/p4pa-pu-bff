@@ -2,6 +2,7 @@ package it.gov.pagopa.pu.bff.connector.registries.config;
 
 import it.gov.pagopa.pu.bff.connector.BaseApiHolderTest;
 import it.gov.pagopa.pu.registries.dto.generated.RegistryPagoPaEventType;
+import it.gov.pagopa.pu.registries.dto.generated.RegistrySilEventType;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -82,6 +83,15 @@ class RegistriesApisHolderTest  extends BaseApiHolderTest {
     assertAuthenticationShouldBeSetInThreadSafeMode(
       accessToken -> registriesApisHolder.getPagoPaRegistryApi(accessToken)
         .getPagoPaRegistry("pagoPaRegistryId"),
+      new ParameterizedTypeReference<>() {},
+      registriesApisHolder::unload);
+  }
+
+  @Test
+  void whenGetSilRegistrySearchControllerApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
+    assertAuthenticationShouldBeSetInThreadSafeMode(
+      accessToken -> registriesApisHolder.getSilRegistrySearchControllerApi(accessToken)
+        .crudSilRegistriesSearchByFilters(RegistrySilEventType.pivotSILChiediAccertamento, OffsetDateTime.now(),OffsetDateTime.now(),"orgFiscalCode","iuv",0,10, Collections.emptyList()),
       new ParameterizedTypeReference<>() {},
       registriesApisHolder::unload);
   }

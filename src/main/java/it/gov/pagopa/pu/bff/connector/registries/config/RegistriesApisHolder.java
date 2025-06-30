@@ -17,6 +17,7 @@ public class RegistriesApisHolder {
   private final PagoPaRegistrySearchControllerApi pagoPaRegistrySearchControllerApi;
   private final PagoPaRegistryApi pagoPaRegistryApi;
   private final SilRegistryApi silRegistryApi;
+  private final SilRegistrySearchControllerApi silRegistrySearchControllerApi;
   private final ThreadLocal<String> bearerTokenHolder = new ThreadLocal<>();
 
   public RegistriesApisHolder(
@@ -37,6 +38,7 @@ public class RegistriesApisHolder {
     this.installmentRegistrySearchControllerApi = new InstallmentRegistrySearchControllerApi(apiClient);
     this.pagoPaRegistrySearchControllerApi = new PagoPaRegistrySearchControllerApi(apiClient);
     this.silRegistryApi = new SilRegistryApi(apiClient);
+    this.silRegistrySearchControllerApi = new SilRegistrySearchControllerApi(apiClient);
     this.pagoPaRegistryApi = new PagoPaRegistryApi(apiClient);
   }
 
@@ -64,6 +66,13 @@ public class RegistriesApisHolder {
    */
   public PagoPaRegistrySearchControllerApi getPagoPaRegistrySearchControllerApi(String accessToken) {
     return getApi(accessToken, pagoPaRegistrySearchControllerApi);
+  }
+
+  /**
+   * It will return a {@link SilRegistrySearchControllerApi} instrumented with the provided accessToken. Use null if auth is not required
+   */
+  public SilRegistrySearchControllerApi getSilRegistrySearchControllerApi(String accessToken) {
+    return getApi(accessToken, silRegistrySearchControllerApi);
   }
 
   /**

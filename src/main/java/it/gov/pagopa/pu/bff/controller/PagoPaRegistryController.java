@@ -40,7 +40,7 @@ public class PagoPaRegistryController implements PagoPaRegistryApi {
   @Override
   public ResponseEntity<PagoPaRegistryDTO> getPagoPaRegistry(Long organizationId, String pagoPaRegistryId) {
     log.info("User requested getPagoPaRegistry having organizationId {} and pagoPaRegistryId {}", organizationId, pagoPaRegistryId);
-    return ResponseEntity.ok(pagoPaRegistryRetrieverService.getPagoPaRegistry(
+    return ResponseEntity.ofNullable(pagoPaRegistryRetrieverService.getPagoPaRegistry(
             organizationId,pagoPaRegistryId, SecurityUtils.getLoggedUser(),SecurityUtils.getAccessToken()));
   }
 }

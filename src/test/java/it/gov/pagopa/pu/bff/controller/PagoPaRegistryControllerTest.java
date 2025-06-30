@@ -89,5 +89,21 @@ class PagoPaRegistryControllerTest {
     Assertions.assertNotNull(response.getBody());
     Assertions.assertSame(expectedResult, response.getBody());
   }
+
+  @Test
+  void givenNoPagoPaRegistryWhenGetPagoPaRegistryThenNotFound() {
+    long organizationId = 1L;
+    String pagoPaRegistryId = "pagoPaRegistryId";
+
+    Mockito.when(pagoPaRegistryRetrieverService.getPagoPaRegistry(
+                    organizationId, pagoPaRegistryId, loggedUser, accessToken))
+      .thenReturn(null);
+
+    ResponseEntity<PagoPaRegistryDTO> response = pagoPaRegistryController.getPagoPaRegistry(
+            organizationId, pagoPaRegistryId);
+
+    Assertions.assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+    Assertions.assertNull(response.getBody());
+  }
 }
 

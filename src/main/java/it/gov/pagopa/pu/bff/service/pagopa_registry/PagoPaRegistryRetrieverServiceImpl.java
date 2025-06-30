@@ -52,7 +52,9 @@ public class PagoPaRegistryRetrieverServiceImpl implements PagoPaRegistryRetriev
     public PagoPaRegistryDTO getPagoPaRegistry(Long organizationId, String pagoPaRegistryId, UserInfo loggedUser, String accessToken) {
         authorizationService.validateBrokerAdminRole(loggedUser);
         PagoPaRegistryDTO pagoPaRegistry = pagoPaRegistryService.getPagoPaRegistry(pagoPaRegistryId, accessToken);
-        validatePagoPaRegistry(organizationId, pagoPaRegistry, loggedUser, accessToken);
+        if(pagoPaRegistry!=null){
+            validatePagoPaRegistry(organizationId, pagoPaRegistry, loggedUser, accessToken);
+        }
         return pagoPaRegistry;
     }
 

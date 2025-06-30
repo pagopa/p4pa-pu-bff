@@ -8256,6 +8256,10 @@
         },
         "required" : [ "dateTime", "eventCategory", "eventSubType", "eventType", "grantorId", "orgFiscalCode", "outcome", "registryId", "requestorId", "traceId" ]
       },
+      "JwtAlgorithm" : {
+        "type" : "string",
+        "enum" : [ "HS256", "HS384", "HS512", "RS256", "RS384", "RS512", "ES256", "ES384", "ES512" ]
+      },
       "OrgSilServiceDTO" : {
         "type" : "object",
         "properties" : {
@@ -8351,7 +8355,7 @@
             "type" : "string"
           },
           "algorithm" : {
-            "type" : "string"
+            "$ref" : "#/components/schemas/JwtAlgorithm"
           },
           "signingKey" : {
             "type" : "string",

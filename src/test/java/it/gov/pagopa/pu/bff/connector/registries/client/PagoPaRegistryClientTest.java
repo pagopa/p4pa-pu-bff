@@ -1,7 +1,6 @@
 package it.gov.pagopa.pu.bff.connector.registries.client;
 
 import it.gov.pagopa.pu.bff.connector.registries.config.RegistriesApisHolder;
-import it.gov.pagopa.pu.bff.exception.ResourceNotFoundException;
 import it.gov.pagopa.pu.bff.util.TestUtils;
 import it.gov.pagopa.pu.registries.controller.generated.PagoPaRegistryApi;
 import it.gov.pagopa.pu.registries.dto.generated.PagoPaRegistryDTO;
@@ -17,7 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.client.HttpClientErrorException;
 import uk.co.jemos.podam.api.PodamFactory;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -60,7 +59,7 @@ class PagoPaRegistryClientTest {
   }
 
   @Test
-  void givenNoPagoPaRegistryWhenGetPagoPaRegistryThenInvokeWithAccessToken() {
+  void givenNoPagoPaRegistryWhenGetPagoPaRegistryThenNull() {
     String accessToken = "TOKEN";
     String pagoPaRegistryId = "pagoPaRegistryId";
 
@@ -69,6 +68,8 @@ class PagoPaRegistryClientTest {
     when(pagoPaRegistryApiMock.getPagoPaRegistry(pagoPaRegistryId))
       .thenThrow(HttpClientErrorException.create(HttpStatus.NOT_FOUND, "NotFound", null, null, null));
 
-    assertThrows(ResourceNotFoundException.class,()->pagoPaRegistryClient.getPagoPaRegistry(pagoPaRegistryId,accessToken));
+    PagoPaRegistryDTO response = pagoPaRegistryClient.getPagoPaRegistry(pagoPaRegistryId,accessToken);
+
+    assertNull(response);
   }
 }

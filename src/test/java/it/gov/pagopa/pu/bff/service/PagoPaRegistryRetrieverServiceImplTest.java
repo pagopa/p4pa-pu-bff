@@ -122,6 +122,25 @@ class PagoPaRegistryRetrieverServiceImplTest {
   }
 
   @Test
+  void givenNoPagoPaRegistryWhenGetPagoPaRegistryThenNull(){
+    Long organizationId = 1L;
+    String pagoPaRegistryId = "pagoPaRegistryId";
+    UserInfo loggedUser = new UserInfo();
+    loggedUser.setUserId("user-123");
+    loggedUser.setMappedExternalUserId("mappedExternalUserId");
+    loggedUser.setBrokerId(2L);
+
+    doNothing().when(authorizationServiceMock).validateBrokerAdminRole(loggedUser);
+    when(pagoPaRegistryServiceMock.getPagoPaRegistry(pagoPaRegistryId,accessToken))
+            .thenReturn(null);
+
+    PagoPaRegistryDTO result = pagoPaRegistryRetrieverService.getPagoPaRegistry(organizationId,pagoPaRegistryId,loggedUser,accessToken);
+
+    assertNull(result);
+    verifyNoInteractions(organizationRetrieverServiceMock);
+  }
+
+  @Test
   void givenNoMatchingOrgFiscalCodeWhenGetPagoPaRegistryThenResourceNotFoundException(){
     Long organizationId = 1L;
     String pagoPaRegistryId = "pagoPaRegistryId";

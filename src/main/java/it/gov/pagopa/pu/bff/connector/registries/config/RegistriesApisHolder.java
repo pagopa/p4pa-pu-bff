@@ -3,10 +3,7 @@ package it.gov.pagopa.pu.bff.connector.registries.config;
 import it.gov.pagopa.pu.bff.config.rest.RestTemplateConfig;
 import it.gov.pagopa.pu.registries.controller.ApiClient;
 import it.gov.pagopa.pu.registries.controller.BaseApi;
-import it.gov.pagopa.pu.registries.controller.generated.DebtPositionRegistrySearchControllerApi;
-import it.gov.pagopa.pu.registries.controller.generated.InstallmentRegistrySearchControllerApi;
-import it.gov.pagopa.pu.registries.controller.generated.PagoPaRegistrySearchControllerApi;
-import it.gov.pagopa.pu.registries.controller.generated.SilRegistryApi;
+import it.gov.pagopa.pu.registries.controller.generated.*;
 import jakarta.annotation.PreDestroy;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.stereotype.Service;
@@ -18,6 +15,7 @@ public class RegistriesApisHolder {
   private final DebtPositionRegistrySearchControllerApi debtPositionRegistrySearchControllerApi;
   private final InstallmentRegistrySearchControllerApi installmentRegistrySearchControllerApi;
   private final PagoPaRegistrySearchControllerApi pagoPaRegistrySearchControllerApi;
+  private final PagoPaRegistryApi pagoPaRegistryApi;
   private final SilRegistryApi silRegistryApi;
   private final ThreadLocal<String> bearerTokenHolder = new ThreadLocal<>();
 
@@ -39,6 +37,7 @@ public class RegistriesApisHolder {
     this.installmentRegistrySearchControllerApi = new InstallmentRegistrySearchControllerApi(apiClient);
     this.pagoPaRegistrySearchControllerApi = new PagoPaRegistrySearchControllerApi(apiClient);
     this.silRegistryApi = new SilRegistryApi(apiClient);
+    this.pagoPaRegistryApi = new PagoPaRegistryApi(apiClient);
   }
 
   @PreDestroy
@@ -72,6 +71,13 @@ public class RegistriesApisHolder {
    */
   public SilRegistryApi getSilRegistryApi(String accessToken) {
     return getApi(accessToken, silRegistryApi);
+  }
+
+  /**
+   * It will return a {@link PagoPaRegistryApi} instrumented with the provided accessToken. Use null if auth is not required
+   */
+  public PagoPaRegistryApi getPagoPaRegistryApi(String accessToken) {
+    return getApi(accessToken, pagoPaRegistryApi);
   }
 
   private <T extends BaseApi> T getApi(String accessToken, T api) {

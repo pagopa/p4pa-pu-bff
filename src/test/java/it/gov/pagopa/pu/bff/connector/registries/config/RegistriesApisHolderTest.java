@@ -76,4 +76,13 @@ class RegistriesApisHolderTest  extends BaseApiHolderTest {
       new ParameterizedTypeReference<>() {},
       registriesApisHolder::unload);
   }
+
+  @Test
+  void whenGetPagoPaRegistryApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
+    assertAuthenticationShouldBeSetInThreadSafeMode(
+      accessToken -> registriesApisHolder.getPagoPaRegistryApi(accessToken)
+        .getPagoPaRegistry("pagoPaRegistryId"),
+      new ParameterizedTypeReference<>() {},
+      registriesApisHolder::unload);
+  }
 }

@@ -1,9 +1,11 @@
 package it.gov.pagopa.pu.bff.connector.registries;
 
+import it.gov.pagopa.pu.bff.connector.registries.client.PagoPaRegistryClient;
 import it.gov.pagopa.pu.bff.connector.registries.client.PagoPaRegistrySearchClient;
 import it.gov.pagopa.pu.bff.dto.PagoPaRegistryFiltersDTO;
 import it.gov.pagopa.pu.bff.util.TestUtils;
 import it.gov.pagopa.pu.registries.dto.generated.PagedModelPagoPaRegistry;
+import it.gov.pagopa.pu.registries.dto.generated.PagoPaRegistryDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,13 +22,14 @@ class PagoPaRegistryServiceTest {
   private static final PodamFactory podamFactory = TestUtils.getPodamFactory();
   @Mock
   private PagoPaRegistrySearchClient pagoPaRegistrySearchClientMock;
+  @Mock
+  private PagoPaRegistryClient pagoPaRegistryClientMock;
   private PagoPaRegistryService service;
 
   @BeforeEach
   void setUp() {
-    service = new PagoPaRegistryServiceImpl(pagoPaRegistrySearchClientMock);
+    service = new PagoPaRegistryServiceImpl(pagoPaRegistrySearchClientMock,pagoPaRegistryClientMock);
   }
-
 
   @Test
   void whenSearchByFiltersThenInvokeClient() {
@@ -40,6 +43,19 @@ class PagoPaRegistryServiceTest {
             .thenReturn(expectedResult);
 
     PagedModelPagoPaRegistry result = service.searchByFilters(orgFiscalCode,filters,pageable,accessToken);
+
+    assertSame(expectedResult, result);
+  }
+
+  @Test
+  void whenGetPagoPaRegistryThenInvokeClient() {
+    String accessToken = "ACCESSTOKEN";
+    PagoPaRegistryDTO expectedResult = podamFactory.manufacturePojo(PagoPaRegistryDTO.class);
+
+    when(pagoPaRegistryClientMock.getPagoPaRegistry(expectedResult.getRegistryId(),accessToken))
+            .thenReturn(expectedResult);
+
+    PagoPaRegistryDTO result = service.getPagoPaRegistry(expectedResult.getRegistryId(),accessToken);
 
     assertSame(expectedResult, result);
   }

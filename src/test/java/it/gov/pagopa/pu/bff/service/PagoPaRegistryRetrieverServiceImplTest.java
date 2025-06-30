@@ -1,18 +1,18 @@
 package it.gov.pagopa.pu.bff.service;
 
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
-import it.gov.pagopa.pu.bff.connector.organization.OrganizationService;
 import it.gov.pagopa.pu.bff.connector.registries.PagoPaRegistryService;
 import it.gov.pagopa.pu.bff.dto.OffsetDateTimeIntervalFilter;
 import it.gov.pagopa.pu.bff.dto.PagoPaRegistryFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedPagoPaRegistry;
 import it.gov.pagopa.pu.bff.exception.ResourceNotFoundException;
 import it.gov.pagopa.pu.bff.mapper.PagoPaRegistryMapper;
+import it.gov.pagopa.pu.bff.service.organization.OrganizationRetrieverService;
 import it.gov.pagopa.pu.bff.service.pagopa_registry.PagoPaRegistryRetrieverService;
 import it.gov.pagopa.pu.bff.service.pagopa_registry.PagoPaRegistryRetrieverServiceImpl;
 import it.gov.pagopa.pu.bff.util.TestUtils;
-import it.gov.pagopa.pu.organization.dto.generated.Organization;
 import it.gov.pagopa.pu.registries.dto.generated.PagedModelPagoPaRegistry;
+import it.gov.pagopa.pu.registries.dto.generated.PagoPaRegistryDTO;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -32,7 +32,7 @@ class PagoPaRegistryRetrieverServiceImplTest {
   @Mock
   private AuthorizationService authorizationServiceMock;
   @Mock
-  private OrganizationService organizationServiceMock;
+  private OrganizationRetrieverService organizationRetrieverServiceMock;
   @Mock
   private PagoPaRegistryService pagoPaRegistryServiceMock;
   @Mock
@@ -43,12 +43,12 @@ class PagoPaRegistryRetrieverServiceImplTest {
 
   @BeforeEach
   void setUp() {
-    pagoPaRegistryRetrieverService = new PagoPaRegistryRetrieverServiceImpl(authorizationServiceMock,organizationServiceMock,pagoPaRegistryServiceMock,pagoPaRegistryMapperMock);
+    pagoPaRegistryRetrieverService = new PagoPaRegistryRetrieverServiceImpl(authorizationServiceMock, organizationRetrieverServiceMock,pagoPaRegistryServiceMock,pagoPaRegistryMapperMock);
   }
 
   @AfterEach
   void verifyNoMoreInteractions() {
-    Mockito.verifyNoMoreInteractions(authorizationServiceMock,organizationServiceMock,
+    Mockito.verifyNoMoreInteractions(authorizationServiceMock, organizationRetrieverServiceMock,
             pagoPaRegistryServiceMock,pagoPaRegistryMapperMock);
   }
 
@@ -59,87 +59,22 @@ class PagoPaRegistryRetrieverServiceImplTest {
     loggedUser.setUserId("user-123");
     loggedUser.setMappedExternalUserId("mappedExternalUserId");
     loggedUser.setBrokerId(2L);
+    String orgFiscalCode = "orgFiscalCode";
 
     PagoPaRegistryFiltersDTO filters = podamFactory.manufacturePojo(PagoPaRegistryFiltersDTO.class);
     Pageable pageable = Pageable.ofSize(10);
     PagedModelPagoPaRegistry pagedModelPagoPaRegistry = podamFactory.manufacturePojo(PagedModelPagoPaRegistry.class);
-    Organization organization = podamFactory.manufacturePojo(Organization.class);
-    organization.setBrokerId(loggedUser.getBrokerId());
-    organization.setOrganizationId(organizationId);
     PagedPagoPaRegistry expectedResult = podamFactory.manufacturePojo(PagedPagoPaRegistry.class);
 
       doNothing().when(authorizationServiceMock).validateBrokerAdminRole(loggedUser);
-      when(organizationServiceMock.getOrganizationByOrganizationId(organizationId,accessToken)).thenReturn(organization);
-      when(pagoPaRegistryServiceMock.searchByFilters(organization.getOrgFiscalCode(),filters,pageable,accessToken)).thenReturn(pagedModelPagoPaRegistry);
+      when(organizationRetrieverServiceMock.getOrgFiscalCode(organizationId,loggedUser,accessToken)).thenReturn(orgFiscalCode);
+      when(pagoPaRegistryServiceMock.searchByFilters(orgFiscalCode,filters,pageable,accessToken)).thenReturn(pagedModelPagoPaRegistry);
       when(pagoPaRegistryMapperMock.mapToPagedPagoPaRegistry(pagedModelPagoPaRegistry)).thenReturn(expectedResult);
 
       PagedPagoPaRegistry result = pagoPaRegistryRetrieverService.getPagoPaRegistries(organizationId,filters,pageable,loggedUser,accessToken);
 
       assertNotNull(result);
       assertSame(expectedResult, result);
-  }
-
-  @Test
-  void givenInvalidBrokerWhenGetPagoPaRegistriesThenResourceNotFoundException() {
-    Long organizationId = 1L;
-    UserInfo loggedUser = new UserInfo();
-    loggedUser.setUserId("user-123");
-    loggedUser.setMappedExternalUserId("mappedExternalUserId");
-    loggedUser.setBrokerId(2L);
-
-    PagoPaRegistryFiltersDTO filters = podamFactory.manufacturePojo(PagoPaRegistryFiltersDTO.class);
-    Pageable pageable = Pageable.ofSize(10);
-    Organization organization = podamFactory.manufacturePojo(Organization.class);
-    organization.setBrokerId(3L);
-    organization.setOrganizationId(organizationId);
-
-    doNothing().when(authorizationServiceMock).validateBrokerAdminRole(loggedUser);
-    when(organizationServiceMock.getOrganizationByOrganizationId(organizationId,accessToken)).thenReturn(organization);
-
-    assertThrows(ResourceNotFoundException.class, ()->pagoPaRegistryRetrieverService.getPagoPaRegistries(organizationId,filters,pageable,loggedUser,accessToken));
-
-    verifyNoInteractions(pagoPaRegistryServiceMock,pagoPaRegistryMapperMock);
-  }
-
-  @Test
-  void givenNoOrganizationBrokerWhenGetPagoPaRegistriesThenResourceNotFoundException() {
-    Long organizationId = 1L;
-    UserInfo loggedUser = new UserInfo();
-    loggedUser.setUserId("user-123");
-    loggedUser.setMappedExternalUserId("mappedExternalUserId");
-    loggedUser.setBrokerId(2L);
-
-    PagoPaRegistryFiltersDTO filters = podamFactory.manufacturePojo(PagoPaRegistryFiltersDTO.class);
-    Pageable pageable = Pageable.ofSize(10);
-    Organization organization = podamFactory.manufacturePojo(Organization.class);
-    organization.setBrokerId(null);
-    organization.setOrganizationId(organizationId);
-
-    doNothing().when(authorizationServiceMock).validateBrokerAdminRole(loggedUser);
-    when(organizationServiceMock.getOrganizationByOrganizationId(organizationId,accessToken)).thenReturn(organization);
-
-    assertThrows(ResourceNotFoundException.class, ()->pagoPaRegistryRetrieverService.getPagoPaRegistries(organizationId,filters,pageable,loggedUser,accessToken));
-
-    verifyNoInteractions(pagoPaRegistryServiceMock,pagoPaRegistryMapperMock);
-  }
-
-  @Test
-  void givenNoOrganizationWhenGetPagoPaRegistriesThenResourceNotFoundException() {
-    Long organizationId = 1L;
-    UserInfo loggedUser = new UserInfo();
-    loggedUser.setUserId("user-123");
-    loggedUser.setMappedExternalUserId("mappedExternalUserId");
-    loggedUser.setBrokerId(2L);
-
-    PagoPaRegistryFiltersDTO filters = podamFactory.manufacturePojo(PagoPaRegistryFiltersDTO.class);
-    Pageable pageable = Pageable.ofSize(10);
-
-    doNothing().when(authorizationServiceMock).validateBrokerAdminRole(loggedUser);
-    when(organizationServiceMock.getOrganizationByOrganizationId(organizationId,accessToken)).thenReturn(null);
-
-    assertThrows(ResourceNotFoundException.class, ()->pagoPaRegistryRetrieverService.getPagoPaRegistries(organizationId,filters,pageable,loggedUser,accessToken));
-
-    verifyNoInteractions(pagoPaRegistryServiceMock,pagoPaRegistryMapperMock);
   }
 
   @Test
@@ -159,7 +94,90 @@ class PagoPaRegistryRetrieverServiceImplTest {
 
     assertThrows(IllegalArgumentException.class, ()->pagoPaRegistryRetrieverService.getPagoPaRegistries(organizationId,filters,pageable,loggedUser,accessToken));
 
-    verifyNoInteractions(organizationServiceMock,pagoPaRegistryServiceMock,pagoPaRegistryMapperMock);
+    verifyNoInteractions(organizationRetrieverServiceMock,pagoPaRegistryServiceMock,pagoPaRegistryMapperMock);
+  }
+
+  @Test
+  void givenMatchingOrgFiscalCodeWhenGetPagoPaRegistryThenOk(){
+    Long organizationId = 1L;
+    String pagoPaRegistryId = "pagoPaRegistryId";
+    UserInfo loggedUser = new UserInfo();
+    loggedUser.setUserId("user-123");
+    loggedUser.setMappedExternalUserId("mappedExternalUserId");
+    loggedUser.setBrokerId(2L);
+    String orgFiscalCode = "orgFiscalCode";
+    PagoPaRegistryDTO expectedResult = podamFactory.manufacturePojo(PagoPaRegistryDTO.class);
+    expectedResult.setOrgFiscalCode(orgFiscalCode);
+
+    doNothing().when(authorizationServiceMock).validateBrokerAdminRole(loggedUser);
+    when(pagoPaRegistryServiceMock.getPagoPaRegistry(pagoPaRegistryId,accessToken))
+            .thenReturn(expectedResult);
+    when(organizationRetrieverServiceMock.getOrgFiscalCode(organizationId, loggedUser,accessToken))
+            .thenReturn(orgFiscalCode);
+
+    PagoPaRegistryDTO result = pagoPaRegistryRetrieverService.getPagoPaRegistry(organizationId,pagoPaRegistryId,loggedUser,accessToken);
+
+    assertNotNull(result);
+    assertSame(expectedResult,result);
+  }
+
+  @Test
+  void givenNoPagoPaRegistryWhenGetPagoPaRegistryThenNull(){
+    Long organizationId = 1L;
+    String pagoPaRegistryId = "pagoPaRegistryId";
+    UserInfo loggedUser = new UserInfo();
+    loggedUser.setUserId("user-123");
+    loggedUser.setMappedExternalUserId("mappedExternalUserId");
+    loggedUser.setBrokerId(2L);
+
+    doNothing().when(authorizationServiceMock).validateBrokerAdminRole(loggedUser);
+    when(pagoPaRegistryServiceMock.getPagoPaRegistry(pagoPaRegistryId,accessToken))
+            .thenReturn(null);
+
+    PagoPaRegistryDTO result = pagoPaRegistryRetrieverService.getPagoPaRegistry(organizationId,pagoPaRegistryId,loggedUser,accessToken);
+
+    assertNull(result);
+    verifyNoInteractions(organizationRetrieverServiceMock);
+  }
+
+  @Test
+  void givenNoMatchingOrgFiscalCodeWhenGetPagoPaRegistryThenResourceNotFoundException(){
+    Long organizationId = 1L;
+    String pagoPaRegistryId = "pagoPaRegistryId";
+    UserInfo loggedUser = new UserInfo();
+    loggedUser.setUserId("user-123");
+    loggedUser.setMappedExternalUserId("mappedExternalUserId");
+    loggedUser.setBrokerId(2L);
+    String orgFiscalCode = "orgFiscalCode";
+    PagoPaRegistryDTO expectedResult = podamFactory.manufacturePojo(PagoPaRegistryDTO.class);
+    expectedResult.setOrgFiscalCode(orgFiscalCode+1);
+
+    doNothing().when(authorizationServiceMock).validateBrokerAdminRole(loggedUser);
+    when(pagoPaRegistryServiceMock.getPagoPaRegistry(pagoPaRegistryId,accessToken))
+            .thenReturn(expectedResult);
+    when(organizationRetrieverServiceMock.getOrgFiscalCode(organizationId, loggedUser,accessToken))
+            .thenReturn(orgFiscalCode);
+
+    assertThrows(ResourceNotFoundException.class,()->pagoPaRegistryRetrieverService.getPagoPaRegistry(organizationId,pagoPaRegistryId,loggedUser,accessToken));
+  }
+
+  @Test
+  void givenNoOrgFiscalCodeWhenGetPagoPaRegistryThenResourceNotFoundException(){
+    Long organizationId = 1L;
+    String pagoPaRegistryId = "pagoPaRegistryId";
+    UserInfo loggedUser = new UserInfo();
+    loggedUser.setUserId("user-123");
+    loggedUser.setMappedExternalUserId("mappedExternalUserId");
+    loggedUser.setBrokerId(2L);
+    PagoPaRegistryDTO expectedResult = podamFactory.manufacturePojo(PagoPaRegistryDTO.class);
+
+    doNothing().when(authorizationServiceMock).validateBrokerAdminRole(loggedUser);
+    when(pagoPaRegistryServiceMock.getPagoPaRegistry(pagoPaRegistryId,accessToken))
+            .thenReturn(expectedResult);
+    when(organizationRetrieverServiceMock.getOrgFiscalCode(organizationId, loggedUser,accessToken))
+            .thenReturn(null);
+
+    assertThrows(ResourceNotFoundException.class,()->pagoPaRegistryRetrieverService.getPagoPaRegistry(organizationId,pagoPaRegistryId,loggedUser,accessToken));
   }
 }
 

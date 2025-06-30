@@ -6,6 +6,7 @@ import it.gov.pagopa.pu.bff.dto.PagoPaRegistryFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedPagoPaRegistry;
 import it.gov.pagopa.pu.bff.security.SecurityUtils;
 import it.gov.pagopa.pu.bff.service.pagopa_registry.PagoPaRegistryRetrieverService;
+import it.gov.pagopa.pu.registries.dto.generated.PagoPaRegistryDTO;
 import it.gov.pagopa.pu.registries.dto.generated.RegistryPagoPaEventType;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -34,5 +35,12 @@ public class PagoPaRegistryController implements PagoPaRegistryApi {
                     .iuv(iuv)
                     .build(),
             pageable, SecurityUtils.getLoggedUser(),SecurityUtils.getAccessToken()));
+  }
+
+  @Override
+  public ResponseEntity<PagoPaRegistryDTO> getPagoPaRegistry(Long organizationId, String pagoPaRegistryId) {
+    log.info("User requested getPagoPaRegistry having organizationId {} and pagoPaRegistryId {}", organizationId, pagoPaRegistryId);
+    return ResponseEntity.ofNullable(pagoPaRegistryRetrieverService.getPagoPaRegistry(
+            organizationId,pagoPaRegistryId, SecurityUtils.getLoggedUser(),SecurityUtils.getAccessToken()));
   }
 }

@@ -2523,6 +2523,38 @@ paths:
         '500':
           description: Internal Server Error
       x-spring-paginated: true
+  /organization/{organizationId}/pagopa-registries/{pagoPaRegistryId}:
+    get:
+      tags:
+        - PagoPaRegistry
+      operationId: getPagoPaRegistry
+      parameters:
+        - name: organizationId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: pagoPaRegistryId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/hal+json:
+              schema:
+                type: 'PagoPaRegistryDTO'
+        '401':
+          description: Unauthorized - Missing or invalid token
+        "400":
+          description: Invalid request
+        '404':
+          description: Not Found
+        '500':
+          description: Internal Server Error
 security:
   - BearerAuth: [ ]
 components:

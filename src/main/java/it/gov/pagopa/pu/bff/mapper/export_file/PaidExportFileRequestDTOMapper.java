@@ -15,6 +15,9 @@ public class PaidExportFileRequestDTOMapper {
       .paymentDateTime(paidExportFileRequest.getFilterFields().getPaymentDate() != null ?
         DateUtils.toRangeClosedOffsetDateTimeIntervalFilter(paidExportFileRequest.getFilterFields().getPaymentDate())
         : null)
+      .installmentUpdateDateTime(paidExportFileRequest.getFilterFields().getInstallmentUpdateDate() != null ?
+        DateUtils.toRangeClosedOffsetDateTimeIntervalFilter(paidExportFileRequest.getFilterFields().getInstallmentUpdateDate())
+        : null)
       .debtPositionTypeOrgId(paidExportFileRequest.getFilterFields().getDebtPositionTypeOrgId() != null ?
         paidExportFileRequest.getFilterFields().getDebtPositionTypeOrgId()
         : null)

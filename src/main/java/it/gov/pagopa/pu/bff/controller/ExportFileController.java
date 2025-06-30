@@ -2,10 +2,13 @@ package it.gov.pagopa.pu.bff.controller;
 
 import it.gov.pagopa.pu.bff.controller.generated.ExportFilesApi;
 import it.gov.pagopa.pu.bff.dto.ExportFileFiltersDTO;
+import it.gov.pagopa.pu.bff.dto.LocalDateIntervalFilter;
 import it.gov.pagopa.pu.bff.dto.OffsetDateTimeIntervalFilter;
 import it.gov.pagopa.pu.bff.dto.generated.PagedExportFile;
 import it.gov.pagopa.pu.bff.dto.generated.PaidExportFileRequest;
+import it.gov.pagopa.pu.bff.dto.generated.PaidExportFileRequestFilterFields;
 import it.gov.pagopa.pu.bff.dto.generated.ReceiptsArchivingExportFileRequest;
+import it.gov.pagopa.pu.bff.exception.InvalidParameterException;
 import it.gov.pagopa.pu.bff.security.SecurityUtils;
 import it.gov.pagopa.pu.bff.service.export_flow_file.ExportFileRetrieverService;
 import it.gov.pagopa.pu.processexecutions.dto.generated.ClassificationsExportFileRequestDTO;
@@ -53,9 +56,28 @@ public class ExportFileController implements ExportFilesApi {
       "User requested paid export file having organizationId {}",
       requestDTO.getOrganizationId());
 
+    if (requestDTO.getFilterFields() != null){
+      validatePaidExportFilterFieldsDate(requestDTO);
+    }
+
     exportFileRetrieverService.createPaidExportFile(requestDTO, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken());
 
     return ResponseEntity.ok().build();
+  }
+
+  private static void validatePaidExportFilterFieldsDate(PaidExportFileRequest requestDTO) {
+    PaidExportFileRequestFilterFields filterFields = requestDTO.getFilterFields();
+    LocalDateIntervalFilter paymentDate = filterFields.getPaymentDate();
+    LocalDateIntervalFilter installmentUpdateDate = filterFields.getInstallmentUpdateDate();
+    boolean hasPaymentDates = paymentDate != null && paymentDate.getFrom() != null && paymentDate.getTo() != null;
+    boolean hasInstallmentDates = installmentUpdateDate != null && installmentUpdateDate.getFrom() != null && installmentUpdateDate.getTo() != null;
+
+    if (hasPaymentDates == hasInstallmentDates) {
+      throw new InvalidParameterException(
+        "You must provide only one of the following date ranges: either the payment date range (paymentDateFrom and paymentDateTo) or the installment update date range (installmentUpdateDateTimeFrom and installmentUpdateDateTimeTo). Providing both or neither is not allowed"
+      );
+    }
+
   }
 
   @Override

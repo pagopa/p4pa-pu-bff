@@ -3567,6 +3567,8 @@ components:
           properties:
             paymentDate:
               type: 'LocalDateInterval'
+            installmentUpdateDate:
+              type: 'LocalDateInterval'
             debtPositionTypeOrgId:
               type: integer
               format: int64

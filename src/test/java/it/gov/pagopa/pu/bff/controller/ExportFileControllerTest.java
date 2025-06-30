@@ -2,6 +2,7 @@ package it.gov.pagopa.pu.bff.controller;
 
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.dto.ExportFileFiltersDTO;
+import it.gov.pagopa.pu.bff.dto.LocalDateIntervalFilter;
 import it.gov.pagopa.pu.bff.dto.OffsetDateTimeIntervalFilter;
 import it.gov.pagopa.pu.bff.dto.generated.ExportFile;
 import it.gov.pagopa.pu.bff.dto.generated.PagedExportFile;
@@ -9,6 +10,7 @@ import it.gov.pagopa.pu.bff.dto.generated.PaidExportFileRequest;
 import it.gov.pagopa.pu.bff.dto.generated.PaidExportFileRequestFilterFields;
 import it.gov.pagopa.pu.bff.dto.generated.ReceiptsArchivingExportFileRequest;
 import it.gov.pagopa.pu.bff.dto.generated.ReceiptsArchivingExportFileRequestFilterFields;
+import it.gov.pagopa.pu.bff.exception.InvalidParameterException;
 import it.gov.pagopa.pu.bff.security.SecurityUtilsTest;
 import it.gov.pagopa.pu.bff.service.export_flow_file.ExportFileRetrieverService;
 import it.gov.pagopa.pu.bff.util.TestUtils;
@@ -118,6 +120,48 @@ class ExportFileControllerTest {
     Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
     Mockito.verify(exportFileRetrieverServiceMock)
       .createPaidExportFile(Mockito.eq(requestDTO), Mockito.same(loggedUser), Mockito.same(accessToken));
+  }
+
+  @Test
+  void givenBothDateWhenCreatePaidExportFileThenThrowException(){
+    LocalDateIntervalFilter localDateIntervalFilter = new LocalDateIntervalFilter();
+    PaidExportFileRequestFilterFields paidExportFileRequestFilterFields = PaidExportFileRequestFilterFields.builder()
+      .paymentDate(localDateIntervalFilter)
+      .installmentUpdateDate(localDateIntervalFilter)
+      .build();
+    PaidExportFileRequest requestDTO = PaidExportFileRequest.builder()
+      .organizationId(1L)
+      .exportFileType(PaidExportFileRequestDTO.ExportFileTypeEnum.PAID)
+      .fileVersion("version1")
+      .filterFields(paidExportFileRequestFilterFields)
+      .build();
+
+    InvalidParameterException ex = Assertions.assertThrows(InvalidParameterException.class, () ->
+      exportFileController.createPaidExportFile(requestDTO));
+    Assertions.assertEquals("You must provide only one of the following date ranges: either the payment date range (paymentDateFrom and paymentDateTo) or the installment update date range (installmentUpdateDateTimeFrom and installmentUpdateDateTimeTo). Providing both or neither is not allowed", ex.getMessage());
+  }
+
+  @Test
+  void givenNoDatesWhenCreatePaidExportFileThenThrowException() {
+    PaidExportFileRequestFilterFields filterFields = PaidExportFileRequestFilterFields.builder()
+      .paymentDate(null)
+      .installmentUpdateDate(null)
+      .build();
+
+    PaidExportFileRequest requestDTO = PaidExportFileRequest.builder()
+      .organizationId(1L)
+      .exportFileType(PaidExportFileRequestDTO.ExportFileTypeEnum.PAID)
+      .fileVersion("version1")
+      .filterFields(filterFields)
+      .build();
+
+    InvalidParameterException ex = Assertions.assertThrows(InvalidParameterException.class, () ->
+      exportFileController.createPaidExportFile(requestDTO));
+
+    Assertions.assertEquals(
+      "You must provide only one of the following date ranges: either the payment date range (paymentDateFrom and paymentDateTo) or the installment update date range (installmentUpdateDateTimeFrom and installmentUpdateDateTimeTo). Providing both or neither is not allowed",
+      ex.getMessage()
+    );
   }
 
   @Test

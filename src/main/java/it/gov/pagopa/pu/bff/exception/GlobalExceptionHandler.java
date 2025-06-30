@@ -86,6 +86,11 @@ public class GlobalExceptionHandler {
     return handleException(ex, request, HttpStatus.BAD_REQUEST, TitleEnum.BAD_REQUEST);
   }
 
+  @ExceptionHandler({InvalidParameterException.class})
+  public ResponseEntity<ErrorDTO> handleInvalidParameterException(InvalidParameterException ex, HttpServletRequest request) {
+    return handleException(ex, request, HttpStatus.BAD_REQUEST, TitleEnum.BAD_REQUEST);
+  }
+
   @ExceptionHandler({ServletException.class, ErrorResponseException.class})
   public ResponseEntity<ErrorDTO> handleServletException(Exception ex, HttpServletRequest request) {
     HttpStatusCode httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;

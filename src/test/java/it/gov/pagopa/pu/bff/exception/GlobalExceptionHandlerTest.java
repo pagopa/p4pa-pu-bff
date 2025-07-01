@@ -302,5 +302,4 @@ class GlobalExceptionHandlerTest {
       .andExpect(MockMvcResultMatchers.jsonPath("$.title").value("BAD_REQUEST"))
       .andExpect(MockMvcResultMatchers.jsonPath("$.description").value("Error"));
   }
-
 }

@@ -8411,7 +8411,7 @@
       },
       "RegistryPagoPaEventType" : {
         "type" : "string",
-        "enum" : [ "paVerifyPaymentNotice", "paGetPaymentV2", "paSendRTV2", "newDebtPosition", "createPosition", "updatePosition", "deletePosition", "fetchPaymentReporting" ]
+        "enum" : [ "paVerifyPaymentNotice", "paGetPaymentV2", "paSendRTV2", "newDebtPosition", "createPosition", "updatePosition", "deletePosition", "fetchPaymentReporting", "ACA_paCreatePosition" ]
       },
       "PagoPaRegistryDTO" : {
         "type" : "object",
@@ -8679,6 +8679,9 @@
             "$ref" : "#/components/schemas/InstallmentStatus"
           },
           "iuv" : {
+            "type" : "string"
+          },
+          "nav" : {
             "type" : "string"
           },
           "amountCents" : {

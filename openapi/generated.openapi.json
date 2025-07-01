@@ -10148,6 +10148,10 @@
           "amountSubmitted" : {
             "type" : "boolean"
           },
+          "receiptId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
           "_links" : {
             "type" : "object",
             "additionalProperties" : {

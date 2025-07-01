@@ -30,6 +30,7 @@ class PaidExportFileRequestDTOMapperTest {
     PaidExportFileRequest request = podamFactory.manufacturePojo(PaidExportFileRequest.class);
     PaidExportFileFilter expectedFilterFields = PaidExportFileFilter.builder()
       .paymentDateTime(DateUtils.toRangeClosedOffsetDateTimeIntervalFilter(request.getFilterFields().getPaymentDate()))
+      .installmentUpdateDateTime(DateUtils.toRangeClosedOffsetDateTimeIntervalFilter(request.getFilterFields().getInstallmentUpdateDate()))
       .debtPositionTypeOrgId(request.getFilterFields().getDebtPositionTypeOrgId())
       .build();
     PaidExportFileRequestDTO expected = PaidExportFileRequestDTO.builder()

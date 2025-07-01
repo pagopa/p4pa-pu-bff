@@ -6917,6 +6917,9 @@
           "paymentDate" : {
             "$ref" : "#/components/schemas/LocalDateIntervalFilter"
           },
+          "installmentUpdateDate" : {
+            "$ref" : "#/components/schemas/LocalDateIntervalFilter"
+          },
           "debtPositionTypeOrgId" : {
             "type" : "integer",
             "format" : "int64"

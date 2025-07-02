@@ -2,13 +2,16 @@ package it.gov.pagopa.pu.bff.service;
 
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.connector.classification.ClassificationService;
+import it.gov.pagopa.pu.bff.dto.ClassificationDetailDTO;
 import it.gov.pagopa.pu.bff.dto.LocalDateIntervalFilter;
 import it.gov.pagopa.pu.bff.dto.OffsetDateTimeIntervalFilter;
 import it.gov.pagopa.pu.bff.dto.TreasuredClassificationFiltersDTO;
+import it.gov.pagopa.pu.bff.mapper.ClassificationDetailDTOMapper;
 import it.gov.pagopa.pu.bff.service.classification.ClassificationRetrieverServiceImpl;
 import it.gov.pagopa.pu.classification.dto.generated.ClassificationDetailViewDTO;
 import it.gov.pagopa.pu.classification.dto.generated.ClassificationsEnum;
 import it.gov.pagopa.pu.classification.dto.generated.PagedTreasuredClassification;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -24,13 +27,16 @@ import org.springframework.security.authorization.AuthorizationDeniedException;
 import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class ClassificationRetrieverServiceImplTest {
 
   @Mock
   private ClassificationService classificationServiceMock;
+  @Mock
+  private ClassificationDetailDTOMapper classificationDetailDTOMapperMock;
 
   private ClassificationRetrieverServiceImpl classificationRetrieverService;
 
@@ -38,7 +44,15 @@ class ClassificationRetrieverServiceImplTest {
 
   @BeforeEach
   void setUp() {
-    classificationRetrieverService = new ClassificationRetrieverServiceImpl(classificationServiceMock);
+    classificationRetrieverService = new ClassificationRetrieverServiceImpl(classificationServiceMock,classificationDetailDTOMapperMock);
+  }
+
+  @AfterEach
+  void verifyNoMoreInteractions(){
+    Mockito.verifyNoMoreInteractions(
+            classificationServiceMock,
+            classificationDetailDTOMapperMock
+    );
   }
 
   @Test
@@ -64,8 +78,6 @@ class ClassificationRetrieverServiceImplTest {
       assertSame(expectedResult, result);
 
       authorizationServiceMockedStatic.verify(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser));
-      verify(classificationServiceMock).getTreasuredClassifications(organizationId, treasuredClassificationFiltersDTO, pageable, accessToken);
-      verifyNoMoreInteractions(classificationServiceMock);
     }
   }
 
@@ -192,22 +204,23 @@ class ClassificationRetrieverServiceImplTest {
 
     long organizationId = 1L;
     long classificationId = 123L;
-    ClassificationDetailViewDTO expectedClassificationDetail = new ClassificationDetailViewDTO();
+    ClassificationDetailViewDTO classificationDetailViewDTO = new ClassificationDetailViewDTO();
+    ClassificationDetailDTO expectedResult = new ClassificationDetailDTO();
 
     try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
       authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)).thenAnswer(a -> null);
 
       when(classificationServiceMock.getClassificationDetail(organizationId, classificationId, accessToken))
-        .thenReturn(expectedClassificationDetail);
+        .thenReturn(classificationDetailViewDTO);
+      when(classificationDetailDTOMapperMock.map(classificationDetailViewDTO))
+        .thenReturn(expectedResult);
 
       ClassificationDetailViewDTO result = classificationRetrieverService.getClassificationDetail(organizationId, classificationId, loggedUser, accessToken);
 
       assertNotNull(result);
-      assertSame(expectedClassificationDetail, result);
+      assertSame(expectedResult, result);
 
       authorizationServiceMockedStatic.verify(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser));
-      verify(classificationServiceMock).getClassificationDetail(organizationId, classificationId, accessToken);
-      verifyNoMoreInteractions(classificationServiceMock);
     }
   }
 
@@ -228,7 +241,7 @@ class ClassificationRetrieverServiceImplTest {
 
       authorizationServiceMockedStatic.verify(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser));
     }
-    verifyNoInteractions(classificationServiceMock);
+    verifyNoInteractions(classificationServiceMock, classificationDetailDTOMapperMock);
   }
 }
 

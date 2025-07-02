@@ -64,7 +64,7 @@ class RegistriesApisHolderTest  extends BaseApiHolderTest {
   void whenGetPagoPaRegistrySearchControllerApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
     assertAuthenticationShouldBeSetInThreadSafeMode(
       accessToken -> registriesApisHolder.getPagoPaRegistrySearchControllerApi(accessToken)
-        .crudPagopaRegistriesSearchByFilters(RegistryPagoPaEventType.createPosition, OffsetDateTime.now(),OffsetDateTime.now(),"orgFiscalCode","iuv",0,10, Collections.emptyList()),
+        .crudPagopaRegistriesSearchByFilters(RegistryPagoPaEventType.GPD_createPosition, OffsetDateTime.now(),OffsetDateTime.now(),"orgFiscalCode","iuv",0,10, Collections.emptyList()),
       new ParameterizedTypeReference<>() {},
       registriesApisHolder::unload);
   }
@@ -91,7 +91,7 @@ class RegistriesApisHolderTest  extends BaseApiHolderTest {
   void whenGetSilRegistrySearchControllerApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
     assertAuthenticationShouldBeSetInThreadSafeMode(
       accessToken -> registriesApisHolder.getSilRegistrySearchControllerApi(accessToken)
-        .crudSilRegistriesSearchByFilters(RegistrySilEventType.pivotSILChiediAccertamento, OffsetDateTime.now(),OffsetDateTime.now(),"orgFiscalCode","iuv",0,10, Collections.emptyList()),
+        .crudSilRegistriesSearchByFilters(RegistrySilEventType.PTPR_pivotSILAutorizzaImportFlusso, OffsetDateTime.now(),OffsetDateTime.now(),"orgFiscalCode","iuv",0,10, Collections.emptyList()),
       new ParameterizedTypeReference<>() {},
       registriesApisHolder::unload);
   }

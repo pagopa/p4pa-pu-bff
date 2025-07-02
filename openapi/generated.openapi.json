@@ -7847,7 +7847,7 @@
       },
       "RegistrySilEventType" : {
         "type" : "string",
-        "enum" : [ "paaSILAutorizzaImportFlusso", "paaSILChiediStatoImportFlusso", "paaSILImportaDovuto", "paaSILPrenotaExportFlusso", "paaSILPrenotaExportFlussoIncrementaleConRicevuta", "paaSILChiediStatoExportFlusso", "paaSILInviaDovuti", "paaSILVerificaAvviso", "paaSILChiediPagati", "paaSILChiediPagatiConRicevuta", "paaSILInviaCarrelloDovuti", "paaSILChiediEsitoCarrelloDovuti", "pivotSILAutorizzaImportFlusso", "pivotSILChiediStatoImportFlusso", "pivotSILAutorizzaImportFlussoTesoreria", "pivotSILChiediStatoImportFlussoTesoreria", "pivotSILPrenotaExportFlussoRiconciliazione", "pivotSILChiediStatoExportFlussoRiconciliazione", "pivotSILChiediAccertamento", "attualizzazioneImporti", "notificaPagamento" ]
+        "enum" : [ "PTDP_paaSILAutorizzaImportFlusso", "PTDP_paaSILImportaDovuto", "PTDP_paaSILInviaDovuti", "PTDP_paaSILInviaCarrelloDovuti", "PTDP_paaSILVerificaAvviso", "PTPR_pivotSILAutorizzaImportFlussoTesoreria", "PTPR_pivotSILAutorizzaImportFlusso", "SIL_attualizzazioneImporti", "SIL_notificaPagamento" ]
       },
       "SilRegistry" : {
         "type" : "object",
@@ -8411,7 +8411,7 @@
       },
       "RegistryPagoPaEventType" : {
         "type" : "string",
-        "enum" : [ "paVerifyPaymentNotice", "paGetPaymentV2", "paSendRTV2", "newDebtPosition", "createPosition", "updatePosition", "deletePosition", "fetchPaymentReporting", "ACA_paCreatePosition" ]
+        "enum" : [ "PaForNode_paVerifyPaymentNotice", "PaForNode_paGetPaymentV2", "PaForNode_paSendRTV2", "ACA_newDebtPosition", "GPD_createPosition", "GPD_updatePosition", "GPD_deletePosition", "NodeForPa_fetchPaymentReporting" ]
       },
       "PagoPaRegistryDTO" : {
         "type" : "object",

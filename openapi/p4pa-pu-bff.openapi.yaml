@@ -3141,6 +3141,9 @@ components:
           format: int64
         fileName:
           type: string
+        fileSize:
+          type: integer
+          format: int64
         creationDate:
           type: string
           format: date-time

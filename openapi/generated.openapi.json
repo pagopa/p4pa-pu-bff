@@ -5209,7 +5209,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/ClassificationDetailViewDTO"
+                  "$ref" : "#/components/schemas/ClassificationDetailDTO"
                 }
               }
             }
@@ -5219,7 +5219,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/ClassificationDetailViewDTO"
+                  "$ref" : "#/components/schemas/ClassificationDetailDTO"
                 }
               }
             }
@@ -5229,7 +5229,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/ClassificationDetailViewDTO"
+                  "$ref" : "#/components/schemas/ClassificationDetailDTO"
                 }
               }
             }
@@ -5239,7 +5239,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/ClassificationDetailViewDTO"
+                  "$ref" : "#/components/schemas/ClassificationDetailDTO"
                 }
               }
             }
@@ -5249,7 +5249,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/ClassificationDetailViewDTO"
+                  "$ref" : "#/components/schemas/ClassificationDetailDTO"
                 }
               }
             }
@@ -9372,7 +9372,7 @@
           }
         }
       },
-      "ClassificationDetailViewDTO" : {
+      "ClassificationDetailDTO" : {
         "type" : "object",
         "properties" : {
           "classificationId" : {
@@ -9696,6 +9696,15 @@
           },
           "paymentNotificationDebtPositionTypeOrgCode" : {
             "type" : "string"
+          },
+          "payed" : {
+            "type" : "boolean"
+          },
+          "reported" : {
+            "type" : "boolean"
+          },
+          "collected" : {
+            "type" : "boolean"
           }
         }
       },

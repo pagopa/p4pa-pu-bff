@@ -2,10 +2,11 @@ package it.gov.pagopa.pu.bff.service.classification;
 
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.connector.classification.ClassificationService;
+import it.gov.pagopa.pu.bff.dto.ClassificationDetailDTO;
 import it.gov.pagopa.pu.bff.dto.TreasuredClassificationFiltersDTO;
+import it.gov.pagopa.pu.bff.mapper.ClassificationDetailDTOMapper;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
 import it.gov.pagopa.pu.bff.util.DateUtils;
-import it.gov.pagopa.pu.classification.dto.generated.ClassificationDetailViewDTO;
 import it.gov.pagopa.pu.classification.dto.generated.PagedTreasuredClassification;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Pageable;
@@ -15,10 +16,12 @@ import org.springframework.stereotype.Service;
 public class ClassificationRetrieverServiceImpl implements ClassificationRetrieverService {
 
   private final ClassificationService classificationService;
+  private final ClassificationDetailDTOMapper classificationDetailDTOMapper;
 
   public ClassificationRetrieverServiceImpl(
-    ClassificationService classificationService) {
+          ClassificationService classificationService, ClassificationDetailDTOMapper classificationDetailDTOMapper) {
     this.classificationService = classificationService;
+      this.classificationDetailDTOMapper = classificationDetailDTOMapper;
   }
 
   @Override
@@ -62,8 +65,8 @@ public class ClassificationRetrieverServiceImpl implements ClassificationRetriev
   }
 
   @Override
-  public ClassificationDetailViewDTO getClassificationDetail(Long organizationId, Long classificationId, UserInfo loggedUser, String accessToken) {
+  public ClassificationDetailDTO getClassificationDetail(Long organizationId, Long classificationId, UserInfo loggedUser, String accessToken) {
     AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser);
-    return classificationService.getClassificationDetail(organizationId, classificationId, accessToken);
+    return classificationDetailDTOMapper.map(classificationService.getClassificationDetail(organizationId, classificationId, accessToken));
   }
 }

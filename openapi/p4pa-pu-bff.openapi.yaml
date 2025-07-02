@@ -822,7 +822,7 @@ paths:
           content:
             application/json:
               schema:
-                type: 'ClassificationDetailViewDTO'
+                type: 'ClassificationDetailDTO'
         '404':
           description: Not Found - Classification Not Found
         '401':

@@ -1,11 +1,11 @@
 package it.gov.pagopa.pu.bff.controller;
 
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
+import it.gov.pagopa.pu.bff.dto.ClassificationDetailDTO;
 import it.gov.pagopa.pu.bff.dto.TreasuredClassificationFiltersDTO;
 import it.gov.pagopa.pu.bff.security.SecurityUtilsTest;
 import it.gov.pagopa.pu.bff.service.classification.ClassificationRetrieverService;
 import it.gov.pagopa.pu.bff.util.TestUtils;
-import it.gov.pagopa.pu.classification.dto.generated.ClassificationDetailViewDTO;
 import it.gov.pagopa.pu.classification.dto.generated.PagedTreasuredClassification;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -108,12 +108,12 @@ class ClassificationControllerTest {
   void givenCorrectRequestWhenGetClassificationDetailThenOK() {
     Long organizationId = 1L;
     Long classificationId = 1L;
-    ClassificationDetailViewDTO mockDetailView = new ClassificationDetailViewDTO();
+    ClassificationDetailDTO mockDetailView = new ClassificationDetailDTO();
     when(classificationRetrieverServiceMock.getClassificationDetail(
       organizationId, classificationId, loggedUser, accessToken))
       .thenReturn(mockDetailView);
 
-    ResponseEntity<ClassificationDetailViewDTO> response = classificationController.getClassificationDetail(organizationId, classificationId);
+    ResponseEntity<ClassificationDetailDTO> response = classificationController.getClassificationDetail(organizationId, classificationId);
 
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertEquals(mockDetailView, response.getBody());
@@ -129,7 +129,7 @@ class ClassificationControllerTest {
     when(classificationRetrieverServiceMock.getClassificationDetail(organizationId, classificationId, loggedUser, accessToken))
       .thenReturn(null);
 
-    ResponseEntity<ClassificationDetailViewDTO> response = classificationController.getClassificationDetail(organizationId, classificationId);
+    ResponseEntity<ClassificationDetailDTO> response = classificationController.getClassificationDetail(organizationId, classificationId);
 
     assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     Assertions.assertNull(response.getBody());

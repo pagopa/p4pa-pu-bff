@@ -1,6 +1,7 @@
 package it.gov.pagopa.pu.bff.controller;
 
 import it.gov.pagopa.pu.bff.controller.generated.ClassificationsApi;
+import it.gov.pagopa.pu.bff.dto.ClassificationDetailDTO;
 import it.gov.pagopa.pu.bff.dto.LocalDateIntervalFilter;
 import it.gov.pagopa.pu.bff.dto.OffsetDateTimeIntervalFilter;
 import it.gov.pagopa.pu.bff.dto.TreasuredClassificationFiltersDTO;
@@ -8,13 +9,13 @@ import it.gov.pagopa.pu.bff.security.SecurityUtils;
 import it.gov.pagopa.pu.bff.service.classification.ClassificationRetrieverService;
 import it.gov.pagopa.pu.classification.dto.generated.ClassificationsEnum;
 import it.gov.pagopa.pu.classification.dto.generated.PagedTreasuredClassification;
-import java.time.LocalDate;
-import java.time.OffsetDateTime;
-import it.gov.pagopa.pu.classification.dto.generated.ClassificationDetailViewDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.time.LocalDate;
+import java.time.OffsetDateTime;
 
 @RestController
 @Slf4j
@@ -82,7 +83,7 @@ public class ClassificationController implements ClassificationsApi {
   }
 
   @Override
-  public ResponseEntity<ClassificationDetailViewDTO> getClassificationDetail(Long organizationId, Long classificationId) {
+  public ResponseEntity<ClassificationDetailDTO> getClassificationDetail(Long organizationId, Long classificationId) {
     log.info("User requested getClassificationDetail having organizationId {} and classificationId {}", organizationId, classificationId);
 
     return ResponseEntity.ofNullable(classificationRetrieverService.getClassificationDetail(

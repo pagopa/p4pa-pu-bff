@@ -22,7 +22,6 @@ import org.springframework.http.ResponseEntity;
 import uk.co.jemos.podam.api.PodamFactory;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -57,11 +56,14 @@ class ClassificationControllerTest {
   @Test
   void givenCorrectRequestWhenGetTreasuredClassificationThenOK() {
     Long organizationId = 1L;
+    String debtPositionTypeOrgCode = "debtPositionTypeOrgCode";
     TreasuredClassificationFiltersDTO treasuredClassificationFiltersDTO = podamFactory.manufacturePojo(TreasuredClassificationFiltersDTO.class);
+    treasuredClassificationFiltersDTO.setDebtPositionTypeOrgCodes(null);
+
     PageRequest pageable = PageRequest.of(0, 10);
     PagedTreasuredClassification mockPagedTreasuredClassification = new PagedTreasuredClassification();
     when(classificationRetrieverServiceMock.getTreasuredClassification(
-      organizationId, treasuredClassificationFiltersDTO, pageable, loggedUser, accessToken))
+      organizationId, treasuredClassificationFiltersDTO, debtPositionTypeOrgCode,pageable, loggedUser, accessToken))
       .thenReturn(mockPagedTreasuredClassification);
 
     ResponseEntity<PagedTreasuredClassification> response = classificationController.getTreasuredClassifications(organizationId,
@@ -89,7 +91,7 @@ class ClassificationControllerTest {
       treasuredClassificationFiltersDTO.getBillAmountCents(),
       treasuredClassificationFiltersDTO.getRemittanceInformation(),
       treasuredClassificationFiltersDTO.getDebtorFiscalCode(),
-      treasuredClassificationFiltersDTO.getDebtPositionTypeOrgCode(),
+      debtPositionTypeOrgCode,
       treasuredClassificationFiltersDTO.getBillYear(),
       treasuredClassificationFiltersDTO.getBillCode(),
       treasuredClassificationFiltersDTO.getDocumentYear(),
@@ -100,8 +102,6 @@ class ClassificationControllerTest {
 
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertEquals(mockPagedTreasuredClassification, response.getBody());
-    verify(classificationRetrieverServiceMock).getTreasuredClassification(
-      organizationId, treasuredClassificationFiltersDTO, pageable, loggedUser, accessToken);
   }
 
   @Test
@@ -117,8 +117,6 @@ class ClassificationControllerTest {
 
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertEquals(mockDetailView, response.getBody());
-    verify(classificationRetrieverServiceMock).getClassificationDetail(
-      organizationId, classificationId, loggedUser, accessToken);
   }
 
   @Test

@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Set;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -29,7 +31,7 @@ public class TreasuredClassificationFiltersDTO {
   private Long billAmountCents;
   private String remittanceInformation;
   private String debtorFiscalCode;
-  private String debtPositionTypeOrgCode;
+  private Set<String> debtPositionTypeOrgCodes;
   private String billYear;
   private String billCode;
   private String documentYear;

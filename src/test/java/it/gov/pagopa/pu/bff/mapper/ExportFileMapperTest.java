@@ -55,12 +55,14 @@ class ExportFileMapperTest {
     exportFileMatchingOperator.setExportFileId(1L);
     exportFileMatchingOperator.setOperatorExternalId(operatorExternalId);
     exportFileMatchingOperator.setFileName("fileName");
+    exportFileMatchingOperator.setFileSize(1L);
     exportFileMatchingOperator.setStatus(ExportFileStatus.COMPLETED);
     exportFileMatchingOperator.setNumTotalRows(10L);
     ExportFile flowFileWithNoTotalRows = new ExportFile();
     flowFileWithNoTotalRows.setCreationDate(OffsetDateTime.now());
     flowFileWithNoTotalRows.setExportFileId(3L);
     flowFileWithNoTotalRows.setFileName("fileName");
+    flowFileWithNoTotalRows.setFileSize(1L);
     flowFileWithNoTotalRows.setOperatorExternalId(otherOperatorExternalId);
     flowFileWithNoTotalRows.setStatus(ExportFileStatus.ERROR);
     flowFileWithNoTotalRows.setNumTotalRows(null);
@@ -120,6 +122,8 @@ class ExportFileMapperTest {
       mappedIngestionFlowFile.getExportFileId());
     assertEquals(expectedExportFile.getFileName(),
       mappedIngestionFlowFile.getFileName());
+    assertEquals(expectedExportFile.getFileSize(),
+      mappedIngestionFlowFile.getFileSize());
     assertEquals(expectedExportFile.getCreationDate(),
       mappedIngestionFlowFile.getCreationDate());
     assertEquals(expectedOperator, mappedIngestionFlowFile.getOperator());
@@ -166,6 +170,7 @@ class ExportFileMapperTest {
     exportFileMatchingOperator.setExportFileId(1L);
     exportFileMatchingOperator.setOperatorExternalId(operatorExternalId);
     exportFileMatchingOperator.setFileName("fileName");
+    exportFileMatchingOperator.setFileSize(1L);
     exportFileMatchingOperator.setStatus(ExportFileStatus.COMPLETED);
     exportFileMatchingOperator.setNumTotalRows(10L);
     embedded.setExportFiles(List.of(exportFileMatchingOperator));

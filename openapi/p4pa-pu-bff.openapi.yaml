@@ -129,6 +129,30 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/ServiceStatus'
+  /workflow/schedules/{scheduleId}/last-updated-time:
+    get:
+      tags:
+        - Schedule
+      operationId: getScheduleLastUpdatedTime
+      parameters:
+        - name: scheduleId
+          in: path
+          required: true
+          schema:
+            type: 'ScheduleEnum'
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScheduleLastUpdatedTimeDTO'
+        '401':
+          description: Unauthorized - Missing or invalid token
+        '403':
+          description: Forbidden - Access denied
+        '500':
+          description: Internal Server Error
   /workflow/taxonomy/synchronize:
     get:
       tags:
@@ -822,7 +846,7 @@ paths:
           content:
             application/json:
               schema:
-                type: 'ClassificationDetailViewDTO'
+                type: 'ClassificationDetailDTO'
         '404':
           description: Not Found - Classification Not Found
         '401':
@@ -1701,7 +1725,7 @@ paths:
               schema:
                 type: array
                 items:
-                  type: 'OrgSilService'
+                  type: 'OrgSilServiceDTO'
         '401':
           description: Unauthorized - Missing or invalid token
         '403':
@@ -1784,12 +1808,12 @@ paths:
           in: query
           schema:
             type: string
-            format: date-time
+            format: date
         - name: payDateTo
           in: query
           schema:
             type: string
-            format: date-time
+            format: date
         - name: paymentDateTimeFrom
           in: query
           schema:
@@ -2062,6 +2086,11 @@ paths:
           schema:
             type: integer
             format: int64
+        - name: nav
+          in: query
+          required: true
+          schema:
+            type: string
       responses:
         '200':
           description: Ok
@@ -2106,6 +2135,86 @@ paths:
                 type: array
                 items:
                   type: 'DebtPositionRegistry'
+        '401':
+          description: Unauthorized - Missing or invalid token
+        '403':
+          description: Forbidden - Access denied
+        '404':
+          description: Not Found
+        '500':
+          description: Internal Server Error
+  /organization/{organizationId}/sil-registries:
+    get:
+      tags:
+        - SilRegistry
+      operationId: getSilRegistries
+      parameters:
+        - name: organizationId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: eventType
+          in: query
+          schema:
+            type: 'RegistrySilEventType'
+        - name: eventDateFrom
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: eventDateTo
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: iuv
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/hal+json:
+              schema:
+                $ref: '#/components/schemas/PagedSilRegistry'
+        '401':
+          description: Unauthorized - Missing or invalid token
+        "400":
+          description: Invalid request
+        '404':
+          description: Not Found
+        '500':
+          description: Internal Server Error
+      x-spring-paginated: true
+  /organization/{organizationId}/sil-registries/{registryId}:
+    get:
+      tags:
+        - SilRegistry
+      operationId: getSilRegistry
+      parameters:
+        - name: organizationId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: registryId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: 'SilRegistryDTO'
+        '400':
+          description: Bad Request
         '401':
           description: Unauthorized - Missing or invalid token
         '403':
@@ -2430,6 +2539,84 @@ paths:
             application/json:
               schema:
                 type: 'AssessmentsDetail'
+        '401':
+          description: Unauthorized - Missing or invalid token
+        "400":
+          description: Invalid request
+        '404':
+          description: Not Found
+        '500':
+          description: Internal Server Error
+  /organization/{organizationId}/pagopa-registries:
+    get:
+      tags:
+        - PagoPaRegistry
+      operationId: getPagoPaRegistries
+      parameters:
+        - name: organizationId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: eventType
+          in: query
+          schema:
+            type: 'RegistryPagoPaEventType'
+        - name: eventDateFrom
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: eventDateTo
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: iuv
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/hal+json:
+              schema:
+                $ref: '#/components/schemas/PagedPagoPaRegistry'
+        '401':
+          description: Unauthorized - Missing or invalid token
+        "400":
+          description: Invalid request
+        '404':
+          description: Not Found
+        '500':
+          description: Internal Server Error
+      x-spring-paginated: true
+  /organization/{organizationId}/pagopa-registries/{pagoPaRegistryId}:
+    get:
+      tags:
+        - PagoPaRegistry
+      operationId: getPagoPaRegistry
+      parameters:
+        - name: organizationId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: pagoPaRegistryId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/hal+json:
+              schema:
+                type: 'PagoPaRegistryDTO'
         '401':
           description: Unauthorized - Missing or invalid token
         "400":
@@ -2978,6 +3165,9 @@ components:
           format: int64
         fileName:
           type: string
+        fileSize:
+          type: integer
+          format: int64
         creationDate:
           type: string
           format: date-time
@@ -3404,6 +3594,8 @@ components:
           properties:
             paymentDate:
               type: 'LocalDateInterval'
+            installmentUpdateDate:
+              type: 'LocalDateInterval'
             debtPositionTypeOrgId:
               type: integer
               format: int64
@@ -3563,3 +3755,61 @@ components:
         number:
           type: integer
       format: int64
+    PagedPagoPaRegistry:
+      type: object
+      required:
+        - content
+        - size
+        - totalElements
+        - totalPages
+        - number
+      properties:
+        content:
+          type: array
+          items:
+            type: 'PagoPaRegistry'
+        size:
+          type: integer
+          format: int64
+        totalElements:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer
+          format: int64
+        number:
+          type: integer
+          format: int64
+    PagedSilRegistry:
+      type: object
+      required:
+        - content
+        - size
+        - totalElements
+        - totalPages
+        - number
+      properties:
+        content:
+          type: array
+          items:
+            type: 'SilRegistry'
+        size:
+          type: integer
+          format: int64
+        totalElements:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer
+          format: int64
+        number:
+          type: integer
+          format: int64
+    ScheduleLastUpdatedTimeDTO:
+      type: object
+      required:
+        - lastUpdatedAt
+      properties:
+        lastUpdatedAt:
+          type: string
+          format: date-time

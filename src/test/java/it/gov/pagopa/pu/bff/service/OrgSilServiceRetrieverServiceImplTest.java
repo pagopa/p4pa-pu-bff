@@ -2,6 +2,8 @@ package it.gov.pagopa.pu.bff.service;
 
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.connector.organization.OrgSilServiceService;
+import it.gov.pagopa.pu.bff.dto.OrgSilServiceDTO;
+import it.gov.pagopa.pu.bff.mapper.OrgSilServiceDTOMapper;
 import it.gov.pagopa.pu.bff.service.org_sil_service.OrgSilServiceRetrieverService;
 import it.gov.pagopa.pu.bff.service.org_sil_service.OrgSilServiceRetrieverServiceImpl;
 import it.gov.pagopa.pu.bff.util.TestUtils;
@@ -21,6 +23,7 @@ import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.util.CollectionUtils;
 import uk.co.jemos.podam.api.PodamFactory;
 
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -31,6 +34,8 @@ public class OrgSilServiceRetrieverServiceImplTest {
     public static final PodamFactory podamFactory = TestUtils.getPodamFactory();
     @Mock
     private OrgSilServiceService orgSilServiceServiceMock;
+    @Mock
+    private OrgSilServiceDTOMapper orgSilServiceDTOMapperMock;
 
     private OrgSilServiceRetrieverService orgSilServiceRetrieverService;
 
@@ -38,7 +43,7 @@ public class OrgSilServiceRetrieverServiceImplTest {
 
     @BeforeEach
     void setUp() {
-        orgSilServiceRetrieverService = new OrgSilServiceRetrieverServiceImpl(orgSilServiceServiceMock);
+        orgSilServiceRetrieverService = new OrgSilServiceRetrieverServiceImpl(orgSilServiceServiceMock,orgSilServiceDTOMapperMock);
     }
 
     @AfterEach
@@ -57,14 +62,15 @@ public class OrgSilServiceRetrieverServiceImplTest {
         Long organizationId=1L;
         OrgSilServiceType serviceType = OrgSilServiceType.ACTUALIZATION;
         CollectionModelOrgSilService collectionModelOrgSilService = podamFactory.manufacturePojo(CollectionModelOrgSilService.class);
-        List<OrgSilService> expectedResult = collectionModelOrgSilService.getEmbedded().getOrgSilServices();
+        List<OrgSilServiceDTO> expectedResult = Collections.singletonList(new OrgSilServiceDTO());
 
       try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
         authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)).thenAnswer(a -> null);
         Mockito.when(orgSilServiceServiceMock.getOrgSilServices(organizationId,serviceType, accessToken))
           .thenReturn(collectionModelOrgSilService);
+        Mockito.when(orgSilServiceDTOMapperMock.map(collectionModelOrgSilService.getEmbedded().getOrgSilServices())).thenReturn(expectedResult);
 
-        List<OrgSilService> result = orgSilServiceRetrieverService.getOrgSilServices(organizationId, serviceType, loggedUser, accessToken);
+        List<OrgSilServiceDTO> result = orgSilServiceRetrieverService.getOrgSilServices(organizationId, serviceType, loggedUser, accessToken);
 
         assertNotNull(result);
         assertSame(expectedResult, result);
@@ -89,7 +95,7 @@ public class OrgSilServiceRetrieverServiceImplTest {
           Mockito.when(orgSilServiceServiceMock.getOrgSilServices(organizationId,serviceType, accessToken))
                   .thenReturn(collectionModelOrgSilService);
 
-          List<OrgSilService> result = orgSilServiceRetrieverService.getOrgSilServices(organizationId, serviceType, loggedUser, accessToken);
+          List<OrgSilServiceDTO> result = orgSilServiceRetrieverService.getOrgSilServices(organizationId, serviceType, loggedUser, accessToken);
 
         assertNotNull(result);
         assertTrue(CollectionUtils.isEmpty(result));
@@ -112,7 +118,7 @@ public class OrgSilServiceRetrieverServiceImplTest {
           Mockito.when(orgSilServiceServiceMock.getOrgSilServices(organizationId,serviceType, accessToken))
                   .thenReturn(null);
 
-          List<OrgSilService> result = orgSilServiceRetrieverService.getOrgSilServices(organizationId, serviceType, loggedUser, accessToken);
+          List<OrgSilServiceDTO> result = orgSilServiceRetrieverService.getOrgSilServices(organizationId, serviceType, loggedUser, accessToken);
 
         assertNotNull(result);
         assertTrue(CollectionUtils.isEmpty(result));

@@ -52,13 +52,14 @@ class InstallmentRegistryControllerTest {
   void givenCorrectRequestWhenGetInstallmentRegistriesThenOk() {
     long organizationId = 1L;
     long debtPositionId = 2L;
+    String nav = "nav";
     List<InstallmentRegistry> expectedResult = new ArrayList<>();
     expectedResult.add(new InstallmentRegistry());
 
-    Mockito.when(installmentRegistryRetrieverServiceMock.getInstallmentRegistries(organizationId, debtPositionId, loggedUser, accessToken))
+    Mockito.when(installmentRegistryRetrieverServiceMock.getInstallmentRegistries(organizationId, debtPositionId, nav, loggedUser, accessToken))
       .thenReturn(expectedResult);
 
-    ResponseEntity<List<InstallmentRegistry>> response = installmentRegistryController.getInstallmentRegistries(organizationId, debtPositionId);
+    ResponseEntity<List<InstallmentRegistry>> response = installmentRegistryController.getInstallmentRegistries(organizationId, debtPositionId, nav);
 
     Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
     Assertions.assertNotNull(response.getBody());

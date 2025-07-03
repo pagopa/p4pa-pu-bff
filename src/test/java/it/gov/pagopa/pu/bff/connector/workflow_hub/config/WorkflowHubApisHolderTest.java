@@ -1,6 +1,7 @@
 package it.gov.pagopa.pu.bff.connector.workflow_hub.config;
 
 import it.gov.pagopa.pu.bff.connector.BaseApiHolderTest;
+import it.gov.pagopa.pu.workflowhub.dto.generated.ScheduleEnum;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -38,6 +39,15 @@ class WorkflowHubApisHolderTest extends BaseApiHolderTest {
     assertAuthenticationShouldBeSetInThreadSafeMode(
       accessToken -> workflowHubApisHolder.getTaxonomyApi(accessToken)
         .synchronizeTaxonomy(),
+      new ParameterizedTypeReference<>() {},
+      workflowHubApisHolder::unload);
+  }
+
+  @Test
+  void whenGetScheduleApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
+    assertAuthenticationShouldBeSetInThreadSafeMode(
+      accessToken -> workflowHubApisHolder.getScheduleApi(accessToken)
+        .getScheduleInfo(ScheduleEnum.PAYMENTS_REPORTING_PAGOPA_BROKERS_FETCH),
       new ParameterizedTypeReference<>() {},
       workflowHubApisHolder::unload);
   }

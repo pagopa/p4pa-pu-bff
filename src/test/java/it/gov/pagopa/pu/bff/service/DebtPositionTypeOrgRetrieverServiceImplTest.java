@@ -41,6 +41,8 @@ import uk.co.jemos.podam.api.PodamFactory;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -904,6 +906,37 @@ class DebtPositionTypeOrgRetrieverServiceImplTest {
 
     Assertions.assertThrows(ResourceNotFoundException.class, () ->
             debtPositionTypeOrgService.validateOperator(organizationId,debtPositionTypeOrgCode,mappedExternalUserId,accessToken));
+  }
+
+  @Test
+  void whenGetDebtPositionTypeOrgCodesThenOk(){
+    Long organizationId = 1L;
+    String mappedExternalUserId = "mappedExternalUserId";
+
+    CollectionModelDebtPositionTypeOrg debtPositionTypeOrgs = podamFactory.manufacturePojo(CollectionModelDebtPositionTypeOrg.class);
+    Set<String> expectedResult = debtPositionTypeOrgs.getEmbedded().getDebtPositionTypeOrgs().stream().map(DebtPositionTypeOrg::getCode).collect(Collectors.toSet());
+
+    Mockito.when(debtPositionTypeOrgServiceMock.getDebtPositionTypeOrgs(organizationId,mappedExternalUserId,accessToken))
+            .thenReturn(debtPositionTypeOrgs);
+
+    Set<String> result = debtPositionTypeOrgService.getDebtPositionTypeOrgCodes(organizationId,mappedExternalUserId,accessToken);
+
+    assertNotNull(result);
+    assertEquals(expectedResult,result);
+  }
+
+  @Test
+  void givenNoDebtPositionTypeOrgsWhenGetDebtPositionTypeOrgCodesThenEmptySet(){
+    Long organizationId = 1L;
+    String mappedExternalUserId = "mappedExternalUserId";
+
+    Mockito.when(debtPositionTypeOrgServiceMock.getDebtPositionTypeOrgs(organizationId,mappedExternalUserId,accessToken))
+            .thenReturn(null);
+
+    Set<String> result = debtPositionTypeOrgService.getDebtPositionTypeOrgCodes(organizationId,mappedExternalUserId,accessToken);
+
+    assertNotNull(result);
+    assertTrue(result.isEmpty());
   }
 }
 

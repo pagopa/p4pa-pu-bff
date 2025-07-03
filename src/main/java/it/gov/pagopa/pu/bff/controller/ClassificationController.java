@@ -1,6 +1,7 @@
 package it.gov.pagopa.pu.bff.controller;
 
 import it.gov.pagopa.pu.bff.controller.generated.ClassificationsApi;
+import it.gov.pagopa.pu.bff.dto.ClassificationDetailDTO;
 import it.gov.pagopa.pu.bff.dto.LocalDateIntervalFilter;
 import it.gov.pagopa.pu.bff.dto.OffsetDateTimeIntervalFilter;
 import it.gov.pagopa.pu.bff.dto.TreasuredClassificationFiltersDTO;
@@ -8,13 +9,13 @@ import it.gov.pagopa.pu.bff.security.SecurityUtils;
 import it.gov.pagopa.pu.bff.service.classification.ClassificationRetrieverService;
 import it.gov.pagopa.pu.classification.dto.generated.ClassificationsEnum;
 import it.gov.pagopa.pu.classification.dto.generated.PagedTreasuredClassification;
-import java.time.LocalDate;
-import java.time.OffsetDateTime;
-import it.gov.pagopa.pu.classification.dto.generated.ClassificationDetailViewDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.time.LocalDate;
+import java.time.OffsetDateTime;
 
 @RestController
 @Slf4j
@@ -31,7 +32,7 @@ public class ClassificationController implements ClassificationsApi {
   public ResponseEntity<PagedTreasuredClassification> getTreasuredClassifications(
     Long organizationId, ClassificationsEnum label, String iud, String iuv, String iur,
     LocalDate lastClassificationDateFrom, LocalDate lastClassificationDateTo,
-    OffsetDateTime payDateFrom, OffsetDateTime payDateTo, OffsetDateTime paymentDateTimeFrom,
+    LocalDate payDateFrom, LocalDate payDateTo, OffsetDateTime paymentDateTimeFrom,
     OffsetDateTime paymentDateTimeTo, LocalDate regulationDateFrom, LocalDate regulationDateTo,
     LocalDate billDateFrom, LocalDate billDateTo, LocalDate regionValueDateFrom,
     LocalDate regionValueDateTo, String pspCompanyName, String pspLastName, String iuf,
@@ -43,7 +44,7 @@ public class ClassificationController implements ClassificationsApi {
     log.info("User requested getTreasuredClassifications having organizationId {}", organizationId);
 
     LocalDateIntervalFilter lastClassificationDateFilter = new LocalDateIntervalFilter(lastClassificationDateFrom, lastClassificationDateTo);
-    OffsetDateTimeIntervalFilter payDateTimeFilter = new OffsetDateTimeIntervalFilter(payDateFrom, payDateTo);
+    LocalDateIntervalFilter payDateTimeFilter = new LocalDateIntervalFilter(payDateFrom, payDateTo);
     OffsetDateTimeIntervalFilter paymentDateTimeFilter = new OffsetDateTimeIntervalFilter(paymentDateTimeFrom, paymentDateTimeTo);
     LocalDateIntervalFilter regulationDateFilter = new LocalDateIntervalFilter(regulationDateFrom, regulationDateTo);
     LocalDateIntervalFilter billDateFilter = new LocalDateIntervalFilter(billDateFrom, billDateTo);
@@ -68,7 +69,6 @@ public class ClassificationController implements ClassificationsApi {
       .billAmountCents(billAmountCents)
       .remittanceInformation(remittanceInformation)
       .debtorFiscalCode(debtorFiscalCode)
-      .debtPositionTypeOrgCode(debtPositionTypeOrgCode)
       .billYear(billYear)
       .billCode(billCode)
       .documentYear(documentYear)
@@ -77,12 +77,12 @@ public class ClassificationController implements ClassificationsApi {
       .provisionalCode(provisionalCode)
       .build();
 
-    return ResponseEntity.ok(classificationRetrieverService.getTreasuredClassification(organizationId, treasuredClassificationFiltersDTO, pageable,
+    return ResponseEntity.ok(classificationRetrieverService.getTreasuredClassification(organizationId, treasuredClassificationFiltersDTO, debtPositionTypeOrgCode, pageable,
       SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken()));
   }
 
   @Override
-  public ResponseEntity<ClassificationDetailViewDTO> getClassificationDetail(Long organizationId, Long classificationId) {
+  public ResponseEntity<ClassificationDetailDTO> getClassificationDetail(Long organizationId, Long classificationId) {
     log.info("User requested getClassificationDetail having organizationId {} and classificationId {}", organizationId, classificationId);
 
     return ResponseEntity.ofNullable(classificationRetrieverService.getClassificationDetail(

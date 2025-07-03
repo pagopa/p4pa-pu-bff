@@ -6,6 +6,7 @@ import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionType;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeRequestBody;
 import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelDebtPositionTypeWithCount;
 import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -39,6 +40,7 @@ public class DebtPositionTypeServiceImpl implements DebtPositionTypeService {
   }
 
   @Override
+  @CacheEvict(key = "#debtPositionTypeId", condition = "#debtPositionTypeId!=null")
   public DebtPositionType patchDebtPositionType(
     Long debtPositionTypeId,
     DebtPositionTypeRequestBody debtPositionType,

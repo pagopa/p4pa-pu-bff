@@ -1,11 +1,11 @@
 package it.gov.pagopa.pu.bff.controller;
 
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
+import it.gov.pagopa.pu.bff.dto.ClassificationDetailDTO;
 import it.gov.pagopa.pu.bff.dto.TreasuredClassificationFiltersDTO;
 import it.gov.pagopa.pu.bff.security.SecurityUtilsTest;
 import it.gov.pagopa.pu.bff.service.classification.ClassificationRetrieverService;
 import it.gov.pagopa.pu.bff.util.TestUtils;
-import it.gov.pagopa.pu.classification.dto.generated.ClassificationDetailViewDTO;
 import it.gov.pagopa.pu.classification.dto.generated.PagedTreasuredClassification;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -22,7 +22,6 @@ import org.springframework.http.ResponseEntity;
 import uk.co.jemos.podam.api.PodamFactory;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -57,11 +56,14 @@ class ClassificationControllerTest {
   @Test
   void givenCorrectRequestWhenGetTreasuredClassificationThenOK() {
     Long organizationId = 1L;
+    String debtPositionTypeOrgCode = "debtPositionTypeOrgCode";
     TreasuredClassificationFiltersDTO treasuredClassificationFiltersDTO = podamFactory.manufacturePojo(TreasuredClassificationFiltersDTO.class);
+    treasuredClassificationFiltersDTO.setDebtPositionTypeOrgCodes(null);
+
     PageRequest pageable = PageRequest.of(0, 10);
     PagedTreasuredClassification mockPagedTreasuredClassification = new PagedTreasuredClassification();
     when(classificationRetrieverServiceMock.getTreasuredClassification(
-      organizationId, treasuredClassificationFiltersDTO, pageable, loggedUser, accessToken))
+      organizationId, treasuredClassificationFiltersDTO, debtPositionTypeOrgCode,pageable, loggedUser, accessToken))
       .thenReturn(mockPagedTreasuredClassification);
 
     ResponseEntity<PagedTreasuredClassification> response = classificationController.getTreasuredClassifications(organizationId,
@@ -89,7 +91,7 @@ class ClassificationControllerTest {
       treasuredClassificationFiltersDTO.getBillAmountCents(),
       treasuredClassificationFiltersDTO.getRemittanceInformation(),
       treasuredClassificationFiltersDTO.getDebtorFiscalCode(),
-      treasuredClassificationFiltersDTO.getDebtPositionTypeOrgCode(),
+      debtPositionTypeOrgCode,
       treasuredClassificationFiltersDTO.getBillYear(),
       treasuredClassificationFiltersDTO.getBillCode(),
       treasuredClassificationFiltersDTO.getDocumentYear(),
@@ -100,25 +102,21 @@ class ClassificationControllerTest {
 
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertEquals(mockPagedTreasuredClassification, response.getBody());
-    verify(classificationRetrieverServiceMock).getTreasuredClassification(
-      organizationId, treasuredClassificationFiltersDTO, pageable, loggedUser, accessToken);
   }
 
   @Test
   void givenCorrectRequestWhenGetClassificationDetailThenOK() {
     Long organizationId = 1L;
     Long classificationId = 1L;
-    ClassificationDetailViewDTO mockDetailView = new ClassificationDetailViewDTO();
+    ClassificationDetailDTO mockDetailView = new ClassificationDetailDTO();
     when(classificationRetrieverServiceMock.getClassificationDetail(
       organizationId, classificationId, loggedUser, accessToken))
       .thenReturn(mockDetailView);
 
-    ResponseEntity<ClassificationDetailViewDTO> response = classificationController.getClassificationDetail(organizationId, classificationId);
+    ResponseEntity<ClassificationDetailDTO> response = classificationController.getClassificationDetail(organizationId, classificationId);
 
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertEquals(mockDetailView, response.getBody());
-    verify(classificationRetrieverServiceMock).getClassificationDetail(
-      organizationId, classificationId, loggedUser, accessToken);
   }
 
   @Test
@@ -129,7 +127,7 @@ class ClassificationControllerTest {
     when(classificationRetrieverServiceMock.getClassificationDetail(organizationId, classificationId, loggedUser, accessToken))
       .thenReturn(null);
 
-    ResponseEntity<ClassificationDetailViewDTO> response = classificationController.getClassificationDetail(organizationId, classificationId);
+    ResponseEntity<ClassificationDetailDTO> response = classificationController.getClassificationDetail(organizationId, classificationId);
 
     assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     Assertions.assertNull(response.getBody());

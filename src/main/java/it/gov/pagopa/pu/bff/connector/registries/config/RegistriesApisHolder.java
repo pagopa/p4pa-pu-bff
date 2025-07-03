@@ -3,8 +3,7 @@ package it.gov.pagopa.pu.bff.connector.registries.config;
 import it.gov.pagopa.pu.bff.config.rest.RestTemplateConfig;
 import it.gov.pagopa.pu.registries.controller.ApiClient;
 import it.gov.pagopa.pu.registries.controller.BaseApi;
-import it.gov.pagopa.pu.registries.controller.generated.DebtPositionRegistrySearchControllerApi;
-import it.gov.pagopa.pu.registries.controller.generated.InstallmentRegistrySearchControllerApi;
+import it.gov.pagopa.pu.registries.controller.generated.*;
 import jakarta.annotation.PreDestroy;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.stereotype.Service;
@@ -15,6 +14,10 @@ public class RegistriesApisHolder {
 
   private final DebtPositionRegistrySearchControllerApi debtPositionRegistrySearchControllerApi;
   private final InstallmentRegistrySearchControllerApi installmentRegistrySearchControllerApi;
+  private final PagoPaRegistrySearchControllerApi pagoPaRegistrySearchControllerApi;
+  private final PagoPaRegistryApi pagoPaRegistryApi;
+  private final SilRegistryApi silRegistryApi;
+  private final SilRegistrySearchControllerApi silRegistrySearchControllerApi;
   private final ThreadLocal<String> bearerTokenHolder = new ThreadLocal<>();
 
   public RegistriesApisHolder(
@@ -33,6 +36,10 @@ public class RegistriesApisHolder {
 
     this.debtPositionRegistrySearchControllerApi = new DebtPositionRegistrySearchControllerApi(apiClient);
     this.installmentRegistrySearchControllerApi = new InstallmentRegistrySearchControllerApi(apiClient);
+    this.pagoPaRegistrySearchControllerApi = new PagoPaRegistrySearchControllerApi(apiClient);
+    this.silRegistryApi = new SilRegistryApi(apiClient);
+    this.silRegistrySearchControllerApi = new SilRegistrySearchControllerApi(apiClient);
+    this.pagoPaRegistryApi = new PagoPaRegistryApi(apiClient);
   }
 
   @PreDestroy
@@ -52,6 +59,34 @@ public class RegistriesApisHolder {
    */
   public InstallmentRegistrySearchControllerApi getInstallmentRegistrySearchControllerApi(String accessToken) {
     return getApi(accessToken, installmentRegistrySearchControllerApi);
+  }
+
+  /**
+   * It will return a {@link PagoPaRegistrySearchControllerApi} instrumented with the provided accessToken. Use null if auth is not required
+   */
+  public PagoPaRegistrySearchControllerApi getPagoPaRegistrySearchControllerApi(String accessToken) {
+    return getApi(accessToken, pagoPaRegistrySearchControllerApi);
+  }
+
+  /**
+   * It will return a {@link SilRegistrySearchControllerApi} instrumented with the provided accessToken. Use null if auth is not required
+   */
+  public SilRegistrySearchControllerApi getSilRegistrySearchControllerApi(String accessToken) {
+    return getApi(accessToken, silRegistrySearchControllerApi);
+  }
+
+  /**
+   * It will return a {@link SilRegistryApi} instrumented with the provided accessToken. Use null if auth is not required
+   */
+  public SilRegistryApi getSilRegistryApi(String accessToken) {
+    return getApi(accessToken, silRegistryApi);
+  }
+
+  /**
+   * It will return a {@link PagoPaRegistryApi} instrumented with the provided accessToken. Use null if auth is not required
+   */
+  public PagoPaRegistryApi getPagoPaRegistryApi(String accessToken) {
+    return getApi(accessToken, pagoPaRegistryApi);
   }
 
   private <T extends BaseApi> T getApi(String accessToken, T api) {

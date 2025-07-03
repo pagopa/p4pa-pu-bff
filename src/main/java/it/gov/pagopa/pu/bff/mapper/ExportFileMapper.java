@@ -52,6 +52,7 @@ public class ExportFileMapper {
     return ExportFile.builder()
       .exportFileId(exportFile.getExportFileId())
       .fileName(exportFile.getFileName())
+      .fileSize(exportFile.getFileSize())
       .creationDate(exportFile.getCreationDate())
       .totalRows(exportFile.getNumTotalRows())
       .operator(UserUtils.getOperator(exportFile.getOperatorExternalId(), userInfo,

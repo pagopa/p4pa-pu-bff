@@ -6,9 +6,9 @@ import it.gov.pagopa.pu.bff.dto.generated.ReceiptDetailDTO;
 import it.gov.pagopa.pu.bff.util.TestUtils;
 import it.gov.pagopa.pu.classification.dto.generated.PagedModelPaymentsReporting;
 import it.gov.pagopa.pu.classification.dto.generated.PaymentsReporting;
-import it.gov.pagopa.pu.debtpositions.dto.generated.EntityTypeEnum;
 import it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentStatus;
 import it.gov.pagopa.pu.debtpositions.dto.generated.PersonDTO;
+import it.gov.pagopa.pu.debtpositions.dto.generated.PersonEntityType;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -122,7 +122,7 @@ class PaymentsReportingMapperTest {
     ReceiptDetailDTO receiptDetailDTO = ReceiptDetailDTO.builder()
       .debtor(
         PersonDTO.builder().fiscalCode("ABCDEF00B00F205A").fullName("DEBTOR")
-          .entityType(EntityTypeEnum.F).build())
+          .entityType(PersonEntityType.F).build())
       .paymentDateTime(OffsetDateTime.now())
       .iud("IUD123")
       .debtPositionTypeOrgDescription("DESCRIPTION")
@@ -202,7 +202,7 @@ class PaymentsReportingMapperTest {
     ReceiptDetailDTO receiptDetailDTO = ReceiptDetailDTO.builder()
       .debtor(
         PersonDTO.builder().fiscalCode("ABCDEF00B00F205A").fullName("DEBTOR")
-          .entityType(EntityTypeEnum.F).build())
+          .entityType(PersonEntityType.F).build())
       .paymentDateTime(OffsetDateTime.now())
       .iud("IUD123")
       .debtPositionTypeOrgDescription("DESCRIPTION")

@@ -63,16 +63,17 @@ class InstallmentRegistryRetrieverServiceImplTest {
 
     Long organizationId = 1L;
     Long debtPositionId = 2L;
+    String nav = "nav";
     CollectionModelInstallmentRegistry collectionModelInstallmentRegistry = podamFactory.manufacturePojo(CollectionModelInstallmentRegistry.class);
     List<InstallmentRegistry> expectedResult = collectionModelInstallmentRegistry.getEmbedded().getInstallmentRegistries();
 
     try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
       authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)).thenAnswer(a -> null);
       Mockito.doNothing().when(debtPositionRetrieverServiceMock).validateOperator(debtPositionId, organizationId, loggedUser, accessToken);
-      Mockito.when(installmentRegistryServiceMock.getInstallmentRegistries(debtPositionId, accessToken))
+      Mockito.when(installmentRegistryServiceMock.getInstallmentRegistries(debtPositionId, nav, accessToken))
         .thenReturn(collectionModelInstallmentRegistry);
 
-      List<InstallmentRegistry> result = installmentRegistryRetrieverService.getInstallmentRegistries(organizationId, debtPositionId, loggedUser, accessToken);
+      List<InstallmentRegistry> result = installmentRegistryRetrieverService.getInstallmentRegistries(organizationId, debtPositionId, nav, loggedUser, accessToken);
 
       assertNotNull(result);
       assertSame(expectedResult, result);
@@ -89,6 +90,7 @@ class InstallmentRegistryRetrieverServiceImplTest {
 
     Long organizationId = 1L;
     Long debtPositionId = 2L;
+    String nav = "nav";
     CollectionModelInstallmentRegistry collectionModelInstallmentRegistry = podamFactory.manufacturePojo(CollectionModelInstallmentRegistry.class);
     collectionModelInstallmentRegistry.setEmbedded(null);
 
@@ -96,10 +98,10 @@ class InstallmentRegistryRetrieverServiceImplTest {
       authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)).thenAnswer(a -> null);
 
       Mockito.doNothing().when(debtPositionRetrieverServiceMock).validateOperator(debtPositionId, organizationId, loggedUser, accessToken);
-      Mockito.when(installmentRegistryServiceMock.getInstallmentRegistries(debtPositionId, accessToken))
+      Mockito.when(installmentRegistryServiceMock.getInstallmentRegistries(debtPositionId, nav, accessToken))
         .thenReturn(collectionModelInstallmentRegistry);
 
-      List<InstallmentRegistry> result = installmentRegistryRetrieverService.getInstallmentRegistries(organizationId, debtPositionId, loggedUser, accessToken);
+      List<InstallmentRegistry> result = installmentRegistryRetrieverService.getInstallmentRegistries(organizationId, debtPositionId, nav, loggedUser, accessToken);
 
       assertNotNull(result);
       assertTrue(CollectionUtils.isEmpty(result));
@@ -116,14 +118,15 @@ class InstallmentRegistryRetrieverServiceImplTest {
 
     Long organizationId = 1L;
     Long debtPositionId = 2L;
+    String nav = "nav";
     try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
       authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)).thenAnswer(a -> null);
 
       Mockito.doNothing().when(debtPositionRetrieverServiceMock).validateOperator(debtPositionId, organizationId, loggedUser, accessToken);
-      Mockito.when(installmentRegistryServiceMock.getInstallmentRegistries(debtPositionId, accessToken))
+      Mockito.when(installmentRegistryServiceMock.getInstallmentRegistries(debtPositionId, nav, accessToken))
         .thenReturn(null);
 
-      List<InstallmentRegistry> result = installmentRegistryRetrieverService.getInstallmentRegistries(organizationId, debtPositionId, loggedUser, accessToken);
+      List<InstallmentRegistry> result = installmentRegistryRetrieverService.getInstallmentRegistries(organizationId, debtPositionId, nav, loggedUser, accessToken);
 
       assertNotNull(result);
       assertTrue(CollectionUtils.isEmpty(result));
@@ -140,12 +143,13 @@ class InstallmentRegistryRetrieverServiceImplTest {
 
     Long organizationId = 1L;
     Long debtPositionId = 2L;
+    String nav = "nav";
     try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
       authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)).thenAnswer(a -> null);
       Mockito.doThrow(new ResourceNotFoundException("")).when(debtPositionRetrieverServiceMock).validateOperator(debtPositionId, organizationId, loggedUser, accessToken);
 
       Assertions.assertThrows(ResourceNotFoundException.class, () ->
-        installmentRegistryRetrieverService.getInstallmentRegistries(organizationId, debtPositionId, loggedUser, accessToken));
+        installmentRegistryRetrieverService.getInstallmentRegistries(organizationId, debtPositionId, nav, loggedUser, accessToken));
 
       Mockito.verifyNoInteractions(installmentRegistryServiceMock);
       authorizationServiceMockedStatic.verify(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser));
@@ -161,13 +165,14 @@ class InstallmentRegistryRetrieverServiceImplTest {
 
     Long organizationId = 1L;
     Long debtPositionId = 2L;
+    String nav = "nav";
 
     try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
       authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser))
         .thenThrow(new AuthorizationDeniedException("Access denied"));
 
       Assertions.assertThrows(AuthorizationDeniedException.class, () ->
-        installmentRegistryRetrieverService.getInstallmentRegistries(organizationId, debtPositionId, loggedUser, accessToken));
+        installmentRegistryRetrieverService.getInstallmentRegistries(organizationId, debtPositionId, nav, loggedUser, accessToken));
 
       authorizationServiceMockedStatic.verify(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser));
     }

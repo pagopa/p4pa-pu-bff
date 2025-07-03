@@ -3,6 +3,7 @@ package it.gov.pagopa.pu.bff.connector.workflow_hub.config;
 import it.gov.pagopa.pu.bff.config.rest.RestTemplateConfig;
 import it.gov.pagopa.pu.workflowhub.controller.ApiClient;
 import it.gov.pagopa.pu.workflowhub.controller.BaseApi;
+import it.gov.pagopa.pu.workflowhub.controller.generated.ScheduleApi;
 import it.gov.pagopa.pu.workflowhub.controller.generated.TaxonomyApi;
 import jakarta.annotation.PreDestroy;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -12,6 +13,7 @@ import org.springframework.web.client.RestTemplate;
 @Service
 public class WorkflowHubApisHolder {
   private final TaxonomyApi taxonomyApi;
+  private final ScheduleApi scheduleApi;
   private final ThreadLocal<String> bearerTokenHolder = new ThreadLocal<>();
 
   public WorkflowHubApisHolder(
@@ -29,6 +31,7 @@ public class WorkflowHubApisHolder {
     }
 
     this.taxonomyApi = new TaxonomyApi(apiClient);
+    this.scheduleApi = new ScheduleApi(apiClient);
   }
 
   @PreDestroy
@@ -38,6 +41,10 @@ public class WorkflowHubApisHolder {
 
   public TaxonomyApi getTaxonomyApi(String accessToken) {
     return getApi(accessToken, taxonomyApi);
+  }
+
+  public ScheduleApi getScheduleApi(String accessToken) {
+    return getApi(accessToken, scheduleApi);
   }
 
   private <T extends BaseApi> T getApi(String accessToken, T api) {

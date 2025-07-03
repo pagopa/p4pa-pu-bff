@@ -40,6 +40,9 @@
     "name" : "Monitoring",
     "description" : "the Monitoring API"
   }, {
+    "name" : "Schedule",
+    "description" : "the Schedule API"
+  }, {
     "name" : "DebtPositionTypes",
     "description" : "the DebtPositionTypes API"
   }, {
@@ -1512,6 +1515,65 @@
               "application/json" : {
                 "schema" : {
                   "$ref" : "#/components/schemas/WorkflowCreatedDTO"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "BearerAuth" : [ ]
+        } ]
+      }
+    },
+    "/bff/workflow/schedules/{scheduleId}/last-updated-time" : {
+      "get" : {
+        "tags" : [ "Schedule" ],
+        "operationId" : "getScheduleLastUpdatedTime",
+        "parameters" : [ {
+          "name" : "scheduleId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/components/schemas/ScheduleEnum"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Ok",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ScheduleLastUpdatedTimeDTO"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Unauthorized - Missing or invalid token",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ScheduleLastUpdatedTimeDTO"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Forbidden - Access denied",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ScheduleLastUpdatedTimeDTO"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal Server Error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ScheduleLastUpdatedTimeDTO"
                 }
               }
             }
@@ -7152,6 +7214,20 @@
             "type" : "string"
           }
         }
+      },
+      "ScheduleLastUpdatedTimeDTO" : {
+        "type" : "object",
+        "properties" : {
+          "lastUpdatedAt" : {
+            "type" : "string",
+            "format" : "date-time"
+          }
+        },
+        "required" : [ "lastUpdatedAt" ]
+      },
+      "ScheduleEnum" : {
+        "type" : "string",
+        "enum" : [ "PAYMENTS_REPORTING_PAGOPA_BROKERS_FETCH", "SYNCHRONIZE_TAXONOMY_PAGOPA_FETCH" ]
       },
       "PagedTaxonomy" : {
         "type" : "object",

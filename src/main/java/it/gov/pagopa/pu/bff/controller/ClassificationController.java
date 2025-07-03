@@ -69,7 +69,6 @@ public class ClassificationController implements ClassificationsApi {
       .billAmountCents(billAmountCents)
       .remittanceInformation(remittanceInformation)
       .debtorFiscalCode(debtorFiscalCode)
-      .debtPositionTypeOrgCode(debtPositionTypeOrgCode)
       .billYear(billYear)
       .billCode(billCode)
       .documentYear(documentYear)
@@ -78,7 +77,7 @@ public class ClassificationController implements ClassificationsApi {
       .provisionalCode(provisionalCode)
       .build();
 
-    return ResponseEntity.ok(classificationRetrieverService.getTreasuredClassification(organizationId, treasuredClassificationFiltersDTO, pageable,
+    return ResponseEntity.ok(classificationRetrieverService.getTreasuredClassification(organizationId, treasuredClassificationFiltersDTO, debtPositionTypeOrgCode, pageable,
       SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken()));
   }
 

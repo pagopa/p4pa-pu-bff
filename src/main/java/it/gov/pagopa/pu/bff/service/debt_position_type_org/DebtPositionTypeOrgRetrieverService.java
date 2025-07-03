@@ -9,6 +9,7 @@ import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrg;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
+import java.util.Set;
 
 public interface DebtPositionTypeOrgRetrieverService {
   DebtPositionTypeOrgDTO getDebtPositionTypeOrgById(Long organizationId, Long debtPositionTypeOrgId, UserInfo loggedUser, String accessToken);
@@ -26,4 +27,6 @@ public interface DebtPositionTypeOrgRetrieverService {
   DebtPositionTypeOrg updateDebtPositionTypeOrg(Long organizationId, Long debtPositionTypeOrgId, SaveDebtPositionTypeOrgDTO saveDebtPositionTypeOrgDTO, UserInfo loggedUser, String accessToken);
 
   void validateOperator(Long organizationId, String debtPositionTypeOrgCode, String mappedExternalUserId, String accessToken);
+
+  Set<String> getDebtPositionTypeOrgCodes(Long organizationId, String mappedExternalUserId, String accessToken);
 }

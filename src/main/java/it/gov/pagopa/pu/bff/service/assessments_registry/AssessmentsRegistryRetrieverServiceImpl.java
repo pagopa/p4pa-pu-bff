@@ -1,9 +1,7 @@
 package it.gov.pagopa.pu.bff.service.assessments_registry;
 
-import io.micrometer.common.util.StringUtils;
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.connector.classification.AssessmentsRegistryService;
-import it.gov.pagopa.pu.bff.connector.debt_position.DebtPositionTypeOrgService;
 import it.gov.pagopa.pu.bff.dto.AssessmentsRegistryFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.generated.AssessmentsRegistryDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedAssessmentsRegistry;
@@ -13,10 +11,12 @@ import it.gov.pagopa.pu.bff.mapper.AssessmentsRegistryDTOMapper;
 import it.gov.pagopa.pu.bff.mapper.AssessmentsRegistryMapper;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
 import it.gov.pagopa.pu.bff.service.debt_position_type_org.DebtPositionTypeOrgRetrieverService;
-import it.gov.pagopa.pu.classification.dto.generated.*;
-import it.gov.pagopa.pu.debtpositions.dto.generated.CollectionModelDebtPositionTypeOrg;
-import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrg;
+import it.gov.pagopa.pu.classification.dto.generated.AssessmentsRegistry;
+import it.gov.pagopa.pu.classification.dto.generated.AssessmentsRegistryStatus;
+import it.gov.pagopa.pu.classification.dto.generated.PagedModelAssessmentsRegistry;
+import it.gov.pagopa.pu.classification.dto.generated.PagedModelAssessmentsRegistryEmbedded;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -25,23 +25,19 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j
 public class AssessmentsRegistryRetrieverServiceImpl implements AssessmentsRegistryRetrieverService {
-  private final DebtPositionTypeOrgService debtPositionTypeOrgService;
   private final DebtPositionTypeOrgRetrieverService debtPositionTypeOrgRetrieverService;
   private final AssessmentsRegistryService assessmentsRegistryService;
   private final AssessmentsRegistryMapper assessmentsRegistryMapper;
   private final AssessmentsRegistryDTOMapper assessmentsRegistryDTOMapper;
 
-  public AssessmentsRegistryRetrieverServiceImpl(DebtPositionTypeOrgService debtPositionTypeOrgService,
-                                                 DebtPositionTypeOrgRetrieverService debtPositionTypeOrgRetrieverService,
+  public AssessmentsRegistryRetrieverServiceImpl(DebtPositionTypeOrgRetrieverService debtPositionTypeOrgRetrieverService,
                                                  AssessmentsRegistryService assessmentsRegistryService,
                                                  AssessmentsRegistryMapper assessmentsRegistryMapper,
                                                  AssessmentsRegistryDTOMapper assessmentsRegistryDTOMapper) {
-    this.debtPositionTypeOrgService = debtPositionTypeOrgService;
     this.debtPositionTypeOrgRetrieverService = debtPositionTypeOrgRetrieverService;
     this.assessmentsRegistryService = assessmentsRegistryService;
     this.assessmentsRegistryMapper = assessmentsRegistryMapper;
@@ -63,14 +59,11 @@ public class AssessmentsRegistryRetrieverServiceImpl implements AssessmentsRegis
   }
 
   private Set<String> getDebtPositionTypeOrgCodes(Long organizationId, String mappedExternalUserId, String accessToken) {
-    CollectionModelDebtPositionTypeOrg debtPositionTypeOrgs = debtPositionTypeOrgService.getDebtPositionTypeOrgs(organizationId, mappedExternalUserId, accessToken);
-    if (debtPositionTypeOrgs != null
-      && debtPositionTypeOrgs.getEmbedded() != null
-      && !CollectionUtils.isEmpty(debtPositionTypeOrgs.getEmbedded().getDebtPositionTypeOrgs())) {
-      return debtPositionTypeOrgs.getEmbedded().getDebtPositionTypeOrgs().stream().map(DebtPositionTypeOrg::getCode).collect(Collectors.toSet());
-    } else {
+    Set<String> debtPositionTypeOrgCodes = debtPositionTypeOrgRetrieverService.getDebtPositionTypeOrgCodes(organizationId,mappedExternalUserId,accessToken);
+    if(CollectionUtils.isEmpty(debtPositionTypeOrgCodes)){
       throw new ResourceNotFoundException("AssessmentsRegistries not found for organizationId " + organizationId);
     }
+    return debtPositionTypeOrgCodes;
   }
 
   @Override

@@ -1,10 +1,5 @@
 package it.gov.pagopa.pu.bff.connector.classification.client;
 
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import it.gov.pagopa.pu.bff.connector.classification.config.ClassificationApisHolder;
 import it.gov.pagopa.pu.bff.dto.TreasuredClassificationFiltersDTO;
 import it.gov.pagopa.pu.bff.util.PageUtils;
@@ -23,6 +18,11 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.client.HttpClientErrorException;
 import uk.co.jemos.podam.api.PodamFactory;
+
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class ClassificationClientTest {
@@ -57,6 +57,7 @@ class ClassificationClientTest {
       .thenReturn(classificationsApiMock);
 
     when(classificationsApiMock.getTreasuredClassifications(organizationId,
+      treasuredClassificationFiltersDTO.getDebtPositionTypeOrgCodes(),
       treasuredClassificationFiltersDTO.getLabel(),
       treasuredClassificationFiltersDTO.getIud(),
       treasuredClassificationFiltersDTO.getIuv(),
@@ -81,7 +82,6 @@ class ClassificationClientTest {
       treasuredClassificationFiltersDTO.getBillAmountCents(),
       treasuredClassificationFiltersDTO.getRemittanceInformation(),
       treasuredClassificationFiltersDTO.getDebtorFiscalCode(),
-      treasuredClassificationFiltersDTO.getDebtPositionTypeOrgCode(),
       treasuredClassificationFiltersDTO.getBillYear(),
       treasuredClassificationFiltersDTO.getBillCode(),
       treasuredClassificationFiltersDTO.getDocumentYear(),

@@ -23,6 +23,7 @@ public class ClassificationClient {
   public PagedTreasuredClassification getTreasuredClassifications(Long organizationId, TreasuredClassificationFiltersDTO filters, Pageable pageable, String accessToken) {
     return classificationApisHolder.getClassificationsApi(accessToken)
       .getTreasuredClassifications(organizationId,
+        filters.getDebtPositionTypeOrgCodes(),
         filters.getLabel(),
         filters.getIud(),
         filters.getIuv(),
@@ -47,7 +48,6 @@ public class ClassificationClient {
         filters.getBillAmountCents(),
         filters.getRemittanceInformation(),
         filters.getDebtorFiscalCode(),
-        filters.getDebtPositionTypeOrgCode(),
         filters.getBillYear(),
         filters.getBillCode(),
         filters.getDocumentYear(),

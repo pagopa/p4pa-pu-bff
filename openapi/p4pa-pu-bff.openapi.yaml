@@ -2392,6 +2392,25 @@ paths:
           description: Forbidden - Access denied
         '500':
           description: Internal Server Error
+  /assessments/operating-year:
+    get:
+      tags:
+        - Assessments
+      operationId: getOperatingYears
+      description: Returns a list of valid operating years
+      responses:
+        '200':
+          description: List of operating years
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+        '403':
+          description: Forbidden - Access denied
+        '500':
+          description: Internal Server Error
   /organization/{organizationId}/assessments:
     get:
       tags:

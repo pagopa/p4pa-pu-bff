@@ -16,6 +16,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.OffsetDateTime;
+import java.time.Year;
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -71,5 +73,17 @@ public class AssessmentsController implements AssessmentsApi {
     log.info("User requested getAssessmentsDetail having organizationId {}, assessmentId {} and assessmentDetailId {}", organizationId, assessmentId, assessmentDetailId);
     return ResponseEntity.ok(assessmentsRetrieverService.getAssessmentsDetail(organizationId, assessmentId, assessmentDetailId, SecurityUtils.getLoggedUser(),
       SecurityUtils.getAccessToken()));
+  }
+
+  @Override
+  public ResponseEntity<List<String>> getOperatingYears() {
+    log.info("User requested getOperatingYears");
+    int currentYear = Year.now().getValue();
+    List<String> years = List.of(
+      String.valueOf(currentYear - 1),
+      String.valueOf(currentYear),
+      String.valueOf(currentYear + 1)
+    );
+    return ResponseEntity.ok(years);
   }
 }

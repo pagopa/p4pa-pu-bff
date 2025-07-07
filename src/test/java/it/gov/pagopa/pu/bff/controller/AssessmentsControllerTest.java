@@ -11,7 +11,6 @@ import it.gov.pagopa.pu.bff.service.assessments.AssessmentsRetrieverService;
 import it.gov.pagopa.pu.bff.util.TestUtils;
 import it.gov.pagopa.pu.classification.dto.generated.AssessmentStatus;
 import it.gov.pagopa.pu.classification.dto.generated.AssessmentsDetail;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,6 +22,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.time.OffsetDateTime;
+import java.time.Year;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @ExtendWith(MockitoExtension.class)
 class AssessmentsControllerTest {
@@ -50,7 +54,7 @@ class AssessmentsControllerTest {
     String iuv = "iuv";
     String debtPositionTypeOrgCode = "debtPositionTypeOrgCode";
 
-    AssessmentsFiltersDTO assessmentsFiltersDTO = new AssessmentsFiltersDTO(organizationId, assessmentsName, offsetDateTime, offsetDateTime.plusDays(1L), iuv, null,  AssessmentStatus.NEW);
+    AssessmentsFiltersDTO assessmentsFiltersDTO = new AssessmentsFiltersDTO(organizationId, assessmentsName, offsetDateTime, offsetDateTime.plusDays(1L), iuv, null, AssessmentStatus.NEW);
 
     PagedAssessmentsExtendedDTO pagedAssessmentsExtendedDTO = new PagedAssessmentsExtendedDTO();
 
@@ -58,9 +62,9 @@ class AssessmentsControllerTest {
     //when
     ResponseEntity<PagedAssessmentsExtendedDTO> result = assessmentsController.getPagedAssessmentsExtendedDTO(organizationId, assessmentsName, offsetDateTime, offsetDateTime.plusDays(1L), iuv, debtPositionTypeOrgCode, AssessmentStatus.NEW, Pageable.ofSize(1));
     //then
-    Assertions.assertEquals(HttpStatus.OK, result.getStatusCode());
-    Assertions.assertNotNull(result);
-    Assertions.assertEquals(pagedAssessmentsExtendedDTO, result.getBody());
+    assertEquals(HttpStatus.OK, result.getStatusCode());
+    assertNotNull(result);
+    assertEquals(pagedAssessmentsExtendedDTO, result.getBody());
   }
 
   @Test
@@ -76,13 +80,13 @@ class AssessmentsControllerTest {
 
     AssessmentsRowsDetailFiltersDTO assessmentsRowsDetailFiltersDTO = new AssessmentsRowsDetailFiltersDTO(organizationId, assessmentId, iud, iuv, offsetDateTimeIntervalFilter, offsetDateTimeIntervalFilter, fiscalCode);
     PagedAssessmentsRowsDetail pagedAssessmentsRowsDetail = new PagedAssessmentsRowsDetail();
-    Mockito.when(assessmentsRetrieverServiceMock.getPagedAssessmentsRowsDetail(assessmentsRowsDetailFiltersDTO, Pageable.ofSize(1),loggedUser, accessToken)).thenReturn(pagedAssessmentsRowsDetail);
+    Mockito.when(assessmentsRetrieverServiceMock.getPagedAssessmentsRowsDetail(assessmentsRowsDetailFiltersDTO, Pageable.ofSize(1), loggedUser, accessToken)).thenReturn(pagedAssessmentsRowsDetail);
     //when
     ResponseEntity<PagedAssessmentsRowsDetail> result = assessmentsController.getPagedAssessmentsDetails(organizationId, assessmentId, iuv, iud, offsetDateTime, offsetDateTime, offsetDateTime, offsetDateTime, fiscalCode, Pageable.ofSize(1));
     //then
-    Assertions.assertEquals(HttpStatus.OK, result.getStatusCode());
-    Assertions.assertNotNull(result);
-    Assertions.assertEquals(pagedAssessmentsRowsDetail, result.getBody());
+    assertEquals(HttpStatus.OK, result.getStatusCode());
+    assertNotNull(result);
+    assertEquals(pagedAssessmentsRowsDetail, result.getBody());
   }
 
   @Test
@@ -97,8 +101,23 @@ class AssessmentsControllerTest {
     //when
     ResponseEntity<AssessmentsDetail> result = assessmentsController.getAssessmentsDetail(organizationId, assessmentId, assessmentDetailId);
     //then
-    Assertions.assertEquals(HttpStatus.OK, result.getStatusCode());
-    Assertions.assertNotNull(result);
-    Assertions.assertEquals(assessmentsDetail, result.getBody());
+    assertEquals(HttpStatus.OK, result.getStatusCode());
+    assertNotNull(result);
+    assertEquals(assessmentsDetail, result.getBody());
+  }
+
+  @Test
+  void whenGetOperatingYearsThenOk() {
+    int currentYear = Year.now().getValue();
+    List<String> expectedYears = List.of(
+      String.valueOf(currentYear - 1),
+      String.valueOf(currentYear),
+      String.valueOf(currentYear + 1));
+
+    ResponseEntity<List<String>> result = assessmentsController.getOperatingYears();
+
+    assertEquals(HttpStatus.OK, result.getStatusCode());
+    assertNotNull(result);
+    assertEquals(expectedYears, result.getBody());
   }
 }

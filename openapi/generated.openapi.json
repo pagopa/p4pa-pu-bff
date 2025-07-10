@@ -7389,7 +7389,8 @@
           "runId" : {
             "type" : "string"
           }
-        }
+        },
+        "required" : [ "runId", "workflowId" ]
       },
       "ScheduleLastUpdatedTimeDTO" : {
         "type" : "object",

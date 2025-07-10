@@ -10144,7 +10144,7 @@
       },
       "AssessmentStatus" : {
         "type" : "string",
-        "enum" : [ "NEW", "CLOSED", "CANCELLED" ]
+        "enum" : [ "CLOSED", "CANCELLED", "ACTIVE" ]
       },
       "AssessmentsExtendedDTO" : {
         "type" : "object",

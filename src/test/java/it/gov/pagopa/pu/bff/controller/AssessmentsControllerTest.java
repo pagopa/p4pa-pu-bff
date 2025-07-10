@@ -54,13 +54,13 @@ class AssessmentsControllerTest {
     String iuv = "iuv";
     String debtPositionTypeOrgCode = "debtPositionTypeOrgCode";
 
-    AssessmentsFiltersDTO assessmentsFiltersDTO = new AssessmentsFiltersDTO(organizationId, assessmentsName, offsetDateTime, offsetDateTime.plusDays(1L), iuv, null, AssessmentStatus.NEW);
+    AssessmentsFiltersDTO assessmentsFiltersDTO = new AssessmentsFiltersDTO(organizationId, assessmentsName, offsetDateTime, offsetDateTime.plusDays(1L), iuv, null, AssessmentStatus.ACTIVE);
 
     PagedAssessmentsExtendedDTO pagedAssessmentsExtendedDTO = new PagedAssessmentsExtendedDTO();
 
     Mockito.when(assessmentsRetrieverServiceMock.getPagedAssessmentsExtendedDTO(assessmentsFiltersDTO, debtPositionTypeOrgCode, Pageable.ofSize(1), loggedUser, accessToken)).thenReturn(pagedAssessmentsExtendedDTO);
     //when
-    ResponseEntity<PagedAssessmentsExtendedDTO> result = assessmentsController.getPagedAssessmentsExtendedDTO(organizationId, assessmentsName, offsetDateTime, offsetDateTime.plusDays(1L), iuv, debtPositionTypeOrgCode, AssessmentStatus.NEW, Pageable.ofSize(1));
+    ResponseEntity<PagedAssessmentsExtendedDTO> result = assessmentsController.getPagedAssessmentsExtendedDTO(organizationId, assessmentsName, offsetDateTime, offsetDateTime.plusDays(1L), iuv, debtPositionTypeOrgCode, AssessmentStatus.ACTIVE, Pageable.ofSize(1));
     //then
     assertEquals(HttpStatus.OK, result.getStatusCode());
     assertNotNull(result);

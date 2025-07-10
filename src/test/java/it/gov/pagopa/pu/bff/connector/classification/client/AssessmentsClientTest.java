@@ -6,6 +6,7 @@ import it.gov.pagopa.pu.bff.dto.AssessmentsRowsDetailFiltersDTO;
 import it.gov.pagopa.pu.classification.controller.generated.AssessmentsControllerApi;
 import it.gov.pagopa.pu.classification.controller.generated.AssessmentsDetailEntityControllerApi;
 import it.gov.pagopa.pu.classification.controller.generated.AssessmentsDetailSearchControllerApi;
+import it.gov.pagopa.pu.classification.dto.generated.Assessments;
 import it.gov.pagopa.pu.classification.dto.generated.AssessmentsDetail;
 import it.gov.pagopa.pu.classification.dto.generated.PagedAssessmentsView;
 import it.gov.pagopa.pu.classification.dto.generated.PagedModelAssessmentsDetail;
@@ -113,4 +114,21 @@ class AssessmentsClientTest {
     Assertions.assertNull(result);
   }
 
+  @Test
+  void givenOrganizationIdAssessmentNameAndDebtPositionTypeOrgCodeWhenCreateAssessmentThenReturnAssessment() {
+    //given
+    String accessToken = "accessToken";
+    Long organizationId = 1L;
+    String assessmentName = "testName";
+    String debtPositionTypeOrgCode = "Code";
+    Assessments assessments = podamFactory.manufacturePojo(Assessments.class);
+
+    Mockito.when(classificationApisHolderMock.getAssessmentsControllerApi(accessToken)).thenReturn(assessmentsControllerApiMock);
+    Mockito.when(assessmentsControllerApiMock.createAssessment(organizationId, assessmentName, debtPositionTypeOrgCode)).thenReturn(assessments);
+    //when
+    Assessments result = assessmentsClient.createAssessment(organizationId, assessmentName, debtPositionTypeOrgCode, accessToken);
+    //then
+    Assertions.assertNotNull(result);
+    Assertions.assertEquals(assessments, result);
+  }
 }

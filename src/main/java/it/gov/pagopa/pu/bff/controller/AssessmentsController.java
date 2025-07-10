@@ -9,6 +9,7 @@ import it.gov.pagopa.pu.bff.dto.generated.PagedAssessmentsRowsDetail;
 import it.gov.pagopa.pu.bff.security.SecurityUtils;
 import it.gov.pagopa.pu.bff.service.assessments.AssessmentsRetrieverService;
 import it.gov.pagopa.pu.classification.dto.generated.AssessmentStatus;
+import it.gov.pagopa.pu.classification.dto.generated.Assessments;
 import it.gov.pagopa.pu.classification.dto.generated.AssessmentsDetail;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -85,5 +86,11 @@ public class AssessmentsController implements AssessmentsApi {
       String.valueOf(currentYear + 1)
     );
     return ResponseEntity.ok(years);
+  }
+
+  @Override
+  public ResponseEntity<Assessments> createAssessment(Long organizationId, String assessmentName, String debtPositionTypeOrgCode) {
+    log.info("User requested createAssessment having organizationId {}, assessmentName {} and debtPositionTypeOrgCode {}", organizationId, assessmentName, debtPositionTypeOrgCode);
+    return ResponseEntity.ok(assessmentsRetrieverService.createAssessment(organizationId, assessmentName, debtPositionTypeOrgCode, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken()));
   }
 }

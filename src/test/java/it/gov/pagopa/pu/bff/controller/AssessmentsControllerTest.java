@@ -10,6 +10,7 @@ import it.gov.pagopa.pu.bff.security.SecurityUtilsTest;
 import it.gov.pagopa.pu.bff.service.assessments.AssessmentsRetrieverService;
 import it.gov.pagopa.pu.bff.util.TestUtils;
 import it.gov.pagopa.pu.classification.dto.generated.AssessmentStatus;
+import it.gov.pagopa.pu.classification.dto.generated.Assessments;
 import it.gov.pagopa.pu.classification.dto.generated.AssessmentsDetail;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -120,4 +121,21 @@ class AssessmentsControllerTest {
     assertNotNull(result);
     assertEquals(expectedYears, result.getBody());
   }
+
+  @Test
+  void whenCreateAssessmentThenOk() {
+    //given
+    Long organizationId = 1L;
+    String assessmentsName = "assessmentsName";
+    String debtPositionTypeOrgCode = "debtPositionTypeOrgCode";
+    Assessments assessments = new Assessments();
+    Mockito.when(assessmentsRetrieverServiceMock.createAssessment(organizationId, assessmentsName, debtPositionTypeOrgCode,loggedUser, accessToken)).thenReturn(assessments);
+    //when
+    ResponseEntity<Assessments> result = assessmentsController.createAssessment(organizationId, assessmentsName, debtPositionTypeOrgCode);
+    //then
+    assertEquals(HttpStatus.OK, result.getStatusCode());
+    assertNotNull(result);
+    assertEquals(assessments, result.getBody());
+  }
+
 }

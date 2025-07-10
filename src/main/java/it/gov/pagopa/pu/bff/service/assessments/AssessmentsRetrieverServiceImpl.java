@@ -15,6 +15,7 @@ import it.gov.pagopa.pu.bff.mapper.PagedAssessmentsRowsDetailMapper;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
 import it.gov.pagopa.pu.bff.service.debt_position_type_org.DebtPositionTypeOrgRetrieverService;
 import it.gov.pagopa.pu.bff.util.DateUtils;
+import it.gov.pagopa.pu.classification.dto.generated.Assessments;
 import it.gov.pagopa.pu.classification.dto.generated.AssessmentsDetail;
 import it.gov.pagopa.pu.classification.dto.generated.PagedAssessmentsView;
 import it.gov.pagopa.pu.debtpositions.dto.generated.CollectionModelDebtPositionTypeOrg;
@@ -130,6 +131,14 @@ public class AssessmentsRetrieverServiceImpl implements AssessmentsRetrieverServ
       throw new InvalidAssessmentsDetailException("The assessment detail with ID %s is either invalid or does not belong to the assessment with ID %s".formatted(assessmentDetailId, assessmentId));
     }
 
+  }
+
+  @Override
+  public Assessments createAssessment(Long organizationId, String assessmentName, String debtPositionTypeOrgCode,  UserInfo loggedUser, String accessToken) {
+    AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser);
+    debtPositionTypeOrgRetrieverService.validateOperator(organizationId, debtPositionTypeOrgCode, loggedUser.getMappedExternalUserId(), accessToken);
+
+    return assessmentsService.createAssessment(organizationId, assessmentName, debtPositionTypeOrgCode, accessToken);
   }
 
 }

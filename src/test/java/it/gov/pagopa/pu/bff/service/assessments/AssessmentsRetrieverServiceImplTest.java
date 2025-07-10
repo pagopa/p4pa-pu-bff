@@ -406,5 +406,67 @@ class AssessmentsRetrieverServiceImplTest {
 
   }
 
+  @Test
+  void givenParamWhenCreateAssessmentThenReturnAssessment() {
+    UserInfo loggedUser = new UserInfo();
+    loggedUser.setMappedExternalUserId("external-id");
+    String accessToken = "accessToken";
 
+    Long organizationId = 1L;
+    String assessmentsName = "assessmentsName";
+    String debtPositionTypeOrgCode = "debtPositionTypeOrgCode";
+
+    Assessments assessments = podamFactory.manufacturePojo(Assessments.class);
+    try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
+      authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)).thenAnswer(a -> null);
+
+      Mockito.when(assessmentsServiceMock.createAssessment(organizationId, assessmentsName, debtPositionTypeOrgCode, accessToken)).thenReturn(assessments);
+
+      Assessments result = assessmentsRetrieverService.createAssessment(organizationId, assessmentsName, debtPositionTypeOrgCode, loggedUser, accessToken);
+
+      Assertions.assertNotNull(result);
+      Assertions.assertEquals(assessments, result);
+    }
+  }
+
+  @Test
+  void givenInvalidUserWhenCreateAssessmentThenThrowException() {
+    UserInfo loggedUser = new UserInfo();
+    loggedUser.setMappedExternalUserId("external-id");
+    String accessToken = "accessToken";
+
+    Long organizationId = 1L;
+    String assessmentsName = "assessmentsName";
+    String debtPositionTypeOrgCode = "debtPositionTypeOrgCode";
+
+    try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
+      authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser))
+        .thenThrow(new SecurityException("Unauthorized"));
+
+      Executable executable = () -> assessmentsRetrieverService.createAssessment(organizationId, assessmentsName, debtPositionTypeOrgCode, loggedUser, accessToken);
+
+      Assertions.assertThrows(SecurityException.class, executable);
+    }
+  }
+
+  @Test
+  void givenInvalidDebtPositionTypeOrgCodeWhenCreateAssessmentThenThrowsAuthorizationDeniedException() {
+    UserInfo loggedUser = new UserInfo();
+    loggedUser.setMappedExternalUserId("external-id");
+    String accessToken = "accessToken";
+
+    Long organizationId = 1L;
+    String assessmentsName = "assessmentsName";
+    String debtPositionTypeOrgCode = "debtPositionTypeOrgCode";
+
+    try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
+      authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)).thenAnswer(a -> null);
+
+      Mockito.doThrow(ResourceNotFoundException.class).when(debtPositionTypeOrgRetrieverServiceMock).validateOperator(organizationId, debtPositionTypeOrgCode, loggedUser.getMappedExternalUserId(), accessToken);
+
+      Executable executable = () -> assessmentsRetrieverService.createAssessment(organizationId, assessmentsName, debtPositionTypeOrgCode, loggedUser, accessToken);
+
+      Assertions.assertThrows(ResourceNotFoundException.class, executable);
+    }
+  }
 }

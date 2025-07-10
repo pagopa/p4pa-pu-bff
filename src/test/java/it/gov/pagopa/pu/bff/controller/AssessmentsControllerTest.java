@@ -10,6 +10,7 @@ import it.gov.pagopa.pu.bff.security.SecurityUtilsTest;
 import it.gov.pagopa.pu.bff.service.assessments.AssessmentsRetrieverService;
 import it.gov.pagopa.pu.bff.util.TestUtils;
 import it.gov.pagopa.pu.classification.dto.generated.AssessmentStatus;
+import it.gov.pagopa.pu.classification.dto.generated.Assessments;
 import it.gov.pagopa.pu.classification.dto.generated.AssessmentsDetail;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -54,13 +55,13 @@ class AssessmentsControllerTest {
     String iuv = "iuv";
     String debtPositionTypeOrgCode = "debtPositionTypeOrgCode";
 
-    AssessmentsFiltersDTO assessmentsFiltersDTO = new AssessmentsFiltersDTO(organizationId, assessmentsName, offsetDateTime, offsetDateTime.plusDays(1L), iuv, null, AssessmentStatus.NEW);
+    AssessmentsFiltersDTO assessmentsFiltersDTO = new AssessmentsFiltersDTO(organizationId, assessmentsName, offsetDateTime, offsetDateTime.plusDays(1L), iuv, null, AssessmentStatus.ACTIVE);
 
     PagedAssessmentsExtendedDTO pagedAssessmentsExtendedDTO = new PagedAssessmentsExtendedDTO();
 
     Mockito.when(assessmentsRetrieverServiceMock.getPagedAssessmentsExtendedDTO(assessmentsFiltersDTO, debtPositionTypeOrgCode, Pageable.ofSize(1), loggedUser, accessToken)).thenReturn(pagedAssessmentsExtendedDTO);
     //when
-    ResponseEntity<PagedAssessmentsExtendedDTO> result = assessmentsController.getPagedAssessmentsExtendedDTO(organizationId, assessmentsName, offsetDateTime, offsetDateTime.plusDays(1L), iuv, debtPositionTypeOrgCode, AssessmentStatus.NEW, Pageable.ofSize(1));
+    ResponseEntity<PagedAssessmentsExtendedDTO> result = assessmentsController.getPagedAssessmentsExtendedDTO(organizationId, assessmentsName, offsetDateTime, offsetDateTime.plusDays(1L), iuv, debtPositionTypeOrgCode, AssessmentStatus.ACTIVE, Pageable.ofSize(1));
     //then
     assertEquals(HttpStatus.OK, result.getStatusCode());
     assertNotNull(result);
@@ -120,4 +121,21 @@ class AssessmentsControllerTest {
     assertNotNull(result);
     assertEquals(expectedYears, result.getBody());
   }
+
+  @Test
+  void whenCreateAssessmentThenOk() {
+    //given
+    Long organizationId = 1L;
+    String assessmentsName = "assessmentsName";
+    String debtPositionTypeOrgCode = "debtPositionTypeOrgCode";
+    Assessments assessments = new Assessments();
+    Mockito.when(assessmentsRetrieverServiceMock.createAssessment(organizationId, assessmentsName, debtPositionTypeOrgCode,loggedUser, accessToken)).thenReturn(assessments);
+    //when
+    ResponseEntity<Assessments> result = assessmentsController.createAssessment(organizationId, assessmentsName, debtPositionTypeOrgCode);
+    //then
+    assertEquals(HttpStatus.OK, result.getStatusCode());
+    assertNotNull(result);
+    assertEquals(assessments, result.getBody());
+  }
+
 }

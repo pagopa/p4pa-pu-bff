@@ -4,6 +4,7 @@ import it.gov.pagopa.pu.bff.connector.classification.config.ClassificationApisHo
 import it.gov.pagopa.pu.bff.dto.AssessmentsFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.AssessmentsRowsDetailFiltersDTO;
 import it.gov.pagopa.pu.bff.util.PageUtils;
+import it.gov.pagopa.pu.classification.dto.generated.Assessments;
 import it.gov.pagopa.pu.classification.dto.generated.AssessmentsDetail;
 import it.gov.pagopa.pu.classification.dto.generated.PagedAssessmentsView;
 import it.gov.pagopa.pu.classification.dto.generated.PagedModelAssessmentsDetail;
@@ -61,6 +62,11 @@ public class AssessmentsClient {
       log.warn("Assessment detail with id %s not found".formatted(assessmentDetailId));
       return null;
     }
+  }
+
+  public Assessments createAssessment(Long organizationId, String assessmentName, String debtPositionTypeOrgCode, String accessToken){
+    return classificationApisHolder.getAssessmentsControllerApi(accessToken)
+      .createAssessment(organizationId, assessmentName, debtPositionTypeOrgCode);
   }
 
 }

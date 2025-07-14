@@ -2553,7 +2553,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PagedAssessmentsRowsDetail'
+                $ref: '#/components/schemas/AssessmentsRowsDetail'
         '401':
           description: Unauthorized - Missing or invalid token
         "400":
@@ -3783,6 +3783,24 @@ components:
         number:
           type: integer
           format: int64
+    AssessmentsRowsDetail:
+      type: object
+      required:
+        - pagedAssessmentsRowsDetail
+        - assessmentsName
+        - debtPositionTypeOrgDescription
+        - status
+      properties:
+        pagedAssessmentsRowsDetail:
+          $ref: "#/components/schemas/PagedAssessmentsRowsDetail"
+        assessmentsName:
+          type: string
+        debtPositionTypeOrgDescription:
+          type: string
+        status:
+          type: 'AssessmentsStatusEnum'
+        updateOperatorExternalId:
+          type: string
     PagedAssessmentsExtendedDTO:
       type: object
       required:

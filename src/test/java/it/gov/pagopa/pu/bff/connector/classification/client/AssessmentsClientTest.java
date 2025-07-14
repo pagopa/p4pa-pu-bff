@@ -6,6 +6,7 @@ import it.gov.pagopa.pu.bff.dto.AssessmentsRowsDetailFiltersDTO;
 import it.gov.pagopa.pu.classification.controller.generated.AssessmentsControllerApi;
 import it.gov.pagopa.pu.classification.controller.generated.AssessmentsDetailEntityControllerApi;
 import it.gov.pagopa.pu.classification.controller.generated.AssessmentsDetailSearchControllerApi;
+import it.gov.pagopa.pu.classification.controller.generated.AssessmentsEntityControllerApi;
 import it.gov.pagopa.pu.classification.dto.generated.Assessments;
 import it.gov.pagopa.pu.classification.dto.generated.AssessmentsDetail;
 import it.gov.pagopa.pu.classification.dto.generated.PagedAssessmentsView;
@@ -37,6 +38,8 @@ class AssessmentsClientTest {
   private AssessmentsDetailSearchControllerApi assessmentsDetailSearchControllerApiMock;
   @Mock
   private AssessmentsDetailEntityControllerApi assessmentsDetailEntityControllerApiMock;
+  @Mock
+  private AssessmentsEntityControllerApi assessmentsEntityControllerApiMock;
 
   private AssessmentsClient assessmentsClient;
   private PodamFactory podamFactory;
@@ -49,7 +52,7 @@ class AssessmentsClientTest {
 
   @AfterEach
   void afterEach() {
-    Mockito.verifyNoMoreInteractions(classificationApisHolderMock, assessmentsControllerApiMock);
+    Mockito.verifyNoMoreInteractions(classificationApisHolderMock, assessmentsControllerApiMock, assessmentsDetailSearchControllerApiMock, assessmentsDetailEntityControllerApiMock,assessmentsEntityControllerApiMock);
   }
 
   @Test
@@ -130,5 +133,34 @@ class AssessmentsClientTest {
     //then
     Assertions.assertNotNull(result);
     Assertions.assertEquals(assessments, result);
+  }
+
+  @Test
+  void givenExistingAssessmentsWhenGetAssessmentsByIdThenReturnAssessments() {
+    //given
+    String accessToken = "accessToken";
+    Long assessmentId = 1L;
+    Assessments expectedResult = podamFactory.manufacturePojo(Assessments.class);
+    Mockito.when(classificationApisHolderMock.getAssessmentsEntityControllerApi(accessToken)).thenReturn(assessmentsEntityControllerApiMock);
+    Mockito.when(assessmentsEntityControllerApiMock.crudGetAssessments(String.valueOf(assessmentId))).thenReturn(expectedResult);
+    //when
+    Assessments result = assessmentsClient.getAssessmentsById(assessmentId, accessToken);
+    //then
+    Assertions.assertNotNull(result);
+    Assertions.assertEquals(expectedResult, result);
+  }
+
+  @Test
+  void givenNoAssessmentsWhenGetAssessmentsByIdThenReturnNull() {
+    //given
+    String accessToken = "accessToken";
+    Long assessmentId = 1L;
+    Mockito.when(classificationApisHolderMock.getAssessmentsEntityControllerApi(accessToken)).thenReturn(assessmentsEntityControllerApiMock);
+    Mockito.when(assessmentsEntityControllerApiMock.crudGetAssessments(String.valueOf(assessmentId)))
+            .thenThrow(HttpClientErrorException.create(HttpStatus.NOT_FOUND, "NotFound", null, null, null));
+    //when
+    Assessments result = assessmentsClient.getAssessmentsById(assessmentId, accessToken);
+    //then
+    Assertions.assertNull(result);
   }
 }

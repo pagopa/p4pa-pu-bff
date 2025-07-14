@@ -69,4 +69,13 @@ public class AssessmentsClient {
       .createAssessment(organizationId, assessmentName, debtPositionTypeOrgCode);
   }
 
+  public Assessments getAssessmentsById(Long assessmentId, String accessToken){
+    try{
+      return classificationApisHolder.getAssessmentsEntityControllerApi(accessToken)
+              .crudGetAssessments(assessmentId.toString());
+    } catch (HttpClientErrorException.NotFound e) {
+      log.warn("Assessment with id %s not found".formatted(assessmentId));
+      return null;
+    }
+  }
 }

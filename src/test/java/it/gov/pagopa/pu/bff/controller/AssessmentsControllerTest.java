@@ -4,8 +4,8 @@ import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.dto.AssessmentsFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.AssessmentsRowsDetailFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.OffsetDateTimeIntervalFilter;
+import it.gov.pagopa.pu.bff.dto.generated.AssessmentsRowsDetail;
 import it.gov.pagopa.pu.bff.dto.generated.PagedAssessmentsExtendedDTO;
-import it.gov.pagopa.pu.bff.dto.generated.PagedAssessmentsRowsDetail;
 import it.gov.pagopa.pu.bff.security.SecurityUtilsTest;
 import it.gov.pagopa.pu.bff.service.assessments.AssessmentsRetrieverService;
 import it.gov.pagopa.pu.bff.util.TestUtils;
@@ -80,10 +80,10 @@ class AssessmentsControllerTest {
     String fiscalCode = "fiscalCode";
 
     AssessmentsRowsDetailFiltersDTO assessmentsRowsDetailFiltersDTO = new AssessmentsRowsDetailFiltersDTO(organizationId, assessmentId, iud, iuv, offsetDateTimeIntervalFilter, offsetDateTimeIntervalFilter, fiscalCode);
-    PagedAssessmentsRowsDetail pagedAssessmentsRowsDetail = new PagedAssessmentsRowsDetail();
+    AssessmentsRowsDetail pagedAssessmentsRowsDetail = new AssessmentsRowsDetail();
     Mockito.when(assessmentsRetrieverServiceMock.getPagedAssessmentsRowsDetail(assessmentsRowsDetailFiltersDTO, Pageable.ofSize(1), loggedUser, accessToken)).thenReturn(pagedAssessmentsRowsDetail);
     //when
-    ResponseEntity<PagedAssessmentsRowsDetail> result = assessmentsController.getPagedAssessmentsDetails(organizationId, assessmentId, iuv, iud, offsetDateTime, offsetDateTime, offsetDateTime, offsetDateTime, fiscalCode, Pageable.ofSize(1));
+    ResponseEntity<AssessmentsRowsDetail> result = assessmentsController.getPagedAssessmentsDetails(organizationId, assessmentId, iuv, iud, offsetDateTime, offsetDateTime, offsetDateTime, offsetDateTime, fiscalCode, Pageable.ofSize(1));
     //then
     assertEquals(HttpStatus.OK, result.getStatusCode());
     assertNotNull(result);

@@ -5963,7 +5963,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/PagedAssessmentsRowsDetail"
+                  "$ref" : "#/components/schemas/AssessmentsRowsDetail"
                 }
               }
             }
@@ -5973,7 +5973,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/PagedAssessmentsRowsDetail"
+                  "$ref" : "#/components/schemas/AssessmentsRowsDetail"
                 }
               }
             }
@@ -5983,7 +5983,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/PagedAssessmentsRowsDetail"
+                  "$ref" : "#/components/schemas/AssessmentsRowsDetail"
                 }
               }
             }
@@ -5993,7 +5993,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/PagedAssessmentsRowsDetail"
+                  "$ref" : "#/components/schemas/AssessmentsRowsDetail"
                 }
               }
             }
@@ -6646,7 +6646,8 @@
           "email" : {
             "type" : "string"
           }
-        }
+        },
+        "required" : [ "entityType", "fiscalCode", "fullName" ]
       },
       "PersonEntityType" : {
         "type" : "string",
@@ -6710,6 +6711,9 @@
             "type" : "string"
           },
           "updateTraceId" : {
+            "type" : "string"
+          },
+          "mbdAttachment" : {
             "type" : "string"
           }
         },
@@ -8052,6 +8056,9 @@
           "transferIndex" : {
             "type" : "integer",
             "format" : "int32"
+          },
+          "mbdAttachment" : {
+            "type" : "string"
           },
           "_links" : {
             "type" : "object",
@@ -10425,6 +10432,27 @@
           }
         },
         "required" : [ "amountCents", "amountSubmitted", "assessmentId", "debtPositionTypeOrgCode", "debtorFiscalCodeHash", "iud", "iur", "iuv", "organizationId", "sectionCode" ]
+      },
+      "AssessmentsRowsDetail" : {
+        "type" : "object",
+        "properties" : {
+          "pagedAssessmentsRowsDetail" : {
+            "$ref" : "#/components/schemas/PagedAssessmentsRowsDetail"
+          },
+          "assessmentsName" : {
+            "type" : "string"
+          },
+          "debtPositionTypeOrgDescription" : {
+            "type" : "string"
+          },
+          "status" : {
+            "$ref" : "#/components/schemas/AssessmentStatus"
+          },
+          "updateOperatorExternalId" : {
+            "type" : "string"
+          }
+        },
+        "required" : [ "assessmentsName", "debtPositionTypeOrgDescription", "pagedAssessmentsRowsDetail", "status" ]
       },
       "PagedAssessmentsRowsDetail" : {
         "type" : "object",

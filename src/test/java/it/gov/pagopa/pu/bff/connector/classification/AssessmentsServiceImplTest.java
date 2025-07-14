@@ -19,6 +19,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Pageable;
 import uk.co.jemos.podam.api.PodamFactory;
 
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.mockito.Mockito.when;
+
 @ExtendWith(MockitoExtension.class)
 class AssessmentsServiceImplTest {
 
@@ -97,5 +100,20 @@ class AssessmentsServiceImplTest {
     //then
     Assertions.assertNotNull(result);
     Assertions.assertEquals(assessments, result);
+  }
+
+
+  @Test
+  void whenGetAssessmentsByIdThenInvokeClient() {
+    long assessmentId = 1L;
+    String accessToken = "ACCESSTOKEN";
+    Assessments expectedResult = new Assessments();
+
+    when(assessmentsClientMock.getAssessmentsById(assessmentId, accessToken))
+            .thenReturn(expectedResult);
+
+    Assessments result = assessmentsService.getAssessmentsById(assessmentId, accessToken);
+
+    assertSame(expectedResult, result);
   }
 }

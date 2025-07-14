@@ -13,4 +13,5 @@ public interface AssessmentsService {
   PagedModelAssessmentsDetail findPagedModelAssessmentsDetail(AssessmentsRowsDetailFiltersDTO filters, Pageable pageable, String accessToken);
   AssessmentsDetail findAssessmentsDetail(Long assessmentDetailId,String accessToken);
   Assessments createAssessment(Long organizationId, String assessmentName, String debtPositionTypeOrgCode, String accessToken);
+  Assessments getAssessmentsById(Long assessmentId, String accessToken);
 }

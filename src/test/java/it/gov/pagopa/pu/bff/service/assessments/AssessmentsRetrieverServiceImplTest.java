@@ -5,12 +5,12 @@ import it.gov.pagopa.pu.bff.connector.classification.AssessmentsService;
 import it.gov.pagopa.pu.bff.connector.debt_position.DebtPositionTypeOrgService;
 import it.gov.pagopa.pu.bff.dto.AssessmentsFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.AssessmentsRowsDetailFiltersDTO;
+import it.gov.pagopa.pu.bff.dto.generated.AssessmentsRowsDetail;
 import it.gov.pagopa.pu.bff.dto.generated.PagedAssessmentsExtendedDTO;
-import it.gov.pagopa.pu.bff.dto.generated.PagedAssessmentsRowsDetail;
 import it.gov.pagopa.pu.bff.exception.InvalidAssessmentsDetailException;
 import it.gov.pagopa.pu.bff.exception.ResourceNotFoundException;
 import it.gov.pagopa.pu.bff.mapper.AssessmentExtendedDTOMapper;
-import it.gov.pagopa.pu.bff.mapper.PagedAssessmentsRowsDetailMapper;
+import it.gov.pagopa.pu.bff.mapper.AssessmentsRowsDetailMapper;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
 import it.gov.pagopa.pu.bff.service.debt_position_type_org.DebtPositionTypeOrgRetrieverService;
 import it.gov.pagopa.pu.classification.dto.generated.Assessments;
@@ -49,13 +49,13 @@ class AssessmentsRetrieverServiceImplTest {
   @Mock
   private AssessmentExtendedDTOMapper assessmentExtendedDTOMapperMock;
   @Mock
-  private PagedAssessmentsRowsDetailMapper pagedAssessmentsRowsDetailMapperMock;
+  private AssessmentsRowsDetailMapper assessmentsRowsDetailMapper;
   private AssessmentsRetrieverService assessmentsRetrieverService;
   private PodamFactory podamFactory;
 
   @BeforeEach
   void setUp() {
-    assessmentsRetrieverService = new AssessmentsRetrieverServiceImpl(assessmentsServiceMock, debtPositionTypeOrgRetrieverServiceMock, debtPositionTypeOrgServiceMock, assessmentExtendedDTOMapperMock, pagedAssessmentsRowsDetailMapperMock);
+    assessmentsRetrieverService = new AssessmentsRetrieverServiceImpl(assessmentsServiceMock, debtPositionTypeOrgRetrieverServiceMock, debtPositionTypeOrgServiceMock, assessmentExtendedDTOMapperMock, assessmentsRowsDetailMapper);
     podamFactory = new PodamFactoryImpl();
   }
 
@@ -296,16 +296,65 @@ class AssessmentsRetrieverServiceImplTest {
 
     AssessmentsRowsDetailFiltersDTO assessmentsRowsDetailFiltersDTO = podamFactory.manufacturePojo(AssessmentsRowsDetailFiltersDTO.class);
     PagedModelAssessmentsDetail pagedModelAssessmentsDetail = podamFactory.manufacturePojo(PagedModelAssessmentsDetail.class);
-    PagedAssessmentsRowsDetail pagedAssessmentsRowsDetail = podamFactory.manufacturePojo(PagedAssessmentsRowsDetail.class);
+    Assessments assessments = podamFactory.manufacturePojo(Assessments.class);
+    DebtPositionTypeOrg debtPositionTypeOrg = podamFactory.manufacturePojo(DebtPositionTypeOrg.class);
+    AssessmentsRowsDetail expectedResult = podamFactory.manufacturePojo(AssessmentsRowsDetail.class);
 
     try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
       authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(assessmentsRowsDetailFiltersDTO.getOrganizationId(), loggedUser)).thenAnswer(a -> null);
+      Mockito.when(assessmentsServiceMock.getAssessmentsById(assessmentsRowsDetailFiltersDTO.getAssessmentId(),accessToken)).thenReturn(assessments);
       Mockito.when(assessmentsServiceMock.findPagedModelAssessmentsDetail(assessmentsRowsDetailFiltersDTO, Pageable.ofSize(1), accessToken)).thenReturn(pagedModelAssessmentsDetail);
-      Mockito.when(pagedAssessmentsRowsDetailMapperMock.map(pagedModelAssessmentsDetail)).thenReturn(pagedAssessmentsRowsDetail);
-      PagedAssessmentsRowsDetail result = assessmentsRetrieverService.getPagedAssessmentsRowsDetail(assessmentsRowsDetailFiltersDTO, Pageable.ofSize(1), loggedUser, accessToken);
+      Mockito.when(debtPositionTypeOrgServiceMock.findDebtPositionTypeOrg(assessmentsRowsDetailFiltersDTO.getOrganizationId(),assessments.getDebtPositionTypeOrgCode(),loggedUser.getMappedExternalUserId(),accessToken)).thenReturn(debtPositionTypeOrg);
+      Mockito.when(assessmentsRowsDetailMapper.map(pagedModelAssessmentsDetail,assessments,debtPositionTypeOrg.getDescription())).thenReturn(expectedResult);
+
+      AssessmentsRowsDetail result = assessmentsRetrieverService.getPagedAssessmentsRowsDetail(assessmentsRowsDetailFiltersDTO, Pageable.ofSize(1), loggedUser, accessToken);
 
       Assertions.assertNotNull(result);
-      Assertions.assertEquals(pagedAssessmentsRowsDetail, result);
+      Assertions.assertEquals(expectedResult, result);
+    }
+  }
+
+  @Test
+  void givenNoDebtPositionWhenGetPagedModelAssessmentsDetailThenResourceNotFoundException() {
+    UserInfo loggedUser = new UserInfo();
+    loggedUser.setUserId("user-123");
+    loggedUser.setMappedExternalUserId("mappedExternalUserId");
+
+    String accessToken = "accessToken";
+
+    AssessmentsRowsDetailFiltersDTO assessmentsRowsDetailFiltersDTO = podamFactory.manufacturePojo(AssessmentsRowsDetailFiltersDTO.class);
+    Assessments assessments = podamFactory.manufacturePojo(Assessments.class);
+    Pageable pageable = Pageable.ofSize(1);
+
+    try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
+      authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(assessmentsRowsDetailFiltersDTO.getOrganizationId(), loggedUser)).thenAnswer(a -> null);
+      Mockito.when(assessmentsServiceMock.getAssessmentsById(assessmentsRowsDetailFiltersDTO.getAssessmentId(),accessToken)).thenReturn(assessments);
+      Mockito.when(debtPositionTypeOrgServiceMock.findDebtPositionTypeOrg(assessmentsRowsDetailFiltersDTO.getOrganizationId(),assessments.getDebtPositionTypeOrgCode(),loggedUser.getMappedExternalUserId(),accessToken)).thenReturn(null);
+
+      Assertions.assertThrows(ResourceNotFoundException.class,()->assessmentsRetrieverService.getPagedAssessmentsRowsDetail(assessmentsRowsDetailFiltersDTO, pageable, loggedUser, accessToken));
+
+      Mockito.verifyNoInteractions(assessmentsRowsDetailMapper);
+    }
+  }
+
+  @Test
+  void givenNoAssessmentsWhenGetPagedModelAssessmentsDetailThenResourceNotFoundException() {
+    UserInfo loggedUser = new UserInfo();
+    loggedUser.setUserId("user-123");
+    loggedUser.setMappedExternalUserId("mappedExternalUserId");
+
+    String accessToken = "accessToken";
+
+    AssessmentsRowsDetailFiltersDTO assessmentsRowsDetailFiltersDTO = podamFactory.manufacturePojo(AssessmentsRowsDetailFiltersDTO.class);
+    Pageable pageable = Pageable.ofSize(1);
+
+    try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
+      authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(assessmentsRowsDetailFiltersDTO.getOrganizationId(), loggedUser)).thenAnswer(a -> null);
+      Mockito.when(assessmentsServiceMock.getAssessmentsById(assessmentsRowsDetailFiltersDTO.getAssessmentId(),accessToken)).thenReturn(null);
+
+      Assertions.assertThrows(ResourceNotFoundException.class,()->assessmentsRetrieverService.getPagedAssessmentsRowsDetail(assessmentsRowsDetailFiltersDTO, pageable, loggedUser, accessToken));
+
+      Mockito.verifyNoInteractions(assessmentsRowsDetailMapper);
     }
   }
 

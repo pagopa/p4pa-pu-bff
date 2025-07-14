@@ -38,4 +38,9 @@ public class AssessmentsServiceImpl implements AssessmentsService{
   public Assessments createAssessment(Long organizationId, String assessmentName, String debtPositionTypeOrgCode, String accessToken) {
     return assessmentsClient.createAssessment(organizationId, assessmentName, debtPositionTypeOrgCode, accessToken);
   }
+
+  @Override
+  public Assessments getAssessmentsById(Long assessmentId, String accessToken) {
+    return assessmentsClient.getAssessmentsById(assessmentId, accessToken);
+  }
 }

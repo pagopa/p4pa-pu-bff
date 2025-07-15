@@ -1,18 +1,15 @@
 package it.gov.pagopa.pu.bff.service;
 
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
+import it.gov.pagopa.pu.bff.connector.classification.AssessmentsService;
 import it.gov.pagopa.pu.bff.connector.classification.ClassificationService;
-import it.gov.pagopa.pu.bff.dto.ClassificationDetailDTO;
-import it.gov.pagopa.pu.bff.dto.LocalDateIntervalFilter;
+import it.gov.pagopa.pu.bff.dto.*;
 import it.gov.pagopa.pu.bff.dto.OffsetDateTimeIntervalFilter;
-import it.gov.pagopa.pu.bff.dto.TreasuredClassificationFiltersDTO;
 import it.gov.pagopa.pu.bff.exception.ResourceNotFoundException;
 import it.gov.pagopa.pu.bff.mapper.ClassificationDetailDTOMapper;
 import it.gov.pagopa.pu.bff.service.classification.ClassificationRetrieverServiceImpl;
 import it.gov.pagopa.pu.bff.service.debt_position_type_org.DebtPositionTypeOrgRetrieverService;
-import it.gov.pagopa.pu.classification.dto.generated.ClassificationDetailViewDTO;
-import it.gov.pagopa.pu.classification.dto.generated.ClassificationsEnum;
-import it.gov.pagopa.pu.classification.dto.generated.PagedTreasuredClassification;
+import it.gov.pagopa.pu.classification.dto.generated.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -28,6 +25,7 @@ import org.springframework.security.authorization.AuthorizationDeniedException;
 
 import java.time.LocalDate;
 import java.util.Collections;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -41,14 +39,18 @@ class ClassificationRetrieverServiceImplTest {
   private DebtPositionTypeOrgRetrieverService debtPositionTypeOrgRetrieverServiceMock;
   @Mock
   private ClassificationDetailDTOMapper classificationDetailDTOMapperMock;
+  @Mock
+  private AssessmentsService assessmentsServiceMock;
 
   private ClassificationRetrieverServiceImpl classificationRetrieverService;
 
   private final String accessToken = "TOKEN";
+  public static final int PAGE_MAX_SIZE = 10;
 
   @BeforeEach
   void setUp() {
-    classificationRetrieverService = new ClassificationRetrieverServiceImpl(classificationServiceMock, debtPositionTypeOrgRetrieverServiceMock,classificationDetailDTOMapperMock);
+    classificationRetrieverService = new ClassificationRetrieverServiceImpl(
+      classificationServiceMock, debtPositionTypeOrgRetrieverServiceMock,classificationDetailDTOMapperMock, assessmentsServiceMock, PAGE_MAX_SIZE);
   }
 
   @AfterEach
@@ -56,7 +58,8 @@ class ClassificationRetrieverServiceImplTest {
     Mockito.verifyNoMoreInteractions(
             classificationServiceMock,
             classificationDetailDTOMapperMock,
-            debtPositionTypeOrgRetrieverServiceMock
+            debtPositionTypeOrgRetrieverServiceMock,
+            assessmentsServiceMock
     );
   }
 
@@ -364,6 +367,108 @@ class ClassificationRetrieverServiceImplTest {
       authorizationServiceMockedStatic.verify(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser));
     }
     verifyNoInteractions(classificationServiceMock, classificationDetailDTOMapperMock);
+  }
+
+  @Test
+  void givenValidFiltersWhenGetPaidInstallmentsThenOk() {
+    UserInfo loggedUser = new UserInfo();
+    loggedUser.setUserId("user-123");
+
+    long organizationId = 1L;
+    long assessmentId = 42L;
+
+    ClassificationPaidInstallmentsFiltersDTO filters = ClassificationPaidInstallmentsFiltersDTO.builder()
+      .iuv("IUV123")
+      .build();
+
+    Pageable pageable = PageRequest.of(0, 10);
+    PagedClassificationPaidInstallmentsView expectedResult = new PagedClassificationPaidInstallmentsView();
+
+    PagedModelAssessmentsDetail assessmentsDetailPage = new PagedModelAssessmentsDetail();
+    PagedModelAssessmentsDetailEmbedded embedded = new PagedModelAssessmentsDetailEmbedded();
+    AssessmentsDetail detail = new AssessmentsDetail();
+    detail.setIud("IUD123");
+    embedded.setAssessmentsDetails(List.of(detail));
+    assessmentsDetailPage.setEmbedded(embedded);
+
+    try (MockedStatic<AuthorizationService> authorizationMock = Mockito.mockStatic(AuthorizationService.class)) {
+      authorizationMock.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser))
+        .thenAnswer(a -> null);
+
+      when(assessmentsServiceMock.findPagedModelAssessmentsDetail(any(), any(), eq(accessToken)))
+        .thenReturn(assessmentsDetailPage);
+
+      when(classificationServiceMock.getPaidInstallments(eq(organizationId), any(), eq(pageable), eq(accessToken)))
+        .thenReturn(expectedResult);
+
+      PagedClassificationPaidInstallmentsView result =
+        classificationRetrieverService.getPaidInstallments(organizationId, assessmentId, filters, pageable, loggedUser, accessToken);
+
+      assertNotNull(result);
+      assertSame(expectedResult, result);
+    }
+  }
+
+  @Test
+  void givenInvalidFiltersWhenGetPaidInstallmentsThenThrowsIllegalArgumentException() {
+    UserInfo loggedUser = new UserInfo();
+    loggedUser.setUserId("user-123");
+
+    long organizationId = 1L;
+    long assessmentId = 42L;
+
+    ClassificationPaidInstallmentsFiltersDTO filters = ClassificationPaidInstallmentsFiltersDTO.builder()
+      .build();
+
+    Pageable pageable = PageRequest.of(0, 10);
+
+    try (MockedStatic<AuthorizationService> authorizationMock = Mockito.mockStatic(AuthorizationService.class)) {
+      authorizationMock.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser))
+        .thenAnswer(a -> null);
+
+      IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () ->
+        classificationRetrieverService.getPaidInstallments(organizationId, assessmentId, filters, pageable, loggedUser, accessToken)
+      );
+
+      assertEquals("At least one filter must be provided, and all date intervals must have both 'from' and 'to' set or be null", ex.getMessage());
+      verifyNoInteractions(assessmentsServiceMock, classificationServiceMock);
+    }
+  }
+
+  @Test
+  void givenNoAssessmentsDetailsWhenGetPaidInstallmentsThenOkWithEmptyIuds() {
+    UserInfo loggedUser = new UserInfo();
+    loggedUser.setUserId("user-123");
+
+    long organizationId = 1L;
+    long assessmentId = 42L;
+
+    ClassificationPaidInstallmentsFiltersDTO filters = ClassificationPaidInstallmentsFiltersDTO.builder()
+      .iuv("IUV123")
+      .build();
+
+    Pageable pageable = PageRequest.of(0, 10);
+    PagedClassificationPaidInstallmentsView expectedResult = new PagedClassificationPaidInstallmentsView();
+
+    PagedModelAssessmentsDetail emptyPage = new PagedModelAssessmentsDetail();
+    emptyPage.setEmbedded(new PagedModelAssessmentsDetailEmbedded());
+
+    try (MockedStatic<AuthorizationService> authorizationMock = Mockito.mockStatic(AuthorizationService.class)) {
+      authorizationMock.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser))
+        .thenAnswer(a -> null);
+
+      when(assessmentsServiceMock.findPagedModelAssessmentsDetail(any(), any(), eq(accessToken)))
+        .thenReturn(emptyPage);
+
+      when(classificationServiceMock.getPaidInstallments(eq(organizationId), any(), eq(pageable), eq(accessToken)))
+        .thenReturn(expectedResult);
+
+      PagedClassificationPaidInstallmentsView result =
+        classificationRetrieverService.getPaidInstallments(organizationId, assessmentId, filters, pageable, loggedUser, accessToken);
+
+      assertNotNull(result);
+      assertSame(expectedResult, result);
+    }
   }
 }
 

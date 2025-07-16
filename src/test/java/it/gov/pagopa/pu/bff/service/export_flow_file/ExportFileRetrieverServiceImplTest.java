@@ -6,26 +6,33 @@ import it.gov.pagopa.pu.bff.connector.process_executions.ExportFileService;
 import it.gov.pagopa.pu.bff.dto.ExportFileFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.OffsetDateTimeIntervalFilter;
 import it.gov.pagopa.pu.bff.dto.generated.*;
+import it.gov.pagopa.pu.bff.exception.ResourceNotFoundException;
 import it.gov.pagopa.pu.bff.mapper.ExportFileMapper;
 import it.gov.pagopa.pu.bff.mapper.export_file.PaidExportFileRequestDTOMapper;
 import it.gov.pagopa.pu.bff.mapper.export_file.ReceiptsArchivingExportFileRequestDTOMapper;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
+import it.gov.pagopa.pu.bff.service.debt_position_type_org.DebtPositionTypeOrgRetrieverService;
 import it.gov.pagopa.pu.bff.util.TestUtils;
+import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrg;
 import it.gov.pagopa.pu.processexecutions.dto.generated.*;
 import it.gov.pagopa.pu.processexecutions.dto.generated.ExportFile.ExportFileTypeEnum;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import uk.co.jemos.podam.api.PodamFactory;
 
 import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -35,10 +42,13 @@ class ExportFileRetrieverServiceImplTest {
   private ExportFileService exportFileServiceMock;
   @Mock
   private ExportFileMapper exportFileMapperMock;
+  @Mock
+  private DebtPositionTypeOrgRetrieverService debtPositionTypeOrgRetrieverServiceMock;
 
   private final PaidExportFileRequestDTOMapper paidExportFileRequestDTOMapper = new PaidExportFileRequestDTOMapper();
   private final ReceiptsArchivingExportFileRequestDTOMapper receiptsArchivingExportFileRequestDTOMapper = new ReceiptsArchivingExportFileRequestDTOMapper();
 
+  private PodamFactory podamFactory = TestUtils.getPodamFactory();
   private ExportFileRetrieverService exportFileRetrieverService;
 
   @BeforeEach
@@ -47,7 +57,8 @@ class ExportFileRetrieverServiceImplTest {
       exportFileServiceMock,
       exportFileMapperMock,
       paidExportFileRequestDTOMapper,
-      receiptsArchivingExportFileRequestDTOMapper);
+      receiptsArchivingExportFileRequestDTOMapper,
+      debtPositionTypeOrgRetrieverServiceMock);
   }
 
   @Test
@@ -275,6 +286,148 @@ class ExportFileRetrieverServiceImplTest {
 
     Mockito.verify(exportFileServiceMock).createClassificationsExportFile(requestDTO, accessToken);
   }
+
+  @Test
+  void givenPopulatedDebtPositionTypeOrgCodesWhenCreateClassificationsExportFileThenOk() {
+    List<DebtPositionTypeOrg> debtPositionTypeOrgs = podamFactory.manufacturePojo(List.class, DebtPositionTypeOrg.class);
+    Set<String> codes = debtPositionTypeOrgs.stream().map(DebtPositionTypeOrg::getCode).collect(Collectors.toSet());
+    ClassificationsExportFileRequestDTO requestDTO = ClassificationsExportFileRequestDTO.builder()
+      .organizationId(1L)
+      .exportFileType(ClassificationsExportFileRequestDTO.ExportFileTypeEnum.CLASSIFICATIONS)
+      .fileVersion("version1")
+      .filterFields(ClassificationsExportFileFilter.builder()
+        .debtPositionTypeOrgCodes(codes)
+        .build())
+      .build();
+
+    String accessToken = "ACCESSTOKEN";
+    UserInfo user = TestUtils.getSampleUser();
+
+    UserOrganizationRoles userOrgRole = new UserOrganizationRoles();
+    userOrgRole.setRoles(List.of("ROLE_USER"));
+    userOrgRole.setOrganizationId(1L);
+    user.setOrganizations(List.of(userOrgRole));
+
+    exportFileRetrieverService.createClassificationsExportFile(requestDTO, user, accessToken);
+
+    ArgumentCaptor<ClassificationsExportFileRequestDTO> captor = ArgumentCaptor.forClass(ClassificationsExportFileRequestDTO.class);
+    Mockito.verify(exportFileServiceMock).createClassificationsExportFile(captor.capture(), Mockito.eq(accessToken));
+
+    ClassificationsExportFileRequestDTO capturedDTO = captor.getValue();
+    Set<String> actualCodes = capturedDTO.getFilterFields().getDebtPositionTypeOrgCodes();
+
+    assertNotNull(actualCodes);
+    assertEquals(codes, actualCodes);
+
+  }
+
+  @Test
+  void givenNullDebtPositionTypeOrgCodesWhenCreateClassificationsExportFileThenOk() {
+    ClassificationsExportFileRequestDTO requestDTO = ClassificationsExportFileRequestDTO.builder()
+      .organizationId(1L)
+      .exportFileType(ClassificationsExportFileRequestDTO.ExportFileTypeEnum.CLASSIFICATIONS)
+      .fileVersion("version1")
+      .filterFields(ClassificationsExportFileFilter.builder()
+        .debtPositionTypeOrgCodes(null)
+        .build())
+      .build();
+
+    String accessToken = "ACCESSTOKEN";
+    UserInfo user = TestUtils.getSampleUser();
+
+    UserOrganizationRoles userOrgRole = new UserOrganizationRoles();
+    userOrgRole.setRoles(List.of("ROLE_USER"));
+    userOrgRole.setOrganizationId(1L);
+    user.setOrganizations(List.of(userOrgRole));
+
+    List<DebtPositionTypeOrg> debtPositionTypeOrgs = podamFactory.manufacturePojo(List.class, DebtPositionTypeOrg.class);
+    Set<String> codes = debtPositionTypeOrgs.stream().map(DebtPositionTypeOrg::getCode).collect(Collectors.toSet());
+
+    Mockito.when(debtPositionTypeOrgRetrieverServiceMock.getDebtPositionTypeOrgCodes(1L, user.getMappedExternalUserId(), accessToken))
+      .thenReturn(codes);
+
+    exportFileRetrieverService.createClassificationsExportFile(requestDTO, user, accessToken);
+
+    ArgumentCaptor<ClassificationsExportFileRequestDTO> captor = ArgumentCaptor.forClass(ClassificationsExportFileRequestDTO.class);
+    Mockito.verify(exportFileServiceMock).createClassificationsExportFile(captor.capture(), Mockito.eq(accessToken));
+
+    ClassificationsExportFileRequestDTO capturedDTO = captor.getValue();
+    Set<String> actualCodes = capturedDTO.getFilterFields().getDebtPositionTypeOrgCodes();
+
+    assertNotNull(actualCodes);
+    assertEquals(codes, actualCodes);
+
+  }
+
+  @Test
+  void givenEmptyDebtPositionTypeOrgCodesWhenCreateClassificationsExportFileThenOk() {
+    ClassificationsExportFileRequestDTO requestDTO = ClassificationsExportFileRequestDTO.builder()
+      .organizationId(1L)
+      .exportFileType(ClassificationsExportFileRequestDTO.ExportFileTypeEnum.CLASSIFICATIONS)
+      .fileVersion("version1")
+      .filterFields(ClassificationsExportFileFilter.builder()
+        .debtPositionTypeOrgCodes(Set.of())
+        .build())
+      .build();
+
+    String accessToken = "ACCESSTOKEN";
+    UserInfo user = TestUtils.getSampleUser();
+
+    UserOrganizationRoles userOrgRole = new UserOrganizationRoles();
+    userOrgRole.setRoles(List.of("ROLE_USER"));
+    userOrgRole.setOrganizationId(1L);
+    user.setOrganizations(List.of(userOrgRole));
+
+    List<DebtPositionTypeOrg> debtPositionTypeOrgs = podamFactory.manufacturePojo(List.class, DebtPositionTypeOrg.class);
+    Set<String> codes = debtPositionTypeOrgs.stream().map(DebtPositionTypeOrg::getCode).collect(Collectors.toSet());
+
+    Mockito.when(debtPositionTypeOrgRetrieverServiceMock.getDebtPositionTypeOrgCodes(1L, user.getMappedExternalUserId(), accessToken))
+      .thenReturn(codes);
+
+    exportFileRetrieverService.createClassificationsExportFile(requestDTO, user, accessToken);
+
+    ArgumentCaptor<ClassificationsExportFileRequestDTO> captor = ArgumentCaptor.forClass(ClassificationsExportFileRequestDTO.class);
+    Mockito.verify(exportFileServiceMock).createClassificationsExportFile(captor.capture(), Mockito.eq(accessToken));
+
+    ClassificationsExportFileRequestDTO capturedDTO = captor.getValue();
+    Set<String> actualCodes = capturedDTO.getFilterFields().getDebtPositionTypeOrgCodes();
+
+    assertNotNull(actualCodes);
+    assertEquals(codes, actualCodes);
+
+  }
+
+  @Test
+  void givenUnauthorizedDebtPositionTypeOrgCodeWhenCreateClassificationsExportFileThenThrowException() {
+    Set<String> unauthorizedCodes = Set.of("UNAUTHORIZED_CODE");
+    ClassificationsExportFileRequestDTO requestDTO = ClassificationsExportFileRequestDTO.builder()
+      .organizationId(1L)
+      .exportFileType(ClassificationsExportFileRequestDTO.ExportFileTypeEnum.CLASSIFICATIONS)
+      .fileVersion("version1")
+      .filterFields(ClassificationsExportFileFilter.builder()
+        .debtPositionTypeOrgCodes(unauthorizedCodes)
+        .build())
+      .build();
+
+    String accessToken = "ACCESSTOKEN";
+    UserInfo user = TestUtils.getSampleUser();
+
+    UserOrganizationRoles userOrgRole = new UserOrganizationRoles();
+    userOrgRole.setRoles(List.of("ROLE_USER"));
+    userOrgRole.setOrganizationId(1L);
+    user.setOrganizations(List.of(userOrgRole));
+
+    Mockito.doThrow(new ResourceNotFoundException("Code not authorized"))
+      .when(debtPositionTypeOrgRetrieverServiceMock)
+      .validateOperator(Mockito.eq(1L), Mockito.eq("UNAUTHORIZED_CODE"), Mockito.anyString(), Mockito.eq(accessToken));
+
+    assertThrows(ResourceNotFoundException.class, () -> {
+      exportFileRetrieverService.createClassificationsExportFile(requestDTO, user, accessToken);
+    });
+
+    Mockito.verify(exportFileServiceMock, Mockito.never()).createClassificationsExportFile(Mockito.any(), Mockito.any());
+  }
+
 
   @Test
   void whenCreatePaymentsReportingExportFileThenOk() {

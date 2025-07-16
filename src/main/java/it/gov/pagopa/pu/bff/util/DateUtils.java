@@ -1,6 +1,7 @@
 package it.gov.pagopa.pu.bff.util;
 
 import it.gov.pagopa.pu.bff.dto.LocalDateIntervalFilter;
+import it.gov.pagopa.pu.bff.dto.LocalDateTimeIntervalFilter;
 import it.gov.pagopa.pu.processexecutions.dto.generated.OffsetDateTimeIntervalFilter;
 
 import java.time.*;
@@ -45,6 +46,12 @@ public class DateUtils {
   }
 
   public static void validateDateFilters(it.gov.pagopa.pu.bff.dto.OffsetDateTimeIntervalFilter dateFilter, String filterName) {
+    if ((dateFilter.getFrom() != null ^ dateFilter.getTo() != null)) {
+      throw new IllegalArgumentException("Both " + filterName + "From and " + filterName + "To must be set or both must be null");
+    }
+  }
+
+  public static void validateDateFilters(LocalDateTimeIntervalFilter dateFilter, String filterName) {
     if ((dateFilter.getFrom() != null ^ dateFilter.getTo() != null)) {
       throw new IllegalArgumentException("Both " + filterName + "From and " + filterName + "To must be set or both must be null");
     }

@@ -14,7 +14,7 @@ public class AssessmentsRowsDetailFiltersDTO {
   private Long assessmentId;
   private String iud;
   private String iuv;
-  private OffsetDateTimeIntervalFilter updateDateTimeIntervalFilter;
+  private LocalDateTimeIntervalFilter updateDateTimeIntervalFilter;
   private OffsetDateTimeIntervalFilter paymentDateTimeIntervalFilter;
   private String fiscalCode;
 }

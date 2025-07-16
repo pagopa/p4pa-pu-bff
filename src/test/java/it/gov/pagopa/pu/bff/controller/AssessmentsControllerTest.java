@@ -1,9 +1,7 @@
 package it.gov.pagopa.pu.bff.controller;
 
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
-import it.gov.pagopa.pu.bff.dto.AssessmentsFiltersDTO;
-import it.gov.pagopa.pu.bff.dto.AssessmentsRowsDetailFiltersDTO;
-import it.gov.pagopa.pu.bff.dto.OffsetDateTimeIntervalFilter;
+import it.gov.pagopa.pu.bff.dto.*;
 import it.gov.pagopa.pu.bff.dto.generated.AssessmentsRowsDetail;
 import it.gov.pagopa.pu.bff.dto.generated.PagedAssessmentsExtendedDTO;
 import it.gov.pagopa.pu.bff.security.SecurityUtilsTest;
@@ -22,6 +20,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.Year;
 import java.util.List;
@@ -78,8 +77,9 @@ class AssessmentsControllerTest {
     OffsetDateTime offsetDateTime = OffsetDateTime.now();
     OffsetDateTimeIntervalFilter offsetDateTimeIntervalFilter = new OffsetDateTimeIntervalFilter(offsetDateTime, offsetDateTime);
     String fiscalCode = "fiscalCode";
-
-    AssessmentsRowsDetailFiltersDTO assessmentsRowsDetailFiltersDTO = new AssessmentsRowsDetailFiltersDTO(organizationId, assessmentId, iud, iuv, offsetDateTimeIntervalFilter, offsetDateTimeIntervalFilter, fiscalCode);
+    LocalDateTime localDateTime = offsetDateTime.toLocalDateTime();
+    LocalDateTimeIntervalFilter localDateTimeIntervalFilter = new LocalDateTimeIntervalFilter(localDateTime , localDateTime );
+    AssessmentsRowsDetailFiltersDTO assessmentsRowsDetailFiltersDTO = new AssessmentsRowsDetailFiltersDTO(organizationId, assessmentId, iud, iuv, localDateTimeIntervalFilter, offsetDateTimeIntervalFilter, fiscalCode);
     AssessmentsRowsDetail pagedAssessmentsRowsDetail = new AssessmentsRowsDetail();
     Mockito.when(assessmentsRetrieverServiceMock.getPagedAssessmentsRowsDetail(assessmentsRowsDetailFiltersDTO, Pageable.ofSize(1), loggedUser, accessToken)).thenReturn(pagedAssessmentsRowsDetail);
     //when

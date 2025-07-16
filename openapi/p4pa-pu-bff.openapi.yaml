@@ -868,13 +868,6 @@ paths:
           schema:
             type: integer
             format: int64
-        - name: iuds
-          in: query
-          schema:
-            type: array
-            uniqueItems: true
-            items:
-              type: string
       responses:
         "200":
           description: List of paid installments

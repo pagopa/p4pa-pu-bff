@@ -5919,17 +5919,6 @@
             "format" : "date-time"
           }
         }, {
-          "name" : "iuds",
-          "in" : "query",
-          "required" : false,
-          "schema" : {
-            "type" : "array",
-            "items" : {
-              "type" : "string"
-            },
-            "uniqueItems" : true
-          }
-        }, {
           "name" : "page",
           "in" : "query",
           "description" : "Zero-based page index (0..N)",
@@ -10484,6 +10473,10 @@
           },
           "debtPositionTypeOrgCode" : {
             "type" : "string"
+          },
+          "amount" : {
+            "type" : "integer",
+            "format" : "int64"
           }
         },
         "required" : [ "organizationId", "updateDate" ]

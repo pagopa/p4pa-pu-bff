@@ -470,5 +470,83 @@ class ClassificationRetrieverServiceImplTest {
       assertSame(expectedResult, result);
     }
   }
+
+  @Test
+  void givenNonExistingAssessmentIdWhenGetPaidInstallmentsThenThrowsResourceNotFoundException() {
+    UserInfo loggedUser = new UserInfo();
+    loggedUser.setUserId("user-123");
+
+    long organizationId = 1L;
+    long nonExistingAssessmentId = 999L;
+
+    ClassificationPaidInstallmentsFiltersDTO filters = ClassificationPaidInstallmentsFiltersDTO.builder()
+      .iuv("IUV123")
+      .build();
+
+    Pageable pageable = PageRequest.of(0, 10);
+
+    try (MockedStatic<AuthorizationService> authorizationMock = Mockito.mockStatic(AuthorizationService.class)) {
+      authorizationMock.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser))
+        .thenAnswer(a -> null);
+
+      when(assessmentsServiceMock.getAssessmentsById(nonExistingAssessmentId, accessToken))
+        .thenReturn(null);
+
+      ResourceNotFoundException ex = assertThrows(ResourceNotFoundException.class, () ->
+        classificationRetrieverService.getPaidInstallments(
+          organizationId,
+          nonExistingAssessmentId,
+          filters,
+          pageable,
+          loggedUser,
+          accessToken
+        )
+      );
+
+      assertEquals("Assessment with id " + nonExistingAssessmentId + " not found", ex.getMessage());
+      verifyNoInteractions(classificationServiceMock);
+    }
+  }
+
+  @Test
+  void givenAssessmentWithDifferentOrganizationIdWhenGetPaidInstallmentsThenThrowsResourceNotFoundException() {
+    UserInfo loggedUser = new UserInfo();
+    loggedUser.setUserId("user-123");
+
+    long organizationId = 1L;
+    long assessmentId = 42L;
+
+    ClassificationPaidInstallmentsFiltersDTO filters = ClassificationPaidInstallmentsFiltersDTO.builder()
+      .iuv("IUV123")
+      .build();
+
+    Pageable pageable = PageRequest.of(0, 10);
+
+    Assessments assessment = new Assessments();
+    assessment.setAssessmentId(assessmentId);
+    assessment.setOrganizationId(99L);
+
+    try (MockedStatic<AuthorizationService> authorizationMock = Mockito.mockStatic(AuthorizationService.class)) {
+      authorizationMock.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser))
+        .thenAnswer(a -> null);
+
+      when(assessmentsServiceMock.getAssessmentsById(assessmentId, accessToken))
+        .thenReturn(assessment);
+
+      ResourceNotFoundException ex = assertThrows(ResourceNotFoundException.class, () ->
+        classificationRetrieverService.getPaidInstallments(
+          organizationId,
+          assessmentId,
+          filters,
+          pageable,
+          loggedUser,
+          accessToken
+        )
+      );
+
+      assertEquals("Assessment with id " + assessmentId + " not found", ex.getMessage());
+      verifyNoInteractions(classificationServiceMock);
+    }
+  }
 }
 

@@ -25,7 +25,6 @@ import org.springframework.http.ResponseEntity;
 import uk.co.jemos.podam.api.PodamFactory;
 
 import java.time.OffsetDateTime;
-import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
@@ -151,7 +150,6 @@ class ClassificationControllerTest {
     OffsetDateTime paymentDateTimeTo = OffsetDateTime.now();
     OffsetDateTime updateDateFrom = OffsetDateTime.now().minusDays(20);
     OffsetDateTime updateDateTo = OffsetDateTime.now().minusDays(5);
-    Set<String> iuds = Set.of("IUD1", "IUD2");
     Pageable pageable = PageRequest.of(0, 10);
 
     PagedClassificationPaidInstallmentsView mockResult = new PagedClassificationPaidInstallmentsView();
@@ -175,7 +173,6 @@ class ClassificationControllerTest {
         paymentDateTimeTo,
         updateDateFrom,
         updateDateTo,
-        iuds,
         pageable
       );
 

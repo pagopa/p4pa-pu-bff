@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
-import java.util.Set;
 
 @RestController
 @Slf4j
@@ -91,7 +90,7 @@ public class ClassificationController implements ClassificationsApi {
   @Override
   public ResponseEntity<PagedClassificationPaidInstallmentsView> getPaidInstallments(
     Long organizationId, String debtPositionTypeOrgCode, Long assessmentId, String iuv, OffsetDateTime paymentDateTimeFrom, OffsetDateTime paymentDateTimeTo,
-    OffsetDateTime updateDateFrom, OffsetDateTime updateDateTo, Set<String> iuds, Pageable pageable) {
+    OffsetDateTime updateDateFrom, OffsetDateTime updateDateTo, Pageable pageable) {
 
     log.info("User requested getPaidInstallments having organizationId {}", organizationId);
 

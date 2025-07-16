@@ -117,7 +117,12 @@ public class ClassificationRetrieverServiceImpl implements ClassificationRetriev
 
     validatePaidInstallmentsFilters(filters.getIuv(), filters.getPaymentDateTimeIntervalFilter(), filters.getUpdateDateIntervalFilter());
 
-    AssessmentsRowsDetailFiltersDTO assessmentsRowsDetailFiltersDTO = getAssessmentsRowsDetailFiltersDTO(organizationId, assessmentId, filters);
+    Assessments assessment = assessmentsService.getAssessmentsById(assessmentId, accessToken);
+    if (assessment == null || !assessment.getOrganizationId().equals(organizationId)) {
+      throw new ResourceNotFoundException("Assessment with id " + assessmentId + " not found");
+    }
+
+    AssessmentsRowsDetailFiltersDTO assessmentsRowsDetailFiltersDTO = getAssessmentsRowsDetailFiltersDTO(assessmentId);
 
     Pageable maxPageable = PageRequest.of(0, pageMaxSize);
     PagedModelAssessmentsDetail assessmentsDetailPage = assessmentsService.findPagedModelAssessmentsDetail(
@@ -132,6 +137,12 @@ public class ClassificationRetrieverServiceImpl implements ClassificationRetriev
   }
 
   private void validatePaidInstallmentsFilters(String iuv, OffsetDateTimeIntervalFilter paymentDateTimeIntervalFilter, OffsetDateTimeIntervalFilter updateDateIntervalFilter) {
+    if (paymentDateTimeIntervalFilter != null) {
+      DateUtils.validateDateFilters(paymentDateTimeIntervalFilter,"paymentDateTime");
+    }
+    if (updateDateIntervalFilter != null) {
+      DateUtils.validateDateFilters(updateDateIntervalFilter,"updateDate");
+    }
     if (StringUtils.isBlank(iuv) &&
       (paymentDateTimeIntervalFilter == null || DateUtils.isNullOrInvalidOffsetDateTimeRange(paymentDateTimeIntervalFilter.getFrom(), paymentDateTimeIntervalFilter.getTo())) &&
       (updateDateIntervalFilter == null || DateUtils.isNullOrInvalidOffsetDateTimeRange(updateDateIntervalFilter.getFrom(), updateDateIntervalFilter.getTo()))) {
@@ -139,13 +150,9 @@ public class ClassificationRetrieverServiceImpl implements ClassificationRetriev
     }
   }
 
-  private static AssessmentsRowsDetailFiltersDTO getAssessmentsRowsDetailFiltersDTO(Long organizationId, Long assessmentId, ClassificationPaidInstallmentsFiltersDTO filters) {
+  private static AssessmentsRowsDetailFiltersDTO getAssessmentsRowsDetailFiltersDTO(Long assessmentId) {
     AssessmentsRowsDetailFiltersDTO assessmentsRowsDetailFiltersDTO = new AssessmentsRowsDetailFiltersDTO();
-    assessmentsRowsDetailFiltersDTO.setOrganizationId(organizationId);
     assessmentsRowsDetailFiltersDTO.setAssessmentId(assessmentId);
-    assessmentsRowsDetailFiltersDTO.setIuv(filters.getIuv());
-    assessmentsRowsDetailFiltersDTO.setPaymentDateTimeIntervalFilter(filters.getPaymentDateTimeIntervalFilter());
-    assessmentsRowsDetailFiltersDTO.setUpdateDateTimeIntervalFilter(filters.getUpdateDateIntervalFilter());
     return assessmentsRowsDetailFiltersDTO;
   }
 

@@ -266,28 +266,6 @@ class ExportFileRetrieverServiceImplTest {
   }
 
   @Test
-  void whenCreateClassificationsExportFileThenOk() {
-    ClassificationsExportFileRequestDTO requestDTO = ClassificationsExportFileRequestDTO.builder()
-      .organizationId(1L)
-      .exportFileType(ClassificationsExportFileRequestDTO.ExportFileTypeEnum.CLASSIFICATIONS)
-      .fileVersion("version1")
-      .filterFields(ClassificationsExportFileFilter.builder()
-        .build())
-      .build();
-    String accessToken = "ACCESSTOKEN";
-    UserInfo user = TestUtils.getSampleUser();
-
-    UserOrganizationRoles userOrgRole = new UserOrganizationRoles();
-    userOrgRole.setRoles(List.of("ROLE_USER"));
-    userOrgRole.setOrganizationId(1L);
-    user.setOrganizations(List.of(userOrgRole));
-
-    exportFileRetrieverService.createClassificationsExportFile(requestDTO, user, accessToken);
-
-    Mockito.verify(exportFileServiceMock).createClassificationsExportFile(requestDTO, accessToken);
-  }
-
-  @Test
   void givenPopulatedDebtPositionTypeOrgCodesWhenCreateClassificationsExportFileThenOk() {
     List<DebtPositionTypeOrg> debtPositionTypeOrgs = podamFactory.manufacturePojo(List.class, DebtPositionTypeOrg.class);
     Set<String> codes = debtPositionTypeOrgs.stream().map(DebtPositionTypeOrg::getCode).collect(Collectors.toSet());

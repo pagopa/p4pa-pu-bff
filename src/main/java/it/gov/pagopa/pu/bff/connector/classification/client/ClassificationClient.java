@@ -1,9 +1,11 @@
 package it.gov.pagopa.pu.bff.connector.classification.client;
 
 import it.gov.pagopa.pu.bff.connector.classification.config.ClassificationApisHolder;
+import it.gov.pagopa.pu.bff.dto.ClassificationPaidInstallmentsFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.TreasuredClassificationFiltersDTO;
 import it.gov.pagopa.pu.bff.util.PageUtils;
 import it.gov.pagopa.pu.classification.dto.generated.ClassificationDetailViewDTO;
+import it.gov.pagopa.pu.classification.dto.generated.PagedClassificationPaidInstallmentsView;
 import it.gov.pagopa.pu.classification.dto.generated.PagedTreasuredClassification;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -67,5 +69,21 @@ public class ClassificationClient {
       log.warn("ClassificationDetail with organizationId {} and classificationId {} not found", organizationId, classificationId);
       return null;
     }
+  }
+
+  public PagedClassificationPaidInstallmentsView getPaidInstallments(Long organizationId, ClassificationPaidInstallmentsFiltersDTO filters, Pageable pageable, String accessToken) {
+    return classificationApisHolder.getClassificationsApi(accessToken)
+      .getPaidInstallments(
+        organizationId,
+        filters.getDebtPositionTypeOrgCode(),
+        filters.getIuv(),
+        filters.getPaymentDateTimeIntervalFilter().getFrom(),
+        filters.getPaymentDateTimeIntervalFilter().getTo(),
+        filters.getUpdateDateIntervalFilter().getFrom(),
+        filters.getUpdateDateIntervalFilter().getTo(),
+        filters.getIuds(),
+        PageUtils.getPageNumber(pageable),
+        PageUtils.getPageSize(pageable),
+        PageUtils.getSortList(pageable));
   }
 }

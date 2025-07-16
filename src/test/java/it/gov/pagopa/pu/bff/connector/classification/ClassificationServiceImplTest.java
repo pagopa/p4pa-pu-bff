@@ -4,8 +4,10 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.Mockito.when;
 
 import it.gov.pagopa.pu.bff.connector.classification.client.ClassificationClient;
+import it.gov.pagopa.pu.bff.dto.ClassificationPaidInstallmentsFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.TreasuredClassificationFiltersDTO;
 import it.gov.pagopa.pu.classification.dto.generated.ClassificationDetailViewDTO;
+import it.gov.pagopa.pu.classification.dto.generated.PagedClassificationPaidInstallmentsView;
 import it.gov.pagopa.pu.classification.dto.generated.PagedTreasuredClassification;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -56,6 +58,27 @@ class ClassificationServiceImplTest {
     ClassificationDetailViewDTO result = classificationService.getClassificationDetail(organizationId, classificationId, accessToken);
 
     assertSame(expectedClassificationDetail, result);
+  }
+
+  @Test
+  void whenGetPaidInstallmentsThenInvokeClient() {
+    Long organizationId = 1L;
+    ClassificationPaidInstallmentsFiltersDTO filters = new ClassificationPaidInstallmentsFiltersDTO();
+    PageRequest pageable = PageRequest.of(0, 10);
+    String accessToken = "ACCESSTOKEN";
+    PagedClassificationPaidInstallmentsView expectedPagedResult = new PagedClassificationPaidInstallmentsView();
+
+    when(classificationClientMock.getPaidInstallments(
+      Mockito.same(organizationId),
+      Mockito.same(filters),
+      Mockito.same(pageable),
+      Mockito.same(accessToken)))
+      .thenReturn(expectedPagedResult);
+
+    PagedClassificationPaidInstallmentsView result = classificationService
+      .getPaidInstallments(organizationId, filters, pageable, accessToken);
+
+    assertSame(expectedPagedResult, result);
   }
 }
 

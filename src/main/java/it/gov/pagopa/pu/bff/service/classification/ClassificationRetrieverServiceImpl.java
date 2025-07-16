@@ -1,23 +1,28 @@
 package it.gov.pagopa.pu.bff.service.classification;
 
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
+import it.gov.pagopa.pu.bff.connector.classification.AssessmentsService;
 import it.gov.pagopa.pu.bff.connector.classification.ClassificationService;
-import it.gov.pagopa.pu.bff.dto.ClassificationDetailDTO;
-import it.gov.pagopa.pu.bff.dto.TreasuredClassificationFiltersDTO;
+import it.gov.pagopa.pu.bff.dto.*;
+import it.gov.pagopa.pu.bff.dto.OffsetDateTimeIntervalFilter;
 import it.gov.pagopa.pu.bff.exception.ResourceNotFoundException;
 import it.gov.pagopa.pu.bff.mapper.ClassificationDetailDTOMapper;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
 import it.gov.pagopa.pu.bff.service.debt_position_type_org.DebtPositionTypeOrgRetrieverService;
 import it.gov.pagopa.pu.bff.util.DateUtils;
-import it.gov.pagopa.pu.classification.dto.generated.ClassificationDetailViewDTO;
-import it.gov.pagopa.pu.classification.dto.generated.PagedTreasuredClassification;
+import it.gov.pagopa.pu.classification.dto.generated.*;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class ClassificationRetrieverServiceImpl implements ClassificationRetrieverService {
@@ -25,18 +30,26 @@ public class ClassificationRetrieverServiceImpl implements ClassificationRetriev
   private final ClassificationService classificationService;
   private final DebtPositionTypeOrgRetrieverService debtPositionTypeOrgRetrieverService;
   private final ClassificationDetailDTOMapper classificationDetailDTOMapper;
+  private final AssessmentsService assessmentsService;
+  private final Integer pageMaxSize;
 
   public ClassificationRetrieverServiceImpl(
-          ClassificationService classificationService, DebtPositionTypeOrgRetrieverService debtPositionTypeOrgRetrieverService, ClassificationDetailDTOMapper classificationDetailDTOMapper) {
+    ClassificationService classificationService,
+    DebtPositionTypeOrgRetrieverService debtPositionTypeOrgRetrieverService,
+    ClassificationDetailDTOMapper classificationDetailDTOMapper,
+    AssessmentsService assessmentsService,
+    @Value("${rest.page.request-max-page-size}") Integer pageMaxSize) {
     this.classificationService = classificationService;
-      this.debtPositionTypeOrgRetrieverService = debtPositionTypeOrgRetrieverService;
-      this.classificationDetailDTOMapper = classificationDetailDTOMapper;
+    this.debtPositionTypeOrgRetrieverService = debtPositionTypeOrgRetrieverService;
+    this.classificationDetailDTOMapper = classificationDetailDTOMapper;
+    this.assessmentsService = assessmentsService;
+    this.pageMaxSize = pageMaxSize;
   }
 
   @Override
   public PagedTreasuredClassification getTreasuredClassification(Long organizationId, TreasuredClassificationFiltersDTO treasuredClassificationFiltersDTO, String debtPositionTypeOrgCode, Pageable pageable, UserInfo loggedUser, String accessToken) {
     AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser);
-    validateTreasuredClassificationFilters(treasuredClassificationFiltersDTO,debtPositionTypeOrgCode);
+    validateTreasuredClassificationFilters(treasuredClassificationFiltersDTO, debtPositionTypeOrgCode);
     if (StringUtils.isNotBlank(debtPositionTypeOrgCode)) {
       debtPositionTypeOrgRetrieverService.validateOperator(organizationId, debtPositionTypeOrgCode, loggedUser.getMappedExternalUserId(), accessToken);
       treasuredClassificationFiltersDTO.setDebtPositionTypeOrgCodes(Collections.singleton(debtPositionTypeOrgCode));
@@ -48,8 +61,8 @@ public class ClassificationRetrieverServiceImpl implements ClassificationRetriev
   }
 
   private Set<String> getDebtPositionTypeOrgCodes(Long organizationId, String mappedExternalUserId, String accessToken) {
-    Set<String> debtPositionTypeOrgCodes = debtPositionTypeOrgRetrieverService.getDebtPositionTypeOrgCodes(organizationId,mappedExternalUserId,accessToken);
-    if(CollectionUtils.isEmpty(debtPositionTypeOrgCodes)){
+    Set<String> debtPositionTypeOrgCodes = debtPositionTypeOrgRetrieverService.getDebtPositionTypeOrgCodes(organizationId, mappedExternalUserId, accessToken);
+    if (CollectionUtils.isEmpty(debtPositionTypeOrgCodes)) {
       throw new ResourceNotFoundException("Classification not found for organizationId " + organizationId);
     }
     return debtPositionTypeOrgCodes;
@@ -90,9 +103,65 @@ public class ClassificationRetrieverServiceImpl implements ClassificationRetriev
   public ClassificationDetailDTO getClassificationDetail(Long organizationId, Long classificationId, UserInfo loggedUser, String accessToken) {
     AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser);
     ClassificationDetailViewDTO classificationDetail = classificationService.getClassificationDetail(organizationId, classificationId, accessToken);
-    if(classificationDetail!=null && StringUtils.isNotBlank(classificationDetail.getDebtPositionTypeOrgCode())){
-      debtPositionTypeOrgRetrieverService.validateOperator(organizationId,classificationDetail.getDebtPositionTypeOrgCode(), loggedUser.getMappedExternalUserId(), accessToken);
+    if (classificationDetail != null && StringUtils.isNotBlank(classificationDetail.getDebtPositionTypeOrgCode())) {
+      debtPositionTypeOrgRetrieverService.validateOperator(organizationId, classificationDetail.getDebtPositionTypeOrgCode(), loggedUser.getMappedExternalUserId(), accessToken);
     }
     return classificationDetailDTOMapper.map(classificationDetail);
+  }
+
+  @Override
+  public PagedClassificationPaidInstallmentsView getPaidInstallments(
+    Long organizationId, Long assessmentId, ClassificationPaidInstallmentsFiltersDTO filters, Pageable pageable, UserInfo loggedUser, String accessToken) {
+
+    AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser);
+
+    validatePaidInstallmentsFilters(filters.getIuv(), filters.getPaymentDateTimeIntervalFilter(), filters.getUpdateDateIntervalFilter());
+
+    Assessments assessment = assessmentsService.getAssessmentsById(assessmentId, accessToken);
+    if (assessment == null || !assessment.getOrganizationId().equals(organizationId)) {
+      throw new ResourceNotFoundException("Assessment with id " + assessmentId + " not found");
+    }
+
+    AssessmentsRowsDetailFiltersDTO assessmentsRowsDetailFiltersDTO = getAssessmentsRowsDetailFiltersDTO(assessmentId);
+
+    Pageable maxPageable = PageRequest.of(0, pageMaxSize);
+    PagedModelAssessmentsDetail assessmentsDetailPage = assessmentsService.findPagedModelAssessmentsDetail(
+      assessmentsRowsDetailFiltersDTO, maxPageable, accessToken);
+
+    Set<String> iuds = extractIuds(assessmentsDetailPage);
+    ClassificationPaidInstallmentsFiltersDTO updatedFilters = filters.toBuilder()
+      .iuds(iuds)
+      .build();
+
+    return classificationService.getPaidInstallments(organizationId, updatedFilters, pageable, accessToken);
+  }
+
+  private void validatePaidInstallmentsFilters(String iuv, OffsetDateTimeIntervalFilter paymentDateTimeIntervalFilter, OffsetDateTimeIntervalFilter updateDateIntervalFilter) {
+    if (paymentDateTimeIntervalFilter != null) {
+      DateUtils.validateDateFilters(paymentDateTimeIntervalFilter,"paymentDateTime");
+    }
+    if (updateDateIntervalFilter != null) {
+      DateUtils.validateDateFilters(updateDateIntervalFilter,"updateDate");
+    }
+    if (StringUtils.isBlank(iuv) &&
+      (paymentDateTimeIntervalFilter == null || DateUtils.isNullOrInvalidOffsetDateTimeRange(paymentDateTimeIntervalFilter.getFrom(), paymentDateTimeIntervalFilter.getTo())) &&
+      (updateDateIntervalFilter == null || DateUtils.isNullOrInvalidOffsetDateTimeRange(updateDateIntervalFilter.getFrom(), updateDateIntervalFilter.getTo()))) {
+      throw new IllegalArgumentException("At least one filter must be provided, and all date intervals must have both 'from' and 'to' set or be null");
+    }
+  }
+
+  private static AssessmentsRowsDetailFiltersDTO getAssessmentsRowsDetailFiltersDTO(Long assessmentId) {
+    AssessmentsRowsDetailFiltersDTO assessmentsRowsDetailFiltersDTO = new AssessmentsRowsDetailFiltersDTO();
+    assessmentsRowsDetailFiltersDTO.setAssessmentId(assessmentId);
+    return assessmentsRowsDetailFiltersDTO;
+  }
+
+  private Set<String> extractIuds(PagedModelAssessmentsDetail page) {
+    return Optional.ofNullable(page.getEmbedded())
+      .map(PagedModelAssessmentsDetailEmbedded::getAssessmentsDetails)
+      .orElse(List.of())
+      .stream()
+      .map(AssessmentsDetail::getIud)
+      .collect(Collectors.toSet());
   }
 }

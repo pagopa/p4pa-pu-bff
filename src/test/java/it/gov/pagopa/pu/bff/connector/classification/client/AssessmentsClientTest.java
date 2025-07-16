@@ -88,6 +88,25 @@ class AssessmentsClientTest {
   }
 
   @Test
+  void givenNoDateFiltersWhenFindPagedModelAssessmentsDetailThenReturnPagedModelAssessmentsDetail() {
+    //given
+    String accessToken = "accessToken";
+    AssessmentsRowsDetailFiltersDTO assessmentsRowsDetailFiltersDTO = podamFactory.manufacturePojo(AssessmentsRowsDetailFiltersDTO.class);
+    assessmentsRowsDetailFiltersDTO.setUpdateDateTimeIntervalFilter(null);
+    assessmentsRowsDetailFiltersDTO.setPaymentDateTimeIntervalFilter(null);
+    PagedModelAssessmentsDetail pagedModelAssessmentsDetail = podamFactory.manufacturePojo(PagedModelAssessmentsDetail.class);
+
+    Mockito.when(classificationApisHolderMock.getAssessmentsDetailSearchControllerApi(accessToken)).thenReturn(assessmentsDetailSearchControllerApiMock);
+    Mockito.when(assessmentsDetailSearchControllerApiMock.crudAssessmentsDetailsFindAssessmentsRowsDetail(
+      assessmentsRowsDetailFiltersDTO.getAssessmentId(), assessmentsRowsDetailFiltersDTO.getIud(), assessmentsRowsDetailFiltersDTO.getIuv(), null, null, null, null, assessmentsRowsDetailFiltersDTO.getFiscalCode(), 0, 1, Collections.emptyList())).thenReturn(pagedModelAssessmentsDetail);
+    //when
+    PagedModelAssessmentsDetail result = assessmentsClient.findPagedModelAssessmentsDetail(assessmentsRowsDetailFiltersDTO, Pageable.ofSize(1), accessToken);
+    //then
+    Assertions.assertNotNull(result);
+    Assertions.assertEquals(pagedModelAssessmentsDetail.getEmbedded().getAssessmentsDetails(), result.getEmbedded().getAssessmentsDetails());
+  }
+
+  @Test
   void givenIdWhenFindAssessmentsDetailThenReturnAssessmentsDetail() {
     //given
     String accessToken = "accessToken";

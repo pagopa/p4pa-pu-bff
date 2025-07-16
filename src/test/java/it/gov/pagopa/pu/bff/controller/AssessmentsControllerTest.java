@@ -77,8 +77,8 @@ class AssessmentsControllerTest {
     OffsetDateTime offsetDateTime = OffsetDateTime.now();
     OffsetDateTimeIntervalFilter offsetDateTimeIntervalFilter = new OffsetDateTimeIntervalFilter(offsetDateTime, offsetDateTime);
     String fiscalCode = "fiscalCode";
-    LocalDateTime now = LocalDateTime.now();
-    LocalDateTimeIntervalFilter localDateTimeIntervalFilter = new LocalDateTimeIntervalFilter(now, now);
+    LocalDateTime localDateTime = offsetDateTime.toLocalDateTime();
+    LocalDateTimeIntervalFilter localDateTimeIntervalFilter = new LocalDateTimeIntervalFilter(localDateTime , localDateTime );
     AssessmentsRowsDetailFiltersDTO assessmentsRowsDetailFiltersDTO = new AssessmentsRowsDetailFiltersDTO(organizationId, assessmentId, iud, iuv, localDateTimeIntervalFilter, offsetDateTimeIntervalFilter, fiscalCode);
     AssessmentsRowsDetail pagedAssessmentsRowsDetail = new AssessmentsRowsDetail();
     Mockito.when(assessmentsRetrieverServiceMock.getPagedAssessmentsRowsDetail(assessmentsRowsDetailFiltersDTO, Pageable.ofSize(1), loggedUser, accessToken)).thenReturn(pagedAssessmentsRowsDetail);

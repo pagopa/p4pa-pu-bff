@@ -16,6 +16,7 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.web.util.DefaultUriBuilderFactory;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.util.Collections;
 import java.util.List;
@@ -149,7 +150,7 @@ class ClassificationApisHolderTest extends BaseApiHolderTest {
   void whenGetAssessmentsDetailSearchControllerApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
     assertAuthenticationShouldBeSetInThreadSafeMode(
       accessToken -> classificationApisHolder.getAssessmentsDetailSearchControllerApi(accessToken)
-        .crudAssessmentsDetailsFindAssessmentsRowsDetail(1L, "iud", "iuv",  OffsetDateTime.now(), OffsetDateTime.now() , OffsetDateTime.now(), OffsetDateTime.now(), "fiscalCode", 1,1, Collections.emptyList()),
+        .crudAssessmentsDetailsFindAssessmentsRowsDetail(1L, "iud", "iuv",  LocalDateTime.now(), LocalDateTime.now() , OffsetDateTime.now(), OffsetDateTime.now(), "fiscalCode", 1,1, Collections.emptyList()),
       new ParameterizedTypeReference<>() {
       },
       classificationApisHolder::unload);

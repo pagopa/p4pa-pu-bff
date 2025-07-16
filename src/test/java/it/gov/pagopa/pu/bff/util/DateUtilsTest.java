@@ -1,6 +1,7 @@
 package it.gov.pagopa.pu.bff.util;
 
 import it.gov.pagopa.pu.bff.dto.LocalDateIntervalFilter;
+import it.gov.pagopa.pu.bff.dto.LocalDateTimeIntervalFilter;
 import it.gov.pagopa.pu.bff.dto.OffsetDateTimeIntervalFilter;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -224,6 +225,48 @@ class DateUtilsTest {
   void givenOnlyToDateOffsetDateTimeWhenValidateDateFiltersThenThrowException() {
     OffsetDateTime to = OffsetDateTime.now();
     OffsetDateTimeIntervalFilter dateFilter = new OffsetDateTimeIntervalFilter(null,to);
+
+    Exception exception = assertThrows(IllegalArgumentException.class, () -> DateUtils.validateDateFilters(dateFilter, "testDate"));
+
+    String expectedMessage = "Both testDateFrom and testDateTo must be set or both must be null";
+    String actualMessage = exception.getMessage();
+
+    assertTrue(actualMessage.contains(expectedMessage));
+  }
+
+  @Test
+  void givenBothDateTimesWhenValidateDateFiltersThenNoException() {
+    LocalDateTime from = LocalDateTime.now().minusDays(10);
+    LocalDateTime to = LocalDateTime.now();
+    LocalDateTimeIntervalFilter dateFilter = new LocalDateTimeIntervalFilter(from, to);
+
+    assertDoesNotThrow(() -> DateUtils.validateDateFilters(dateFilter, "testDate"));
+  }
+
+  @Test
+  void givenBothDateTimesNullWhenValidateDateFiltersThenNoException() {
+    LocalDateTimeIntervalFilter dateFilter = new LocalDateTimeIntervalFilter(null, null);
+
+    assertDoesNotThrow(() -> DateUtils.validateDateFilters(dateFilter, "testDate"));
+  }
+
+  @Test
+  void givenOnlyFromDateTimeWhenValidateDateFiltersThenThrowException() {
+    LocalDateTime from = LocalDateTime.now().minusDays(10);
+    LocalDateTimeIntervalFilter dateFilter = new LocalDateTimeIntervalFilter(from, null);
+
+    Exception exception = assertThrows(IllegalArgumentException.class, () -> DateUtils.validateDateFilters(dateFilter, "testDate"));
+
+    String expectedMessage = "Both testDateFrom and testDateTo must be set or both must be null";
+    String actualMessage = exception.getMessage();
+
+    assertTrue(actualMessage.contains(expectedMessage));
+  }
+
+  @Test
+  void givenOnlyToDateTimeWhenValidateDateFiltersThenThrowException() {
+    LocalDateTime to = LocalDateTime.now();
+    LocalDateTimeIntervalFilter dateFilter = new LocalDateTimeIntervalFilter(null, to);
 
     Exception exception = assertThrows(IllegalArgumentException.class, () -> DateUtils.validateDateFilters(dateFilter, "testDate"));
 

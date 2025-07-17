@@ -24,7 +24,7 @@ public class AssessmentsDetailController implements AssessmentsDetailApi {
 
     @Override
   public ResponseEntity<List<AssessmentsDetail>> createAssessmentsDetail(Long organizationId, Long assessmentId, CreateAssessmentsDetail createAssessmentsDetail) {
-    log.info("User requested createAssessmentsDetail having organizationId {} and assessmentId {}", organizationId, assessmentId);
+    log.info("User requested createAssessmentsDetail having organizationId {}, assessmentId {} and iuds {}", organizationId, assessmentId, createAssessmentsDetail.getIuds());
     return ResponseEntity.status(HttpStatus.CREATED).body(
             assessmentsDetailRetrieverService.createAssessmentsDetail(organizationId,assessmentId,createAssessmentsDetail, SecurityUtils.getLoggedUser(),SecurityUtils.getAccessToken())
     );

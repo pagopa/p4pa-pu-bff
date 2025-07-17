@@ -39,6 +39,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.authorization.AuthorizationDeniedException;
 import uk.co.jemos.podam.api.PodamFactory;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -937,6 +938,64 @@ class DebtPositionTypeOrgRetrieverServiceImplTest {
 
     assertNotNull(result);
     assertTrue(result.isEmpty());
+  }
+
+  @Test
+  void whenValidateIudsThenOk(){
+    Long organizationId = 1L;
+    String debtPositionTypeOrgCode = "debtPositionTypeOrgCode";
+    Set<String> iuds = podamFactory.manufacturePojo(Set.class,String.class);
+    DebtPositionTypeOrg debtPositionTypeOrg = podamFactory.manufacturePojo(DebtPositionTypeOrg.class);
+    debtPositionTypeOrg.setCode(debtPositionTypeOrgCode);
+
+    Mockito.when(debtPositionTypeOrgServiceMock.findDebtPositionTypeOrgByOrganizationIdAndIuds(organizationId,iuds,accessToken))
+            .thenReturn(Collections.singletonList(debtPositionTypeOrg));
+
+    debtPositionTypeOrgService.validateIuds(organizationId,debtPositionTypeOrgCode,iuds,accessToken);
+  }
+
+  @Test
+  void givenNoMatchingDebtPositionTypeOrgCodeWhenValidateIudsThenIllegalArgumentException(){
+    Long organizationId = 1L;
+    String debtPositionTypeOrgCode = "debtPositionTypeOrgCode";
+    Set<String> iuds = podamFactory.manufacturePojo(Set.class,String.class);
+    DebtPositionTypeOrg debtPositionTypeOrg = podamFactory.manufacturePojo(DebtPositionTypeOrg.class);
+    debtPositionTypeOrg.setCode(debtPositionTypeOrgCode+1);
+
+    Mockito.when(debtPositionTypeOrgServiceMock.findDebtPositionTypeOrgByOrganizationIdAndIuds(organizationId,iuds,accessToken))
+            .thenReturn(Collections.singletonList(debtPositionTypeOrg));
+
+    assertThrows(IllegalArgumentException.class, () -> debtPositionTypeOrgService.validateIuds(organizationId,debtPositionTypeOrgCode,iuds,accessToken));
+  }
+
+  @Test
+  void givenNoDebtPositionTypeOrgsWhenValidateIudsThenIllegalArgumentException(){
+    Long organizationId = 1L;
+    String debtPositionTypeOrgCode = "debtPositionTypeOrgCode";
+    Set<String> iuds = podamFactory.manufacturePojo(Set.class,String.class);
+
+    Mockito.when(debtPositionTypeOrgServiceMock.findDebtPositionTypeOrgByOrganizationIdAndIuds(organizationId,iuds,accessToken))
+            .thenReturn(Collections.emptyList());
+
+    assertThrows(IllegalArgumentException.class, () -> debtPositionTypeOrgService.validateIuds(organizationId,debtPositionTypeOrgCode,iuds,accessToken));
+  }
+
+  @Test
+  void givenMultipleDebtPositionTypeOrgsWhenValidateIudsThenIllegalArgumentException(){
+    Long organizationId = 1L;
+    String debtPositionTypeOrgCode = "debtPositionTypeOrgCode";
+    Set<String> iuds = podamFactory.manufacturePojo(Set.class,String.class);
+    List<DebtPositionTypeOrg> debtPositionTypeOrgs = new ArrayList<>();
+    for (int i = 0; i < 2; i++) {
+      DebtPositionTypeOrg debtPositionTypeOrg = podamFactory.manufacturePojo(DebtPositionTypeOrg.class);
+      debtPositionTypeOrg.setCode(debtPositionTypeOrgCode);
+      debtPositionTypeOrgs.add(debtPositionTypeOrg);
+    }
+
+    Mockito.when(debtPositionTypeOrgServiceMock.findDebtPositionTypeOrgByOrganizationIdAndIuds(organizationId,iuds,accessToken))
+            .thenReturn(debtPositionTypeOrgs);
+
+    assertThrows(IllegalArgumentException.class, () -> debtPositionTypeOrgService.validateIuds(organizationId,debtPositionTypeOrgCode,iuds,accessToken));
   }
 }
 

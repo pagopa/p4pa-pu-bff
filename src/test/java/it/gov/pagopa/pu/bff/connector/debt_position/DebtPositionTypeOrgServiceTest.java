@@ -13,8 +13,10 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import uk.co.jemos.podam.api.PodamFactory;
 
 import java.util.List;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.Mockito.*;
@@ -22,6 +24,7 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class DebtPositionTypeOrgServiceTest {
 
+  public static final PodamFactory podamFactory = TestUtils.getPodamFactory();
   @Mock
   private DebtPositionTypeOrgClient debtPositionTypeOrgClientMock;
   @Mock
@@ -124,7 +127,7 @@ class DebtPositionTypeOrgServiceTest {
 
   @Test
   void whenSaveDebtPositionTypeOrgThenInvokeClient() {
-    SaveDebtPositionTypeOrgDTO saveDebtPositionTypeOrgDTO = TestUtils.getPodamFactory().manufacturePojo(SaveDebtPositionTypeOrgDTO.class);
+    SaveDebtPositionTypeOrgDTO saveDebtPositionTypeOrgDTO = podamFactory.manufacturePojo(SaveDebtPositionTypeOrgDTO.class);
     String accessToken = "ACCESSTOKEN";
     DebtPositionTypeOrg expectedResult = new DebtPositionTypeOrg();
 
@@ -148,6 +151,21 @@ class DebtPositionTypeOrgServiceTest {
       .thenReturn(expectedResult);
 
     DebtPositionTypeOrg result = service.findDebtPositionTypeOrg(organizationId,debtPositionTypeOrgCode,mappedExternalUserId,accessToken);
+
+    assertSame(expectedResult, result);
+  }
+
+  @Test
+  void whenFindDebtPositionTypeOrgByOrganizationIdAndIudsThenInvokeClient() {
+    Long organizationId = 1L;
+    String accessToken = "ACCESSTOKEN";
+    Set<String> iuds = podamFactory.manufacturePojo(Set.class,String.class);
+    List<DebtPositionTypeOrg> expectedResult = podamFactory.manufacturePojo(List.class,DebtPositionTypeOrg.class);
+
+    when(debtPositionTypeOrgSearchClientMock.findDebtPositionTypeOrgByOrganizationIdAndIuds(organizationId,iuds,accessToken))
+      .thenReturn(expectedResult);
+
+    List<DebtPositionTypeOrg> result = service.findDebtPositionTypeOrgByOrganizationIdAndIuds(organizationId,iuds,accessToken);
 
     assertSame(expectedResult, result);
   }

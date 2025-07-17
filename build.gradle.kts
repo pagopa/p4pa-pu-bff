@@ -221,6 +221,7 @@ tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>("ope
     "RegistrySilEventType" to "it.gov.pagopa.pu.registries.dto.generated.RegistrySilEventType",
     "Assessments" to "it.gov.pagopa.pu.classification.dto.generated.Assessments",
     "PagedClassificationPaidInstallmentsView" to "it.gov.pagopa.pu.classification.dto.generated.PagedClassificationPaidInstallmentsView",
+    "CreateAssessmentsDetail" to "it.gov.pagopa.pu.classification.dto.generated.CreateAssessmentsDetail",
     "OrgSilServiceView" to "it.gov.pagopa.pu.organization.dto.generated.OrgSilServiceView"
   ))
   configOptions.set(mapOf(

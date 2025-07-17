@@ -114,4 +114,18 @@ class OrgSilServiceControllerTest {
     assertSame(orgSilServiceDTO, response.getBody());
   }
 
+  @Test
+  void givenCorrectRequestWhenGetOrgSilServicesDetailsThenReturnNull() {
+    //given
+    long organizationId = 2L;
+    long orgSilServiceId = 1L;
+    OrgSilServiceDTO orgSilServiceDTO = new OrgSilServiceDTO();
+    when(orgSilServiceRetrieverServiceMock.getOrgSilServiceDetails(organizationId, orgSilServiceId, loggedUser, accessToken)).thenReturn(null);
+    //when
+    ResponseEntity<OrgSilServiceDTO> response = orgSilServiceController.getOrgSilServiceDetails(organizationId, orgSilServiceId);
+    //then
+    assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+    assertNull(response.getBody());
+  }
+
 }

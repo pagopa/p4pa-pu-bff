@@ -1,12 +1,15 @@
 package it.gov.pagopa.pu.bff.connector.organization.client;
 
 import it.gov.pagopa.pu.bff.connector.organization.config.OrganizationApisHolder;
+import it.gov.pagopa.pu.bff.util.PageUtils;
 import it.gov.pagopa.pu.bff.util.TestUtils;
 import it.gov.pagopa.pu.organization.controller.generated.OrgSilServiceEntityControllerApi;
 import it.gov.pagopa.pu.organization.controller.generated.OrgSilServiceSearchControllerApi;
+import it.gov.pagopa.pu.organization.controller.generated.OrgSilServiceViewSearchControllerApi;
 import it.gov.pagopa.pu.organization.dto.generated.CollectionModelOrgSilService;
 import it.gov.pagopa.pu.organization.dto.generated.OrgSilService;
 import it.gov.pagopa.pu.organization.dto.generated.OrgSilServiceType;
+import it.gov.pagopa.pu.organization.dto.generated.PagedModelOrgSilServiceView;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,6 +18,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.client.HttpClientErrorException;
 import uk.co.jemos.podam.api.PodamFactory;
@@ -32,6 +38,8 @@ class OrgSilServiceSearchClientTest {
   private OrgSilServiceSearchControllerApi orgSilServiceSearchControllerApiMock;
   @Mock
   private OrgSilServiceEntityControllerApi orgSilServiceEntityControllerApiMock;
+  @Mock
+  private OrgSilServiceViewSearchControllerApi orgSilServiceViewSearchControllerApiMock;
 
   private OrgSilServiceSearchClient orgSilServiceSearchClient;
 
@@ -42,7 +50,7 @@ class OrgSilServiceSearchClientTest {
 
   @AfterEach
   void verifyNoMoreInteractions() {
-    Mockito.verifyNoMoreInteractions(organizationApisHolderMock, orgSilServiceSearchControllerApiMock, orgSilServiceEntityControllerApiMock);
+    Mockito.verifyNoMoreInteractions(organizationApisHolderMock, orgSilServiceSearchControllerApiMock, orgSilServiceEntityControllerApiMock, orgSilServiceViewSearchControllerApiMock);
   }
 
   @Test
@@ -93,5 +101,42 @@ class OrgSilServiceSearchClientTest {
     OrgSilService response = orgSilServiceSearchClient.getOrgSilServiceById(orgSilServiceId, accessToken);
 
     assertNull(response);
+  }
+
+  @Test
+  void whenGetOrgSilServicesByFiltersThenInvokeWithAccessToken() {
+    String accessToken = "ACCESSTOKEN";
+    Long organizationId = 1L;
+    String applicationName = "myApp";
+    OrgSilServiceType serviceType = OrgSilServiceType.ACTUALIZATION;
+    boolean flagLegacy = true;
+    Pageable pageable = PageRequest.of(0, 10, Sort.by("name").ascending());
+    PagedModelOrgSilServiceView expectedResponse =
+      podamFactory.manufacturePojo(PagedModelOrgSilServiceView.class);
+
+    when(organizationApisHolderMock.getOrgSilServiceViewSearchControllerApi(accessToken))
+      .thenReturn(orgSilServiceViewSearchControllerApiMock);
+
+    when(orgSilServiceViewSearchControllerApiMock.crudOrgSilServicesViewFindOrgSilServicesByFilters(
+      organizationId,
+      applicationName,
+      serviceType,
+      flagLegacy,
+      PageUtils.getPageNumber(pageable),
+      PageUtils.getPageSize(pageable),
+      PageUtils.getSortList(pageable)))
+      .thenReturn(expectedResponse);
+
+    PagedModelOrgSilServiceView response =
+      orgSilServiceSearchClient.getOrgSilServicesByFilters(
+        organizationId,
+        applicationName,
+        serviceType,
+        flagLegacy,
+        pageable,
+        accessToken);
+
+    Assertions.assertNotNull(response);
+    Assertions.assertEquals(expectedResponse, response);
   }
 }

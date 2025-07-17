@@ -1,11 +1,13 @@
 package it.gov.pagopa.pu.bff.connector.classification.client;
 
 import it.gov.pagopa.pu.bff.connector.classification.config.ClassificationApisHolder;
+import it.gov.pagopa.pu.bff.dto.ClassificationPaidInstallmentsFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.TreasuredClassificationFiltersDTO;
 import it.gov.pagopa.pu.bff.util.PageUtils;
 import it.gov.pagopa.pu.bff.util.TestUtils;
 import it.gov.pagopa.pu.classification.controller.generated.ClassificationsApi;
 import it.gov.pagopa.pu.classification.dto.generated.ClassificationDetailViewDTO;
+import it.gov.pagopa.pu.classification.dto.generated.PagedClassificationPaidInstallmentsView;
 import it.gov.pagopa.pu.classification.dto.generated.PagedTreasuredClassification;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -132,6 +134,39 @@ class ClassificationClientTest {
 
     assertNull(result);
     verify(classificationsApiMock).getClassificationDetail(organizationId, classificationId);
+  }
+
+  @Test
+  void givenValidParamsWhenGetPaidInstallmentsThenReturnExpected() {
+    String accessToken = "ACCESSTOKEN";
+    Long organizationId = 1L;
+    ClassificationPaidInstallmentsFiltersDTO filtersDTO =
+      podamFactory.manufacturePojo(ClassificationPaidInstallmentsFiltersDTO.class);
+    PageRequest pageable = PageRequest.of(0, 10);
+    PagedClassificationPaidInstallmentsView expectedResponse =
+      new PagedClassificationPaidInstallmentsView();
+
+    when(classificationApisHolderMock.getClassificationsApi(accessToken))
+      .thenReturn(classificationsApiMock);
+
+    when(classificationsApiMock.getPaidInstallments(
+      organizationId,
+      filtersDTO.getDebtPositionTypeOrgCode(),
+      filtersDTO.getIuv(),
+      filtersDTO.getPaymentDateTimeIntervalFilter().getFrom(),
+      filtersDTO.getPaymentDateTimeIntervalFilter().getTo(),
+      filtersDTO.getUpdateDateIntervalFilter().getFrom(),
+      filtersDTO.getUpdateDateIntervalFilter().getTo(),
+      filtersDTO.getIuds(),
+      PageUtils.getPageNumber(pageable),
+      PageUtils.getPageSize(pageable),
+      PageUtils.getSortList(pageable)
+    )).thenReturn(expectedResponse);
+
+    PagedClassificationPaidInstallmentsView result =
+      classificationClient.getPaidInstallments(organizationId, filtersDTO, pageable, accessToken);
+
+    assertSame(expectedResponse, result);
   }
 }
 

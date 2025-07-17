@@ -821,6 +821,69 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorDTO'
+  /organization/{organizationId}/classifications/paid-installments:
+    get:
+      tags:
+        - Classifications
+      operationId: getPaidInstallments
+      parameters:
+        - name: organizationId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: iuv
+          in: query
+          schema:
+            type: string
+        - name: paymentDateTimeFrom
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: paymentDateTimeTo
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: updateDateFrom
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: updateDateTo
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: debtPositionTypeOrgCode
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: assessmentId
+          in: query
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: List of paid installments
+          content:
+            application/json:
+              schema:
+                type: 'PagedClassificationPaidInstallmentsView'
+        '401':
+          description: Unauthorized - Missing or invalid token
+        '403':
+          description: Forbidden - Access denied
+        '404':
+          description: Not Found
+        '500':
+          description: Internal Server Error
+      x-spring-paginated: true
   /organization/{organizationId}/classifications/{classificationId}:
     get:
       tags:
@@ -1699,6 +1762,45 @@ paths:
         '500':
           description: Internal Server Error
       x-spring-paginated: true
+  /organization/{organizationId}/org-sil-services/view:
+    get:
+      tags:
+        - OrgSilService
+      summary: "Retrieve a filtered list of OrgSilService"
+      operationId: getOrgSilServicesByFilters
+      parameters:
+        - name: organizationId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: applicationName
+          in: query
+          schema:
+            type: string
+        - name: serviceType
+          in: query
+          schema:
+            type: 'OrgSilServiceType'
+        - name: flagLegacy
+          in: query
+          schema:
+            type: boolean
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PagedOrgSilServiceView'
+        '401':
+          description: Unauthorized - Missing or invalid token
+        '403':
+          description: Forbidden - Access denied
+        '500':
+          description: Internal Server Error
+      x-spring-paginated: true
   /organization/{organizationId}/org-sil-services:
     get:
       tags:
@@ -2392,6 +2494,25 @@ paths:
           description: Forbidden - Access denied
         '500':
           description: Internal Server Error
+  /assessments/operating-year:
+    get:
+      tags:
+        - Assessments
+      operationId: getOperatingYears
+      description: Returns a list of valid operating years
+      responses:
+        '200':
+          description: List of operating years
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+        '403':
+          description: Forbidden - Access denied
+        '500':
+          description: Internal Server Error
   /organization/{organizationId}/assessments:
     get:
       tags:
@@ -2444,6 +2565,40 @@ paths:
         '500':
           description: Internal Server Error
       x-spring-paginated: true
+    post:
+      tags:
+        - Assessments
+      operationId: createAssessment
+      parameters:
+        - name: organizationId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: assessmentName
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: debtPositionTypeOrgCode
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Assessment
+          content:
+            application/json:
+              schema:
+                type: 'Assessments'
+        '401':
+          description: Unauthorized - Missing or invalid token
+        '409':
+          description: Conflict
+        '500':
+          description: Internal Server Error
   /organization/{organizationId}/assessments/{assessmentId}/details:
     get:
       tags:
@@ -2500,7 +2655,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PagedAssessmentsRowsDetail'
+                $ref: '#/components/schemas/AssessmentsRowsDetail'
         '401':
           description: Unauthorized - Missing or invalid token
         "400":
@@ -2539,6 +2694,49 @@ paths:
             application/json:
               schema:
                 type: 'AssessmentsDetail'
+        '401':
+          description: Unauthorized - Missing or invalid token
+        "400":
+          description: Invalid request
+        '404':
+          description: Not Found
+        '500':
+          description: Internal Server Error
+  /organization/{organizationId}/assessments/{assessmentId}/assessments-details:
+    post:
+      tags:
+        - assessmentsDetail
+      operationId: createAssessmentsDetail
+      parameters:
+        - name: organizationId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: The ID of the organization
+        - name: assessmentId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: The ID of the assessment
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: 'CreateAssessmentsDetail'
+        required: true
+      responses:
+        '201':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: 'AssessmentsDetail'
         '401':
           description: Unauthorized - Missing or invalid token
         "400":
@@ -3730,6 +3928,24 @@ components:
         number:
           type: integer
           format: int64
+    AssessmentsRowsDetail:
+      type: object
+      required:
+        - pagedAssessmentsRowsDetail
+        - assessmentsName
+        - debtPositionTypeOrgDescription
+        - status
+      properties:
+        pagedAssessmentsRowsDetail:
+          $ref: "#/components/schemas/PagedAssessmentsRowsDetail"
+        assessmentsName:
+          type: string
+        debtPositionTypeOrgDescription:
+          type: string
+        status:
+          type: 'AssessmentsStatusEnum'
+        updateOperatorExternalId:
+          type: string
     PagedAssessmentsExtendedDTO:
       type: object
       required:
@@ -3813,3 +4029,28 @@ components:
         lastUpdatedAt:
           type: string
           format: date-time
+    PagedOrgSilServiceView:
+      type: object
+      required:
+        - content
+        - size
+        - totalElements
+        - totalPages
+        - number
+      properties:
+        content:
+          type: array
+          items:
+            type: 'OrgSilServiceView'
+        size:
+          type: integer
+          format: int64
+        totalElements:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer
+          format: int64
+        number:
+          type: integer
+          format: int64

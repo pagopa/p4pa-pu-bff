@@ -10,6 +10,7 @@ import it.gov.pagopa.pu.bff.mapper.ExportFileMapper;
 import it.gov.pagopa.pu.bff.mapper.export_file.PaidExportFileRequestDTOMapper;
 import it.gov.pagopa.pu.bff.mapper.export_file.ReceiptsArchivingExportFileRequestDTOMapper;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
+import it.gov.pagopa.pu.bff.service.debt_position_type_org.DebtPositionTypeOrgRetrieverService;
 import it.gov.pagopa.pu.bff.util.DateUtils;
 import it.gov.pagopa.pu.processexecutions.dto.generated.ClassificationsExportFileRequestDTO;
 import it.gov.pagopa.pu.processexecutions.dto.generated.PaymentsReportingExportFileRequestDTO;
@@ -27,16 +28,18 @@ public class ExportFileRetrieverServiceImpl implements
   private final ExportFileMapper exportFileMapper;
   private final PaidExportFileRequestDTOMapper paidExportFileRequestDTOMapper;
   private final ReceiptsArchivingExportFileRequestDTOMapper receiptsArchivingExportFileRequestDTOMapper;
+  private final DebtPositionTypeOrgRetrieverService debtPositionTypeOrgRetrieverService;
 
   public ExportFileRetrieverServiceImpl(
     ExportFileService exportFileService,
     ExportFileMapper exportFileMapper,
     PaidExportFileRequestDTOMapper paidExportFileRequestDTOMapper,
-    ReceiptsArchivingExportFileRequestDTOMapper receiptsArchivingExportFileRequestDTOMapper) {
+    ReceiptsArchivingExportFileRequestDTOMapper receiptsArchivingExportFileRequestDTOMapper, DebtPositionTypeOrgRetrieverService debtPositionTypeOrgRetrieverService) {
     this.exportFileService = exportFileService;
     this.exportFileMapper = exportFileMapper;
     this.paidExportFileRequestDTOMapper = paidExportFileRequestDTOMapper;
     this.receiptsArchivingExportFileRequestDTOMapper = receiptsArchivingExportFileRequestDTOMapper;
+    this.debtPositionTypeOrgRetrieverService = debtPositionTypeOrgRetrieverService;
   }
 
   @Override
@@ -75,6 +78,13 @@ public class ExportFileRetrieverServiceImpl implements
   public void createClassificationsExportFile(ClassificationsExportFileRequestDTO requestDTO,
                                               UserInfo loggedUser, String accessToken) {
     AuthorizationService.validateUserForOrganizationId(requestDTO.getOrganizationId(), loggedUser);
+
+    if (requestDTO.getFilterFields().getDebtPositionTypeOrgCodes() != null && !requestDTO.getFilterFields().getDebtPositionTypeOrgCodes().isEmpty()) {
+      requestDTO.getFilterFields().getDebtPositionTypeOrgCodes().forEach(dptoc -> debtPositionTypeOrgRetrieverService.validateOperator(requestDTO.getOrganizationId(), dptoc, loggedUser.getMappedExternalUserId(), accessToken));
+    } else {
+      requestDTO.getFilterFields().setDebtPositionTypeOrgCodes(debtPositionTypeOrgRetrieverService.getDebtPositionTypeOrgCodes(requestDTO.getOrganizationId(), loggedUser.getMappedExternalUserId(), accessToken));
+    }
+
     exportFileService.createClassificationsExportFile(requestDTO, accessToken);
   }
 

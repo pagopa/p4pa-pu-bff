@@ -1,7 +1,9 @@
 package it.gov.pagopa.pu.bff.connector.debt_position.client;
 
 import it.gov.pagopa.pu.bff.connector.debt_position.config.DebtPositionApisHolder;
+import it.gov.pagopa.pu.bff.util.TestUtils;
 import it.gov.pagopa.pu.debtpositions.controller.generated.DebtPositionTypeOrgSearchControllerApi;
+import it.gov.pagopa.pu.debtpositions.dto.generated.CollectionModelDebtPositionTypeOrg;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrg;
 import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelDebtPositionTypeOrg;
 import org.junit.jupiter.api.AfterEach;
@@ -12,15 +14,19 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.util.CollectionUtils;
+import uk.co.jemos.podam.api.PodamFactory;
 
 import java.util.Collections;
+import java.util.List;
+import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class DebtPositionTypeOrgSearchClientTest {
+  public static final PodamFactory podamFactory = TestUtils.getPodamFactory();
 
   @Mock
   private DebtPositionApisHolder debtPositionApisHolderMock;
@@ -78,7 +84,7 @@ class DebtPositionTypeOrgSearchClientTest {
   }
 
   @Test
-  void givenNoExistingDebtPositionTypeOrgWhenFindDebtPositionTypeOrgThenInvokeWithAccessToken() {
+  void givenNoExistingDebtPositionTypeOrgWhenFindDebtPositionTypeOrgThenNull() {
     Long organizationId = 1L;
     String debtPositionTypeOrgCode="debtPositionTypeOrgCode";
     String mappedExternalUserId = "mappedExternalUserId";
@@ -93,5 +99,78 @@ class DebtPositionTypeOrgSearchClientTest {
     DebtPositionTypeOrg result = debtPositionTypeOrgSearchClient.findDebtPositionTypeOrg(organizationId,debtPositionTypeOrgCode,mappedExternalUserId, accessToken);
 
     assertNull(result);
+  }
+
+  @Test
+  void whenFindDebtPositionTypeOrgByOrganizationIdAndIudsThenInvokeWithAccessToken() {
+    Long organizationId = 1L;
+    String accessToken = "ACCESS_TOKEN";
+    Set<String> iuds = podamFactory.manufacturePojo(Set.class,String.class);
+    CollectionModelDebtPositionTypeOrg collectionModelDebtPositionTypeOrg = podamFactory.manufacturePojo(CollectionModelDebtPositionTypeOrg.class);
+
+    when(debtPositionApisHolderMock.getDebtPositionTypeOrgSearchControllerApi(accessToken))
+      .thenReturn(debtPositionTypeOrgSearchControllerApiMock);
+    when(debtPositionTypeOrgSearchControllerApiMock.crudDebtPositionTypeOrgsFindDebtPositionTypeOrgByOrganizationIdAndIuds(
+      organizationId,iuds))
+      .thenReturn(collectionModelDebtPositionTypeOrg);
+
+    List<DebtPositionTypeOrg> result = debtPositionTypeOrgSearchClient.findDebtPositionTypeOrgByOrganizationIdAndIuds(organizationId,iuds, accessToken);
+
+    assertSame(collectionModelDebtPositionTypeOrg.getEmbedded().getDebtPositionTypeOrgs(), result);
+  }
+
+  @Test
+  void givenNoDebtPositionTypeOrgsWhenFindDebtPositionTypeOrgByOrganizationIdAndIudsThenNull() {
+    Long organizationId = 1L;
+    String accessToken = "ACCESS_TOKEN";
+    Set<String> iuds = podamFactory.manufacturePojo(Set.class,String.class);
+    CollectionModelDebtPositionTypeOrg collectionModelDebtPositionTypeOrg = podamFactory.manufacturePojo(CollectionModelDebtPositionTypeOrg.class);
+    collectionModelDebtPositionTypeOrg.getEmbedded().setDebtPositionTypeOrgs(null);
+
+    when(debtPositionApisHolderMock.getDebtPositionTypeOrgSearchControllerApi(accessToken))
+            .thenReturn(debtPositionTypeOrgSearchControllerApiMock);
+    when(debtPositionTypeOrgSearchControllerApiMock.crudDebtPositionTypeOrgsFindDebtPositionTypeOrgByOrganizationIdAndIuds(
+            organizationId,iuds))
+            .thenReturn(collectionModelDebtPositionTypeOrg);
+
+    List<DebtPositionTypeOrg> result = debtPositionTypeOrgSearchClient.findDebtPositionTypeOrgByOrganizationIdAndIuds(organizationId,iuds, accessToken);
+
+    assertTrue(CollectionUtils.isEmpty(result));
+  }
+
+  @Test
+  void givenNoEmbeddedDebtPositionTypeOrgsWhenFindDebtPositionTypeOrgByOrganizationIdAndIudsThenNull() {
+    Long organizationId = 1L;
+    String accessToken = "ACCESS_TOKEN";
+    Set<String> iuds = podamFactory.manufacturePojo(Set.class,String.class);
+    CollectionModelDebtPositionTypeOrg collectionModelDebtPositionTypeOrg = podamFactory.manufacturePojo(CollectionModelDebtPositionTypeOrg.class);
+    collectionModelDebtPositionTypeOrg.setEmbedded(null);
+
+    when(debtPositionApisHolderMock.getDebtPositionTypeOrgSearchControllerApi(accessToken))
+            .thenReturn(debtPositionTypeOrgSearchControllerApiMock);
+    when(debtPositionTypeOrgSearchControllerApiMock.crudDebtPositionTypeOrgsFindDebtPositionTypeOrgByOrganizationIdAndIuds(
+            organizationId,iuds))
+            .thenReturn(collectionModelDebtPositionTypeOrg);
+
+    List<DebtPositionTypeOrg> result = debtPositionTypeOrgSearchClient.findDebtPositionTypeOrgByOrganizationIdAndIuds(organizationId,iuds, accessToken);
+
+    assertTrue(CollectionUtils.isEmpty(result));
+  }
+
+  @Test
+  void givenNoCollectionModelDebtPositionTypeOrgWhenFindDebtPositionTypeOrgByOrganizationIdAndIudsThenNull() {
+    Long organizationId = 1L;
+    String accessToken = "ACCESS_TOKEN";
+    Set<String> iuds = podamFactory.manufacturePojo(Set.class,String.class);
+
+    when(debtPositionApisHolderMock.getDebtPositionTypeOrgSearchControllerApi(accessToken))
+            .thenReturn(debtPositionTypeOrgSearchControllerApiMock);
+    when(debtPositionTypeOrgSearchControllerApiMock.crudDebtPositionTypeOrgsFindDebtPositionTypeOrgByOrganizationIdAndIuds(
+            organizationId,iuds))
+            .thenReturn(null);
+
+    List<DebtPositionTypeOrg> result = debtPositionTypeOrgSearchClient.findDebtPositionTypeOrgByOrganizationIdAndIuds(organizationId,iuds, accessToken);
+
+    assertTrue(CollectionUtils.isEmpty(result));
   }
 }

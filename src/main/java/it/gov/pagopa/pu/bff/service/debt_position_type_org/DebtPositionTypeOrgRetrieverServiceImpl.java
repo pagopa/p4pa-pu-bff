@@ -238,4 +238,12 @@ public class DebtPositionTypeOrgRetrieverServiceImpl implements DebtPositionType
       return Collections.emptySet();
     }
   }
+
+  @Override
+  public void validateIuds(Long organizationId, String debtPositionTypeOrgCode, Set<String> iuds, String accessToken) {
+    List<DebtPositionTypeOrg> debtPositionTypeOrgs = debtPositionTypeOrgService.findDebtPositionTypeOrgByOrganizationIdAndIuds(organizationId, iuds, accessToken);
+    if(debtPositionTypeOrgs.size()!=1 || !debtPositionTypeOrgs.getFirst().getCode().equals(debtPositionTypeOrgCode)){
+      throw new IllegalArgumentException("One or more iuds refer to an invalid DebtPositionTypeOrg");
+    }
+  }
 }

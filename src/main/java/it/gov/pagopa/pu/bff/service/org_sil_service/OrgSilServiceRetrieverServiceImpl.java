@@ -3,12 +3,15 @@ package it.gov.pagopa.pu.bff.service.org_sil_service;
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.connector.organization.OrgSilServiceService;
 import it.gov.pagopa.pu.bff.dto.OrgSilServiceDTO;
+import it.gov.pagopa.pu.bff.dto.generated.PagedOrgSilServiceView;
 import it.gov.pagopa.pu.bff.mapper.OrgSilServiceDTOMapper;
+import it.gov.pagopa.pu.bff.mapper.OrgSilServiceViewMapper;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
 import it.gov.pagopa.pu.organization.dto.generated.CollectionModelOrgSilService;
 import it.gov.pagopa.pu.organization.dto.generated.OrgSilService;
 import it.gov.pagopa.pu.organization.dto.generated.OrgSilServiceType;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -20,10 +23,17 @@ public class OrgSilServiceRetrieverServiceImpl implements OrgSilServiceRetriever
 
   private final OrgSilServiceService orgSilServiceService;
   private final OrgSilServiceDTOMapper orgSilServiceDTOMapper;
+  private final AuthorizationService authorizationService;
+  private final OrgSilServiceViewMapper orgSilServiceViewMapper;
 
-  public OrgSilServiceRetrieverServiceImpl(OrgSilServiceService orgSilServiceService, OrgSilServiceDTOMapper orgSilServiceDTOMapper) {
+  public OrgSilServiceRetrieverServiceImpl(OrgSilServiceService orgSilServiceService,
+                                           OrgSilServiceDTOMapper orgSilServiceDTOMapper,
+                                           AuthorizationService authorizationService,
+                                           OrgSilServiceViewMapper orgSilServiceViewMapper) {
       this.orgSilServiceService = orgSilServiceService;
       this.orgSilServiceDTOMapper = orgSilServiceDTOMapper;
+      this.authorizationService = authorizationService;
+      this.orgSilServiceViewMapper = orgSilServiceViewMapper;
   }
 
   @Override
@@ -45,4 +55,10 @@ public class OrgSilServiceRetrieverServiceImpl implements OrgSilServiceRetriever
     return service != null ? service.getApplicationName() : null;
   }
 
+  @Override
+  public PagedOrgSilServiceView getOrgSilServicesByFilters(Long organizationId, String applicationName, OrgSilServiceType serviceType, Boolean flagLegacy, Pageable pageable, UserInfo loggedUser, String accessToken) {
+    authorizationService.validateAdminRole(organizationId, loggedUser);
+    return orgSilServiceViewMapper.map(
+      orgSilServiceService.getOrgSilServicesByFilters(organizationId, applicationName, serviceType, flagLegacy, pageable, accessToken));
+  }
 }

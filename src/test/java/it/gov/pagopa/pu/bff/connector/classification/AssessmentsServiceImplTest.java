@@ -4,6 +4,7 @@ import it.gov.pagopa.pu.bff.connector.classification.client.AssessmentsClient;
 import it.gov.pagopa.pu.bff.dto.AssessmentsFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.AssessmentsRowsDetailFiltersDTO;
 import it.gov.pagopa.pu.bff.util.TestUtils;
+import it.gov.pagopa.pu.classification.dto.generated.Assessments;
 import it.gov.pagopa.pu.classification.dto.generated.AssessmentsDetail;
 import it.gov.pagopa.pu.classification.dto.generated.PagedAssessmentsView;
 import it.gov.pagopa.pu.classification.dto.generated.PagedModelAssessmentsDetail;
@@ -17,6 +18,9 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Pageable;
 import uk.co.jemos.podam.api.PodamFactory;
+
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class AssessmentsServiceImplTest {
@@ -80,5 +84,36 @@ class AssessmentsServiceImplTest {
     //then
     Assertions.assertNotNull(result);
     Assertions.assertEquals(assessmentsDetail, result);
+  }
+
+  @Test
+  void givenOrganizationIdAssessmentNameAndDebtPositionTypeOrgCodeWhenCreateAssessmentThenReturnAssessment() {
+    //given
+    String accessToken = "accessToken";
+    Long organizationId = 1L;
+    String assessmentName = "testName";
+    String debtPositionTypeOrgCode = "Code";
+    Assessments assessments = podamFactory.manufacturePojo(Assessments.class);
+    Mockito.when(assessmentsClientMock.createAssessment(organizationId, assessmentName, debtPositionTypeOrgCode, accessToken)).thenReturn(assessments);
+    //when
+    Assessments result = assessmentsService.createAssessment(organizationId, assessmentName, debtPositionTypeOrgCode, accessToken);
+    //then
+    Assertions.assertNotNull(result);
+    Assertions.assertEquals(assessments, result);
+  }
+
+
+  @Test
+  void whenGetAssessmentsByIdThenInvokeClient() {
+    long assessmentId = 1L;
+    String accessToken = "ACCESSTOKEN";
+    Assessments expectedResult = new Assessments();
+
+    when(assessmentsClientMock.getAssessmentsById(assessmentId, accessToken))
+            .thenReturn(expectedResult);
+
+    Assessments result = assessmentsService.getAssessmentsById(assessmentId, accessToken);
+
+    assertSame(expectedResult, result);
   }
 }

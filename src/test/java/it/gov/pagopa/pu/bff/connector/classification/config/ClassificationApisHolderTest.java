@@ -1,9 +1,10 @@
 package it.gov.pagopa.pu.bff.connector.classification.config;
 
 import it.gov.pagopa.pu.bff.connector.BaseApiHolderTest;
-import it.gov.pagopa.pu.classification.dto.generated.AssessmentsRegistry;
 import it.gov.pagopa.pu.classification.dto.generated.AssessmentStatus;
+import it.gov.pagopa.pu.classification.dto.generated.AssessmentsRegistry;
 import it.gov.pagopa.pu.classification.dto.generated.AssessmentsRegistryStatus;
+import it.gov.pagopa.pu.classification.dto.generated.CreateAssessmentsDetail;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,6 +17,7 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.web.util.DefaultUriBuilderFactory;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.util.Collections;
 import java.util.List;
@@ -139,7 +141,7 @@ class ClassificationApisHolderTest extends BaseApiHolderTest {
   void whenGetAssessmentsControllerApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
     assertAuthenticationShouldBeSetInThreadSafeMode(
       accessToken -> classificationApisHolder.getAssessmentsControllerApi(accessToken)
-        .getPagedAssessmentsList("assessmentName", OffsetDateTime.now(), OffsetDateTime.now() , "iuv", List.of("code"), AssessmentStatus.NEW, 0, 1, Collections.emptyList()),
+        .getPagedAssessmentsList("assessmentName", OffsetDateTime.now(), OffsetDateTime.now() , "iuv", List.of("code"), AssessmentStatus.ACTIVE, 0, 1, Collections.emptyList()),
       new ParameterizedTypeReference<>() {
       },
       classificationApisHolder::unload);
@@ -149,7 +151,7 @@ class ClassificationApisHolderTest extends BaseApiHolderTest {
   void whenGetAssessmentsDetailSearchControllerApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
     assertAuthenticationShouldBeSetInThreadSafeMode(
       accessToken -> classificationApisHolder.getAssessmentsDetailSearchControllerApi(accessToken)
-        .crudAssessmentsDetailsFindAssessmentsRowsDetail(1L, "iud", "iuv",  OffsetDateTime.now(), OffsetDateTime.now() , OffsetDateTime.now(), OffsetDateTime.now(), "fiscalCode", 1,1, Collections.emptyList()),
+        .crudAssessmentsDetailsFindAssessmentsRowsDetail(1L, "iud", "iuv",  LocalDateTime.now(), LocalDateTime.now() , OffsetDateTime.now(), OffsetDateTime.now(), "fiscalCode", 1,1, Collections.emptyList()),
       new ParameterizedTypeReference<>() {
       },
       classificationApisHolder::unload);
@@ -160,6 +162,26 @@ class ClassificationApisHolderTest extends BaseApiHolderTest {
     assertAuthenticationShouldBeSetInThreadSafeMode(
       accessToken -> classificationApisHolder.getAssessmentsDetailEntityControllerApi(accessToken)
         .crudGetAssessmentsdetail("1"),
+      new ParameterizedTypeReference<>() {
+      },
+      classificationApisHolder::unload);
+  }
+
+  @Test
+  void whenGetAssessmentsEntityControllerApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
+    assertAuthenticationShouldBeSetInThreadSafeMode(
+      accessToken -> classificationApisHolder.getAssessmentsEntityControllerApi(accessToken)
+        .crudGetAssessments("1"),
+      new ParameterizedTypeReference<>() {
+      },
+      classificationApisHolder::unload);
+  }
+
+  @Test
+  void whenGetAssessmentsDetailApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
+    assertAuthenticationShouldBeSetInThreadSafeMode(
+      accessToken -> classificationApisHolder.getAssessmentsDetailApi(accessToken)
+        .createAssessmentsDetail(1L,2L,new CreateAssessmentsDetail()),
       new ParameterizedTypeReference<>() {
       },
       classificationApisHolder::unload);

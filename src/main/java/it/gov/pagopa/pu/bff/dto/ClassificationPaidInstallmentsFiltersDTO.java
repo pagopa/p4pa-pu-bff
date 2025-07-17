@@ -5,16 +5,16 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Set;
+
 @Data
-@AllArgsConstructor
+@Builder(toBuilder = true)
 @NoArgsConstructor
-@Builder
-public class AssessmentsRowsDetailFiltersDTO {
-  private Long organizationId;
-  private Long assessmentId;
-  private String iud;
+@AllArgsConstructor
+public class ClassificationPaidInstallmentsFiltersDTO {
   private String iuv;
-  private LocalDateTimeIntervalFilter updateDateTimeIntervalFilter;
   private OffsetDateTimeIntervalFilter paymentDateTimeIntervalFilter;
-  private String fiscalCode;
+  private OffsetDateTimeIntervalFilter updateDateIntervalFilter;
+  private String debtPositionTypeOrgCode;
+  private Set<String> iuds;
 }

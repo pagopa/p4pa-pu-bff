@@ -2,10 +2,12 @@ package it.gov.pagopa.pu.bff.controller;
 
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.dto.ClassificationDetailDTO;
+import it.gov.pagopa.pu.bff.dto.ClassificationPaidInstallmentsFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.TreasuredClassificationFiltersDTO;
 import it.gov.pagopa.pu.bff.security.SecurityUtilsTest;
 import it.gov.pagopa.pu.bff.service.classification.ClassificationRetrieverService;
 import it.gov.pagopa.pu.bff.util.TestUtils;
+import it.gov.pagopa.pu.classification.dto.generated.PagedClassificationPaidInstallmentsView;
 import it.gov.pagopa.pu.classification.dto.generated.PagedTreasuredClassification;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -17,11 +19,16 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import uk.co.jemos.podam.api.PodamFactory;
 
+import java.time.OffsetDateTime;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -63,7 +70,7 @@ class ClassificationControllerTest {
     PageRequest pageable = PageRequest.of(0, 10);
     PagedTreasuredClassification mockPagedTreasuredClassification = new PagedTreasuredClassification();
     when(classificationRetrieverServiceMock.getTreasuredClassification(
-      organizationId, treasuredClassificationFiltersDTO, debtPositionTypeOrgCode,pageable, loggedUser, accessToken))
+      organizationId, treasuredClassificationFiltersDTO, debtPositionTypeOrgCode, pageable, loggedUser, accessToken))
       .thenReturn(mockPagedTreasuredClassification);
 
     ResponseEntity<PagedTreasuredClassification> response = classificationController.getTreasuredClassifications(organizationId,
@@ -131,6 +138,46 @@ class ClassificationControllerTest {
 
     assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     Assertions.assertNull(response.getBody());
+  }
+
+  @Test
+  void givenCorrectRequestWhenGetPaidInstallmentsThenOK() {
+    Long organizationId = 1L;
+    Long assessmentId = 2L;
+    String debtPositionTypeOrgCode = "TEST_CODE";
+    String iuv = "IUV12345";
+    OffsetDateTime paymentDateTimeFrom = OffsetDateTime.now().minusDays(10);
+    OffsetDateTime paymentDateTimeTo = OffsetDateTime.now();
+    OffsetDateTime updateDateFrom = OffsetDateTime.now().minusDays(20);
+    OffsetDateTime updateDateTo = OffsetDateTime.now().minusDays(5);
+    Pageable pageable = PageRequest.of(0, 10);
+
+    PagedClassificationPaidInstallmentsView mockResult = new PagedClassificationPaidInstallmentsView();
+
+    when(classificationRetrieverServiceMock.getPaidInstallments(
+      eq(organizationId),
+      eq(assessmentId),
+      any(ClassificationPaidInstallmentsFiltersDTO.class),
+      eq(pageable),
+      eq(loggedUser),
+      eq(accessToken)
+    )).thenReturn(mockResult);
+
+    ResponseEntity<PagedClassificationPaidInstallmentsView> response =
+      classificationController.getPaidInstallments(
+        organizationId,
+        debtPositionTypeOrgCode,
+        assessmentId,
+        iuv,
+        paymentDateTimeFrom,
+        paymentDateTimeTo,
+        updateDateFrom,
+        updateDateTo,
+        pageable
+      );
+
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertEquals(mockResult, response.getBody());
   }
 }
 

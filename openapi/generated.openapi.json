@@ -16,6 +16,39 @@
     "name" : "Classifications",
     "description" : "the Classifications API"
   }, {
+    "name" : "OrgSilService",
+    "description" : "the OrgSilService API"
+  }, {
+    "name" : "SilRegistry",
+    "description" : "the SilRegistry API"
+  }, {
+    "name" : "DebtPositionTypes",
+    "description" : "the DebtPositionTypes API"
+  }, {
+    "name" : "AssessmentsRegistry",
+    "description" : "the AssessmentsRegistry API"
+  }, {
+    "name" : "DebtPositionRegistry",
+    "description" : "the DebtPositionRegistry API"
+  }, {
+    "name" : "DebtPositionTypeOrgs",
+    "description" : "the DebtPositionTypeOrgs API"
+  }, {
+    "name" : "Brokers",
+    "description" : "the Brokers API"
+  }, {
+    "name" : "Receipts",
+    "description" : "the Receipts API"
+  }, {
+    "name" : "Treasuries",
+    "description" : "the Treasuries API"
+  }, {
+    "name" : "assessmentsDetail",
+    "description" : "the assessmentsDetail API"
+  }, {
+    "name" : "Authentication",
+    "description" : "the Authentication API"
+  }, {
     "name" : "Assessments",
     "description" : "the Assessments API"
   }, {
@@ -24,12 +57,6 @@
   }, {
     "name" : "IngestionFlowFiles",
     "description" : "the IngestionFlowFiles API"
-  }, {
-    "name" : "OrgSilService",
-    "description" : "the OrgSilService API"
-  }, {
-    "name" : "SilRegistry",
-    "description" : "the SilRegistry API"
   }, {
     "name" : "Installments",
     "description" : "the Installments API"
@@ -43,44 +70,20 @@
     "name" : "Schedule",
     "description" : "the Schedule API"
   }, {
-    "name" : "DebtPositionTypes",
-    "description" : "the DebtPositionTypes API"
-  }, {
     "name" : "InstallmentRegistry",
     "description" : "the InstallmentRegistry API"
   }, {
     "name" : "Transfers",
     "description" : "the Transfers API"
   }, {
-    "name" : "AssessmentsRegistry",
-    "description" : "the AssessmentsRegistry API"
-  }, {
-    "name" : "DebtPositionRegistry",
-    "description" : "the DebtPositionRegistry API"
-  }, {
     "name" : "ExportFiles",
     "description" : "the ExportFiles API"
-  }, {
-    "name" : "DebtPositionTypeOrgs",
-    "description" : "the DebtPositionTypeOrgs API"
   }, {
     "name" : "DebtPositions",
     "description" : "the DebtPositions API"
   }, {
     "name" : "PagoPaRegistry",
     "description" : "the PagoPaRegistry API"
-  }, {
-    "name" : "Brokers",
-    "description" : "the Brokers API"
-  }, {
-    "name" : "Receipts",
-    "description" : "the Receipts API"
-  }, {
-    "name" : "Treasuries",
-    "description" : "the Treasuries API"
-  }, {
-    "name" : "Authentication",
-    "description" : "the Authentication API"
   }, {
     "name" : "Organizations",
     "description" : "the Organizations API"
@@ -844,6 +847,318 @@
               "application/json" : {
                 "schema" : {
                   "$ref" : "#/components/schemas/DebtPositionTypeOrg"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "BearerAuth" : [ ]
+        } ]
+      }
+    },
+    "/bff/organization/{organizationId}/assessments" : {
+      "get" : {
+        "tags" : [ "Assessments" ],
+        "operationId" : "getPagedAssessmentsExtendedDTO",
+        "parameters" : [ {
+          "name" : "organizationId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }, {
+          "name" : "assessmentName",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "updateDateFrom",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "format" : "date-time"
+          }
+        }, {
+          "name" : "updateDateTo",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "format" : "date-time"
+          }
+        }, {
+          "name" : "iuv",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "debtPositionTypeOrgCode",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "status",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/components/schemas/AssessmentStatus"
+          }
+        }, {
+          "name" : "page",
+          "in" : "query",
+          "description" : "Zero-based page index (0..N)",
+          "required" : false,
+          "schema" : {
+            "type" : "integer",
+            "default" : 0,
+            "minimum" : 0
+          }
+        }, {
+          "name" : "size",
+          "in" : "query",
+          "description" : "The size of the page to be returned",
+          "required" : false,
+          "schema" : {
+            "type" : "integer",
+            "default" : 20,
+            "minimum" : 1
+          }
+        }, {
+          "name" : "sort",
+          "in" : "query",
+          "description" : "Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "List of assessments",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/PagedAssessmentsExtendedDTO"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Unauthorized - Missing or invalid token",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/PagedAssessmentsExtendedDTO"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Invalid request",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/PagedAssessmentsExtendedDTO"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal Server Error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/PagedAssessmentsExtendedDTO"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "BearerAuth" : [ ]
+        } ]
+      },
+      "post" : {
+        "tags" : [ "Assessments" ],
+        "operationId" : "createAssessment",
+        "parameters" : [ {
+          "name" : "organizationId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }, {
+          "name" : "assessmentName",
+          "in" : "query",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "debtPositionTypeOrgCode",
+          "in" : "query",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Assessment",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Assessments"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Unauthorized - Missing or invalid token",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Assessments"
+                }
+              }
+            }
+          },
+          "409" : {
+            "description" : "Conflict",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Assessments"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal Server Error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Assessments"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "BearerAuth" : [ ]
+        } ]
+      }
+    },
+    "/bff/organization/{organizationId}/assessments/{assessmentId}/assessments-details" : {
+      "post" : {
+        "tags" : [ "assessmentsDetail" ],
+        "operationId" : "createAssessmentsDetail",
+        "parameters" : [ {
+          "name" : "organizationId",
+          "in" : "path",
+          "description" : "The ID of the organization",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }, {
+          "name" : "assessmentId",
+          "in" : "path",
+          "description" : "The ID of the assessment",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/CreateAssessmentsDetail"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "201" : {
+            "description" : "Ok",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/AssessmentsDetail"
+                  }
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Unauthorized - Missing or invalid token",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/AssessmentsDetail"
+                  }
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Invalid request",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/AssessmentsDetail"
+                  }
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Not Found",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/AssessmentsDetail"
+                  }
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal Server Error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/AssessmentsDetail"
+                  }
                 }
               }
             }
@@ -3733,6 +4048,119 @@
         } ]
       }
     },
+    "/bff/organization/{organizationId}/org-sil-services/view" : {
+      "get" : {
+        "tags" : [ "OrgSilService" ],
+        "summary" : "Retrieve a filtered list of OrgSilService",
+        "operationId" : "getOrgSilServicesByFilters",
+        "parameters" : [ {
+          "name" : "organizationId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }, {
+          "name" : "applicationName",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "serviceType",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/components/schemas/OrgSilServiceType"
+          }
+        }, {
+          "name" : "flagLegacy",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "boolean"
+          }
+        }, {
+          "name" : "page",
+          "in" : "query",
+          "description" : "Zero-based page index (0..N)",
+          "required" : false,
+          "schema" : {
+            "type" : "integer",
+            "default" : 0,
+            "minimum" : 0
+          }
+        }, {
+          "name" : "size",
+          "in" : "query",
+          "description" : "The size of the page to be returned",
+          "required" : false,
+          "schema" : {
+            "type" : "integer",
+            "default" : 20,
+            "minimum" : 1
+          }
+        }, {
+          "name" : "sort",
+          "in" : "query",
+          "description" : "Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/PagedOrgSilServiceView"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Unauthorized - Missing or invalid token",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/PagedOrgSilServiceView"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Forbidden - Access denied",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/PagedOrgSilServiceView"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal Server Error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/PagedOrgSilServiceView"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "BearerAuth" : [ ]
+        } ]
+      }
+    },
     "/bff/organization/{organizationId}/installments" : {
       "get" : {
         "tags" : [ "Installments" ],
@@ -5645,10 +6073,10 @@
         } ]
       }
     },
-    "/bff/organization/{organizationId}/assessments" : {
+    "/bff/organization/{organizationId}/classifications/paid-installments" : {
       "get" : {
-        "tags" : [ "Assessments" ],
-        "operationId" : "getPagedAssessmentsExtendedDTO",
+        "tags" : [ "Classifications" ],
+        "operationId" : "getPaidInstallments",
         "parameters" : [ {
           "name" : "organizationId",
           "in" : "path",
@@ -5658,11 +6086,42 @@
             "format" : "int64"
           }
         }, {
-          "name" : "assessmentName",
+          "name" : "debtPositionTypeOrgCode",
+          "in" : "query",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "assessmentId",
+          "in" : "query",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }, {
+          "name" : "iuv",
           "in" : "query",
           "required" : false,
           "schema" : {
             "type" : "string"
+          }
+        }, {
+          "name" : "paymentDateTimeFrom",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "format" : "date-time"
+          }
+        }, {
+          "name" : "paymentDateTimeTo",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "format" : "date-time"
           }
         }, {
           "name" : "updateDateFrom",
@@ -5679,27 +6138,6 @@
           "schema" : {
             "type" : "string",
             "format" : "date-time"
-          }
-        }, {
-          "name" : "iuv",
-          "in" : "query",
-          "required" : false,
-          "schema" : {
-            "type" : "string"
-          }
-        }, {
-          "name" : "debtPositionTypeOrgCode",
-          "in" : "query",
-          "required" : false,
-          "schema" : {
-            "type" : "string"
-          }
-        }, {
-          "name" : "status",
-          "in" : "query",
-          "required" : false,
-          "schema" : {
-            "$ref" : "#/components/schemas/AssessmentStatus"
           }
         }, {
           "name" : "page",
@@ -5735,11 +6173,11 @@
         } ],
         "responses" : {
           "200" : {
-            "description" : "List of assessments",
+            "description" : "List of paid installments",
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/PagedAssessmentsExtendedDTO"
+                  "$ref" : "#/components/schemas/PagedClassificationPaidInstallmentsView"
                 }
               }
             }
@@ -5749,17 +6187,27 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/PagedAssessmentsExtendedDTO"
+                  "$ref" : "#/components/schemas/PagedClassificationPaidInstallmentsView"
                 }
               }
             }
           },
-          "400" : {
-            "description" : "Invalid request",
+          "403" : {
+            "description" : "Forbidden - Access denied",
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/PagedAssessmentsExtendedDTO"
+                  "$ref" : "#/components/schemas/PagedClassificationPaidInstallmentsView"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Not Found",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/PagedClassificationPaidInstallmentsView"
                 }
               }
             }
@@ -5769,7 +6217,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/PagedAssessmentsExtendedDTO"
+                  "$ref" : "#/components/schemas/PagedClassificationPaidInstallmentsView"
                 }
               }
             }
@@ -5891,7 +6339,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/PagedAssessmentsRowsDetail"
+                  "$ref" : "#/components/schemas/AssessmentsRowsDetail"
                 }
               }
             }
@@ -5901,7 +6349,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/PagedAssessmentsRowsDetail"
+                  "$ref" : "#/components/schemas/AssessmentsRowsDetail"
                 }
               }
             }
@@ -5911,7 +6359,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/PagedAssessmentsRowsDetail"
+                  "$ref" : "#/components/schemas/AssessmentsRowsDetail"
                 }
               }
             }
@@ -5921,7 +6369,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/PagedAssessmentsRowsDetail"
+                  "$ref" : "#/components/schemas/AssessmentsRowsDetail"
                 }
               }
             }
@@ -6217,6 +6665,57 @@
               "application/json" : {
                 "schema" : {
                   "$ref" : "#/components/schemas/UserInfo"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "BearerAuth" : [ ]
+        } ]
+      }
+    },
+    "/bff/assessments/operating-year" : {
+      "get" : {
+        "tags" : [ "Assessments" ],
+        "description" : "Returns a list of valid operating years",
+        "operationId" : "getOperatingYears",
+        "responses" : {
+          "200" : {
+            "description" : "List of operating years",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "type" : "string"
+                  }
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Forbidden - Access denied",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "type" : "string"
+                  }
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal Server Error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "type" : "string"
+                  }
                 }
               }
             }
@@ -6523,7 +7022,8 @@
           "email" : {
             "type" : "string"
           }
-        }
+        },
+        "required" : [ "entityType", "fiscalCode", "fullName" ]
       },
       "PersonEntityType" : {
         "type" : "string",
@@ -6587,6 +7087,9 @@
             "type" : "string"
           },
           "updateTraceId" : {
+            "type" : "string"
+          },
+          "mbdAttachment" : {
             "type" : "string"
           }
         },
@@ -6883,6 +7386,154 @@
         },
         "required" : [ "access_token", "expires_in", "token_type" ]
       },
+      "AssessmentStatus" : {
+        "type" : "string",
+        "enum" : [ "CLOSED", "CANCELLED", "ACTIVE" ]
+      },
+      "Assessments" : {
+        "type" : "object",
+        "properties" : {
+          "creationDate" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "updateDate" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "updateOperatorExternalId" : {
+            "type" : "string"
+          },
+          "updateTraceId" : {
+            "type" : "string"
+          },
+          "assessmentId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "organizationId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "debtPositionTypeOrgCode" : {
+            "type" : "string"
+          },
+          "status" : {
+            "$ref" : "#/components/schemas/AssessmentStatus"
+          },
+          "assessmentName" : {
+            "type" : "string"
+          },
+          "printed" : {
+            "type" : "boolean"
+          },
+          "flagManualGeneration" : {
+            "type" : "boolean"
+          },
+          "_links" : {
+            "type" : "object",
+            "additionalProperties" : {
+              "$ref" : "#/components/schemas/Link"
+            }
+          }
+        },
+        "required" : [ "assessmentName", "debtPositionTypeOrgCode", "flagManualGeneration", "organizationId", "printed", "status" ]
+      },
+      "AssessmentsDetail" : {
+        "type" : "object",
+        "properties" : {
+          "creationDate" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "updateDate" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "updateOperatorExternalId" : {
+            "type" : "string"
+          },
+          "updateTraceId" : {
+            "type" : "string"
+          },
+          "assessmentDetailId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "assessmentId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "organizationId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "debtPositionTypeOrgCode" : {
+            "type" : "string"
+          },
+          "iuv" : {
+            "type" : "string"
+          },
+          "iud" : {
+            "type" : "string"
+          },
+          "iur" : {
+            "type" : "string"
+          },
+          "debtorFiscalCodeHash" : {
+            "type" : "string",
+            "format" : "byte"
+          },
+          "paymentDateTime" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "officeCode" : {
+            "type" : "string"
+          },
+          "sectionCode" : {
+            "type" : "string"
+          },
+          "assessmentCode" : {
+            "type" : "string"
+          },
+          "amountCents" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "amountSubmitted" : {
+            "type" : "boolean"
+          },
+          "receiptId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "_links" : {
+            "type" : "object",
+            "additionalProperties" : {
+              "$ref" : "#/components/schemas/Link"
+            }
+          }
+        },
+        "required" : [ "amountCents", "amountSubmitted", "assessmentId", "debtPositionTypeOrgCode", "debtorFiscalCodeHash", "iud", "iur", "iuv", "organizationId", "sectionCode" ]
+      },
+      "CreateAssessmentsDetail" : {
+        "type" : "object",
+        "properties" : {
+          "assessmentRegistryId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "iuds" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            },
+            "uniqueItems" : true
+          }
+        },
+        "required" : [ "assessmentRegistryId", "iuds" ]
+      },
       "ExportFileTypeEnum" : {
         "type" : "string",
         "enum" : [ "PAID", "CLASSIFICATIONS", "PAYMENTS_REPORTING", "RECEIPTS_ARCHIVING" ]
@@ -6998,13 +7649,23 @@
             "type" : "string"
           },
           "iuv" : {
-            "type" : "string"
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
           },
           "iur" : {
-            "type" : "string"
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
           },
           "label" : {
-            "$ref" : "#/components/schemas/LabelEnum"
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/LabelEnum"
+            },
+            "uniqueItems" : true
           },
           "lastClassificationDate" : {
             "$ref" : "#/components/schemas/LocalDateIntervalFilter"
@@ -7042,6 +7703,13 @@
           },
           "pspLastName" : {
             "type" : "string"
+          },
+          "debtPositionTypeOrgCodes" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            },
+            "uniqueItems" : true
           }
         }
       },
@@ -7213,7 +7881,8 @@
           "runId" : {
             "type" : "string"
           }
-        }
+        },
+        "required" : [ "runId", "workflowId" ]
       },
       "ScheduleLastUpdatedTimeDTO" : {
         "type" : "object",
@@ -7875,6 +8544,9 @@
           "transferIndex" : {
             "type" : "integer",
             "format" : "int32"
+          },
+          "mbdAttachment" : {
+            "type" : "string"
           },
           "_links" : {
             "type" : "object",
@@ -8660,6 +9332,70 @@
           }
         },
         "required" : [ "authConfig" ]
+      },
+      "OrgSilServiceView" : {
+        "type" : "object",
+        "properties" : {
+          "orgSilServiceId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "organizationId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "applicationName" : {
+            "type" : "string"
+          },
+          "serviceUrl" : {
+            "type" : "string"
+          },
+          "serviceType" : {
+            "$ref" : "#/components/schemas/OrgSilServiceType"
+          },
+          "flagLegacy" : {
+            "type" : "boolean"
+          },
+          "updateDate" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "_links" : {
+            "type" : "object",
+            "additionalProperties" : {
+              "$ref" : "#/components/schemas/Link"
+            }
+          }
+        },
+        "required" : [ "applicationName", "orgSilServiceId", "organizationId", "serviceType", "serviceUrl" ]
+      },
+      "PagedOrgSilServiceView" : {
+        "type" : "object",
+        "properties" : {
+          "content" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/OrgSilServiceView"
+            }
+          },
+          "size" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "totalElements" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "totalPages" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "number" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        },
+        "required" : [ "content", "number", "size", "totalElements", "totalPages" ]
       },
       "InstallmentView" : {
         "type" : "object",
@@ -10091,9 +10827,67 @@
           }
         }
       },
-      "AssessmentStatus" : {
-        "type" : "string",
-        "enum" : [ "NEW", "CLOSED", "CANCELLED" ]
+      "ClassificationPaidInstallmentsView" : {
+        "type" : "object",
+        "properties" : {
+          "iud" : {
+            "type" : "string"
+          },
+          "iuv" : {
+            "type" : "string"
+          },
+          "paymentDateTime" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "updateDate" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "receiptPaymentRequestId" : {
+            "type" : "string"
+          },
+          "organizationId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "debtPositionTypeOrgCode" : {
+            "type" : "string"
+          },
+          "amount" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        },
+        "required" : [ "organizationId", "updateDate" ]
+      },
+      "PagedClassificationPaidInstallmentsView" : {
+        "type" : "object",
+        "properties" : {
+          "content" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/ClassificationPaidInstallmentsView"
+            }
+          },
+          "size" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "totalElements" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "totalPages" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "number" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        },
+        "required" : [ "content", "number", "size", "totalElements", "totalPages" ]
       },
       "AssessmentsExtendedDTO" : {
         "type" : "object",
@@ -10175,83 +10969,26 @@
         },
         "required" : [ "content", "number", "size", "totalElements", "totalPages" ]
       },
-      "AssessmentsDetail" : {
+      "AssessmentsRowsDetail" : {
         "type" : "object",
         "properties" : {
-          "creationDate" : {
-            "type" : "string",
-            "format" : "date-time"
+          "pagedAssessmentsRowsDetail" : {
+            "$ref" : "#/components/schemas/PagedAssessmentsRowsDetail"
           },
-          "updateDate" : {
-            "type" : "string",
-            "format" : "date-time"
+          "assessmentsName" : {
+            "type" : "string"
+          },
+          "debtPositionTypeOrgDescription" : {
+            "type" : "string"
+          },
+          "status" : {
+            "$ref" : "#/components/schemas/AssessmentStatus"
           },
           "updateOperatorExternalId" : {
             "type" : "string"
-          },
-          "updateTraceId" : {
-            "type" : "string"
-          },
-          "assessmentDetailId" : {
-            "type" : "integer",
-            "format" : "int64"
-          },
-          "assessmentId" : {
-            "type" : "integer",
-            "format" : "int64"
-          },
-          "organizationId" : {
-            "type" : "integer",
-            "format" : "int64"
-          },
-          "debtPositionTypeOrgCode" : {
-            "type" : "string"
-          },
-          "iuv" : {
-            "type" : "string"
-          },
-          "iud" : {
-            "type" : "string"
-          },
-          "iur" : {
-            "type" : "string"
-          },
-          "debtorFiscalCodeHash" : {
-            "type" : "string",
-            "format" : "byte"
-          },
-          "paymentDateTime" : {
-            "type" : "string",
-            "format" : "date-time"
-          },
-          "officeCode" : {
-            "type" : "string"
-          },
-          "sectionCode" : {
-            "type" : "string"
-          },
-          "assessmentCode" : {
-            "type" : "string"
-          },
-          "amountCents" : {
-            "type" : "integer",
-            "format" : "int64"
-          },
-          "amountSubmitted" : {
-            "type" : "boolean"
-          },
-          "receiptId" : {
-            "type" : "integer",
-            "format" : "int64"
-          },
-          "_links" : {
-            "type" : "object",
-            "additionalProperties" : {
-              "$ref" : "#/components/schemas/Link"
-            }
           }
         },
-        "required" : [ "amountCents", "amountSubmitted", "assessmentId", "debtPositionTypeOrgCode", "debtorFiscalCodeHash", "iud", "iur", "iuv", "organizationId", "sectionCode" ]
+        "required" : [ "assessmentsName", "debtPositionTypeOrgDescription", "pagedAssessmentsRowsDetail", "status" ]
       },
       "PagedAssessmentsRowsDetail" : {
         "type" : "object",

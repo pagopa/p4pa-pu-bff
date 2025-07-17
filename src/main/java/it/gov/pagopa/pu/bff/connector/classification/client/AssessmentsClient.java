@@ -4,6 +4,7 @@ import it.gov.pagopa.pu.bff.connector.classification.config.ClassificationApisHo
 import it.gov.pagopa.pu.bff.dto.AssessmentsFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.AssessmentsRowsDetailFiltersDTO;
 import it.gov.pagopa.pu.bff.util.PageUtils;
+import it.gov.pagopa.pu.classification.dto.generated.Assessments;
 import it.gov.pagopa.pu.classification.dto.generated.AssessmentsDetail;
 import it.gov.pagopa.pu.classification.dto.generated.PagedAssessmentsView;
 import it.gov.pagopa.pu.classification.dto.generated.PagedModelAssessmentsDetail;
@@ -44,10 +45,10 @@ public class AssessmentsClient {
         assessmentsRowsDetailFiltersDTO.getAssessmentId(),
         assessmentsRowsDetailFiltersDTO.getIud(),
         assessmentsRowsDetailFiltersDTO.getIuv(),
-        assessmentsRowsDetailFiltersDTO.getUpdateDateTimeIntervalFilter().getFrom(),
-        assessmentsRowsDetailFiltersDTO.getUpdateDateTimeIntervalFilter().getTo(),
-        assessmentsRowsDetailFiltersDTO.getPaymentDateTimeIntervalFilter().getFrom(),
-        assessmentsRowsDetailFiltersDTO.getPaymentDateTimeIntervalFilter().getTo(),
+        assessmentsRowsDetailFiltersDTO.getUpdateDateTimeIntervalFilter() != null ? assessmentsRowsDetailFiltersDTO.getUpdateDateTimeIntervalFilter().getFrom() : null,
+        assessmentsRowsDetailFiltersDTO.getUpdateDateTimeIntervalFilter() != null ? assessmentsRowsDetailFiltersDTO.getUpdateDateTimeIntervalFilter().getTo() : null,
+        assessmentsRowsDetailFiltersDTO.getPaymentDateTimeIntervalFilter() != null ? assessmentsRowsDetailFiltersDTO.getPaymentDateTimeIntervalFilter().getFrom() : null,
+        assessmentsRowsDetailFiltersDTO.getPaymentDateTimeIntervalFilter() != null ? assessmentsRowsDetailFiltersDTO.getPaymentDateTimeIntervalFilter().getTo() : null,
         assessmentsRowsDetailFiltersDTO.getFiscalCode(),
         PageUtils.getPageNumber(pageable),
         PageUtils.getPageSize(pageable),
@@ -63,4 +64,18 @@ public class AssessmentsClient {
     }
   }
 
+  public Assessments createAssessment(Long organizationId, String assessmentName, String debtPositionTypeOrgCode, String accessToken){
+    return classificationApisHolder.getAssessmentsControllerApi(accessToken)
+      .createAssessment(organizationId, assessmentName, debtPositionTypeOrgCode);
+  }
+
+  public Assessments getAssessmentsById(Long assessmentId, String accessToken){
+    try{
+      return classificationApisHolder.getAssessmentsEntityControllerApi(accessToken)
+              .crudGetAssessments(assessmentId.toString());
+    } catch (HttpClientErrorException.NotFound e) {
+      log.warn("Assessment with id %s not found".formatted(assessmentId));
+      return null;
+    }
+  }
 }

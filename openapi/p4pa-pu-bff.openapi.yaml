@@ -1762,6 +1762,45 @@ paths:
         '500':
           description: Internal Server Error
       x-spring-paginated: true
+  /organization/{organizationId}/org-sil-services/filters:
+    get:
+      tags:
+        - OrgSilService
+      summary: "Retrieve a filtered list of OrgSilService"
+      operationId: getOrgSilServicesByFilters
+      parameters:
+        - name: organizationId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: applicationName
+          in: query
+          schema:
+            type: string
+        - name: serviceType
+          in: query
+          schema:
+            type: 'OrgSilServiceType'
+        - name: flagLegacy
+          in: query
+          schema:
+            type: boolean
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PagedOrgSilServiceView'
+        '401':
+          description: Unauthorized - Missing or invalid token
+        '403':
+          description: Forbidden - Access denied
+        '500':
+          description: Internal Server Error
+      x-spring-paginated: true
   /organization/{organizationId}/org-sil-services:
     get:
       tags:
@@ -3947,3 +3986,28 @@ components:
         lastUpdatedAt:
           type: string
           format: date-time
+    PagedOrgSilServiceView:
+      type: object
+      required:
+        - content
+        - size
+        - totalElements
+        - totalPages
+        - number
+      properties:
+        content:
+          type: array
+          items:
+            type: 'OrgSilServiceView'
+        size:
+          type: integer
+          format: int64
+        totalElements:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer
+          format: int64
+        number:
+          type: integer
+          format: int64

@@ -1,10 +1,13 @@
 package it.gov.pagopa.pu.bff.connector.organization.client;
 
 import it.gov.pagopa.pu.bff.connector.organization.config.OrganizationApisHolder;
+import it.gov.pagopa.pu.bff.util.PageUtils;
 import it.gov.pagopa.pu.organization.dto.generated.CollectionModelOrgSilService;
 import it.gov.pagopa.pu.organization.dto.generated.OrgSilService;
 import it.gov.pagopa.pu.organization.dto.generated.OrgSilServiceType;
+import it.gov.pagopa.pu.organization.dto.generated.PagedModelOrgSilServiceView;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 
@@ -33,4 +36,15 @@ public class OrgSilServiceSearchClient {
     }
   }
 
+  public PagedModelOrgSilServiceView getOrgSilServicesByFilters(Long organizationId, String applicationName, OrgSilServiceType serviceType, Boolean flagLegacy, Pageable pageable, String accessToken) {
+    return organizationApisHolder.getOrgSilServiceViewSearchControllerApi(accessToken)
+      .crudOrgSilServicesViewFindOrgSilServicesByFilters(
+        organizationId,
+        applicationName,
+        serviceType,
+        flagLegacy,
+        PageUtils.getPageNumber(pageable),
+        PageUtils.getPageSize(pageable),
+        PageUtils.getSortList(pageable));
+  }
 }

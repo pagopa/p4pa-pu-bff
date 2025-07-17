@@ -1834,6 +1834,38 @@ paths:
           description: Forbidden - Access denied
         '500':
           description: Internal Server Error
+  /organization/{organizationId}/org-sil-services/{orgSilServiceId}:
+    get:
+      tags:
+        - OrgSilService
+      summary: "Retrieve a OrgSilService details"
+      operationId: getOrgSilServiceDetails
+      parameters:
+        - name: organizationId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: orgSilServiceId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: 'OrgSilServiceDecryptedDTO'
+        '401':
+          description: Unauthorized - Missing or invalid token
+        '403':
+          description: Forbidden - Access denied
+        '500':
+          description: Internal Server Error
   /organization/{organizationId}/debt-position-type-orgs/operators:
     get:
       tags:

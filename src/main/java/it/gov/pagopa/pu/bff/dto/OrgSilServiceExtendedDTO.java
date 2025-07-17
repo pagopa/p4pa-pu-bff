@@ -18,7 +18,7 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @NoArgsConstructor
 @SuperBuilder(toBuilder = true)
-public class OrgSilServiceDTO extends OrgSilService {
+public class OrgSilServiceExtendedDTO extends OrgSilService {
   private SilServiceLegacyBasicAuthConfig legacyBasicAuthConfig;
   private SilServiceLegacyJwtAuthConfig legacyJwtAuthConfig;
 

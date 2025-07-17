@@ -3997,7 +3997,7 @@
                 "schema" : {
                   "type" : "array",
                   "items" : {
-                    "$ref" : "#/components/schemas/OrgSilServiceDTO"
+                    "$ref" : "#/components/schemas/OrgSilServiceExtendedDTO"
                   }
                 }
               }
@@ -4010,7 +4010,7 @@
                 "schema" : {
                   "type" : "array",
                   "items" : {
-                    "$ref" : "#/components/schemas/OrgSilServiceDTO"
+                    "$ref" : "#/components/schemas/OrgSilServiceExtendedDTO"
                   }
                 }
               }
@@ -4023,7 +4023,7 @@
                 "schema" : {
                   "type" : "array",
                   "items" : {
-                    "$ref" : "#/components/schemas/OrgSilServiceDTO"
+                    "$ref" : "#/components/schemas/OrgSilServiceExtendedDTO"
                   }
                 }
               }
@@ -4036,8 +4036,77 @@
                 "schema" : {
                   "type" : "array",
                   "items" : {
-                    "$ref" : "#/components/schemas/OrgSilServiceDTO"
+                    "$ref" : "#/components/schemas/OrgSilServiceExtendedDTO"
                   }
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "BearerAuth" : [ ]
+        } ]
+      }
+    },
+    "/bff/organization/{organizationId}/org-sil-services/{orgSilServiceId}" : {
+      "get" : {
+        "tags" : [ "OrgSilService" ],
+        "summary" : "Retrieve a OrgSilService details",
+        "operationId" : "getOrgSilServiceDetails",
+        "parameters" : [ {
+          "name" : "organizationId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }, {
+          "name" : "orgSilServiceId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OrgSilServiceDTO"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Unauthorized - Missing or invalid token",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OrgSilServiceDTO"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Forbidden - Access denied",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OrgSilServiceDTO"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal Server Error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OrgSilServiceDTO"
                 }
               }
             }
@@ -9226,7 +9295,7 @@
         "type" : "string",
         "enum" : [ "HS256", "HS384", "HS512", "RS256", "RS384", "RS512", "ES256", "ES384", "ES512" ]
       },
-      "OrgSilServiceDTO" : {
+      "OrgSilServiceExtendedDTO" : {
         "type" : "object",
         "properties" : {
           "creationDate" : {
@@ -9302,6 +9371,110 @@
           "authConfig" : {
             "type" : "string"
           }
+        },
+        "required" : [ "authConfig" ]
+      },
+      "OrgSilServiceDTO" : {
+        "type" : "object",
+        "properties" : {
+          "orgSilServiceId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "organizationId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "applicationName" : {
+            "type" : "string",
+            "maxLength" : 255,
+            "minLength" : 0
+          },
+          "serviceUrl" : {
+            "type" : "string",
+            "maxLength" : 500,
+            "minLength" : 0
+          },
+          "serviceType" : {
+            "$ref" : "#/components/schemas/OrgSilServiceType"
+          },
+          "flagLegacy" : {
+            "type" : "boolean"
+          },
+          "authConfig" : {
+            "oneOf" : [ {
+              "$ref" : "#/components/schemas/SilServiceLegacyBasicAuthConfigDTO"
+            }, {
+              "$ref" : "#/components/schemas/SilServiceLegacyJwtAuthConfigDTO"
+            } ]
+          }
+        },
+        "required" : [ "applicationName", "flagLegacy", "organizationId", "serviceType", "serviceUrl" ]
+      },
+      "OrgSilServiceDTOAuthConfig" : {
+        "discriminator" : {
+          "propertyName" : "authConfig"
+        },
+        "properties" : {
+          "authConfig" : {
+            "type" : "string"
+          }
+        },
+        "required" : [ "authConfig" ]
+      },
+      "SilServiceLegacyBasicAuthConfigDTO" : {
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/OrgSilServiceDTOAuthConfig"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "authUrl" : {
+              "type" : "string"
+            },
+            "user" : {
+              "type" : "string"
+            },
+            "psw" : {
+              "type" : "string"
+            },
+            "authConfig" : {
+              "type" : "string"
+            }
+          }
+        } ],
+        "discriminator" : {
+          "propertyName" : "authConfig"
+        },
+        "required" : [ "authConfig" ]
+      },
+      "SilServiceLegacyJwtAuthConfigDTO" : {
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/OrgSilServiceDTOAuthConfig"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "kid" : {
+              "type" : "string"
+            },
+            "subject" : {
+              "type" : "string"
+            },
+            "issuer" : {
+              "type" : "string"
+            },
+            "algorithm" : {
+              "$ref" : "#/components/schemas/JwtAlgorithm"
+            },
+            "signingKey" : {
+              "type" : "string"
+            },
+            "authConfig" : {
+              "type" : "string"
+            }
+          }
+        } ],
+        "discriminator" : {
+          "propertyName" : "authConfig"
         },
         "required" : [ "authConfig" ]
       },

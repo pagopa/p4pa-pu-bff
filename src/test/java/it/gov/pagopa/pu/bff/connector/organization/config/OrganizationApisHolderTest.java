@@ -13,6 +13,8 @@ import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.web.util.DefaultUriBuilderFactory;
 
+import java.util.Collections;
+
 @ExtendWith(MockitoExtension.class)
 class OrganizationApisHolderTest extends BaseApiHolderTest {
   @Mock
@@ -143,6 +145,16 @@ class OrganizationApisHolderTest extends BaseApiHolderTest {
     assertAuthenticationShouldBeSetInThreadSafeMode(
       accessToken -> organizationApisHolder.getOrgSilServiceEntityControllerApi(accessToken)
         .crudGetOrgsilservice(String.valueOf(1L)),
+      new ParameterizedTypeReference<>() {},
+      organizationApisHolder::unload);
+  }
+
+  @Test
+  void whenGetOrgSilServiceViewSearchControllerApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
+    assertAuthenticationShouldBeSetInThreadSafeMode(
+      accessToken -> organizationApisHolder.getOrgSilServiceViewSearchControllerApi(accessToken)
+        .crudOrgSilServicesViewFindOrgSilServicesByFilters(
+          1L,"appName",OrgSilServiceType.ACTUALIZATION,true,0,0,Collections.emptyList()),
       new ParameterizedTypeReference<>() {},
       organizationApisHolder::unload);
   }

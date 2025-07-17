@@ -2,6 +2,7 @@ package it.gov.pagopa.pu.bff.controller;
 
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.dto.OrgSilServiceDTO;
+import it.gov.pagopa.pu.bff.dto.generated.PagedOrgSilServiceView;
 import it.gov.pagopa.pu.bff.security.SecurityUtilsTest;
 import it.gov.pagopa.pu.bff.service.org_sil_service.OrgSilServiceRetrieverService;
 import it.gov.pagopa.pu.bff.util.TestUtils;
@@ -14,6 +15,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import uk.co.jemos.podam.api.PodamFactory;
@@ -43,14 +46,14 @@ class OrgSilServiceControllerTest {
   }
 
   @AfterEach
-  void verifyNoMoreInteractions(){
+  void verifyNoMoreInteractions() {
     Mockito.verifyNoMoreInteractions(
-            orgSilServiceRetrieverServiceMock
+      orgSilServiceRetrieverServiceMock
     );
   }
 
   @AfterEach
-  void clearContext(){
+  void clearContext() {
     SecurityUtilsTest.clearSecurityContext();
   }
 
@@ -62,10 +65,31 @@ class OrgSilServiceControllerTest {
     List<OrgSilServiceDTO> expectedResult = new ArrayList<>();
     expectedResult.add(new OrgSilServiceDTO());
 
-    when(orgSilServiceRetrieverServiceMock.getOrgSilServices(organizationId,serviceType, loggedUser, accessToken))
+    when(orgSilServiceRetrieverServiceMock.getOrgSilServices(organizationId, serviceType, loggedUser, accessToken))
       .thenReturn(expectedResult);
 
-    ResponseEntity<List<OrgSilServiceDTO>> response = orgSilServiceController.getOrgSilServices(organizationId,serviceType);
+    ResponseEntity<List<OrgSilServiceDTO>> response = orgSilServiceController.getOrgSilServices(organizationId, serviceType);
+
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertNotNull(response.getBody());
+    assertSame(expectedResult, response.getBody());
+  }
+
+  @Test
+  void givenCorrectRequestWhenGetOrgSilServicesByFiltersThenOk() {
+    long organizationId = 1L;
+    String applicationName = "myApp";
+    OrgSilServiceType serviceType = OrgSilServiceType.ACTUALIZATION;
+    boolean flagLegacy = true;
+    Pageable pageable = PageRequest.of(0, 10);
+
+    PagedOrgSilServiceView expectedResult = new PagedOrgSilServiceView();
+
+    when(orgSilServiceRetrieverServiceMock.getOrgSilServicesByFilters(organizationId, applicationName, serviceType, flagLegacy, pageable, loggedUser, accessToken))
+      .thenReturn(expectedResult);
+
+    ResponseEntity<PagedOrgSilServiceView> response = orgSilServiceController.getOrgSilServicesByFilters(
+      organizationId, applicationName, serviceType, flagLegacy, pageable);
 
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertNotNull(response.getBody());

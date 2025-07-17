@@ -2,13 +2,14 @@ package it.gov.pagopa.pu.bff.service.org_sil_service;
 
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.connector.organization.OrgSilServiceService;
-import it.gov.pagopa.pu.bff.dto.OrgSilServiceDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedOrgSilServiceView;
+import it.gov.pagopa.pu.bff.dto.OrgSilServiceExtendedDTO;
 import it.gov.pagopa.pu.bff.mapper.OrgSilServiceDTOMapper;
 import it.gov.pagopa.pu.bff.mapper.OrgSilServiceViewMapper;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
 import it.gov.pagopa.pu.organization.dto.generated.CollectionModelOrgSilService;
 import it.gov.pagopa.pu.organization.dto.generated.OrgSilService;
+import it.gov.pagopa.pu.organization.dto.generated.OrgSilServiceDTO;
 import it.gov.pagopa.pu.organization.dto.generated.OrgSilServiceType;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -37,7 +38,7 @@ public class OrgSilServiceRetrieverServiceImpl implements OrgSilServiceRetriever
   }
 
   @Override
-  public List<OrgSilServiceDTO> getOrgSilServices(Long organizationId, OrgSilServiceType serviceType, UserInfo loggedUser, String accessToken) {
+  public List<OrgSilServiceExtendedDTO> getOrgSilServices(Long organizationId, OrgSilServiceType serviceType, UserInfo loggedUser, String accessToken) {
     AuthorizationService.validateUserForOrganizationId(organizationId,loggedUser);
     CollectionModelOrgSilService collection = orgSilServiceService.getOrgSilServices(organizationId,serviceType,accessToken);
     if (collection == null || collection.getEmbedded() == null) {
@@ -60,5 +61,10 @@ public class OrgSilServiceRetrieverServiceImpl implements OrgSilServiceRetriever
     authorizationService.validateAdminRole(organizationId, loggedUser);
     return orgSilServiceViewMapper.map(
       orgSilServiceService.getOrgSilServicesByFilters(organizationId, applicationName, serviceType, flagLegacy, pageable, accessToken));
+  }
+  @Override
+  public OrgSilServiceDTO getOrgSilServiceDetails(Long organizationId, Long orgSilServiceId, UserInfo loggedUser, String accessToken) {
+    AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser);
+    return orgSilServiceService.getOrgSilServiceByIdDecrypted(orgSilServiceId, accessToken);
   }
 }

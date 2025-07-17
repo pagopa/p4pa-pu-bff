@@ -4,6 +4,7 @@ import it.gov.pagopa.pu.bff.connector.organization.config.OrganizationApisHolder
 import it.gov.pagopa.pu.bff.util.PageUtils;
 import it.gov.pagopa.pu.organization.dto.generated.CollectionModelOrgSilService;
 import it.gov.pagopa.pu.organization.dto.generated.OrgSilService;
+import it.gov.pagopa.pu.organization.dto.generated.OrgSilServiceDTO;
 import it.gov.pagopa.pu.organization.dto.generated.OrgSilServiceType;
 import it.gov.pagopa.pu.organization.dto.generated.PagedModelOrgSilServiceView;
 import lombok.extern.slf4j.Slf4j;
@@ -47,4 +48,8 @@ public class OrgSilServiceSearchClient {
         PageUtils.getPageSize(pageable),
         PageUtils.getSortList(pageable));
   }
+  public OrgSilServiceDTO getOrgSilServiceByIdDecrypted(Long orgSilServiceId, String accessToken){
+    return organizationApisHolder.getOrganizationSilServiceApi(accessToken).getOrgSilService(orgSilServiceId);
+  }
+
 }

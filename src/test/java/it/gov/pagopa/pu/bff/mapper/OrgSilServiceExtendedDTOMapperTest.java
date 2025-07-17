@@ -1,6 +1,6 @@
 package it.gov.pagopa.pu.bff.mapper;
 
-import it.gov.pagopa.pu.bff.dto.OrgSilServiceDTO;
+import it.gov.pagopa.pu.bff.dto.OrgSilServiceExtendedDTO;
 import it.gov.pagopa.pu.bff.util.TestUtils;
 import it.gov.pagopa.pu.organization.dto.generated.OrgSilService;
 import it.gov.pagopa.pu.organization.dto.generated.SilServiceLegacyBasicAuthConfig;
@@ -12,7 +12,7 @@ import uk.co.jemos.podam.api.PodamFactory;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-class OrgSilServiceDTOMapperTest {
+class OrgSilServiceExtendedDTOMapperTest {
 
   private final OrgSilServiceDTOMapper mapper = Mappers.getMapper(OrgSilServiceDTOMapper.class);
   private final PodamFactory podamFactory= TestUtils.getPodamFactory();
@@ -26,7 +26,7 @@ class OrgSilServiceDTOMapperTest {
     basicAuthConfig.setAuthConfig("legacyBasic");
     orgSilService.setAuthConfig(basicAuthConfig);
 
-    OrgSilServiceDTO result = mapper.map(orgSilService);
+    OrgSilServiceExtendedDTO result = mapper.map(orgSilService);
 
     assertNotNull(result);
     TestUtils.checkNotNullFields(result,"authConfig","legacyJwtAuthConfig");
@@ -44,7 +44,7 @@ class OrgSilServiceDTOMapperTest {
     basicAuthConfig.setAuthConfig("legacyBasic");
     orgSilService.setAuthConfig(basicAuthConfig);
 
-    OrgSilServiceDTO result = mapper.map(orgSilService);
+    OrgSilServiceExtendedDTO result = mapper.map(orgSilService);
 
     assertNotNull(result);
     TestUtils.checkNotNullFields(result,"authConfig","legacyJwtAuthConfig","legacyBasicAuthConfig");
@@ -62,7 +62,7 @@ class OrgSilServiceDTOMapperTest {
     basicAuthConfig.setAuthConfig("legacyBasic");
     orgSilService.setAuthConfig(basicAuthConfig);
 
-    OrgSilServiceDTO result = mapper.map(orgSilService);
+    OrgSilServiceExtendedDTO result = mapper.map(orgSilService);
 
     assertNotNull(result);
     TestUtils.checkNotNullFields(result,"authConfig","flagLegacy","legacyJwtAuthConfig","legacyBasicAuthConfig");
@@ -80,7 +80,7 @@ class OrgSilServiceDTOMapperTest {
     jwtAuthConfig.setAuthConfig("legacyJwt");
     orgSilService.setAuthConfig(jwtAuthConfig);
 
-    OrgSilServiceDTO result = mapper.map(orgSilService);
+    OrgSilServiceExtendedDTO result = mapper.map(orgSilService);
 
     assertNotNull(result);
     TestUtils.checkNotNullFields(result,"authConfig","legacyBasicAuthConfig");
@@ -98,7 +98,7 @@ class OrgSilServiceDTOMapperTest {
     jwtAuthConfig.setAuthConfig("legacyJwt");
     orgSilService.setAuthConfig(jwtAuthConfig);
 
-    OrgSilServiceDTO result = mapper.map(orgSilService);
+    OrgSilServiceExtendedDTO result = mapper.map(orgSilService);
 
     assertNotNull(result);
     TestUtils.checkNotNullFields(result,"authConfig","legacyJwtAuthConfig","legacyBasicAuthConfig");
@@ -116,7 +116,7 @@ class OrgSilServiceDTOMapperTest {
     jwtAuthConfig.setAuthConfig("legacyJwt");
     orgSilService.setAuthConfig(jwtAuthConfig);
 
-    OrgSilServiceDTO result = mapper.map(orgSilService);
+    OrgSilServiceExtendedDTO result = mapper.map(orgSilService);
 
     assertNotNull(result);
     TestUtils.checkNotNullFields(result,"authConfig","flagLegacy","legacyJwtAuthConfig","legacyBasicAuthConfig");
@@ -131,7 +131,7 @@ class OrgSilServiceDTOMapperTest {
             OrgSilService.class);
     orgSilService.setAuthConfig(null);
 
-    OrgSilServiceDTO result = mapper.map(orgSilService);
+    OrgSilServiceExtendedDTO result = mapper.map(orgSilService);
 
     assertNotNull(result);
     TestUtils.checkNotNullFields(result,"authConfig","legacyJwtAuthConfig","legacyBasicAuthConfig");

@@ -6,8 +6,10 @@ import it.gov.pagopa.pu.bff.util.TestUtils;
 import it.gov.pagopa.pu.organization.controller.generated.OrgSilServiceEntityControllerApi;
 import it.gov.pagopa.pu.organization.controller.generated.OrgSilServiceSearchControllerApi;
 import it.gov.pagopa.pu.organization.controller.generated.OrgSilServiceViewSearchControllerApi;
+import it.gov.pagopa.pu.organization.controller.generated.OrganizationSilServiceApi;
 import it.gov.pagopa.pu.organization.dto.generated.CollectionModelOrgSilService;
 import it.gov.pagopa.pu.organization.dto.generated.OrgSilService;
+import it.gov.pagopa.pu.organization.dto.generated.OrgSilServiceDTO;
 import it.gov.pagopa.pu.organization.dto.generated.OrgSilServiceType;
 import it.gov.pagopa.pu.organization.dto.generated.PagedModelOrgSilServiceView;
 import org.junit.jupiter.api.AfterEach;
@@ -39,6 +41,8 @@ class OrgSilServiceSearchClientTest {
   @Mock
   private OrgSilServiceEntityControllerApi orgSilServiceEntityControllerApiMock;
   @Mock
+  private OrganizationSilServiceApi organizationSilServiceApiMock;
+  @Mock
   private OrgSilServiceViewSearchControllerApi orgSilServiceViewSearchControllerApiMock;
 
   private OrgSilServiceSearchClient orgSilServiceSearchClient;
@@ -50,7 +54,7 @@ class OrgSilServiceSearchClientTest {
 
   @AfterEach
   void verifyNoMoreInteractions() {
-    Mockito.verifyNoMoreInteractions(organizationApisHolderMock, orgSilServiceSearchControllerApiMock, orgSilServiceEntityControllerApiMock, orgSilServiceViewSearchControllerApiMock);
+    Mockito.verifyNoMoreInteractions(organizationApisHolderMock, orgSilServiceSearchControllerApiMock, orgSilServiceEntityControllerApiMock, orgSilServiceViewSearchControllerApiMock, organizationSilServiceApiMock);
   }
 
   @Test
@@ -139,4 +143,21 @@ class OrgSilServiceSearchClientTest {
     Assertions.assertNotNull(response);
     Assertions.assertEquals(expectedResponse, response);
   }
+
+  @Test
+  void givenIdWhenGetOrgSilServiceByIdDecryptedThenInvokeWithAccessToken() {
+    //given
+    Long orgSilServiceId = 1L;
+    String accessToken = "ACCESSTOKEN";
+    OrgSilServiceDTO orgSilService = podamFactory.manufacturePojo(OrgSilServiceDTO.class);
+
+    when(organizationApisHolderMock.getOrganizationSilServiceApi(accessToken)).thenReturn(organizationSilServiceApiMock);
+    when(organizationSilServiceApiMock.getOrgSilService(orgSilServiceId)).thenReturn(orgSilService);
+    //when
+    OrgSilServiceDTO result = orgSilServiceSearchClient.getOrgSilServiceByIdDecrypted(orgSilServiceId, accessToken);
+    //then
+    Assertions.assertNotNull(result);
+    Assertions.assertEquals(orgSilService, result);
+  }
+
 }

@@ -1,12 +1,14 @@
 package it.gov.pagopa.pu.bff.controller;
 
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
-import it.gov.pagopa.pu.bff.dto.OrgSilServiceDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedOrgSilServiceView;
+import it.gov.pagopa.pu.bff.dto.OrgSilServiceExtendedDTO;
 import it.gov.pagopa.pu.bff.security.SecurityUtilsTest;
 import it.gov.pagopa.pu.bff.service.org_sil_service.OrgSilServiceRetrieverService;
 import it.gov.pagopa.pu.bff.util.TestUtils;
+import it.gov.pagopa.pu.organization.dto.generated.OrgSilServiceDTO;
 import it.gov.pagopa.pu.organization.dto.generated.OrgSilServiceType;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -27,6 +29,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
+@Slf4j
 @ExtendWith(MockitoExtension.class)
 class OrgSilServiceControllerTest {
 
@@ -62,13 +65,13 @@ class OrgSilServiceControllerTest {
     long organizationId = 1L;
     OrgSilServiceType serviceType = OrgSilServiceType.ACTUALIZATION;
 
-    List<OrgSilServiceDTO> expectedResult = new ArrayList<>();
-    expectedResult.add(new OrgSilServiceDTO());
+    List<OrgSilServiceExtendedDTO> expectedResult = new ArrayList<>();
+    expectedResult.add(new OrgSilServiceExtendedDTO());
 
     when(orgSilServiceRetrieverServiceMock.getOrgSilServices(organizationId, serviceType, loggedUser, accessToken))
       .thenReturn(expectedResult);
 
-    ResponseEntity<List<OrgSilServiceDTO>> response = orgSilServiceController.getOrgSilServices(organizationId, serviceType);
+    ResponseEntity<List<OrgSilServiceExtendedDTO>> response = orgSilServiceController.getOrgSilServices(organizationId,serviceType);
 
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertNotNull(response.getBody());
@@ -95,4 +98,20 @@ class OrgSilServiceControllerTest {
     assertNotNull(response.getBody());
     assertSame(expectedResult, response.getBody());
   }
+
+  @Test
+  void givenCorrectRequestWhenGetOrgSilServicesDetailsThenOk() {
+    //given
+    long organizationId = 2L;
+    long orgSilServiceId = 1L;
+    OrgSilServiceDTO orgSilServiceDTO = new OrgSilServiceDTO();
+    when(orgSilServiceRetrieverServiceMock.getOrgSilServiceDetails(organizationId, orgSilServiceId, loggedUser, accessToken)).thenReturn(orgSilServiceDTO);
+    //when
+    ResponseEntity<OrgSilServiceDTO> response = orgSilServiceController.getOrgSilServiceDetails(organizationId, orgSilServiceId);
+    //then
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertNotNull(response.getBody());
+    assertSame(orgSilServiceDTO, response.getBody());
+  }
+
 }

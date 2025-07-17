@@ -84,7 +84,7 @@ class OrgSilServiceServiceTest {
   }
 
   @Test
-  void whenGetOrgSilServiceDetailsByFiltersThenInvokeClient() {
+  void whenGetOrgSilServiceDetailsThenInvokeClient() {
     Long orgSilServiceId = 1L;
 
     OrgSilServiceDTO orgSilServiceDTO = podamFactory.manufacturePojo(OrgSilServiceDTO.class);

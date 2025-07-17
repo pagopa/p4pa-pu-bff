@@ -2,8 +2,8 @@ package it.gov.pagopa.pu.bff.service.org_sil_service;
 
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.connector.organization.OrgSilServiceService;
-import it.gov.pagopa.pu.bff.dto.generated.PagedOrgSilServiceView;
 import it.gov.pagopa.pu.bff.dto.OrgSilServiceExtendedDTO;
+import it.gov.pagopa.pu.bff.dto.generated.PagedOrgSilServiceView;
 import it.gov.pagopa.pu.bff.mapper.OrgSilServiceDTOMapper;
 import it.gov.pagopa.pu.bff.mapper.OrgSilServiceViewMapper;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
@@ -64,9 +64,8 @@ public class OrgSilServiceRetrieverServiceImpl implements OrgSilServiceRetriever
   }
   @Override
   public OrgSilServiceDTO getOrgSilServiceDetails(Long organizationId, Long orgSilServiceId, UserInfo loggedUser, String accessToken) {
-    if (!AuthorizationService.isAdminRole(organizationId, loggedUser)) {
-      return null;
-    }
+    authorizationService.validateAdminRole(organizationId, loggedUser);
+
     return orgSilServiceService.getOrgSilServiceByIdDecrypted(orgSilServiceId, accessToken);
   }
 }

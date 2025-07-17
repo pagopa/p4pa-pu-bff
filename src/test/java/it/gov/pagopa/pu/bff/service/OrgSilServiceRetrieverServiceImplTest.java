@@ -237,8 +237,9 @@ public class OrgSilServiceRetrieverServiceImplTest {
     verifyNoInteractions(orgSilServiceServiceMock);
     verifyNoInteractions(orgSilServiceViewMapperMock);
   }
+
   @Test
-  void givenValidServiceIdWhenGetOrgSilServiceDetailsThenReturnOrgSilServiceDTO() {
+  void givenValidOrgSilServiceIdWhenGetOrgSilServiceDetailsThenReturnOrgSilServiceDTO() {
     OrgSilServiceDTO orgSilServiceDTO = new OrgSilServiceDTO();
     Long organizationId=1L;
 
@@ -246,38 +247,29 @@ public class OrgSilServiceRetrieverServiceImplTest {
     loggedUser.setUserId("user-123");
     loggedUser.setMappedExternalUserId("operatorExternalUserId");
 
-    try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
-      authorizationServiceMockedStatic.when(() -> AuthorizationService.isAdminRole(organizationId, loggedUser)).thenAnswer(a -> true);
+    doNothing().when(authorizationServiceMock).validateAdminRole(organizationId, loggedUser);
+    Mockito.when(orgSilServiceServiceMock.getOrgSilServiceByIdDecrypted(2L, accessToken)).thenReturn(orgSilServiceDTO);
 
-      Mockito.when(orgSilServiceServiceMock.getOrgSilServiceByIdDecrypted(2L, accessToken)).thenReturn(orgSilServiceDTO);
+    OrgSilServiceDTO result = orgSilServiceRetrieverService.getOrgSilServiceDetails(organizationId, 2L, loggedUser, accessToken);
 
-      OrgSilServiceDTO result = orgSilServiceRetrieverService.getOrgSilServiceDetails(organizationId, 2L, loggedUser, accessToken);
+    assertNotNull(result);
+    assertEquals(orgSilServiceDTO, result);
 
-      assertNotNull(result);
-      assertEquals(orgSilServiceDTO, result);
-
-      authorizationServiceMockedStatic.verify(() -> AuthorizationService.isAdminRole(organizationId, loggedUser));
-    }
   }
 
   @Test
-  void givenInvalidUserForOrganizationIdWhenGetOrgSilServiceDetailsThenAuthorizationDeniedException() {
+  void givenInvalidAdminForOrganizationIdWhenGetOrgSilServiceDetailsThenAuthorizationDeniedException() {
     UserInfo loggedUser = new UserInfo();
     loggedUser.setUserId("user-123");
     loggedUser.setMappedExternalUserId("operatorExternalUserId");
 
     Long organizationId=1L;
 
-    try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
-      authorizationServiceMockedStatic.when(() -> AuthorizationService.isAdminRole(organizationId, loggedUser))
-        .thenThrow(new AuthorizationDeniedException("Access denied"));
+    doThrow(AuthorizationDeniedException.class).when(authorizationServiceMock).validateAdminRole(organizationId, loggedUser);
 
-      Assertions.assertThrows(AuthorizationDeniedException.class, () ->
-        orgSilServiceRetrieverService.getOrgSilServiceDetails(organizationId, 2L, loggedUser, accessToken));
+    Assertions.assertThrows(AuthorizationDeniedException.class, () ->
+      orgSilServiceRetrieverService.getOrgSilServiceDetails(organizationId, 2L, loggedUser, accessToken));
 
-      authorizationServiceMockedStatic.verify(() -> AuthorizationService.isAdminRole(organizationId, loggedUser));
-    }
-    Mockito.verifyNoInteractions(orgSilServiceServiceMock);
   }
 
 

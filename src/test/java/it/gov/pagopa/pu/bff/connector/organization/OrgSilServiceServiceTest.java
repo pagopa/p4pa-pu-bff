@@ -2,10 +2,7 @@ package it.gov.pagopa.pu.bff.connector.organization;
 
 import it.gov.pagopa.pu.bff.connector.organization.client.OrgSilServiceSearchClient;
 import it.gov.pagopa.pu.bff.util.TestUtils;
-import it.gov.pagopa.pu.organization.dto.generated.CollectionModelOrgSilService;
-import it.gov.pagopa.pu.organization.dto.generated.OrgSilService;
-import it.gov.pagopa.pu.organization.dto.generated.OrgSilServiceType;
-import it.gov.pagopa.pu.organization.dto.generated.PagedModelOrgSilServiceView;
+import it.gov.pagopa.pu.organization.dto.generated.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -84,5 +81,19 @@ class OrgSilServiceServiceTest {
         organizationId, applicationName, serviceType, flagLegacy, pageable, accessToken);
 
     assertSame(expectedResult, result);
+  }
+
+  @Test
+  void whenGetOrgSilServiceDetailsThenInvokeClient() {
+    Long orgSilServiceId = 1L;
+
+    OrgSilServiceDTO orgSilServiceDTO = podamFactory.manufacturePojo(OrgSilServiceDTO.class);
+
+    when(orgSilServiceSearchClientMock.getOrgSilServiceByIdDecrypted(orgSilServiceId, accessToken))
+      .thenReturn(orgSilServiceDTO);
+
+    OrgSilServiceDTO result = service.getOrgSilServiceByIdDecrypted(orgSilServiceId, accessToken);
+
+    assertSame(orgSilServiceDTO, result);
   }
 }

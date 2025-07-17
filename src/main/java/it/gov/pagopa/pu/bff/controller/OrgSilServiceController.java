@@ -1,10 +1,11 @@
 package it.gov.pagopa.pu.bff.controller;
 
 import it.gov.pagopa.pu.bff.controller.generated.OrgSilServiceApi;
-import it.gov.pagopa.pu.bff.dto.OrgSilServiceDTO;
+import it.gov.pagopa.pu.bff.dto.OrgSilServiceExtendedDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedOrgSilServiceView;
 import it.gov.pagopa.pu.bff.security.SecurityUtils;
 import it.gov.pagopa.pu.bff.service.org_sil_service.OrgSilServiceRetrieverService;
+import it.gov.pagopa.pu.organization.dto.generated.OrgSilServiceDTO;
 import it.gov.pagopa.pu.organization.dto.generated.OrgSilServiceType;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -24,7 +25,7 @@ public class OrgSilServiceController implements OrgSilServiceApi {
   }
 
   @Override
-  public ResponseEntity<List<OrgSilServiceDTO>> getOrgSilServices(Long organizationId, OrgSilServiceType serviceType) {
+  public ResponseEntity<List<OrgSilServiceExtendedDTO>> getOrgSilServices(Long organizationId, OrgSilServiceType serviceType) {
     log.info("User requested getOrgSilServices having organizationId {} and serviceType {}", organizationId, serviceType);
     return ResponseEntity.ok(orgSilServiceRetrieverService.getOrgSilServices(organizationId, serviceType,
       SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken()));
@@ -35,5 +36,12 @@ public class OrgSilServiceController implements OrgSilServiceApi {
     log.info("User requested getOrgSilServicesByFilters having organizationId {}", organizationId);
     return ResponseEntity.ok(orgSilServiceRetrieverService.getOrgSilServicesByFilters(
       organizationId, applicationName, serviceType, flagLegacy, pageable, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken()));
+  }
+
+  @Override
+  public ResponseEntity<OrgSilServiceDTO> getOrgSilServiceDetails(Long organizationId, Long orgSilServiceId) {
+    log.info("User requested getOrgSilServiceDetails having organizationId {} and orgSilServiceId {}",organizationId,orgSilServiceId);
+    return ResponseEntity.ofNullable(orgSilServiceRetrieverService.getOrgSilServiceDetails(organizationId,orgSilServiceId,
+      SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken()));
   }
 }

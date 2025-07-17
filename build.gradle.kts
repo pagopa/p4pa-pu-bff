@@ -220,7 +220,8 @@ tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>("ope
     "ScheduleEnum" to "it.gov.pagopa.pu.workflowhub.dto.generated.ScheduleEnum",
     "RegistrySilEventType" to "it.gov.pagopa.pu.registries.dto.generated.RegistrySilEventType",
     "Assessments" to "it.gov.pagopa.pu.classification.dto.generated.Assessments",
-    "PagedClassificationPaidInstallmentsView" to "it.gov.pagopa.pu.classification.dto.generated.PagedClassificationPaidInstallmentsView"
+    "PagedClassificationPaidInstallmentsView" to "it.gov.pagopa.pu.classification.dto.generated.PagedClassificationPaidInstallmentsView",
+    "CreateAssessmentsDetail" to "it.gov.pagopa.pu.classification.dto.generated.CreateAssessmentsDetail"
   ))
   configOptions.set(mapOf(
     "dateLibrary" to "java8",

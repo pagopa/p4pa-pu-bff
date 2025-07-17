@@ -24,6 +24,7 @@ public class ClassificationApisHolder {
   private final AssessmentsDetailSearchControllerApi assessmentsDetailSearchControllerApi;
   private final AssessmentsDetailEntityControllerApi assessmentsDetailEntityControllerApi;
   private final AssessmentsEntityControllerApi assessmentsEntityControllerApi;
+  private final AssessmentsDetailApi assessmentsDetailApi;
   private final ThreadLocal<String> bearerTokenHolder = new ThreadLocal<>();
 
   public ClassificationApisHolder(ClassificationApiClientConfig clientConfig,
@@ -50,6 +51,7 @@ public class ClassificationApisHolder {
     this.assessmentsDetailSearchControllerApi = new AssessmentsDetailSearchControllerApi(apiClient);
     this.assessmentsDetailEntityControllerApi = new AssessmentsDetailEntityControllerApi(apiClient);
     this.assessmentsEntityControllerApi = new AssessmentsEntityControllerApi(apiClient);
+    this.assessmentsDetailApi = new AssessmentsDetailApi(apiClient);
   }
 
   @PreDestroy
@@ -103,6 +105,10 @@ public class ClassificationApisHolder {
 
   public AssessmentsEntityControllerApi getAssessmentsEntityControllerApi(String accessToken){
     return getApi(accessToken, assessmentsEntityControllerApi);
+  }
+
+  public AssessmentsDetailApi getAssessmentsDetailApi(String accessToken){
+    return getApi(accessToken, assessmentsDetailApi);
   }
 
   private <T extends BaseApi> T getApi(String accessToken, T api) {

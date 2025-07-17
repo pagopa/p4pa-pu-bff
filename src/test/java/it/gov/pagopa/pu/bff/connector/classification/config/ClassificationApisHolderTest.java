@@ -4,6 +4,7 @@ import it.gov.pagopa.pu.bff.connector.BaseApiHolderTest;
 import it.gov.pagopa.pu.classification.dto.generated.AssessmentStatus;
 import it.gov.pagopa.pu.classification.dto.generated.AssessmentsRegistry;
 import it.gov.pagopa.pu.classification.dto.generated.AssessmentsRegistryStatus;
+import it.gov.pagopa.pu.classification.dto.generated.CreateAssessmentsDetail;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -171,6 +172,16 @@ class ClassificationApisHolderTest extends BaseApiHolderTest {
     assertAuthenticationShouldBeSetInThreadSafeMode(
       accessToken -> classificationApisHolder.getAssessmentsEntityControllerApi(accessToken)
         .crudGetAssessments("1"),
+      new ParameterizedTypeReference<>() {
+      },
+      classificationApisHolder::unload);
+  }
+
+  @Test
+  void whenGetAssessmentsDetailApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
+    assertAuthenticationShouldBeSetInThreadSafeMode(
+      accessToken -> classificationApisHolder.getAssessmentsDetailApi(accessToken)
+        .createAssessmentsDetail(1L,2L,new CreateAssessmentsDetail()),
       new ParameterizedTypeReference<>() {
       },
       classificationApisHolder::unload);

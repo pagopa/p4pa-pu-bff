@@ -4048,7 +4048,7 @@
         } ]
       }
     },
-    "/bff/organization/{organizationId}/org-sil-services/filters" : {
+    "/bff/organization/{organizationId}/org-sil-services/view" : {
       "get" : {
         "tags" : [ "OrgSilService" ],
         "summary" : "Retrieve a filtered list of OrgSilService",

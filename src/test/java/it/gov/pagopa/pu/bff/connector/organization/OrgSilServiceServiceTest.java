@@ -6,10 +6,12 @@ import it.gov.pagopa.pu.organization.dto.generated.CollectionModelOrgSilService;
 import it.gov.pagopa.pu.organization.dto.generated.OrgSilService;
 import it.gov.pagopa.pu.organization.dto.generated.OrgSilServiceType;
 import it.gov.pagopa.pu.organization.dto.generated.PagedModelOrgSilServiceView;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -31,7 +33,12 @@ class OrgSilServiceServiceTest {
 
   @BeforeEach
   void setUp() {
-    service = new  OrgSilServiceServiceImpl(orgSilServiceSearchClientMock);
+    service = new OrgSilServiceServiceImpl(orgSilServiceSearchClientMock);
+  }
+
+  @AfterEach
+  void verifyNoMoreInteractions() {
+    Mockito.verifyNoMoreInteractions(orgSilServiceSearchClientMock);
   }
 
   @Test

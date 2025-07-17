@@ -64,7 +64,9 @@ public class OrgSilServiceRetrieverServiceImpl implements OrgSilServiceRetriever
   }
   @Override
   public OrgSilServiceDTO getOrgSilServiceDetails(Long organizationId, Long orgSilServiceId, UserInfo loggedUser, String accessToken) {
-    AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser);
+    if (!AuthorizationService.isAdminRole(organizationId, loggedUser)) {
+      return null;
+    }
     return orgSilServiceService.getOrgSilServiceByIdDecrypted(orgSilServiceId, accessToken);
   }
 }

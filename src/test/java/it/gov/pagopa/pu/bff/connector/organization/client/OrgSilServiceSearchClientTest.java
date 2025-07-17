@@ -160,4 +160,17 @@ class OrgSilServiceSearchClientTest {
     Assertions.assertEquals(orgSilService, result);
   }
 
+  @Test
+  void givenNonExistentOrgSilServiceIdIdWhenGetOrgSilServiceByIdDecryptedThenReturnNull() {
+    Long orgSilServiceId = 1L;
+    String accessToken = "ACCESSTOKEN";
+
+    when(organizationApisHolderMock.getOrganizationSilServiceApi(accessToken)).thenReturn(organizationSilServiceApiMock);
+    when(organizationSilServiceApiMock.getOrgSilService(orgSilServiceId)).thenThrow(HttpClientErrorException.create(HttpStatus.NOT_FOUND, "NotFound", null, null, null));
+
+    OrgSilServiceDTO result = orgSilServiceSearchClient.getOrgSilServiceByIdDecrypted(orgSilServiceId, accessToken);
+
+    assertNull(result);
+  }
+
 }

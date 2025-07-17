@@ -49,7 +49,13 @@ public class OrgSilServiceSearchClient {
         PageUtils.getSortList(pageable));
   }
   public OrgSilServiceDTO getOrgSilServiceByIdDecrypted(Long orgSilServiceId, String accessToken){
-    return organizationApisHolder.getOrganizationSilServiceApi(accessToken).getOrgSilService(orgSilServiceId);
+    try {
+      return organizationApisHolder.getOrganizationSilServiceApi(accessToken).getOrgSilService(orgSilServiceId);
+    } catch (HttpClientErrorException.NotFound e) {
+      log.info("OrgSilService with ID {} not found", orgSilServiceId);
+      return null;
+    }
+
   }
 
 }

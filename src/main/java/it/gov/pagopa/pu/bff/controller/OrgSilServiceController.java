@@ -41,7 +41,7 @@ public class OrgSilServiceController implements OrgSilServiceApi {
   @Override
   public ResponseEntity<OrgSilServiceDTO> getOrgSilServiceDetails(Long organizationId, Long orgSilServiceId) {
     log.info("User requested getOrgSilServiceDetails having organizationId {} and orgSilServiceId {}",organizationId,orgSilServiceId);
-    return ResponseEntity.ok(orgSilServiceRetrieverService.getOrgSilServiceDetails(organizationId,orgSilServiceId,
+    return ResponseEntity.ofNullable(orgSilServiceRetrieverService.getOrgSilServiceDetails(organizationId,orgSilServiceId,
       SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken()));
   }
 }

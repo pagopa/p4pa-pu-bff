@@ -238,7 +238,7 @@ public class OrgSilServiceRetrieverServiceImplTest {
     verifyNoInteractions(orgSilServiceViewMapperMock);
   }
   @Test
-  void givenValidServiceIdWhenGetOrgSilServiceDetailsThenReturnOrgServiceSil() {
+  void givenValidServiceIdWhenGetOrgSilServiceDetailsThenReturnOrgSilServiceDTO() {
     OrgSilServiceDTO orgSilServiceDTO = new OrgSilServiceDTO();
     Long organizationId=1L;
 
@@ -247,7 +247,7 @@ public class OrgSilServiceRetrieverServiceImplTest {
     loggedUser.setMappedExternalUserId("operatorExternalUserId");
 
     try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
-      authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)).thenAnswer(a -> null);
+      authorizationServiceMockedStatic.when(() -> AuthorizationService.isAdminRole(organizationId, loggedUser)).thenAnswer(a -> true);
 
       Mockito.when(orgSilServiceServiceMock.getOrgSilServiceByIdDecrypted(2L, accessToken)).thenReturn(orgSilServiceDTO);
 
@@ -256,7 +256,7 @@ public class OrgSilServiceRetrieverServiceImplTest {
       assertNotNull(result);
       assertEquals(orgSilServiceDTO, result);
 
-      authorizationServiceMockedStatic.verify(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser));
+      authorizationServiceMockedStatic.verify(() -> AuthorizationService.isAdminRole(organizationId, loggedUser));
     }
   }
 
@@ -269,13 +269,13 @@ public class OrgSilServiceRetrieverServiceImplTest {
     Long organizationId=1L;
 
     try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
-      authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser))
+      authorizationServiceMockedStatic.when(() -> AuthorizationService.isAdminRole(organizationId, loggedUser))
         .thenThrow(new AuthorizationDeniedException("Access denied"));
 
       Assertions.assertThrows(AuthorizationDeniedException.class, () ->
         orgSilServiceRetrieverService.getOrgSilServiceDetails(organizationId, 2L, loggedUser, accessToken));
 
-      authorizationServiceMockedStatic.verify(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser));
+      authorizationServiceMockedStatic.verify(() -> AuthorizationService.isAdminRole(organizationId, loggedUser));
     }
     Mockito.verifyNoInteractions(orgSilServiceServiceMock);
   }

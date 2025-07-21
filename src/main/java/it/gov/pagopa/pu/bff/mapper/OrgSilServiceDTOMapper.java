@@ -1,9 +1,7 @@
 package it.gov.pagopa.pu.bff.mapper;
 
 import it.gov.pagopa.pu.bff.dto.OrgSilServiceExtendedDTO;
-import it.gov.pagopa.pu.organization.dto.generated.OrgSilService;
-import it.gov.pagopa.pu.organization.dto.generated.OrgSilServiceRequestBodyAuthConfig;
-import it.gov.pagopa.pu.organization.dto.generated.SilServiceAuthConfig;
+import it.gov.pagopa.pu.organization.dto.generated.*;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
@@ -24,5 +22,17 @@ public interface OrgSilServiceDTOMapper {
   default <T extends SilServiceAuthConfig> T mapAuthConfig(OrgSilServiceRequestBodyAuthConfig config){
     return (T) config;
   }
+
+  @Mapping(target = "authConfig", ignore = true)
+  @Mapping(target = "legacyBasicAuthConfig", conditionExpression = "java(orgSilServiceDTO.getAuthConfig()!=null && Boolean.TRUE.equals(orgSilServiceDTO.getFlagLegacy()) && \"legacyBasic\".equals(orgSilServiceDTO.getAuthConfig().getAuthConfig()))", source = "authConfig", qualifiedByName = "mapAuthConfig")
+  @Mapping(target = "legacyJwtAuthConfig", conditionExpression = "java(orgSilServiceDTO.getAuthConfig()!=null && Boolean.TRUE.equals(orgSilServiceDTO.getFlagLegacy()) && \"legacyJwt\".equals(orgSilServiceDTO.getAuthConfig().getAuthConfig()))", source = "authConfig", qualifiedByName = "mapAuthConfig")
+  OrgSilServiceExtendedDTO map(OrgSilServiceDTO orgSilServiceDTO);
+
+  @SuppressWarnings("unchecked")
+  @Named("mapAuthConfig")
+  default <T extends SilServiceAuthConfig> T mapAuthConfig(OrgSilServiceDTOAuthConfig config){
+    return (T) config;
+  }
+
 }
 

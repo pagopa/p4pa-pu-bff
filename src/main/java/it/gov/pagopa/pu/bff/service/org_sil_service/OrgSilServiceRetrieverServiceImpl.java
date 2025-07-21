@@ -9,7 +9,6 @@ import it.gov.pagopa.pu.bff.mapper.OrgSilServiceViewMapper;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
 import it.gov.pagopa.pu.organization.dto.generated.CollectionModelOrgSilService;
 import it.gov.pagopa.pu.organization.dto.generated.OrgSilService;
-import it.gov.pagopa.pu.organization.dto.generated.OrgSilServiceDTO;
 import it.gov.pagopa.pu.organization.dto.generated.OrgSilServiceType;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -63,9 +62,9 @@ public class OrgSilServiceRetrieverServiceImpl implements OrgSilServiceRetriever
       orgSilServiceService.getOrgSilServicesByFilters(organizationId, applicationName, serviceType, flagLegacy, pageable, accessToken));
   }
   @Override
-  public OrgSilServiceDTO getOrgSilServiceDetails(Long organizationId, Long orgSilServiceId, UserInfo loggedUser, String accessToken) {
+  public OrgSilServiceExtendedDTO getOrgSilServiceDetails(Long organizationId, Long orgSilServiceId, UserInfo loggedUser, String accessToken) {
     authorizationService.validateAdminRole(organizationId, loggedUser);
 
-    return orgSilServiceService.getOrgSilServiceByIdDecrypted(orgSilServiceId, accessToken);
+    return orgSilServiceDTOMapper.map(orgSilServiceService.getOrgSilServiceByIdDecrypted(orgSilServiceId, accessToken));
   }
 }

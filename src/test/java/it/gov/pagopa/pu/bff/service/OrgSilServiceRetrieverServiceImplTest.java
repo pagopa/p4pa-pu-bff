@@ -241,6 +241,7 @@ public class OrgSilServiceRetrieverServiceImplTest {
   @Test
   void givenValidOrgSilServiceIdWhenGetOrgSilServiceDetailsThenReturnOrgSilServiceDTO() {
     OrgSilServiceDTO orgSilServiceDTO = new OrgSilServiceDTO();
+    OrgSilServiceExtendedDTO orgSilServiceExtendedDTO = new OrgSilServiceExtendedDTO();
     Long organizationId=1L;
 
     UserInfo loggedUser = new UserInfo();
@@ -249,11 +250,12 @@ public class OrgSilServiceRetrieverServiceImplTest {
 
     doNothing().when(authorizationServiceMock).validateAdminRole(organizationId, loggedUser);
     Mockito.when(orgSilServiceServiceMock.getOrgSilServiceByIdDecrypted(2L, accessToken)).thenReturn(orgSilServiceDTO);
+    Mockito.when(orgSilServiceDTOMapperMock.map(orgSilServiceDTO)).thenReturn(orgSilServiceExtendedDTO);
 
-    OrgSilServiceDTO result = orgSilServiceRetrieverService.getOrgSilServiceDetails(organizationId, 2L, loggedUser, accessToken);
+    OrgSilServiceExtendedDTO result = orgSilServiceRetrieverService.getOrgSilServiceDetails(organizationId, 2L, loggedUser, accessToken);
 
     assertNotNull(result);
-    assertEquals(orgSilServiceDTO, result);
+    assertEquals(orgSilServiceExtendedDTO, result);
 
   }
 

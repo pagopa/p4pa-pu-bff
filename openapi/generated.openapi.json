@@ -4076,7 +4076,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/OrgSilServiceDTO"
+                  "$ref" : "#/components/schemas/OrgSilServiceExtendedDTO"
                 }
               }
             }
@@ -4086,7 +4086,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/OrgSilServiceDTO"
+                  "$ref" : "#/components/schemas/OrgSilServiceExtendedDTO"
                 }
               }
             }
@@ -4096,7 +4096,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/OrgSilServiceDTO"
+                  "$ref" : "#/components/schemas/OrgSilServiceExtendedDTO"
                 }
               }
             }
@@ -4106,7 +4106,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/OrgSilServiceDTO"
+                  "$ref" : "#/components/schemas/OrgSilServiceExtendedDTO"
                 }
               }
             }
@@ -9399,110 +9399,6 @@
           "authConfig" : {
             "type" : "string"
           }
-        },
-        "required" : [ "authConfig" ]
-      },
-      "OrgSilServiceDTO" : {
-        "type" : "object",
-        "properties" : {
-          "orgSilServiceId" : {
-            "type" : "integer",
-            "format" : "int64"
-          },
-          "organizationId" : {
-            "type" : "integer",
-            "format" : "int64"
-          },
-          "applicationName" : {
-            "type" : "string",
-            "maxLength" : 255,
-            "minLength" : 0
-          },
-          "serviceUrl" : {
-            "type" : "string",
-            "maxLength" : 500,
-            "minLength" : 0
-          },
-          "serviceType" : {
-            "$ref" : "#/components/schemas/OrgSilServiceType"
-          },
-          "flagLegacy" : {
-            "type" : "boolean"
-          },
-          "authConfig" : {
-            "oneOf" : [ {
-              "$ref" : "#/components/schemas/SilServiceLegacyBasicAuthConfigDTO"
-            }, {
-              "$ref" : "#/components/schemas/SilServiceLegacyJwtAuthConfigDTO"
-            } ]
-          }
-        },
-        "required" : [ "applicationName", "flagLegacy", "organizationId", "serviceType", "serviceUrl" ]
-      },
-      "OrgSilServiceDTOAuthConfig" : {
-        "discriminator" : {
-          "propertyName" : "authConfig"
-        },
-        "properties" : {
-          "authConfig" : {
-            "type" : "string"
-          }
-        },
-        "required" : [ "authConfig" ]
-      },
-      "SilServiceLegacyBasicAuthConfigDTO" : {
-        "allOf" : [ {
-          "$ref" : "#/components/schemas/OrgSilServiceDTOAuthConfig"
-        }, {
-          "type" : "object",
-          "properties" : {
-            "authUrl" : {
-              "type" : "string"
-            },
-            "user" : {
-              "type" : "string"
-            },
-            "psw" : {
-              "type" : "string"
-            },
-            "authConfig" : {
-              "type" : "string"
-            }
-          }
-        } ],
-        "discriminator" : {
-          "propertyName" : "authConfig"
-        },
-        "required" : [ "authConfig" ]
-      },
-      "SilServiceLegacyJwtAuthConfigDTO" : {
-        "allOf" : [ {
-          "$ref" : "#/components/schemas/OrgSilServiceDTOAuthConfig"
-        }, {
-          "type" : "object",
-          "properties" : {
-            "kid" : {
-              "type" : "string"
-            },
-            "subject" : {
-              "type" : "string"
-            },
-            "issuer" : {
-              "type" : "string"
-            },
-            "algorithm" : {
-              "$ref" : "#/components/schemas/JwtAlgorithm"
-            },
-            "signingKey" : {
-              "type" : "string"
-            },
-            "authConfig" : {
-              "type" : "string"
-            }
-          }
-        } ],
-        "discriminator" : {
-          "propertyName" : "authConfig"
         },
         "required" : [ "authConfig" ]
       },

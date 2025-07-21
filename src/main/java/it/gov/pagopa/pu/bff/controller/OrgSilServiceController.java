@@ -5,7 +5,6 @@ import it.gov.pagopa.pu.bff.dto.OrgSilServiceExtendedDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedOrgSilServiceView;
 import it.gov.pagopa.pu.bff.security.SecurityUtils;
 import it.gov.pagopa.pu.bff.service.org_sil_service.OrgSilServiceRetrieverService;
-import it.gov.pagopa.pu.organization.dto.generated.OrgSilServiceDTO;
 import it.gov.pagopa.pu.organization.dto.generated.OrgSilServiceType;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -39,9 +38,10 @@ public class OrgSilServiceController implements OrgSilServiceApi {
   }
 
   @Override
-  public ResponseEntity<OrgSilServiceDTO> getOrgSilServiceDetails(Long organizationId, Long orgSilServiceId) {
+  public ResponseEntity<OrgSilServiceExtendedDTO> getOrgSilServiceDetails(Long organizationId, Long orgSilServiceId) {
     log.info("User requested getOrgSilServiceDetails having organizationId {} and orgSilServiceId {}",organizationId,orgSilServiceId);
     return ResponseEntity.ofNullable(orgSilServiceRetrieverService.getOrgSilServiceDetails(organizationId,orgSilServiceId,
       SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken()));
   }
+
 }

@@ -3967,6 +3967,7 @@ components:
         - assessmentsName
         - debtPositionTypeOrgDescription
         - status
+        - flagManualGeneration
       properties:
         pagedAssessmentsRowsDetail:
           $ref: "#/components/schemas/PagedAssessmentsRowsDetail"
@@ -3978,6 +3979,8 @@ components:
           type: 'AssessmentsStatusEnum'
         updateOperatorExternalId:
           type: string
+        flagManualGeneration:
+          type: boolean
     PagedAssessmentsExtendedDTO:
       type: object
       required:

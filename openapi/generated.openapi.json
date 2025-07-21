@@ -9374,6 +9374,34 @@
         },
         "required" : [ "authConfig" ]
       },
+      "SilServiceLegacyJwtAuthConfig" : {
+        "type" : "object",
+        "discriminator" : {
+          "propertyName" : "authConfig"
+        },
+        "properties" : {
+          "kid" : {
+            "type" : "string"
+          },
+          "subject" : {
+            "type" : "string"
+          },
+          "issuer" : {
+            "type" : "string"
+          },
+          "algorithm" : {
+            "$ref" : "#/components/schemas/JwtAlgorithm"
+          },
+          "signingKey" : {
+            "type" : "string",
+            "format" : "byte"
+          },
+          "authConfig" : {
+            "type" : "string"
+          }
+        },
+        "required" : [ "authConfig" ]
+      },
       "OrgSilServiceDTO" : {
         "type" : "object",
         "properties" : {
@@ -9475,34 +9503,6 @@
         } ],
         "discriminator" : {
           "propertyName" : "authConfig"
-        },
-        "required" : [ "authConfig" ]
-      },
-      "SilServiceLegacyJwtAuthConfig" : {
-        "type" : "object",
-        "discriminator" : {
-          "propertyName" : "authConfig"
-        },
-        "properties" : {
-          "kid" : {
-            "type" : "string"
-          },
-          "subject" : {
-            "type" : "string"
-          },
-          "issuer" : {
-            "type" : "string"
-          },
-          "algorithm" : {
-            "$ref" : "#/components/schemas/JwtAlgorithm"
-          },
-          "signingKey" : {
-            "type" : "string",
-            "format" : "byte"
-          },
-          "authConfig" : {
-            "type" : "string"
-          }
         },
         "required" : [ "authConfig" ]
       },
@@ -11159,9 +11159,12 @@
           },
           "updateOperatorExternalId" : {
             "type" : "string"
+          },
+          "flagManualGeneration" : {
+            "type" : "boolean"
           }
         },
-        "required" : [ "assessmentsName", "debtPositionTypeOrgDescription", "pagedAssessmentsRowsDetail", "status" ]
+        "required" : [ "assessmentsName", "debtPositionTypeOrgDescription", "flagManualGeneration", "pagedAssessmentsRowsDetail", "status" ]
       },
       "PagedAssessmentsRowsDetail" : {
         "type" : "object",

@@ -474,6 +474,56 @@
         } ]
       }
     },
+    "/bff/organization/{organizationId}/assessments/{assessmentId}" : {
+      "put" : {
+        "tags" : [ "Assessments" ],
+        "operationId" : "updateAssessmentsStatus",
+        "parameters" : [ {
+          "name" : "organizationId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }, {
+          "name" : "assessmentId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }, {
+          "name" : "status",
+          "in" : "query",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/components/schemas/AssessmentStatus"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Ok"
+          },
+          "401" : {
+            "description" : "Unauthorized - Missing or invalid token"
+          },
+          "403" : {
+            "description" : "Forbidden - Access denied"
+          },
+          "404" : {
+            "description" : "Not Found"
+          },
+          "500" : {
+            "description" : "Internal Server Error"
+          }
+        },
+        "security" : [ {
+          "BearerAuth" : [ ]
+        } ]
+      }
+    },
     "/bff/organization/{organizationId}/assessments-registries/{assessmentRegistryId}" : {
       "get" : {
         "tags" : [ "AssessmentsRegistry" ],
@@ -7426,6 +7476,10 @@
         },
         "required" : [ "debtPositionTypeOrg", "operatorsSelection" ]
       },
+      "AssessmentStatus" : {
+        "type" : "string",
+        "enum" : [ "CLOSED", "CANCELLED", "ACTIVE" ]
+      },
       "AssessmentsRegistry" : {
         "type" : "object",
         "properties" : {
@@ -7506,10 +7560,6 @@
           }
         },
         "required" : [ "access_token", "expires_in", "token_type" ]
-      },
-      "AssessmentStatus" : {
-        "type" : "string",
-        "enum" : [ "CLOSED", "CANCELLED", "ACTIVE" ]
       },
       "Assessments" : {
         "type" : "object",

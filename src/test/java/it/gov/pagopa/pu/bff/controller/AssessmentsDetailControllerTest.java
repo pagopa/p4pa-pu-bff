@@ -17,9 +17,8 @@ import uk.co.jemos.podam.api.PodamFactory;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class AssessmentsDetailControllerTest {
@@ -55,4 +54,18 @@ class AssessmentsDetailControllerTest {
     assertEquals(expectedResult, result.getBody());
   }
 
+  @Test
+  void whenDeleteAssessmentsDetailsThenOk() {
+    Long organizationId = 1L;
+    List<Long> assessmentDetailIds = List.of(10L, 20L, 30L);
+
+    ResponseEntity<Void> result = assessmentsDetailController.deleteAssessmentsDetails(organizationId, assessmentDetailIds);
+
+    assertNotNull(result);
+    assertEquals(HttpStatus.OK, result.getStatusCode());
+    assertNull(result.getBody());
+
+    verify(assessmentsDetailRetrieverServiceMock, times(1))
+      .deleteAssessmentsDetails(organizationId, assessmentDetailIds, loggedUser, accessToken);
+  }
 }

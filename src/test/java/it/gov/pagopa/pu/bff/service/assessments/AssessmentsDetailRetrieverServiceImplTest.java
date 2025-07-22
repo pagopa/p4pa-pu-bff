@@ -21,7 +21,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import uk.co.jemos.podam.api.PodamFactory;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
@@ -58,24 +60,24 @@ class AssessmentsDetailRetrieverServiceImplTest {
 
     try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
       authorizationServiceMockedStatic.when(() ->
-              AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)
+        AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)
       ).thenAnswer(a -> null);
 
-      when(assessmentsServiceMock.getAssessmentsById(assessmentsId,accessToken)).thenReturn(assessments);
-      doNothing().when(debtPositionTypeOrgRetrieverServiceMock).validateOperator(organizationId,assessments.getDebtPositionTypeOrgCode(),loggedUser.getMappedExternalUserId(),accessToken);
-      doNothing().when(debtPositionTypeOrgRetrieverServiceMock).validateIuds(organizationId,assessments.getDebtPositionTypeOrgCode(), createAssessmentsDetail.getIuds(),accessToken);
-      when(assessmentsDetailServiceMock.createAssessmentsDetail(organizationId,assessmentsId,createAssessmentsDetail,accessToken))
-              .thenReturn(expectedResult);
+      when(assessmentsServiceMock.getAssessmentsById(assessmentsId, accessToken)).thenReturn(assessments);
+      doNothing().when(debtPositionTypeOrgRetrieverServiceMock).validateOperator(organizationId, assessments.getDebtPositionTypeOrgCode(), loggedUser.getMappedExternalUserId(), accessToken);
+      doNothing().when(debtPositionTypeOrgRetrieverServiceMock).validateIuds(organizationId, assessments.getDebtPositionTypeOrgCode(), createAssessmentsDetail.getIuds(), accessToken);
+      when(assessmentsDetailServiceMock.createAssessmentsDetail(organizationId, assessmentsId, createAssessmentsDetail, accessToken))
+        .thenReturn(expectedResult);
 
       List<AssessmentsDetail> result = assessmentsRetrieverService.createAssessmentsDetail(
-              organizationId, assessmentsId, createAssessmentsDetail, loggedUser, accessToken
+        organizationId, assessmentsId, createAssessmentsDetail, loggedUser, accessToken
       );
 
       Assertions.assertNotNull(result);
       Assertions.assertEquals(expectedResult, result);
 
       authorizationServiceMockedStatic.verify(() ->
-              AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)
+        AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)
       );
     }
   }
@@ -90,21 +92,21 @@ class AssessmentsDetailRetrieverServiceImplTest {
     Long assessmentsId = 2L;
     CreateAssessmentsDetail createAssessmentsDetail = podamFactory.manufacturePojo(CreateAssessmentsDetail.class);
     Assessments assessments = podamFactory.manufacturePojo(Assessments.class);
-    assessments.setOrganizationId(organizationId+1);
+    assessments.setOrganizationId(organizationId + 1);
 
     try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
       authorizationServiceMockedStatic.when(() ->
-              AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)
+        AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)
       ).thenAnswer(a -> null);
 
-      when(assessmentsServiceMock.getAssessmentsById(assessmentsId,accessToken)).thenReturn(assessments);
+      when(assessmentsServiceMock.getAssessmentsById(assessmentsId, accessToken)).thenReturn(assessments);
 
-      assertThrows(ResourceNotFoundException.class,()-> assessmentsRetrieverService.createAssessmentsDetail(
-              organizationId, assessmentsId, createAssessmentsDetail, loggedUser, accessToken));
+      assertThrows(ResourceNotFoundException.class, () -> assessmentsRetrieverService.createAssessmentsDetail(
+        organizationId, assessmentsId, createAssessmentsDetail, loggedUser, accessToken));
 
-      verifyNoInteractions(assessmentsDetailServiceMock,debtPositionTypeOrgRetrieverServiceMock);
+      verifyNoInteractions(assessmentsDetailServiceMock, debtPositionTypeOrgRetrieverServiceMock);
       authorizationServiceMockedStatic.verify(() ->
-              AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)
+        AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)
       );
     }
   }
@@ -121,17 +123,17 @@ class AssessmentsDetailRetrieverServiceImplTest {
 
     try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
       authorizationServiceMockedStatic.when(() ->
-              AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)
+        AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)
       ).thenAnswer(a -> null);
 
-      when(assessmentsServiceMock.getAssessmentsById(assessmentsId,accessToken)).thenReturn(null);
+      when(assessmentsServiceMock.getAssessmentsById(assessmentsId, accessToken)).thenReturn(null);
 
-      assertThrows(ResourceNotFoundException.class,()-> assessmentsRetrieverService.createAssessmentsDetail(
-              organizationId, assessmentsId, createAssessmentsDetail, loggedUser, accessToken));
+      assertThrows(ResourceNotFoundException.class, () -> assessmentsRetrieverService.createAssessmentsDetail(
+        organizationId, assessmentsId, createAssessmentsDetail, loggedUser, accessToken));
 
-      verifyNoInteractions(assessmentsDetailServiceMock,debtPositionTypeOrgRetrieverServiceMock);
+      verifyNoInteractions(assessmentsDetailServiceMock, debtPositionTypeOrgRetrieverServiceMock);
       authorizationServiceMockedStatic.verify(() ->
-              AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)
+        AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)
       );
     }
   }
@@ -150,17 +152,104 @@ class AssessmentsDetailRetrieverServiceImplTest {
 
     try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
       authorizationServiceMockedStatic.when(() ->
-              AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)
+        AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)
       ).thenAnswer(a -> null);
 
 
-      assertThrows(IllegalArgumentException.class,()-> assessmentsRetrieverService.createAssessmentsDetail(
-              organizationId, assessmentsId, createAssessmentsDetail, loggedUser, accessToken));
+      assertThrows(IllegalArgumentException.class, () -> assessmentsRetrieverService.createAssessmentsDetail(
+        organizationId, assessmentsId, createAssessmentsDetail, loggedUser, accessToken));
 
-      verifyNoInteractions(assessmentsDetailServiceMock,debtPositionTypeOrgRetrieverServiceMock, assessmentsServiceMock);
+      verifyNoInteractions(assessmentsDetailServiceMock, debtPositionTypeOrgRetrieverServiceMock, assessmentsServiceMock);
       authorizationServiceMockedStatic.verify(() ->
-              AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)
+        AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)
       );
+    }
+  }
+
+  @Test
+  void givenValidIdsWhenDeleteAssessmentsDetailsThenOk() {
+    Long organizationId = 1L;
+    String accessToken = "accessToken";
+    UserInfo loggedUser = podamFactory.manufacturePojo(UserInfo.class);
+    List<Long> ids = List.of(10L, 20L);
+
+    Map<Long, AssessmentsDetail> detailsMap = new HashMap<>();
+    for (Long id : ids) {
+      AssessmentsDetail detail = podamFactory.manufacturePojo(AssessmentsDetail.class);
+      detail.setOrganizationId(organizationId);
+      detailsMap.put(id, detail);
+    }
+
+    try (MockedStatic<AuthorizationService> authMock = Mockito.mockStatic(AuthorizationService.class)) {
+      authMock.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser))
+        .thenAnswer(a -> null);
+
+      for (Long id : ids) {
+        AssessmentsDetail detail = detailsMap.get(id);
+        when(assessmentsServiceMock.findAssessmentsDetail(id, accessToken))
+          .thenReturn(detail);
+
+        doNothing().when(debtPositionTypeOrgRetrieverServiceMock).validateOperator(
+          organizationId, detail.getDebtPositionTypeOrgCode(), loggedUser.getMappedExternalUserId(), accessToken);
+
+        doNothing().when(assessmentsDetailServiceMock).deleteAssessmentsDetails(id, accessToken);
+      }
+
+      assessmentsRetrieverService.deleteAssessmentsDetails(organizationId, ids, loggedUser, accessToken);
+
+      authMock.verify(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser));
+
+      for (Long id : ids) {
+        verify(assessmentsServiceMock, times(2)).findAssessmentsDetail(id, accessToken);
+        verify(debtPositionTypeOrgRetrieverServiceMock).validateOperator(organizationId, detailsMap.get(id).getDebtPositionTypeOrgCode(), loggedUser.getMappedExternalUserId(), accessToken);
+        verify(assessmentsDetailServiceMock).deleteAssessmentsDetails(id, accessToken);
+      }
+    }
+  }
+
+  @Test
+  void givenInvalidIdWhenDeleteAssessmentsDetailsThenThrowResourceNotFoundException() {
+    Long organizationId = 1L;
+    String accessToken = "accessToken";
+    UserInfo loggedUser = podamFactory.manufacturePojo(UserInfo.class);
+    List<Long> ids = List.of(10L, 20L);
+
+    try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
+      authorizationServiceMockedStatic.when(() ->
+          AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser))
+        .thenAnswer(a -> null);
+
+      when(assessmentsServiceMock.findAssessmentsDetail(10L, accessToken)).thenReturn(null);
+
+      assertThrows(ResourceNotFoundException.class, () ->
+        assessmentsRetrieverService.deleteAssessmentsDetails(organizationId, ids, loggedUser, accessToken));
+
+      authorizationServiceMockedStatic.verify(() ->
+        AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser));
+    }
+  }
+
+  @Test
+  void givenIdBelongingToDifferentOrganizationWhenDeleteAssessmentsDetailsThenThrowResourceNotFoundException() {
+    Long organizationId = 1L;
+    String accessToken = "accessToken";
+    UserInfo loggedUser = podamFactory.manufacturePojo(UserInfo.class);
+    List<Long> ids = List.of(10L);
+
+    try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
+      authorizationServiceMockedStatic.when(() ->
+          AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser))
+        .thenAnswer(a -> null);
+
+      AssessmentsDetail detail = podamFactory.manufacturePojo(AssessmentsDetail.class);
+      detail.setOrganizationId(organizationId + 1);
+      when(assessmentsServiceMock.findAssessmentsDetail(10L, accessToken)).thenReturn(detail);
+
+      assertThrows(ResourceNotFoundException.class, () ->
+        assessmentsRetrieverService.deleteAssessmentsDetails(organizationId, ids, loggedUser, accessToken));
+
+      authorizationServiceMockedStatic.verify(() ->
+        AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser));
     }
   }
 }

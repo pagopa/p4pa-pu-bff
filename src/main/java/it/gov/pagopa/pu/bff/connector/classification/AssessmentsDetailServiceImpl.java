@@ -12,12 +12,17 @@ public class AssessmentsDetailServiceImpl implements AssessmentsDetailService {
 
   private final AssessmentsDetailClient assessmentsDetailClient;
 
-    public AssessmentsDetailServiceImpl(AssessmentsDetailClient assessmentsDetailClient) {
-        this.assessmentsDetailClient = assessmentsDetailClient;
-    }
+  public AssessmentsDetailServiceImpl(AssessmentsDetailClient assessmentsDetailClient) {
+    this.assessmentsDetailClient = assessmentsDetailClient;
+  }
 
   @Override
   public List<AssessmentsDetail> createAssessmentsDetail(Long organizationId, Long assessmentsId, CreateAssessmentsDetail createAssessmentsDetail, String accessToken) {
     return assessmentsDetailClient.createAssessmentsDetail(organizationId, assessmentsId, createAssessmentsDetail, accessToken);
+  }
+
+  @Override
+  public void deleteAssessmentsDetails(Long assessmentDetailId, String accessToken) {
+    assessmentsDetailClient.deleteAssessmentsDetails(assessmentDetailId, accessToken);
   }
 }

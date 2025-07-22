@@ -56,19 +56,12 @@ public class AssessmentsDetailRetrieverServiceImpl implements AssessmentsDetailR
     validateAssessmentsDetails(organizationId, assessmentDetailIds, loggedUser.getMappedExternalUserId(), accessToken);
 
     for (Long id : assessmentDetailIds) {
-      if (id == null) {
-        continue;
-      }
       assessmentsDetailService.deleteAssessmentsDetails(id, accessToken);
     }
   }
 
   private void validateAssessmentsDetails(Long organizationId, List<Long> assessmentDetailIds, String mappedExternalUserId, String accessToken) {
     for (Long id : assessmentDetailIds) {
-      if (id == null) {
-        continue;
-      }
-
       AssessmentsDetail detail = assessmentsService.findAssessmentsDetail(id, accessToken);
 
       if (detail == null || !organizationId.equals(detail.getOrganizationId())) {

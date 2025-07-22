@@ -1,12 +1,12 @@
 package it.gov.pagopa.pu.bff.controller;
 
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
-import it.gov.pagopa.pu.bff.dto.generated.PagedOrgSilServiceView;
+import it.gov.pagopa.pu.bff.dto.OrgSilServiceDecryptedDTO;
 import it.gov.pagopa.pu.bff.dto.OrgSilServiceExtendedDTO;
+import it.gov.pagopa.pu.bff.dto.generated.PagedOrgSilServiceView;
 import it.gov.pagopa.pu.bff.security.SecurityUtilsTest;
 import it.gov.pagopa.pu.bff.service.org_sil_service.OrgSilServiceRetrieverService;
 import it.gov.pagopa.pu.bff.util.TestUtils;
-import it.gov.pagopa.pu.organization.dto.generated.OrgSilServiceDTO;
 import it.gov.pagopa.pu.organization.dto.generated.OrgSilServiceType;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterEach;
@@ -104,14 +104,15 @@ class OrgSilServiceControllerTest {
     //given
     long organizationId = 2L;
     long orgSilServiceId = 1L;
-    OrgSilServiceDTO orgSilServiceDTO = new OrgSilServiceDTO();
-    when(orgSilServiceRetrieverServiceMock.getOrgSilServiceDetails(organizationId, orgSilServiceId, loggedUser, accessToken)).thenReturn(orgSilServiceDTO);
+    OrgSilServiceDecryptedDTO orgSilServiceDecryptedDTO = new OrgSilServiceDecryptedDTO();
+
+    when(orgSilServiceRetrieverServiceMock.getOrgSilServiceDetails(organizationId, orgSilServiceId, loggedUser, accessToken)).thenReturn(orgSilServiceDecryptedDTO);
     //when
-    ResponseEntity<OrgSilServiceDTO> response = orgSilServiceController.getOrgSilServiceDetails(organizationId, orgSilServiceId);
+    ResponseEntity<OrgSilServiceDecryptedDTO> response = orgSilServiceController.getOrgSilServiceDetails(organizationId, orgSilServiceId);
     //then
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertNotNull(response.getBody());
-    assertSame(orgSilServiceDTO, response.getBody());
+    assertSame(orgSilServiceDecryptedDTO, response.getBody());
   }
 
   @Test
@@ -122,7 +123,7 @@ class OrgSilServiceControllerTest {
 
     when(orgSilServiceRetrieverServiceMock.getOrgSilServiceDetails(organizationId, orgSilServiceId, loggedUser, accessToken)).thenReturn(null);
     //when
-    ResponseEntity<OrgSilServiceDTO> response = orgSilServiceController.getOrgSilServiceDetails(organizationId, orgSilServiceId);
+    ResponseEntity<OrgSilServiceDecryptedDTO> response = orgSilServiceController.getOrgSilServiceDetails(organizationId, orgSilServiceId);
     //then
     assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     assertNull(response.getBody());

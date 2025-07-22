@@ -2,6 +2,7 @@ package it.gov.pagopa.pu.bff.service;
 
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.connector.organization.OrgSilServiceService;
+import it.gov.pagopa.pu.bff.dto.OrgSilServiceDecryptedDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedOrgSilServiceView;
 import it.gov.pagopa.pu.bff.dto.OrgSilServiceExtendedDTO;
 import it.gov.pagopa.pu.bff.mapper.OrgSilServiceDTOMapper;
@@ -241,6 +242,7 @@ public class OrgSilServiceRetrieverServiceImplTest {
   @Test
   void givenValidOrgSilServiceIdWhenGetOrgSilServiceDetailsThenReturnOrgSilServiceDTO() {
     OrgSilServiceDTO orgSilServiceDTO = new OrgSilServiceDTO();
+    OrgSilServiceDecryptedDTO orgSilServiceExtended = new OrgSilServiceDecryptedDTO();
     Long organizationId=1L;
 
     UserInfo loggedUser = new UserInfo();
@@ -249,11 +251,12 @@ public class OrgSilServiceRetrieverServiceImplTest {
 
     doNothing().when(authorizationServiceMock).validateAdminRole(organizationId, loggedUser);
     Mockito.when(orgSilServiceServiceMock.getOrgSilServiceByIdDecrypted(2L, accessToken)).thenReturn(orgSilServiceDTO);
+    Mockito.when(orgSilServiceDTOMapperMock.map(orgSilServiceDTO)).thenReturn(orgSilServiceExtended);
 
-    OrgSilServiceDTO result = orgSilServiceRetrieverService.getOrgSilServiceDetails(organizationId, 2L, loggedUser, accessToken);
+    OrgSilServiceDecryptedDTO result = orgSilServiceRetrieverService.getOrgSilServiceDetails(organizationId, 2L, loggedUser, accessToken);
 
     assertNotNull(result);
-    assertEquals(orgSilServiceDTO, result);
+    assertEquals(orgSilServiceExtended, result);
 
   }
 

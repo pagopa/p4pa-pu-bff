@@ -1,7 +1,7 @@
 package it.gov.pagopa.pu.bff.mapper;
 
 import it.gov.pagopa.pu.bff.dto.OrgSilServiceDecryptedDTO;
-import it.gov.pagopa.pu.bff.dto.OrgSilServiceExtended;
+import it.gov.pagopa.pu.bff.dto.OrgSilServiceExtendedDTO;
 import it.gov.pagopa.pu.bff.util.TestUtils;
 import it.gov.pagopa.pu.organization.dto.generated.*;
 import org.junit.jupiter.api.Test;
@@ -25,7 +25,7 @@ class OrgSilServiceDTOMapperTest {
     basicAuthConfig.setAuthConfig("legacyBasic");
     orgSilService.setAuthConfig(basicAuthConfig);
 
-    OrgSilServiceExtended result = mapper.map(orgSilService);
+    OrgSilServiceExtendedDTO result = mapper.map(orgSilService);
 
     assertNotNull(result);
     TestUtils.checkNotNullFields(result,"authConfig","legacyJwtAuthConfig");
@@ -43,7 +43,7 @@ class OrgSilServiceDTOMapperTest {
     basicAuthConfig.setAuthConfig("legacyBasic");
     orgSilService.setAuthConfig(basicAuthConfig);
 
-    OrgSilServiceExtended result = mapper.map(orgSilService);
+    OrgSilServiceExtendedDTO result = mapper.map(orgSilService);
 
     assertNotNull(result);
     TestUtils.checkNotNullFields(result,"authConfig","legacyJwtAuthConfig","legacyBasicAuthConfig");
@@ -61,7 +61,7 @@ class OrgSilServiceDTOMapperTest {
     basicAuthConfig.setAuthConfig("legacyBasic");
     orgSilService.setAuthConfig(basicAuthConfig);
 
-    OrgSilServiceExtended result = mapper.map(orgSilService);
+    OrgSilServiceExtendedDTO result = mapper.map(orgSilService);
 
     assertNotNull(result);
     TestUtils.checkNotNullFields(result,"authConfig","flagLegacy","legacyJwtAuthConfig","legacyBasicAuthConfig");
@@ -79,7 +79,7 @@ class OrgSilServiceDTOMapperTest {
     jwtAuthConfig.setAuthConfig("legacyJwt");
     orgSilService.setAuthConfig(jwtAuthConfig);
 
-    OrgSilServiceExtended result = mapper.map(orgSilService);
+    OrgSilServiceExtendedDTO result = mapper.map(orgSilService);
 
     assertNotNull(result);
     TestUtils.checkNotNullFields(result,"authConfig","legacyBasicAuthConfig");
@@ -97,7 +97,7 @@ class OrgSilServiceDTOMapperTest {
     jwtAuthConfig.setAuthConfig("legacyJwt");
     orgSilService.setAuthConfig(jwtAuthConfig);
 
-    OrgSilServiceExtended result = mapper.map(orgSilService);
+    OrgSilServiceExtendedDTO result = mapper.map(orgSilService);
 
     assertNotNull(result);
     TestUtils.checkNotNullFields(result,"authConfig","legacyJwtAuthConfig","legacyBasicAuthConfig");
@@ -115,7 +115,7 @@ class OrgSilServiceDTOMapperTest {
     jwtAuthConfig.setAuthConfig("legacyJwt");
     orgSilService.setAuthConfig(jwtAuthConfig);
 
-    OrgSilServiceExtended result = mapper.map(orgSilService);
+    OrgSilServiceExtendedDTO result = mapper.map(orgSilService);
 
     assertNotNull(result);
     TestUtils.checkNotNullFields(result,"authConfig","flagLegacy","legacyJwtAuthConfig","legacyBasicAuthConfig");
@@ -130,7 +130,7 @@ class OrgSilServiceDTOMapperTest {
             OrgSilService.class);
     orgSilService.setAuthConfig(null);
 
-    OrgSilServiceExtended result = mapper.map(orgSilService);
+    OrgSilServiceExtendedDTO result = mapper.map(orgSilService);
 
     assertNotNull(result);
     TestUtils.checkNotNullFields(result,"authConfig","legacyJwtAuthConfig","legacyBasicAuthConfig");
@@ -140,7 +140,7 @@ class OrgSilServiceDTOMapperTest {
   }
 
   @Test
-  void givenLegacyBasicAuthConfigDTOWhenMapToOrgSilServiceDTOExtendedThenCorrectMapping() {
+  void givenLegacyBasicAuthConfigDTOWhenMapToOrgSilServiceDecryptedDTOThenCorrectMapping() {
     OrgSilServiceDTO orgSilService = podamFactory.manufacturePojo(OrgSilServiceDTO.class);
     orgSilService.setFlagLegacy(true);
     SilServiceLegacyBasicAuthConfigDTO basicAuthConfig = podamFactory.manufacturePojo(SilServiceLegacyBasicAuthConfigDTO.class);
@@ -157,7 +157,7 @@ class OrgSilServiceDTOMapperTest {
   }
 
   @Test
-  void givenLegacyBasicAuthDTOAndFlagLegacyFalseWhenMapToOrgSilServiceDTOExtendedThenCorrectMapping() {
+  void givenLegacyBasicAuthDTOAndFlagLegacyFalseWhenMapToOrgSilServiceDecryptedDTOThenCorrectMapping() {
     OrgSilServiceDTO orgSilService = podamFactory.manufacturePojo(OrgSilServiceDTO.class);
     orgSilService.setFlagLegacy(false);
     SilServiceLegacyBasicAuthConfigDTO basicAuthConfig = podamFactory.manufacturePojo(SilServiceLegacyBasicAuthConfigDTO.class);
@@ -174,7 +174,7 @@ class OrgSilServiceDTOMapperTest {
   }
 
   @Test
-  void givenLegacyJwtAuthWhenMapToOrgSilServiceDTOExtendedThenCorrectMapping() {
+  void givenLegacyJwtAuthWhenMapToOrgSilServiceDecryptedDTOThenCorrectMapping() {
     OrgSilServiceDTO orgSilService = podamFactory.manufacturePojo(OrgSilServiceDTO.class);
     orgSilService.setFlagLegacy(true);
     SilServiceLegacyJwtAuthConfigDTO jwtAuthConfig = podamFactory.manufacturePojo(SilServiceLegacyJwtAuthConfigDTO.class);
@@ -191,7 +191,7 @@ class OrgSilServiceDTOMapperTest {
   }
 
   @Test
-  void givenLegacyJwtAuthAndFlagLegacyFalseWhenMapToOrgSilServiceDTOExtendedThenCorrectMapping() {
+  void givenLegacyJwtAuthAndFlagLegacyFalseWhenMapToOrgSilServiceDecryptedDTOThenCorrectMapping() {
     OrgSilServiceDTO orgSilService = podamFactory.manufacturePojo(OrgSilServiceDTO.class);
     orgSilService.setFlagLegacy(false);
     SilServiceLegacyJwtAuthConfigDTO jwtAuthConfig = podamFactory.manufacturePojo(SilServiceLegacyJwtAuthConfigDTO.class);
@@ -208,7 +208,7 @@ class OrgSilServiceDTOMapperTest {
   }
 
   @Test
-  void givenNullAuthConfigWhenMapToOrgSilServiceDTOExtendedThenCorrectMapping() {
+  void givenNullAuthConfigWhenMapToOrgSilServiceDecryptedDTOThenCorrectMapping() {
     OrgSilServiceDTO orgSilService = podamFactory.manufacturePojo(OrgSilServiceDTO.class);
     orgSilService.setAuthConfig(null);
 

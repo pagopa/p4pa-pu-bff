@@ -3,7 +3,7 @@ package it.gov.pagopa.pu.bff.service.org_sil_service;
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.connector.organization.OrgSilServiceService;
 import it.gov.pagopa.pu.bff.dto.OrgSilServiceDecryptedDTO;
-import it.gov.pagopa.pu.bff.dto.OrgSilServiceExtended;
+import it.gov.pagopa.pu.bff.dto.OrgSilServiceExtendedDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedOrgSilServiceView;
 import it.gov.pagopa.pu.bff.mapper.OrgSilServiceDTOMapper;
 import it.gov.pagopa.pu.bff.mapper.OrgSilServiceViewMapper;
@@ -38,7 +38,7 @@ public class OrgSilServiceRetrieverServiceImpl implements OrgSilServiceRetriever
   }
 
   @Override
-  public List<OrgSilServiceExtended> getOrgSilServices(Long organizationId, OrgSilServiceType serviceType, UserInfo loggedUser, String accessToken) {
+  public List<OrgSilServiceExtendedDTO> getOrgSilServices(Long organizationId, OrgSilServiceType serviceType, UserInfo loggedUser, String accessToken) {
     AuthorizationService.validateUserForOrganizationId(organizationId,loggedUser);
     CollectionModelOrgSilService collection = orgSilServiceService.getOrgSilServices(organizationId,serviceType,accessToken);
     if (collection == null || collection.getEmbedded() == null) {

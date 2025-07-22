@@ -2,7 +2,7 @@ package it.gov.pagopa.pu.bff.controller;
 
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.dto.OrgSilServiceDecryptedDTO;
-import it.gov.pagopa.pu.bff.dto.OrgSilServiceExtended;
+import it.gov.pagopa.pu.bff.dto.OrgSilServiceExtendedDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedOrgSilServiceView;
 import it.gov.pagopa.pu.bff.security.SecurityUtilsTest;
 import it.gov.pagopa.pu.bff.service.org_sil_service.OrgSilServiceRetrieverService;
@@ -65,13 +65,13 @@ class OrgSilServiceControllerTest {
     long organizationId = 1L;
     OrgSilServiceType serviceType = OrgSilServiceType.ACTUALIZATION;
 
-    List<OrgSilServiceExtended> expectedResult = new ArrayList<>();
-    expectedResult.add(new OrgSilServiceExtended());
+    List<OrgSilServiceExtendedDTO> expectedResult = new ArrayList<>();
+    expectedResult.add(new OrgSilServiceExtendedDTO());
 
     when(orgSilServiceRetrieverServiceMock.getOrgSilServices(organizationId, serviceType, loggedUser, accessToken))
       .thenReturn(expectedResult);
 
-    ResponseEntity<List<OrgSilServiceExtended>> response = orgSilServiceController.getOrgSilServices(organizationId,serviceType);
+    ResponseEntity<List<OrgSilServiceExtendedDTO>> response = orgSilServiceController.getOrgSilServices(organizationId,serviceType);
 
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertNotNull(response.getBody());

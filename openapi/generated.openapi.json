@@ -3997,7 +3997,7 @@
                 "schema" : {
                   "type" : "array",
                   "items" : {
-                    "$ref" : "#/components/schemas/OrgSilServiceExtended"
+                    "$ref" : "#/components/schemas/OrgSilServiceExtendedDTO"
                   }
                 }
               }
@@ -4010,7 +4010,7 @@
                 "schema" : {
                   "type" : "array",
                   "items" : {
-                    "$ref" : "#/components/schemas/OrgSilServiceExtended"
+                    "$ref" : "#/components/schemas/OrgSilServiceExtendedDTO"
                   }
                 }
               }
@@ -4023,7 +4023,7 @@
                 "schema" : {
                   "type" : "array",
                   "items" : {
-                    "$ref" : "#/components/schemas/OrgSilServiceExtended"
+                    "$ref" : "#/components/schemas/OrgSilServiceExtendedDTO"
                   }
                 }
               }
@@ -4036,7 +4036,7 @@
                 "schema" : {
                   "type" : "array",
                   "items" : {
-                    "$ref" : "#/components/schemas/OrgSilServiceExtended"
+                    "$ref" : "#/components/schemas/OrgSilServiceExtendedDTO"
                   }
                 }
               }
@@ -9301,7 +9301,7 @@
         "type" : "string",
         "enum" : [ "HS256", "HS384", "HS512", "RS256", "RS384", "RS512", "ES256", "ES384", "ES512" ]
       },
-      "OrgSilServiceExtended" : {
+      "OrgSilServiceExtendedDTO" : {
         "type" : "object",
         "properties" : {
           "creationDate" : {
@@ -9693,7 +9693,7 @@
             "type" : "string"
           }
         },
-        "required" : [ "amountCents", "debtPositionDescription", "debtPositionId", "debtPositionTypeOrgDescription", "debtor", "dueDate", "installmentId", "iuv", "status" ]
+        "required" : [ "amountCents", "debtPositionDescription", "debtPositionId", "debtPositionTypeOrgDescription", "debtor", "installmentId", "iuv", "status" ]
       },
       "InstallmentRegistry" : {
         "type" : "object",

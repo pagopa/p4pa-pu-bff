@@ -6857,21 +6857,18 @@
             "type" : "integer",
             "format" : "int64"
           }
-        } ],
-        "requestBody" : {
-          "content" : {
-            "application/json" : {
-              "schema" : {
-                "type" : "array",
-                "items" : {
-                  "type" : "integer",
-                  "format" : "int64"
-                }
-              }
+        }, {
+          "name" : "assessmentDetailIds",
+          "in" : "query",
+          "required" : true,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "integer",
+              "format" : "int64"
             }
-          },
-          "required" : true
-        },
+          }
+        } ],
         "responses" : {
           "200" : {
             "description" : "OK"

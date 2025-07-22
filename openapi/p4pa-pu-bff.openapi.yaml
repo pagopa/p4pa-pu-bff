@@ -2631,6 +2631,40 @@ paths:
           description: Conflict
         '500':
           description: Internal Server Error
+  /organization/{organizationId}/assessments/{assessmentId}:
+    put:
+      tags:
+        - Assessments
+      operationId: updateAssessmentsStatus
+      parameters:
+        - name: organizationId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: assessmentId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: status
+          in: query
+          required: true
+          schema:
+            type: 'AssessmentsStatusEnum'
+      responses:
+        "200":
+          description: Ok
+        '401':
+          description: Unauthorized - Missing or invalid token
+        '403':
+          description: Forbidden - Access denied
+        '404':
+          description: Not Found
+        '500':
+          description: Internal Server Error
   /organization/{organizationId}/assessments/{assessmentId}/details:
     get:
       tags:

@@ -18,15 +18,22 @@ public class AssessmentsDetailController implements AssessmentsDetailApi {
 
   private final AssessmentsDetailRetrieverService assessmentsDetailRetrieverService;
 
-    public AssessmentsDetailController(AssessmentsDetailRetrieverService assessmentsDetailRetrieverService) {
-        this.assessmentsDetailRetrieverService = assessmentsDetailRetrieverService;
-    }
+  public AssessmentsDetailController(AssessmentsDetailRetrieverService assessmentsDetailRetrieverService) {
+    this.assessmentsDetailRetrieverService = assessmentsDetailRetrieverService;
+  }
 
-    @Override
+  @Override
   public ResponseEntity<List<AssessmentsDetail>> createAssessmentsDetail(Long organizationId, Long assessmentId, CreateAssessmentsDetail createAssessmentsDetail) {
     log.info("User requested createAssessmentsDetail having organizationId {}, assessmentId {} and iuds {}", organizationId, assessmentId, createAssessmentsDetail.getIuds());
     return ResponseEntity.status(HttpStatus.CREATED).body(
-            assessmentsDetailRetrieverService.createAssessmentsDetail(organizationId,assessmentId,createAssessmentsDetail, SecurityUtils.getLoggedUser(),SecurityUtils.getAccessToken())
+      assessmentsDetailRetrieverService.createAssessmentsDetail(organizationId, assessmentId, createAssessmentsDetail, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken())
     );
+  }
+
+  @Override
+  public ResponseEntity<Void> deleteAssessmentsDetails(Long organizationId, List<Long> assessmentDetailIds) {
+    log.info("User requested deleteAssessmentsDetails having organizationId {} and assessmentDetailIds {}", organizationId, assessmentDetailIds);
+    assessmentsDetailRetrieverService.deleteAssessmentsDetails(organizationId, assessmentDetailIds, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken());
+    return ResponseEntity.ok().build();
   }
 }

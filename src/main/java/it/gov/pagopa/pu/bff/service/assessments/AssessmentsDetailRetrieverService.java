@@ -8,4 +8,6 @@ import java.util.List;
 
 public interface AssessmentsDetailRetrieverService {
   List<AssessmentsDetail> createAssessmentsDetail(Long organizationId, Long assessmentId, CreateAssessmentsDetail createAssessmentsDetail, UserInfo loggedUser, String accessToken);
+
+  void deleteAssessmentsDetails(Long organizationId, List<Long> assessmentDetailIds, UserInfo loggedUser, String accessToken);
 }

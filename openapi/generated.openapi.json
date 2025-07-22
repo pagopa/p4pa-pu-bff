@@ -34,6 +34,9 @@
     "name" : "DebtPositionTypeOrgs",
     "description" : "the DebtPositionTypeOrgs API"
   }, {
+    "name" : "assessmentsDetail",
+    "description" : "the assessmentsDetail API"
+  }, {
     "name" : "Brokers",
     "description" : "the Brokers API"
   }, {
@@ -42,9 +45,6 @@
   }, {
     "name" : "Treasuries",
     "description" : "the Treasuries API"
-  }, {
-    "name" : "assessmentsDetail",
-    "description" : "the assessmentsDetail API"
   }, {
     "name" : "Authentication",
     "description" : "the Authentication API"
@@ -6794,6 +6794,55 @@
           "BearerAuth" : [ ]
         } ]
       }
+    },
+    "/bff/organization/{organizationId}/assessments-details" : {
+      "delete" : {
+        "tags" : [ "assessmentsDetail" ],
+        "operationId" : "deleteAssessmentsDetails",
+        "parameters" : [ {
+          "name" : "organizationId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "type" : "array",
+                "items" : {
+                  "type" : "integer",
+                  "format" : "int64"
+                }
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          },
+          "401" : {
+            "description" : "Unauthorized - Missing or invalid token"
+          },
+          "403" : {
+            "description" : "Forbidden - Access denied"
+          },
+          "404" : {
+            "description" : "Not Found"
+          },
+          "500" : {
+            "description" : "Internal Server Error"
+          }
+        },
+        "security" : [ {
+          "BearerAuth" : [ ]
+        } ]
+      }
     }
   },
   "components" : {
@@ -6914,6 +6963,9 @@
           "dueDate" : {
             "type" : "string",
             "format" : "date"
+          },
+          "switchToExpired" : {
+            "type" : "boolean"
           },
           "notificationFeeCents" : {
             "type" : "integer",

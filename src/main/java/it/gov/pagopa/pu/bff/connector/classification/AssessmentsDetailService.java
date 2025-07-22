@@ -7,4 +7,6 @@ import java.util.List;
 
 public interface AssessmentsDetailService {
   List<AssessmentsDetail> createAssessmentsDetail(Long organizationId, Long assessmentsId, CreateAssessmentsDetail createAssessmentsDetail, String accessToken);
+
+  void deleteAssessmentsDetails(Long assessmentDetailId, String accessToken);
 }

@@ -177,6 +177,7 @@ class AssessmentsDetailRetrieverServiceImplTest {
     for (Long id : ids) {
       AssessmentsDetail detail = podamFactory.manufacturePojo(AssessmentsDetail.class);
       detail.setOrganizationId(organizationId);
+      detail.setAssessmentDetailId(id);
       detailsMap.put(id, detail);
     }
 
@@ -200,7 +201,7 @@ class AssessmentsDetailRetrieverServiceImplTest {
       authMock.verify(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser));
 
       for (Long id : ids) {
-        verify(assessmentsServiceMock, times(2)).findAssessmentsDetail(id, accessToken);
+        verify(assessmentsServiceMock).findAssessmentsDetail(id, accessToken);
         verify(debtPositionTypeOrgRetrieverServiceMock).validateOperator(organizationId, detailsMap.get(id).getDebtPositionTypeOrgCode(), loggedUser.getMappedExternalUserId(), accessToken);
         verify(assessmentsDetailServiceMock).deleteAssessmentsDetails(id, accessToken);
       }

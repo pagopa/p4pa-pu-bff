@@ -13,8 +13,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
+import java.util.Map;
 
 @Service
 @Slf4j
@@ -54,31 +56,38 @@ public class AssessmentsDetailRetrieverServiceImpl implements AssessmentsDetailR
   public void deleteAssessmentsDetails(Long organizationId, List<Long> assessmentDetailIds, UserInfo loggedUser, String accessToken) {
     AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser);
 
-    validateAllIdsExistAndBelongToOrganization(organizationId, assessmentDetailIds, accessToken);
+    List<Long> invalidIds = new ArrayList<>();
+    Map<Long, AssessmentsDetail> validDetails = collectAndValidateAssessmentsDetails(organizationId, assessmentDetailIds, accessToken, invalidIds);
+
+    if (!invalidIds.isEmpty()) {
+      throw new ResourceNotFoundException("The following assessmentDetailIds were not found or do not belong to organization: " + invalidIds);
+    }
+
+    for (AssessmentsDetail detail : validDetails.values()) {
+      debtPositionTypeOrgRetrieverService.validateOperator(organizationId, detail.getDebtPositionTypeOrgCode(), loggedUser.getMappedExternalUserId(), accessToken);
+      assessmentsDetailService.deleteAssessmentsDetails(detail.getAssessmentDetailId(), accessToken);
+    }
+  }
+
+  private Map<Long, AssessmentsDetail> collectAndValidateAssessmentsDetails(Long organizationId, List<Long> assessmentDetailIds, String accessToken, List<Long> invalidIds) {
+    Map<Long, AssessmentsDetail> validDetails = new HashMap<>();
 
     for (Long id : assessmentDetailIds) {
-      deleteSingleAssessmentDetail(organizationId, id, loggedUser, accessToken);
+      if (id == null) {
+        continue;
+      }
+
+      AssessmentsDetail detail = assessmentsService.findAssessmentsDetail(id, accessToken);
+
+      if (detail == null || !organizationId.equals(detail.getOrganizationId())) {
+        invalidIds.add(id);
+      } else {
+        validDetails.put(id, detail);
+      }
     }
+
+    return validDetails;
   }
 
-  private void validateAllIdsExistAndBelongToOrganization(Long organizationId, List<Long> assessmentDetailIds, String accessToken) {
-    List<Long> notFoundIds = assessmentDetailIds.stream()
-      .filter(Objects::nonNull)
-      .filter(id -> {
-        AssessmentsDetail detail = assessmentsService.findAssessmentsDetail(id, accessToken);
-        return detail == null || !organizationId.equals(detail.getOrganizationId());
-      })
-      .toList();
-
-    if (!notFoundIds.isEmpty()) {
-      throw new ResourceNotFoundException("The following assessmentDetailIds were not found or do not belong to organization: " + notFoundIds);
-    }
-  }
-
-  private void deleteSingleAssessmentDetail(Long organizationId, Long id, UserInfo loggedUser, String accessToken) {
-    AssessmentsDetail detail = assessmentsService.findAssessmentsDetail(id, accessToken);
-    debtPositionTypeOrgRetrieverService.validateOperator(organizationId, detail.getDebtPositionTypeOrgCode(), loggedUser.getMappedExternalUserId(), accessToken);
-    assessmentsDetailService.deleteAssessmentsDetails(id, accessToken);
-  }
 }
 

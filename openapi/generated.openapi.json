@@ -11208,9 +11208,12 @@
           },
           "updateOperatorExternalId" : {
             "type" : "string"
+          },
+          "flagManualGeneration" : {
+            "type" : "boolean"
           }
         },
-        "required" : [ "assessmentsName", "debtPositionTypeOrgDescription", "pagedAssessmentsRowsDetail", "status" ]
+        "required" : [ "assessmentsName", "debtPositionTypeOrgDescription", "flagManualGeneration", "pagedAssessmentsRowsDetail", "status" ]
       },
       "PagedAssessmentsRowsDetail" : {
         "type" : "object",

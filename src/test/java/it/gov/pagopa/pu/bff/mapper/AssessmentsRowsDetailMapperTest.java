@@ -31,6 +31,7 @@ class AssessmentsRowsDetailMapperTest {
     assertEquals(assessments.getStatus(),result.getStatus());
     assertEquals(assessments.getUpdateOperatorExternalId(),result.getUpdateOperatorExternalId());
     assertEquals(debtPositionTypeOrgDescription,result.getDebtPositionTypeOrgDescription());
+    assertEquals(assessments.getFlagManualGeneration(), result.getFlagManualGeneration());
     TestUtils.checkNotNullFields(result);
   }
 }

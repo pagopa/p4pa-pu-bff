@@ -1859,7 +1859,7 @@ paths:
           content:
             application/json:
               schema:
-                type: 'OrgSilServiceDTO'
+                type: 'OrgSilServiceDTOExtended'
         '401':
           description: Unauthorized - Missing or invalid token
         '403':

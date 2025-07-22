@@ -18,19 +18,19 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @NoArgsConstructor
 @SuperBuilder(toBuilder = true)
-public class OrgSilServiceExtendedDTO extends OrgSilService {
+public class OrgSilServiceExtended extends OrgSilService {
   private SilServiceLegacyBasicAuthConfig legacyBasicAuthConfig;
   private SilServiceLegacyJwtAuthConfig legacyJwtAuthConfig;
 
   //This method should not be used since the authConfig field has been remapped
   @Override
   public OrgSilServiceRequestBodyAuthConfig getAuthConfig() {
-    throw new UnsupportedOperationException("This method is not supported in OrgSilServiceDTO.");
+    throw new UnsupportedOperationException("This method is not supported in OrgSilServiceExtended.");
   }
 
   //This method should not be used since the authConfig field has been remapped
   @Override
   public void setAuthConfig(@Nullable OrgSilServiceRequestBodyAuthConfig authConfig) {
-    throw new UnsupportedOperationException("This method is not supported in OrgSilServiceDTO.");
+    throw new UnsupportedOperationException("This method is not supported in OrgSilServiceExtended.");
   }
 }

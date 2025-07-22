@@ -2,8 +2,9 @@ package it.gov.pagopa.pu.bff.service;
 
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.connector.organization.OrgSilServiceService;
+import it.gov.pagopa.pu.bff.dto.OrgSilServiceDTOExtended;
 import it.gov.pagopa.pu.bff.dto.generated.PagedOrgSilServiceView;
-import it.gov.pagopa.pu.bff.dto.OrgSilServiceExtendedDTO;
+import it.gov.pagopa.pu.bff.dto.OrgSilServiceExtended;
 import it.gov.pagopa.pu.bff.mapper.OrgSilServiceDTOMapper;
 import it.gov.pagopa.pu.bff.mapper.OrgSilServiceViewMapper;
 import it.gov.pagopa.pu.bff.service.org_sil_service.OrgSilServiceRetrieverService;
@@ -74,7 +75,7 @@ public class OrgSilServiceRetrieverServiceImplTest {
     Long organizationId = 1L;
     OrgSilServiceType serviceType = OrgSilServiceType.ACTUALIZATION;
     CollectionModelOrgSilService collectionModelOrgSilService = podamFactory.manufacturePojo(CollectionModelOrgSilService.class);
-    List<OrgSilServiceExtendedDTO> expectedResult = Collections.singletonList(new OrgSilServiceExtendedDTO());
+    List<OrgSilServiceExtended> expectedResult = Collections.singletonList(new OrgSilServiceExtended());
 
     try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
       authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)).thenAnswer(a -> null);
@@ -82,7 +83,7 @@ public class OrgSilServiceRetrieverServiceImplTest {
         .thenReturn(collectionModelOrgSilService);
       when(orgSilServiceDTOMapperMock.map(collectionModelOrgSilService.getEmbedded().getOrgSilServices())).thenReturn(expectedResult);
 
-        List<OrgSilServiceExtendedDTO> result = orgSilServiceRetrieverService.getOrgSilServices(organizationId, serviceType, loggedUser, accessToken);
+        List<OrgSilServiceExtended> result = orgSilServiceRetrieverService.getOrgSilServices(organizationId, serviceType, loggedUser, accessToken);
 
       assertNotNull(result);
       assertSame(expectedResult, result);
@@ -107,7 +108,7 @@ public class OrgSilServiceRetrieverServiceImplTest {
       when(orgSilServiceServiceMock.getOrgSilServices(organizationId, serviceType, accessToken))
         .thenReturn(collectionModelOrgSilService);
 
-          List<OrgSilServiceExtendedDTO> result = orgSilServiceRetrieverService.getOrgSilServices(organizationId, serviceType, loggedUser, accessToken);
+          List<OrgSilServiceExtended> result = orgSilServiceRetrieverService.getOrgSilServices(organizationId, serviceType, loggedUser, accessToken);
 
       assertNotNull(result);
       assertTrue(CollectionUtils.isEmpty(result));
@@ -130,7 +131,7 @@ public class OrgSilServiceRetrieverServiceImplTest {
       when(orgSilServiceServiceMock.getOrgSilServices(organizationId, serviceType, accessToken))
         .thenReturn(null);
 
-          List<OrgSilServiceExtendedDTO> result = orgSilServiceRetrieverService.getOrgSilServices(organizationId, serviceType, loggedUser, accessToken);
+          List<OrgSilServiceExtended> result = orgSilServiceRetrieverService.getOrgSilServices(organizationId, serviceType, loggedUser, accessToken);
 
       assertNotNull(result);
       assertTrue(CollectionUtils.isEmpty(result));
@@ -241,7 +242,7 @@ public class OrgSilServiceRetrieverServiceImplTest {
   @Test
   void givenValidOrgSilServiceIdWhenGetOrgSilServiceDetailsThenReturnOrgSilServiceDTO() {
     OrgSilServiceDTO orgSilServiceDTO = new OrgSilServiceDTO();
-    OrgSilServiceExtendedDTO orgSilServiceExtendedDTO = new OrgSilServiceExtendedDTO();
+    OrgSilServiceDTOExtended orgSilServiceExtended = new OrgSilServiceDTOExtended();
     Long organizationId=1L;
 
     UserInfo loggedUser = new UserInfo();
@@ -250,12 +251,12 @@ public class OrgSilServiceRetrieverServiceImplTest {
 
     doNothing().when(authorizationServiceMock).validateAdminRole(organizationId, loggedUser);
     Mockito.when(orgSilServiceServiceMock.getOrgSilServiceByIdDecrypted(2L, accessToken)).thenReturn(orgSilServiceDTO);
-    Mockito.when(orgSilServiceDTOMapperMock.map(orgSilServiceDTO)).thenReturn(orgSilServiceExtendedDTO);
+    Mockito.when(orgSilServiceDTOMapperMock.map(orgSilServiceDTO)).thenReturn(orgSilServiceExtended);
 
-    OrgSilServiceExtendedDTO result = orgSilServiceRetrieverService.getOrgSilServiceDetails(organizationId, 2L, loggedUser, accessToken);
+    OrgSilServiceDTOExtended result = orgSilServiceRetrieverService.getOrgSilServiceDetails(organizationId, 2L, loggedUser, accessToken);
 
     assertNotNull(result);
-    assertEquals(orgSilServiceExtendedDTO, result);
+    assertEquals(orgSilServiceExtended, result);
 
   }
 

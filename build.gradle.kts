@@ -205,7 +205,7 @@ tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>("ope
     "WorkflowCreatedDTO" to "it.gov.pagopa.pu.workflowhub.dto.generated.WorkflowCreatedDTO",
     "ManageDebtPositionDTO" to "it.gov.pagopa.pu.debtpositions.dto.generated.ManageDebtPositionDTO",
     "OrgSilServiceType" to "it.gov.pagopa.pu.organization.dto.generated.OrgSilServiceType",
-    "OrgSilServiceDTO" to "it.gov.pagopa.pu.bff.dto.OrgSilServiceExtendedDTO",
+    "OrgSilServiceDTO" to "it.gov.pagopa.pu.bff.dto.OrgSilServiceExtended",
     "AssessmentsRegistryStatus" to "it.gov.pagopa.pu.classification.dto.generated.AssessmentsRegistryStatus",
     "AssessmentsRegistry" to "it.gov.pagopa.pu.classification.dto.generated.AssessmentsRegistry",
     "AssessmentsExtendedDTO" to "it.gov.pagopa.pu.bff.dto.AssessmentsExtendedDTO",
@@ -223,7 +223,7 @@ tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>("ope
     "PagedClassificationPaidInstallmentsView" to "it.gov.pagopa.pu.classification.dto.generated.PagedClassificationPaidInstallmentsView",
     "CreateAssessmentsDetail" to "it.gov.pagopa.pu.classification.dto.generated.CreateAssessmentsDetail",
     "OrgSilServiceView" to "it.gov.pagopa.pu.organization.dto.generated.OrgSilServiceView",
-    "OrgSilServiceDecryptedDTO" to "it.gov.pagopa.pu.organization.dto.generated.OrgSilServiceDTO"
+    "OrgSilServiceDTOExtended" to "it.gov.pagopa.pu.bff.dto.OrgSilServiceDTOExtended"
   ))
   configOptions.set(mapOf(
     "dateLibrary" to "java8",

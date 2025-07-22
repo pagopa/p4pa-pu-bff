@@ -3997,7 +3997,7 @@
                 "schema" : {
                   "type" : "array",
                   "items" : {
-                    "$ref" : "#/components/schemas/OrgSilServiceExtendedDTO"
+                    "$ref" : "#/components/schemas/OrgSilServiceExtended"
                   }
                 }
               }
@@ -4010,7 +4010,7 @@
                 "schema" : {
                   "type" : "array",
                   "items" : {
-                    "$ref" : "#/components/schemas/OrgSilServiceExtendedDTO"
+                    "$ref" : "#/components/schemas/OrgSilServiceExtended"
                   }
                 }
               }
@@ -4023,7 +4023,7 @@
                 "schema" : {
                   "type" : "array",
                   "items" : {
-                    "$ref" : "#/components/schemas/OrgSilServiceExtendedDTO"
+                    "$ref" : "#/components/schemas/OrgSilServiceExtended"
                   }
                 }
               }
@@ -4036,7 +4036,7 @@
                 "schema" : {
                   "type" : "array",
                   "items" : {
-                    "$ref" : "#/components/schemas/OrgSilServiceExtendedDTO"
+                    "$ref" : "#/components/schemas/OrgSilServiceExtended"
                   }
                 }
               }
@@ -4076,7 +4076,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/OrgSilServiceExtendedDTO"
+                  "$ref" : "#/components/schemas/OrgSilServiceDTOExtended"
                 }
               }
             }
@@ -4086,7 +4086,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/OrgSilServiceExtendedDTO"
+                  "$ref" : "#/components/schemas/OrgSilServiceDTOExtended"
                 }
               }
             }
@@ -4096,7 +4096,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/OrgSilServiceExtendedDTO"
+                  "$ref" : "#/components/schemas/OrgSilServiceDTOExtended"
                 }
               }
             }
@@ -4106,7 +4106,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/OrgSilServiceExtendedDTO"
+                  "$ref" : "#/components/schemas/OrgSilServiceDTOExtended"
                 }
               }
             }
@@ -9295,7 +9295,7 @@
         "type" : "string",
         "enum" : [ "HS256", "HS384", "HS512", "RS256", "RS384", "RS512", "ES256", "ES384", "ES512" ]
       },
-      "OrgSilServiceExtendedDTO" : {
+      "OrgSilServiceExtended" : {
         "type" : "object",
         "properties" : {
           "creationDate" : {
@@ -9395,6 +9395,90 @@
           "signingKey" : {
             "type" : "string",
             "format" : "byte"
+          },
+          "authConfig" : {
+            "type" : "string"
+          }
+        },
+        "required" : [ "authConfig" ]
+      },
+      "OrgSilServiceDTOExtended" : {
+        "type" : "object",
+        "properties" : {
+          "orgSilServiceId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "organizationId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "applicationName" : {
+            "type" : "string",
+            "maxLength" : 255,
+            "minLength" : 0
+          },
+          "serviceUrl" : {
+            "type" : "string",
+            "maxLength" : 500,
+            "minLength" : 0
+          },
+          "serviceType" : {
+            "$ref" : "#/components/schemas/OrgSilServiceType"
+          },
+          "flagLegacy" : {
+            "type" : "boolean"
+          },
+          "legacyBasicAuthConfig" : {
+            "$ref" : "#/components/schemas/SilServiceLegacyBasicAuthConfigDTO"
+          },
+          "legacyJwtAuthConfig" : {
+            "$ref" : "#/components/schemas/SilServiceLegacyJwtAuthConfigDTO"
+          }
+        },
+        "required" : [ "applicationName", "flagLegacy", "organizationId", "serviceType", "serviceUrl" ]
+      },
+      "SilServiceLegacyBasicAuthConfigDTO" : {
+        "type" : "object",
+        "discriminator" : {
+          "propertyName" : "authConfig"
+        },
+        "properties" : {
+          "authUrl" : {
+            "type" : "string"
+          },
+          "user" : {
+            "type" : "string"
+          },
+          "psw" : {
+            "type" : "string"
+          },
+          "authConfig" : {
+            "type" : "string"
+          }
+        },
+        "required" : [ "authConfig" ]
+      },
+      "SilServiceLegacyJwtAuthConfigDTO" : {
+        "type" : "object",
+        "discriminator" : {
+          "propertyName" : "authConfig"
+        },
+        "properties" : {
+          "kid" : {
+            "type" : "string"
+          },
+          "subject" : {
+            "type" : "string"
+          },
+          "issuer" : {
+            "type" : "string"
+          },
+          "algorithm" : {
+            "$ref" : "#/components/schemas/JwtAlgorithm"
+          },
+          "signingKey" : {
+            "type" : "string"
           },
           "authConfig" : {
             "type" : "string"

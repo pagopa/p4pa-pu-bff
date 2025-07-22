@@ -1,7 +1,8 @@
 package it.gov.pagopa.pu.bff.controller;
 
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
-import it.gov.pagopa.pu.bff.dto.OrgSilServiceExtendedDTO;
+import it.gov.pagopa.pu.bff.dto.OrgSilServiceDTOExtended;
+import it.gov.pagopa.pu.bff.dto.OrgSilServiceExtended;
 import it.gov.pagopa.pu.bff.dto.generated.PagedOrgSilServiceView;
 import it.gov.pagopa.pu.bff.security.SecurityUtilsTest;
 import it.gov.pagopa.pu.bff.service.org_sil_service.OrgSilServiceRetrieverService;
@@ -64,13 +65,13 @@ class OrgSilServiceControllerTest {
     long organizationId = 1L;
     OrgSilServiceType serviceType = OrgSilServiceType.ACTUALIZATION;
 
-    List<OrgSilServiceExtendedDTO> expectedResult = new ArrayList<>();
-    expectedResult.add(new OrgSilServiceExtendedDTO());
+    List<OrgSilServiceExtended> expectedResult = new ArrayList<>();
+    expectedResult.add(new OrgSilServiceExtended());
 
     when(orgSilServiceRetrieverServiceMock.getOrgSilServices(organizationId, serviceType, loggedUser, accessToken))
       .thenReturn(expectedResult);
 
-    ResponseEntity<List<OrgSilServiceExtendedDTO>> response = orgSilServiceController.getOrgSilServices(organizationId,serviceType);
+    ResponseEntity<List<OrgSilServiceExtended>> response = orgSilServiceController.getOrgSilServices(organizationId,serviceType);
 
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertNotNull(response.getBody());
@@ -103,15 +104,15 @@ class OrgSilServiceControllerTest {
     //given
     long organizationId = 2L;
     long orgSilServiceId = 1L;
-    OrgSilServiceExtendedDTO orgSilServiceExtendedDTO = new OrgSilServiceExtendedDTO();
+    OrgSilServiceDTOExtended orgSilServiceDTOExtended = new OrgSilServiceDTOExtended();
 
-    when(orgSilServiceRetrieverServiceMock.getOrgSilServiceDetails(organizationId, orgSilServiceId, loggedUser, accessToken)).thenReturn(orgSilServiceExtendedDTO);
+    when(orgSilServiceRetrieverServiceMock.getOrgSilServiceDetails(organizationId, orgSilServiceId, loggedUser, accessToken)).thenReturn(orgSilServiceDTOExtended);
     //when
-    ResponseEntity<OrgSilServiceExtendedDTO> response = orgSilServiceController.getOrgSilServiceDetails(organizationId, orgSilServiceId);
+    ResponseEntity<OrgSilServiceDTOExtended> response = orgSilServiceController.getOrgSilServiceDetails(organizationId, orgSilServiceId);
     //then
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertNotNull(response.getBody());
-    assertSame(orgSilServiceExtendedDTO, response.getBody());
+    assertSame(orgSilServiceDTOExtended, response.getBody());
   }
 
   @Test
@@ -122,7 +123,7 @@ class OrgSilServiceControllerTest {
 
     when(orgSilServiceRetrieverServiceMock.getOrgSilServiceDetails(organizationId, orgSilServiceId, loggedUser, accessToken)).thenReturn(null);
     //when
-    ResponseEntity<OrgSilServiceExtendedDTO> response = orgSilServiceController.getOrgSilServiceDetails(organizationId, orgSilServiceId);
+    ResponseEntity<OrgSilServiceDTOExtended> response = orgSilServiceController.getOrgSilServiceDetails(organizationId, orgSilServiceId);
     //then
     assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     assertNull(response.getBody());

@@ -1,7 +1,8 @@
 package it.gov.pagopa.pu.bff.controller;
 
 import it.gov.pagopa.pu.bff.controller.generated.OrgSilServiceApi;
-import it.gov.pagopa.pu.bff.dto.OrgSilServiceExtendedDTO;
+import it.gov.pagopa.pu.bff.dto.OrgSilServiceDTOExtended;
+import it.gov.pagopa.pu.bff.dto.OrgSilServiceExtended;
 import it.gov.pagopa.pu.bff.dto.generated.PagedOrgSilServiceView;
 import it.gov.pagopa.pu.bff.security.SecurityUtils;
 import it.gov.pagopa.pu.bff.service.org_sil_service.OrgSilServiceRetrieverService;
@@ -24,7 +25,7 @@ public class OrgSilServiceController implements OrgSilServiceApi {
   }
 
   @Override
-  public ResponseEntity<List<OrgSilServiceExtendedDTO>> getOrgSilServices(Long organizationId, OrgSilServiceType serviceType) {
+  public ResponseEntity<List<OrgSilServiceExtended>> getOrgSilServices(Long organizationId, OrgSilServiceType serviceType) {
     log.info("User requested getOrgSilServices having organizationId {} and serviceType {}", organizationId, serviceType);
     return ResponseEntity.ok(orgSilServiceRetrieverService.getOrgSilServices(organizationId, serviceType,
       SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken()));
@@ -38,7 +39,7 @@ public class OrgSilServiceController implements OrgSilServiceApi {
   }
 
   @Override
-  public ResponseEntity<OrgSilServiceExtendedDTO> getOrgSilServiceDetails(Long organizationId, Long orgSilServiceId) {
+  public ResponseEntity<OrgSilServiceDTOExtended> getOrgSilServiceDetails(Long organizationId, Long orgSilServiceId) {
     log.info("User requested getOrgSilServiceDetails having organizationId {} and orgSilServiceId {}",organizationId,orgSilServiceId);
     return ResponseEntity.ofNullable(orgSilServiceRetrieverService.getOrgSilServiceDetails(organizationId,orgSilServiceId,
       SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken()));

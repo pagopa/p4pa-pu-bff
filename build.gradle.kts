@@ -223,7 +223,7 @@ tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>("ope
     "PagedClassificationPaidInstallmentsView" to "it.gov.pagopa.pu.classification.dto.generated.PagedClassificationPaidInstallmentsView",
     "CreateAssessmentsDetail" to "it.gov.pagopa.pu.classification.dto.generated.CreateAssessmentsDetail",
     "OrgSilServiceView" to "it.gov.pagopa.pu.organization.dto.generated.OrgSilServiceView",
-    "OrgSilServiceDTOExtended" to "it.gov.pagopa.pu.bff.dto.OrgSilServiceDTOExtended"
+    "OrgSilServiceDecryptedDTO" to "it.gov.pagopa.pu.bff.dto.OrgSilServiceDecryptedDTO"
   ))
   configOptions.set(mapOf(
     "dateLibrary" to "java8",

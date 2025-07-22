@@ -4076,7 +4076,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/OrgSilServiceDTOExtended"
+                  "$ref" : "#/components/schemas/OrgSilServiceDecryptedDTO"
                 }
               }
             }
@@ -4086,7 +4086,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/OrgSilServiceDTOExtended"
+                  "$ref" : "#/components/schemas/OrgSilServiceDecryptedDTO"
                 }
               }
             }
@@ -4096,7 +4096,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/OrgSilServiceDTOExtended"
+                  "$ref" : "#/components/schemas/OrgSilServiceDecryptedDTO"
                 }
               }
             }
@@ -4106,7 +4106,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/OrgSilServiceDTOExtended"
+                  "$ref" : "#/components/schemas/OrgSilServiceDecryptedDTO"
                 }
               }
             }
@@ -6915,6 +6915,9 @@
             "type" : "string",
             "format" : "date"
           },
+          "switchToExpired" : {
+            "type" : "boolean"
+          },
           "notificationFeeCents" : {
             "type" : "integer",
             "format" : "int64"
@@ -7499,6 +7502,9 @@
           "flagManualGeneration" : {
             "type" : "boolean"
           },
+          "operatorExternalUserId" : {
+            "type" : "string"
+          },
           "_links" : {
             "type" : "object",
             "additionalProperties" : {
@@ -7506,7 +7512,7 @@
             }
           }
         },
-        "required" : [ "assessmentName", "debtPositionTypeOrgCode", "flagManualGeneration", "organizationId", "printed", "status" ]
+        "required" : [ "assessmentName", "debtPositionTypeOrgCode", "flagManualGeneration", "operatorExternalUserId", "organizationId", "printed", "status" ]
       },
       "AssessmentsDetail" : {
         "type" : "object",
@@ -9402,7 +9408,7 @@
         },
         "required" : [ "authConfig" ]
       },
-      "OrgSilServiceDTOExtended" : {
+      "OrgSilServiceDecryptedDTO" : {
         "type" : "object",
         "properties" : {
           "orgSilServiceId" : {
@@ -11082,6 +11088,9 @@
           "flagManualGeneration" : {
             "type" : "boolean"
           },
+          "operatorExternalUserId" : {
+            "type" : "string"
+          },
           "_links" : {
             "type" : "object",
             "additionalProperties" : {
@@ -11092,7 +11101,7 @@
             "type" : "string"
           }
         },
-        "required" : [ "assessmentName", "debtPositionTypeOrgCode", "flagManualGeneration", "organizationId", "printed", "status" ]
+        "required" : [ "assessmentName", "debtPositionTypeOrgCode", "flagManualGeneration", "operatorExternalUserId", "organizationId", "printed", "status" ]
       },
       "PagedAssessmentsExtendedDTO" : {
         "type" : "object",

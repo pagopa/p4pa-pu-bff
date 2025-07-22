@@ -1,7 +1,7 @@
 package it.gov.pagopa.pu.bff.controller;
 
 import it.gov.pagopa.pu.bff.controller.generated.OrgSilServiceApi;
-import it.gov.pagopa.pu.bff.dto.OrgSilServiceDTOExtended;
+import it.gov.pagopa.pu.bff.dto.OrgSilServiceDecryptedDTO;
 import it.gov.pagopa.pu.bff.dto.OrgSilServiceExtended;
 import it.gov.pagopa.pu.bff.dto.generated.PagedOrgSilServiceView;
 import it.gov.pagopa.pu.bff.security.SecurityUtils;
@@ -39,7 +39,7 @@ public class OrgSilServiceController implements OrgSilServiceApi {
   }
 
   @Override
-  public ResponseEntity<OrgSilServiceDTOExtended> getOrgSilServiceDetails(Long organizationId, Long orgSilServiceId) {
+  public ResponseEntity<OrgSilServiceDecryptedDTO> getOrgSilServiceDetails(Long organizationId, Long orgSilServiceId) {
     log.info("User requested getOrgSilServiceDetails having organizationId {} and orgSilServiceId {}",organizationId,orgSilServiceId);
     return ResponseEntity.ofNullable(orgSilServiceRetrieverService.getOrgSilServiceDetails(organizationId,orgSilServiceId,
       SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken()));

@@ -1,7 +1,7 @@
 package it.gov.pagopa.pu.bff.controller;
 
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
-import it.gov.pagopa.pu.bff.dto.OrgSilServiceDTOExtended;
+import it.gov.pagopa.pu.bff.dto.OrgSilServiceDecryptedDTO;
 import it.gov.pagopa.pu.bff.dto.OrgSilServiceExtended;
 import it.gov.pagopa.pu.bff.dto.generated.PagedOrgSilServiceView;
 import it.gov.pagopa.pu.bff.security.SecurityUtilsTest;
@@ -104,15 +104,15 @@ class OrgSilServiceControllerTest {
     //given
     long organizationId = 2L;
     long orgSilServiceId = 1L;
-    OrgSilServiceDTOExtended orgSilServiceDTOExtended = new OrgSilServiceDTOExtended();
+    OrgSilServiceDecryptedDTO orgSilServiceDecryptedDTO = new OrgSilServiceDecryptedDTO();
 
-    when(orgSilServiceRetrieverServiceMock.getOrgSilServiceDetails(organizationId, orgSilServiceId, loggedUser, accessToken)).thenReturn(orgSilServiceDTOExtended);
+    when(orgSilServiceRetrieverServiceMock.getOrgSilServiceDetails(organizationId, orgSilServiceId, loggedUser, accessToken)).thenReturn(orgSilServiceDecryptedDTO);
     //when
-    ResponseEntity<OrgSilServiceDTOExtended> response = orgSilServiceController.getOrgSilServiceDetails(organizationId, orgSilServiceId);
+    ResponseEntity<OrgSilServiceDecryptedDTO> response = orgSilServiceController.getOrgSilServiceDetails(organizationId, orgSilServiceId);
     //then
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertNotNull(response.getBody());
-    assertSame(orgSilServiceDTOExtended, response.getBody());
+    assertSame(orgSilServiceDecryptedDTO, response.getBody());
   }
 
   @Test
@@ -123,7 +123,7 @@ class OrgSilServiceControllerTest {
 
     when(orgSilServiceRetrieverServiceMock.getOrgSilServiceDetails(organizationId, orgSilServiceId, loggedUser, accessToken)).thenReturn(null);
     //when
-    ResponseEntity<OrgSilServiceDTOExtended> response = orgSilServiceController.getOrgSilServiceDetails(organizationId, orgSilServiceId);
+    ResponseEntity<OrgSilServiceDecryptedDTO> response = orgSilServiceController.getOrgSilServiceDetails(organizationId, orgSilServiceId);
     //then
     assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     assertNull(response.getBody());

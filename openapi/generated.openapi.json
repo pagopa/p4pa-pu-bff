@@ -6212,14 +6212,6 @@
             "type" : "string"
           }
         }, {
-          "name" : "assessmentId",
-          "in" : "query",
-          "required" : true,
-          "schema" : {
-            "type" : "integer",
-            "format" : "int64"
-          }
-        }, {
           "name" : "iuv",
           "in" : "query",
           "required" : false,
@@ -6257,6 +6249,14 @@
           "schema" : {
             "type" : "string",
             "format" : "date-time"
+          }
+        }, {
+          "name" : "assessmentId",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
           }
         }, {
           "name" : "page",

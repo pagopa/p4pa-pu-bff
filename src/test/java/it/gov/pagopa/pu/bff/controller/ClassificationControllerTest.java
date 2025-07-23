@@ -167,12 +167,12 @@ class ClassificationControllerTest {
       classificationController.getPaidInstallments(
         organizationId,
         debtPositionTypeOrgCode,
-        assessmentId,
         iuv,
         paymentDateTimeFrom,
         paymentDateTimeTo,
         updateDateFrom,
         updateDateTo,
+        assessmentId,
         pageable
       );
 

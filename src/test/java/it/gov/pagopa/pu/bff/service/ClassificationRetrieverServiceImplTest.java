@@ -4,7 +4,6 @@ import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.connector.classification.AssessmentsService;
 import it.gov.pagopa.pu.bff.connector.classification.ClassificationService;
 import it.gov.pagopa.pu.bff.dto.*;
-import it.gov.pagopa.pu.bff.dto.OffsetDateTimeIntervalFilter;
 import it.gov.pagopa.pu.bff.exception.ResourceNotFoundException;
 import it.gov.pagopa.pu.bff.mapper.ClassificationDetailDTOMapper;
 import it.gov.pagopa.pu.bff.service.classification.ClassificationRetrieverServiceImpl;
@@ -402,10 +401,11 @@ class ClassificationRetrieverServiceImplTest {
       when(assessmentsServiceMock.getAssessmentsById(assessmentId, accessToken))
         .thenReturn(assessment);
 
-      when(assessmentsServiceMock.findPagedModelAssessmentsDetail(any(), any(), eq(accessToken)))
+      when(assessmentsServiceMock.findPagedModelAssessmentsDetail(argThat(f->f.getAssessmentId().equals(assessmentId)),
+              argThat(p->p.getPageNumber()==0 && p.getPageSize() == PAGE_MAX_SIZE), eq(accessToken)))
         .thenReturn(assessmentsDetailPage);
 
-      when(classificationServiceMock.getPaidInstallments(eq(organizationId), any(), eq(pageable), eq(accessToken)))
+      when(classificationServiceMock.getPaidInstallments(eq(organizationId), argThat(f->f.getIuv().equals(filters.getIuv()) && f.getIuds().equals(Collections.singleton(detail.getIud()))), eq(pageable), eq(accessToken)))
         .thenReturn(expectedResult);
 
       PagedClassificationPaidInstallmentsView result =
@@ -413,6 +413,37 @@ class ClassificationRetrieverServiceImplTest {
 
       assertNotNull(result);
       assertSame(expectedResult, result);
+    }
+  }
+
+  @Test
+  void givenNoAssessmentIdWhenGetPaidInstallmentsThenOk() {
+    UserInfo loggedUser = new UserInfo();
+    loggedUser.setUserId("user-123");
+
+    long organizationId = 1L;
+
+    ClassificationPaidInstallmentsFiltersDTO filters = ClassificationPaidInstallmentsFiltersDTO.builder()
+      .iuv("IUV123")
+      .build();
+
+    Pageable pageable = PageRequest.of(0, 10);
+    PagedClassificationPaidInstallmentsView expectedResult = new PagedClassificationPaidInstallmentsView();
+
+    try (MockedStatic<AuthorizationService> authorizationMock = Mockito.mockStatic(AuthorizationService.class)) {
+      authorizationMock.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser))
+        .thenAnswer(a -> null);
+
+      when(classificationServiceMock.getPaidInstallments(organizationId, filters, pageable, accessToken))
+        .thenReturn(expectedResult);
+
+      PagedClassificationPaidInstallmentsView result =
+        classificationRetrieverService.getPaidInstallments(organizationId, null, filters, pageable, loggedUser, accessToken);
+
+      assertNotNull(result);
+      assertSame(expectedResult, result);
+
+      verifyNoInteractions(assessmentsServiceMock);
     }
   }
 
@@ -471,10 +502,11 @@ class ClassificationRetrieverServiceImplTest {
       when(assessmentsServiceMock.getAssessmentsById(assessmentId, accessToken))
         .thenReturn(assessment);
 
-      when(assessmentsServiceMock.findPagedModelAssessmentsDetail(any(), any(), eq(accessToken)))
+      when(assessmentsServiceMock.findPagedModelAssessmentsDetail(argThat(f->f.getAssessmentId().equals(assessmentId)),
+              argThat(p->p.getPageNumber()==0 && p.getPageSize() == PAGE_MAX_SIZE), eq(accessToken)))
         .thenReturn(emptyPage);
 
-      when(classificationServiceMock.getPaidInstallments(eq(organizationId), any(), eq(pageable), eq(accessToken)))
+      when(classificationServiceMock.getPaidInstallments(organizationId, filters, pageable, accessToken))
         .thenReturn(expectedResult);
 
       PagedClassificationPaidInstallmentsView result =
@@ -482,6 +514,7 @@ class ClassificationRetrieverServiceImplTest {
 
       assertNotNull(result);
       assertSame(expectedResult, result);
+      assertTrue(filters.getIuds().isEmpty());
     }
   }
 

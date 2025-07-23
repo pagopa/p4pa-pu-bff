@@ -89,8 +89,8 @@ public class ClassificationController implements ClassificationsApi {
 
   @Override
   public ResponseEntity<PagedClassificationPaidInstallmentsView> getPaidInstallments(
-    Long organizationId, String debtPositionTypeOrgCode, Long assessmentId, String iuv, OffsetDateTime paymentDateTimeFrom, OffsetDateTime paymentDateTimeTo,
-    OffsetDateTime updateDateFrom, OffsetDateTime updateDateTo, Pageable pageable) {
+    Long organizationId, String debtPositionTypeOrgCode, String iuv, OffsetDateTime paymentDateTimeFrom, OffsetDateTime paymentDateTimeTo,
+    OffsetDateTime updateDateFrom, OffsetDateTime updateDateTo, Long assessmentId, Pageable pageable) {
 
     log.info("User requested getPaidInstallments having organizationId {}", organizationId);
 

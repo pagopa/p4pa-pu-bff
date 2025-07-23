@@ -24,6 +24,7 @@ public class SilRegistrySearchClient {
       filters.getEventDate().getTo(),
       orgFiscalCode,
       filters.getIuv(),
+      filters.getOutcome(),
       PageUtils.getPageNumber(pageable),
       PageUtils.getPageSize(pageable),
       PageUtils.getSortList(pageable));

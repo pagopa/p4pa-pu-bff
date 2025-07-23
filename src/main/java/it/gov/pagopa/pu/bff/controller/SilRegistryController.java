@@ -6,6 +6,7 @@ import it.gov.pagopa.pu.bff.dto.SilRegistryFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedSilRegistry;
 import it.gov.pagopa.pu.bff.security.SecurityUtils;
 import it.gov.pagopa.pu.bff.service.sil_registry.SilRegistryRetrieverService;
+import it.gov.pagopa.pu.registries.dto.generated.RegistryOutcome;
 import it.gov.pagopa.pu.registries.dto.generated.RegistrySilEventType;
 import it.gov.pagopa.pu.registries.dto.generated.SilRegistryDTO;
 import lombok.extern.slf4j.Slf4j;
@@ -32,7 +33,7 @@ public class SilRegistryController implements SilRegistryApi {
   }
 
   @Override
-  public ResponseEntity<PagedSilRegistry> getSilRegistries(Long organizationId, RegistrySilEventType eventType, OffsetDateTime eventDateFrom, OffsetDateTime eventDateTo, String iuv, Pageable pageable) {
+  public ResponseEntity<PagedSilRegistry> getSilRegistries(Long organizationId, RegistrySilEventType eventType, OffsetDateTime eventDateFrom, OffsetDateTime eventDateTo, String iuv, RegistryOutcome outcome, Pageable pageable) {
     log.info("User requested getSilRegistries having organizationId {}", organizationId);
     return ResponseEntity.ok(silRegistryRetrieverService.getSilRegistries(
       organizationId,
@@ -40,6 +41,7 @@ public class SilRegistryController implements SilRegistryApi {
         .eventType(eventType)
         .eventDate(new OffsetDateTimeIntervalFilter(eventDateFrom, eventDateTo))
         .iuv(iuv)
+        .outcome(outcome)
         .build(),
       pageable, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken()));
   }

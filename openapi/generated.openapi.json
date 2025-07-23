@@ -3009,6 +3009,13 @@
             "type" : "string"
           }
         }, {
+          "name" : "outcome",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/components/schemas/RegistryOutcome"
+          }
+        }, {
           "name" : "page",
           "in" : "query",
           "description" : "Zero-based page index (0..N)",
@@ -3851,6 +3858,13 @@
           "required" : false,
           "schema" : {
             "type" : "string"
+          }
+        }, {
+          "name" : "outcome",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/components/schemas/RegistryOutcome"
           }
         }, {
           "name" : "page",

@@ -1,6 +1,7 @@
 package it.gov.pagopa.pu.bff.connector.registries.config;
 
 import it.gov.pagopa.pu.bff.connector.BaseApiHolderTest;
+import it.gov.pagopa.pu.registries.dto.generated.RegistryOutcome;
 import it.gov.pagopa.pu.registries.dto.generated.RegistryPagoPaEventType;
 import it.gov.pagopa.pu.registries.dto.generated.RegistrySilEventType;
 import org.junit.jupiter.api.AfterEach;
@@ -64,7 +65,7 @@ class RegistriesApisHolderTest  extends BaseApiHolderTest {
   void whenGetPagoPaRegistrySearchControllerApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
     assertAuthenticationShouldBeSetInThreadSafeMode(
       accessToken -> registriesApisHolder.getPagoPaRegistrySearchControllerApi(accessToken)
-        .crudPagopaRegistriesSearchByFilters(RegistryPagoPaEventType.GPD_createPosition, OffsetDateTime.now(),OffsetDateTime.now(),"orgFiscalCode","iuv",0,10, Collections.emptyList()),
+        .crudPagopaRegistriesSearchByFilters(RegistryPagoPaEventType.GPD_createPosition, OffsetDateTime.now(),OffsetDateTime.now(),"orgFiscalCode","iuv", RegistryOutcome.OK,0,10, Collections.emptyList()),
       new ParameterizedTypeReference<>() {},
       registriesApisHolder::unload);
   }
@@ -91,7 +92,7 @@ class RegistriesApisHolderTest  extends BaseApiHolderTest {
   void whenGetSilRegistrySearchControllerApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
     assertAuthenticationShouldBeSetInThreadSafeMode(
       accessToken -> registriesApisHolder.getSilRegistrySearchControllerApi(accessToken)
-        .crudSilRegistriesSearchByFilters(RegistrySilEventType.PTPR_pivotSILAutorizzaImportFlusso, OffsetDateTime.now(),OffsetDateTime.now(),"orgFiscalCode","iuv",0,10, Collections.emptyList()),
+        .crudSilRegistriesSearchByFilters(RegistrySilEventType.PTPR_pivotSILAutorizzaImportFlusso, OffsetDateTime.now(),OffsetDateTime.now(),"orgFiscalCode","iuv",RegistryOutcome.OK, 0,10, Collections.emptyList()),
       new ParameterizedTypeReference<>() {},
       registriesApisHolder::unload);
   }

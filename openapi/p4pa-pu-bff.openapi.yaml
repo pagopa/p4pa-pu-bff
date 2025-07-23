@@ -864,7 +864,6 @@ paths:
             type: string
         - name: assessmentId
           in: query
-          required: true
           schema:
             type: integer
             format: int64

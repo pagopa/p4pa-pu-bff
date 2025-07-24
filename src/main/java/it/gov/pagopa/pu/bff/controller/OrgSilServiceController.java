@@ -48,7 +48,7 @@ public class OrgSilServiceController implements OrgSilServiceApi {
 
   @Override
   public ResponseEntity<OrgSilServiceDecryptedDTO> createOrgSilService(Long organizationId, OrgSilServiceDecryptedDTO body) {
-    log.info("User requested createOrgSilService having organizationId {}", organizationId);
+    log.info("User requested createOrgSilService having organizationId {} and applicationName {}", organizationId, body.getApplicationName());
     return new ResponseEntity<>(orgSilServiceRetrieverService.createOrgSilService(
       organizationId, body, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken()), HttpStatus.CREATED);
   }

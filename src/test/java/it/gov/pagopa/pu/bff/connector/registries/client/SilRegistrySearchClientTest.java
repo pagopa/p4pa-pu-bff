@@ -5,7 +5,6 @@ import it.gov.pagopa.pu.bff.dto.SilRegistryFiltersDTO;
 import it.gov.pagopa.pu.bff.util.TestUtils;
 import it.gov.pagopa.pu.registries.controller.generated.SilRegistrySearchControllerApi;
 import it.gov.pagopa.pu.registries.dto.generated.PagedModelSilRegistry;
-import it.gov.pagopa.pu.registries.dto.generated.RegistryOutcome;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -61,7 +60,7 @@ class SilRegistrySearchClientTest {
       filters.getEventDate().getTo(),
       orgFiscalCode,
       filters.getIuv(),
-      RegistryOutcome.OK,
+      filters.getOutcome(),
       0,
       10,
       Collections.emptyList()

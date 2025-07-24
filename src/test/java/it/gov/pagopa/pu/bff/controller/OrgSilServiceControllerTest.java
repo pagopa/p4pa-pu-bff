@@ -6,6 +6,7 @@ import it.gov.pagopa.pu.bff.dto.OrgSilServiceExtendedDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedOrgSilServiceView;
 import it.gov.pagopa.pu.bff.security.SecurityUtilsTest;
 import it.gov.pagopa.pu.bff.service.org_sil_service.OrgSilServiceRetrieverService;
+import it.gov.pagopa.pu.bff.service.org_sil_service.OrgSilServiceStorerService;
 import it.gov.pagopa.pu.bff.util.TestUtils;
 import it.gov.pagopa.pu.organization.dto.generated.OrgSilServiceType;
 import lombok.extern.slf4j.Slf4j;
@@ -36,6 +37,8 @@ class OrgSilServiceControllerTest {
   public static final PodamFactory podamFactory = TestUtils.getPodamFactory();
   @Mock
   private OrgSilServiceRetrieverService orgSilServiceRetrieverServiceMock;
+  @Mock
+  private OrgSilServiceStorerService orgSilServiceStorerServiceMock;
 
   @InjectMocks
   private OrgSilServiceController orgSilServiceController;
@@ -71,7 +74,7 @@ class OrgSilServiceControllerTest {
     when(orgSilServiceRetrieverServiceMock.getOrgSilServices(organizationId, serviceType, loggedUser, accessToken))
       .thenReturn(expectedResult);
 
-    ResponseEntity<List<OrgSilServiceExtendedDTO>> response = orgSilServiceController.getOrgSilServices(organizationId,serviceType);
+    ResponseEntity<List<OrgSilServiceExtendedDTO>> response = orgSilServiceController.getOrgSilServices(organizationId, serviceType);
 
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertNotNull(response.getBody());
@@ -129,4 +132,31 @@ class OrgSilServiceControllerTest {
     assertNull(response.getBody());
   }
 
+  @Test
+  void givenCorrectRequestWhenCreateOrgSilServiceThenCreated() {
+    long organizationId = 1L;
+
+    OrgSilServiceDecryptedDTO requestBody = new OrgSilServiceDecryptedDTO();
+    requestBody.setOrganizationId(organizationId);
+    requestBody.setApplicationName("TestApp");
+    requestBody.setServiceUrl("https://example.com/api");
+    requestBody.setServiceType(OrgSilServiceType.ACTUALIZATION);
+    requestBody.setFlagLegacy(false);
+
+    OrgSilServiceDecryptedDTO expectedResponse = new OrgSilServiceDecryptedDTO();
+    expectedResponse.setOrganizationId(organizationId);
+    expectedResponse.setApplicationName("TestApp");
+    expectedResponse.setServiceUrl("https://example.com/api");
+    expectedResponse.setServiceType(OrgSilServiceType.ACTUALIZATION);
+    expectedResponse.setFlagLegacy(false);
+
+    when(orgSilServiceStorerServiceMock.createOrgSilService(organizationId, requestBody, loggedUser, accessToken))
+      .thenReturn(expectedResponse);
+
+    ResponseEntity<OrgSilServiceDecryptedDTO> response = orgSilServiceController.createOrgSilService(organizationId, requestBody);
+
+    assertEquals(HttpStatus.CREATED, response.getStatusCode());
+    assertNotNull(response.getBody());
+    assertEquals(expectedResponse, response.getBody());
+  }
 }

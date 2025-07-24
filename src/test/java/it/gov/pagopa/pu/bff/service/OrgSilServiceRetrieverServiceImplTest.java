@@ -3,18 +3,14 @@ package it.gov.pagopa.pu.bff.service;
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.connector.organization.OrgSilServiceService;
 import it.gov.pagopa.pu.bff.dto.OrgSilServiceDecryptedDTO;
-import it.gov.pagopa.pu.bff.dto.generated.PagedOrgSilServiceView;
 import it.gov.pagopa.pu.bff.dto.OrgSilServiceExtendedDTO;
+import it.gov.pagopa.pu.bff.dto.generated.PagedOrgSilServiceView;
 import it.gov.pagopa.pu.bff.mapper.OrgSilServiceDTOMapper;
 import it.gov.pagopa.pu.bff.mapper.OrgSilServiceViewMapper;
 import it.gov.pagopa.pu.bff.service.org_sil_service.OrgSilServiceRetrieverService;
 import it.gov.pagopa.pu.bff.service.org_sil_service.OrgSilServiceRetrieverServiceImpl;
 import it.gov.pagopa.pu.bff.util.TestUtils;
-import it.gov.pagopa.pu.organization.dto.generated.CollectionModelOrgSilService;
-import it.gov.pagopa.pu.organization.dto.generated.OrgSilService;
-import it.gov.pagopa.pu.organization.dto.generated.OrgSilServiceDTO;
-import it.gov.pagopa.pu.organization.dto.generated.OrgSilServiceType;
-import it.gov.pagopa.pu.organization.dto.generated.PagedModelOrgSilServiceView;
+import it.gov.pagopa.pu.organization.dto.generated.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -83,7 +79,7 @@ public class OrgSilServiceRetrieverServiceImplTest {
         .thenReturn(collectionModelOrgSilService);
       when(orgSilServiceDTOMapperMock.map(collectionModelOrgSilService.getEmbedded().getOrgSilServices())).thenReturn(expectedResult);
 
-        List<OrgSilServiceExtendedDTO> result = orgSilServiceRetrieverService.getOrgSilServices(organizationId, serviceType, loggedUser, accessToken);
+      List<OrgSilServiceExtendedDTO> result = orgSilServiceRetrieverService.getOrgSilServices(organizationId, serviceType, loggedUser, accessToken);
 
       assertNotNull(result);
       assertSame(expectedResult, result);
@@ -108,7 +104,7 @@ public class OrgSilServiceRetrieverServiceImplTest {
       when(orgSilServiceServiceMock.getOrgSilServices(organizationId, serviceType, accessToken))
         .thenReturn(collectionModelOrgSilService);
 
-          List<OrgSilServiceExtendedDTO> result = orgSilServiceRetrieverService.getOrgSilServices(organizationId, serviceType, loggedUser, accessToken);
+      List<OrgSilServiceExtendedDTO> result = orgSilServiceRetrieverService.getOrgSilServices(organizationId, serviceType, loggedUser, accessToken);
 
       assertNotNull(result);
       assertTrue(CollectionUtils.isEmpty(result));
@@ -131,7 +127,7 @@ public class OrgSilServiceRetrieverServiceImplTest {
       when(orgSilServiceServiceMock.getOrgSilServices(organizationId, serviceType, accessToken))
         .thenReturn(null);
 
-          List<OrgSilServiceExtendedDTO> result = orgSilServiceRetrieverService.getOrgSilServices(organizationId, serviceType, loggedUser, accessToken);
+      List<OrgSilServiceExtendedDTO> result = orgSilServiceRetrieverService.getOrgSilServices(organizationId, serviceType, loggedUser, accessToken);
 
       assertNotNull(result);
       assertTrue(CollectionUtils.isEmpty(result));
@@ -243,7 +239,7 @@ public class OrgSilServiceRetrieverServiceImplTest {
   void givenValidOrgSilServiceIdWhenGetOrgSilServiceDetailsThenReturnOrgSilServiceDTO() {
     OrgSilServiceDTO orgSilServiceDTO = new OrgSilServiceDTO();
     OrgSilServiceDecryptedDTO orgSilServiceExtended = new OrgSilServiceDecryptedDTO();
-    Long organizationId=1L;
+    Long organizationId = 1L;
 
     UserInfo loggedUser = new UserInfo();
     loggedUser.setUserId("user-123");
@@ -266,7 +262,7 @@ public class OrgSilServiceRetrieverServiceImplTest {
     loggedUser.setUserId("user-123");
     loggedUser.setMappedExternalUserId("operatorExternalUserId");
 
-    Long organizationId=1L;
+    Long organizationId = 1L;
 
     doThrow(AuthorizationDeniedException.class).when(authorizationServiceMock).validateAdminRole(organizationId, loggedUser);
 
@@ -274,6 +270,4 @@ public class OrgSilServiceRetrieverServiceImplTest {
       orgSilServiceRetrieverService.getOrgSilServiceDetails(organizationId, 2L, loggedUser, accessToken));
 
   }
-
-
 }

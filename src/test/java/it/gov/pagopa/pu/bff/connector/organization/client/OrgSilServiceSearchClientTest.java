@@ -173,4 +173,18 @@ class OrgSilServiceSearchClientTest {
     assertNull(result);
   }
 
+  @Test
+  void givenOrgSilServiceDTOWhenCreateOrUpdateThenReturnResponse() {
+    String accessToken = "ACCESSTOKEN";
+    OrgSilServiceDTO inputDto = podamFactory.manufacturePojo(OrgSilServiceDTO.class);
+    OrgSilServiceDTO expectedResponse = podamFactory.manufacturePojo(OrgSilServiceDTO.class);
+
+    when(organizationApisHolderMock.getOrganizationSilServiceApi(accessToken)).thenReturn(organizationSilServiceApiMock);
+    when(organizationSilServiceApiMock.createOrUpdateOrgSilService(inputDto)).thenReturn(expectedResponse);
+
+    OrgSilServiceDTO actualResponse = orgSilServiceSearchClient.createOrUpdateOrgSilService(inputDto, accessToken);
+
+    Assertions.assertNotNull(actualResponse);
+    Assertions.assertEquals(expectedResponse, actualResponse);
+  }
 }

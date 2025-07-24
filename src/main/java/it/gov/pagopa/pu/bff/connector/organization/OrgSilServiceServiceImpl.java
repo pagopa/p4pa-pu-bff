@@ -37,4 +37,9 @@ public class OrgSilServiceServiceImpl implements OrgSilServiceService {
   public OrgSilServiceDTO getOrgSilServiceByIdDecrypted(Long orgSilServiceId, String accessToken) {
     return orgSilServiceSearchClient.getOrgSilServiceByIdDecrypted(orgSilServiceId, accessToken);
   }
+
+  @Override
+  public OrgSilServiceDTO createOrUpdateOrgSilService(OrgSilServiceDTO orgSilServiceDTO, String accessToken) {
+    return orgSilServiceSearchClient.createOrUpdateOrgSilService(orgSilServiceDTO, accessToken);
+  }
 }

@@ -6,6 +6,8 @@ import it.gov.pagopa.pu.organization.dto.generated.*;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -20,7 +22,7 @@ public interface OrgSilServiceDTOMapper {
 
   @SuppressWarnings("unchecked")
   @Named("mapAuthConfig")
-  default <T extends SilServiceAuthConfig> T mapAuthConfig(OrgSilServiceRequestBodyAuthConfig config){
+  default <T extends SilServiceAuthConfig> T mapAuthConfig(OrgSilServiceRequestBodyAuthConfig config) {
     return (T) config;
   }
 
@@ -31,8 +33,31 @@ public interface OrgSilServiceDTOMapper {
 
   @SuppressWarnings("unchecked")
   @Named("mapOrgSilServiceDTOAuthConfig")
-  default <T extends SilServiceAuthConfigDTO> T mapOrgSilServiceDTOAuthConfig(OrgSilServiceDTOAuthConfig config){
+  default <T extends SilServiceAuthConfigDTO> T mapOrgSilServiceDTOAuthConfig(OrgSilServiceDTOAuthConfig config) {
     return (T) config;
+  }
+
+  @Mapping(target = "authConfig", source = ".", qualifiedByName = "getAuthConfig")
+  OrgSilServiceDTO toOrgSilServiceDTO(OrgSilServiceDecryptedDTO decryptedDTO);
+
+  @SuppressWarnings("unchecked")
+  @Named("getAuthConfig")
+  default <T extends OrgSilServiceDTOAuthConfig> T getAuthConfig(OrgSilServiceDecryptedDTO source) {
+    if (Boolean.TRUE.equals(source.getFlagLegacy())) {
+      boolean hasBasicAuthConfig = source.getLegacyBasicAuthConfig() != null;
+      boolean hasJwtAuthConfig = source.getLegacyJwtAuthConfig() != null;
+
+      if (hasBasicAuthConfig && hasJwtAuthConfig) {
+        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "When flagLegacy is true, only one of legacyBasicAuthConfig or legacyJwtAuthConfig must be provided.");
+      }
+
+      if (hasBasicAuthConfig) {
+        return (T) source.getLegacyBasicAuthConfig();
+      } else if (hasJwtAuthConfig) {
+        return (T) source.getLegacyJwtAuthConfig();
+      }
+    }
+    return null;
   }
 }
 

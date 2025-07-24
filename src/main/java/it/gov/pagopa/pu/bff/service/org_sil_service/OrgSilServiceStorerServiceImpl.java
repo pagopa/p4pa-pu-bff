@@ -7,8 +7,10 @@ import it.gov.pagopa.pu.bff.mapper.OrgSilServiceDTOMapper;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
 import it.gov.pagopa.pu.organization.dto.generated.OrgSilServiceDTO;
 import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+@Service
 public class OrgSilServiceStorerServiceImpl implements OrgSilServiceStorerService {
   private final OrgSilServiceService orgSilServiceService;
   private final OrgSilServiceDTOMapper orgSilServiceDTOMapper;

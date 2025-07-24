@@ -7,6 +7,7 @@ import it.gov.pagopa.pu.bff.dto.generated.PagedPagoPaRegistry;
 import it.gov.pagopa.pu.bff.security.SecurityUtils;
 import it.gov.pagopa.pu.bff.service.pagopa_registry.PagoPaRegistryRetrieverService;
 import it.gov.pagopa.pu.registries.dto.generated.PagoPaRegistryDTO;
+import it.gov.pagopa.pu.registries.dto.generated.RegistryOutcome;
 import it.gov.pagopa.pu.registries.dto.generated.RegistryPagoPaEventType;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -24,8 +25,8 @@ public class PagoPaRegistryController implements PagoPaRegistryApi {
         this.pagoPaRegistryRetrieverService = pagoPaRegistryRetrieverService;
     }
 
-    @Override
-  public ResponseEntity<PagedPagoPaRegistry> getPagoPaRegistries(Long organizationId, RegistryPagoPaEventType eventType, OffsetDateTime eventDateFrom, OffsetDateTime eventDateTo, String iuv, Pageable pageable) {
+  @Override
+  public ResponseEntity<PagedPagoPaRegistry> getPagoPaRegistries(Long organizationId, RegistryPagoPaEventType eventType, OffsetDateTime eventDateFrom, OffsetDateTime eventDateTo, String iuv, RegistryOutcome outcome,  Pageable pageable) {
     log.info("User requested getPagoPaRegistries having organizationId {}", organizationId);
     return ResponseEntity.ok(pagoPaRegistryRetrieverService.getPagoPaRegistries(
             organizationId,
@@ -33,6 +34,7 @@ public class PagoPaRegistryController implements PagoPaRegistryApi {
                     .eventType(eventType)
                     .eventDate(new OffsetDateTimeIntervalFilter(eventDateFrom,eventDateTo))
                     .iuv(iuv)
+                    .outcome(outcome)
                     .build(),
             pageable, SecurityUtils.getLoggedUser(),SecurityUtils.getAccessToken()));
   }

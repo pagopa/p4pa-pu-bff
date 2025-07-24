@@ -2306,6 +2306,10 @@ paths:
           in: query
           schema:
             type: string
+        - name: outcome
+          in: query
+          schema:
+            type: 'RegistryOutcome'
       responses:
         '200':
           description: OK
@@ -2871,6 +2875,10 @@ paths:
           in: query
           schema:
             type: string
+        - name: outcome
+          in: query
+          schema:
+            type: 'RegistryOutcome'
       responses:
         '200':
           description: OK

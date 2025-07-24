@@ -6,6 +6,7 @@ import it.gov.pagopa.pu.bff.dto.generated.PagedSilRegistry;
 import it.gov.pagopa.pu.bff.security.SecurityUtilsTest;
 import it.gov.pagopa.pu.bff.service.sil_registry.SilRegistryRetrieverService;
 import it.gov.pagopa.pu.bff.util.TestUtils;
+import it.gov.pagopa.pu.registries.dto.generated.RegistryOutcome;
 import it.gov.pagopa.pu.registries.dto.generated.SilRegistryDTO;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -101,6 +102,7 @@ class SilRegistryControllerTest {
       filters.getEventDate().getFrom(),
       filters.getEventDate().getTo(),
       filters.getIuv(),
+      RegistryOutcome.OK,
       Pageable.ofSize(10));
 
     Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());

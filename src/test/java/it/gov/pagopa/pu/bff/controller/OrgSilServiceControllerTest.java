@@ -6,6 +6,7 @@ import it.gov.pagopa.pu.bff.dto.OrgSilServiceExtendedDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedOrgSilServiceView;
 import it.gov.pagopa.pu.bff.security.SecurityUtilsTest;
 import it.gov.pagopa.pu.bff.service.org_sil_service.OrgSilServiceRetrieverService;
+import it.gov.pagopa.pu.bff.service.org_sil_service.OrgSilServiceStorerService;
 import it.gov.pagopa.pu.bff.util.TestUtils;
 import it.gov.pagopa.pu.organization.dto.generated.OrgSilServiceType;
 import lombok.extern.slf4j.Slf4j;
@@ -36,6 +37,8 @@ class OrgSilServiceControllerTest {
   public static final PodamFactory podamFactory = TestUtils.getPodamFactory();
   @Mock
   private OrgSilServiceRetrieverService orgSilServiceRetrieverServiceMock;
+  @Mock
+  private OrgSilServiceStorerService orgSilServiceStorerServiceMock;
 
   @InjectMocks
   private OrgSilServiceController orgSilServiceController;
@@ -147,7 +150,7 @@ class OrgSilServiceControllerTest {
     expectedResponse.setServiceType(OrgSilServiceType.ACTUALIZATION);
     expectedResponse.setFlagLegacy(false);
 
-    when(orgSilServiceRetrieverServiceMock.createOrgSilService(organizationId, requestBody, loggedUser, accessToken))
+    when(orgSilServiceStorerServiceMock.createOrgSilService(organizationId, requestBody, loggedUser, accessToken))
       .thenReturn(expectedResponse);
 
     ResponseEntity<OrgSilServiceDecryptedDTO> response = orgSilServiceController.createOrgSilService(organizationId, requestBody);

@@ -3,8 +3,8 @@ package it.gov.pagopa.pu.bff.service;
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.connector.organization.OrgSilServiceService;
 import it.gov.pagopa.pu.bff.dto.OrgSilServiceDecryptedDTO;
-import it.gov.pagopa.pu.bff.dto.generated.PagedOrgSilServiceView;
 import it.gov.pagopa.pu.bff.dto.OrgSilServiceExtendedDTO;
+import it.gov.pagopa.pu.bff.dto.generated.PagedOrgSilServiceView;
 import it.gov.pagopa.pu.bff.mapper.OrgSilServiceDTOMapper;
 import it.gov.pagopa.pu.bff.mapper.OrgSilServiceViewMapper;
 import it.gov.pagopa.pu.bff.service.org_sil_service.OrgSilServiceRetrieverService;
@@ -22,10 +22,8 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.util.CollectionUtils;
-import org.springframework.web.server.ResponseStatusException;
 import uk.co.jemos.podam.api.PodamFactory;
 
 import java.util.Collections;
@@ -81,7 +79,7 @@ public class OrgSilServiceRetrieverServiceImplTest {
         .thenReturn(collectionModelOrgSilService);
       when(orgSilServiceDTOMapperMock.map(collectionModelOrgSilService.getEmbedded().getOrgSilServices())).thenReturn(expectedResult);
 
-        List<OrgSilServiceExtendedDTO> result = orgSilServiceRetrieverService.getOrgSilServices(organizationId, serviceType, loggedUser, accessToken);
+      List<OrgSilServiceExtendedDTO> result = orgSilServiceRetrieverService.getOrgSilServices(organizationId, serviceType, loggedUser, accessToken);
 
       assertNotNull(result);
       assertSame(expectedResult, result);
@@ -106,7 +104,7 @@ public class OrgSilServiceRetrieverServiceImplTest {
       when(orgSilServiceServiceMock.getOrgSilServices(organizationId, serviceType, accessToken))
         .thenReturn(collectionModelOrgSilService);
 
-          List<OrgSilServiceExtendedDTO> result = orgSilServiceRetrieverService.getOrgSilServices(organizationId, serviceType, loggedUser, accessToken);
+      List<OrgSilServiceExtendedDTO> result = orgSilServiceRetrieverService.getOrgSilServices(organizationId, serviceType, loggedUser, accessToken);
 
       assertNotNull(result);
       assertTrue(CollectionUtils.isEmpty(result));
@@ -129,7 +127,7 @@ public class OrgSilServiceRetrieverServiceImplTest {
       when(orgSilServiceServiceMock.getOrgSilServices(organizationId, serviceType, accessToken))
         .thenReturn(null);
 
-          List<OrgSilServiceExtendedDTO> result = orgSilServiceRetrieverService.getOrgSilServices(organizationId, serviceType, loggedUser, accessToken);
+      List<OrgSilServiceExtendedDTO> result = orgSilServiceRetrieverService.getOrgSilServices(organizationId, serviceType, loggedUser, accessToken);
 
       assertNotNull(result);
       assertTrue(CollectionUtils.isEmpty(result));
@@ -241,7 +239,7 @@ public class OrgSilServiceRetrieverServiceImplTest {
   void givenValidOrgSilServiceIdWhenGetOrgSilServiceDetailsThenReturnOrgSilServiceDTO() {
     OrgSilServiceDTO orgSilServiceDTO = new OrgSilServiceDTO();
     OrgSilServiceDecryptedDTO orgSilServiceExtended = new OrgSilServiceDecryptedDTO();
-    Long organizationId=1L;
+    Long organizationId = 1L;
 
     UserInfo loggedUser = new UserInfo();
     loggedUser.setUserId("user-123");
@@ -264,124 +262,12 @@ public class OrgSilServiceRetrieverServiceImplTest {
     loggedUser.setUserId("user-123");
     loggedUser.setMappedExternalUserId("operatorExternalUserId");
 
-    Long organizationId=1L;
+    Long organizationId = 1L;
 
     doThrow(AuthorizationDeniedException.class).when(authorizationServiceMock).validateAdminRole(organizationId, loggedUser);
 
     Assertions.assertThrows(AuthorizationDeniedException.class, () ->
       orgSilServiceRetrieverService.getOrgSilServiceDetails(organizationId, 2L, loggedUser, accessToken));
 
-  }
-
-  @Test
-  void givenOrgSilServiceIdNotNullWhenCreateThenThrowBadRequest() {
-    Long organizationId = 1L;
-    OrgSilServiceDecryptedDTO body = new OrgSilServiceDecryptedDTO();
-    body.setOrgSilServiceId(99L);
-    UserInfo loggedUser = new UserInfo();
-
-    doNothing().when(authorizationServiceMock).validateAdminRole(organizationId, loggedUser);
-
-    ResponseStatusException ex = assertThrows(ResponseStatusException.class, () ->
-      orgSilServiceRetrieverService.createOrgSilService(organizationId, body, loggedUser, accessToken));
-
-    assertEquals(HttpStatus.BAD_REQUEST, ex.getStatusCode());
-    assertTrue(ex.getReason().contains("orgSilServiceId must not be provided"));
-  }
-
-  @Test
-  void givenFlagLegacyFalseAndAuthConfigProvidedWhenCreateThenThrowBadRequest() {
-    Long organizationId = 1L;
-    OrgSilServiceDecryptedDTO body = new OrgSilServiceDecryptedDTO();
-    body.setFlagLegacy(false);
-    body.setLegacyBasicAuthConfig(new SilServiceLegacyBasicAuthConfigDTO());
-    UserInfo loggedUser = new UserInfo();
-
-    doNothing().when(authorizationServiceMock).validateAdminRole(organizationId, loggedUser);
-
-    ResponseStatusException ex = assertThrows(ResponseStatusException.class, () ->
-      orgSilServiceRetrieverService.createOrgSilService(organizationId, body, loggedUser, accessToken));
-
-    assertEquals(HttpStatus.BAD_REQUEST, ex.getStatusCode());
-    assertTrue(ex.getReason().contains("authConfig must not be provided"));
-  }
-
-  @Test
-  void givenFlagLegacyTrueAndNoAuthConfigWhenCreateThenThrowBadRequest() {
-    Long organizationId = 1L;
-    OrgSilServiceDecryptedDTO body = new OrgSilServiceDecryptedDTO();
-    body.setFlagLegacy(true);
-    UserInfo loggedUser = new UserInfo();
-
-    doNothing().when(authorizationServiceMock).validateAdminRole(organizationId, loggedUser);
-
-    ResponseStatusException ex = assertThrows(ResponseStatusException.class, () ->
-      orgSilServiceRetrieverService.createOrgSilService(organizationId, body, loggedUser, accessToken));
-
-    assertEquals(HttpStatus.BAD_REQUEST, ex.getStatusCode());
-    assertTrue(ex.getReason().contains("exactly one authConfig"));
-  }
-
-  @Test
-  void givenFlagLegacyTrueAndBothAuthConfigWhenCreateThenThrowBadRequest() {
-    Long organizationId = 1L;
-    OrgSilServiceDecryptedDTO body = new OrgSilServiceDecryptedDTO();
-    body.setFlagLegacy(true);
-    body.setLegacyBasicAuthConfig(new SilServiceLegacyBasicAuthConfigDTO());
-    body.setLegacyJwtAuthConfig(new SilServiceLegacyJwtAuthConfigDTO());
-    UserInfo loggedUser = new UserInfo();
-
-    doNothing().when(authorizationServiceMock).validateAdminRole(organizationId, loggedUser);
-
-    ResponseStatusException ex = assertThrows(ResponseStatusException.class, () ->
-      orgSilServiceRetrieverService.createOrgSilService(organizationId, body, loggedUser, accessToken));
-
-    assertEquals(HttpStatus.BAD_REQUEST, ex.getStatusCode());
-    assertTrue(ex.getReason().contains("exactly one authConfig"));
-  }
-
-  @Test
-  void givenFlagLegacyFalseAndNoAuthConfigWhenCreateThenOk() {
-    Long organizationId = 1L;
-    OrgSilServiceDecryptedDTO body = new OrgSilServiceDecryptedDTO();
-    body.setFlagLegacy(false);
-    UserInfo loggedUser = new UserInfo();
-
-    OrgSilServiceDTO mappedDto = new OrgSilServiceDTO();
-    OrgSilServiceDTO createdDto = new OrgSilServiceDTO();
-    OrgSilServiceDecryptedDTO expectedResponse = new OrgSilServiceDecryptedDTO();
-
-    doNothing().when(authorizationServiceMock).validateAdminRole(organizationId, loggedUser);
-    when(orgSilServiceDTOMapperMock.toOrgSilServiceDTO(body)).thenReturn(mappedDto);
-    when(orgSilServiceServiceMock.createOrUpdateOrgSilService(mappedDto, accessToken)).thenReturn(createdDto);
-    when(orgSilServiceDTOMapperMock.map(createdDto)).thenReturn(expectedResponse);
-
-    OrgSilServiceDecryptedDTO result = orgSilServiceRetrieverService.createOrgSilService(organizationId, body, loggedUser, accessToken);
-
-    assertNotNull(result);
-    assertEquals(expectedResponse, result);
-  }
-
-  @Test
-  void givenFlagLegacyTrueAndOnlyBasicAuthConfigWhenCreateThenOk() {
-    Long organizationId = 1L;
-    OrgSilServiceDecryptedDTO body = new OrgSilServiceDecryptedDTO();
-    body.setFlagLegacy(true);
-    body.setLegacyBasicAuthConfig(new SilServiceLegacyBasicAuthConfigDTO());
-    UserInfo loggedUser = new UserInfo();
-
-    OrgSilServiceDTO mappedDto = new OrgSilServiceDTO();
-    OrgSilServiceDTO createdDto = new OrgSilServiceDTO();
-    OrgSilServiceDecryptedDTO expectedResponse = new OrgSilServiceDecryptedDTO();
-
-    doNothing().when(authorizationServiceMock).validateAdminRole(organizationId, loggedUser);
-    when(orgSilServiceDTOMapperMock.toOrgSilServiceDTO(body)).thenReturn(mappedDto);
-    when(orgSilServiceServiceMock.createOrUpdateOrgSilService(mappedDto, accessToken)).thenReturn(createdDto);
-    when(orgSilServiceDTOMapperMock.map(createdDto)).thenReturn(expectedResponse);
-
-    OrgSilServiceDecryptedDTO result = orgSilServiceRetrieverService.createOrgSilService(organizationId, body, loggedUser, accessToken);
-
-    assertNotNull(result);
-    assertEquals(expectedResponse, result);
   }
 }

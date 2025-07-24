@@ -6,6 +6,7 @@ import it.gov.pagopa.pu.bff.dto.OrgSilServiceExtendedDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedOrgSilServiceView;
 import it.gov.pagopa.pu.bff.security.SecurityUtils;
 import it.gov.pagopa.pu.bff.service.org_sil_service.OrgSilServiceRetrieverService;
+import it.gov.pagopa.pu.bff.service.org_sil_service.OrgSilServiceStorerService;
 import it.gov.pagopa.pu.organization.dto.generated.OrgSilServiceType;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -20,9 +21,11 @@ import java.util.List;
 public class OrgSilServiceController implements OrgSilServiceApi {
 
   private final OrgSilServiceRetrieverService orgSilServiceRetrieverService;
+  private final OrgSilServiceStorerService orgSilServiceStorerService;
 
-  public OrgSilServiceController(OrgSilServiceRetrieverService orgSilServiceRetrieverService) {
+  public OrgSilServiceController(OrgSilServiceRetrieverService orgSilServiceRetrieverService, OrgSilServiceStorerService orgSilServiceStorerService) {
     this.orgSilServiceRetrieverService = orgSilServiceRetrieverService;
+    this.orgSilServiceStorerService = orgSilServiceStorerService;
   }
 
   @Override
@@ -49,7 +52,7 @@ public class OrgSilServiceController implements OrgSilServiceApi {
   @Override
   public ResponseEntity<OrgSilServiceDecryptedDTO> createOrgSilService(Long organizationId, OrgSilServiceDecryptedDTO body) {
     log.info("User requested createOrgSilService having organizationId {} and applicationName {}", organizationId, body.getApplicationName());
-    return new ResponseEntity<>(orgSilServiceRetrieverService.createOrgSilService(
+    return new ResponseEntity<>(orgSilServiceStorerService.createOrgSilService(
       organizationId, body, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken()), HttpStatus.CREATED);
   }
 }

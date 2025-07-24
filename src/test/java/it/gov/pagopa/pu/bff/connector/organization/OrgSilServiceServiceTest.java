@@ -96,4 +96,17 @@ class OrgSilServiceServiceTest {
 
     assertSame(orgSilServiceDTO, result);
   }
+
+  @Test
+  void whenCreateOrUpdateOrgSilServiceThenInvokeClient() {
+    OrgSilServiceDTO inputDto = podamFactory.manufacturePojo(OrgSilServiceDTO.class);
+    OrgSilServiceDTO expectedResponse = podamFactory.manufacturePojo(OrgSilServiceDTO.class);
+
+    when(orgSilServiceSearchClientMock.createOrUpdateOrgSilService(inputDto, accessToken))
+      .thenReturn(expectedResponse);
+
+    OrgSilServiceDTO result = service.createOrUpdateOrgSilService(inputDto, accessToken);
+
+    assertSame(expectedResponse, result);
+  }
 }

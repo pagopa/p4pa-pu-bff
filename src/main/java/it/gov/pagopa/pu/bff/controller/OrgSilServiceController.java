@@ -9,6 +9,7 @@ import it.gov.pagopa.pu.bff.service.org_sil_service.OrgSilServiceRetrieverServic
 import it.gov.pagopa.pu.organization.dto.generated.OrgSilServiceType;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -40,9 +41,15 @@ public class OrgSilServiceController implements OrgSilServiceApi {
 
   @Override
   public ResponseEntity<OrgSilServiceDecryptedDTO> getOrgSilServiceDetails(Long organizationId, Long orgSilServiceId) {
-    log.info("User requested getOrgSilServiceDetails having organizationId {} and orgSilServiceId {}",organizationId,orgSilServiceId);
-    return ResponseEntity.ofNullable(orgSilServiceRetrieverService.getOrgSilServiceDetails(organizationId,orgSilServiceId,
+    log.info("User requested getOrgSilServiceDetails having organizationId {} and orgSilServiceId {}", organizationId, orgSilServiceId);
+    return ResponseEntity.ofNullable(orgSilServiceRetrieverService.getOrgSilServiceDetails(organizationId, orgSilServiceId,
       SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken()));
   }
 
+  @Override
+  public ResponseEntity<OrgSilServiceDecryptedDTO> createOrgSilService(Long organizationId, OrgSilServiceDecryptedDTO body) {
+    log.info("User requested createOrgSilService having organizationId {}", organizationId);
+    return new ResponseEntity<>(orgSilServiceRetrieverService.createOrgSilService(
+      organizationId, body, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken()), HttpStatus.CREATED);
+  }
 }

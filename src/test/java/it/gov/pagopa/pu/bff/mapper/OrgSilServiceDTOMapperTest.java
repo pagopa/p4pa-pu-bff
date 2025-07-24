@@ -6,10 +6,11 @@ import it.gov.pagopa.pu.bff.util.TestUtils;
 import it.gov.pagopa.pu.organization.dto.generated.*;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 import uk.co.jemos.podam.api.PodamFactory;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 class OrgSilServiceDTOMapperTest {
 
@@ -219,5 +220,86 @@ class OrgSilServiceDTOMapperTest {
     TestUtils.reflectionEqualsByName(orgSilService,result,"authConfig");
     assertNull(result.getLegacyBasicAuthConfig());
     assertNull(result.getLegacyJwtAuthConfig());
+  }
+
+  @Test
+  void givenLegacyBasicAuthWhenToOrgSilServiceDTOThenCorrectAuthConfigMapped() {
+    OrgSilServiceDecryptedDTO dto = new OrgSilServiceDecryptedDTO();
+    dto.setFlagLegacy(true);
+    dto.setLegacyBasicAuthConfig(new SilServiceLegacyBasicAuthConfigDTO());
+    dto.setLegacyJwtAuthConfig(null);
+    dto.setOrganizationId(1L);
+    dto.setApplicationName("appName");
+    dto.setServiceUrl("url");
+    dto.setServiceType(OrgSilServiceType.ACTUALIZATION);
+
+    OrgSilServiceDTO result = mapper.toOrgSilServiceDTO(dto);
+
+    assertNotNull(result);
+    assertEquals(dto.getLegacyBasicAuthConfig(), result.getAuthConfig());
+  }
+
+  @Test
+  void givenLegacyJwtAuthWhenToOrgSilServiceDTOThenCorrectAuthConfigMapped() {
+    OrgSilServiceDecryptedDTO dto = new OrgSilServiceDecryptedDTO();
+    dto.setFlagLegacy(true);
+    dto.setLegacyJwtAuthConfig(new SilServiceLegacyJwtAuthConfigDTO());
+    dto.setLegacyBasicAuthConfig(null);
+    dto.setOrganizationId(1L);
+    dto.setApplicationName("appName");
+    dto.setServiceUrl("url");
+    dto.setServiceType(OrgSilServiceType.ACTUALIZATION);
+
+    OrgSilServiceDTO result = mapper.toOrgSilServiceDTO(dto);
+
+    assertNotNull(result);
+    assertEquals(dto.getLegacyJwtAuthConfig(), result.getAuthConfig());
+  }
+
+  @Test
+  void givenBothAuthConfigsWhenToOrgSilServiceDTOThenThrowBadRequest() {
+    OrgSilServiceDecryptedDTO dto = new OrgSilServiceDecryptedDTO();
+    dto.setFlagLegacy(true);
+    dto.setLegacyJwtAuthConfig(new SilServiceLegacyJwtAuthConfigDTO());
+    dto.setLegacyBasicAuthConfig(new SilServiceLegacyBasicAuthConfigDTO());
+
+    ResponseStatusException ex = assertThrows(ResponseStatusException.class, () -> mapper.toOrgSilServiceDTO(dto));
+
+    assertEquals(HttpStatus.BAD_REQUEST, ex.getStatusCode());
+    assertTrue(ex.getReason().contains("only one of legacyBasicAuthConfig or legacyJwtAuthConfig"));
+  }
+
+  @Test
+  void givenLegacyTrueAndNoAuthConfigWhenToOrgSilServiceDTOThenAuthConfigIsNull() {
+    OrgSilServiceDecryptedDTO dto = new OrgSilServiceDecryptedDTO();
+    dto.setFlagLegacy(true);
+    dto.setLegacyJwtAuthConfig(null);
+    dto.setLegacyBasicAuthConfig(null);
+    dto.setOrganizationId(1L);
+    dto.setApplicationName("appName");
+    dto.setServiceUrl("url");
+    dto.setServiceType(OrgSilServiceType.ACTUALIZATION);
+
+    OrgSilServiceDTO result = mapper.toOrgSilServiceDTO(dto);
+
+    assertNotNull(result);
+    assertNull(result.getAuthConfig());
+  }
+
+  @Test
+  void givenFlagLegacyFalseWhenToOrgSilServiceDTOThenAuthConfigIsNull() {
+    OrgSilServiceDecryptedDTO dto = new OrgSilServiceDecryptedDTO();
+    dto.setFlagLegacy(false);
+    dto.setLegacyJwtAuthConfig(new SilServiceLegacyJwtAuthConfigDTO());
+    dto.setLegacyBasicAuthConfig(new SilServiceLegacyBasicAuthConfigDTO());
+    dto.setOrganizationId(1L);
+    dto.setApplicationName("appName");
+    dto.setServiceUrl("url");
+    dto.setServiceType(OrgSilServiceType.ACTUALIZATION);
+
+    OrgSilServiceDTO result = mapper.toOrgSilServiceDTO(dto);
+
+    assertNotNull(result);
+    assertNull(result.getAuthConfig());
   }
 }

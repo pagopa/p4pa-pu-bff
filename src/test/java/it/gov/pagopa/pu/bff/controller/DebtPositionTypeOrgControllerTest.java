@@ -212,6 +212,23 @@ class DebtPositionTypeOrgControllerTest {
     Assertions.assertSame(expectedResult, response.getBody());
   }
 
+  @Test
+  void givenCorrectRequestWhenUpdateFlagActiveDebtPositionTypeOrgThenOk() {
+    //given
+    long organizationId = 1L;
+    long debtPositionTypeOrgId = 2L;
+    Mockito.doNothing().when(debtPositionTypeOrgRetrieverServiceMock).updateFlagActiveDebtPositionTypeOrg(
+      Mockito.eq(organizationId),
+      Mockito.eq(debtPositionTypeOrgId),
+      Mockito.eq(true),
+      Mockito.same(loggedUser),
+      Mockito.same(accessToken));
+    //when
+    ResponseEntity<Void> response = debtPositionTypeOrgController.updateFlagActiveDebtPositionTypeOrg(organizationId, debtPositionTypeOrgId, true);
+    //then
+    Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
+
+  }
 }
 
 

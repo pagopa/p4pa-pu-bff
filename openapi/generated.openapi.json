@@ -11230,7 +11230,7 @@
             "type" : "string",
             "format" : "date-time"
           },
-          "updateDate" : {
+          "receiptCreationDate" : {
             "type" : "string",
             "format" : "date-time"
           },
@@ -11249,7 +11249,7 @@
             "format" : "int64"
           }
         },
-        "required" : [ "organizationId", "updateDate" ]
+        "required" : [ "organizationId" ]
       },
       "PagedClassificationPaidInstallmentsView" : {
         "type" : "object",

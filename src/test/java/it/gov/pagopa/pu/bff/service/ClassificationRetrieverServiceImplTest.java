@@ -472,6 +472,8 @@ class ClassificationRetrieverServiceImplTest {
     long assessmentId = 42L;
 
     ClassificationPaidInstallmentsFiltersDTO filters = ClassificationPaidInstallmentsFiltersDTO.builder()
+      .paymentDateTimeIntervalFilter(new OffsetDateTimeIntervalFilter())
+      .receiptCreationDateInterval(new OffsetDateTimeIntervalFilter())
       .build();
 
     Pageable pageable = PageRequest.of(0, 10);

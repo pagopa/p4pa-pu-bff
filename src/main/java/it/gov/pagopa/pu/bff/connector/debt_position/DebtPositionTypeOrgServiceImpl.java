@@ -77,4 +77,9 @@ public class DebtPositionTypeOrgServiceImpl implements DebtPositionTypeOrgServic
   public List<DebtPositionTypeOrg> findDebtPositionTypeOrgByOrganizationIdAndIuds(Long organizationId, Set<String> iuds, String accessToken) {
     return debtPositionTypeOrgSearchClient.findDebtPositionTypeOrgByOrganizationIdAndIuds(organizationId, iuds, accessToken);
   }
+
+  @Override
+  public void updateFlagActiveDebtPositionTypeOrg(Long debtPositionTypeOrgId, Boolean flagActive, String accessToken) {
+    debtPositionTypeOrgClient.updateFlagActiveDebtPositionTypeOrg(debtPositionTypeOrgId, flagActive, accessToken);
+  }
 }

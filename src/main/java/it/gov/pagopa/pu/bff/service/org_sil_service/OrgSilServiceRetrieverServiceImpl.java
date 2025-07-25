@@ -31,16 +31,16 @@ public class OrgSilServiceRetrieverServiceImpl implements OrgSilServiceRetriever
                                            OrgSilServiceDTOMapper orgSilServiceDTOMapper,
                                            AuthorizationService authorizationService,
                                            OrgSilServiceViewMapper orgSilServiceViewMapper) {
-      this.orgSilServiceService = orgSilServiceService;
-      this.orgSilServiceDTOMapper = orgSilServiceDTOMapper;
-      this.authorizationService = authorizationService;
-      this.orgSilServiceViewMapper = orgSilServiceViewMapper;
+    this.orgSilServiceService = orgSilServiceService;
+    this.orgSilServiceDTOMapper = orgSilServiceDTOMapper;
+    this.authorizationService = authorizationService;
+    this.orgSilServiceViewMapper = orgSilServiceViewMapper;
   }
 
   @Override
   public List<OrgSilServiceExtendedDTO> getOrgSilServices(Long organizationId, OrgSilServiceType serviceType, UserInfo loggedUser, String accessToken) {
-    AuthorizationService.validateUserForOrganizationId(organizationId,loggedUser);
-    CollectionModelOrgSilService collection = orgSilServiceService.getOrgSilServices(organizationId,serviceType,accessToken);
+    AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser);
+    CollectionModelOrgSilService collection = orgSilServiceService.getOrgSilServices(organizationId, serviceType, accessToken);
     if (collection == null || collection.getEmbedded() == null) {
       return Collections.emptyList();
     }
@@ -62,6 +62,7 @@ public class OrgSilServiceRetrieverServiceImpl implements OrgSilServiceRetriever
     return orgSilServiceViewMapper.map(
       orgSilServiceService.getOrgSilServicesByFilters(organizationId, applicationName, serviceType, flagLegacy, pageable, accessToken));
   }
+
   @Override
   public OrgSilServiceDecryptedDTO getOrgSilServiceDetails(Long organizationId, Long orgSilServiceId, UserInfo loggedUser, String accessToken) {
     authorizationService.validateAdminRole(organizationId, loggedUser);

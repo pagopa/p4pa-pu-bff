@@ -876,12 +876,12 @@ paths:
           schema:
             type: string
             format: date-time
-        - name: updateDateFrom
+        - name: receiptCreationDateFrom
           in: query
           schema:
             type: string
             format: date-time
-        - name: updateDateTo
+        - name: receiptCreationDateTo
           in: query
           schema:
             type: string

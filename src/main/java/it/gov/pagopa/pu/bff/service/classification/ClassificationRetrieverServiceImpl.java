@@ -114,7 +114,7 @@ public class ClassificationRetrieverServiceImpl implements ClassificationRetriev
 
     AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser);
 
-    validatePaidInstallmentsFilters(filters.getIuv(), filters.getPaymentDateTimeIntervalFilter(), filters.getUpdateDateIntervalFilter());
+    validatePaidInstallmentsFilters(filters.getIuv(), filters.getPaymentDateTimeIntervalFilter(), filters.getReceiptCreationDateInterval());
 
     if(assessmentId!=null) {
       filters.setIuds(getIudsFilter(organizationId, assessmentId, accessToken));
@@ -134,16 +134,16 @@ public class ClassificationRetrieverServiceImpl implements ClassificationRetriev
     return extractIuds(assessmentsDetailPage);
   }
 
-  private void validatePaidInstallmentsFilters(String iuv, OffsetDateTimeIntervalFilter paymentDateTimeIntervalFilter, OffsetDateTimeIntervalFilter updateDateIntervalFilter) {
+  private void validatePaidInstallmentsFilters(String iuv, OffsetDateTimeIntervalFilter paymentDateTimeIntervalFilter, OffsetDateTimeIntervalFilter receiptCreationDateTimeInterval) {
     if (paymentDateTimeIntervalFilter != null) {
       DateUtils.validateDateFilters(paymentDateTimeIntervalFilter,"paymentDateTime");
     }
-    if (updateDateIntervalFilter != null) {
-      DateUtils.validateDateFilters(updateDateIntervalFilter,"updateDate");
+    if (receiptCreationDateTimeInterval != null) {
+      DateUtils.validateDateFilters(receiptCreationDateTimeInterval,"receiptCreationDate");
     }
     if (StringUtils.isBlank(iuv) &&
       (paymentDateTimeIntervalFilter == null || DateUtils.isNullOrInvalidOffsetDateTimeRange(paymentDateTimeIntervalFilter.getFrom(), paymentDateTimeIntervalFilter.getTo())) &&
-      (updateDateIntervalFilter == null || DateUtils.isNullOrInvalidOffsetDateTimeRange(updateDateIntervalFilter.getFrom(), updateDateIntervalFilter.getTo()))) {
+      (receiptCreationDateTimeInterval == null || DateUtils.isNullOrInvalidOffsetDateTimeRange(receiptCreationDateTimeInterval.getFrom(), receiptCreationDateTimeInterval.getTo()))) {
       throw new IllegalArgumentException("At least one filter must be provided, and all date intervals must have both 'from' and 'to' set or be null");
     }
   }

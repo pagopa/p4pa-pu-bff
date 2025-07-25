@@ -54,5 +54,13 @@ public class DebtPositionTypeOrgClient {
   public DebtPositionTypeOrg saveDebtPositionTypeOrg(SaveDebtPositionTypeOrgDTO saveDebtPositionTypeOrg, String accessToken){
     return debtPositionApisHolder.getDebtPositionTypeOrgApi(accessToken).saveDebtPositionTypeOrg(saveDebtPositionTypeOrg);
   }
+
+  public void updateFlagActiveDebtPositionTypeOrg(Long debtPositionTypeOrgId, Boolean flagActive,  String accessToken){
+    try{
+      debtPositionApisHolder.getDebtPositionTypeOrgApi(accessToken).updateFlagActiveDebtPositionTypeOrg(debtPositionTypeOrgId, flagActive);
+    } catch (HttpClientErrorException.NotFound e) {
+      throw new ResourceNotFoundException("DebtPositionTypeOrg with debtPositionTypeOrgId %d not found".formatted(debtPositionTypeOrgId));
+    }
+  }
 }
 

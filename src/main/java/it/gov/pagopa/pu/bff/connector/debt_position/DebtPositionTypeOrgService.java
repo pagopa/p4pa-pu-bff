@@ -24,4 +24,5 @@ public interface DebtPositionTypeOrgService {
   DebtPositionTypeOrg findDebtPositionTypeOrg(Long organizationId, String debtPositionTypeOrgCode, String mappedExternalUserId, String accessToken);
 
   List<DebtPositionTypeOrg> findDebtPositionTypeOrgByOrganizationIdAndIuds(Long organizationId, Set<String> iuds, String accessToken);
+  void  updateFlagActiveDebtPositionTypeOrg(Long debtPositionTypeOrgId, Boolean flagActive,  String accessToken);
 }

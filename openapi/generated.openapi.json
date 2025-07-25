@@ -6328,7 +6328,7 @@
             "format" : "date-time"
           }
         }, {
-          "name" : "updateDateFrom",
+          "name" : "receiptCreationDateFrom",
           "in" : "query",
           "required" : false,
           "schema" : {
@@ -6336,7 +6336,7 @@
             "format" : "date-time"
           }
         }, {
-          "name" : "updateDateTo",
+          "name" : "receiptCreationDateTo",
           "in" : "query",
           "required" : false,
           "schema" : {
@@ -11188,7 +11188,7 @@
             "type" : "string",
             "format" : "date-time"
           },
-          "updateDate" : {
+          "receiptCreationDate" : {
             "type" : "string",
             "format" : "date-time"
           },
@@ -11207,7 +11207,7 @@
             "format" : "int64"
           }
         },
-        "required" : [ "organizationId", "updateDate" ]
+        "required" : [ "organizationId" ]
       },
       "PagedClassificationPaidInstallmentsView" : {
         "type" : "object",

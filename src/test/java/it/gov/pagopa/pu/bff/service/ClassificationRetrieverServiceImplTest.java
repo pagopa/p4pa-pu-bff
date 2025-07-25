@@ -23,6 +23,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.authorization.AuthorizationDeniedException;
 
 import java.time.LocalDate;
+import java.time.OffsetDateTime;
 import java.util.Collections;
 import java.util.List;
 
@@ -375,9 +376,15 @@ class ClassificationRetrieverServiceImplTest {
 
     long organizationId = 1L;
     long assessmentId = 42L;
+    OffsetDateTime paymentDateTimeFrom = OffsetDateTime.now();
+    OffsetDateTime paymentDateTimeTo = OffsetDateTime.now().plusDays(1);
+    OffsetDateTime receiptCreationDateFrom = OffsetDateTime.now().minusDays(2);
+    OffsetDateTime receiptCreationDateTo = OffsetDateTime.now().minusDays(1);
 
     ClassificationPaidInstallmentsFiltersDTO filters = ClassificationPaidInstallmentsFiltersDTO.builder()
       .iuv("IUV123")
+      .paymentDateTimeIntervalFilter(new OffsetDateTimeIntervalFilter(paymentDateTimeFrom,paymentDateTimeTo))
+      .receiptCreationDateInterval(new OffsetDateTimeIntervalFilter(receiptCreationDateFrom,receiptCreationDateTo))
       .build();
 
     Pageable pageable = PageRequest.of(0, 10);
@@ -405,7 +412,16 @@ class ClassificationRetrieverServiceImplTest {
               argThat(p->p.getPageNumber()==0 && p.getPageSize() == PAGE_MAX_SIZE), eq(accessToken)))
         .thenReturn(assessmentsDetailPage);
 
-      when(classificationServiceMock.getPaidInstallments(eq(organizationId), argThat(f->f.getIuv().equals(filters.getIuv()) && f.getIuds().equals(Collections.singleton(detail.getIud()))), eq(pageable), eq(accessToken)))
+      when(classificationServiceMock.getPaidInstallments(eq(organizationId),
+              argThat(f->
+                      f.getIuv().equals(filters.getIuv())
+                      && f.getIuds().equals(Collections.singleton(detail.getIud()))
+                      && f.getPaymentDateTimeIntervalFilter().getFrom().equals(paymentDateTimeFrom)
+                      && f.getPaymentDateTimeIntervalFilter().getTo().equals(paymentDateTimeTo)
+                      && f.getReceiptCreationDateInterval().getFrom().equals(receiptCreationDateFrom)
+                      && f.getReceiptCreationDateInterval().getTo().equals(receiptCreationDateTo)
+              ),
+              eq(pageable), eq(accessToken)))
         .thenReturn(expectedResult);
 
       PagedClassificationPaidInstallmentsView result =

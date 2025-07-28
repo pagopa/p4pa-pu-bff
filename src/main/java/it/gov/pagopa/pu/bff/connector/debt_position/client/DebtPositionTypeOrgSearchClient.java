@@ -54,4 +54,9 @@ public class DebtPositionTypeOrgSearchClient {
     return collectionModelDebtPositionTypeOrg!=null && collectionModelDebtPositionTypeOrg.getEmbedded() !=null?
             collectionModelDebtPositionTypeOrg.getEmbedded().getDebtPositionTypeOrgs(): Collections.emptyList();
   }
+
+  public Long countByOrgSilServiceId(Long orgSilServiceId, String accessToken) {
+    return debtPositionApisHolder.getDebtPositionTypeOrgSearchControllerApi(accessToken)
+      .crudDebtPositionTypeOrgsCountByOrgSilServiceId(orgSilServiceId);
+  }
 }

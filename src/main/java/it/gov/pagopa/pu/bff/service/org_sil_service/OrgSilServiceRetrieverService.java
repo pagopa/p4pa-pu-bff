@@ -17,4 +17,6 @@ public interface OrgSilServiceRetrieverService {
   String getOrgSilServiceApplicationName(Long serviceId, String accessToken);
 
   PagedOrgSilServiceView getOrgSilServicesByFilters(Long organizationId, String applicationName, OrgSilServiceType serviceType, Boolean flagLegacy, Pageable pageable, UserInfo loggedUser, String accessToken);
+
+  void deleteOrgSilService(Long organizationId, Long orgSilServiceId, UserInfo loggedUser, String accessToken);
 }

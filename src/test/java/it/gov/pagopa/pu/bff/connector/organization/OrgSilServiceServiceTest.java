@@ -1,5 +1,6 @@
 package it.gov.pagopa.pu.bff.connector.organization;
 
+import it.gov.pagopa.pu.bff.connector.organization.client.OrgSilServiceEntityClient;
 import it.gov.pagopa.pu.bff.connector.organization.client.OrgSilServiceSearchClient;
 import it.gov.pagopa.pu.bff.util.TestUtils;
 import it.gov.pagopa.pu.organization.dto.generated.*;
@@ -15,7 +16,7 @@ import org.springframework.data.domain.Pageable;
 import uk.co.jemos.podam.api.PodamFactory;
 
 import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class OrgSilServiceServiceTest {
@@ -25,17 +26,19 @@ class OrgSilServiceServiceTest {
 
   @Mock
   private OrgSilServiceSearchClient orgSilServiceSearchClientMock;
+  @Mock
+  private OrgSilServiceEntityClient orgSilServiceEntityClientMock;
 
   private OrgSilServiceService service;
 
   @BeforeEach
   void setUp() {
-    service = new OrgSilServiceServiceImpl(orgSilServiceSearchClientMock);
+    service = new OrgSilServiceServiceImpl(orgSilServiceSearchClientMock, orgSilServiceEntityClientMock);
   }
 
   @AfterEach
   void verifyNoMoreInteractions() {
-    Mockito.verifyNoMoreInteractions(orgSilServiceSearchClientMock);
+    Mockito.verifyNoMoreInteractions(orgSilServiceSearchClientMock, orgSilServiceEntityClientMock);
   }
 
   @Test
@@ -108,5 +111,15 @@ class OrgSilServiceServiceTest {
     OrgSilServiceDTO result = service.createOrUpdateOrgSilService(inputDto, accessToken);
 
     assertSame(expectedResponse, result);
+  }
+
+  @Test
+  void whenDeleteOrgSilServiceThenInvokeClient() {
+    Long orgSilServiceId = 123L;
+
+    service.deleteOrgSilService(orgSilServiceId, accessToken);
+
+    verify(orgSilServiceEntityClientMock, times(1))
+      .deleteOrgSilService(orgSilServiceId, accessToken);
   }
 }

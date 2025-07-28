@@ -18,6 +18,7 @@ import uk.co.jemos.podam.api.PodamFactory;
 import java.util.List;
 import java.util.Set;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.Mockito.*;
 
@@ -168,6 +169,20 @@ class DebtPositionTypeOrgServiceTest {
     List<DebtPositionTypeOrg> result = service.findDebtPositionTypeOrgByOrganizationIdAndIuds(organizationId,iuds,accessToken);
 
     assertSame(expectedResult, result);
+  }
+
+  @Test
+  void whenCountByOrgSilServiceIdThenInvokeClient() {
+    Long orgSilServiceId = 123L;
+    String accessToken = "ACCESS_TOKEN";
+    Long expectedCount = 7L;
+
+    when(debtPositionTypeOrgSearchClientMock.countByOrgSilServiceId(orgSilServiceId, accessToken))
+      .thenReturn(expectedCount);
+
+    Long result = service.countByOrgSilServiceId(orgSilServiceId, accessToken);
+
+    assertEquals(expectedCount, result);
   }
 }
 

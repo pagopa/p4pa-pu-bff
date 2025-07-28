@@ -1,10 +1,12 @@
 package it.gov.pagopa.pu.bff.service;
 
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
+import it.gov.pagopa.pu.bff.connector.debt_position.DebtPositionTypeOrgService;
 import it.gov.pagopa.pu.bff.connector.organization.OrgSilServiceService;
 import it.gov.pagopa.pu.bff.dto.OrgSilServiceDecryptedDTO;
 import it.gov.pagopa.pu.bff.dto.OrgSilServiceExtendedDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedOrgSilServiceView;
+import it.gov.pagopa.pu.bff.exception.ConflictException;
 import it.gov.pagopa.pu.bff.mapper.OrgSilServiceDTOMapper;
 import it.gov.pagopa.pu.bff.mapper.OrgSilServiceViewMapper;
 import it.gov.pagopa.pu.bff.service.org_sil_service.OrgSilServiceRetrieverService;
@@ -44,6 +46,8 @@ public class OrgSilServiceRetrieverServiceImplTest {
   private AuthorizationService authorizationServiceMock;
   @Mock
   private OrgSilServiceViewMapper orgSilServiceViewMapperMock;
+  @Mock
+  private DebtPositionTypeOrgService debtPositionTypeOrgServiceMock;
 
   private OrgSilServiceRetrieverService orgSilServiceRetrieverService;
 
@@ -52,13 +56,13 @@ public class OrgSilServiceRetrieverServiceImplTest {
   @BeforeEach
   void setUp() {
     orgSilServiceRetrieverService = new OrgSilServiceRetrieverServiceImpl(
-      orgSilServiceServiceMock, orgSilServiceDTOMapperMock, authorizationServiceMock, orgSilServiceViewMapperMock);
+      orgSilServiceServiceMock, orgSilServiceDTOMapperMock, authorizationServiceMock, orgSilServiceViewMapperMock, debtPositionTypeOrgServiceMock);
   }
 
   @AfterEach
   void verifyNoMoreInteractions() {
     Mockito.verifyNoMoreInteractions(
-      orgSilServiceServiceMock, orgSilServiceDTOMapperMock, authorizationServiceMock, orgSilServiceViewMapperMock
+      orgSilServiceServiceMock, orgSilServiceDTOMapperMock, authorizationServiceMock, orgSilServiceViewMapperMock, debtPositionTypeOrgServiceMock
     );
   }
 
@@ -269,5 +273,53 @@ public class OrgSilServiceRetrieverServiceImplTest {
     Assertions.assertThrows(AuthorizationDeniedException.class, () ->
       orgSilServiceRetrieverService.getOrgSilServiceDetails(organizationId, 2L, loggedUser, accessToken));
 
+  }
+
+  @Test
+  void givenValidInputWhenDeleteOrgSilServiceThenDeleteOrgSilService() {
+    Long organizationId = 1L;
+    Long orgSilServiceId = 2L;
+    UserInfo loggedUser = new UserInfo();
+    loggedUser.setUserId("user-123");
+    loggedUser.setMappedExternalUserId("external-123");
+
+    doNothing().when(authorizationServiceMock).validateAdminRole(organizationId, loggedUser);
+    when(debtPositionTypeOrgServiceMock.countByOrgSilServiceId(orgSilServiceId, accessToken)).thenReturn(0L);
+    doNothing().when(orgSilServiceServiceMock).deleteOrgSilService(orgSilServiceId, accessToken);
+
+    orgSilServiceRetrieverService.deleteOrgSilService(organizationId, orgSilServiceId, loggedUser, accessToken);
+  }
+
+  @Test
+  void givenUtilizedOrgSilServiceIdWhenDeleteThenThrowConflictException() {
+    Long organizationId = 1L;
+    Long orgSilServiceId = 2L;
+    UserInfo loggedUser = new UserInfo();
+    loggedUser.setUserId("user-123");
+    loggedUser.setMappedExternalUserId("external-123");
+
+    doNothing().when(authorizationServiceMock).validateAdminRole(organizationId, loggedUser);
+    when(debtPositionTypeOrgServiceMock.countByOrgSilServiceId(orgSilServiceId, accessToken)).thenReturn(3L); // > 0
+
+    ConflictException exception = assertThrows(ConflictException.class,
+      () -> orgSilServiceRetrieverService.deleteOrgSilService(organizationId, orgSilServiceId, loggedUser, accessToken));
+
+    assertEquals("Cannot delete OrgSilService with ID 2: it is referenced by 3 DebtPositionTypeOrg record(s).", exception.getMessage());
+  }
+
+  @Test
+  void givenInvalidAdminForOrganizationIdWhenDeleteOrgSilServiceThenThrowAuthorizationDeniedException() {
+    Long organizationId = 1L;
+    Long orgSilServiceId = 2L;
+
+    UserInfo loggedUser = new UserInfo();
+    loggedUser.setUserId("user-123");
+    loggedUser.setMappedExternalUserId("external-123");
+
+    doThrow(AuthorizationDeniedException.class).when(authorizationServiceMock)
+      .validateAdminRole(organizationId, loggedUser);
+
+    assertThrows(AuthorizationDeniedException.class,
+      () -> orgSilServiceRetrieverService.deleteOrgSilService(organizationId, orgSilServiceId, loggedUser, accessToken));
   }
 }

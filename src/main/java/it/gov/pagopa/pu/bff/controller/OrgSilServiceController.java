@@ -55,4 +55,11 @@ public class OrgSilServiceController implements OrgSilServiceApi {
     return new ResponseEntity<>(orgSilServiceStorerService.createOrgSilService(
       organizationId, body, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken()), HttpStatus.CREATED);
   }
+
+  @Override
+  public ResponseEntity<Void> deleteOrgSilService(Long organizationId, Long orgSilServiceId) {
+    log.info("User requested deleteOrgSilService having organizationId {} and orgSilServiceId {}", organizationId, orgSilServiceId);
+    orgSilServiceRetrieverService.deleteOrgSilService(organizationId, orgSilServiceId, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken());
+    return ResponseEntity.ok().build();
+  }
 }

@@ -1,11 +1,8 @@
 package it.gov.pagopa.pu.bff.connector.organization;
 
+import it.gov.pagopa.pu.bff.connector.organization.client.OrgSilServiceEntityClient;
 import it.gov.pagopa.pu.bff.connector.organization.client.OrgSilServiceSearchClient;
-import it.gov.pagopa.pu.organization.dto.generated.CollectionModelOrgSilService;
-import it.gov.pagopa.pu.organization.dto.generated.OrgSilService;
-import it.gov.pagopa.pu.organization.dto.generated.OrgSilServiceDTO;
-import it.gov.pagopa.pu.organization.dto.generated.OrgSilServiceType;
-import it.gov.pagopa.pu.organization.dto.generated.PagedModelOrgSilServiceView;
+import it.gov.pagopa.pu.organization.dto.generated.*;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -13,14 +10,16 @@ import org.springframework.stereotype.Service;
 public class OrgSilServiceServiceImpl implements OrgSilServiceService {
 
   private final OrgSilServiceSearchClient orgSilServiceSearchClient;
+  private final OrgSilServiceEntityClient orgSilServiceEntityClient;
 
-  public OrgSilServiceServiceImpl(OrgSilServiceSearchClient orgSilServiceSearchClient) {
-      this.orgSilServiceSearchClient = orgSilServiceSearchClient;
+  public OrgSilServiceServiceImpl(OrgSilServiceSearchClient orgSilServiceSearchClient, OrgSilServiceEntityClient orgSilServiceEntityClient) {
+    this.orgSilServiceSearchClient = orgSilServiceSearchClient;
+    this.orgSilServiceEntityClient = orgSilServiceEntityClient;
   }
 
   @Override
   public CollectionModelOrgSilService getOrgSilServices(Long organizationId, OrgSilServiceType serviceType, String accessToken) {
-    return orgSilServiceSearchClient.getOrgSilServices(organizationId,serviceType,accessToken);
+    return orgSilServiceSearchClient.getOrgSilServices(organizationId, serviceType, accessToken);
   }
 
   @Override
@@ -41,5 +40,10 @@ public class OrgSilServiceServiceImpl implements OrgSilServiceService {
   @Override
   public OrgSilServiceDTO createOrUpdateOrgSilService(OrgSilServiceDTO orgSilServiceDTO, String accessToken) {
     return orgSilServiceSearchClient.createOrUpdateOrgSilService(orgSilServiceDTO, accessToken);
+  }
+
+  @Override
+  public void deleteOrgSilService(Long orgSilServiceId, String accessToken) {
+    orgSilServiceEntityClient.deleteOrgSilService(orgSilServiceId, accessToken);
   }
 }

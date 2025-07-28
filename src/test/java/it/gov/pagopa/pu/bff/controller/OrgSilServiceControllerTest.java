@@ -28,7 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @Slf4j
 @ExtendWith(MockitoExtension.class)
@@ -158,5 +158,20 @@ class OrgSilServiceControllerTest {
     assertEquals(HttpStatus.CREATED, response.getStatusCode());
     assertNotNull(response.getBody());
     assertEquals(expectedResponse, response.getBody());
+  }
+
+  @Test
+  void whenDeleteOrgSilServiceThenOk() {
+    Long organizationId = 1L;
+    Long orgSilServiceId = 100L;
+
+    ResponseEntity<Void> result = orgSilServiceController.deleteOrgSilService(organizationId, orgSilServiceId);
+
+    assertNotNull(result);
+    assertEquals(HttpStatus.OK, result.getStatusCode());
+    assertNull(result.getBody());
+
+    verify(orgSilServiceRetrieverServiceMock, times(1))
+      .deleteOrgSilService(organizationId, orgSilServiceId, loggedUser, accessToken);
   }
 }

@@ -80,4 +80,11 @@ public class DebtPositionTypeOrgController implements DebtPositionTypeOrgsApi {
             debtPositionTypeOrgRetrieverService.updateDebtPositionTypeOrg(organizationId, debtPositionTypeOrgId,saveDebtPositionTypeOrgDTO, SecurityUtils.getLoggedUser(),SecurityUtils.getAccessToken())
     );
   }
+
+  @Override
+  public ResponseEntity<Void> updateFlagActiveDebtPositionTypeOrg(Long organizationId, Long debtPositionTypeOrgId, Boolean flagActive) {
+    log.info("User requested updateFlagActiveDebtPositionTypeOrg having organizationId {}, debtPositionTypeOrgId {} and flagActive {}", organizationId, debtPositionTypeOrgId, flagActive);
+    debtPositionTypeOrgRetrieverService.updateFlagActiveDebtPositionTypeOrg(organizationId, debtPositionTypeOrgId, flagActive, SecurityUtils.getLoggedUser(),SecurityUtils.getAccessToken());
+    return ResponseEntity.ok().build();
+  }
 }

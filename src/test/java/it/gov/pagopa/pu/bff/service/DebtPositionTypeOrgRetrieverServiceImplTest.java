@@ -909,7 +909,6 @@ class DebtPositionTypeOrgRetrieverServiceImplTest {
             debtPositionTypeOrgService.validateOperator(organizationId,debtPositionTypeOrgCode,mappedExternalUserId,accessToken));
   }
 
-  @Test
   void whenGetDebtPositionTypeOrgCodesThenOk(){
     Long organizationId = 1L;
     String mappedExternalUserId = "mappedExternalUserId";
@@ -996,6 +995,21 @@ class DebtPositionTypeOrgRetrieverServiceImplTest {
             .thenReturn(debtPositionTypeOrgs);
 
     assertThrows(IllegalArgumentException.class, () -> debtPositionTypeOrgService.validateIuds(organizationId,debtPositionTypeOrgCode,iuds,accessToken));
+  }
+
+  @Test
+  void givenDebtPositionTypeOrgIdAndFlagActiveWhenUpdateFlagActiveDebtPositionTypeOrgThenOk() {
+    //given
+    UserInfo loggedUser = new UserInfo();
+    loggedUser.setUserId("admin-123");
+
+    Long organizationId = 1L;
+    Long debtPositionTypeOrgId = 2L;
+
+    Mockito.doNothing().when(authorizationServiceMock).validateAdminRole(organizationId, loggedUser);
+    Mockito.doNothing().when(debtPositionTypeOrgServiceMock).updateFlagActiveDebtPositionTypeOrg(debtPositionTypeOrgId, true, accessToken);
+    //when
+    Assertions.assertDoesNotThrow(() -> debtPositionTypeOrgService.updateFlagActiveDebtPositionTypeOrg(organizationId, debtPositionTypeOrgId, true, loggedUser, accessToken));
   }
 }
 

@@ -90,17 +90,17 @@ public class ClassificationController implements ClassificationsApi {
   @Override
   public ResponseEntity<PagedClassificationPaidInstallmentsView> getPaidInstallments(
     Long organizationId, String debtPositionTypeOrgCode, String iuv, OffsetDateTime paymentDateTimeFrom, OffsetDateTime paymentDateTimeTo,
-    OffsetDateTime updateDateFrom, OffsetDateTime updateDateTo, Long assessmentId, Pageable pageable) {
+    OffsetDateTime receiptCreationDateFrom, OffsetDateTime receiptCreationDateTo, Long assessmentId, Pageable pageable) {
 
     log.info("User requested getPaidInstallments having organizationId {}", organizationId);
 
     OffsetDateTimeIntervalFilter paymentDateTimeIntervalFilter = new OffsetDateTimeIntervalFilter(paymentDateTimeFrom, paymentDateTimeTo);
-    OffsetDateTimeIntervalFilter updateDateIntervalFilter = new OffsetDateTimeIntervalFilter(updateDateFrom, updateDateTo);
+    OffsetDateTimeIntervalFilter receiptCreationDateInterval = new OffsetDateTimeIntervalFilter(receiptCreationDateFrom, receiptCreationDateTo);
 
     ClassificationPaidInstallmentsFiltersDTO classificationPaidInstallmentsFiltersDTO = ClassificationPaidInstallmentsFiltersDTO.builder()
       .iuv(iuv)
       .paymentDateTimeIntervalFilter(paymentDateTimeIntervalFilter)
-      .updateDateIntervalFilter(updateDateIntervalFilter)
+      .receiptCreationDateInterval(receiptCreationDateInterval)
       .debtPositionTypeOrgCode(debtPositionTypeOrgCode)
       .build();
 

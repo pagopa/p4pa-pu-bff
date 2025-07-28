@@ -172,6 +172,18 @@ class DebtPositionTypeOrgServiceTest {
   }
 
   @Test
+  void whenUpdateFlagActiveDebtPositionTypeOrgThenInvokeClient() {
+    Long debtPositionTypeOrgId = 1L;
+    String accessToken = "ACCESSTOKEN";
+
+    doNothing().when(debtPositionTypeOrgClientMock).updateFlagActiveDebtPositionTypeOrg(debtPositionTypeOrgId, true, accessToken);
+
+    service.updateFlagActiveDebtPositionTypeOrg(debtPositionTypeOrgId, true, accessToken);
+
+    verifyNoMoreInteractions(debtPositionTypeOrgClientMock);
+  }
+
+  @Test
   void whenCountByOrgSilServiceIdThenInvokeClient() {
     Long orgSilServiceId = 123L;
     String accessToken = "ACCESS_TOKEN";

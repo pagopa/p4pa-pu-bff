@@ -610,6 +610,35 @@ paths:
           description: Not Found
         "500":
           description: Internal server error
+    patch:
+      tags:
+        - DebtPositionTypeOrgs
+      operationId: "updateFlagActiveDebtPositionTypeOrg"
+      parameters:
+        - name: organizationId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: debtPositionTypeOrgId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: flagActive
+          in: query
+          required: true
+          schema:
+            type: boolean
+      responses:
+        '200':
+          description: Ok
+        '404':
+          description: Not Found
+        "500":
+          description: Internal server error
     delete:
       tags:
         - DebtPositionTypeOrgs
@@ -847,12 +876,12 @@ paths:
           schema:
             type: string
             format: date-time
-        - name: updateDateFrom
+        - name: receiptCreationDateFrom
           in: query
           schema:
             type: string
             format: date-time
-        - name: updateDateTo
+        - name: receiptCreationDateTo
           in: query
           schema:
             type: string

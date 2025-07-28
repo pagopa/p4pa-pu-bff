@@ -246,4 +246,10 @@ public class DebtPositionTypeOrgRetrieverServiceImpl implements DebtPositionType
       throw new IllegalArgumentException("One or more iuds refer to an invalid DebtPositionTypeOrg");
     }
   }
+
+  @Override
+  public void updateFlagActiveDebtPositionTypeOrg(Long organizationId, Long debtPositionTypeOrgCodeId, boolean flagActive, UserInfo loggedUser, String accessToken) {
+    authorizationService.validateAdminRole(organizationId, loggedUser);
+    debtPositionTypeOrgService.updateFlagActiveDebtPositionTypeOrg(debtPositionTypeOrgCodeId, flagActive, accessToken);
+  }
 }

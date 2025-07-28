@@ -1,10 +1,12 @@
 package it.gov.pagopa.pu.bff.service.org_sil_service;
 
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
+import it.gov.pagopa.pu.bff.connector.debt_position.DebtPositionTypeOrgService;
 import it.gov.pagopa.pu.bff.connector.organization.OrgSilServiceService;
 import it.gov.pagopa.pu.bff.dto.OrgSilServiceDecryptedDTO;
 import it.gov.pagopa.pu.bff.dto.OrgSilServiceExtendedDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedOrgSilServiceView;
+import it.gov.pagopa.pu.bff.exception.ConflictException;
 import it.gov.pagopa.pu.bff.mapper.OrgSilServiceDTOMapper;
 import it.gov.pagopa.pu.bff.mapper.OrgSilServiceViewMapper;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
@@ -26,15 +28,18 @@ public class OrgSilServiceRetrieverServiceImpl implements OrgSilServiceRetriever
   private final OrgSilServiceDTOMapper orgSilServiceDTOMapper;
   private final AuthorizationService authorizationService;
   private final OrgSilServiceViewMapper orgSilServiceViewMapper;
+  private final DebtPositionTypeOrgService debtPositionTypeOrgService;
 
   public OrgSilServiceRetrieverServiceImpl(OrgSilServiceService orgSilServiceService,
                                            OrgSilServiceDTOMapper orgSilServiceDTOMapper,
                                            AuthorizationService authorizationService,
-                                           OrgSilServiceViewMapper orgSilServiceViewMapper) {
+                                           OrgSilServiceViewMapper orgSilServiceViewMapper,
+                                           DebtPositionTypeOrgService debtPositionTypeOrgService) {
     this.orgSilServiceService = orgSilServiceService;
     this.orgSilServiceDTOMapper = orgSilServiceDTOMapper;
     this.authorizationService = authorizationService;
     this.orgSilServiceViewMapper = orgSilServiceViewMapper;
+    this.debtPositionTypeOrgService = debtPositionTypeOrgService;
   }
 
   @Override
@@ -68,5 +73,17 @@ public class OrgSilServiceRetrieverServiceImpl implements OrgSilServiceRetriever
     authorizationService.validateAdminRole(organizationId, loggedUser);
 
     return orgSilServiceDTOMapper.map(orgSilServiceService.getOrgSilServiceByIdDecrypted(orgSilServiceId, accessToken));
+  }
+
+  @Override
+  public void deleteOrgSilService(Long organizationId, Long orgSilServiceId, UserInfo loggedUser, String accessToken) {
+    authorizationService.validateAdminRole(organizationId, loggedUser);
+
+    Long usageCount = debtPositionTypeOrgService.countByOrgSilServiceId(orgSilServiceId, accessToken);
+    if (usageCount > 0) {
+      throw new ConflictException("Cannot delete OrgSilService with ID " + orgSilServiceId + ": it is referenced by " + usageCount + " DebtPositionTypeOrg record(s).");
+    }
+
+    orgSilServiceService.deleteOrgSilService(orgSilServiceId, accessToken);
   }
 }

@@ -82,4 +82,9 @@ public class DebtPositionTypeOrgServiceImpl implements DebtPositionTypeOrgServic
   public void updateFlagActiveDebtPositionTypeOrg(Long debtPositionTypeOrgId, Boolean flagActive, String accessToken) {
     debtPositionTypeOrgClient.updateFlagActiveDebtPositionTypeOrg(debtPositionTypeOrgId, flagActive, accessToken);
   }
+
+  @Override
+  public Long countByOrgSilServiceId(Long orgSilServiceId, String accessToken) {
+    return debtPositionTypeOrgSearchClient.countByOrgSilServiceId(orgSilServiceId, accessToken);
+  }
 }

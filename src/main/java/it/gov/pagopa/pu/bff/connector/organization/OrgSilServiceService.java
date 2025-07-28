@@ -13,4 +13,6 @@ public interface OrgSilServiceService {
   OrgSilServiceDTO getOrgSilServiceByIdDecrypted(Long orgSilServiceId, String accessToken);
 
   OrgSilServiceDTO createOrUpdateOrgSilService(OrgSilServiceDTO orgSilServiceDTO, String accessToken);
+
+  void deleteOrgSilService(Long orgSilServiceId, String accessToken);
 }

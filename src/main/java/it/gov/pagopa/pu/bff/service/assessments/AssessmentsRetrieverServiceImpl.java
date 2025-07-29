@@ -89,7 +89,7 @@ public class AssessmentsRetrieverServiceImpl implements AssessmentsRetrieverServ
   }
 
   private Map<String, String> getDebtPositionTypeOrgMap(Long organizationId, String mappedExternalUserId, String accessToken) {
-    CollectionModelDebtPositionTypeOrg debtPositionTypeOrgs = debtPositionTypeOrgService.getDebtPositionTypeOrgs(organizationId, mappedExternalUserId, accessToken);
+    CollectionModelDebtPositionTypeOrg debtPositionTypeOrgs = debtPositionTypeOrgService.getDebtPositionTypeOrgs(organizationId, null, mappedExternalUserId, accessToken);
 
     if (debtPositionTypeOrgs != null
             && debtPositionTypeOrgs.getEmbedded() != null

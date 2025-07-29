@@ -82,7 +82,7 @@ public class ExportFileRetrieverServiceImpl implements
     if (requestDTO.getFilterFields().getDebtPositionTypeOrgCodes() != null && !requestDTO.getFilterFields().getDebtPositionTypeOrgCodes().isEmpty()) {
       requestDTO.getFilterFields().getDebtPositionTypeOrgCodes().forEach(dptoc -> debtPositionTypeOrgRetrieverService.validateOperator(requestDTO.getOrganizationId(), dptoc, loggedUser.getMappedExternalUserId(), accessToken));
     } else {
-      requestDTO.getFilterFields().setDebtPositionTypeOrgCodes(debtPositionTypeOrgRetrieverService.getDebtPositionTypeOrgCodes(requestDTO.getOrganizationId(), loggedUser.getMappedExternalUserId(), accessToken));
+      requestDTO.getFilterFields().setDebtPositionTypeOrgCodes(debtPositionTypeOrgRetrieverService.getDebtPositionTypeOrgCodes(requestDTO.getOrganizationId(), null, loggedUser.getMappedExternalUserId(), accessToken));
     }
 
     exportFileService.createClassificationsExportFile(requestDTO, accessToken);

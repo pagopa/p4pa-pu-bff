@@ -7,11 +7,11 @@ import java.util.List;
 import java.util.Set;
 
 public interface DebtPositionTypeOrgService {
-  CollectionModelDebtPositionTypeOrg getDebtPositionTypeOrgs(Long organizationId, String operatorExternalUserId, String accessToken);
+  CollectionModelDebtPositionTypeOrg getDebtPositionTypeOrgs(Long organizationId, Boolean flagActive, String operatorExternalUserId, String accessToken);
 
   DebtPositionTypeOrg getDebtPositionTypeOrg(Long debtPositionTypeOrgId, String accessToken);
 
-  PagedModelDebtPositionTypeOrgWithCount getDebtPositionTypeOrgWithCount(Long organizationId, String code, String description, Pageable pageable, String accessToken);
+  PagedModelDebtPositionTypeOrgWithCount getDebtPositionTypeOrgWithCount(Long organizationId, String code, String description, Boolean flagActive, Pageable pageable, String accessToken);
 
   CollectionModelDebtPositionTypeOrgCountByOrganizationId getDebtPositionTypeOrgCountByOrganizationId(List<Long> organizationIds, String accessToken);
 

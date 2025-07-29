@@ -67,10 +67,10 @@ class DebtPositionTypeOrgClientTest {
       .thenReturn(debtPositionTypeOrgSearchControllerApiMock);
 
     when(debtPositionTypeOrgSearchControllerApiMock.crudDebtPositionTypeOrgsFindDebtPositionTypeOrgs(
-      String.valueOf(organizationId), operatorExternalUserId))
+      String.valueOf(organizationId),operatorExternalUserId, true))
       .thenReturn(expectedResult);
 
-    CollectionModelDebtPositionTypeOrg result = debtPositionTypeOrgClient.getDebtPositionTypeOrgs(organizationId, operatorExternalUserId, accessToken);
+    CollectionModelDebtPositionTypeOrg result = debtPositionTypeOrgClient.getDebtPositionTypeOrgs(organizationId, operatorExternalUserId, true, accessToken);
 
     assertSame(expectedResult, result);
   }

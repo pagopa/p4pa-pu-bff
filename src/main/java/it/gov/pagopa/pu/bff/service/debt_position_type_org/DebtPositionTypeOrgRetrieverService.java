@@ -14,9 +14,9 @@ import java.util.Set;
 public interface DebtPositionTypeOrgRetrieverService {
   DebtPositionTypeOrgDTO getDebtPositionTypeOrgById(Long organizationId, Long debtPositionTypeOrgId, UserInfo loggedUser, String accessToken);
 
-  List<DebtPositionTypeOrg> getDebtPositionTypeOrgs(Long organizationId, UserInfo loggedUser, String accessToken);
+  List<DebtPositionTypeOrg> getDebtPositionTypeOrgs(Long organizationId, Boolean flagActive, UserInfo loggedUser, String accessToken);
 
-  PagedDebtPositionTypeOrgWithCount getDebtPositionTypeOrgWithCount(Long organizationId, String code, String description, Pageable pageable, UserInfo loggedUser, String accessToken);
+  PagedDebtPositionTypeOrgWithCount getDebtPositionTypeOrgWithCount(Long organizationId, String code, String description, Boolean flagActive, Pageable pageable, UserInfo loggedUser, String accessToken);
 
   void deleteDebtPositionTypeOrg(Long organizationId, Long debtPositionTypeOrgId, UserInfo loggedUser, String accessToken);
 
@@ -28,7 +28,7 @@ public interface DebtPositionTypeOrgRetrieverService {
 
   void validateOperator(Long organizationId, String debtPositionTypeOrgCode, String mappedExternalUserId, String accessToken);
 
-  Set<String> getDebtPositionTypeOrgCodes(Long organizationId, String mappedExternalUserId, String accessToken);
+  Set<String> getDebtPositionTypeOrgCodes(Long organizationId, Boolean flagActive, String mappedExternalUserId, String accessToken);
 
   void validateIuds(Long organizationId, String debtPositionTypeOrgCode, Set<String> iuds, String accessToken);
   void updateFlagActiveDebtPositionTypeOrg(Long organizationId, Long debtPositionTypeOrgCodeId, boolean flagActive, UserInfo loggedUser, String accessToken);

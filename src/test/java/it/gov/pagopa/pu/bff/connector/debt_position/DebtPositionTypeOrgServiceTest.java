@@ -47,10 +47,10 @@ class DebtPositionTypeOrgServiceTest {
     String accessToken = "ACCESSTOKEN";
     CollectionModelDebtPositionTypeOrg expectedResult = new CollectionModelDebtPositionTypeOrg();
 
-    when(debtPositionTypeOrgClientMock.getDebtPositionTypeOrgs(Mockito.same(organizationId), Mockito.same(operatorExternalUserId), Mockito.same(accessToken)))
+    when(debtPositionTypeOrgClientMock.getDebtPositionTypeOrgs(Mockito.same(organizationId), Mockito.same(operatorExternalUserId),  Mockito.same(true), Mockito.same(accessToken)))
       .thenReturn(expectedResult);
 
-    CollectionModelDebtPositionTypeOrg result = service.getDebtPositionTypeOrgs(organizationId, operatorExternalUserId, accessToken);
+    CollectionModelDebtPositionTypeOrg result = service.getDebtPositionTypeOrgs(organizationId, true, operatorExternalUserId,  accessToken);
 
     assertSame(expectedResult, result);
   }
@@ -78,10 +78,10 @@ class DebtPositionTypeOrgServiceTest {
     String accessToken = "ACCESSTOKEN";
     PagedModelDebtPositionTypeOrgWithCount expectedResult = new PagedModelDebtPositionTypeOrgWithCount();
 
-    when(debtPositionTypeOrgWithCountClientMock.getDebtPositionTypeOrgWithCount(Mockito.same(organizationId), Mockito.same(code), Mockito.same(description), Mockito.same(pageable), Mockito.same(accessToken)))
+    when(debtPositionTypeOrgWithCountClientMock.getDebtPositionTypeOrgWithCount(Mockito.same(organizationId), Mockito.same(code), Mockito.same(description), Mockito.same(true), Mockito.same(pageable), Mockito.same(accessToken)))
       .thenReturn(expectedResult);
 
-    PagedModelDebtPositionTypeOrgWithCount result = service.getDebtPositionTypeOrgWithCount(organizationId, code, description, pageable, accessToken);
+    PagedModelDebtPositionTypeOrgWithCount result = service.getDebtPositionTypeOrgWithCount(organizationId, code, description, true, pageable, accessToken);
 
     assertSame(expectedResult, result);
   }

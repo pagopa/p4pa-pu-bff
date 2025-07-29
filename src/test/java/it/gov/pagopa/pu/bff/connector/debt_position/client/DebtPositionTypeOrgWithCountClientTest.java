@@ -50,10 +50,10 @@ class DebtPositionTypeOrgWithCountClientTest {
       .thenReturn(debtPositionTypeOrgWithCountSearchControllerApiMock);
 
     when(debtPositionTypeOrgWithCountSearchControllerApiMock.crudDebtPositionTypeOrgsWithCountFindByCodeAndDescription(
-      organizationId, code, description, PageUtils.getPageNumber(pageable), PageUtils.getPageSize(pageable), PageUtils.getSortList(pageable)))
+      organizationId, code, description, true, PageUtils.getPageNumber(pageable), PageUtils.getPageSize(pageable), PageUtils.getSortList(pageable)))
       .thenReturn(expectedResult);
 
-    PagedModelDebtPositionTypeOrgWithCount result = debtPositionTypeOrgWithCountClient.getDebtPositionTypeOrgWithCount(organizationId, code, description, pageable, accessToken);
+    PagedModelDebtPositionTypeOrgWithCount result = debtPositionTypeOrgWithCountClient.getDebtPositionTypeOrgWithCount(organizationId, code, description, true, pageable, accessToken);
 
     assertSame(expectedResult, result);
   }

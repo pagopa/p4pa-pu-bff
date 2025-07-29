@@ -15,12 +15,13 @@ public class DebtPositionTypeOrgWithCountClient {
     this.debtPositionApisHolder = debtPositionApisHolder;
   }
 
-  public PagedModelDebtPositionTypeOrgWithCount getDebtPositionTypeOrgWithCount(Long organizationId, String code, String description, Pageable pageable, String accessToken) {
+  public PagedModelDebtPositionTypeOrgWithCount getDebtPositionTypeOrgWithCount(Long organizationId, String code, String description,  Boolean flagActive, Pageable pageable, String accessToken) {
     return debtPositionApisHolder.getDebtPositionTypeOrgWithCountSearchControllerApi(accessToken)
       .crudDebtPositionTypeOrgsWithCountFindByCodeAndDescription(
         organizationId,
         code,
         description,
+        flagActive,
         PageUtils.getPageNumber(pageable),
         PageUtils.getPageSize(pageable),
         PageUtils.getSortList(pageable));

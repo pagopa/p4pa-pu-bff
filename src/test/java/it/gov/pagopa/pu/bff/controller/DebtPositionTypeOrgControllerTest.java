@@ -97,10 +97,11 @@ class DebtPositionTypeOrgControllerTest {
 
     Mockito.when(debtPositionTypeOrgRetrieverServiceMock.getDebtPositionTypeOrgs(
       organizationId,
+      true,
       loggedUser, accessToken
     )).thenReturn(expectedResult);
 
-    ResponseEntity<List<DebtPositionTypeOrg>> response = debtPositionTypeOrgController.getDebtPositionTypeOrgs(organizationId);
+    ResponseEntity<List<DebtPositionTypeOrg>> response = debtPositionTypeOrgController.getDebtPositionTypeOrgs(organizationId, true);
 
     Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
     Assertions.assertNotNull(response.getBody());
@@ -119,12 +120,13 @@ class DebtPositionTypeOrgControllerTest {
       organizationId,
       code,
       description,
+      true,
       pageable,
       loggedUser, accessToken
     )).thenReturn(expectedResult);
 
     ResponseEntity<PagedDebtPositionTypeOrgWithCount> response = debtPositionTypeOrgController.getDebtPositionTypeOrgWithCount(
-      organizationId, code, description, pageable);
+      organizationId, code, description, true, pageable);
 
     Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
     Assertions.assertNotNull(response.getBody());

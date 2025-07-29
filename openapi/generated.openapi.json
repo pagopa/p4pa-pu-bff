@@ -991,6 +991,13 @@
             "type" : "integer",
             "format" : "int64"
           }
+        }, {
+          "name" : "flagActive",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "boolean"
+          }
         } ],
         "responses" : {
           "200" : {
@@ -5799,6 +5806,13 @@
             "type" : "string"
           }
         }, {
+          "name" : "flagActive",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "boolean"
+          }
+        }, {
           "name" : "page",
           "in" : "query",
           "description" : "Zero-based page index (0..N)",
@@ -10547,6 +10561,9 @@
           "enabledOperators" : {
             "type" : "integer",
             "format" : "int32"
+          },
+          "flagActive" : {
+            "type" : "boolean"
           },
           "_links" : {
             "type" : "object",

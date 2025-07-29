@@ -38,17 +38,17 @@ public class DebtPositionTypeOrgController implements DebtPositionTypeOrgsApi {
   }
 
   @Override
-  public ResponseEntity<List<DebtPositionTypeOrg>> getDebtPositionTypeOrgs(Long organizationId) {
+  public ResponseEntity<List<DebtPositionTypeOrg>> getDebtPositionTypeOrgs(Long organizationId, Boolean flagActive) {
     log.info("User requested getDebtPositionTypeOrgs having organizationId {}", organizationId);
     return ResponseEntity.ok(debtPositionTypeOrgRetrieverService.getDebtPositionTypeOrgs(
-      organizationId, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken()));
+      organizationId, flagActive, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken()));
   }
 
   @Override
-  public ResponseEntity<PagedDebtPositionTypeOrgWithCount> getDebtPositionTypeOrgWithCount(Long organizationId, String code, String description, Pageable pageable) {
+  public ResponseEntity<PagedDebtPositionTypeOrgWithCount> getDebtPositionTypeOrgWithCount(Long organizationId, String code, String description,  Boolean flagActive, Pageable pageable) {
     log.info("User requested getDebtPositionTypeOrgWithCount having organizationId {}", organizationId);
     return ResponseEntity.ok(debtPositionTypeOrgRetrieverService.getDebtPositionTypeOrgWithCount(
-      organizationId, code, description, pageable, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken()));
+      organizationId, code, description, flagActive, pageable, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken()));
   }
 
   @Override

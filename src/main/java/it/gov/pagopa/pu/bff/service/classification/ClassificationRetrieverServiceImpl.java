@@ -60,7 +60,7 @@ public class ClassificationRetrieverServiceImpl implements ClassificationRetriev
   }
 
   private Set<String> getDebtPositionTypeOrgCodes(Long organizationId, String mappedExternalUserId, String accessToken) {
-    Set<String> debtPositionTypeOrgCodes = debtPositionTypeOrgRetrieverService.getDebtPositionTypeOrgCodes(organizationId, mappedExternalUserId, accessToken);
+    Set<String> debtPositionTypeOrgCodes = debtPositionTypeOrgRetrieverService.getDebtPositionTypeOrgCodes(organizationId, null, mappedExternalUserId, accessToken);
     if (CollectionUtils.isEmpty(debtPositionTypeOrgCodes)) {
       throw new ResourceNotFoundException("Classification not found for organizationId " + organizationId);
     }

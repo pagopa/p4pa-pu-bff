@@ -68,7 +68,7 @@ class DebtPositionApisHolderTest extends BaseApiHolderTest {
   void whenGetDebtPositionTypeOrgWithCountSearchControllerApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
     assertAuthenticationShouldBeSetInThreadSafeMode(
       accessToken -> debtPositionApisHolder.getDebtPositionTypeOrgWithCountSearchControllerApi(accessToken)
-        .crudDebtPositionTypeOrgsWithCountFindByCodeAndDescription(1L, "code", "description", 0, 10, Collections.emptyList()),
+        .crudDebtPositionTypeOrgsWithCountFindByCodeAndDescription(1L, "code", "description", true, 0, 10, Collections.emptyList()),
       new ParameterizedTypeReference<>() {
       },
       debtPositionApisHolder::unload);
@@ -88,7 +88,7 @@ class DebtPositionApisHolderTest extends BaseApiHolderTest {
   void whenGetDebtPositionTypeOrgSearchControllerApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
     assertAuthenticationShouldBeSetInThreadSafeMode(
       accessToken -> debtPositionApisHolder.getDebtPositionTypeOrgSearchControllerApi(accessToken)
-        .crudDebtPositionTypeOrgsFindDebtPositionTypeOrgs("1", "operator123"),
+        .crudDebtPositionTypeOrgsFindDebtPositionTypeOrgs("1", "operator123", true),
       new ParameterizedTypeReference<>() {
       }, debtPositionApisHolder::unload);
   }

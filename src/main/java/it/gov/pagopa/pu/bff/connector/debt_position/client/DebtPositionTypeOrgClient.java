@@ -21,9 +21,9 @@ public class DebtPositionTypeOrgClient {
     this.debtPositionApisHolder = debtPositionApisHolder;
   }
 
-  public CollectionModelDebtPositionTypeOrg getDebtPositionTypeOrgs(Long organizationId, String operatorExternalUserId, String accessToken) {
+  public CollectionModelDebtPositionTypeOrg getDebtPositionTypeOrgs(Long organizationId, String operatorExternalUserId, Boolean flagActive, String accessToken) {
     return debtPositionApisHolder.getDebtPositionTypeOrgSearchControllerApi(accessToken)
-      .crudDebtPositionTypeOrgsFindDebtPositionTypeOrgs(String.valueOf(organizationId), operatorExternalUserId);
+      .crudDebtPositionTypeOrgsFindDebtPositionTypeOrgs(String.valueOf(organizationId), operatorExternalUserId, flagActive);
   }
 
   public DebtPositionTypeOrg getDebtPositionTypeOrg(Long debtPositionTypeOrgId,

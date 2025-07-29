@@ -59,7 +59,7 @@ public class AssessmentsRegistryRetrieverServiceImpl implements AssessmentsRegis
   }
 
   private Set<String> getDebtPositionTypeOrgCodes(Long organizationId, String mappedExternalUserId, String accessToken) {
-    Set<String> debtPositionTypeOrgCodes = debtPositionTypeOrgRetrieverService.getDebtPositionTypeOrgCodes(organizationId,mappedExternalUserId,accessToken);
+    Set<String> debtPositionTypeOrgCodes = debtPositionTypeOrgRetrieverService.getDebtPositionTypeOrgCodes(organizationId, null, mappedExternalUserId,accessToken);
     if(CollectionUtils.isEmpty(debtPositionTypeOrgCodes)){
       throw new ResourceNotFoundException("AssessmentsRegistries not found for organizationId " + organizationId);
     }

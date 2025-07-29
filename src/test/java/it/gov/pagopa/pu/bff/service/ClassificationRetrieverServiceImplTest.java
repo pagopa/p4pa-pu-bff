@@ -108,7 +108,7 @@ class ClassificationRetrieverServiceImplTest {
 
     try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
       authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)).thenAnswer(a -> null);
-      when(debtPositionTypeOrgRetrieverServiceMock.getDebtPositionTypeOrgCodes(organizationId,loggedUser.getMappedExternalUserId(),accessToken))
+      when(debtPositionTypeOrgRetrieverServiceMock.getDebtPositionTypeOrgCodes(organizationId, null, loggedUser.getMappedExternalUserId(),accessToken))
               .thenReturn(treasuredClassificationFiltersDTO.getDebtPositionTypeOrgCodes());
       when(classificationServiceMock.getTreasuredClassifications(organizationId, treasuredClassificationFiltersDTO, pageable, accessToken))
               .thenReturn(expectedResult);
@@ -135,7 +135,7 @@ class ClassificationRetrieverServiceImplTest {
 
     try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
       authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)).thenAnswer(a -> null);
-      when(debtPositionTypeOrgRetrieverServiceMock.getDebtPositionTypeOrgCodes(organizationId,loggedUser.getMappedExternalUserId(),accessToken))
+      when(debtPositionTypeOrgRetrieverServiceMock.getDebtPositionTypeOrgCodes(organizationId, null, loggedUser.getMappedExternalUserId(),accessToken))
               .thenReturn(null);
 
       assertThrows(ResourceNotFoundException.class,()->classificationRetrieverService.getTreasuredClassification(organizationId, treasuredClassificationFiltersDTO, null, pageable, loggedUser, accessToken));
@@ -231,7 +231,7 @@ class ClassificationRetrieverServiceImplTest {
 
     try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
       authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)).thenAnswer(a -> null);
-      when(debtPositionTypeOrgRetrieverServiceMock.getDebtPositionTypeOrgCodes(organizationId,loggedUser.getMappedExternalUserId(),accessToken))
+      when(debtPositionTypeOrgRetrieverServiceMock.getDebtPositionTypeOrgCodes(organizationId, null, loggedUser.getMappedExternalUserId(),accessToken))
               .thenReturn(filtersDTO.getDebtPositionTypeOrgCodes());
       Mockito.when(classificationServiceMock.getTreasuredClassifications(organizationId, filtersDTO, pageable, accessToken))
         .thenReturn(expectedResult);

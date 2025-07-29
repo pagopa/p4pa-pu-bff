@@ -321,7 +321,7 @@ class ExportFileRetrieverServiceImplTest {
     List<DebtPositionTypeOrg> debtPositionTypeOrgs = podamFactory.manufacturePojo(List.class, DebtPositionTypeOrg.class);
     Set<String> codes = debtPositionTypeOrgs.stream().map(DebtPositionTypeOrg::getCode).collect(Collectors.toSet());
 
-    Mockito.when(debtPositionTypeOrgRetrieverServiceMock.getDebtPositionTypeOrgCodes(1L, user.getMappedExternalUserId(), accessToken))
+    Mockito.when(debtPositionTypeOrgRetrieverServiceMock.getDebtPositionTypeOrgCodes(1L, null, user.getMappedExternalUserId(), accessToken))
       .thenReturn(codes);
 
     exportFileRetrieverService.createClassificationsExportFile(requestDTO, user, accessToken);
@@ -359,7 +359,7 @@ class ExportFileRetrieverServiceImplTest {
     List<DebtPositionTypeOrg> debtPositionTypeOrgs = podamFactory.manufacturePojo(List.class, DebtPositionTypeOrg.class);
     Set<String> codes = debtPositionTypeOrgs.stream().map(DebtPositionTypeOrg::getCode).collect(Collectors.toSet());
 
-    Mockito.when(debtPositionTypeOrgRetrieverServiceMock.getDebtPositionTypeOrgCodes(1L, user.getMappedExternalUserId(), accessToken))
+    Mockito.when(debtPositionTypeOrgRetrieverServiceMock.getDebtPositionTypeOrgCodes(1L, null, user.getMappedExternalUserId(), accessToken))
       .thenReturn(codes);
 
     exportFileRetrieverService.createClassificationsExportFile(requestDTO, user, accessToken);

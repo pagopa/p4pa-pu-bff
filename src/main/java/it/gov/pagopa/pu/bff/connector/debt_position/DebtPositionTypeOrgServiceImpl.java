@@ -29,8 +29,8 @@ public class DebtPositionTypeOrgServiceImpl implements DebtPositionTypeOrgServic
   }
 
   @Override
-  public CollectionModelDebtPositionTypeOrg getDebtPositionTypeOrgs(Long organizationId, String operatorExternalUserId, String accessToken) {
-    return debtPositionTypeOrgClient.getDebtPositionTypeOrgs(organizationId, operatorExternalUserId, accessToken);
+  public CollectionModelDebtPositionTypeOrg getDebtPositionTypeOrgs(Long organizationId, Boolean flagActive, String operatorExternalUserId, String accessToken) {
+    return debtPositionTypeOrgClient.getDebtPositionTypeOrgs(organizationId, operatorExternalUserId, flagActive, accessToken);
   }
 
   @Override
@@ -40,8 +40,8 @@ public class DebtPositionTypeOrgServiceImpl implements DebtPositionTypeOrgServic
   }
 
   @Override
-  public PagedModelDebtPositionTypeOrgWithCount getDebtPositionTypeOrgWithCount(Long organizationId, String code, String description, Pageable pageable, String accessToken) {
-    return debtPositionTypeOrgWithCountClient.getDebtPositionTypeOrgWithCount(organizationId, code, description, pageable, accessToken);
+  public PagedModelDebtPositionTypeOrgWithCount getDebtPositionTypeOrgWithCount(Long organizationId, String code, String description, Boolean flagActive, Pageable pageable, String accessToken) {
+    return debtPositionTypeOrgWithCountClient.getDebtPositionTypeOrgWithCount(organizationId, code, description, flagActive, pageable, accessToken);
   }
 
   @Override

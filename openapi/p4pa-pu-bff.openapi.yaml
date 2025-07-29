@@ -459,6 +459,11 @@ paths:
           required: false
           schema:
             type: string
+        - name: flagActive
+          in: query
+          required: false
+          schema:
+            type: boolean
       responses:
         '200':
           description: OK
@@ -683,6 +688,11 @@ paths:
           schema:
             type: integer
             format: int64
+        - name: flagActive
+          in: query
+          required: false
+          schema:
+            type: boolean
       responses:
         '200':
           description: OK

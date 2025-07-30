@@ -22,6 +22,8 @@ public class ReceiptDetailDTOMapper {
       .pspCompanyName(receiptDetailDTO.getPspCompanyName())
       .iud(receiptDetailDTO.getIud())
       .iur(receiptDetailDTO.getIur())
+      .feeCents(receiptDetailDTO.getFeeCents())
+      .notificationFeeCents(receiptDetailDTO.getNotificationFeeCents())
       .build();
   }
 

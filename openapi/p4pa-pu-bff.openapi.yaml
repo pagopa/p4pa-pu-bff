@@ -3546,6 +3546,12 @@ components:
           type: string
         iur:
           type: string
+        feeCents:
+          type: integer
+          format: int64
+        notificationFeeCents:
+          type: integer
+          format: int64
     PagedIngestionFlowFile:
       type: object
       required:

@@ -10186,6 +10186,17 @@
           },
           "iur" : {
             "type" : "string"
+          },
+          "iun" : {
+            "type" : "string"
+          },
+          "notificationDate" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "notificationFeeCents" : {
+            "type" : "integer",
+            "format" : "int64"
           }
         },
         "required" : [ "amountCents", "debtPositionDescription", "debtPositionId", "debtPositionTypeOrgDescription", "debtor", "installmentId", "iuv", "status" ]

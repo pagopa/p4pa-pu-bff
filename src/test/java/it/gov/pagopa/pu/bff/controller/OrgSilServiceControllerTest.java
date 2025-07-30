@@ -174,4 +174,34 @@ class OrgSilServiceControllerTest {
     verify(orgSilServiceRetrieverServiceMock, times(1))
       .deleteOrgSilService(organizationId, orgSilServiceId, loggedUser, accessToken);
   }
+
+  @Test
+  void givenCorrectRequestWhenUpdateOrgSilServiceThenOk() {
+    long organizationId = 1L;
+
+    OrgSilServiceDecryptedDTO requestBody = new OrgSilServiceDecryptedDTO();
+    requestBody.setOrganizationId(organizationId);
+    requestBody.setApplicationName("OldAppName");
+    requestBody.setServiceUrl("https://example.com/api");
+    requestBody.setServiceType(OrgSilServiceType.ACTUALIZATION);
+    requestBody.setFlagLegacy(false);
+
+    OrgSilServiceDecryptedDTO expectedResponse = new OrgSilServiceDecryptedDTO();
+    expectedResponse.setOrganizationId(organizationId);
+    expectedResponse.setApplicationName("NewAppName");
+    expectedResponse.setServiceUrl("https://example.com/api");
+    expectedResponse.setServiceType(OrgSilServiceType.ACTUALIZATION);
+    expectedResponse.setFlagLegacy(false);
+
+    when(orgSilServiceStorerServiceMock.updateOrgSilService(organizationId, requestBody, loggedUser, accessToken))
+      .thenReturn(expectedResponse);
+
+    ResponseEntity<OrgSilServiceDecryptedDTO> response =
+      orgSilServiceController.updateOrgSilService(organizationId, requestBody);
+
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertNotNull(response.getBody());
+    assertEquals("NewAppName", response.getBody().getApplicationName());
+    assertEquals(expectedResponse, response.getBody());
+  }
 }

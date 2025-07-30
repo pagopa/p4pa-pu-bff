@@ -5,4 +5,6 @@ import it.gov.pagopa.pu.bff.dto.OrgSilServiceDecryptedDTO;
 
 public interface OrgSilServiceStorerService {
   OrgSilServiceDecryptedDTO createOrgSilService(Long organizationId, OrgSilServiceDecryptedDTO body, UserInfo loggedUser, String accessToken);
+
+  OrgSilServiceDecryptedDTO updateOrgSilService(Long organizationId, OrgSilServiceDecryptedDTO body, UserInfo loggedUser, String accessToken);
 }

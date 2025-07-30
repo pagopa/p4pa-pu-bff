@@ -92,6 +92,244 @@
     "description" : "the Organizations API"
   } ],
   "paths" : {
+    "/bff/organization/{organizationId}/org-sil-services" : {
+      "get" : {
+        "tags" : [ "OrgSilService" ],
+        "summary" : "Retrieve a list of OrgSilService",
+        "operationId" : "getOrgSilServices",
+        "parameters" : [ {
+          "name" : "organizationId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }, {
+          "name" : "serviceType",
+          "in" : "query",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/components/schemas/OrgSilServiceType"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/OrgSilServiceExtendedDTO"
+                  }
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Unauthorized - Missing or invalid token",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/OrgSilServiceExtendedDTO"
+                  }
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Forbidden - Access denied",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/OrgSilServiceExtendedDTO"
+                  }
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal Server Error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/OrgSilServiceExtendedDTO"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "BearerAuth" : [ ]
+        } ]
+      },
+      "put" : {
+        "tags" : [ "OrgSilService" ],
+        "summary" : "Update an OrgSilService",
+        "operationId" : "updateOrgSilService",
+        "parameters" : [ {
+          "name" : "organizationId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/OrgSilServiceDecryptedDTO"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Updated successfully",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OrgSilServiceDecryptedDTO"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad Request",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OrgSilServiceDecryptedDTO"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Unauthorized - Missing or invalid token",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OrgSilServiceDecryptedDTO"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Forbidden - Access denied",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OrgSilServiceDecryptedDTO"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal Server Error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OrgSilServiceDecryptedDTO"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "BearerAuth" : [ ]
+        } ]
+      },
+      "post" : {
+        "tags" : [ "OrgSilService" ],
+        "summary" : "Create an OrgSilService",
+        "operationId" : "createOrgSilService",
+        "parameters" : [ {
+          "name" : "organizationId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/OrgSilServiceDecryptedDTO"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "201" : {
+            "description" : "Created",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OrgSilServiceDecryptedDTO"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad Request",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OrgSilServiceDecryptedDTO"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Unauthorized - Missing or invalid token",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OrgSilServiceDecryptedDTO"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Forbidden - Access denied",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OrgSilServiceDecryptedDTO"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal Server Error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OrgSilServiceDecryptedDTO"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "BearerAuth" : [ ]
+        } ]
+      }
+    },
     "/bff/organization/{organizationId}/debt-positions/{debtPositionId}/publish" : {
       "put" : {
         "tags" : [ "DebtPositions" ],
@@ -820,165 +1058,6 @@
           }
         },
         "security" : [ ]
-      }
-    },
-    "/bff/organization/{organizationId}/org-sil-services" : {
-      "get" : {
-        "tags" : [ "OrgSilService" ],
-        "summary" : "Retrieve a list of OrgSilService",
-        "operationId" : "getOrgSilServices",
-        "parameters" : [ {
-          "name" : "organizationId",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "type" : "integer",
-            "format" : "int64"
-          }
-        }, {
-          "name" : "serviceType",
-          "in" : "query",
-          "required" : true,
-          "schema" : {
-            "$ref" : "#/components/schemas/OrgSilServiceType"
-          }
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : "OK",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "type" : "array",
-                  "items" : {
-                    "$ref" : "#/components/schemas/OrgSilServiceExtendedDTO"
-                  }
-                }
-              }
-            }
-          },
-          "401" : {
-            "description" : "Unauthorized - Missing or invalid token",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "type" : "array",
-                  "items" : {
-                    "$ref" : "#/components/schemas/OrgSilServiceExtendedDTO"
-                  }
-                }
-              }
-            }
-          },
-          "403" : {
-            "description" : "Forbidden - Access denied",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "type" : "array",
-                  "items" : {
-                    "$ref" : "#/components/schemas/OrgSilServiceExtendedDTO"
-                  }
-                }
-              }
-            }
-          },
-          "500" : {
-            "description" : "Internal Server Error",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "type" : "array",
-                  "items" : {
-                    "$ref" : "#/components/schemas/OrgSilServiceExtendedDTO"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "security" : [ {
-          "BearerAuth" : [ ]
-        } ]
-      },
-      "post" : {
-        "tags" : [ "OrgSilService" ],
-        "summary" : "Create an OrgSilService",
-        "operationId" : "createOrgSilService",
-        "parameters" : [ {
-          "name" : "organizationId",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "type" : "integer",
-            "format" : "int64"
-          }
-        } ],
-        "requestBody" : {
-          "content" : {
-            "application/json" : {
-              "schema" : {
-                "$ref" : "#/components/schemas/OrgSilServiceDecryptedDTO"
-              }
-            }
-          },
-          "required" : true
-        },
-        "responses" : {
-          "201" : {
-            "description" : "Created",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/OrgSilServiceDecryptedDTO"
-                }
-              }
-            }
-          },
-          "400" : {
-            "description" : "Bad Request",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/OrgSilServiceDecryptedDTO"
-                }
-              }
-            }
-          },
-          "401" : {
-            "description" : "Unauthorized - Missing or invalid token",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/OrgSilServiceDecryptedDTO"
-                }
-              }
-            }
-          },
-          "403" : {
-            "description" : "Forbidden - Access denied",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/OrgSilServiceDecryptedDTO"
-                }
-              }
-            }
-          },
-          "500" : {
-            "description" : "Internal Server Error",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/OrgSilServiceDecryptedDTO"
-                }
-              }
-            }
-          }
-        },
-        "security" : [ {
-          "BearerAuth" : [ ]
-        } ]
       }
     },
     "/bff/organization/{organizationId}/debt-position-type-orgs" : {
@@ -7206,6 +7285,98 @@
   },
   "components" : {
     "schemas" : {
+      "JwtAlgorithm" : {
+        "type" : "string",
+        "enum" : [ "HS256", "HS384", "HS512", "RS256", "RS384", "RS512", "ES256", "ES384", "ES512" ]
+      },
+      "OrgSilServiceDecryptedDTO" : {
+        "type" : "object",
+        "properties" : {
+          "orgSilServiceId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "organizationId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "applicationName" : {
+            "type" : "string",
+            "maxLength" : 255,
+            "minLength" : 0
+          },
+          "serviceUrl" : {
+            "type" : "string",
+            "maxLength" : 500,
+            "minLength" : 0
+          },
+          "serviceType" : {
+            "$ref" : "#/components/schemas/OrgSilServiceType"
+          },
+          "flagLegacy" : {
+            "type" : "boolean"
+          },
+          "legacyBasicAuthConfig" : {
+            "$ref" : "#/components/schemas/SilServiceLegacyBasicAuthConfigDTO"
+          },
+          "legacyJwtAuthConfig" : {
+            "$ref" : "#/components/schemas/SilServiceLegacyJwtAuthConfigDTO"
+          }
+        },
+        "required" : [ "applicationName", "flagLegacy", "organizationId", "serviceType", "serviceUrl" ]
+      },
+      "OrgSilServiceType" : {
+        "type" : "string",
+        "enum" : [ "PAID_NOTIFICATION_OUTCOME", "ACTUALIZATION" ]
+      },
+      "SilServiceLegacyBasicAuthConfigDTO" : {
+        "type" : "object",
+        "discriminator" : {
+          "propertyName" : "authConfig"
+        },
+        "properties" : {
+          "authUrl" : {
+            "type" : "string"
+          },
+          "user" : {
+            "type" : "string"
+          },
+          "psw" : {
+            "type" : "string"
+          },
+          "authConfig" : {
+            "type" : "string"
+          }
+        },
+        "required" : [ "authConfig" ]
+      },
+      "SilServiceLegacyJwtAuthConfigDTO" : {
+        "type" : "object",
+        "discriminator" : {
+          "propertyName" : "authConfig"
+        },
+        "properties" : {
+          "kid" : {
+            "type" : "string"
+          },
+          "subject" : {
+            "type" : "string"
+          },
+          "issuer" : {
+            "type" : "string"
+          },
+          "algorithm" : {
+            "$ref" : "#/components/schemas/JwtAlgorithm"
+          },
+          "signingKey" : {
+            "type" : "string"
+          },
+          "authConfig" : {
+            "type" : "string"
+          }
+        },
+        "required" : [ "authConfig" ]
+      },
       "Action" : {
         "type" : "string",
         "enum" : [ "I", "M", "A" ]
@@ -7869,98 +8040,6 @@
           }
         },
         "required" : [ "access_token", "expires_in", "token_type" ]
-      },
-      "JwtAlgorithm" : {
-        "type" : "string",
-        "enum" : [ "HS256", "HS384", "HS512", "RS256", "RS384", "RS512", "ES256", "ES384", "ES512" ]
-      },
-      "OrgSilServiceDecryptedDTO" : {
-        "type" : "object",
-        "properties" : {
-          "orgSilServiceId" : {
-            "type" : "integer",
-            "format" : "int64"
-          },
-          "organizationId" : {
-            "type" : "integer",
-            "format" : "int64"
-          },
-          "applicationName" : {
-            "type" : "string",
-            "maxLength" : 255,
-            "minLength" : 0
-          },
-          "serviceUrl" : {
-            "type" : "string",
-            "maxLength" : 500,
-            "minLength" : 0
-          },
-          "serviceType" : {
-            "$ref" : "#/components/schemas/OrgSilServiceType"
-          },
-          "flagLegacy" : {
-            "type" : "boolean"
-          },
-          "legacyBasicAuthConfig" : {
-            "$ref" : "#/components/schemas/SilServiceLegacyBasicAuthConfigDTO"
-          },
-          "legacyJwtAuthConfig" : {
-            "$ref" : "#/components/schemas/SilServiceLegacyJwtAuthConfigDTO"
-          }
-        },
-        "required" : [ "applicationName", "flagLegacy", "organizationId", "serviceType", "serviceUrl" ]
-      },
-      "OrgSilServiceType" : {
-        "type" : "string",
-        "enum" : [ "PAID_NOTIFICATION_OUTCOME", "ACTUALIZATION" ]
-      },
-      "SilServiceLegacyBasicAuthConfigDTO" : {
-        "type" : "object",
-        "discriminator" : {
-          "propertyName" : "authConfig"
-        },
-        "properties" : {
-          "authUrl" : {
-            "type" : "string"
-          },
-          "user" : {
-            "type" : "string"
-          },
-          "psw" : {
-            "type" : "string"
-          },
-          "authConfig" : {
-            "type" : "string"
-          }
-        },
-        "required" : [ "authConfig" ]
-      },
-      "SilServiceLegacyJwtAuthConfigDTO" : {
-        "type" : "object",
-        "discriminator" : {
-          "propertyName" : "authConfig"
-        },
-        "properties" : {
-          "kid" : {
-            "type" : "string"
-          },
-          "subject" : {
-            "type" : "string"
-          },
-          "issuer" : {
-            "type" : "string"
-          },
-          "algorithm" : {
-            "$ref" : "#/components/schemas/JwtAlgorithm"
-          },
-          "signingKey" : {
-            "type" : "string"
-          },
-          "authConfig" : {
-            "type" : "string"
-          }
-        },
-        "required" : [ "authConfig" ]
       },
       "Assessments" : {
         "type" : "object",

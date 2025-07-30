@@ -1905,6 +1905,39 @@ paths:
           description: Forbidden - Access denied
         '500':
           description: Internal Server Error
+    put:
+      tags:
+        - OrgSilService
+      summary: "Update an OrgSilService"
+      operationId: updateOrgSilService
+      parameters:
+        - name: organizationId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: 'OrgSilServiceDecryptedDTO'
+      responses:
+        '200':
+          description: Updated successfully
+          content:
+            application/json:
+              schema:
+                type: 'OrgSilServiceDecryptedDTO'
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized - Missing or invalid token
+        '403':
+          description: Forbidden - Access denied
+        '500':
+          description: Internal Server Error
   /organization/{organizationId}/org-sil-services/{orgSilServiceId}:
     get:
       tags:

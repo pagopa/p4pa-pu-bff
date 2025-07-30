@@ -62,4 +62,11 @@ public class OrgSilServiceController implements OrgSilServiceApi {
     orgSilServiceRetrieverService.deleteOrgSilService(organizationId, orgSilServiceId, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken());
     return ResponseEntity.ok().build();
   }
+
+  @Override
+  public ResponseEntity<OrgSilServiceDecryptedDTO> updateOrgSilService(Long organizationId, OrgSilServiceDecryptedDTO body) {
+    log.info("User requested updateOrgSilService having organizationId {} and applicationName {}", organizationId, body.getApplicationName());
+    return ResponseEntity.ok(orgSilServiceStorerService.updateOrgSilService(
+      organizationId, body, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken()));
+  }
 }

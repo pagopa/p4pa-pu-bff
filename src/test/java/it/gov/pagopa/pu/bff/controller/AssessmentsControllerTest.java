@@ -1,7 +1,10 @@
 package it.gov.pagopa.pu.bff.controller;
 
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
-import it.gov.pagopa.pu.bff.dto.*;
+import it.gov.pagopa.pu.bff.dto.AssessmentsFiltersDTO;
+import it.gov.pagopa.pu.bff.dto.AssessmentsRowsDetailFiltersDTO;
+import it.gov.pagopa.pu.bff.dto.LocalDateTimeIntervalFilter;
+import it.gov.pagopa.pu.bff.dto.OffsetDateTimeIntervalFilter;
 import it.gov.pagopa.pu.bff.dto.generated.AssessmentsRowsDetail;
 import it.gov.pagopa.pu.bff.dto.generated.PagedAssessmentsExtendedDTO;
 import it.gov.pagopa.pu.bff.security.SecurityUtilsTest;
@@ -136,6 +139,19 @@ class AssessmentsControllerTest {
     assertEquals(HttpStatus.OK, result.getStatusCode());
     assertNotNull(result);
     assertEquals(assessments, result.getBody());
+  }
+
+  @Test
+  void whenUpdateAssessmentsStatusThenOk() {
+    //given
+    Long organizationId = 1L;
+    Long assessmentId = 2L;
+    AssessmentStatus status = AssessmentStatus.ACTIVE;
+    Mockito.doNothing().when(assessmentsRetrieverServiceMock).updateAssessmentsStatus(organizationId,assessmentId,status,loggedUser, accessToken);
+    //when
+    ResponseEntity<Void> result = assessmentsController.updateAssessmentsStatus(organizationId, assessmentId, status);
+    //then
+    assertEquals(HttpStatus.OK, result.getStatusCode());
   }
 
 }

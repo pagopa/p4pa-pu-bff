@@ -1,13 +1,11 @@
 package it.gov.pagopa.pu.bff.connector.classification;
 
 import it.gov.pagopa.pu.bff.connector.classification.client.AssessmentsClient;
+import it.gov.pagopa.pu.bff.connector.classification.client.AssessmentsEntityExtendedClient;
 import it.gov.pagopa.pu.bff.dto.AssessmentsFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.AssessmentsRowsDetailFiltersDTO;
 import it.gov.pagopa.pu.bff.util.TestUtils;
-import it.gov.pagopa.pu.classification.dto.generated.Assessments;
-import it.gov.pagopa.pu.classification.dto.generated.AssessmentsDetail;
-import it.gov.pagopa.pu.classification.dto.generated.PagedAssessmentsView;
-import it.gov.pagopa.pu.classification.dto.generated.PagedModelAssessmentsDetail;
+import it.gov.pagopa.pu.classification.dto.generated.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,13 +18,15 @@ import org.springframework.data.domain.Pageable;
 import uk.co.jemos.podam.api.PodamFactory;
 
 import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class AssessmentsServiceImplTest {
 
   @Mock
   private AssessmentsClient assessmentsClientMock;
+  @Mock
+  private AssessmentsEntityExtendedClient assessmentsEntityExtendedClientMock;
 
   private final PodamFactory podamFactory = TestUtils.getPodamFactory();
 
@@ -34,12 +34,12 @@ class AssessmentsServiceImplTest {
 
   @BeforeEach
   void setUp() {
-    assessmentsService = new AssessmentsServiceImpl(assessmentsClientMock);
+    assessmentsService = new AssessmentsServiceImpl(assessmentsClientMock,assessmentsEntityExtendedClientMock);
   }
 
   @AfterEach
   void afterEach(){
-    Mockito.verifyNoMoreInteractions(assessmentsClientMock);
+    Mockito.verifyNoMoreInteractions(assessmentsClientMock,assessmentsEntityExtendedClientMock);
   }
 
   @Test
@@ -102,7 +102,6 @@ class AssessmentsServiceImplTest {
     Assertions.assertEquals(assessments, result);
   }
 
-
   @Test
   void whenGetAssessmentsByIdThenInvokeClient() {
     long assessmentId = 1L;
@@ -115,5 +114,19 @@ class AssessmentsServiceImplTest {
     Assessments result = assessmentsService.getAssessmentsById(assessmentId, accessToken);
 
     assertSame(expectedResult, result);
+  }
+
+  @Test
+  void whenUpdateStatusThenInvokeClient() {
+    Long organizationId = 1L;
+    Long assessmentId = 2L;
+    AssessmentStatus status = AssessmentStatus.ACTIVE;
+    String accessToken = "ACCESSTOKEN";
+
+    doNothing().when(assessmentsEntityExtendedClientMock).updateStatus(organizationId,assessmentId,status,accessToken);
+
+    assessmentsService.updateStatus(organizationId,assessmentId,status,accessToken);
+
+    verifyNoMoreInteractions(assessmentsEntityExtendedClientMock);
   }
 }

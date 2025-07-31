@@ -101,6 +101,7 @@ class SilRegistryControllerTest {
       filters.getEventDate().getFrom(),
       filters.getEventDate().getTo(),
       filters.getIuv(),
+      filters.getOutcome(),
       Pageable.ofSize(10));
 
     Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());

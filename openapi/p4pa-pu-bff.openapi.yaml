@@ -459,6 +459,11 @@ paths:
           required: false
           schema:
             type: string
+        - name: flagActive
+          in: query
+          required: false
+          schema:
+            type: boolean
       responses:
         '200':
           description: OK
@@ -610,6 +615,35 @@ paths:
           description: Not Found
         "500":
           description: Internal server error
+    patch:
+      tags:
+        - DebtPositionTypeOrgs
+      operationId: "updateFlagActiveDebtPositionTypeOrg"
+      parameters:
+        - name: organizationId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: debtPositionTypeOrgId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: flagActive
+          in: query
+          required: true
+          schema:
+            type: boolean
+      responses:
+        '200':
+          description: Ok
+        '404':
+          description: Not Found
+        "500":
+          description: Internal server error
     delete:
       tags:
         - DebtPositionTypeOrgs
@@ -654,6 +688,11 @@ paths:
           schema:
             type: integer
             format: int64
+        - name: flagActive
+          in: query
+          required: false
+          schema:
+            type: boolean
       responses:
         '200':
           description: OK
@@ -847,12 +886,12 @@ paths:
           schema:
             type: string
             format: date-time
-        - name: updateDateFrom
+        - name: receiptCreationDateFrom
           in: query
           schema:
             type: string
             format: date-time
-        - name: updateDateTo
+        - name: receiptCreationDateTo
           in: query
           schema:
             type: string
@@ -864,7 +903,6 @@ paths:
             type: string
         - name: assessmentId
           in: query
-          required: true
           schema:
             type: integer
             format: int64
@@ -1834,6 +1872,72 @@ paths:
           description: Forbidden - Access denied
         '500':
           description: Internal Server Error
+    post:
+      tags:
+        - OrgSilService
+      summary: "Create an OrgSilService"
+      operationId: createOrgSilService
+      parameters:
+        - name: organizationId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: 'OrgSilServiceDecryptedDTO'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: 'OrgSilServiceDecryptedDTO'
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized - Missing or invalid token
+        '403':
+          description: Forbidden - Access denied
+        '500':
+          description: Internal Server Error
+    put:
+      tags:
+        - OrgSilService
+      summary: "Update an OrgSilService"
+      operationId: updateOrgSilService
+      parameters:
+        - name: organizationId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: 'OrgSilServiceDecryptedDTO'
+      responses:
+        '200':
+          description: Updated successfully
+          content:
+            application/json:
+              schema:
+                type: 'OrgSilServiceDecryptedDTO'
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized - Missing or invalid token
+        '403':
+          description: Forbidden - Access denied
+        '500':
+          description: Internal Server Error
   /organization/{organizationId}/org-sil-services/{orgSilServiceId}:
     get:
       tags:
@@ -1864,6 +1968,37 @@ paths:
           description: Unauthorized - Missing or invalid token
         '403':
           description: Forbidden - Access denied
+        '500':
+          description: Internal Server Error
+    delete:
+      tags:
+        - OrgSilService
+      summary: "Delete OrgSilService if orgSilServiceId is not used in any DebtPositionTypeOrg"
+      operationId: deleteOrgSilService
+      parameters:
+        - name: organizationId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: orgSilServiceId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+        '401':
+          description: Unauthorized - Missing or invalid token
+        '403':
+          description: Forbidden - Access denied
+        '404':
+          description: Not Found
+        '409':
+          description: Conflict
         '500':
           description: Internal Server Error
   /organization/{organizationId}/debt-position-type-orgs/operators:
@@ -2307,6 +2442,10 @@ paths:
           in: query
           schema:
             type: string
+        - name: outcome
+          in: query
+          schema:
+            type: 'RegistryOutcome'
       responses:
         '200':
           description: OK
@@ -2631,6 +2770,40 @@ paths:
           description: Conflict
         '500':
           description: Internal Server Error
+  /organization/{organizationId}/assessments/{assessmentId}:
+    put:
+      tags:
+        - Assessments
+      operationId: updateAssessmentsStatus
+      parameters:
+        - name: organizationId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: assessmentId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: status
+          in: query
+          required: true
+          schema:
+            type: 'AssessmentsStatusEnum'
+      responses:
+        "200":
+          description: Ok
+        '401':
+          description: Unauthorized - Missing or invalid token
+        '403':
+          description: Forbidden - Access denied
+        '404':
+          description: Not Found
+        '500':
+          description: Internal Server Error
   /organization/{organizationId}/assessments/{assessmentId}/details:
     get:
       tags:
@@ -2734,6 +2907,37 @@ paths:
           description: Not Found
         '500':
           description: Internal Server Error
+  /organization/{organizationId}/assessments-details:
+    delete:
+      tags:
+        - assessmentsDetail
+      operationId: deleteAssessmentsDetails
+      parameters:
+        - name: organizationId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: assessmentDetailIds
+          in: query
+          required: true
+          schema:
+            type: array
+            items:
+              type: integer
+              format: int64
+      responses:
+          '200':
+            description: OK
+          '401':
+            description: Unauthorized - Missing or invalid token
+          '403':
+            description: Forbidden - Access denied
+          '404':
+            description: Not Found
+          '500':
+            description: Internal Server Error
   /organization/{organizationId}/assessments/{assessmentId}/assessments-details:
     post:
       tags:
@@ -2807,6 +3011,10 @@ paths:
           in: query
           schema:
             type: string
+        - name: outcome
+          in: query
+          schema:
+            type: 'RegistryOutcome'
       responses:
         '200':
           description: OK
@@ -2853,6 +3061,76 @@ paths:
           description: Invalid request
         '404':
           description: Not Found
+        '500':
+          description: Internal Server Error
+  /organization/{organizationId}/clients:
+    get:
+      tags:
+        - Clients
+      operationId: getClients
+      parameters:
+        - name: organizationId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: clientId
+          in: query
+          schema:
+            type: string
+        - name: clientName
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/hal+json:
+              schema:
+                type: 'ClientDTOPage'
+        '401':
+          description: Unauthorized - Missing or invalid token
+        "400":
+          description: Invalid request
+        '404':
+          description: Not Found
+        '500':
+          description: Internal Server Error
+      x-spring-paginated: true
+    post:
+      tags:
+        - Clients
+      operationId: registerClient
+      parameters:
+        - name: organizationId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: 'CreateClientRequest'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: 'ClientDTO'
+        '401':
+          description: Unauthorized - Missing or invalid token
+        "400":
+          description: Invalid request
+        '404':
+          description: Not Found
+        '409':
+          description: Conflict
         '500':
           description: Internal Server Error
 security:
@@ -3302,6 +3580,12 @@ components:
           type: string
         iur:
           type: string
+        feeCents:
+          type: integer
+          format: int64
+        notificationFeeCents:
+          type: integer
+          format: int64
     PagedIngestionFlowFile:
       type: object
       required:
@@ -3967,6 +4251,7 @@ components:
         - assessmentsName
         - debtPositionTypeOrgDescription
         - status
+        - flagManualGeneration
       properties:
         pagedAssessmentsRowsDetail:
           $ref: "#/components/schemas/PagedAssessmentsRowsDetail"
@@ -3978,6 +4263,8 @@ components:
           type: 'AssessmentsStatusEnum'
         updateOperatorExternalId:
           type: string
+        flagManualGeneration:
+          type: boolean
     PagedAssessmentsExtendedDTO:
       type: object
       required:

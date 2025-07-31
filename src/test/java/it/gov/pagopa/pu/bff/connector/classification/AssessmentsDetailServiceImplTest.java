@@ -53,4 +53,14 @@ class AssessmentsDetailServiceImplTest {
     Assertions.assertNotNull(result);
     Assertions.assertEquals(expectedResult, result);
   }
+
+  @Test
+  void whenDeleteAssessmentsDetailThenInvokeClient() {
+    Long assessmentDetailId = 42L;
+    String accessToken = "accessToken";
+
+    assessmentsDetailService.deleteAssessmentsDetails(assessmentDetailId, accessToken);
+
+    Mockito.verify(assessmentsDetailClientMock).deleteAssessmentsDetails(assessmentDetailId, accessToken);
+  }
 }

@@ -93,9 +93,9 @@ public class DebtPositionTypeOrgRetrieverServiceImpl implements DebtPositionType
   }
 
   @Override
-  public List<DebtPositionTypeOrg> getDebtPositionTypeOrgs(Long organizationId, UserInfo loggedUser, String accessToken) {
+  public List<DebtPositionTypeOrg> getDebtPositionTypeOrgs(Long organizationId, Boolean flagActive, UserInfo loggedUser, String accessToken) {
     AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser);
-    CollectionModelDebtPositionTypeOrg collection = debtPositionTypeOrgService.getDebtPositionTypeOrgs(organizationId, loggedUser.getMappedExternalUserId(), accessToken);
+    CollectionModelDebtPositionTypeOrg collection = debtPositionTypeOrgService.getDebtPositionTypeOrgs(organizationId, flagActive, loggedUser.getMappedExternalUserId(), accessToken);
 
     if (collection == null || collection.getEmbedded() == null) {
       return Collections.emptyList();
@@ -104,10 +104,10 @@ public class DebtPositionTypeOrgRetrieverServiceImpl implements DebtPositionType
   }
 
   @Override
-  public PagedDebtPositionTypeOrgWithCount getDebtPositionTypeOrgWithCount(Long organizationId, String code, String description, Pageable pageable, UserInfo loggedUser, String accessToken) {
+  public PagedDebtPositionTypeOrgWithCount getDebtPositionTypeOrgWithCount(Long organizationId, String code, String description, Boolean flagActive, Pageable pageable, UserInfo loggedUser, String accessToken) {
     authorizationService.validateAdminRole(organizationId, loggedUser);
     return debtPositionTypeOrgWithCountMapper.mapToPagedDebtPositionTypeOrgWithCount(
-      debtPositionTypeOrgService.getDebtPositionTypeOrgWithCount(organizationId, code, description, pageable, accessToken));
+      debtPositionTypeOrgService.getDebtPositionTypeOrgWithCount(organizationId, code, description, flagActive, pageable, accessToken));
   }
 
   @Override
@@ -228,8 +228,8 @@ public class DebtPositionTypeOrgRetrieverServiceImpl implements DebtPositionType
   }
 
   @Override
-  public Set<String> getDebtPositionTypeOrgCodes(Long organizationId, String mappedExternalUserId, String accessToken) {
-    CollectionModelDebtPositionTypeOrg debtPositionTypeOrgs = debtPositionTypeOrgService.getDebtPositionTypeOrgs(organizationId, mappedExternalUserId, accessToken);
+  public Set<String> getDebtPositionTypeOrgCodes(Long organizationId, Boolean flagActive, String mappedExternalUserId, String accessToken) {
+    CollectionModelDebtPositionTypeOrg debtPositionTypeOrgs = debtPositionTypeOrgService.getDebtPositionTypeOrgs(organizationId,flagActive, mappedExternalUserId, accessToken);
     if (debtPositionTypeOrgs != null
             && debtPositionTypeOrgs.getEmbedded() != null
             && !CollectionUtils.isEmpty(debtPositionTypeOrgs.getEmbedded().getDebtPositionTypeOrgs())) {
@@ -245,5 +245,11 @@ public class DebtPositionTypeOrgRetrieverServiceImpl implements DebtPositionType
     if(debtPositionTypeOrgs.size()!=1 || !debtPositionTypeOrgs.getFirst().getCode().equals(debtPositionTypeOrgCode)){
       throw new IllegalArgumentException("One or more iuds refer to an invalid DebtPositionTypeOrg");
     }
+  }
+
+  @Override
+  public void updateFlagActiveDebtPositionTypeOrg(Long organizationId, Long debtPositionTypeOrgCodeId, boolean flagActive, UserInfo loggedUser, String accessToken) {
+    authorizationService.validateAdminRole(organizationId, loggedUser);
+    debtPositionTypeOrgService.updateFlagActiveDebtPositionTypeOrg(debtPositionTypeOrgCodeId, flagActive, accessToken);
   }
 }

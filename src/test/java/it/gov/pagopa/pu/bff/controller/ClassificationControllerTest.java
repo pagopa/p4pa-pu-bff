@@ -2,7 +2,6 @@ package it.gov.pagopa.pu.bff.controller;
 
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.dto.ClassificationDetailDTO;
-import it.gov.pagopa.pu.bff.dto.ClassificationPaidInstallmentsFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.TreasuredClassificationFiltersDTO;
 import it.gov.pagopa.pu.bff.security.SecurityUtilsTest;
 import it.gov.pagopa.pu.bff.service.classification.ClassificationRetrieverService;
@@ -27,7 +26,7 @@ import uk.co.jemos.podam.api.PodamFactory;
 import java.time.OffsetDateTime;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
@@ -148,8 +147,8 @@ class ClassificationControllerTest {
     String iuv = "IUV12345";
     OffsetDateTime paymentDateTimeFrom = OffsetDateTime.now().minusDays(10);
     OffsetDateTime paymentDateTimeTo = OffsetDateTime.now();
-    OffsetDateTime updateDateFrom = OffsetDateTime.now().minusDays(20);
-    OffsetDateTime updateDateTo = OffsetDateTime.now().minusDays(5);
+    OffsetDateTime receiptCreationDateFrom = OffsetDateTime.now().minusDays(20);
+    OffsetDateTime receiptCreationDateTo = OffsetDateTime.now().minusDays(5);
     Pageable pageable = PageRequest.of(0, 10);
 
     PagedClassificationPaidInstallmentsView mockResult = new PagedClassificationPaidInstallmentsView();
@@ -157,7 +156,13 @@ class ClassificationControllerTest {
     when(classificationRetrieverServiceMock.getPaidInstallments(
       eq(organizationId),
       eq(assessmentId),
-      any(ClassificationPaidInstallmentsFiltersDTO.class),
+      argThat(f->f.getIuv().equals(iuv)
+              && f.getPaymentDateTimeIntervalFilter().getFrom().equals(paymentDateTimeFrom)
+              && f.getPaymentDateTimeIntervalFilter().getTo().equals(paymentDateTimeTo)
+              && f.getReceiptCreationDateInterval().getFrom().equals(receiptCreationDateFrom)
+              && f.getReceiptCreationDateInterval().getTo().equals(receiptCreationDateTo)
+              && f.getDebtPositionTypeOrgCode().equals(debtPositionTypeOrgCode)
+      ),
       eq(pageable),
       eq(loggedUser),
       eq(accessToken)
@@ -167,12 +172,12 @@ class ClassificationControllerTest {
       classificationController.getPaidInstallments(
         organizationId,
         debtPositionTypeOrgCode,
-        assessmentId,
         iuv,
         paymentDateTimeFrom,
         paymentDateTimeTo,
-        updateDateFrom,
-        updateDateTo,
+        receiptCreationDateFrom,
+        receiptCreationDateTo,
+        assessmentId,
         pageable
       );
 

@@ -13,10 +13,7 @@ import it.gov.pagopa.pu.bff.mapper.AssessmentExtendedDTOMapper;
 import it.gov.pagopa.pu.bff.mapper.AssessmentsRowsDetailMapper;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
 import it.gov.pagopa.pu.bff.service.debt_position_type_org.DebtPositionTypeOrgRetrieverService;
-import it.gov.pagopa.pu.classification.dto.generated.Assessments;
-import it.gov.pagopa.pu.classification.dto.generated.AssessmentsDetail;
-import it.gov.pagopa.pu.classification.dto.generated.PagedAssessmentsView;
-import it.gov.pagopa.pu.classification.dto.generated.PagedModelAssessmentsDetail;
+import it.gov.pagopa.pu.classification.dto.generated.*;
 import it.gov.pagopa.pu.debtpositions.dto.generated.CollectionModelDebtPositionTypeOrg;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrg;
 import org.junit.jupiter.api.Assertions;
@@ -29,6 +26,7 @@ import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.authorization.AuthorizationDeniedException;
 import uk.co.jemos.podam.api.PodamFactory;
 import uk.co.jemos.podam.api.PodamFactoryImpl;
 
@@ -168,7 +166,7 @@ class AssessmentsRetrieverServiceImplTest {
     try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
       authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(filters.getOrganizationId(), loggedUser)).thenAnswer(a -> null);
 
-      Mockito.when(debtPositionTypeOrgServiceMock.getDebtPositionTypeOrgs(filters.getOrganizationId(), loggedUser.getMappedExternalUserId(), accessToken)).thenReturn(debtPositionTypeOrgs);
+      Mockito.when(debtPositionTypeOrgServiceMock.getDebtPositionTypeOrgs(filters.getOrganizationId(), null, loggedUser.getMappedExternalUserId(), accessToken)).thenReturn(debtPositionTypeOrgs);
       Mockito.when(assessmentsServiceMock.findPagedAssessmentsView(filters, Pageable.ofSize(1), accessToken)).thenReturn(pagedAssessmentsView);
       Mockito.when(assessmentExtendedDTOMapperMock.mapToPagedAssessmentsExtendedDTO(pagedAssessmentsView, debtPositionTypeOrgMap)).thenReturn(pagedAssessmentsExtendedDTO);
 
@@ -192,7 +190,7 @@ class AssessmentsRetrieverServiceImplTest {
     try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
       authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(filters.getOrganizationId(), loggedUser)).thenAnswer(a -> null);
 
-      Mockito.when(debtPositionTypeOrgServiceMock.getDebtPositionTypeOrgs(filters.getOrganizationId(), loggedUser.getMappedExternalUserId(), accessToken)).thenReturn(null);
+      Mockito.when(debtPositionTypeOrgServiceMock.getDebtPositionTypeOrgs(filters.getOrganizationId(), null, loggedUser.getMappedExternalUserId(), accessToken)).thenReturn(null);
       Executable executable = () -> assessmentsRetrieverService.getPagedAssessmentsExtendedDTO(
               filters,
               null,
@@ -245,7 +243,7 @@ class AssessmentsRetrieverServiceImplTest {
     try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
       authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(filters.getOrganizationId(), loggedUser)).thenAnswer(a -> null);
 
-      Mockito.when(debtPositionTypeOrgServiceMock.getDebtPositionTypeOrgs(filters.getOrganizationId(), loggedUser.getMappedExternalUserId(), accessToken)).thenReturn(debtPositionTypeOrgs);
+      Mockito.when(debtPositionTypeOrgServiceMock.getDebtPositionTypeOrgs(filters.getOrganizationId(), null, loggedUser.getMappedExternalUserId(), accessToken)).thenReturn(debtPositionTypeOrgs);
 
       Pageable pageable = Pageable.ofSize(1);
 
@@ -516,6 +514,146 @@ class AssessmentsRetrieverServiceImplTest {
       Executable executable = () -> assessmentsRetrieverService.createAssessment(organizationId, assessmentsName, debtPositionTypeOrgCode, loggedUser, accessToken);
 
       Assertions.assertThrows(ResourceNotFoundException.class, executable);
+    }
+  }
+
+  @Test
+  void whenUpdateAssessmentsStatusThenOk(){
+    UserInfo loggedUser = new UserInfo();
+    loggedUser.setMappedExternalUserId("external-id");
+    String accessToken = "accessToken";
+
+    Long organizationId = 1L;
+    Long assessmentId = 2L;
+    AssessmentStatus status = AssessmentStatus.ACTIVE;
+    Assessments assessments = podamFactory.manufacturePojo(Assessments.class);
+    assessments.setAssessmentId(assessmentId);
+    assessments.setOrganizationId(organizationId);
+    assessments.setFlagManualGeneration(true);
+
+    try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
+      authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)).thenAnswer(a -> null);
+      authorizationServiceMockedStatic.when(() -> AuthorizationService.isAdminRole(organizationId, loggedUser)).thenAnswer(a -> true);
+      Mockito.when(assessmentsServiceMock.getAssessmentsById(assessmentId, accessToken)).thenReturn(assessments);
+      Mockito.doNothing().when(assessmentsServiceMock).updateStatus(organizationId, assessmentId, status, accessToken);
+
+      assessmentsRetrieverService.updateAssessmentsStatus(organizationId,assessmentId,status, loggedUser, accessToken);
+      Mockito.verifyNoMoreInteractions(assessmentsServiceMock);
+    }
+  }
+
+  @Test
+  void givenNoAdminRoleWhenUpdateAssessmentsStatusThenOk(){
+    UserInfo loggedUser = new UserInfo();
+    loggedUser.setMappedExternalUserId("external-id");
+    String accessToken = "accessToken";
+
+    Long organizationId = 1L;
+    Long assessmentId = 2L;
+    AssessmentStatus status = AssessmentStatus.ACTIVE;
+    Assessments assessments = podamFactory.manufacturePojo(Assessments.class);
+    assessments.setAssessmentId(assessmentId);
+    assessments.setOrganizationId(organizationId);
+    assessments.setFlagManualGeneration(true);
+    assessments.setOperatorExternalUserId(loggedUser.getMappedExternalUserId());
+
+    try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
+      authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)).thenAnswer(a -> null);
+      authorizationServiceMockedStatic.when(() -> AuthorizationService.isAdminRole(organizationId, loggedUser)).thenAnswer(a -> false);
+      Mockito.when(assessmentsServiceMock.getAssessmentsById(assessmentId, accessToken)).thenReturn(assessments);
+      Mockito.doNothing().when(assessmentsServiceMock).updateStatus(organizationId, assessmentId, status, accessToken);
+
+      assessmentsRetrieverService.updateAssessmentsStatus(organizationId,assessmentId,status, loggedUser, accessToken);
+      Mockito.verifyNoMoreInteractions(assessmentsServiceMock);
+    }
+  }
+
+  @Test
+  void givenNoAdminRoleAndWrongOperatorWhenUpdateAssessmentsStatusThenAuthorizationDeniedException(){
+    UserInfo loggedUser = new UserInfo();
+    loggedUser.setMappedExternalUserId("external-id");
+    String accessToken = "accessToken";
+
+    Long organizationId = 1L;
+    Long assessmentId = 2L;
+    AssessmentStatus status = AssessmentStatus.ACTIVE;
+    Assessments assessments = podamFactory.manufacturePojo(Assessments.class);
+    assessments.setAssessmentId(assessmentId);
+    assessments.setOrganizationId(organizationId);
+    assessments.setFlagManualGeneration(true);
+    assessments.setOperatorExternalUserId(loggedUser.getMappedExternalUserId()+1);
+
+    try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
+      authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)).thenAnswer(a -> null);
+      authorizationServiceMockedStatic.when(() -> AuthorizationService.isAdminRole(organizationId, loggedUser)).thenAnswer(a -> false);
+      Mockito.when(assessmentsServiceMock.getAssessmentsById(assessmentId, accessToken)).thenReturn(assessments);
+
+      Assertions.assertThrows(AuthorizationDeniedException.class, ()->assessmentsRetrieverService.updateAssessmentsStatus(organizationId,assessmentId,status, loggedUser, accessToken));
+    }
+  }
+
+  @Test
+  void givenFalseFlagManualGenerationWhenUpdateAssessmentsStatusThenIllegalArgumentException(){
+    UserInfo loggedUser = new UserInfo();
+    loggedUser.setMappedExternalUserId("external-id");
+    String accessToken = "accessToken";
+
+    Long organizationId = 1L;
+    Long assessmentId = 2L;
+    AssessmentStatus status = AssessmentStatus.ACTIVE;
+    Assessments assessments = podamFactory.manufacturePojo(Assessments.class );
+    assessments.setAssessmentId(assessmentId);
+    assessments.setOrganizationId(organizationId);
+    assessments.setFlagManualGeneration(false);
+
+    try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
+      authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)).thenAnswer(a -> null);
+      authorizationServiceMockedStatic.when(() -> AuthorizationService.isAdminRole(organizationId, loggedUser)).thenAnswer(a -> true);
+      Mockito.when(assessmentsServiceMock.getAssessmentsById(assessmentId, accessToken)).thenReturn(assessments);
+
+      Assertions.assertThrows(IllegalArgumentException.class,()->assessmentsRetrieverService.updateAssessmentsStatus(organizationId,assessmentId,status, loggedUser, accessToken));
+    }
+  }
+
+  @Test
+  void givenWrongAssessmentsOrganizationIdWhenUpdateAssessmentsStatusThenResourceNotFoundException(){
+    UserInfo loggedUser = new UserInfo();
+    loggedUser.setMappedExternalUserId("external-id");
+    String accessToken = "accessToken";
+
+    Long organizationId = 1L;
+    Long assessmentId = 2L;
+    AssessmentStatus status = AssessmentStatus.ACTIVE;
+    Assessments assessments = podamFactory.manufacturePojo(Assessments.class );
+    assessments.setAssessmentId(assessmentId);
+    assessments.setOrganizationId(organizationId+1);
+    assessments.setFlagManualGeneration(true);
+
+    try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
+      authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)).thenAnswer(a -> null);
+      authorizationServiceMockedStatic.when(() -> AuthorizationService.isAdminRole(organizationId, loggedUser)).thenAnswer(a -> true);
+      Mockito.when(assessmentsServiceMock.getAssessmentsById(assessmentId, accessToken)).thenReturn(assessments);
+
+      Assertions.assertThrows(ResourceNotFoundException.class,()->assessmentsRetrieverService.updateAssessmentsStatus(organizationId,assessmentId,status, loggedUser, accessToken));
+    }
+  }
+
+  @Test
+  void givenNoAssessmentsWhenUpdateAssessmentsStatusThenResourceNotFoundException(){
+    UserInfo loggedUser = new UserInfo();
+    loggedUser.setMappedExternalUserId("external-id");
+    String accessToken = "accessToken";
+
+    Long organizationId = 1L;
+    Long assessmentId = 2L;
+    AssessmentStatus status = AssessmentStatus.ACTIVE;
+
+    try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
+      authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)).thenAnswer(a -> null);
+      authorizationServiceMockedStatic.when(() -> AuthorizationService.isAdminRole(organizationId, loggedUser)).thenAnswer(a -> true);
+      Mockito.when(assessmentsServiceMock.getAssessmentsById(assessmentId, accessToken)).thenReturn(null);
+
+      Assertions.assertThrows(ResourceNotFoundException.class,()->assessmentsRetrieverService.updateAssessmentsStatus(organizationId,assessmentId,status, loggedUser, accessToken));
     }
   }
 }

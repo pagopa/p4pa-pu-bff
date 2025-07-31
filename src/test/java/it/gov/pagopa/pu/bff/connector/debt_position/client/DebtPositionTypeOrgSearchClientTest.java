@@ -173,4 +173,21 @@ class DebtPositionTypeOrgSearchClientTest {
 
     assertTrue(CollectionUtils.isEmpty(result));
   }
+
+  @Test
+  void givenOrgSilServiceIdWhenCountByOrgSilServiceIdThenInvokeWithAccessToken() {
+    Long orgSilServiceId = 123L;
+    String accessToken = "ACCESS_TOKEN";
+    Long expectedCount = 5L;
+
+    when(debtPositionApisHolderMock.getDebtPositionTypeOrgSearchControllerApi(accessToken))
+      .thenReturn(debtPositionTypeOrgSearchControllerApiMock);
+    when(debtPositionTypeOrgSearchControllerApiMock
+      .crudDebtPositionTypeOrgsCountByOrgSilServiceId(orgSilServiceId))
+      .thenReturn(expectedCount);
+
+    Long result = debtPositionTypeOrgSearchClient.countByOrgSilServiceId(orgSilServiceId, accessToken);
+
+    assertEquals(expectedCount, result);
+  }
 }

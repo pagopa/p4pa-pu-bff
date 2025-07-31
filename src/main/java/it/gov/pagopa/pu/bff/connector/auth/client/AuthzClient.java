@@ -1,9 +1,14 @@
 package it.gov.pagopa.pu.bff.connector.auth.client;
 
+import it.gov.pagopa.pu.auth.dto.generated.ClientDTO;
+import it.gov.pagopa.pu.auth.dto.generated.ClientDTOPage;
+import it.gov.pagopa.pu.auth.dto.generated.CreateClientRequest;
 import it.gov.pagopa.pu.auth.dto.generated.OperatorsPage;
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.connector.auth.config.AuthApisHolder;
+import it.gov.pagopa.pu.bff.util.PageUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 
@@ -30,5 +35,15 @@ public class AuthzClient {
   public OperatorsPage getOrganizationOperators(String organizationIpaCode, String fiscalCode, String firstName, String lastName, Integer page, Integer size, String accessToken) {
     return authApisHolder.getAuthzApi(accessToken)
         .getOrganizationOperators(organizationIpaCode, fiscalCode, firstName, lastName, page, size);
+  }
+
+  public ClientDTOPage getClients(String organizationIpaCode, String clientId, String clientName,
+    Pageable pageable, String accessToken) {
+    return authApisHolder.getAuthzApi(accessToken).getClientsSearch(organizationIpaCode, clientId, clientName,
+      pageable.getPageNumber(), pageable.getPageSize(), PageUtils.getSortList(pageable));
+  }
+
+  public ClientDTO registerClient(String organizationIpaCode, CreateClientRequest createClientRequest, String accessToken){
+    return authApisHolder.getAuthzApi(accessToken).registerClient(organizationIpaCode, createClientRequest);
   }
 }

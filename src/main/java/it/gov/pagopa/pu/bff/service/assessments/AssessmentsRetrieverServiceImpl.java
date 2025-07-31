@@ -15,12 +15,14 @@ import it.gov.pagopa.pu.bff.mapper.AssessmentsRowsDetailMapper;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
 import it.gov.pagopa.pu.bff.service.debt_position_type_org.DebtPositionTypeOrgRetrieverService;
 import it.gov.pagopa.pu.bff.util.DateUtils;
+import it.gov.pagopa.pu.classification.dto.generated.AssessmentStatus;
 import it.gov.pagopa.pu.classification.dto.generated.Assessments;
 import it.gov.pagopa.pu.classification.dto.generated.AssessmentsDetail;
 import it.gov.pagopa.pu.classification.dto.generated.PagedAssessmentsView;
 import it.gov.pagopa.pu.debtpositions.dto.generated.CollectionModelDebtPositionTypeOrg;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrg;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -87,7 +89,7 @@ public class AssessmentsRetrieverServiceImpl implements AssessmentsRetrieverServ
   }
 
   private Map<String, String> getDebtPositionTypeOrgMap(Long organizationId, String mappedExternalUserId, String accessToken) {
-    CollectionModelDebtPositionTypeOrg debtPositionTypeOrgs = debtPositionTypeOrgService.getDebtPositionTypeOrgs(organizationId, mappedExternalUserId, accessToken);
+    CollectionModelDebtPositionTypeOrg debtPositionTypeOrgs = debtPositionTypeOrgService.getDebtPositionTypeOrgs(organizationId, null, mappedExternalUserId, accessToken);
 
     if (debtPositionTypeOrgs != null
             && debtPositionTypeOrgs.getEmbedded() != null
@@ -152,5 +154,24 @@ public class AssessmentsRetrieverServiceImpl implements AssessmentsRetrieverServ
     return assessmentsService.createAssessment(organizationId, assessmentName, debtPositionTypeOrgCode, accessToken);
   }
 
+  @Override
+  public void updateAssessmentsStatus(Long organizationId, Long assessmentId, AssessmentStatus status, UserInfo loggedUser, String accessToken) {
+    AuthorizationService.validateUserForOrganizationId(organizationId,loggedUser);
+    Assessments assessments = getManuallyGeneratedAssessment(organizationId, assessmentId, accessToken);
+    if(!AuthorizationService.isAdminRole(organizationId,loggedUser) && !loggedUser.getMappedExternalUserId().equals(assessments.getOperatorExternalUserId())){
+      throw new AuthorizationDeniedException("User is neither the organization’s admin nor the Assessments' creator");
+    }
+    assessmentsService.updateStatus(organizationId, assessmentId, status, accessToken);
+  }
+
+  private Assessments getManuallyGeneratedAssessment(Long organizationId, Long assessmentId, String accessToken) {
+    Assessments assessments = assessmentsService.getAssessmentsById(assessmentId, accessToken);
+    if(assessments == null || !organizationId.equals(assessments.getOrganizationId())){
+      throw new ResourceNotFoundException("Assessments having assessmentsId "+ assessmentId +" and organizationId "+ organizationId +" not found");
+    } else if(!assessments.getFlagManualGeneration()){
+      throw new IllegalArgumentException("Assessments having id "+ assessmentId +" has not been manually generated");
+    }
+    return assessments;
+  }
 }
 

@@ -4,7 +4,6 @@ import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.connector.classification.AssessmentsService;
 import it.gov.pagopa.pu.bff.connector.classification.ClassificationService;
 import it.gov.pagopa.pu.bff.dto.*;
-import it.gov.pagopa.pu.bff.dto.OffsetDateTimeIntervalFilter;
 import it.gov.pagopa.pu.bff.exception.ResourceNotFoundException;
 import it.gov.pagopa.pu.bff.mapper.ClassificationDetailDTOMapper;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
@@ -61,7 +60,7 @@ public class ClassificationRetrieverServiceImpl implements ClassificationRetriev
   }
 
   private Set<String> getDebtPositionTypeOrgCodes(Long organizationId, String mappedExternalUserId, String accessToken) {
-    Set<String> debtPositionTypeOrgCodes = debtPositionTypeOrgRetrieverService.getDebtPositionTypeOrgCodes(organizationId, mappedExternalUserId, accessToken);
+    Set<String> debtPositionTypeOrgCodes = debtPositionTypeOrgRetrieverService.getDebtPositionTypeOrgCodes(organizationId, null, mappedExternalUserId, accessToken);
     if (CollectionUtils.isEmpty(debtPositionTypeOrgCodes)) {
       throw new ResourceNotFoundException("Classification not found for organizationId " + organizationId);
     }
@@ -115,37 +114,36 @@ public class ClassificationRetrieverServiceImpl implements ClassificationRetriev
 
     AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser);
 
-    validatePaidInstallmentsFilters(filters.getIuv(), filters.getPaymentDateTimeIntervalFilter(), filters.getUpdateDateIntervalFilter());
+    validatePaidInstallmentsFilters(filters.getIuv(), filters.getPaymentDateTimeIntervalFilter(), filters.getReceiptCreationDateInterval());
 
+    if(assessmentId!=null) {
+      filters.setIuds(getIudsFilter(organizationId, assessmentId, accessToken));
+    }
+    return classificationService.getPaidInstallments(organizationId, filters, pageable, accessToken);
+  }
+
+  private Set<String> getIudsFilter(Long organizationId, Long assessmentId, String accessToken) {
     Assessments assessment = assessmentsService.getAssessmentsById(assessmentId, accessToken);
     if (assessment == null || !assessment.getOrganizationId().equals(organizationId)) {
       throw new ResourceNotFoundException("Assessment with id " + assessmentId + " not found");
     }
-
     AssessmentsRowsDetailFiltersDTO assessmentsRowsDetailFiltersDTO = getAssessmentsRowsDetailFiltersDTO(assessmentId);
-
     Pageable maxPageable = PageRequest.of(0, pageMaxSize);
     PagedModelAssessmentsDetail assessmentsDetailPage = assessmentsService.findPagedModelAssessmentsDetail(
-      assessmentsRowsDetailFiltersDTO, maxPageable, accessToken);
-
-    Set<String> iuds = extractIuds(assessmentsDetailPage);
-    ClassificationPaidInstallmentsFiltersDTO updatedFilters = filters.toBuilder()
-      .iuds(iuds)
-      .build();
-
-    return classificationService.getPaidInstallments(organizationId, updatedFilters, pageable, accessToken);
+            assessmentsRowsDetailFiltersDTO, maxPageable, accessToken);
+    return extractIuds(assessmentsDetailPage);
   }
 
-  private void validatePaidInstallmentsFilters(String iuv, OffsetDateTimeIntervalFilter paymentDateTimeIntervalFilter, OffsetDateTimeIntervalFilter updateDateIntervalFilter) {
+  private void validatePaidInstallmentsFilters(String iuv, OffsetDateTimeIntervalFilter paymentDateTimeIntervalFilter, OffsetDateTimeIntervalFilter receiptCreationDateTimeInterval) {
     if (paymentDateTimeIntervalFilter != null) {
       DateUtils.validateDateFilters(paymentDateTimeIntervalFilter,"paymentDateTime");
     }
-    if (updateDateIntervalFilter != null) {
-      DateUtils.validateDateFilters(updateDateIntervalFilter,"updateDate");
+    if (receiptCreationDateTimeInterval != null) {
+      DateUtils.validateDateFilters(receiptCreationDateTimeInterval,"receiptCreationDate");
     }
     if (StringUtils.isBlank(iuv) &&
       (paymentDateTimeIntervalFilter == null || DateUtils.isNullOrInvalidOffsetDateTimeRange(paymentDateTimeIntervalFilter.getFrom(), paymentDateTimeIntervalFilter.getTo())) &&
-      (updateDateIntervalFilter == null || DateUtils.isNullOrInvalidOffsetDateTimeRange(updateDateIntervalFilter.getFrom(), updateDateIntervalFilter.getTo()))) {
+      (receiptCreationDateTimeInterval == null || DateUtils.isNullOrInvalidOffsetDateTimeRange(receiptCreationDateTimeInterval.getFrom(), receiptCreationDateTimeInterval.getTo()))) {
       throw new IllegalArgumentException("At least one filter must be provided, and all date intervals must have both 'from' and 'to' set or be null");
     }
   }

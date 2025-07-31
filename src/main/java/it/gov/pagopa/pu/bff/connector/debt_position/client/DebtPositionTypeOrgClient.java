@@ -21,9 +21,9 @@ public class DebtPositionTypeOrgClient {
     this.debtPositionApisHolder = debtPositionApisHolder;
   }
 
-  public CollectionModelDebtPositionTypeOrg getDebtPositionTypeOrgs(Long organizationId, String operatorExternalUserId, String accessToken) {
+  public CollectionModelDebtPositionTypeOrg getDebtPositionTypeOrgs(Long organizationId, String operatorExternalUserId, Boolean flagActive, String accessToken) {
     return debtPositionApisHolder.getDebtPositionTypeOrgSearchControllerApi(accessToken)
-      .crudDebtPositionTypeOrgsFindDebtPositionTypeOrgs(String.valueOf(organizationId), operatorExternalUserId);
+      .crudDebtPositionTypeOrgsFindDebtPositionTypeOrgs(String.valueOf(organizationId), operatorExternalUserId, flagActive);
   }
 
   public DebtPositionTypeOrg getDebtPositionTypeOrg(Long debtPositionTypeOrgId,
@@ -53,6 +53,14 @@ public class DebtPositionTypeOrgClient {
 
   public DebtPositionTypeOrg saveDebtPositionTypeOrg(SaveDebtPositionTypeOrgDTO saveDebtPositionTypeOrg, String accessToken){
     return debtPositionApisHolder.getDebtPositionTypeOrgApi(accessToken).saveDebtPositionTypeOrg(saveDebtPositionTypeOrg);
+  }
+
+  public void updateFlagActiveDebtPositionTypeOrg(Long debtPositionTypeOrgId, Boolean flagActive,  String accessToken){
+    try{
+      debtPositionApisHolder.getDebtPositionTypeOrgApi(accessToken).updateFlagActiveDebtPositionTypeOrg(debtPositionTypeOrgId, flagActive);
+    } catch (HttpClientErrorException.NotFound e) {
+      throw new ResourceNotFoundException("DebtPositionTypeOrg with debtPositionTypeOrgId %d not found".formatted(debtPositionTypeOrgId));
+    }
   }
 }
 

@@ -95,4 +95,11 @@ public class AssessmentsController implements AssessmentsApi {
     log.info("User requested createAssessment having organizationId {}, assessmentName {} and debtPositionTypeOrgCode {}", organizationId, assessmentName, debtPositionTypeOrgCode);
     return ResponseEntity.ok(assessmentsRetrieverService.createAssessment(organizationId, assessmentName, debtPositionTypeOrgCode, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken()));
   }
+
+  @Override
+  public ResponseEntity<Void> updateAssessmentsStatus(Long organizationId, Long assessmentId, AssessmentStatus status) {
+    log.info("User requested updateAssessmentsStatus having organizationId {}, assessmentId {} and status {}", organizationId, assessmentId, status);
+    assessmentsRetrieverService.updateAssessmentsStatus(organizationId, assessmentId, status, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken());
+    return ResponseEntity.ok().build();
+  }
 }

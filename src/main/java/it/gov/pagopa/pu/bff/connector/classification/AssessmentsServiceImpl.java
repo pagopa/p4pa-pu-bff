@@ -1,12 +1,10 @@
 package it.gov.pagopa.pu.bff.connector.classification;
 
 import it.gov.pagopa.pu.bff.connector.classification.client.AssessmentsClient;
+import it.gov.pagopa.pu.bff.connector.classification.client.AssessmentsEntityExtendedClient;
 import it.gov.pagopa.pu.bff.dto.AssessmentsFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.AssessmentsRowsDetailFiltersDTO;
-import it.gov.pagopa.pu.classification.dto.generated.Assessments;
-import it.gov.pagopa.pu.classification.dto.generated.AssessmentsDetail;
-import it.gov.pagopa.pu.classification.dto.generated.PagedAssessmentsView;
-import it.gov.pagopa.pu.classification.dto.generated.PagedModelAssessmentsDetail;
+import it.gov.pagopa.pu.classification.dto.generated.*;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -14,9 +12,11 @@ import org.springframework.stereotype.Service;
 public class AssessmentsServiceImpl implements AssessmentsService{
 
   private final AssessmentsClient assessmentsClient;
+  private final AssessmentsEntityExtendedClient assessmentsEntityExtendedClient;
 
-  public AssessmentsServiceImpl(AssessmentsClient assessmentsClient) {
+  public AssessmentsServiceImpl(AssessmentsClient assessmentsClient, AssessmentsEntityExtendedClient assessmentsEntityExtendedClient) {
     this.assessmentsClient = assessmentsClient;
+      this.assessmentsEntityExtendedClient = assessmentsEntityExtendedClient;
   }
 
   @Override
@@ -42,5 +42,10 @@ public class AssessmentsServiceImpl implements AssessmentsService{
   @Override
   public Assessments getAssessmentsById(Long assessmentId, String accessToken) {
     return assessmentsClient.getAssessmentsById(assessmentId, accessToken);
+  }
+
+  @Override
+  public void updateStatus(Long organizationId, Long assessmentId, AssessmentStatus status, String accessToken) {
+    assessmentsEntityExtendedClient.updateStatus(organizationId, assessmentId, status, accessToken);
   }
 }

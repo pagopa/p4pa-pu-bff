@@ -60,6 +60,7 @@ class SilRegistrySearchClientTest {
       filters.getEventDate().getTo(),
       orgFiscalCode,
       filters.getIuv(),
+      filters.getOutcome(),
       0,
       10,
       Collections.emptyList()

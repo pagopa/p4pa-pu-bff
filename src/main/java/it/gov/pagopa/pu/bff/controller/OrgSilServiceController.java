@@ -1,14 +1,16 @@
 package it.gov.pagopa.pu.bff.controller;
 
 import it.gov.pagopa.pu.bff.controller.generated.OrgSilServiceApi;
+import it.gov.pagopa.pu.bff.dto.OrgSilServiceDecryptedDTO;
 import it.gov.pagopa.pu.bff.dto.OrgSilServiceExtendedDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedOrgSilServiceView;
 import it.gov.pagopa.pu.bff.security.SecurityUtils;
 import it.gov.pagopa.pu.bff.service.org_sil_service.OrgSilServiceRetrieverService;
-import it.gov.pagopa.pu.organization.dto.generated.OrgSilServiceDTO;
+import it.gov.pagopa.pu.bff.service.org_sil_service.OrgSilServiceStorerService;
 import it.gov.pagopa.pu.organization.dto.generated.OrgSilServiceType;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -19,9 +21,11 @@ import java.util.List;
 public class OrgSilServiceController implements OrgSilServiceApi {
 
   private final OrgSilServiceRetrieverService orgSilServiceRetrieverService;
+  private final OrgSilServiceStorerService orgSilServiceStorerService;
 
-  public OrgSilServiceController(OrgSilServiceRetrieverService orgSilServiceRetrieverService) {
+  public OrgSilServiceController(OrgSilServiceRetrieverService orgSilServiceRetrieverService, OrgSilServiceStorerService orgSilServiceStorerService) {
     this.orgSilServiceRetrieverService = orgSilServiceRetrieverService;
+    this.orgSilServiceStorerService = orgSilServiceStorerService;
   }
 
   @Override
@@ -39,9 +43,30 @@ public class OrgSilServiceController implements OrgSilServiceApi {
   }
 
   @Override
-  public ResponseEntity<OrgSilServiceDTO> getOrgSilServiceDetails(Long organizationId, Long orgSilServiceId) {
-    log.info("User requested getOrgSilServiceDetails having organizationId {} and orgSilServiceId {}",organizationId,orgSilServiceId);
-    return ResponseEntity.ofNullable(orgSilServiceRetrieverService.getOrgSilServiceDetails(organizationId,orgSilServiceId,
+  public ResponseEntity<OrgSilServiceDecryptedDTO> getOrgSilServiceDetails(Long organizationId, Long orgSilServiceId) {
+    log.info("User requested getOrgSilServiceDetails having organizationId {} and orgSilServiceId {}", organizationId, orgSilServiceId);
+    return ResponseEntity.ofNullable(orgSilServiceRetrieverService.getOrgSilServiceDetails(organizationId, orgSilServiceId,
       SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken()));
+  }
+
+  @Override
+  public ResponseEntity<OrgSilServiceDecryptedDTO> createOrgSilService(Long organizationId, OrgSilServiceDecryptedDTO body) {
+    log.info("User requested createOrgSilService having organizationId {} and applicationName {}", organizationId, body.getApplicationName());
+    return new ResponseEntity<>(orgSilServiceStorerService.createOrgSilService(
+      organizationId, body, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken()), HttpStatus.CREATED);
+  }
+
+  @Override
+  public ResponseEntity<Void> deleteOrgSilService(Long organizationId, Long orgSilServiceId) {
+    log.info("User requested deleteOrgSilService having organizationId {} and orgSilServiceId {}", organizationId, orgSilServiceId);
+    orgSilServiceRetrieverService.deleteOrgSilService(organizationId, orgSilServiceId, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken());
+    return ResponseEntity.ok().build();
+  }
+
+  @Override
+  public ResponseEntity<OrgSilServiceDecryptedDTO> updateOrgSilService(Long organizationId, OrgSilServiceDecryptedDTO body) {
+    log.info("User requested updateOrgSilService having organizationId {} and applicationName {}", organizationId, body.getApplicationName());
+    return ResponseEntity.ok(orgSilServiceStorerService.updateOrgSilService(
+      organizationId, body, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken()));
   }
 }

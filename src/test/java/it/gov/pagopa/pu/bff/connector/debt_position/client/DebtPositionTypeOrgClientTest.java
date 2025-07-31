@@ -67,10 +67,10 @@ class DebtPositionTypeOrgClientTest {
       .thenReturn(debtPositionTypeOrgSearchControllerApiMock);
 
     when(debtPositionTypeOrgSearchControllerApiMock.crudDebtPositionTypeOrgsFindDebtPositionTypeOrgs(
-      String.valueOf(organizationId), operatorExternalUserId))
+      String.valueOf(organizationId),operatorExternalUserId, true))
       .thenReturn(expectedResult);
 
-    CollectionModelDebtPositionTypeOrg result = debtPositionTypeOrgClient.getDebtPositionTypeOrgs(organizationId, operatorExternalUserId, accessToken);
+    CollectionModelDebtPositionTypeOrg result = debtPositionTypeOrgClient.getDebtPositionTypeOrgs(organizationId, operatorExternalUserId, true, accessToken);
 
     assertSame(expectedResult, result);
   }
@@ -171,5 +171,29 @@ class DebtPositionTypeOrgClientTest {
     DebtPositionTypeOrg result = debtPositionTypeOrgClient.saveDebtPositionTypeOrg(saveDebtPositionTypeOrgDTO, accessToken);
 
     assertSame(expectedResult, result);
+  }
+
+  @Test
+  void givenExistingDebtPositionTypeOrgIdWhenUpdateFlagActiveDebtPositionTypeOrgThenInvokeWithAccessToken() {
+    Long debtPositionTypeOrgId = 1L;
+    String accessToken = "ACCESSTOKEN";
+    when(debtPositionApisHolderMock.getDebtPositionTypeOrgApi(accessToken))
+      .thenReturn(debtPositionTypeOrgApiMock);
+    doNothing().when(debtPositionTypeOrgApiMock).updateFlagActiveDebtPositionTypeOrg(debtPositionTypeOrgId, true);
+
+    Assertions.assertDoesNotThrow(()->debtPositionTypeOrgClient.updateFlagActiveDebtPositionTypeOrg(debtPositionTypeOrgId, true, accessToken));
+  }
+
+  @Test
+  void givenNoDebtPositionTypeOrgIdWhenUpdateFlagActiveDebtPositionTypeOrgThenInvokeWithAccessToken() {
+    Long debtPositionTypeOrgId = 1L;
+    String accessToken = "ACCESSTOKEN";
+    when(debtPositionApisHolderMock.getDebtPositionTypeOrgApi(accessToken))
+      .thenReturn(debtPositionTypeOrgApiMock);
+    doThrow(HttpClientErrorException.create(HttpStatus.NOT_FOUND, "NotFound", null, null, null))
+      .when(debtPositionTypeOrgApiMock).updateFlagActiveDebtPositionTypeOrg(debtPositionTypeOrgId, false);
+
+    Assertions.assertThrows(ResourceNotFoundException.class,()->
+      debtPositionTypeOrgClient.updateFlagActiveDebtPositionTypeOrg(debtPositionTypeOrgId, false, accessToken));
   }
 }

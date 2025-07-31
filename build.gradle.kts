@@ -225,7 +225,9 @@ tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>("ope
     "OrgSilServiceView" to "it.gov.pagopa.pu.organization.dto.generated.OrgSilServiceView",
     "OrgSilServiceDecryptedDTO" to "it.gov.pagopa.pu.bff.dto.OrgSilServiceDecryptedDTO",
     "RegistryOutcome" to "it.gov.pagopa.pu.registries.dto.generated.RegistryOutcome",
-    "ClientDTOPage" to "it.gov.pagopa.pu.auth.dto.generated.ClientDTOPage"
+    "ClientDTOPage" to "it.gov.pagopa.pu.auth.dto.generated.ClientDTOPage",
+    "ClientDTO" to "it.gov.pagopa.pu.auth.dto.generated.ClientDTO",
+    "CreateClientRequest" to "it.gov.pagopa.pu.auth.dto.generated.CreateClientRequest"
   ))
   configOptions.set(mapOf(
     "dateLibrary" to "java8",

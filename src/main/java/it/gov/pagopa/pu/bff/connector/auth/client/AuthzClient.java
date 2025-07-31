@@ -1,6 +1,8 @@
 package it.gov.pagopa.pu.bff.connector.auth.client;
 
+import it.gov.pagopa.pu.auth.dto.generated.ClientDTO;
 import it.gov.pagopa.pu.auth.dto.generated.ClientDTOPage;
+import it.gov.pagopa.pu.auth.dto.generated.CreateClientRequest;
 import it.gov.pagopa.pu.auth.dto.generated.OperatorsPage;
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.connector.auth.config.AuthApisHolder;
@@ -39,5 +41,9 @@ public class AuthzClient {
     Pageable pageable, String accessToken) {
     return authApisHolder.getAuthzApi(accessToken).getClientsSearch(organizationIpaCode, clientId, clientName,
       pageable.getPageNumber(), pageable.getPageSize(), PageUtils.getSortList(pageable));
+  }
+
+  public ClientDTO registerClient(String organizationIpaCode, CreateClientRequest createClientRequest, String accessToken){
+    return authApisHolder.getAuthzApi(accessToken).registerClient(organizationIpaCode, createClientRequest);
   }
 }

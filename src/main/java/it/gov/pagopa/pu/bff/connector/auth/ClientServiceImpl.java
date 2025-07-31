@@ -1,6 +1,8 @@
 package it.gov.pagopa.pu.bff.connector.auth;
 
+import it.gov.pagopa.pu.auth.dto.generated.ClientDTO;
 import it.gov.pagopa.pu.auth.dto.generated.ClientDTOPage;
+import it.gov.pagopa.pu.auth.dto.generated.CreateClientRequest;
 import it.gov.pagopa.pu.bff.connector.auth.client.AuthzClient;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -18,5 +20,10 @@ public class ClientServiceImpl implements ClientService {
   public ClientDTOPage getClients(String organizationIpaCode, String clientId, String clientName,
     Pageable pageable, String accessToken) {
     return authzClient.getClients(organizationIpaCode, clientId, clientName, pageable, accessToken);
+  }
+
+  @Override
+  public ClientDTO registerClient(String organizationIpaCode, CreateClientRequest createClientRequest, String accessToken) {
+    return authzClient.registerClient(organizationIpaCode, createClientRequest, accessToken);
   }
 }

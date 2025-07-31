@@ -1,6 +1,8 @@
 package it.gov.pagopa.pu.bff.service.clients;
 
+import it.gov.pagopa.pu.auth.dto.generated.ClientDTO;
 import it.gov.pagopa.pu.auth.dto.generated.ClientDTOPage;
+import it.gov.pagopa.pu.auth.dto.generated.CreateClientRequest;
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.connector.auth.ClientService;
 import it.gov.pagopa.pu.bff.connector.organization.OrganizationService;
@@ -30,5 +32,13 @@ public class ClientRetrieverServiceImpl implements ClientRetrieverService {
     authorizationService.validateAdminRole(organizationId, loggedUser);
     Organization organization = organizationService.getOrganizationByOrganizationId(organizationId, accessToken);
     return clientService.getClients(organization.getIpaCode(), clientId, clientName, pageable, accessToken);
+  }
+
+  @Override
+  public ClientDTO registerClient(Long organizationId, CreateClientRequest createClientRequest,
+    UserInfo loggedUser, String accessToken) {
+    authorizationService.validateAdminRole(organizationId, loggedUser);
+    Organization organization = organizationService.getOrganizationByOrganizationId(organizationId, accessToken);
+    return clientService.registerClient(organization.getIpaCode(), createClientRequest, accessToken);
   }
 }

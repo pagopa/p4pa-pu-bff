@@ -1,7 +1,9 @@
 package it.gov.pagopa.pu.bff.service.clients;
 
+import it.gov.pagopa.pu.auth.dto.generated.ClientDTO;
 import it.gov.pagopa.pu.auth.dto.generated.ClientDTOPage;
 import it.gov.pagopa.pu.auth.dto.generated.ClientNoSecretDTO;
+import it.gov.pagopa.pu.auth.dto.generated.CreateClientRequest;
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.auth.dto.generated.UserOrganizationRoles;
 import it.gov.pagopa.pu.bff.connector.auth.ClientService;
@@ -75,6 +77,38 @@ class ClientRetrieverServiceImplTest {
 
     // When
     ClientDTOPage result = clientRetrieverService.getClients(organizationId, null, null, pageRequest, userInfo,
+      accessToken);
+
+    // Then
+    Assertions.assertNotNull(result);
+    Assertions.assertEquals(expectedResult, result);
+  }
+
+  @Test
+  void givenValidRequestWhenRegisterClientThenOk() {
+    // Given
+    Long organizationId = 1L;
+    String accessToken = "TOKEN";
+    String clientName = "CLIENTNAME";
+
+    Organization organization = new Organization();
+    organization.setOrganizationId(organizationId);
+    organization.setIpaCode("IPACODE");
+
+    ClientDTO expectedResult = new ClientDTO();
+    expectedResult.setClientName(clientName);
+
+    CreateClientRequest request = new CreateClientRequest();
+    request.setClientName(clientName);
+
+    Mockito.doNothing().when(authorizationServiceMock).validateAdminRole(organizationId, userInfo);
+    Mockito.when(organizationServiceMock.getOrganizationByOrganizationId(organizationId, accessToken))
+      .thenReturn(organization);
+    Mockito.when(clientServiceMock.registerClient(organization.getIpaCode(), request, accessToken))
+      .thenReturn(expectedResult);
+
+    // When
+    ClientDTO result = clientRetrieverService.registerClient(organizationId, request, userInfo,
       accessToken);
 
     // Then

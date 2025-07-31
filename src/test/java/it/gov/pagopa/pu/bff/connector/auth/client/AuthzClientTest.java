@@ -1,10 +1,13 @@
 package it.gov.pagopa.pu.bff.connector.auth.client;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.Mockito.when;
 
 import it.gov.pagopa.pu.auth.controller.generated.AuthzApi;
+import it.gov.pagopa.pu.auth.dto.generated.ClientDTO;
 import it.gov.pagopa.pu.auth.dto.generated.ClientDTOPage;
+import it.gov.pagopa.pu.auth.dto.generated.CreateClientRequest;
 import it.gov.pagopa.pu.auth.dto.generated.OperatorsPage;
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.connector.auth.config.AuthApisHolder;
@@ -107,6 +110,29 @@ class AuthzClientTest {
 
     ClientDTOPage result = authzClient.getClients(organizationIpaCode, null, null, pageRequest, accessToken );
 
+    assertSame(expectedResult, result);
+  }
+
+  @Test
+  void whenRegisterClientThenInvokeWithAccessToken() {
+    // Given
+    String accessToken = "ACCESSTOKEN";
+    String organizationIpaCode = "IPACODE";
+    String clientName = "CLIENTNAME";
+    ClientDTO expectedResult = new ClientDTO();
+    expectedResult.setClientName(clientName);
+
+    CreateClientRequest request = new CreateClientRequest();
+    request.clientName(clientName);
+
+    when(authApisHolderMock.getAuthzApi(accessToken)).thenReturn(authzApiMock);
+    when(authzApiMock.registerClient(organizationIpaCode, request)).thenReturn(expectedResult);
+
+    // When
+    ClientDTO result = authzClient.registerClient(organizationIpaCode, request, accessToken);
+
+    // Then
+    assertNotNull(result);
     assertSame(expectedResult, result);
   }
 

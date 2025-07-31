@@ -2,8 +2,10 @@ package it.gov.pagopa.pu.bff.controller;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import it.gov.pagopa.pu.auth.dto.generated.ClientDTO;
 import it.gov.pagopa.pu.auth.dto.generated.ClientDTOPage;
 import it.gov.pagopa.pu.auth.dto.generated.ClientNoSecretDTO;
+import it.gov.pagopa.pu.auth.dto.generated.CreateClientRequest;
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.security.SecurityUtilsTest;
 import it.gov.pagopa.pu.bff.service.clients.ClientRetrieverService;
@@ -69,5 +71,28 @@ class ClientControllerTest {
     assertNotNull(response.getBody());
     assertEquals(1, response.getBody().getContent().size());
     assertEquals(expectedResult.getContent().getFirst().getOrganizationIpaCode(), response.getBody().getContent().getFirst().getOrganizationIpaCode());
+  }
+
+  @Test
+  void whenRegisterClientThenSuccess() {
+    // Given
+    Long organizationId = 1L;
+    String clientName = "CLIENTNAME";
+    ClientDTO expectedResult = new ClientDTO();
+    expectedResult.setClientName(clientName);
+
+    CreateClientRequest request = new CreateClientRequest();
+    request.clientName(clientName);
+
+    Mockito.when(clientRetrieverServiceMock.registerClient(organizationId, request, loggedUser, accessToken ))
+      .thenReturn(expectedResult);
+
+    // When
+    ResponseEntity<ClientDTO> response = clientController.registerClient(organizationId, request);
+
+    // Then
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertNotNull(response.getBody());
+    assertEquals(expectedResult, response.getBody());
   }
 }

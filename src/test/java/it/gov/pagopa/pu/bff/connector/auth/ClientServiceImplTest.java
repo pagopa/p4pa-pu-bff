@@ -1,8 +1,10 @@
 package it.gov.pagopa.pu.bff.connector.auth;
 
 
+import it.gov.pagopa.pu.auth.dto.generated.ClientDTO;
 import it.gov.pagopa.pu.auth.dto.generated.ClientDTOPage;
 import it.gov.pagopa.pu.auth.dto.generated.ClientNoSecretDTO;
+import it.gov.pagopa.pu.auth.dto.generated.CreateClientRequest;
 import it.gov.pagopa.pu.bff.connector.auth.client.AuthzClient;
 import java.util.List;
 import org.junit.jupiter.api.Assertions;
@@ -47,6 +49,29 @@ class ClientServiceImplTest {
 
     // When
     ClientDTOPage result = clientService.getClients("IPACODE", null, null, pageRequest, accessToken);
+
+    // Then
+    Assertions.assertNotNull(result);
+    Assertions.assertEquals(expectedResult, result);
+  }
+
+  @Test
+  void whenRegisterClientThenSuccess(){
+    // Given
+    String accessToken = "ACCESSTOKEN";
+    String ipaCode = "IPACODE";
+    String clientName = "CLIENTNAME";
+
+    ClientDTO expectedResult = new ClientDTO();
+    expectedResult.setClientName(clientName);
+
+    CreateClientRequest request = new CreateClientRequest();
+    request.setClientName(clientName);
+
+    Mockito.when(authzClientMock.registerClient(ipaCode, request, accessToken)).thenReturn(expectedResult);
+
+    // When
+    ClientDTO result = clientService.registerClient(ipaCode, request, accessToken);
 
     // Then
     Assertions.assertNotNull(result);

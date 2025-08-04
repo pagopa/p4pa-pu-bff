@@ -26,4 +26,9 @@ public class ClientServiceImpl implements ClientService {
   public ClientDTO registerClient(String organizationIpaCode, CreateClientRequest createClientRequest, String accessToken) {
     return authzClient.registerClient(organizationIpaCode, createClientRequest, accessToken);
   }
+
+  @Override
+  public ClientDTO getClient(String organizationIpaCode, String clientId, String accessToken) {
+    return authzClient.getClient(organizationIpaCode, clientId, accessToken);
+  }
 }

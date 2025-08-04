@@ -37,13 +37,18 @@ public class AuthzClient {
         .getOrganizationOperators(organizationIpaCode, fiscalCode, firstName, lastName, page, size);
   }
 
-  public ClientDTOPage getClients(String organizationIpaCode, String clientId, String clientName,
-    Pageable pageable, String accessToken) {
-    return authApisHolder.getAuthzApi(accessToken).getClientsSearch(organizationIpaCode, clientId, clientName,
-      pageable.getPageNumber(), pageable.getPageSize(), PageUtils.getSortList(pageable));
+  public ClientDTOPage getClients(String organizationIpaCode, String clientId, String clientName, Pageable pageable, String accessToken) {
+    return authApisHolder.getAuthzApi(accessToken)
+      .getClientsSearch(organizationIpaCode, clientId, clientName, pageable.getPageNumber(), pageable.getPageSize(), PageUtils.getSortList(pageable));
   }
 
   public ClientDTO registerClient(String organizationIpaCode, CreateClientRequest createClientRequest, String accessToken){
-    return authApisHolder.getAuthzApi(accessToken).registerClient(organizationIpaCode, createClientRequest);
+    return authApisHolder.getAuthzApi(accessToken)
+      .registerClient(organizationIpaCode, createClientRequest);
+  }
+
+  public ClientDTO getClient(String organizationIpaCode, String clientId, String accessToken) {
+    return authApisHolder.getAuthzApi(accessToken)
+      .getClient(organizationIpaCode, clientId);
   }
 }

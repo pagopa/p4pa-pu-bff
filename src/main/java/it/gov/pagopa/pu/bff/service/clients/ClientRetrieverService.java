@@ -8,5 +8,8 @@ import org.springframework.data.domain.Pageable;
 
 public interface ClientRetrieverService {
   ClientDTOPage getClients(Long organizationId, String clientId, String clientName, Pageable pageable, UserInfo loggedUser, String accessToken);
+
   ClientDTO registerClient(Long organizationId, CreateClientRequest createClientRequest, UserInfo loggedUser, String accessToken);
+
+  ClientDTO getClient(Long organizationId, String clientId, UserInfo loggedUser, String accessToken);
 }

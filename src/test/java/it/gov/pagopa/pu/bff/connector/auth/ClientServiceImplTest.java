@@ -77,4 +77,21 @@ class ClientServiceImplTest {
     Assertions.assertNotNull(result);
     Assertions.assertEquals(expectedResult, result);
   }
+
+  @Test
+  void whenGetClientThenSuccess() {
+    String accessToken = "ACCESSTOKEN";
+    String ipaCode = "IPACODE";
+    String clientId = "CLIENT_ID";
+
+    ClientDTO expectedResult = new ClientDTO();
+    expectedResult.setClientId(clientId);
+
+    Mockito.when(authzClientMock.getClient(ipaCode, clientId, accessToken)).thenReturn(expectedResult);
+
+    ClientDTO result = clientService.getClient(ipaCode, clientId, accessToken);
+
+    Assertions.assertNotNull(result);
+    Assertions.assertEquals(expectedResult, result);
+  }
 }

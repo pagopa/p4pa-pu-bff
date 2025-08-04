@@ -36,4 +36,11 @@ public class ClientController implements ClientsApi {
       SecurityUtils.getLoggedUser(),
       SecurityUtils.getAccessToken()));
   }
+
+  @Override
+  public ResponseEntity<ClientDTO> getClient(Long organizationId, String clientId) {
+    log.info("User requested getClient having organizationId {} and clientId {}", organizationId, clientId);
+    return ResponseEntity.ok(clientRetrieverService.getClient(
+      organizationId, clientId, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken()));
+  }
 }

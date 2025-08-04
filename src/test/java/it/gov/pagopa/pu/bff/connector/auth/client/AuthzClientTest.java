@@ -136,4 +136,21 @@ class AuthzClientTest {
     assertSame(expectedResult, result);
   }
 
+  @Test
+  void whenGetClientThenInvokeWithAccessToken() {
+    String accessToken = "ACCESSTOKEN";
+    String organizationIpaCode = "IPACODE";
+    String clientId = "CLIENT_ID";
+
+    ClientDTO expectedResult = new ClientDTO();
+    expectedResult.setClientId(clientId);
+
+    when(authApisHolderMock.getAuthzApi(accessToken)).thenReturn(authzApiMock);
+    when(authzApiMock.getClient(organizationIpaCode, clientId)).thenReturn(expectedResult);
+
+    ClientDTO result = authzClient.getClient(organizationIpaCode, clientId, accessToken);
+
+    assertNotNull(result);
+    assertSame(expectedResult, result);
+  }
 }

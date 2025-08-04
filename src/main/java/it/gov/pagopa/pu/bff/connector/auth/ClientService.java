@@ -7,8 +7,7 @@ import org.springframework.data.domain.Pageable;
 
 public interface ClientService {
   ClientDTOPage getClients(String organizationIpaCode, String clientId, String clientName, Pageable pageable, String accessToken);
-
   ClientDTO registerClient(String organizationIpaCode, CreateClientRequest createClientRequest, String accessToken);
-
   ClientDTO getClient(String organizationIpaCode, String clientId, String accessToken);
+  void deleteClient(String organizationIpaCode, String clientId, String accessToken);
 }

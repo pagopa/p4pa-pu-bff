@@ -1,15 +1,7 @@
 package it.gov.pagopa.pu.bff.connector.auth.client;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.mockito.Mockito.when;
-
 import it.gov.pagopa.pu.auth.controller.generated.AuthzApi;
-import it.gov.pagopa.pu.auth.dto.generated.ClientDTO;
-import it.gov.pagopa.pu.auth.dto.generated.ClientDTOPage;
-import it.gov.pagopa.pu.auth.dto.generated.CreateClientRequest;
-import it.gov.pagopa.pu.auth.dto.generated.OperatorsPage;
-import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
+import it.gov.pagopa.pu.auth.dto.generated.*;
 import it.gov.pagopa.pu.bff.connector.auth.config.AuthApisHolder;
 import it.gov.pagopa.pu.bff.util.PageUtils;
 import org.junit.jupiter.api.AfterEach;
@@ -24,6 +16,11 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.client.HttpClientErrorException;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class AuthzClientTest {
@@ -152,5 +149,20 @@ class AuthzClientTest {
 
     assertNotNull(result);
     assertSame(expectedResult, result);
+  }
+
+  @Test
+  void whenRevokeClientThenInvokeWithAccessToken() {
+    //given
+    String accessToken = "ACCESSTOKEN";
+    String organizationIpaCode = "IPACODE";
+    String clientId = "CLIENTID";
+
+    when(authApisHolderMock.getAuthzApi(accessToken)).thenReturn(authzApiMock);
+    doNothing().when(authzApiMock).revokeClient(organizationIpaCode, clientId);
+    //when
+    authzClient.revokeClient(organizationIpaCode,clientId, accessToken);
+    //then
+    Mockito.verifyNoMoreInteractions(authzApiMock);
   }
 }

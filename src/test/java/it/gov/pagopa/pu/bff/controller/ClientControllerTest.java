@@ -112,4 +112,16 @@ class ClientControllerTest {
     assertNotNull(response.getBody());
     assertEquals(expectedClient, response.getBody());
   }
+
+  @Test
+  void givenCorrectClientIdWhenDeleteClientThenSuccess() {
+    //given
+    Long organizationId = 1L;
+    String clientId = "CLIENTID";
+    Mockito.doNothing().when(clientRetrieverServiceMock).deleteClient(organizationId, clientId, loggedUser, accessToken);
+    //when
+    ResponseEntity<Void> response = clientController.deleteClient(organizationId, clientId);
+    //then
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+  }
 }

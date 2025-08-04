@@ -17,6 +17,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+
 @ExtendWith(MockitoExtension.class)
 class ClientServiceImplTest {
 
@@ -93,5 +95,19 @@ class ClientServiceImplTest {
 
     Assertions.assertNotNull(result);
     Assertions.assertEquals(expectedResult, result);
+  }
+
+  @Test
+  void whenDeleteClientThenSuccess() {
+    //given
+    String accessToken = "ACCESSTOKEN";
+    String organizationIpaCode = "IPACODE";
+    String clientId = "CLIENTID";
+
+    Mockito.doNothing().when(authzClientMock).revokeClient(organizationIpaCode, clientId, accessToken);
+    //when
+    clientService.deleteClient(organizationIpaCode, clientId, accessToken);
+    //then
+    verifyNoMoreInteractions(authzClientMock);
   }
 }

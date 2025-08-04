@@ -41,4 +41,11 @@ public class ClientRetrieverServiceImpl implements ClientRetrieverService {
     Organization organization = organizationService.getOrganizationByOrganizationId(organizationId, accessToken);
     return clientService.registerClient(organization.getIpaCode(), createClientRequest, accessToken);
   }
+
+  @Override
+  public ClientDTO getClient(Long organizationId, String clientId, UserInfo loggedUser, String accessToken) {
+    authorizationService.validateAdminRole(organizationId, loggedUser);
+    Organization organization = organizationService.getOrganizationByOrganizationId(organizationId, accessToken);
+    return clientService.getClient(organization.getIpaCode(), clientId, accessToken);
+  }
 }

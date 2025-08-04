@@ -2928,16 +2928,16 @@ paths:
               type: integer
               format: int64
       responses:
-          '200':
-            description: OK
-          '401':
-            description: Unauthorized - Missing or invalid token
-          '403':
-            description: Forbidden - Access denied
-          '404':
-            description: Not Found
-          '500':
-            description: Internal Server Error
+        '200':
+          description: OK
+        '401':
+          description: Unauthorized - Missing or invalid token
+        '403':
+          description: Forbidden - Access denied
+        '404':
+          description: Not Found
+        '500':
+          description: Internal Server Error
   /organization/{organizationId}/assessments/{assessmentId}/assessments-details:
     post:
       tags:
@@ -3063,40 +3063,6 @@ paths:
           description: Not Found
         '500':
           description: Internal Server Error
-  /organization/{organizationId}/clients/{clientId}:
-    get:
-      tags:
-        - Clients
-      operationId: getClient
-      parameters:
-        - name: organizationId
-          in: path
-          required: true
-          schema:
-            type: integer
-            format: int64
-        - name: clientId
-          in: path
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: 'ClientDTO'
-        '400':
-          description: Bad request
-        '401':
-          description: Unauthorized - Missing or invalid token
-        '403':
-          description: Forbidden
-        '404':
-          description: Not Found
-        '500':
-          description: Internal Server Error
   /organization/{organizationId}/clients:
     get:
       tags:
@@ -3165,6 +3131,67 @@ paths:
           description: Not Found
         '409':
           description: Conflict
+        '500':
+          description: Internal Server Error
+  /organization/{organizationId}/clients/{clientId}:
+    get:
+      tags:
+        - Clients
+      operationId: getClient
+      parameters:
+        - name: organizationId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: clientId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: 'ClientDTO'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized - Missing or invalid token
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+        '500':
+          description: Internal Server Error
+    delete:
+      tags:
+        - Clients
+      operationId: deleteClient
+      parameters:
+        - name: organizationId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: clientId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+        '401':
+          description: Unauthorized - Missing or invalid token
+        '403':
+          description: Forbidden - Access denied
+        '404':
+          description: Not Found
         '500':
           description: Internal Server Error
 security:

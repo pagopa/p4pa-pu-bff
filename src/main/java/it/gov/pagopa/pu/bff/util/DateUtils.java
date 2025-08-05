@@ -31,20 +31,6 @@ public class DateUtils {
     return endOfDay.atZone(ZONEID).toOffsetDateTime();
   }
 
-  public static OffsetDateTime toOffsetDateTimeStartOfTheDay(LocalDateTime localDateTime) {
-    if (localDateTime == null) {
-      return null;
-    }
-    return localDateTime.atZone(ZONEID).toOffsetDateTime();
-  }
-
-  public static OffsetDateTime toOffsetDateTimeEndOfTheDay(LocalDateTime localDateTime) {
-    if (localDateTime == null) {
-      return null;
-    }
-    LocalDateTime endOfDay = localDateTime.with(LocalTime.MAX.truncatedTo(java.time.temporal.ChronoUnit.MILLIS));
-    return endOfDay.atZone(ZONEID).toOffsetDateTime();
-  }
 
   public static OffsetDateTimeIntervalFilter toRangeClosedOffsetDateTimeIntervalFilter(
     LocalDateIntervalFilter localDateIntervalFilter) {

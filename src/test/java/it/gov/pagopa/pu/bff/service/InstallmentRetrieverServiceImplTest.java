@@ -57,7 +57,7 @@ class InstallmentRetrieverServiceImplTest {
 
     InstallmentViewFiltersDTO filtersDTO = new InstallmentViewFiltersDTO();
     filtersDTO.setOrganizationId(1L);
-    filtersDTO.setDueDate(new OffsetDateTimeIntervalFilter(OffsetDateTime.now().minusDays(5), OffsetDateTime.now().plusDays(5)));
+    filtersDTO.setDueDateTime(new OffsetDateTimeIntervalFilter(OffsetDateTime.now().minusDays(5), OffsetDateTime.now().plusDays(5)));
     Pageable pageable = PageRequest.of(0, 10);
 
     PagedModelInstallmentView pagedModelInstallmentView = new PagedModelInstallmentView();
@@ -88,7 +88,7 @@ class InstallmentRetrieverServiceImplTest {
 
     InstallmentViewFiltersDTO filtersDTO = new InstallmentViewFiltersDTO();
     filtersDTO.setOrganizationId(1L);
-    filtersDTO.setDueDate(new OffsetDateTimeIntervalFilter(null, null));
+    filtersDTO.setDueDateTime(new OffsetDateTimeIntervalFilter(null, null));
     filtersDTO.setIuv(null);
     filtersDTO.setFiscalCode(null);
     filtersDTO.setDebtPositionTypeOrgId(null);
@@ -112,7 +112,7 @@ class InstallmentRetrieverServiceImplTest {
   void givenOnlyDueDateFromWhenGetInstallmentsThenThrowIllegalArgumentException() {
     InstallmentViewFiltersDTO filtersDTO = new InstallmentViewFiltersDTO();
     filtersDTO.setOrganizationId(1L);
-    filtersDTO.setDueDate(new OffsetDateTimeIntervalFilter(OffsetDateTime.now().minusDays(5), null));
+    filtersDTO.setDueDateTime(new OffsetDateTimeIntervalFilter(OffsetDateTime.now().minusDays(5), null));
     assertThrowsIllegalArgument(filtersDTO);
   }
 
@@ -120,7 +120,7 @@ class InstallmentRetrieverServiceImplTest {
   void givenOnlyDueDateToWhenGetInstallmentsThenThrowIllegalArgumentException() {
     InstallmentViewFiltersDTO filtersDTO = new InstallmentViewFiltersDTO();
     filtersDTO.setOrganizationId(1L);
-    filtersDTO.setDueDate(new OffsetDateTimeIntervalFilter(null, OffsetDateTime.now()));
+    filtersDTO.setDueDateTime(new OffsetDateTimeIntervalFilter(null, OffsetDateTime.now()));
     assertThrowsIllegalArgument(filtersDTO);
   }
 
@@ -128,7 +128,7 @@ class InstallmentRetrieverServiceImplTest {
   void givenEmptyDueDateIntervalWhenGetInstallmentsThenThrowIllegalArgumentException() {
     InstallmentViewFiltersDTO filtersDTO = new InstallmentViewFiltersDTO();
     filtersDTO.setOrganizationId(1L);
-    filtersDTO.setDueDate(new OffsetDateTimeIntervalFilter(null, null));
+    filtersDTO.setDueDateTime(new OffsetDateTimeIntervalFilter(null, null));
     assertThrowsIllegalArgument(filtersDTO);
   }
 
@@ -155,7 +155,7 @@ class InstallmentRetrieverServiceImplTest {
   void givenValidDueDateRangeWhenGetInstallmentsThenOk() {
     InstallmentViewFiltersDTO filtersDTO = new InstallmentViewFiltersDTO();
     filtersDTO.setOrganizationId(1L);
-    filtersDTO.setDueDate(new OffsetDateTimeIntervalFilter(OffsetDateTime.now().minusDays(3), OffsetDateTime.now().plusDays(3)));
+    filtersDTO.setDueDateTime(new OffsetDateTimeIntervalFilter(OffsetDateTime.now().minusDays(3), OffsetDateTime.now().plusDays(3)));
     testSingleInstallmentFilterSuccess(filtersDTO);
   }
 

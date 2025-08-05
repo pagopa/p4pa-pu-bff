@@ -7,14 +7,13 @@ import it.gov.pagopa.pu.bff.dto.OffsetDateTimeIntervalFilter;
 import it.gov.pagopa.pu.bff.dto.generated.PagedInstallmentView;
 import it.gov.pagopa.pu.bff.security.SecurityUtils;
 import it.gov.pagopa.pu.bff.service.installment.InstallmentRetrieverService;
-import it.gov.pagopa.pu.bff.util.DateUtils;
 import it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentDetailDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 @Slf4j
 @RestController
@@ -27,10 +26,10 @@ public class InstallmentController implements InstallmentsApi {
   }
 
   @Override
-  public ResponseEntity<PagedInstallmentView> getInstallments(Long organizationId, LocalDateTime dueDateTimeFrom, LocalDateTime dueDateTimeTo, String iuv, String fiscalCode, Long debtPositionTypeOrgId, Pageable pageable) {
+  public ResponseEntity<PagedInstallmentView> getInstallments(Long organizationId, OffsetDateTime dueDateTimeFrom, OffsetDateTime dueDateTimeTo, String iuv, String fiscalCode, Long debtPositionTypeOrgId, Pageable pageable) {
     log.info("User requested getInstallments having organizationId {}, dueDateTimeFrom {} and dueDateTimeTo {}", organizationId, dueDateTimeFrom, dueDateTimeTo);
     UserInfo userInfo = SecurityUtils.getLoggedUser();
-    OffsetDateTimeIntervalFilter dueDateTimeFilter = new OffsetDateTimeIntervalFilter(DateUtils.toOffsetDateTimeStartOfTheDay(dueDateTimeFrom), DateUtils.toOffsetDateTimeEndOfTheDay(dueDateTimeTo));
+    OffsetDateTimeIntervalFilter dueDateTimeFilter = new OffsetDateTimeIntervalFilter(dueDateTimeFrom, dueDateTimeTo);
 
     return ResponseEntity.ok(installmentRetrieverService.getInstallments(
       new InstallmentViewFiltersDTO(

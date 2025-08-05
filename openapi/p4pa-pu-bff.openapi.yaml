@@ -787,13 +787,13 @@ paths:
           required: false
           schema:
             type: string
-            format: local-date-time
+            format: date-time
         - name: dueDateTimeTo
           in: query
           required: false
           schema:
             type: string
-            format: local-date-time
+            format: date-time
         - name: iuv
           in: query
           schema:

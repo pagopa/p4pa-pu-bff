@@ -4766,7 +4766,7 @@
             "format" : "int64"
           }
         }, {
-          "name" : "dueDateFrom",
+          "name" : "dueDateTimeFrom",
           "in" : "query",
           "required" : false,
           "schema" : {
@@ -4774,7 +4774,7 @@
             "format" : "date-time"
           }
         }, {
-          "name" : "dueDateTo",
+          "name" : "dueDateTimeTo",
           "in" : "query",
           "required" : false,
           "schema" : {

@@ -41,8 +41,8 @@ public class InstallmentRetrieverServiceImpl implements InstallmentRetrieverServ
   }
 
   private void validateInstallmentViewFilters(InstallmentViewFiltersDTO filtersDTO) {
-    if ((filtersDTO.getDueDate() == null ||
-      DateUtils.isNullOrInvalidOffsetDateTimeRange(filtersDTO.getDueDate().getFrom(), filtersDTO.getDueDate().getTo())) &&
+    if ((filtersDTO.getDueDateTime() == null ||
+      DateUtils.isNullOrInvalidOffsetDateTimeRange(filtersDTO.getDueDateTime().getFrom(), filtersDTO.getDueDateTime().getTo())) &&
       StringUtils.isBlank(filtersDTO.getIuv()) &&
       StringUtils.isBlank(filtersDTO.getFiscalCode()) &&
       filtersDTO.getDebtPositionTypeOrgId() == null) {

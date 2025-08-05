@@ -782,18 +782,18 @@ paths:
           schema:
             type: integer
             format: int64
-        - name: dueDateFrom
+        - name: dueDateTimeFrom
           in: query
           required: false
           schema:
             type: string
-            format: date-time
-        - name: dueDateTo
+            format: local-date-time
+        - name: dueDateTimeTo
           in: query
           required: false
           schema:
             type: string
-            format: date-time
+            format: local-date-time
         - name: iuv
           in: query
           schema:

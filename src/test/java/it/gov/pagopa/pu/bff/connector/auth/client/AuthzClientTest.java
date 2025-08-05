@@ -165,4 +165,22 @@ class AuthzClientTest {
     //then
     Mockito.verifyNoMoreInteractions(authzApiMock);
   }
+
+  @Test
+  void whenGenerateClientSecretThenInvokeWithAccessToken() {
+    String accessToken = "ACCESSTOKEN";
+    String organizationIpaCode = "IPACODE";
+    String clientId = "CLIENT_ID";
+
+    ClientDTO expectedResult = new ClientDTO();
+    expectedResult.setClientId(clientId);
+
+    when(authApisHolderMock.getAuthzApi(accessToken)).thenReturn(authzApiMock);
+    when(authzApiMock.generateClientSecret(organizationIpaCode, clientId)).thenReturn(expectedResult);
+
+    ClientDTO result = authzClient.generateClientSecret(organizationIpaCode, clientId, accessToken);
+
+    assertNotNull(result);
+    assertSame(expectedResult, result);
+  }
 }

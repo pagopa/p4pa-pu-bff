@@ -124,4 +124,21 @@ class ClientControllerTest {
     //then
     assertEquals(HttpStatus.OK, response.getStatusCode());
   }
+
+  @Test
+  void whenGenerateClientSecretThenSuccess() {
+    Long organizationId = 1L;
+    String clientId = "CLIENT_ID";
+    ClientDTO expectedClient = new ClientDTO();
+    expectedClient.setClientId(clientId);
+
+    Mockito.when(clientRetrieverServiceMock.generateClientSecret(organizationId, clientId, loggedUser, accessToken))
+      .thenReturn(expectedClient);
+
+    ResponseEntity<ClientDTO> response = clientController.generateClientSecret(organizationId, clientId);
+
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertNotNull(response.getBody());
+    assertEquals(expectedClient, response.getBody());
+  }
 }

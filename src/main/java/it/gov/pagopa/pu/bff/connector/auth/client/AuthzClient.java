@@ -55,4 +55,9 @@ public class AuthzClient {
   public void revokeClient(String organizationIpaCode, String clientId, String accessToken){
     authApisHolder.getAuthzApi(accessToken).revokeClient(organizationIpaCode, clientId);
   }
+
+  public ClientDTO generateClientSecret(String organizationIpaCode, String clientId, String accessToken) {
+    return authApisHolder.getAuthzApi(accessToken)
+      .generateClientSecret(organizationIpaCode, clientId);
+  }
 }

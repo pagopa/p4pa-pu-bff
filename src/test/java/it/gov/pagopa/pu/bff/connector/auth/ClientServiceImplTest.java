@@ -110,4 +110,22 @@ class ClientServiceImplTest {
     //then
     verifyNoMoreInteractions(authzClientMock);
   }
+
+  @Test
+  void whenGenerateClientSecretThenSuccess() {
+    String accessToken = "ACCESSTOKEN";
+    String ipaCode = "IPACODE";
+    String clientId = "CLIENT_ID";
+
+    ClientDTO expectedResult = new ClientDTO();
+    expectedResult.setClientId(clientId);
+
+    Mockito.when(authzClientMock.generateClientSecret(ipaCode, clientId, accessToken))
+      .thenReturn(expectedResult);
+
+    ClientDTO result = clientService.generateClientSecret(ipaCode, clientId, accessToken);
+
+    Assertions.assertNotNull(result);
+    Assertions.assertEquals(expectedResult, result);
+  }
 }

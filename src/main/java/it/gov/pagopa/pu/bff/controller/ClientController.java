@@ -50,4 +50,11 @@ public class ClientController implements ClientsApi {
     clientRetrieverService.deleteClient(organizationId, clientId, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken());
     return ResponseEntity.ok().build();
   }
+
+  @Override
+  public ResponseEntity<ClientDTO> generateClientSecret(Long organizationId, String clientId) {
+    log.info("User requested generateClientSecret for client {} having organizationId {}", clientId, organizationId);
+    return ResponseEntity.ok(clientRetrieverService.generateClientSecret(
+      organizationId, clientId, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken()));
+  }
 }

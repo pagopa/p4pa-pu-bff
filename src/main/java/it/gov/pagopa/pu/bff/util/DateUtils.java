@@ -31,6 +31,7 @@ public class DateUtils {
     return endOfDay.atZone(ZONEID).toOffsetDateTime();
   }
 
+
   public static OffsetDateTimeIntervalFilter toRangeClosedOffsetDateTimeIntervalFilter(
     LocalDateIntervalFilter localDateIntervalFilter) {
     return OffsetDateTimeIntervalFilter.builder()

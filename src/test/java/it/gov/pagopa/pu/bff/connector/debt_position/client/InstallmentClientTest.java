@@ -74,8 +74,8 @@ class InstallmentClientTest {
     when(installmentViewSearchControllerApiMock.crudInstallmentViewsFindInstallmentsByFilters(
       filtersDTO.getOrganizationId(),
       filtersDTO.getOperatorExternalUserId(),
-      filtersDTO.getDueDate().getFrom(),
-      filtersDTO.getDueDate().getTo(),
+      filtersDTO.getDueDateTime().getFrom(),
+      filtersDTO.getDueDateTime().getTo(),
       filtersDTO.getIuv(),
       filtersDTO.getFiscalCode(),
       filtersDTO.getDebtPositionTypeOrgId(),

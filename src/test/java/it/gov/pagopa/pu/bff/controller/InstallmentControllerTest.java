@@ -66,10 +66,11 @@ class InstallmentControllerTest {
     String fiscalCode = "FiscalCode123";
     long debtPositionTypeOrgId = 2L;
     Pageable pageable = PageRequest.of(0, 10);
-    OffsetDateTime dueDateFrom = OffsetDateTime.now().minusDays(10);
-    OffsetDateTime dueDateTo = OffsetDateTime.now();
 
-    OffsetDateTimeIntervalFilter paymentDateTimeFilter = new OffsetDateTimeIntervalFilter(dueDateFrom, dueDateTo);
+    OffsetDateTime dueDateTimeFrom = OffsetDateTime.now().minusDays(10);
+    OffsetDateTime dueDateTimeTo = OffsetDateTime.now();
+
+    OffsetDateTimeIntervalFilter paymentDateTimeFilter = new OffsetDateTimeIntervalFilter(dueDateTimeFrom, dueDateTimeTo);
 
     InstallmentViewFiltersDTO filtersDTO = new InstallmentViewFiltersDTO(organizationId, loggedUser.getMappedExternalUserId(), paymentDateTimeFilter, iuv, fiscalCode, debtPositionTypeOrgId);
 
@@ -93,7 +94,7 @@ class InstallmentControllerTest {
     when(installmentRetrieverServiceMock.getInstallments(filtersDTO, pageable, loggedUser, accessToken))
       .thenReturn(expectedResult);
 
-    ResponseEntity<PagedInstallmentView> response = installmentController.getInstallments(organizationId, dueDateFrom, dueDateTo, iuv, fiscalCode, debtPositionTypeOrgId, pageable);
+    ResponseEntity<PagedInstallmentView> response = installmentController.getInstallments(organizationId, dueDateTimeFrom, dueDateTimeTo, iuv, fiscalCode, debtPositionTypeOrgId, pageable);
 
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertNotNull(response.getBody());

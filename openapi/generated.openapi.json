@@ -757,6 +757,93 @@
         } ]
       }
     },
+    "/bff/organization/{organizationId}/clients/{clientId}/client-secret" : {
+      "put" : {
+        "tags" : [ "Clients" ],
+        "operationId" : "generateClientSecret",
+        "parameters" : [ {
+          "name" : "organizationId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }, {
+          "name" : "clientId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ClientDTO"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad request",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ClientDTO"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Unauthorized - Missing or invalid token",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ClientDTO"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Forbidden",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ClientDTO"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Not Found",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ClientDTO"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal Server Error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ClientDTO"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "BearerAuth" : [ ]
+        } ]
+      }
+    },
     "/bff/organization/{organizationId}/assessments/{assessmentId}" : {
       "put" : {
         "tags" : [ "Assessments" ],
@@ -8171,6 +8258,24 @@
         },
         "required" : [ "debtPositionTypeOrg", "operatorsSelection" ]
       },
+      "ClientDTO" : {
+        "type" : "object",
+        "properties" : {
+          "clientId" : {
+            "type" : "string"
+          },
+          "clientName" : {
+            "type" : "string"
+          },
+          "organizationIpaCode" : {
+            "type" : "string"
+          },
+          "clientSecret" : {
+            "type" : "string"
+          }
+        },
+        "required" : [ "clientId", "clientName", "clientSecret", "organizationIpaCode" ]
+      },
       "AssessmentStatus" : {
         "type" : "string",
         "enum" : [ "CLOSED", "CANCELLED", "ACTIVE" ]
@@ -8255,24 +8360,6 @@
           }
         },
         "required" : [ "access_token", "expires_in", "token_type" ]
-      },
-      "ClientDTO" : {
-        "type" : "object",
-        "properties" : {
-          "clientId" : {
-            "type" : "string"
-          },
-          "clientName" : {
-            "type" : "string"
-          },
-          "organizationIpaCode" : {
-            "type" : "string"
-          },
-          "clientSecret" : {
-            "type" : "string"
-          }
-        },
-        "required" : [ "clientId", "clientName", "clientSecret", "organizationIpaCode" ]
       },
       "CreateClientRequest" : {
         "type" : "object",

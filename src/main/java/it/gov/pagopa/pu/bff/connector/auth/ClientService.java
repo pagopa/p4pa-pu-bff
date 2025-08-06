@@ -10,4 +10,5 @@ public interface ClientService {
   ClientDTO registerClient(String organizationIpaCode, CreateClientRequest createClientRequest, String accessToken);
   ClientDTO getClient(String organizationIpaCode, String clientId, String accessToken);
   void deleteClient(String organizationIpaCode, String clientId, String accessToken);
+  ClientDTO generateClientSecret(String organizationIpaCode, String clientId, String accessToken);
 }

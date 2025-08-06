@@ -3133,6 +3133,40 @@ paths:
           description: Conflict
         '500':
           description: Internal Server Error
+  /organization/{organizationId}/clients/{clientId}/client-secret:
+    put:
+      tags:
+        - Clients
+      operationId: generateClientSecret
+      parameters:
+        - name: organizationId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: clientId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: 'ClientDTO'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized - Missing or invalid token
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+        '500':
+          description: Internal Server Error
   /organization/{organizationId}/clients/{clientId}:
     get:
       tags:

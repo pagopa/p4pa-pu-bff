@@ -6,6 +6,7 @@ import it.gov.pagopa.pu.auth.dto.generated.CreateClientRequest;
 import it.gov.pagopa.pu.auth.dto.generated.OperatorsPage;
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.connector.auth.config.AuthApisHolder;
+import it.gov.pagopa.pu.bff.exception.ResourceNotFoundException;
 import it.gov.pagopa.pu.bff.util.PageUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -54,5 +55,14 @@ public class AuthzClient {
 
   public void revokeClient(String organizationIpaCode, String clientId, String accessToken){
     authApisHolder.getAuthzApi(accessToken).revokeClient(organizationIpaCode, clientId);
+  }
+
+  public ClientDTO generateClientSecret(String organizationIpaCode, String clientId, String accessToken) {
+    try {
+      return authApisHolder.getAuthzApi(accessToken)
+        .generateClientSecret(organizationIpaCode, clientId);
+    } catch (HttpClientErrorException.NotFound e) {
+      throw new ResourceNotFoundException("Client with ID not found: " + clientId);
+    }
   }
 }

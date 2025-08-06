@@ -73,4 +73,11 @@ public class DateUtils {
     return (from == null && to == null) || (from == null ^ to == null);
   }
 
+  public static LocalDate fromOffsetDateTimeToLocalDate(OffsetDateTime dateTime){
+     if (dateTime != null){
+       return dateTime.toLocalDate();
+     }
+     return null;
+  }
+
 }

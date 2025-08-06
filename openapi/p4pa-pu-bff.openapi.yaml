@@ -886,12 +886,12 @@ paths:
           schema:
             type: string
             format: date-time
-        - name: receiptCreationDateFrom
+        - name: receiptCreationDateTimeFrom
           in: query
           schema:
             type: string
             format: date-time
-        - name: receiptCreationDateTo
+        - name: receiptCreationDateTimeTo
           in: query
           schema:
             type: string
@@ -2063,26 +2063,26 @@ paths:
           in: query
           schema:
             type: string
-        - name: lastClassificationDateFrom
+        - name: lastClassificationDateTimeFrom
           in: query
           schema:
             type: string
-            format: date
-        - name: lastClassificationDateTo
+            format: date-time
+        - name: lastClassificationDateTimeTo
           in: query
           schema:
             type: string
-            format: date
-        - name: payDateFrom
+            format: date-time
+        - name: payDateTimeFrom
           in: query
           schema:
             type: string
-            format: date
-        - name: payDateTo
+            format: date-time
+        - name: payDateTimeTo
           in: query
           schema:
             type: string
-            format: date
+            format: date-time
         - name: paymentDateTimeFrom
           in: query
           schema:
@@ -2093,36 +2093,36 @@ paths:
           schema:
             type: string
             format: date-time
-        - name: regulationDateFrom
+        - name: regulationDateTimeFrom
           in: query
           schema:
             type: string
-            format: date
-        - name: regulationDateTo
+            format: date-time
+        - name: regulationDateTimeTo
           in: query
           schema:
             type: string
-            format: date
-        - name: billDateFrom
+            format: date-time
+        - name: billDateTimeFrom
           in: query
           schema:
             type: string
-            format: date
-        - name: billDateTo
+            format: date-time
+        - name: billDateTimeTo
           in: query
           schema:
             type: string
-            format: date
-        - name: regionValueDateFrom
+            format: date-time
+        - name: regionValueDateTimeFrom
           in: query
           schema:
             type: string
-            format: date
-        - name: regionValueDateTo
+            format: date-time
+        - name: regionValueDateTimeTo
           in: query
           schema:
             type: string
-            format: date
+            format: date-time
         - name: pspCompanyName
           in: query
           schema:

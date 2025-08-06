@@ -6605,36 +6605,36 @@
             "type" : "string"
           }
         }, {
-          "name" : "lastClassificationDateFrom",
+          "name" : "lastClassificationDateTimeFrom",
           "in" : "query",
           "required" : false,
           "schema" : {
             "type" : "string",
-            "format" : "date"
+            "format" : "date-time"
           }
         }, {
-          "name" : "lastClassificationDateTo",
+          "name" : "lastClassificationDateTimeTo",
           "in" : "query",
           "required" : false,
           "schema" : {
             "type" : "string",
-            "format" : "date"
+            "format" : "date-time"
           }
         }, {
-          "name" : "payDateFrom",
+          "name" : "payDateTimeFrom",
           "in" : "query",
           "required" : false,
           "schema" : {
             "type" : "string",
-            "format" : "date"
+            "format" : "date-time"
           }
         }, {
-          "name" : "payDateTo",
+          "name" : "payDateTimeTo",
           "in" : "query",
           "required" : false,
           "schema" : {
             "type" : "string",
-            "format" : "date"
+            "format" : "date-time"
           }
         }, {
           "name" : "paymentDateTimeFrom",
@@ -6653,52 +6653,52 @@
             "format" : "date-time"
           }
         }, {
-          "name" : "regulationDateFrom",
+          "name" : "regulationDateTimeFrom",
           "in" : "query",
           "required" : false,
           "schema" : {
             "type" : "string",
-            "format" : "date"
+            "format" : "date-time"
           }
         }, {
-          "name" : "regulationDateTo",
+          "name" : "regulationDateTimeTo",
           "in" : "query",
           "required" : false,
           "schema" : {
             "type" : "string",
-            "format" : "date"
+            "format" : "date-time"
           }
         }, {
-          "name" : "billDateFrom",
+          "name" : "billDateTimeFrom",
           "in" : "query",
           "required" : false,
           "schema" : {
             "type" : "string",
-            "format" : "date"
+            "format" : "date-time"
           }
         }, {
-          "name" : "billDateTo",
+          "name" : "billDateTimeTo",
           "in" : "query",
           "required" : false,
           "schema" : {
             "type" : "string",
-            "format" : "date"
+            "format" : "date-time"
           }
         }, {
-          "name" : "regionValueDateFrom",
+          "name" : "regionValueDateTimeFrom",
           "in" : "query",
           "required" : false,
           "schema" : {
             "type" : "string",
-            "format" : "date"
+            "format" : "date-time"
           }
         }, {
-          "name" : "regionValueDateTo",
+          "name" : "regionValueDateTimeTo",
           "in" : "query",
           "required" : false,
           "schema" : {
             "type" : "string",
-            "format" : "date"
+            "format" : "date-time"
           }
         }, {
           "name" : "pspCompanyName",
@@ -6928,7 +6928,7 @@
             "format" : "date-time"
           }
         }, {
-          "name" : "receiptCreationDateFrom",
+          "name" : "receiptCreationDateTimeFrom",
           "in" : "query",
           "required" : false,
           "schema" : {
@@ -6936,7 +6936,7 @@
             "format" : "date-time"
           }
         }, {
-          "name" : "receiptCreationDateTo",
+          "name" : "receiptCreationDateTimeTo",
           "in" : "query",
           "required" : false,
           "schema" : {

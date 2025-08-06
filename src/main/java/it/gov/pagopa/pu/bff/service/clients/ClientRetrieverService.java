@@ -11,4 +11,5 @@ public interface ClientRetrieverService {
   ClientDTO registerClient(Long organizationId, CreateClientRequest createClientRequest, UserInfo loggedUser, String accessToken);
   ClientDTO getClient(Long organizationId, String clientId, UserInfo loggedUser, String accessToken);
   void deleteClient(Long organizationId, String clientId, UserInfo loggedUser, String accessToken);
+  ClientDTO generateClientSecret(Long organizationId, String clientId, UserInfo loggedUser, String accessToken);
 }

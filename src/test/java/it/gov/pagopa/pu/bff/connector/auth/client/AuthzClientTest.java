@@ -3,6 +3,7 @@ package it.gov.pagopa.pu.bff.connector.auth.client;
 import it.gov.pagopa.pu.auth.controller.generated.AuthzApi;
 import it.gov.pagopa.pu.auth.dto.generated.*;
 import it.gov.pagopa.pu.bff.connector.auth.config.AuthApisHolder;
+import it.gov.pagopa.pu.bff.exception.ResourceNotFoundException;
 import it.gov.pagopa.pu.bff.util.PageUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -17,10 +18,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.client.HttpClientErrorException;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class AuthzClientTest {
@@ -164,5 +163,39 @@ class AuthzClientTest {
     authzClient.revokeClient(organizationIpaCode,clientId, accessToken);
     //then
     Mockito.verifyNoMoreInteractions(authzApiMock);
+  }
+
+  @Test
+  void whenGenerateClientSecretThenInvokeWithAccessToken() {
+    String accessToken = "ACCESSTOKEN";
+    String organizationIpaCode = "IPACODE";
+    String clientId = "CLIENT_ID";
+
+    ClientDTO expectedResult = new ClientDTO();
+    expectedResult.setClientId(clientId);
+
+    when(authApisHolderMock.getAuthzApi(accessToken)).thenReturn(authzApiMock);
+    when(authzApiMock.generateClientSecret(organizationIpaCode, clientId)).thenReturn(expectedResult);
+
+    ClientDTO result = authzClient.generateClientSecret(organizationIpaCode, clientId, accessToken);
+
+    assertNotNull(result);
+    assertSame(expectedResult, result);
+  }
+
+  @Test
+  void givenClientNotFoundWhenGenerateClientSecretThenThrowResourceNotFoundException() {
+    String accessToken = "ACCESSTOKEN";
+    String organizationIpaCode = "IPACODE";
+    String clientId = "CLIENT_ID";
+
+    when(authApisHolderMock.getAuthzApi(accessToken)).thenReturn(authzApiMock);
+
+    doThrow(HttpClientErrorException.create(HttpStatus.NOT_FOUND, "NotFound", null, null, null))
+      .when(authzApiMock).generateClientSecret(organizationIpaCode, clientId);
+
+    ResourceNotFoundException thrown = assertThrows(ResourceNotFoundException.class, () -> authzClient.generateClientSecret(organizationIpaCode, clientId, accessToken));
+
+    assertTrue(thrown.getMessage().contains(clientId));
   }
 }

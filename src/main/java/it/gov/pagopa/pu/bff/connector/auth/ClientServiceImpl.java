@@ -36,4 +36,9 @@ public class ClientServiceImpl implements ClientService {
   public void deleteClient(String organizationIpaCode, String clientId, String accessToken) {
     authzClient.revokeClient(organizationIpaCode, clientId, accessToken);
   }
+
+  @Override
+  public ClientDTO generateClientSecret(String organizationIpaCode, String clientId, String accessToken) {
+    return authzClient.generateClientSecret(organizationIpaCode, clientId, accessToken);
+  }
 }

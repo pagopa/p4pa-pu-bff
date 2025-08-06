@@ -275,4 +275,21 @@ class DateUtilsTest {
 
     assertTrue(actualMessage.contains(expectedMessage));
   }
+
+  @Test
+  void givenOffsetDateTimeWhenFromOffsetDateTimeToLocalDateThenReturnLocalDate(){
+    //given
+    OffsetDateTime offsetDateTime = OffsetDateTime.now();
+    //when
+    LocalDate result = DateUtils.fromOffsetDateTimeToLocalDate(offsetDateTime);
+    //then
+    Assertions.assertNotNull(result);
+    Assertions.assertEquals(offsetDateTime.toLocalDate(), result);
+  }
+
+  @Test
+  void givenNullWhenFromOffsetDateTimeToLocalDateThenReturnNull(){
+    Assertions.assertNull(DateUtils.fromOffsetDateTimeToLocalDate(null));
+  }
+
 }

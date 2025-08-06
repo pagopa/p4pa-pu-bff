@@ -24,6 +24,7 @@ import org.springframework.http.ResponseEntity;
 import uk.co.jemos.podam.api.PodamFactory;
 
 import java.time.OffsetDateTime;
+import java.time.ZoneId;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.argThat;
@@ -65,6 +66,7 @@ class ClassificationControllerTest {
     String debtPositionTypeOrgCode = "debtPositionTypeOrgCode";
     TreasuredClassificationFiltersDTO treasuredClassificationFiltersDTO = podamFactory.manufacturePojo(TreasuredClassificationFiltersDTO.class);
     treasuredClassificationFiltersDTO.setDebtPositionTypeOrgCodes(null);
+    treasuredClassificationFiltersDTO.getLastClassificationDate().getFrom().atStartOfDay(ZoneId.systemDefault());
 
     PageRequest pageable = PageRequest.of(0, 10);
     PagedTreasuredClassification mockPagedTreasuredClassification = new PagedTreasuredClassification();
@@ -77,18 +79,18 @@ class ClassificationControllerTest {
       treasuredClassificationFiltersDTO.getIud(),
       treasuredClassificationFiltersDTO.getIuv(),
       treasuredClassificationFiltersDTO.getIur(),
-      treasuredClassificationFiltersDTO.getLastClassificationDate().getFrom(),
-      treasuredClassificationFiltersDTO.getLastClassificationDate().getTo(),
-      treasuredClassificationFiltersDTO.getPayDate().getFrom(),
-      treasuredClassificationFiltersDTO.getPayDate().getTo(),
+      treasuredClassificationFiltersDTO.getLastClassificationDate().getFrom().atStartOfDay(ZoneId.systemDefault()).toOffsetDateTime(),
+      treasuredClassificationFiltersDTO.getLastClassificationDate().getTo().atStartOfDay(ZoneId.systemDefault()).toOffsetDateTime(),
+      treasuredClassificationFiltersDTO.getPayDate().getFrom().atStartOfDay(ZoneId.systemDefault()).toOffsetDateTime(),
+      treasuredClassificationFiltersDTO.getPayDate().getTo().atStartOfDay(ZoneId.systemDefault()).toOffsetDateTime(),
       treasuredClassificationFiltersDTO.getPaymentDateTime().getFrom(),
       treasuredClassificationFiltersDTO.getPaymentDateTime().getTo(),
-      treasuredClassificationFiltersDTO.getRegulationDate().getFrom(),
-      treasuredClassificationFiltersDTO.getRegulationDate().getTo(),
-      treasuredClassificationFiltersDTO.getBillDate().getFrom(),
-      treasuredClassificationFiltersDTO.getBillDate().getTo(),
-      treasuredClassificationFiltersDTO.getRegionValueDate().getFrom(),
-      treasuredClassificationFiltersDTO.getRegionValueDate().getTo(),
+      treasuredClassificationFiltersDTO.getRegulationDate().getFrom().atStartOfDay(ZoneId.systemDefault()).toOffsetDateTime(),
+      treasuredClassificationFiltersDTO.getRegulationDate().getTo().atStartOfDay(ZoneId.systemDefault()).toOffsetDateTime(),
+      treasuredClassificationFiltersDTO.getBillDate().getFrom().atStartOfDay(ZoneId.systemDefault()).toOffsetDateTime(),
+      treasuredClassificationFiltersDTO.getBillDate().getTo().atStartOfDay(ZoneId.systemDefault()).toOffsetDateTime(),
+      treasuredClassificationFiltersDTO.getRegionValueDate().getFrom().atStartOfDay(ZoneId.systemDefault()).toOffsetDateTime(),
+      treasuredClassificationFiltersDTO.getRegionValueDate().getTo().atStartOfDay(ZoneId.systemDefault()).toOffsetDateTime(),
       treasuredClassificationFiltersDTO.getPspCompanyName(),
       treasuredClassificationFiltersDTO.getPspLastName(),
       treasuredClassificationFiltersDTO.getIuf(),

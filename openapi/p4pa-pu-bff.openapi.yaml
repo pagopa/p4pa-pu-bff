@@ -1018,18 +1018,18 @@ paths:
           schema:
             type: integer
             format: int64
-        - name: billDateFrom
+        - name: billDateTimeFrom
           in: query
           required: false
           schema:
             type: string
-            format: date
-        - name: billDateTo
+            format: date-time
+        - name: billDateTimeTo
           in: query
           required: false
           schema:
             type: string
-            format: date
+            format: date-time
         - name: provisionalCode
           in: query
           required: false
@@ -1055,18 +1055,18 @@ paths:
           required: false
           schema:
             type: string
-        - name: regionValueDateFrom
+        - name: regionValueDateTimeFrom
           in: query
           required: false
           schema:
             type: string
-            format: date
-        - name: regionValueDateTo
+            format: date-time
+        - name: regionValueDateTimeTo
           in: query
           required: false
           schema:
             type: string
-            format: date
+            format: date-time
         - name: documentCode
           in: query
           required: false

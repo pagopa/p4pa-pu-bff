@@ -24,6 +24,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.time.LocalDate;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
 import java.util.List;
 
 @ExtendWith(MockitoExtension.class)
@@ -63,6 +65,9 @@ class TreasuryControllerTest {
     long billAmountCents = 1000L;
     LocalDate billDateFrom = LocalDate.now().minusDays(20);
     LocalDate billDateTo = LocalDate.now().minusDays(10);
+    OffsetDateTime billDateTimeFrom = billDateFrom.atStartOfDay().atZone(ZoneId.systemDefault()).toOffsetDateTime();
+    OffsetDateTime billDateTimeTo = billDateTo.atStartOfDay().atZone(ZoneId.systemDefault()).toOffsetDateTime();
+
     String provisionalCode = "PROV123";
     String provisionalAe = "PROVAE123";
     String billCode = "BILL123";
@@ -70,6 +75,8 @@ class TreasuryControllerTest {
     String pspLastName = "PSPLastName";
     LocalDate regionValueDateFrom = LocalDate.now().minusDays(10);
     LocalDate regionValueDateTo = LocalDate.now().minusDays(5);
+    OffsetDateTime regionValueDateTimeFrom = regionValueDateFrom.atStartOfDay().atZone(ZoneId.systemDefault()).toOffsetDateTime();
+    OffsetDateTime regionValueDateTimeTo = regionValueDateTo.atStartOfDay().atZone(ZoneId.systemDefault()).toOffsetDateTime();
     String documentCode = "DOC123";
     String documentYear = "2025";
     Pageable pageable = PageRequest.of(0, 10);
@@ -101,7 +108,7 @@ class TreasuryControllerTest {
       .thenReturn(expectedResult);
 
     ResponseEntity<PagedTreasuryView> response = treasuryController.getTreasuries(
-      organizationId, iuv, iuf, billAmountCents, billDateFrom, billDateTo, provisionalCode, provisionalAe, billCode, billYear, pspLastName, regionValueDateFrom, regionValueDateTo, documentCode, documentYear, pageable
+      organizationId, iuv, iuf, billAmountCents, billDateTimeFrom, billDateTimeTo, provisionalCode, provisionalAe, billCode, billYear, pspLastName, regionValueDateTimeFrom, regionValueDateTimeTo, documentCode, documentYear, pageable
     );
 
     Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());

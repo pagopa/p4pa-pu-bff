@@ -1114,18 +1114,18 @@ paths:
           required: false
           schema:
             type: string
-        - name: regulationDateFrom
+        - name: regulationDateTimeFrom
           in: query
           required: false
           schema:
             type: string
-            format: date
-        - name: regulationDateTo
+            format: date-time
+        - name: regulationDateTimeTo
           in: query
           required: false
           schema:
             type: string
-            format: date
+            format: date-time
       responses:
         '200':
           description: OK
@@ -1163,18 +1163,18 @@ paths:
           required: false
           schema:
             type: string
-        - name: payDateFrom
+        - name: payDateTimeFrom
           in: query
           required: false
           schema:
             type: string
-            format: date
-        - name: payDateTo
+            format: date-time
+        - name: payDateTimeTo
           in: query
           required: false
           schema:
             type: string
-            format: date
+            format: date-time
       responses:
         '200':
           description: OK

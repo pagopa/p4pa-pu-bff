@@ -4095,20 +4095,20 @@
             "type" : "string"
           }
         }, {
-          "name" : "regulationDateFrom",
+          "name" : "regulationDateTimeFrom",
           "in" : "query",
           "required" : false,
           "schema" : {
             "type" : "string",
-            "format" : "date"
+            "format" : "date-time"
           }
         }, {
-          "name" : "regulationDateTo",
+          "name" : "regulationDateTimeTo",
           "in" : "query",
           "required" : false,
           "schema" : {
             "type" : "string",
-            "format" : "date"
+            "format" : "date-time"
           }
         }, {
           "name" : "page",
@@ -4217,20 +4217,20 @@
             "type" : "string"
           }
         }, {
-          "name" : "payDateFrom",
+          "name" : "payDateTimeFrom",
           "in" : "query",
           "required" : false,
           "schema" : {
             "type" : "string",
-            "format" : "date"
+            "format" : "date-time"
           }
         }, {
-          "name" : "payDateTo",
+          "name" : "payDateTimeTo",
           "in" : "query",
           "required" : false,
           "schema" : {
             "type" : "string",
-            "format" : "date"
+            "format" : "date-time"
           }
         }, {
           "name" : "page",

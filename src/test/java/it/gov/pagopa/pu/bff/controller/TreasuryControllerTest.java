@@ -122,6 +122,8 @@ class TreasuryControllerTest {
       .billCode("123456789")
       .ingestionFlowFileId(100L)
       .pspLastName("PSPLastName")
+      .orgBtCode("orgBtCode")
+      .orgIstatCode("orgIstatCode")
       .build();
 
     Mockito.when(treasuryRetrieverServiceMock.getTreasuryDetail(Mockito.eq(organizationId), Mockito.eq(treasuryId), Mockito.same(loggedUser), Mockito.same(accessToken)))

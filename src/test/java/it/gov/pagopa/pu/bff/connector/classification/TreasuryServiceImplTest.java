@@ -19,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class TreasuryServiceTest {
+class TreasuryServiceImplTest {
 
   @Mock
   private TreasuryViewSearchClient treasuryViewSearchClient;
@@ -61,6 +61,8 @@ class TreasuryServiceTest {
       .billAmountCents(1000L)
       .billDate(LocalDate.now().minusDays(10))
       .pspLastName("PSPLastName")
+      .orgBtCode("orgBtCode")
+      .orgIstatCode("orgIstatCode")
       .build();
 
     when(treasurySearchClient.getTreasuryDetail(Mockito.same(organizationId), Mockito.same(treasuryId), Mockito.same(accessToken)))

@@ -9338,6 +9338,12 @@
             "type" : "integer",
             "format" : "int64"
           },
+          "orgBtCode" : {
+            "type" : "string"
+          },
+          "orgIstatCode" : {
+            "type" : "string"
+          },
           "iuf" : {
             "type" : "string"
           },
@@ -9459,7 +9465,7 @@
             }
           }
         },
-        "required" : [ "billAmountCents", "billCode", "billDate", "billYear", "ingestionFlowFileId", "organizationId", "pspLastName" ]
+        "required" : [ "billAmountCents", "billCode", "billDate", "billYear", "ingestionFlowFileId", "orgBtCode", "orgIstatCode", "organizationId", "pspLastName" ]
       },
       "Stamp" : {
         "type" : "object",

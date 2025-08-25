@@ -55,6 +55,8 @@ class TreasurySearchClientTest {
       .billAmountCents(1000L)
       .billDate(LocalDate.now().minusDays(10))
       .pspLastName("PSPLastName")
+      .orgBtCode("orgBtCode")
+      .orgIstatCode("orgIstatCode")
       .build();
 
     when(classificationApisHolderMock.getTreasurySearchControllerApi(accessToken))

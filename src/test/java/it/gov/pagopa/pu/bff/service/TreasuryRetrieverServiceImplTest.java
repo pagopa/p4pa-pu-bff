@@ -219,6 +219,8 @@ class TreasuryRetrieverServiceImplTest {
       .billAmountCents(1000L)
       .billDate(LocalDate.now().minusDays(10))
       .pspLastName("PSPLastName")
+      .orgBtCode("orgBtCode")
+      .orgIstatCode("orgIstatCode")
       .build();
 
     try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {

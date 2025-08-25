@@ -63,6 +63,9 @@ public class DebtPositionRetrieverServiceImpl implements DebtPositionRetrieverSe
       throw new InvalidDebtPositionException("Bad Request: Debt Position ID should not be provided");
     }
     debtPositionDTO.setDebtPositionOrigin(DebtPositionOrigin.ORDINARY);
+    debtPositionDTO.getPaymentOptions().forEach(paymentOptionDTO ->
+      paymentOptionDTO.getInstallments().forEach(installmentDTO -> installmentDTO.setGenerateNotice(true))
+    );
     return debtPositionService.createDebtPosition(debtPositionDTO, false, accessToken);
   }
 

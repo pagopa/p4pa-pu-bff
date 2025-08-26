@@ -3228,20 +3228,20 @@
             "format" : "int64"
           }
         }, {
-          "name" : "billDateFrom",
+          "name" : "billDateTimeFrom",
           "in" : "query",
           "required" : false,
           "schema" : {
             "type" : "string",
-            "format" : "date"
+            "format" : "date-time"
           }
         }, {
-          "name" : "billDateTo",
+          "name" : "billDateTimeTo",
           "in" : "query",
           "required" : false,
           "schema" : {
             "type" : "string",
-            "format" : "date"
+            "format" : "date-time"
           }
         }, {
           "name" : "provisionalCode",
@@ -3279,20 +3279,20 @@
             "type" : "string"
           }
         }, {
-          "name" : "regionValueDateFrom",
+          "name" : "regionValueDateTimeFrom",
           "in" : "query",
           "required" : false,
           "schema" : {
             "type" : "string",
-            "format" : "date"
+            "format" : "date-time"
           }
         }, {
-          "name" : "regionValueDateTo",
+          "name" : "regionValueDateTimeTo",
           "in" : "query",
           "required" : false,
           "schema" : {
             "type" : "string",
-            "format" : "date"
+            "format" : "date-time"
           }
         }, {
           "name" : "documentCode",

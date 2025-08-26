@@ -24,6 +24,7 @@ import org.springframework.http.ResponseEntity;
 
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
+import java.time.ZoneId;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -64,6 +65,9 @@ class PaymentsReportingControllerTest {
     String regulationUniqueIdentifier = "RUI123";
     LocalDate regulationDateFrom = LocalDate.now().minusDays(10);
     LocalDate regulationDateTo = LocalDate.now();
+
+    OffsetDateTime regulationDateTimeFrom = regulationDateFrom.atStartOfDay().atZone(ZoneId.systemDefault()).toOffsetDateTime();
+    OffsetDateTime regulationDateTimeTo = regulationDateTo.atStartOfDay().atZone(ZoneId.systemDefault()).toOffsetDateTime();
     Pageable pageable = PageRequest.of(0, 10);
 
     LocalDateIntervalFilter regulationDateFilter = new LocalDateIntervalFilter(regulationDateFrom, regulationDateTo);
@@ -88,7 +92,7 @@ class PaymentsReportingControllerTest {
         pageable, loggedUser, accessToken))
       .thenReturn(expectedResult);
 
-    ResponseEntity<PagedPaymentsReportingView> response = paymentsReportingController.getPaymentsReporting(organizationId, iuf, regulationUniqueIdentifier, regulationDateFrom, regulationDateTo, pageable);
+    ResponseEntity<PagedPaymentsReportingView> response = paymentsReportingController.getPaymentsReporting(organizationId, iuf, regulationUniqueIdentifier, regulationDateTimeFrom, regulationDateTimeTo, pageable);
 
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertNotNull(response.getBody());
@@ -104,6 +108,9 @@ class PaymentsReportingControllerTest {
     LocalDate payDateTo = LocalDate.now();
     Pageable pageable = PageRequest.of(0, 10);
 
+    OffsetDateTime payDateTimeFrom = payDateFrom.atStartOfDay().atZone(ZoneId.systemDefault()).toOffsetDateTime();
+    OffsetDateTime payDateTimeTo = payDateTo.atStartOfDay().atZone(ZoneId.systemDefault()).toOffsetDateTime();
+
     LocalDateIntervalFilter payDateFilter = new LocalDateIntervalFilter(payDateFrom,payDateTo);
 
     PagedPaymentsReportingRow expectedResult = new PagedPaymentsReportingRow();
@@ -112,7 +119,7 @@ class PaymentsReportingControllerTest {
         pageable, loggedUser, accessToken))
       .thenReturn(expectedResult);
 
-    ResponseEntity<PagedPaymentsReportingRow> response = paymentsReportingController.getPaymentsReportingRows(organizationId, iuf, iuv, payDateFrom, payDateTo, pageable);
+    ResponseEntity<PagedPaymentsReportingRow> response = paymentsReportingController.getPaymentsReportingRows(organizationId, iuf, iuv, payDateTimeFrom, payDateTimeTo, pageable);
 
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertNotNull(response.getBody());

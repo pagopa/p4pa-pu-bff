@@ -17,8 +17,8 @@ public class AssessmentsFiltersDTO {
 
   private Long organizationId;
   private String assessmentName;
-  private OffsetDateTime updateDateFrom;
-  private OffsetDateTime updateDateTo;
+  private OffsetDateTime updateDateTimeFrom;
+  private OffsetDateTime updateDateTimeTo;
   private String iuv;
   private Set<String> debtPositionTypeOrgCodes;
   private AssessmentStatus status;

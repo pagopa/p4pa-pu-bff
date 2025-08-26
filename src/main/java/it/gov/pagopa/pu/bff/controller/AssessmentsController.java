@@ -33,14 +33,14 @@ public class AssessmentsController implements AssessmentsApi {
   }
 
   @Override
-  public ResponseEntity<PagedAssessmentsExtendedDTO> getPagedAssessmentsExtendedDTO(Long organizationId, String assessmentName, OffsetDateTime updateDateFrom, OffsetDateTime updateDateTo, String iuv, String debtPositionTypeOrgCode, AssessmentStatus status, Pageable pageable) {
+  public ResponseEntity<PagedAssessmentsExtendedDTO> getPagedAssessmentsExtendedDTO(Long organizationId, String assessmentName, OffsetDateTime updateDateTimeFrom, OffsetDateTime updateDateTimeTo, String iuv, String debtPositionTypeOrgCode, AssessmentStatus status, Pageable pageable) {
     log.info("User requested getPagedAssessmentsExtendedDTO having organizationId {} and debtPositionTypeOrgCode {}", organizationId, debtPositionTypeOrgCode);
     return ResponseEntity.ok(assessmentsRetrieverService.getPagedAssessmentsExtendedDTO(
             AssessmentsFiltersDTO.builder()
                     .organizationId(organizationId)
                     .assessmentName(assessmentName)
-                    .updateDateFrom(updateDateFrom)
-                    .updateDateTo(updateDateTo)
+                    .updateDateTimeFrom(updateDateTimeFrom)
+                    .updateDateTimeTo(updateDateTimeTo)
                     .iuv(iuv)
                     .status(status).build(),
             debtPositionTypeOrgCode,

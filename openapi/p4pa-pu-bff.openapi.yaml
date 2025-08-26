@@ -2700,12 +2700,12 @@ paths:
           in: query
           schema:
             type: string
-        - name: updateDateFrom
+        - name: updateDateTimeFrom
           in: query
           schema:
             type: string
             format: date-time
-        - name: updateDateTo
+        - name: updateDateTimeTo
           in: query
           schema:
             type: string

@@ -34,15 +34,15 @@ public class ExportFileController implements ExportFilesApi {
   @Override
   public ResponseEntity<PagedExportFile> getExportFiles(
     Long organizationId,
-    ExportFileTypeEnum exportFileType, OffsetDateTime creationDateFrom,
-    OffsetDateTime creationDateTo, ExportFileStatus status, String fileName,
+    ExportFileTypeEnum exportFileType, OffsetDateTime creationDateTimeFrom,
+    OffsetDateTime creationDateTimeTo, ExportFileStatus status, String fileName,
     Pageable pageable) {
     log.info(
       "User requested getExportFiles having organizationId {} and exportFileType {}",
       organizationId, exportFileType);
     return ResponseEntity.ok(exportFileRetrieverService.getExportFiles(
       new ExportFileFiltersDTO(organizationId, exportFileType,
-        new OffsetDateTimeIntervalFilter(creationDateFrom, creationDateTo),
+        new OffsetDateTimeIntervalFilter(creationDateTimeFrom, creationDateTimeTo),
         status, fileName), pageable, SecurityUtils.getLoggedUser(),
       SecurityUtils.getAccessToken()));
   }

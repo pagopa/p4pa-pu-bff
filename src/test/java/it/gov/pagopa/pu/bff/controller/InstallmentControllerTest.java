@@ -2,7 +2,7 @@ package it.gov.pagopa.pu.bff.controller;
 
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.dto.InstallmentViewFiltersDTO;
-import it.gov.pagopa.pu.bff.dto.OffsetDateTimeIntervalFilter;
+import it.gov.pagopa.pu.bff.dto.LocalDateIntervalFilter;
 import it.gov.pagopa.pu.bff.dto.generated.PagedInstallmentView;
 import it.gov.pagopa.pu.bff.security.SecurityUtilsTest;
 import it.gov.pagopa.pu.bff.service.installment.InstallmentRetrieverService;
@@ -24,6 +24,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.util.List;
 
@@ -70,9 +71,9 @@ class InstallmentControllerTest {
     OffsetDateTime dueDateTimeFrom = OffsetDateTime.now().minusDays(10);
     OffsetDateTime dueDateTimeTo = OffsetDateTime.now();
 
-    OffsetDateTimeIntervalFilter paymentDateTimeFilter = new OffsetDateTimeIntervalFilter(dueDateTimeFrom, dueDateTimeTo);
+    LocalDateIntervalFilter paymentDateFilter = new LocalDateIntervalFilter(dueDateTimeFrom.toLocalDate(), dueDateTimeTo.toLocalDate());
 
-    InstallmentViewFiltersDTO filtersDTO = new InstallmentViewFiltersDTO(organizationId, loggedUser.getMappedExternalUserId(), paymentDateTimeFilter, iuv, fiscalCode, debtPositionTypeOrgId);
+    InstallmentViewFiltersDTO filtersDTO = new InstallmentViewFiltersDTO(organizationId, loggedUser.getMappedExternalUserId(), paymentDateFilter, iuv, fiscalCode, debtPositionTypeOrgId);
 
     PagedInstallmentView expectedResult = new PagedInstallmentView();
     expectedResult.setContent(List.of(InstallmentView.builder()
@@ -80,7 +81,7 @@ class InstallmentControllerTest {
       .paymentOptionId(200L)
       .iuv(iuv)
       .status(InstallmentStatus.PAID)
-      .dueDate(OffsetDateTime.now())
+      .dueDate(LocalDate.now())
       .amountCents(1000L)
       .remittanceInformation("Remittance Info")
       .debtorFiscalCodeHash(new byte[]{1, 2, 3})

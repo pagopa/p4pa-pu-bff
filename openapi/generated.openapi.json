@@ -5280,7 +5280,7 @@
             "$ref" : "#/components/schemas/ExportFileTypeEnum"
           }
         }, {
-          "name" : "creationDateFrom",
+          "name" : "creationDateTimeFrom",
           "in" : "query",
           "required" : false,
           "schema" : {
@@ -5288,7 +5288,7 @@
             "format" : "date-time"
           }
         }, {
-          "name" : "creationDateTo",
+          "name" : "creationDateTimeTo",
           "in" : "query",
           "required" : false,
           "schema" : {

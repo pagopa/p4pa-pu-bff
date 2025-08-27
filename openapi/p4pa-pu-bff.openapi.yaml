@@ -1490,12 +1490,12 @@ paths:
           required: true
           schema:
             type: 'ExportFileType'
-        - name: creationDateFrom
+        - name: creationDateTimeFrom
           in: query
           schema:
             type: string
             format: date-time
-        - name: creationDateTo
+        - name: creationDateTimeTo
           in: query
           schema:
             type: string

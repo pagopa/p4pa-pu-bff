@@ -227,7 +227,8 @@ tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>("ope
     "RegistryOutcome" to "it.gov.pagopa.pu.registries.dto.generated.RegistryOutcome",
     "ClientDTOPage" to "it.gov.pagopa.pu.auth.dto.generated.ClientDTOPage",
     "ClientDTO" to "it.gov.pagopa.pu.auth.dto.generated.ClientDTO",
-    "CreateClientRequest" to "it.gov.pagopa.pu.auth.dto.generated.CreateClientRequest"
+    "CreateClientRequest" to "it.gov.pagopa.pu.auth.dto.generated.CreateClientRequest",
+    "AssessmentsRegistryExtendedDTO" to "it.gov.pagopa.pu.bff.dto.AssessmentsRegistryExtendedDTO"
   ))
   configOptions.set(mapOf(
     "dateLibrary" to "java8",

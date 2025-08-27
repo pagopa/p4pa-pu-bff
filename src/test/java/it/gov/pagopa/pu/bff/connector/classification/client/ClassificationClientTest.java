@@ -21,6 +21,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.client.HttpClientErrorException;
 import uk.co.jemos.podam.api.PodamFactory;
 
+import java.util.Collections;
+
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.Mockito.verify;
@@ -90,6 +92,7 @@ class ClassificationClientTest {
       treasuredClassificationFiltersDTO.getDocumentCode(),
       treasuredClassificationFiltersDTO.getProvisionalAe(),
       treasuredClassificationFiltersDTO.getProvisionalCode(),
+            Collections.emptySet(),//TODO [P4ADEV-3543] Replace with excludedLabels
       PageUtils.getPageNumber(pageable),
       PageUtils.getPageSize(pageable),
       PageUtils.getSortList(pageable)))

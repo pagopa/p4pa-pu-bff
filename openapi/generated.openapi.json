@@ -12074,13 +12074,77 @@
         },
         "required" : [ "content", "number", "size", "totalElements", "totalPages" ]
       },
+      "AssessmentsRegistryExtendedDTO" : {
+        "type" : "object",
+        "properties" : {
+          "creationDate" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "updateDate" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "updateOperatorExternalId" : {
+            "type" : "string"
+          },
+          "updateTraceId" : {
+            "type" : "string"
+          },
+          "assessmentRegistryId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "organizationId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "debtPositionTypeOrgCode" : {
+            "type" : "string"
+          },
+          "sectionCode" : {
+            "type" : "string"
+          },
+          "sectionDescription" : {
+            "type" : "string"
+          },
+          "officeCode" : {
+            "type" : "string"
+          },
+          "officeDescription" : {
+            "type" : "string"
+          },
+          "assessmentCode" : {
+            "type" : "string"
+          },
+          "assessmentDescription" : {
+            "type" : "string"
+          },
+          "operatingYear" : {
+            "type" : "string"
+          },
+          "status" : {
+            "$ref" : "#/components/schemas/AssessmentsRegistryStatus"
+          },
+          "_links" : {
+            "type" : "object",
+            "additionalProperties" : {
+              "$ref" : "#/components/schemas/Link"
+            }
+          },
+          "debtPositionTypeOrgDescription" : {
+            "type" : "string"
+          }
+        },
+        "required" : [ "debtPositionTypeOrgCode", "operatingYear", "organizationId", "sectionCode", "status" ]
+      },
       "PagedAssessmentsRegistry" : {
         "type" : "object",
         "properties" : {
           "content" : {
             "type" : "array",
             "items" : {
-              "$ref" : "#/components/schemas/AssessmentsRegistry"
+              "$ref" : "#/components/schemas/AssessmentsRegistryExtendedDTO"
             }
           },
           "size" : {
@@ -12118,6 +12182,10 @@
             "type" : "string",
             "readOnly" : true
           },
+          "debtPositionTypeOrgDescription" : {
+            "type" : "string",
+            "readOnly" : true
+          },
           "sectionCode" : {
             "type" : "string"
           },
@@ -12143,7 +12211,7 @@
             "$ref" : "#/components/schemas/AssessmentsRegistryStatus"
           }
         },
-        "required" : [ "assessmentRegistryId", "debtPositionTypeOrgCode", "operatingYear", "organizationId", "sectionCode", "status" ]
+        "required" : [ "assessmentRegistryId", "debtPositionTypeOrgCode", "debtPositionTypeOrgDescription", "operatingYear", "organizationId", "sectionCode", "status" ]
       },
       "ServiceStatus" : {
         "type" : "object",

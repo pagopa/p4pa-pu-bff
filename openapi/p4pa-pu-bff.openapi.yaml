@@ -4265,7 +4265,7 @@ components:
         content:
           type: array
           items:
-            type: 'AssessmentsRegistry'
+            type: 'AssessmentsRegistryExtendedDTO'
         size:
           type: integer
           format: int64
@@ -4284,6 +4284,7 @@ components:
         - assessmentRegistryId
         - organizationId
         - debtPositionTypeOrgCode
+        - debtPositionTypeOrgDescription
         - sectionCode
         - operatingYear
         - status
@@ -4296,6 +4297,9 @@ components:
           type: integer
           format: int64
         debtPositionTypeOrgCode:
+          type: string
+          readOnly: true
+        debtPositionTypeOrgDescription:
           type: string
           readOnly: true
         sectionCode:

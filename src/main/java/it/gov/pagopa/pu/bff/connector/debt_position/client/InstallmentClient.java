@@ -26,8 +26,8 @@ public class InstallmentClient {
       .crudInstallmentViewsFindInstallmentsByFilters(
         installmentViewFiltersDTO.getOrganizationId(),
         installmentViewFiltersDTO.getOperatorExternalUserId(),
-        installmentViewFiltersDTO.getDueDateTime().getFrom(),
-        installmentViewFiltersDTO.getDueDateTime().getTo(),
+        installmentViewFiltersDTO.getDueDate().getFrom(),
+        installmentViewFiltersDTO.getDueDate().getTo(),
         installmentViewFiltersDTO.getIuv(),
         installmentViewFiltersDTO.getFiscalCode(),
         installmentViewFiltersDTO.getDebtPositionTypeOrgId(),

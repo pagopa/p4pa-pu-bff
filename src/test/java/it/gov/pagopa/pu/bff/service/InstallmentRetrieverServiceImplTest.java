@@ -3,7 +3,7 @@ package it.gov.pagopa.pu.bff.service;
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.connector.debt_position.InstallmentService;
 import it.gov.pagopa.pu.bff.dto.InstallmentViewFiltersDTO;
-import it.gov.pagopa.pu.bff.dto.OffsetDateTimeIntervalFilter;
+import it.gov.pagopa.pu.bff.dto.LocalDateIntervalFilter;
 import it.gov.pagopa.pu.bff.dto.generated.PagedInstallmentView;
 import it.gov.pagopa.pu.bff.mapper.InstallmentViewMapper;
 import it.gov.pagopa.pu.bff.service.installment.InstallmentRetrieverServiceImpl;
@@ -21,6 +21,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.authorization.AuthorizationDeniedException;
 
+import java.time.LocalDate;
 import java.time.OffsetDateTime;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -57,7 +58,7 @@ class InstallmentRetrieverServiceImplTest {
 
     InstallmentViewFiltersDTO filtersDTO = new InstallmentViewFiltersDTO();
     filtersDTO.setOrganizationId(1L);
-    filtersDTO.setDueDateTime(new OffsetDateTimeIntervalFilter(OffsetDateTime.now().minusDays(5), OffsetDateTime.now().plusDays(5)));
+    filtersDTO.setDueDate(new LocalDateIntervalFilter(LocalDate.now().minusDays(5), LocalDate.now().plusDays(5)));
     Pageable pageable = PageRequest.of(0, 10);
 
     PagedModelInstallmentView pagedModelInstallmentView = new PagedModelInstallmentView();
@@ -88,7 +89,7 @@ class InstallmentRetrieverServiceImplTest {
 
     InstallmentViewFiltersDTO filtersDTO = new InstallmentViewFiltersDTO();
     filtersDTO.setOrganizationId(1L);
-    filtersDTO.setDueDateTime(new OffsetDateTimeIntervalFilter(null, null));
+    filtersDTO.setDueDate(new LocalDateIntervalFilter(null, null));
     filtersDTO.setIuv(null);
     filtersDTO.setFiscalCode(null);
     filtersDTO.setDebtPositionTypeOrgId(null);
@@ -112,7 +113,7 @@ class InstallmentRetrieverServiceImplTest {
   void givenOnlyDueDateFromWhenGetInstallmentsThenThrowIllegalArgumentException() {
     InstallmentViewFiltersDTO filtersDTO = new InstallmentViewFiltersDTO();
     filtersDTO.setOrganizationId(1L);
-    filtersDTO.setDueDateTime(new OffsetDateTimeIntervalFilter(OffsetDateTime.now().minusDays(5), null));
+    filtersDTO.setDueDate(new LocalDateIntervalFilter(LocalDate.now().minusDays(5), null));
     assertThrowsIllegalArgument(filtersDTO);
   }
 
@@ -120,7 +121,7 @@ class InstallmentRetrieverServiceImplTest {
   void givenOnlyDueDateToWhenGetInstallmentsThenThrowIllegalArgumentException() {
     InstallmentViewFiltersDTO filtersDTO = new InstallmentViewFiltersDTO();
     filtersDTO.setOrganizationId(1L);
-    filtersDTO.setDueDateTime(new OffsetDateTimeIntervalFilter(null, OffsetDateTime.now()));
+    filtersDTO.setDueDate(new LocalDateIntervalFilter(null, LocalDate.now()));
     assertThrowsIllegalArgument(filtersDTO);
   }
 
@@ -128,7 +129,7 @@ class InstallmentRetrieverServiceImplTest {
   void givenEmptyDueDateIntervalWhenGetInstallmentsThenThrowIllegalArgumentException() {
     InstallmentViewFiltersDTO filtersDTO = new InstallmentViewFiltersDTO();
     filtersDTO.setOrganizationId(1L);
-    filtersDTO.setDueDateTime(new OffsetDateTimeIntervalFilter(null, null));
+    filtersDTO.setDueDate(new LocalDateIntervalFilter(null, null));
     assertThrowsIllegalArgument(filtersDTO);
   }
 
@@ -155,7 +156,7 @@ class InstallmentRetrieverServiceImplTest {
   void givenValidDueDateRangeWhenGetInstallmentsThenOk() {
     InstallmentViewFiltersDTO filtersDTO = new InstallmentViewFiltersDTO();
     filtersDTO.setOrganizationId(1L);
-    filtersDTO.setDueDateTime(new OffsetDateTimeIntervalFilter(OffsetDateTime.now().minusDays(3), OffsetDateTime.now().plusDays(3)));
+    filtersDTO.setDueDate(new LocalDateIntervalFilter(LocalDate.now().minusDays(3), LocalDate.now().plusDays(3)));
     testSingleInstallmentFilterSuccess(filtersDTO);
   }
 

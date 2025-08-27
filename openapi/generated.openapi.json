@@ -1507,7 +1507,7 @@
             "type" : "string"
           }
         }, {
-          "name" : "updateDateFrom",
+          "name" : "updateDateTimeFrom",
           "in" : "query",
           "required" : false,
           "schema" : {
@@ -1515,7 +1515,7 @@
             "format" : "date-time"
           }
         }, {
-          "name" : "updateDateTo",
+          "name" : "updateDateTimeTo",
           "in" : "query",
           "required" : false,
           "schema" : {

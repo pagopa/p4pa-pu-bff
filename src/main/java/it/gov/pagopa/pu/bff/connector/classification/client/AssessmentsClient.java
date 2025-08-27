@@ -29,8 +29,8 @@ public class AssessmentsClient {
     return classificationApisHolder.getAssessmentsControllerApi(accessToken)
       .getPagedAssessmentsList(
         filters.getAssessmentName(),
-        filters.getUpdateDateFrom(),
-        filters.getUpdateDateTo(),
+        filters.getUpdateDateTimeFrom(),
+        filters.getUpdateDateTimeTo(),
         filters.getIuv(),
         new ArrayList<>(filters.getDebtPositionTypeOrgCodes()),
         filters.getStatus(),

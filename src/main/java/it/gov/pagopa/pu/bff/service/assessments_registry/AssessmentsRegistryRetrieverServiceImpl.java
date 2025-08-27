@@ -8,13 +8,14 @@ import it.gov.pagopa.pu.bff.dto.generated.PagedAssessmentsRegistry;
 import it.gov.pagopa.pu.bff.exception.InvalidAssessmentsRegistryException;
 import it.gov.pagopa.pu.bff.exception.ResourceNotFoundException;
 import it.gov.pagopa.pu.bff.mapper.AssessmentsRegistryDTOMapper;
-import it.gov.pagopa.pu.bff.mapper.AssessmentsRegistryMapper;
+import it.gov.pagopa.pu.bff.mapper.AssessmentsRegistryExtendedDTOMapper;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
 import it.gov.pagopa.pu.bff.service.debt_position_type_org.DebtPositionTypeOrgRetrieverService;
 import it.gov.pagopa.pu.classification.dto.generated.AssessmentsRegistry;
 import it.gov.pagopa.pu.classification.dto.generated.AssessmentsRegistryStatus;
 import it.gov.pagopa.pu.classification.dto.generated.PagedModelAssessmentsRegistry;
 import it.gov.pagopa.pu.classification.dto.generated.PagedModelAssessmentsRegistryEmbedded;
+import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrg;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.PageRequest;
@@ -25,55 +26,64 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
 public class AssessmentsRegistryRetrieverServiceImpl implements AssessmentsRegistryRetrieverService {
   private final DebtPositionTypeOrgRetrieverService debtPositionTypeOrgRetrieverService;
   private final AssessmentsRegistryService assessmentsRegistryService;
-  private final AssessmentsRegistryMapper assessmentsRegistryMapper;
+  private final AssessmentsRegistryExtendedDTOMapper assessmentsRegistryExtendedDTOMapper;
   private final AssessmentsRegistryDTOMapper assessmentsRegistryDTOMapper;
 
   public AssessmentsRegistryRetrieverServiceImpl(DebtPositionTypeOrgRetrieverService debtPositionTypeOrgRetrieverService,
                                                  AssessmentsRegistryService assessmentsRegistryService,
-                                                 AssessmentsRegistryMapper assessmentsRegistryMapper,
+                                                 AssessmentsRegistryExtendedDTOMapper assessmentsRegistryExtendedDTOMapper,
                                                  AssessmentsRegistryDTOMapper assessmentsRegistryDTOMapper) {
     this.debtPositionTypeOrgRetrieverService = debtPositionTypeOrgRetrieverService;
     this.assessmentsRegistryService = assessmentsRegistryService;
-    this.assessmentsRegistryMapper = assessmentsRegistryMapper;
+    this.assessmentsRegistryExtendedDTOMapper = assessmentsRegistryExtendedDTOMapper;
     this.assessmentsRegistryDTOMapper = assessmentsRegistryDTOMapper;
   }
 
   @Override
   public PagedAssessmentsRegistry getAssessmentsRegistries(AssessmentsRegistryFiltersDTO filters, String debtPositionTypeOrgCode, Pageable pageable, UserInfo loggedUser, String accessToken) {
     AuthorizationService.validateUserForOrganizationId(filters.getOrganizationId(), loggedUser);
-
-    if (StringUtils.isNotBlank(debtPositionTypeOrgCode)) {
-      debtPositionTypeOrgRetrieverService.validateOperator(filters.getOrganizationId(), debtPositionTypeOrgCode, loggedUser.getMappedExternalUserId(), accessToken);
-      filters.setDebtPositionTypeOrgCodes(Collections.singleton(debtPositionTypeOrgCode));
-    } else {
-      filters.setDebtPositionTypeOrgCodes(getDebtPositionTypeOrgCodes(filters.getOrganizationId(), loggedUser.getMappedExternalUserId(), accessToken));
-    }
-    return assessmentsRegistryMapper.mapToPagedAssessmentsRegistry(
-      assessmentsRegistryService.findAssessmentsRegistriesByFilters(filters, pageable, accessToken));
+    Map<String, DebtPositionTypeOrg> debtPositionTypeOrgCodeMap = getDebtPositionTypeOrgCodeMap(filters, debtPositionTypeOrgCode, loggedUser, accessToken);
+    filters.setDebtPositionTypeOrgCodes(debtPositionTypeOrgCodeMap.keySet());
+    return assessmentsRegistryExtendedDTOMapper.mapToPagedAssessmentsRegistry(
+      assessmentsRegistryService.findAssessmentsRegistriesByFilters(filters, pageable, accessToken),
+            debtPositionTypeOrgCodeMap);
   }
 
-  private Set<String> getDebtPositionTypeOrgCodes(Long organizationId, String mappedExternalUserId, String accessToken) {
-    Set<String> debtPositionTypeOrgCodes = debtPositionTypeOrgRetrieverService.getDebtPositionTypeOrgCodes(organizationId, null, mappedExternalUserId,accessToken);
-    if(CollectionUtils.isEmpty(debtPositionTypeOrgCodes)){
+  private Map<String, DebtPositionTypeOrg> getDebtPositionTypeOrgCodeMap(AssessmentsRegistryFiltersDTO filters, String debtPositionTypeOrgCode, UserInfo loggedUser, String accessToken) {
+    Map<String,DebtPositionTypeOrg> debtPositionTypeOrgMap = new HashMap<>();
+    if (StringUtils.isNotBlank(debtPositionTypeOrgCode)) {
+      DebtPositionTypeOrg debtPositionTypeOrg = debtPositionTypeOrgRetrieverService.getDebtPositionTypeOrgByCode(filters.getOrganizationId(), debtPositionTypeOrgCode, loggedUser.getMappedExternalUserId(), accessToken);
+      debtPositionTypeOrgMap.put(debtPositionTypeOrgCode,debtPositionTypeOrg);
+    } else {
+      List<DebtPositionTypeOrg> debtPositionTypeOrgs = getDebtPositionTypeOrgs(filters.getOrganizationId(), loggedUser.getMappedExternalUserId(), accessToken);
+      debtPositionTypeOrgMap = debtPositionTypeOrgs.stream().collect(Collectors.toMap(DebtPositionTypeOrg::getCode, Function.identity()));
+    }
+    return debtPositionTypeOrgMap;
+  }
+
+  private List<DebtPositionTypeOrg> getDebtPositionTypeOrgs(Long organizationId, String mappedExternalUserId, String accessToken) {
+    List<DebtPositionTypeOrg> debtPositionTypeOrgs = debtPositionTypeOrgRetrieverService.getDebtPositionTypeOrgs(organizationId, null, mappedExternalUserId, accessToken);
+    if(CollectionUtils.isEmpty(debtPositionTypeOrgs)){
       throw new ResourceNotFoundException("AssessmentsRegistries not found for organizationId " + organizationId);
     }
-    return debtPositionTypeOrgCodes;
+    return debtPositionTypeOrgs;
   }
 
   @Override
   public AssessmentsRegistryDTO getAssessmentsRegistry(Long organizationId, Long assessmentRegistryId, UserInfo loggedUser, String accessToken) {
     AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser);
 
-    AssessmentsRegistryDTO assessmentRegistryDTO = assessmentsRegistryDTOMapper.map(assessmentsRegistryService.getAssessmentsRegistry(assessmentRegistryId, accessToken));
-    debtPositionTypeOrgRetrieverService.validateOperator(organizationId, assessmentRegistryDTO.getDebtPositionTypeOrgCode(), loggedUser.getMappedExternalUserId(), accessToken);
-
-    return assessmentRegistryDTO;
+    AssessmentsRegistry assessmentsRegistry = assessmentsRegistryService.getAssessmentsRegistry(assessmentRegistryId, accessToken);
+    DebtPositionTypeOrg debtPositionTypeOrg = debtPositionTypeOrgRetrieverService.getDebtPositionTypeOrgByCode(organizationId, assessmentsRegistry.getDebtPositionTypeOrgCode(), loggedUser.getMappedExternalUserId(), accessToken);
+    return assessmentsRegistryDTOMapper.map(assessmentsRegistry,debtPositionTypeOrg.getDescription());
   }
 
   @Override

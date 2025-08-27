@@ -32,4 +32,6 @@ public interface DebtPositionTypeOrgRetrieverService {
 
   void validateIuds(Long organizationId, String debtPositionTypeOrgCode, Set<String> iuds, String accessToken);
   void updateFlagActiveDebtPositionTypeOrg(Long organizationId, Long debtPositionTypeOrgCodeId, boolean flagActive, UserInfo loggedUser, String accessToken);
+  DebtPositionTypeOrg getDebtPositionTypeOrgByCode(Long organizationId, String debtPositionTypeOrgCode, String mappedExternalUserId, String accessToken);
+  List<DebtPositionTypeOrg> getDebtPositionTypeOrgs(Long organizationId, Boolean flagActive, String mappedExternalUserId, String accessToken);
 }

@@ -2997,12 +2997,12 @@ paths:
           in: query
           schema:
             type: 'RegistryPagoPaEventType'
-        - name: eventDateFrom
+        - name: eventDateTimeFrom
           in: query
           schema:
             type: string
             format: date-time
-        - name: eventDateTo
+        - name: eventDateTimeTo
           in: query
           schema:
             type: string

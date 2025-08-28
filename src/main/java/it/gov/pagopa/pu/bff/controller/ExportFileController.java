@@ -14,6 +14,8 @@ import it.gov.pagopa.pu.processexecutions.dto.generated.ExportFileStatus;
 import it.gov.pagopa.pu.processexecutions.dto.generated.PaymentsReportingExportFileRequestDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.SortDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -36,7 +38,7 @@ public class ExportFileController implements ExportFilesApi {
     Long organizationId,
     ExportFileTypeEnum exportFileType, OffsetDateTime creationDateTimeFrom,
     OffsetDateTime creationDateTimeTo, ExportFileStatus status, String fileName,
-    Pageable pageable) {
+    @SortDefault(sort = "creationDate", direction = Sort.Direction.DESC) Pageable pageable) {
     log.info(
       "User requested getExportFiles having organizationId {} and exportFileType {}",
       organizationId, exportFileType);

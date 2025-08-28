@@ -5228,6 +5228,7 @@
           "required" : false,
           "schema" : {
             "type" : "array",
+            "default" : [ "creationDate,DESC" ],
             "items" : {
               "type" : "string"
             }
@@ -5336,6 +5337,7 @@
           "required" : false,
           "schema" : {
             "type" : "array",
+            "default" : [ "creationDate,DESC" ],
             "items" : {
               "type" : "string"
             }

@@ -4417,7 +4417,7 @@
             "$ref" : "#/components/schemas/RegistryPagoPaEventType"
           }
         }, {
-          "name" : "eventDateFrom",
+          "name" : "eventDateTimeFrom",
           "in" : "query",
           "required" : false,
           "schema" : {
@@ -4425,7 +4425,7 @@
             "format" : "date-time"
           }
         }, {
-          "name" : "eventDateTo",
+          "name" : "eventDateTimeTo",
           "in" : "query",
           "required" : false,
           "schema" : {

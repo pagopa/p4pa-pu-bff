@@ -26,13 +26,13 @@ public class PagoPaRegistryController implements PagoPaRegistryApi {
     }
 
   @Override
-  public ResponseEntity<PagedPagoPaRegistry> getPagoPaRegistries(Long organizationId, RegistryPagoPaEventType eventType, OffsetDateTime eventDateFrom, OffsetDateTime eventDateTo, String iuv, RegistryOutcome outcome,  Pageable pageable) {
+  public ResponseEntity<PagedPagoPaRegistry> getPagoPaRegistries(Long organizationId, RegistryPagoPaEventType eventType, OffsetDateTime eventDateTimeFrom, OffsetDateTime eventDateTimeTo, String iuv, RegistryOutcome outcome,  Pageable pageable) {
     log.info("User requested getPagoPaRegistries having organizationId {}", organizationId);
     return ResponseEntity.ok(pagoPaRegistryRetrieverService.getPagoPaRegistries(
             organizationId,
             PagoPaRegistryFiltersDTO.builder()
                     .eventType(eventType)
-                    .eventDate(new OffsetDateTimeIntervalFilter(eventDateFrom,eventDateTo))
+                    .eventDate(new OffsetDateTimeIntervalFilter(eventDateTimeFrom,eventDateTimeTo))
                     .iuv(iuv)
                     .outcome(outcome)
                     .build(),

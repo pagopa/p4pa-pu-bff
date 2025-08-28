@@ -1531,13 +1531,13 @@ paths:
           schema:
             type: integer
             format: int64
-        - name: creationDateFrom
+        - name: creationDateTimeFrom
           in: query
           required: false
           schema:
             type: string
             format: date-time
-        - name: creationDateTo
+        - name: creationDateTimeTo
           in: query
           required: false
           schema:

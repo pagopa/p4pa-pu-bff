@@ -12,8 +12,8 @@ import java.time.OffsetDateTime;
 @NoArgsConstructor
 public class DebtPositionViewFiltersDTO {
   private Long organizationId;
-  private OffsetDateTime creationDateFrom;
-  private OffsetDateTime creationDateTo;
+  private OffsetDateTime creationDateTimeFrom;
+  private OffsetDateTime creationDateTimeTo;
   private String fiscalCode;
   private Long debtPositionTypeOrgId;
   private DebtPositionStatus status;

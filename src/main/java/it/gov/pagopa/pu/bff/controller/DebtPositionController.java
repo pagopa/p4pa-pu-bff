@@ -44,17 +44,17 @@ public class DebtPositionController implements DebtPositionsApi {
   @Override
   public ResponseEntity<PagedDebtPositionView> getDebtPositionViews(
     Long organizationId,
-    OffsetDateTime creationDateFrom,
-    OffsetDateTime creationDateTo,
+    OffsetDateTime creationDateTimeFrom,
+    OffsetDateTime creationDateTimeTo,
     String fiscalCode,
     Long debtPositionTypeOrgId,
     DebtPositionStatus status,
     Pageable pageable) {
-    log.info("User requested getDebtPositionViews having organizationId {} , creationDateFrom {} , creationDateTo {} ", organizationId, creationDateFrom, creationDateTo);
+    log.info("User requested getDebtPositionViews having organizationId {} , creationDateTimeFrom {} , creationDateTimeTo {} ", organizationId, creationDateTimeFrom, creationDateTimeTo);
     return ResponseEntity.ok(debtPositionRetrieverService.getDebtPositionViews(
       new DebtPositionViewFiltersDTO(organizationId,
-          creationDateFrom,
-          creationDateTo,
+          creationDateTimeFrom,
+          creationDateTimeTo,
           fiscalCode,
           debtPositionTypeOrgId,
           status),

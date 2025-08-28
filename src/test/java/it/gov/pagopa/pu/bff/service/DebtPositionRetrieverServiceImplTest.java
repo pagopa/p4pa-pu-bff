@@ -192,8 +192,8 @@ class DebtPositionRetrieverServiceImplTest {
 
     DebtPositionViewFiltersDTO filtersDTO = new DebtPositionViewFiltersDTO();
     filtersDTO.setOrganizationId(1L);
-    filtersDTO.setCreationDateFrom(null);
-    filtersDTO.setCreationDateTo(null);
+    filtersDTO.setCreationDateTimeFrom(null);
+    filtersDTO.setCreationDateTimeTo(null);
     filtersDTO.setFiscalCode(null);
     filtersDTO.setDebtPositionTypeOrgId(null);
     filtersDTO.setStatus(null);
@@ -215,8 +215,8 @@ class DebtPositionRetrieverServiceImplTest {
   void givenOnlyCreationDateFromWhenGetDebtPositionViewsThenThrowIllegalArgumentException() {
     DebtPositionViewFiltersDTO filtersDTO = new DebtPositionViewFiltersDTO();
     filtersDTO.setOrganizationId(1L);
-    filtersDTO.setCreationDateFrom(OffsetDateTime.now());
-    filtersDTO.setCreationDateTo(null);
+    filtersDTO.setCreationDateTimeFrom(OffsetDateTime.now());
+    filtersDTO.setCreationDateTimeTo(null);
     assertThrowsIllegalArgument(filtersDTO);
   }
 
@@ -224,8 +224,8 @@ class DebtPositionRetrieverServiceImplTest {
   void givenOnlyCreationDateToWhenGetDebtPositionViewsThenThrowIllegalArgumentException() {
     DebtPositionViewFiltersDTO filtersDTO = new DebtPositionViewFiltersDTO();
     filtersDTO.setOrganizationId(1L);
-    filtersDTO.setCreationDateFrom(null);
-    filtersDTO.setCreationDateTo(OffsetDateTime.now());
+    filtersDTO.setCreationDateTimeFrom(null);
+    filtersDTO.setCreationDateTimeTo(OffsetDateTime.now());
     assertThrowsIllegalArgument(filtersDTO);
   }
 
@@ -250,8 +250,8 @@ class DebtPositionRetrieverServiceImplTest {
   void givenValidCreationDateRangeWhenGetDebtPositionViewsThenOk() {
     DebtPositionViewFiltersDTO filtersDTO = new DebtPositionViewFiltersDTO();
     filtersDTO.setOrganizationId(1L);
-    filtersDTO.setCreationDateFrom(OffsetDateTime.now().minusDays(5));
-    filtersDTO.setCreationDateTo(OffsetDateTime.now());
+    filtersDTO.setCreationDateTimeFrom(OffsetDateTime.now().minusDays(5));
+    filtersDTO.setCreationDateTimeTo(OffsetDateTime.now());
     testSingleFilterSuccess(filtersDTO);
   }
 

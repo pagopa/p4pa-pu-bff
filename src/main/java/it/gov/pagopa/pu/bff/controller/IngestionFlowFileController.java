@@ -30,10 +30,10 @@ public class IngestionFlowFileController implements IngestionFlowFilesApi {
   @Override
   public ResponseEntity<PagedIngestionFlowFile> getIngestionFlowFiles(
     Long organizationId,
-    List<IngestionFlowFileTypeEnum> ingestionFlowFileTypes, OffsetDateTime creationDateFrom,
-    OffsetDateTime creationDateTo, IngestionFlowFileStatus status, String fileName,
+    List<IngestionFlowFileTypeEnum> ingestionFlowFileTypes, OffsetDateTime creationDateTimeFrom,
+    OffsetDateTime creationDateTimeTo, IngestionFlowFileStatus status, String fileName,
     Pageable pageable) {
     log.info("User requested getIngestionFlowFiles having organizationId {} and ingestionFlowFileTypes {}", organizationId, ingestionFlowFileTypes);
-    return ResponseEntity.ok(ingestionFlowFileRetrieverService.getIngestionFlowFiles(new IngestionFlowFileFiltersDTO(organizationId,ingestionFlowFileTypes,creationDateFrom,creationDateTo,status,fileName),pageable, SecurityUtils.getLoggedUser(),SecurityUtils.getAccessToken()));
+    return ResponseEntity.ok(ingestionFlowFileRetrieverService.getIngestionFlowFiles(new IngestionFlowFileFiltersDTO(organizationId,ingestionFlowFileTypes,creationDateTimeFrom,creationDateTimeTo,status,fileName),pageable, SecurityUtils.getLoggedUser(),SecurityUtils.getAccessToken()));
   }
 }

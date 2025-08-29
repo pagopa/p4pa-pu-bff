@@ -23,7 +23,7 @@ class TreasuredClassificationExtendedDTOMapperTest {
 
   @ParameterizedTest
   @MethodSource("mapCases")
-  void givenViewWithLabel_whenMap_thenStatusMappedCorrectly(ClassificationsEnum label, String expectedStatus) {
+  void givenViewWithLabelWhenMapThenStatusMappedCorrectly(ClassificationsEnum label, String expectedStatus) {
     TreasuredClassificationView view = new TreasuredClassificationView();
     view.setClassificationId(1L);
     view.setOrganizationId(99L);
@@ -60,7 +60,7 @@ class TreasuredClassificationExtendedDTOMapperTest {
   }
 
   @Test
-  void givenPagedSource_whenMap_thenPagedMapped() {
+  void givenPagedSourceWhenMapThenPagedMapped() {
     TreasuredClassificationView view = new TreasuredClassificationView();
     view.setClassificationId(999L);
     view.setLabel(ClassificationsEnum.RT_IUF);
@@ -83,11 +83,25 @@ class TreasuredClassificationExtendedDTOMapperTest {
     assertEquals(0L, extended.getNumber());
   }
 
-  @Test
-  void givenNullSource_whenMap_thenReturnNull() {
-    assertNull(mapper.map((TreasuredClassificationView) null));
-    assertNull(mapper.map((List<TreasuredClassificationView>) null));
-    assertNull(mapper.map((PagedTreasuredClassification) null));
+  @ParameterizedTest
+  @MethodSource("nullInputs")
+  void givenNullSource_whenMap_thenReturnNull(String type, Object source) {
+    Object result = switch (type) {
+      case "view" -> mapper.map((TreasuredClassificationView) source);
+      case "list" -> mapper.map((List<TreasuredClassificationView>) source);
+      case "paged" -> mapper.map((PagedTreasuredClassification) source);
+      default -> throw new IllegalArgumentException("Unsupported type: " + type);
+    };
+
+    assertNull(result);
+  }
+
+  static Stream<Arguments> nullInputs() {
+    return Stream.of(
+      Arguments.of("view", null),
+      Arguments.of("list", null),
+      Arguments.of("paged", null)
+    );
   }
 }
 

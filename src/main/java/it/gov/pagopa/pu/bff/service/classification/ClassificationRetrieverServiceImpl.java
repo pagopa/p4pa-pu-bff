@@ -3,13 +3,17 @@ package it.gov.pagopa.pu.bff.service.classification;
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.connector.classification.AssessmentsService;
 import it.gov.pagopa.pu.bff.connector.classification.ClassificationService;
+import it.gov.pagopa.pu.bff.connector.organization.OrganizationService;
 import it.gov.pagopa.pu.bff.dto.*;
+import it.gov.pagopa.pu.bff.dto.generated.PagedTreasuredClassificationExtendedDTO;
 import it.gov.pagopa.pu.bff.exception.ResourceNotFoundException;
 import it.gov.pagopa.pu.bff.mapper.ClassificationDetailDTOMapper;
+import it.gov.pagopa.pu.bff.mapper.TreasuredClassificationExtendedDTOMapper;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
 import it.gov.pagopa.pu.bff.service.debt_position_type_org.DebtPositionTypeOrgRetrieverService;
 import it.gov.pagopa.pu.bff.util.DateUtils;
 import it.gov.pagopa.pu.classification.dto.generated.*;
+import it.gov.pagopa.pu.organization.dto.generated.Organization;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
@@ -17,10 +21,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -30,6 +31,8 @@ public class ClassificationRetrieverServiceImpl implements ClassificationRetriev
   private final DebtPositionTypeOrgRetrieverService debtPositionTypeOrgRetrieverService;
   private final ClassificationDetailDTOMapper classificationDetailDTOMapper;
   private final AssessmentsService assessmentsService;
+  private final TreasuredClassificationExtendedDTOMapper treasuredClassificationExtendedDTOMapper;
+  private final OrganizationService organizationService;
   private final Integer pageMaxSize;
 
   public ClassificationRetrieverServiceImpl(
@@ -37,16 +40,20 @@ public class ClassificationRetrieverServiceImpl implements ClassificationRetriev
     DebtPositionTypeOrgRetrieverService debtPositionTypeOrgRetrieverService,
     ClassificationDetailDTOMapper classificationDetailDTOMapper,
     AssessmentsService assessmentsService,
+    TreasuredClassificationExtendedDTOMapper treasuredClassificationExtendedDTOMapper,
+    OrganizationService organizationService,
     @Value("${rest.page.request-max-page-size}") Integer pageMaxSize) {
     this.classificationService = classificationService;
     this.debtPositionTypeOrgRetrieverService = debtPositionTypeOrgRetrieverService;
     this.classificationDetailDTOMapper = classificationDetailDTOMapper;
     this.assessmentsService = assessmentsService;
+    this.treasuredClassificationExtendedDTOMapper = treasuredClassificationExtendedDTOMapper;
+    this.organizationService = organizationService;
     this.pageMaxSize = pageMaxSize;
   }
 
   @Override
-  public PagedTreasuredClassification getTreasuredClassification(Long organizationId, TreasuredClassificationFiltersDTO treasuredClassificationFiltersDTO, String debtPositionTypeOrgCode, Pageable pageable, UserInfo loggedUser, String accessToken) {
+  public PagedTreasuredClassificationExtendedDTO getTreasuredClassification(Long organizationId, TreasuredClassificationFiltersDTO treasuredClassificationFiltersDTO, String debtPositionTypeOrgCode, Pageable pageable, UserInfo loggedUser, String accessToken) {
     AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser);
     validateTreasuredClassificationFilters(treasuredClassificationFiltersDTO, debtPositionTypeOrgCode);
     if (StringUtils.isNotBlank(debtPositionTypeOrgCode)) {
@@ -56,7 +63,32 @@ public class ClassificationRetrieverServiceImpl implements ClassificationRetriev
       treasuredClassificationFiltersDTO.setDebtPositionTypeOrgCodes(getDebtPositionTypeOrgCodes(organizationId, loggedUser.getMappedExternalUserId(), accessToken));
     }
 
-    return classificationService.getTreasuredClassifications(organizationId, treasuredClassificationFiltersDTO, pageable, accessToken);
+    Organization organization = organizationService.getOrganizationByOrganizationId(organizationId, accessToken);
+    if(organization == null) {
+      throw new ResourceNotFoundException("Organization having ID " + organizationId + " not found");
+    }
+    treasuredClassificationFiltersDTO.setExcludedLabels(getExcludedLabels(organization));
+
+    PagedTreasuredClassification backendPage = classificationService.getTreasuredClassifications(organizationId, treasuredClassificationFiltersDTO, pageable, accessToken);
+
+    return treasuredClassificationExtendedDTOMapper.map(backendPage);
+  }
+
+  private static Set<String> getExcludedLabels(Organization organization) {
+    Set<String> excludedLabels = new HashSet<>();
+    if (Boolean.FALSE.equals(organization.getFlagPaymentNotification())) {
+      excludedLabels.add(ClassificationsEnum.RT_NO_IUD.getValue());
+      excludedLabels.add(ClassificationsEnum.IUD_NO_RT.getValue());
+    }
+    if (Boolean.FALSE.equals(organization.getFlagTreasury())) {
+      excludedLabels.add(ClassificationsEnum.RT_TES.getValue());
+      excludedLabels.add(ClassificationsEnum.RT_IUF_TES.getValue());
+      excludedLabels.add(ClassificationsEnum.IUF_NO_TES.getValue());
+      excludedLabels.add(ClassificationsEnum.TES_NO_IUF_OR_IUV.getValue());
+      excludedLabels.add(ClassificationsEnum.IUF_TES_DIV_IMP.getValue());
+      excludedLabels.add(ClassificationsEnum.TES_NO_MATCH.getValue());
+    }
+    return excludedLabels;
   }
 
   private Set<String> getDebtPositionTypeOrgCodes(Long organizationId, String mappedExternalUserId, String accessToken) {

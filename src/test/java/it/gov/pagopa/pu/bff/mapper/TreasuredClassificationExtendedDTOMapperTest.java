@@ -83,25 +83,19 @@ class TreasuredClassificationExtendedDTOMapperTest {
     assertEquals(0L, extended.getNumber());
   }
 
-  @ParameterizedTest
-  @MethodSource("nullInputs")
-  void givenNullSource_whenMap_thenReturnNull(String type, Object source) {
-    Object result = switch (type) {
-      case "view" -> mapper.map((TreasuredClassificationView) source);
-      case "list" -> mapper.map((List<TreasuredClassificationView>) source);
-      case "paged" -> mapper.map((PagedTreasuredClassification) source);
-      default -> throw new IllegalArgumentException("Unsupported type: " + type);
-    };
-
-    assertNull(result);
+  @Test
+  void givenNullSingleViewWhenMapThenReturnNull() {
+    assertNull(mapper.map((TreasuredClassificationView) null));
   }
 
-  static Stream<Arguments> nullInputs() {
-    return Stream.of(
-      Arguments.of("view", null),
-      Arguments.of("list", null),
-      Arguments.of("paged", null)
-    );
+  @Test
+  void givenNullListWhenMapThenReturnNull() {
+    assertNull(mapper.map((List<TreasuredClassificationView>) null));
+  }
+
+  @Test
+  void givenNullPagedWhenMapThenReturnNull() {
+    assertNull(mapper.map((PagedTreasuredClassification) null));
   }
 }
 

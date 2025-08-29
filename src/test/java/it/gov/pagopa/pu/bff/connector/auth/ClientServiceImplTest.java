@@ -17,6 +17,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+
 @ExtendWith(MockitoExtension.class)
 class ClientServiceImplTest {
 
@@ -74,6 +76,55 @@ class ClientServiceImplTest {
     ClientDTO result = clientService.registerClient(ipaCode, request, accessToken);
 
     // Then
+    Assertions.assertNotNull(result);
+    Assertions.assertEquals(expectedResult, result);
+  }
+
+  @Test
+  void whenGetClientThenSuccess() {
+    String accessToken = "ACCESSTOKEN";
+    String ipaCode = "IPACODE";
+    String clientId = "CLIENT_ID";
+
+    ClientDTO expectedResult = new ClientDTO();
+    expectedResult.setClientId(clientId);
+
+    Mockito.when(authzClientMock.getClient(ipaCode, clientId, accessToken)).thenReturn(expectedResult);
+
+    ClientDTO result = clientService.getClient(ipaCode, clientId, accessToken);
+
+    Assertions.assertNotNull(result);
+    Assertions.assertEquals(expectedResult, result);
+  }
+
+  @Test
+  void whenDeleteClientThenSuccess() {
+    //given
+    String accessToken = "ACCESSTOKEN";
+    String organizationIpaCode = "IPACODE";
+    String clientId = "CLIENTID";
+
+    Mockito.doNothing().when(authzClientMock).revokeClient(organizationIpaCode, clientId, accessToken);
+    //when
+    clientService.deleteClient(organizationIpaCode, clientId, accessToken);
+    //then
+    verifyNoMoreInteractions(authzClientMock);
+  }
+
+  @Test
+  void whenGenerateClientSecretThenSuccess() {
+    String accessToken = "ACCESSTOKEN";
+    String ipaCode = "IPACODE";
+    String clientId = "CLIENT_ID";
+
+    ClientDTO expectedResult = new ClientDTO();
+    expectedResult.setClientId(clientId);
+
+    Mockito.when(authzClientMock.generateClientSecret(ipaCode, clientId, accessToken))
+      .thenReturn(expectedResult);
+
+    ClientDTO result = clientService.generateClientSecret(ipaCode, clientId, accessToken);
+
     Assertions.assertNotNull(result);
     Assertions.assertEquals(expectedResult, result);
   }

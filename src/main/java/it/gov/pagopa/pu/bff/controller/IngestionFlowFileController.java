@@ -9,6 +9,8 @@ import it.gov.pagopa.pu.processexecutions.dto.generated.IngestionFlowFile.Ingest
 import it.gov.pagopa.pu.processexecutions.dto.generated.IngestionFlowFileStatus;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.SortDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -30,10 +32,10 @@ public class IngestionFlowFileController implements IngestionFlowFilesApi {
   @Override
   public ResponseEntity<PagedIngestionFlowFile> getIngestionFlowFiles(
     Long organizationId,
-    List<IngestionFlowFileTypeEnum> ingestionFlowFileTypes, OffsetDateTime creationDateFrom,
-    OffsetDateTime creationDateTo, IngestionFlowFileStatus status, String fileName,
-    Pageable pageable) {
+    List<IngestionFlowFileTypeEnum> ingestionFlowFileTypes, OffsetDateTime creationDateTimeFrom,
+    OffsetDateTime creationDateTimeTo, IngestionFlowFileStatus status, String fileName,
+    @SortDefault(sort = "creationDate", direction = Sort.Direction.DESC) Pageable pageable) {
     log.info("User requested getIngestionFlowFiles having organizationId {} and ingestionFlowFileTypes {}", organizationId, ingestionFlowFileTypes);
-    return ResponseEntity.ok(ingestionFlowFileRetrieverService.getIngestionFlowFiles(new IngestionFlowFileFiltersDTO(organizationId,ingestionFlowFileTypes,creationDateFrom,creationDateTo,status,fileName),pageable, SecurityUtils.getLoggedUser(),SecurityUtils.getAccessToken()));
+    return ResponseEntity.ok(ingestionFlowFileRetrieverService.getIngestionFlowFiles(new IngestionFlowFileFiltersDTO(organizationId,ingestionFlowFileTypes,creationDateTimeFrom,creationDateTimeTo,status,fileName),pageable, SecurityUtils.getLoggedUser(),SecurityUtils.getAccessToken()));
   }
 }

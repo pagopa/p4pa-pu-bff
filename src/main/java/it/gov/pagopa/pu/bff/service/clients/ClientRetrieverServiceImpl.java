@@ -41,4 +41,25 @@ public class ClientRetrieverServiceImpl implements ClientRetrieverService {
     Organization organization = organizationService.getOrganizationByOrganizationId(organizationId, accessToken);
     return clientService.registerClient(organization.getIpaCode(), createClientRequest, accessToken);
   }
+
+  @Override
+  public ClientDTO getClient(Long organizationId, String clientId, UserInfo loggedUser, String accessToken) {
+    authorizationService.validateAdminRole(organizationId, loggedUser);
+    Organization organization = organizationService.getOrganizationByOrganizationId(organizationId, accessToken);
+    return clientService.getClient(organization.getIpaCode(), clientId, accessToken);
+  }
+
+  @Override
+  public void deleteClient(Long organizationId, String clientId, UserInfo loggedUser, String accessToken) {
+    authorizationService.validateAdminRole(organizationId, loggedUser);
+    Organization organization = organizationService.getOrganizationByOrganizationId(organizationId, accessToken);
+    clientService.deleteClient(organization.getIpaCode(), clientId, accessToken);
+  }
+
+  @Override
+  public ClientDTO generateClientSecret(Long organizationId, String clientId, UserInfo loggedUser, String accessToken) {
+    authorizationService.validateAdminRole(organizationId, loggedUser);
+    Organization organization = organizationService.getOrganizationByOrganizationId(organizationId, accessToken);
+    return clientService.generateClientSecret(organization.getIpaCode(), clientId, accessToken);
+  }
 }

@@ -63,6 +63,9 @@ public class DebtPositionRetrieverServiceImpl implements DebtPositionRetrieverSe
       throw new InvalidDebtPositionException("Bad Request: Debt Position ID should not be provided");
     }
     debtPositionDTO.setDebtPositionOrigin(DebtPositionOrigin.ORDINARY);
+    debtPositionDTO.getPaymentOptions().forEach(paymentOptionDTO ->
+      paymentOptionDTO.getInstallments().forEach(installmentDTO -> installmentDTO.setGenerateNotice(true))
+    );
     return debtPositionService.createDebtPosition(debtPositionDTO, false, accessToken);
   }
 
@@ -84,7 +87,7 @@ public class DebtPositionRetrieverServiceImpl implements DebtPositionRetrieverSe
   }
 
   private void validateDebtPositionViewFilters(DebtPositionViewFiltersDTO filtersDTO) {
-    if (DateUtils.isNullOrInvalidOffsetDateTimeRange(filtersDTO.getCreationDateFrom(), filtersDTO.getCreationDateTo()) &&
+    if (DateUtils.isNullOrInvalidOffsetDateTimeRange(filtersDTO.getCreationDateTimeFrom(), filtersDTO.getCreationDateTimeTo()) &&
       StringUtils.isBlank(filtersDTO.getFiscalCode()) &&
       filtersDTO.getDebtPositionTypeOrgId() == null &&
       filtersDTO.getStatus() == null) {

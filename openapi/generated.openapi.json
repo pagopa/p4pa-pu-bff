@@ -757,6 +757,93 @@
         } ]
       }
     },
+    "/bff/organization/{organizationId}/clients/{clientId}/client-secret" : {
+      "put" : {
+        "tags" : [ "Clients" ],
+        "operationId" : "generateClientSecret",
+        "parameters" : [ {
+          "name" : "organizationId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }, {
+          "name" : "clientId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ClientDTO"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad request",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ClientDTO"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Unauthorized - Missing or invalid token",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ClientDTO"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Forbidden",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ClientDTO"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Not Found",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ClientDTO"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal Server Error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ClientDTO"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "BearerAuth" : [ ]
+        } ]
+      }
+    },
     "/bff/organization/{organizationId}/assessments/{assessmentId}" : {
       "put" : {
         "tags" : [ "Assessments" ],
@@ -1420,7 +1507,7 @@
             "type" : "string"
           }
         }, {
-          "name" : "updateDateFrom",
+          "name" : "updateDateTimeFrom",
           "in" : "query",
           "required" : false,
           "schema" : {
@@ -1428,7 +1515,7 @@
             "format" : "date-time"
           }
         }, {
-          "name" : "updateDateTo",
+          "name" : "updateDateTimeTo",
           "in" : "query",
           "required" : false,
           "schema" : {
@@ -3141,20 +3228,20 @@
             "format" : "int64"
           }
         }, {
-          "name" : "billDateFrom",
+          "name" : "billDateTimeFrom",
           "in" : "query",
           "required" : false,
           "schema" : {
             "type" : "string",
-            "format" : "date"
+            "format" : "date-time"
           }
         }, {
-          "name" : "billDateTo",
+          "name" : "billDateTimeTo",
           "in" : "query",
           "required" : false,
           "schema" : {
             "type" : "string",
-            "format" : "date"
+            "format" : "date-time"
           }
         }, {
           "name" : "provisionalCode",
@@ -3192,20 +3279,20 @@
             "type" : "string"
           }
         }, {
-          "name" : "regionValueDateFrom",
+          "name" : "regionValueDateTimeFrom",
           "in" : "query",
           "required" : false,
           "schema" : {
             "type" : "string",
-            "format" : "date"
+            "format" : "date-time"
           }
         }, {
-          "name" : "regionValueDateTo",
+          "name" : "regionValueDateTimeTo",
           "in" : "query",
           "required" : false,
           "schema" : {
             "type" : "string",
-            "format" : "date"
+            "format" : "date-time"
           }
         }, {
           "name" : "documentCode",
@@ -3479,7 +3566,7 @@
             "$ref" : "#/components/schemas/RegistrySilEventType"
           }
         }, {
-          "name" : "eventDateFrom",
+          "name" : "eventDateTimeFrom",
           "in" : "query",
           "required" : false,
           "schema" : {
@@ -3487,7 +3574,7 @@
             "format" : "date-time"
           }
         }, {
-          "name" : "eventDateTo",
+          "name" : "eventDateTimeTo",
           "in" : "query",
           "required" : false,
           "schema" : {
@@ -4008,20 +4095,20 @@
             "type" : "string"
           }
         }, {
-          "name" : "regulationDateFrom",
+          "name" : "regulationDateTimeFrom",
           "in" : "query",
           "required" : false,
           "schema" : {
             "type" : "string",
-            "format" : "date"
+            "format" : "date-time"
           }
         }, {
-          "name" : "regulationDateTo",
+          "name" : "regulationDateTimeTo",
           "in" : "query",
           "required" : false,
           "schema" : {
             "type" : "string",
-            "format" : "date"
+            "format" : "date-time"
           }
         }, {
           "name" : "page",
@@ -4130,20 +4217,20 @@
             "type" : "string"
           }
         }, {
-          "name" : "payDateFrom",
+          "name" : "payDateTimeFrom",
           "in" : "query",
           "required" : false,
           "schema" : {
             "type" : "string",
-            "format" : "date"
+            "format" : "date-time"
           }
         }, {
-          "name" : "payDateTo",
+          "name" : "payDateTimeTo",
           "in" : "query",
           "required" : false,
           "schema" : {
             "type" : "string",
-            "format" : "date"
+            "format" : "date-time"
           }
         }, {
           "name" : "page",
@@ -4330,7 +4417,7 @@
             "$ref" : "#/components/schemas/RegistryPagoPaEventType"
           }
         }, {
-          "name" : "eventDateFrom",
+          "name" : "eventDateTimeFrom",
           "in" : "query",
           "required" : false,
           "schema" : {
@@ -4338,7 +4425,7 @@
             "format" : "date-time"
           }
         }, {
-          "name" : "eventDateTo",
+          "name" : "eventDateTimeTo",
           "in" : "query",
           "required" : false,
           "schema" : {
@@ -4766,7 +4853,7 @@
             "format" : "int64"
           }
         }, {
-          "name" : "dueDateFrom",
+          "name" : "dueDateTimeFrom",
           "in" : "query",
           "required" : false,
           "schema" : {
@@ -4774,7 +4861,7 @@
             "format" : "date-time"
           }
         }, {
-          "name" : "dueDateTo",
+          "name" : "dueDateTimeTo",
           "in" : "query",
           "required" : false,
           "schema" : {
@@ -5085,7 +5172,7 @@
             }
           }
         }, {
-          "name" : "creationDateFrom",
+          "name" : "creationDateTimeFrom",
           "in" : "query",
           "required" : false,
           "schema" : {
@@ -5093,7 +5180,7 @@
             "format" : "date-time"
           }
         }, {
-          "name" : "creationDateTo",
+          "name" : "creationDateTimeTo",
           "in" : "query",
           "required" : false,
           "schema" : {
@@ -5141,6 +5228,7 @@
           "required" : false,
           "schema" : {
             "type" : "array",
+            "default" : [ "creationDate,DESC" ],
             "items" : {
               "type" : "string"
             }
@@ -5193,7 +5281,7 @@
             "$ref" : "#/components/schemas/ExportFileTypeEnum"
           }
         }, {
-          "name" : "creationDateFrom",
+          "name" : "creationDateTimeFrom",
           "in" : "query",
           "required" : false,
           "schema" : {
@@ -5201,7 +5289,7 @@
             "format" : "date-time"
           }
         }, {
-          "name" : "creationDateTo",
+          "name" : "creationDateTimeTo",
           "in" : "query",
           "required" : false,
           "schema" : {
@@ -5249,6 +5337,7 @@
           "required" : false,
           "schema" : {
             "type" : "array",
+            "default" : [ "creationDate,DESC" ],
             "items" : {
               "type" : "string"
             }
@@ -5295,7 +5384,7 @@
             "format" : "int64"
           }
         }, {
-          "name" : "creationDateFrom",
+          "name" : "creationDateTimeFrom",
           "in" : "query",
           "required" : false,
           "schema" : {
@@ -5303,7 +5392,7 @@
             "format" : "date-time"
           }
         }, {
-          "name" : "creationDateTo",
+          "name" : "creationDateTimeTo",
           "in" : "query",
           "required" : false,
           "schema" : {
@@ -6269,6 +6358,133 @@
         } ]
       }
     },
+    "/bff/organization/{organizationId}/clients/{clientId}" : {
+      "get" : {
+        "tags" : [ "Clients" ],
+        "operationId" : "getClient",
+        "parameters" : [ {
+          "name" : "organizationId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }, {
+          "name" : "clientId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ClientDTO"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad request",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ClientDTO"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Unauthorized - Missing or invalid token",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ClientDTO"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Forbidden",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ClientDTO"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Not Found",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ClientDTO"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal Server Error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ClientDTO"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "BearerAuth" : [ ]
+        } ]
+      },
+      "delete" : {
+        "tags" : [ "Clients" ],
+        "operationId" : "deleteClient",
+        "parameters" : [ {
+          "name" : "organizationId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }, {
+          "name" : "clientId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          },
+          "401" : {
+            "description" : "Unauthorized - Missing or invalid token"
+          },
+          "403" : {
+            "description" : "Forbidden - Access denied"
+          },
+          "404" : {
+            "description" : "Not Found"
+          },
+          "500" : {
+            "description" : "Internal Server Error"
+          }
+        },
+        "security" : [ {
+          "BearerAuth" : [ ]
+        } ]
+      }
+    },
     "/bff/organization/{organizationId}/classifications/{classificationId}" : {
       "get" : {
         "tags" : [ "Classifications" ],
@@ -6391,36 +6607,36 @@
             "type" : "string"
           }
         }, {
-          "name" : "lastClassificationDateFrom",
+          "name" : "lastClassificationDateTimeFrom",
           "in" : "query",
           "required" : false,
           "schema" : {
             "type" : "string",
-            "format" : "date"
+            "format" : "date-time"
           }
         }, {
-          "name" : "lastClassificationDateTo",
+          "name" : "lastClassificationDateTimeTo",
           "in" : "query",
           "required" : false,
           "schema" : {
             "type" : "string",
-            "format" : "date"
+            "format" : "date-time"
           }
         }, {
-          "name" : "payDateFrom",
+          "name" : "payDateTimeFrom",
           "in" : "query",
           "required" : false,
           "schema" : {
             "type" : "string",
-            "format" : "date"
+            "format" : "date-time"
           }
         }, {
-          "name" : "payDateTo",
+          "name" : "payDateTimeTo",
           "in" : "query",
           "required" : false,
           "schema" : {
             "type" : "string",
-            "format" : "date"
+            "format" : "date-time"
           }
         }, {
           "name" : "paymentDateTimeFrom",
@@ -6439,52 +6655,52 @@
             "format" : "date-time"
           }
         }, {
-          "name" : "regulationDateFrom",
+          "name" : "regulationDateTimeFrom",
           "in" : "query",
           "required" : false,
           "schema" : {
             "type" : "string",
-            "format" : "date"
+            "format" : "date-time"
           }
         }, {
-          "name" : "regulationDateTo",
+          "name" : "regulationDateTimeTo",
           "in" : "query",
           "required" : false,
           "schema" : {
             "type" : "string",
-            "format" : "date"
+            "format" : "date-time"
           }
         }, {
-          "name" : "billDateFrom",
+          "name" : "billDateTimeFrom",
           "in" : "query",
           "required" : false,
           "schema" : {
             "type" : "string",
-            "format" : "date"
+            "format" : "date-time"
           }
         }, {
-          "name" : "billDateTo",
+          "name" : "billDateTimeTo",
           "in" : "query",
           "required" : false,
           "schema" : {
             "type" : "string",
-            "format" : "date"
+            "format" : "date-time"
           }
         }, {
-          "name" : "regionValueDateFrom",
+          "name" : "regionValueDateTimeFrom",
           "in" : "query",
           "required" : false,
           "schema" : {
             "type" : "string",
-            "format" : "date"
+            "format" : "date-time"
           }
         }, {
-          "name" : "regionValueDateTo",
+          "name" : "regionValueDateTimeTo",
           "in" : "query",
           "required" : false,
           "schema" : {
             "type" : "string",
-            "format" : "date"
+            "format" : "date-time"
           }
         }, {
           "name" : "pspCompanyName",
@@ -6714,7 +6930,7 @@
             "format" : "date-time"
           }
         }, {
-          "name" : "receiptCreationDateFrom",
+          "name" : "receiptCreationDateTimeFrom",
           "in" : "query",
           "required" : false,
           "schema" : {
@@ -6722,7 +6938,7 @@
             "format" : "date-time"
           }
         }, {
-          "name" : "receiptCreationDateTo",
+          "name" : "receiptCreationDateTimeTo",
           "in" : "query",
           "required" : false,
           "schema" : {
@@ -7560,6 +7776,9 @@
           "iupdPagopa" : {
             "type" : "string"
           },
+          "generateNotice" : {
+            "type" : "boolean"
+          },
           "iud" : {
             "type" : "string"
           },
@@ -8044,6 +8263,24 @@
         },
         "required" : [ "debtPositionTypeOrg", "operatorsSelection" ]
       },
+      "ClientDTO" : {
+        "type" : "object",
+        "properties" : {
+          "clientId" : {
+            "type" : "string"
+          },
+          "clientName" : {
+            "type" : "string"
+          },
+          "organizationIpaCode" : {
+            "type" : "string"
+          },
+          "clientSecret" : {
+            "type" : "string"
+          }
+        },
+        "required" : [ "clientId", "clientName", "clientSecret", "organizationIpaCode" ]
+      },
       "AssessmentStatus" : {
         "type" : "string",
         "enum" : [ "CLOSED", "CANCELLED", "ACTIVE" ]
@@ -8128,24 +8365,6 @@
           }
         },
         "required" : [ "access_token", "expires_in", "token_type" ]
-      },
-      "ClientDTO" : {
-        "type" : "object",
-        "properties" : {
-          "clientId" : {
-            "type" : "string"
-          },
-          "clientName" : {
-            "type" : "string"
-          },
-          "organizationIpaCode" : {
-            "type" : "string"
-          },
-          "clientSecret" : {
-            "type" : "string"
-          }
-        },
-        "required" : [ "clientId", "clientName", "clientSecret", "organizationIpaCode" ]
       },
       "CreateClientRequest" : {
         "type" : "object",
@@ -9124,6 +9343,12 @@
             "type" : "integer",
             "format" : "int64"
           },
+          "orgBtCode" : {
+            "type" : "string"
+          },
+          "orgIstatCode" : {
+            "type" : "string"
+          },
           "iuf" : {
             "type" : "string"
           },
@@ -9245,7 +9470,7 @@
             }
           }
         },
-        "required" : [ "billAmountCents", "billCode", "billDate", "billYear", "ingestionFlowFileId", "organizationId", "pspLastName" ]
+        "required" : [ "billAmountCents", "billCode", "billDate", "billYear", "ingestionFlowFileId", "orgBtCode", "orgIstatCode", "organizationId", "pspLastName" ]
       },
       "Stamp" : {
         "type" : "object",
@@ -10189,7 +10414,7 @@
           },
           "dueDate" : {
             "type" : "string",
-            "format" : "date-time"
+            "format" : "date"
           },
           "amountCents" : {
             "type" : "integer",
@@ -10431,7 +10656,7 @@
       },
       "IngestionFlowFileTypeEnum" : {
         "type" : "string",
-        "enum" : [ "RECEIPT", "RECEIPT_PAGOPA", "PAYMENTS_REPORTING", "PAYMENTS_REPORTING_PAGOPA", "TREASURY_OPI", "TREASURY_CSV", "TREASURY_XLS", "TREASURY_POSTE", "TREASURY_CSV_COMPLETE", "DP_INSTALLMENTS", "PAYMENT_NOTIFICATION", "ORGANIZATIONS", "ORGANIZATIONS_SIL_SERVICE", "DEBT_POSITIONS_TYPE", "DEBT_POSITIONS_TYPE_ORG", "DEBT_POSITIONS_TYPE_ORG_OPERATORS", "ASSESSMENTS", "ASSESSMENTS_REGISTRY" ]
+        "enum" : [ "RECEIPT", "RECEIPT_PAGOPA", "PAYMENTS_REPORTING", "PAYMENTS_REPORTING_PAGOPA", "TREASURY_OPI", "TREASURY_CSV", "TREASURY_XLS", "TREASURY_POSTE", "TREASURY_CSV_COMPLETE", "DP_INSTALLMENTS", "PAYMENT_NOTIFICATION", "ORGANIZATIONS", "ORGANIZATIONS_SIL_SERVICE", "DEBT_POSITIONS_TYPE", "DEBT_POSITIONS_TYPE_ORG", "DEBT_POSITIONS_TYPE_ORG_OPERATORS", "ASSESSMENTS", "ASSESSMENTS_REGISTRY", "SEND_NOTIFICATION" ]
       },
       "ExportFile" : {
         "type" : "object",
@@ -11851,13 +12076,77 @@
         },
         "required" : [ "content", "number", "size", "totalElements", "totalPages" ]
       },
+      "AssessmentsRegistryExtendedDTO" : {
+        "type" : "object",
+        "properties" : {
+          "creationDate" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "updateDate" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "updateOperatorExternalId" : {
+            "type" : "string"
+          },
+          "updateTraceId" : {
+            "type" : "string"
+          },
+          "assessmentRegistryId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "organizationId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "debtPositionTypeOrgCode" : {
+            "type" : "string"
+          },
+          "sectionCode" : {
+            "type" : "string"
+          },
+          "sectionDescription" : {
+            "type" : "string"
+          },
+          "officeCode" : {
+            "type" : "string"
+          },
+          "officeDescription" : {
+            "type" : "string"
+          },
+          "assessmentCode" : {
+            "type" : "string"
+          },
+          "assessmentDescription" : {
+            "type" : "string"
+          },
+          "operatingYear" : {
+            "type" : "string"
+          },
+          "status" : {
+            "$ref" : "#/components/schemas/AssessmentsRegistryStatus"
+          },
+          "_links" : {
+            "type" : "object",
+            "additionalProperties" : {
+              "$ref" : "#/components/schemas/Link"
+            }
+          },
+          "debtPositionTypeOrgDescription" : {
+            "type" : "string"
+          }
+        },
+        "required" : [ "debtPositionTypeOrgCode", "operatingYear", "organizationId", "sectionCode", "status" ]
+      },
       "PagedAssessmentsRegistry" : {
         "type" : "object",
         "properties" : {
           "content" : {
             "type" : "array",
             "items" : {
-              "$ref" : "#/components/schemas/AssessmentsRegistry"
+              "$ref" : "#/components/schemas/AssessmentsRegistryExtendedDTO"
             }
           },
           "size" : {
@@ -11895,6 +12184,10 @@
             "type" : "string",
             "readOnly" : true
           },
+          "debtPositionTypeOrgDescription" : {
+            "type" : "string",
+            "readOnly" : true
+          },
           "sectionCode" : {
             "type" : "string"
           },
@@ -11920,7 +12213,7 @@
             "$ref" : "#/components/schemas/AssessmentsRegistryStatus"
           }
         },
-        "required" : [ "assessmentRegistryId", "debtPositionTypeOrgCode", "operatingYear", "organizationId", "sectionCode", "status" ]
+        "required" : [ "assessmentRegistryId", "debtPositionTypeOrgCode", "debtPositionTypeOrgDescription", "operatingYear", "organizationId", "sectionCode", "status" ]
       },
       "ServiceStatus" : {
         "type" : "object",

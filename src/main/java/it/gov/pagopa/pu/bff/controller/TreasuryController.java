@@ -6,13 +6,14 @@ import it.gov.pagopa.pu.bff.dto.TreasuryViewFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedTreasuryView;
 import it.gov.pagopa.pu.bff.security.SecurityUtils;
 import it.gov.pagopa.pu.bff.service.treasury.TreasuryRetrieverService;
+import it.gov.pagopa.pu.bff.util.DateUtils;
 import it.gov.pagopa.pu.classification.dto.generated.Treasury;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.time.LocalDate;
+import java.time.OffsetDateTime;
 
 @RestController
 @Slf4j
@@ -25,10 +26,10 @@ public class TreasuryController implements TreasuriesApi {
   }
 
   @Override
-  public ResponseEntity<PagedTreasuryView> getTreasuries(Long organizationId, String iuv, String iuf, Long billAmountCents, LocalDate billDateFrom, LocalDate billDateTo, String provisionalCode, String provisionalAe, String billCode, String billYear, String pspLastName, LocalDate regionValueDateFrom, LocalDate regionValueDateTo, String documentCode, String documentYear, Pageable pageable) {
+  public ResponseEntity<PagedTreasuryView> getTreasuries(Long organizationId, String iuv, String iuf, Long billAmountCents, OffsetDateTime billDateFrom, OffsetDateTime billDateTo, String provisionalCode, String provisionalAe, String billCode, String billYear, String pspLastName, OffsetDateTime regionValueDateFrom, OffsetDateTime regionValueDateTo, String documentCode, String documentYear, Pageable pageable) {
     log.info("User requested getTreasuries having organizationId {}", organizationId);
-    LocalDateIntervalFilter billDateFilter = new LocalDateIntervalFilter(billDateFrom, billDateTo);
-    LocalDateIntervalFilter regionValueDateFilter = new LocalDateIntervalFilter(regionValueDateFrom, regionValueDateTo);
+    LocalDateIntervalFilter billDateFilter = new LocalDateIntervalFilter(DateUtils.fromOffsetDateTimeToLocalDate(billDateFrom), DateUtils.fromOffsetDateTimeToLocalDate(billDateTo));
+    LocalDateIntervalFilter regionValueDateFilter = new LocalDateIntervalFilter(DateUtils.fromOffsetDateTimeToLocalDate(regionValueDateFrom), DateUtils.fromOffsetDateTimeToLocalDate(regionValueDateTo));
 
     return ResponseEntity.ok(treasuryRetrieverService.getTreasuries(
       new TreasuryViewFiltersDTO(organizationId, iuv, iuf, billAmountCents, billDateFilter, provisionalCode, provisionalAe, billCode, billYear, pspLastName, regionValueDateFilter, documentCode, documentYear),

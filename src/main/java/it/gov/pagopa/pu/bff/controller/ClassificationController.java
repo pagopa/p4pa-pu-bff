@@ -4,6 +4,7 @@ import it.gov.pagopa.pu.bff.controller.generated.ClassificationsApi;
 import it.gov.pagopa.pu.bff.dto.*;
 import it.gov.pagopa.pu.bff.security.SecurityUtils;
 import it.gov.pagopa.pu.bff.service.classification.ClassificationRetrieverService;
+import it.gov.pagopa.pu.bff.util.DateUtils;
 import it.gov.pagopa.pu.classification.dto.generated.ClassificationsEnum;
 import it.gov.pagopa.pu.classification.dto.generated.PagedClassificationPaidInstallmentsView;
 import it.gov.pagopa.pu.classification.dto.generated.PagedTreasuredClassification;
@@ -12,7 +13,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.time.LocalDate;
 import java.time.OffsetDateTime;
 
 @RestController
@@ -29,11 +29,11 @@ public class ClassificationController implements ClassificationsApi {
   @Override
   public ResponseEntity<PagedTreasuredClassification> getTreasuredClassifications(
     Long organizationId, ClassificationsEnum label, String iud, String iuv, String iur,
-    LocalDate lastClassificationDateFrom, LocalDate lastClassificationDateTo,
-    LocalDate payDateFrom, LocalDate payDateTo, OffsetDateTime paymentDateTimeFrom,
-    OffsetDateTime paymentDateTimeTo, LocalDate regulationDateFrom, LocalDate regulationDateTo,
-    LocalDate billDateFrom, LocalDate billDateTo, LocalDate regionValueDateFrom,
-    LocalDate regionValueDateTo, String pspCompanyName, String pspLastName, String iuf,
+    OffsetDateTime lastClassificationDateTimeFrom, OffsetDateTime lastClassificationDateTimeTo,
+    OffsetDateTime payDateTimeFrom, OffsetDateTime payDateTimeTo, OffsetDateTime paymentDateTimeFrom,
+    OffsetDateTime paymentDateTimeTo, OffsetDateTime regulationDateTimeFrom, OffsetDateTime regulationDateTimeTo,
+    OffsetDateTime billDateTimeFrom, OffsetDateTime billDateTimeTo, OffsetDateTime regionValueDateTimeFrom,
+    OffsetDateTime regionValueDateTimeTo, String pspCompanyName, String pspLastName, String iuf,
     String regulationUniqueIdentifier, String accountRegistryCode, Long billAmountCents,
     String remittanceInformation, String debtorFiscalCode, String debtPositionTypeOrgCode,
     String billYear, String billCode, String documentYear, String documentCode,
@@ -41,12 +41,12 @@ public class ClassificationController implements ClassificationsApi {
 
     log.info("User requested getTreasuredClassifications having organizationId {}", organizationId);
 
-    LocalDateIntervalFilter lastClassificationDateFilter = new LocalDateIntervalFilter(lastClassificationDateFrom, lastClassificationDateTo);
-    LocalDateIntervalFilter payDateTimeFilter = new LocalDateIntervalFilter(payDateFrom, payDateTo);
+    LocalDateIntervalFilter lastClassificationDateFilter = new LocalDateIntervalFilter(DateUtils.fromOffsetDateTimeToLocalDate(lastClassificationDateTimeFrom), DateUtils.fromOffsetDateTimeToLocalDate(lastClassificationDateTimeTo));
+    LocalDateIntervalFilter payDateFilter = new LocalDateIntervalFilter(DateUtils.fromOffsetDateTimeToLocalDate(payDateTimeFrom), DateUtils.fromOffsetDateTimeToLocalDate(payDateTimeTo));
     OffsetDateTimeIntervalFilter paymentDateTimeFilter = new OffsetDateTimeIntervalFilter(paymentDateTimeFrom, paymentDateTimeTo);
-    LocalDateIntervalFilter regulationDateFilter = new LocalDateIntervalFilter(regulationDateFrom, regulationDateTo);
-    LocalDateIntervalFilter billDateFilter = new LocalDateIntervalFilter(billDateFrom, billDateTo);
-    LocalDateIntervalFilter regionValueDateFilter = new LocalDateIntervalFilter(regionValueDateFrom, regionValueDateTo);
+    LocalDateIntervalFilter regulationDateFilter = new LocalDateIntervalFilter(DateUtils.fromOffsetDateTimeToLocalDate(regulationDateTimeFrom), DateUtils.fromOffsetDateTimeToLocalDate(regulationDateTimeTo));
+    LocalDateIntervalFilter billDateFilter = new LocalDateIntervalFilter(DateUtils.fromOffsetDateTimeToLocalDate(billDateTimeFrom), DateUtils.fromOffsetDateTimeToLocalDate(billDateTimeTo));
+    LocalDateIntervalFilter regionValueDateFilter = new LocalDateIntervalFilter(DateUtils.fromOffsetDateTimeToLocalDate(regionValueDateTimeFrom), DateUtils.fromOffsetDateTimeToLocalDate(regionValueDateTimeTo));
 
     TreasuredClassificationFiltersDTO treasuredClassificationFiltersDTO = TreasuredClassificationFiltersDTO.builder()
       .label(label)
@@ -54,7 +54,7 @@ public class ClassificationController implements ClassificationsApi {
       .iuv(iuv)
       .iur(iur)
       .lastClassificationDate(lastClassificationDateFilter)
-      .payDate(payDateTimeFilter)
+      .payDate(payDateFilter)
       .paymentDateTime(paymentDateTimeFilter)
       .regulationDate(regulationDateFilter)
       .billDate(billDateFilter)
@@ -90,12 +90,12 @@ public class ClassificationController implements ClassificationsApi {
   @Override
   public ResponseEntity<PagedClassificationPaidInstallmentsView> getPaidInstallments(
     Long organizationId, String debtPositionTypeOrgCode, String iuv, OffsetDateTime paymentDateTimeFrom, OffsetDateTime paymentDateTimeTo,
-    OffsetDateTime receiptCreationDateFrom, OffsetDateTime receiptCreationDateTo, Long assessmentId, Pageable pageable) {
+    OffsetDateTime receiptCreationDateTimeFrom, OffsetDateTime receiptCreationDateTimeTo, Long assessmentId, Pageable pageable) {
 
     log.info("User requested getPaidInstallments having organizationId {}", organizationId);
 
     OffsetDateTimeIntervalFilter paymentDateTimeIntervalFilter = new OffsetDateTimeIntervalFilter(paymentDateTimeFrom, paymentDateTimeTo);
-    OffsetDateTimeIntervalFilter receiptCreationDateInterval = new OffsetDateTimeIntervalFilter(receiptCreationDateFrom, receiptCreationDateTo);
+    OffsetDateTimeIntervalFilter receiptCreationDateInterval = new OffsetDateTimeIntervalFilter(receiptCreationDateTimeFrom, receiptCreationDateTimeTo);
 
     ClassificationPaidInstallmentsFiltersDTO classificationPaidInstallmentsFiltersDTO = ClassificationPaidInstallmentsFiltersDTO.builder()
       .iuv(iuv)

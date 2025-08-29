@@ -116,4 +116,73 @@ class ClientRetrieverServiceImplTest {
     Assertions.assertEquals(expectedResult, result);
   }
 
+  @Test
+  void givenValidRequestWhenGetClientThenOk() {
+    Long organizationId = 1L;
+    String clientId = "CLIENT_ID";
+    String accessToken = "TOKEN";
+
+    Organization organization = new Organization();
+    organization.setOrganizationId(organizationId);
+    organization.setIpaCode("IPACODE");
+
+    ClientDTO expectedResult = new ClientDTO();
+    expectedResult.setClientId(clientId);
+
+    Mockito.doNothing().when(authorizationServiceMock).validateAdminRole(organizationId, userInfo);
+    Mockito.when(organizationServiceMock.getOrganizationByOrganizationId(organizationId, accessToken))
+      .thenReturn(organization);
+    Mockito.when(clientServiceMock.getClient(organization.getIpaCode(), clientId, accessToken))
+      .thenReturn(expectedResult);
+
+    ClientDTO result = clientRetrieverService.getClient(organizationId, clientId, userInfo, accessToken);
+
+    Assertions.assertNotNull(result);
+    Assertions.assertEquals(expectedResult, result);
+  }
+
+  @Test
+  void givenValidRequestWhenDeleteClientThenOk() {
+    //given
+    Long organizationId = 1L;
+    String accessToken = "ACCESSTOKEN";
+    String clientId = "CLIENTID";
+
+    Organization organization = new Organization();
+    organization.setOrganizationId(organizationId);
+    organization.setIpaCode("IPACODE");
+
+    Mockito.doNothing().when(authorizationServiceMock).validateAdminRole(organizationId, userInfo);
+    Mockito.when(organizationServiceMock.getOrganizationByOrganizationId(organizationId, accessToken))
+      .thenReturn(organization);
+    Mockito.doNothing().when(clientServiceMock).deleteClient(organization.getIpaCode(), clientId, accessToken);
+
+    //then
+    Assertions.assertDoesNotThrow(() -> clientRetrieverService.deleteClient(organizationId, clientId, userInfo, accessToken));
+  }
+
+  @Test
+  void givenValidRequestWhenGenerateClientSecretThenOk() {
+    Long organizationId = 1L;
+    String clientId = "CLIENT_ID";
+    String accessToken = "TOKEN";
+
+    Organization organization = new Organization();
+    organization.setOrganizationId(organizationId);
+    organization.setIpaCode("IPACODE");
+
+    ClientDTO expectedResult = new ClientDTO();
+    expectedResult.setClientId(clientId);
+
+    Mockito.doNothing().when(authorizationServiceMock).validateAdminRole(organizationId, userInfo);
+    Mockito.when(organizationServiceMock.getOrganizationByOrganizationId(organizationId, accessToken))
+      .thenReturn(organization);
+    Mockito.when(clientServiceMock.generateClientSecret(organization.getIpaCode(), clientId, accessToken))
+      .thenReturn(expectedResult);
+
+    ClientDTO result = clientRetrieverService.generateClientSecret(organizationId, clientId, userInfo, accessToken);
+
+    Assertions.assertNotNull(result);
+    Assertions.assertEquals(expectedResult, result);
+  }
 }

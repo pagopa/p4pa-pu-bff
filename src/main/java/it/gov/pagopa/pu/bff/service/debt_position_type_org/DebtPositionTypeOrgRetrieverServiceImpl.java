@@ -95,7 +95,12 @@ public class DebtPositionTypeOrgRetrieverServiceImpl implements DebtPositionType
   @Override
   public List<DebtPositionTypeOrg> getDebtPositionTypeOrgs(Long organizationId, Boolean flagActive, UserInfo loggedUser, String accessToken) {
     AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser);
-    CollectionModelDebtPositionTypeOrg collection = debtPositionTypeOrgService.getDebtPositionTypeOrgs(organizationId, flagActive, loggedUser.getMappedExternalUserId(), accessToken);
+    return getDebtPositionTypeOrgs(organizationId, flagActive, loggedUser.getMappedExternalUserId(), accessToken);
+  }
+
+  @Override
+  public List<DebtPositionTypeOrg> getDebtPositionTypeOrgs(Long organizationId, Boolean flagActive, String mappedExternalUserId, String accessToken) {
+    CollectionModelDebtPositionTypeOrg collection = debtPositionTypeOrgService.getDebtPositionTypeOrgs(organizationId, flagActive, mappedExternalUserId, accessToken);
 
     if (collection == null || collection.getEmbedded() == null) {
       return Collections.emptyList();
@@ -221,19 +226,14 @@ public class DebtPositionTypeOrgRetrieverServiceImpl implements DebtPositionType
 
   @Override
   public void validateOperator(Long organizationId, String debtPositionTypeOrgCode, String mappedExternalUserId, String accessToken) {
-    DebtPositionTypeOrg debtPositionTypeOrg = debtPositionTypeOrgService.findDebtPositionTypeOrg(organizationId, debtPositionTypeOrgCode, mappedExternalUserId, accessToken);
-    if(debtPositionTypeOrg==null){
-      throw new ResourceNotFoundException("DebtPositionTypeOrg with organizationId "+organizationId+" and code "+debtPositionTypeOrgCode+" not found");
-    }
+    getDebtPositionTypeOrgByCode(organizationId, debtPositionTypeOrgCode, mappedExternalUserId, accessToken);
   }
 
   @Override
   public Set<String> getDebtPositionTypeOrgCodes(Long organizationId, Boolean flagActive, String mappedExternalUserId, String accessToken) {
-    CollectionModelDebtPositionTypeOrg debtPositionTypeOrgs = debtPositionTypeOrgService.getDebtPositionTypeOrgs(organizationId,flagActive, mappedExternalUserId, accessToken);
-    if (debtPositionTypeOrgs != null
-            && debtPositionTypeOrgs.getEmbedded() != null
-            && !CollectionUtils.isEmpty(debtPositionTypeOrgs.getEmbedded().getDebtPositionTypeOrgs())) {
-      return debtPositionTypeOrgs.getEmbedded().getDebtPositionTypeOrgs().stream().map(DebtPositionTypeOrg::getCode).collect(Collectors.toSet());
+    List<DebtPositionTypeOrg> debtPositionTypeOrgs = getDebtPositionTypeOrgs(organizationId,flagActive, mappedExternalUserId, accessToken);
+    if (!CollectionUtils.isEmpty(debtPositionTypeOrgs)) {
+      return debtPositionTypeOrgs.stream().map(DebtPositionTypeOrg::getCode).collect(Collectors.toSet());
     } else {
       return Collections.emptySet();
     }
@@ -251,5 +251,14 @@ public class DebtPositionTypeOrgRetrieverServiceImpl implements DebtPositionType
   public void updateFlagActiveDebtPositionTypeOrg(Long organizationId, Long debtPositionTypeOrgCodeId, boolean flagActive, UserInfo loggedUser, String accessToken) {
     authorizationService.validateAdminRole(organizationId, loggedUser);
     debtPositionTypeOrgService.updateFlagActiveDebtPositionTypeOrg(debtPositionTypeOrgCodeId, flagActive, accessToken);
+  }
+
+  @Override
+  public DebtPositionTypeOrg getDebtPositionTypeOrgByCode(Long organizationId, String debtPositionTypeOrgCode, String mappedExternalUserId, String accessToken) {
+    DebtPositionTypeOrg debtPositionTypeOrg = debtPositionTypeOrgService.findDebtPositionTypeOrg(organizationId, debtPositionTypeOrgCode, mappedExternalUserId, accessToken);
+    if(debtPositionTypeOrg==null){
+      throw new ResourceNotFoundException("DebtPositionTypeOrg with organizationId "+organizationId+" and code "+debtPositionTypeOrgCode+" not found");
+    }
+    return debtPositionTypeOrg;
   }
 }

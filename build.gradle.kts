@@ -2,7 +2,7 @@ import java.util.*
 
 plugins {
   java
-  id("org.springframework.boot") version "3.5.3"
+  id("org.springframework.boot") version "3.5.5"
   id("io.spring.dependency-management") version "1.1.7"
   jacoco
   id("org.sonarqube") version "6.2.0.5505"
@@ -227,7 +227,8 @@ tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>("ope
     "RegistryOutcome" to "it.gov.pagopa.pu.registries.dto.generated.RegistryOutcome",
     "ClientDTOPage" to "it.gov.pagopa.pu.auth.dto.generated.ClientDTOPage",
     "ClientDTO" to "it.gov.pagopa.pu.auth.dto.generated.ClientDTO",
-    "CreateClientRequest" to "it.gov.pagopa.pu.auth.dto.generated.CreateClientRequest"
+    "CreateClientRequest" to "it.gov.pagopa.pu.auth.dto.generated.CreateClientRequest",
+    "AssessmentsRegistryExtendedDTO" to "it.gov.pagopa.pu.bff.dto.AssessmentsRegistryExtendedDTO"
   ))
   configOptions.set(mapOf(
     "dateLibrary" to "java8",

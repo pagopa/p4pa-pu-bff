@@ -95,4 +95,50 @@ class ClientControllerTest {
     assertNotNull(response.getBody());
     assertEquals(expectedResult, response.getBody());
   }
+
+  @Test
+  void whenGetClientThenSuccess() {
+    Long organizationId = 1L;
+    String clientId = "CLIENT_ID";
+    ClientDTO expectedClient = new ClientDTO();
+    expectedClient.setClientId(clientId);
+
+    Mockito.when(clientRetrieverServiceMock.getClient(organizationId, clientId, loggedUser, accessToken))
+      .thenReturn(expectedClient);
+
+    ResponseEntity<ClientDTO> response = clientController.getClient(organizationId, clientId);
+
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertNotNull(response.getBody());
+    assertEquals(expectedClient, response.getBody());
+  }
+
+  @Test
+  void givenCorrectClientIdWhenDeleteClientThenSuccess() {
+    //given
+    Long organizationId = 1L;
+    String clientId = "CLIENTID";
+    Mockito.doNothing().when(clientRetrieverServiceMock).deleteClient(organizationId, clientId, loggedUser, accessToken);
+    //when
+    ResponseEntity<Void> response = clientController.deleteClient(organizationId, clientId);
+    //then
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+  }
+
+  @Test
+  void whenGenerateClientSecretThenSuccess() {
+    Long organizationId = 1L;
+    String clientId = "CLIENT_ID";
+    ClientDTO expectedClient = new ClientDTO();
+    expectedClient.setClientId(clientId);
+
+    Mockito.when(clientRetrieverServiceMock.generateClientSecret(organizationId, clientId, loggedUser, accessToken))
+      .thenReturn(expectedClient);
+
+    ResponseEntity<ClientDTO> response = clientController.generateClientSecret(organizationId, clientId);
+
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertNotNull(response.getBody());
+    assertEquals(expectedClient, response.getBody());
+  }
 }

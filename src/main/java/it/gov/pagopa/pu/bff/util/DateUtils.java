@@ -31,6 +31,7 @@ public class DateUtils {
     return endOfDay.atZone(ZONEID).toOffsetDateTime();
   }
 
+
   public static OffsetDateTimeIntervalFilter toRangeClosedOffsetDateTimeIntervalFilter(
     LocalDateIntervalFilter localDateIntervalFilter) {
     return OffsetDateTimeIntervalFilter.builder()
@@ -70,6 +71,13 @@ public class DateUtils {
 
   public static boolean isNullOrInvalidLocalDateTimeRange(LocalDateTime from, LocalDateTime to) {
     return (from == null && to == null) || (from == null ^ to == null);
+  }
+
+  public static LocalDate fromOffsetDateTimeToLocalDate(OffsetDateTime dateTime){
+     if (dateTime != null){
+       return dateTime.toLocalDate();
+     }
+     return null;
   }
 
 }

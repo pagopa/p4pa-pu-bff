@@ -63,7 +63,7 @@ class AssessmentsClientTest {
     PagedAssessmentsView pagedAssessmentsView = podamFactory.manufacturePojo(PagedAssessmentsView.class);
 
     Mockito.when(classificationApisHolderMock.getAssessmentsControllerApi(accessToken)).thenReturn(assessmentsControllerApiMock);
-    Mockito.when(assessmentsControllerApiMock.getPagedAssessmentsList(assessmentsFiltersDTO.getAssessmentName(), assessmentsFiltersDTO.getUpdateDateFrom(), assessmentsFiltersDTO.getUpdateDateTo(), assessmentsFiltersDTO.getIuv(), assessmentsFiltersDTO.getDebtPositionTypeOrgCodes().stream().toList(), assessmentsFiltersDTO.getStatus(), 0, 1, Collections.emptyList())).thenReturn(pagedAssessmentsView);
+    Mockito.when(assessmentsControllerApiMock.getPagedAssessmentsList(assessmentsFiltersDTO.getAssessmentName(), assessmentsFiltersDTO.getUpdateDateTimeFrom(), assessmentsFiltersDTO.getUpdateDateTimeTo(), assessmentsFiltersDTO.getIuv(), assessmentsFiltersDTO.getDebtPositionTypeOrgCodes().stream().toList(), assessmentsFiltersDTO.getStatus(), 0, 1, Collections.emptyList())).thenReturn(pagedAssessmentsView);
     //when
     PagedAssessmentsView result = assessmentsClient.findPagedAssessmentsView(assessmentsFiltersDTO, Pageable.ofSize(1), accessToken);
     //then

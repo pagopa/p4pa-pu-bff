@@ -909,6 +909,7 @@ class DebtPositionTypeOrgRetrieverServiceImplTest {
             debtPositionTypeOrgService.validateOperator(organizationId,debtPositionTypeOrgCode,mappedExternalUserId,accessToken));
   }
 
+  @Test
   void whenGetDebtPositionTypeOrgCodesThenOk(){
     Long organizationId = 1L;
     String mappedExternalUserId = "mappedExternalUserId";
@@ -1010,6 +1011,85 @@ class DebtPositionTypeOrgRetrieverServiceImplTest {
     Mockito.doNothing().when(debtPositionTypeOrgServiceMock).updateFlagActiveDebtPositionTypeOrg(debtPositionTypeOrgId, true, accessToken);
     //when
     Assertions.assertDoesNotThrow(() -> debtPositionTypeOrgService.updateFlagActiveDebtPositionTypeOrg(organizationId, debtPositionTypeOrgId, true, loggedUser, accessToken));
+  }
+
+  @Test
+  void whenGetDebtPositionTypeOrgsThenOk() {
+    String mappedExternalUserId = "mappedExternalUserId";
+
+    long organizationId = 1L;
+    CollectionModelDebtPositionTypeOrg collectionModel = podamFactory.manufacturePojo(CollectionModelDebtPositionTypeOrg.class);
+
+    Mockito.when(debtPositionTypeOrgServiceMock.getDebtPositionTypeOrgs(organizationId, true, mappedExternalUserId, accessToken))
+            .thenReturn(collectionModel);
+
+    List<DebtPositionTypeOrg> result = debtPositionTypeOrgService.getDebtPositionTypeOrgs(organizationId, true, mappedExternalUserId, accessToken);
+
+    assertNotNull(result);
+    assertFalse(result.isEmpty());
+    assertSame(collectionModel.getEmbedded().getDebtPositionTypeOrgs(), result);
+  }
+
+  @Test
+  void givenNullEmbeddedWhenGetDebtPositionTypeOrgsThenEmptyList() {
+    String mappedExternalUserId = "mappedExternalUserId";
+
+    long organizationId = 1L;
+    CollectionModelDebtPositionTypeOrg collectionModel = podamFactory.manufacturePojo(CollectionModelDebtPositionTypeOrg.class);
+    collectionModel.setEmbedded(null);
+
+    Mockito.when(debtPositionTypeOrgServiceMock.getDebtPositionTypeOrgs(organizationId, true, mappedExternalUserId, accessToken))
+            .thenReturn(collectionModel);
+
+    List<DebtPositionTypeOrg> result = debtPositionTypeOrgService.getDebtPositionTypeOrgs(organizationId, true, mappedExternalUserId, accessToken);
+
+    assertNotNull(result);
+    assertTrue(result.isEmpty());
+  }
+
+  @Test
+  void givenNullCollectionModelWhenGetDebtPositionTypeOrgsThenEmptyList() {
+    String mappedExternalUserId = "mappedExternalUserId";
+
+    long organizationId = 1L;
+
+    Mockito.when(debtPositionTypeOrgServiceMock.getDebtPositionTypeOrgs(organizationId, true, mappedExternalUserId, accessToken))
+            .thenReturn(null);
+
+    List<DebtPositionTypeOrg> result = debtPositionTypeOrgService.getDebtPositionTypeOrgs(organizationId, true, mappedExternalUserId, accessToken);
+
+    assertNotNull(result);
+    assertTrue(result.isEmpty());
+  }
+
+
+  @Test
+  void whenGetDebtPositionTypeOrgByCodeThenOk() {
+    Long organizationId = 1L;
+    String debtPositionTypeOrgCode = "debtPositionTypeOrgCode";
+    String mappedExternalUserId = "mappedExternalUserId";
+    DebtPositionTypeOrg expectedResult = podamFactory.manufacturePojo(DebtPositionTypeOrg.class);
+
+    Mockito.when(debtPositionTypeOrgServiceMock.findDebtPositionTypeOrg(organizationId,debtPositionTypeOrgCode,mappedExternalUserId,accessToken))
+            .thenReturn(expectedResult);
+
+    DebtPositionTypeOrg result = debtPositionTypeOrgService.getDebtPositionTypeOrgByCode(organizationId, debtPositionTypeOrgCode, mappedExternalUserId, accessToken);
+
+    assertNotNull(result);
+    assertEquals(expectedResult,result);
+  }
+
+  @Test
+  void givenNoDebtPositionTypeOrgWhenGetDebtPositionTypeOrgByCodeThenResourceNotFound() {
+    Long organizationId = 1L;
+    String debtPositionTypeOrgCode = "debtPositionTypeOrgCode";
+    String mappedExternalUserId = "mappedExternalUserId";
+
+    Mockito.when(debtPositionTypeOrgServiceMock.findDebtPositionTypeOrg(organizationId,debtPositionTypeOrgCode,mappedExternalUserId,accessToken))
+            .thenReturn(null);
+
+    Assertions.assertThrows(ResourceNotFoundException.class, () ->
+            debtPositionTypeOrgService.getDebtPositionTypeOrgByCode(organizationId,debtPositionTypeOrgCode,mappedExternalUserId,accessToken));
   }
 }
 

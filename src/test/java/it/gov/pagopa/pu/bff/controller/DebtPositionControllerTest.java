@@ -95,8 +95,8 @@ class DebtPositionControllerTest {
     Mockito.when(debtPositionRetrieverServiceMock.getDebtPositionViews(
         Mockito.argThat(f ->
           f.getOrganizationId().equals(organizationId)
-            && f.getCreationDateFrom().equals(creationDateFrom)
-            && f.getCreationDateTo().equals(creationDateTo)
+            && f.getCreationDateTimeFrom().equals(creationDateFrom)
+            && f.getCreationDateTimeTo().equals(creationDateTo)
             && f.getFiscalCode().equals(fiscalCode)
             && f.getDebtPositionTypeOrgId().equals(debtPositionTypeOrgId)
             && f.getStatus().equals(status)

@@ -11,6 +11,7 @@ public interface ClassificationDetailDTOMapper {
   @Mapping(target = "payed", expression = "java(isPayed(classificationDetailViewDTO.getLabel()))")
   @Mapping(target = "reported", expression = "java(isReported(classificationDetailViewDTO.getLabel()))")
   @Mapping(target = "collected", expression = "java(isCollected(classificationDetailViewDTO.getLabel()))")
+  @Mapping(target = "status", expression = "java(ClassificationStatusMapper.mapStatus(classificationDetailViewDTO.getLabel()))")
   ClassificationDetailDTO map(ClassificationDetailViewDTO classificationDetailViewDTO);
 
   default boolean isPayed(ClassificationsEnum classification) {

@@ -6846,7 +6846,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/PagedTreasuredClassification"
+                  "$ref" : "#/components/schemas/PagedTreasuredClassificationExtendedDTO"
                 }
               }
             }
@@ -6856,7 +6856,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/PagedTreasuredClassification"
+                  "$ref" : "#/components/schemas/PagedTreasuredClassificationExtendedDTO"
                 }
               }
             }
@@ -6866,7 +6866,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/PagedTreasuredClassification"
+                  "$ref" : "#/components/schemas/PagedTreasuredClassificationExtendedDTO"
                 }
               }
             }
@@ -6876,7 +6876,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/PagedTreasuredClassification"
+                  "$ref" : "#/components/schemas/PagedTreasuredClassificationExtendedDTO"
                 }
               }
             }
@@ -11573,6 +11573,9 @@
           },
           "collected" : {
             "type" : "boolean"
+          },
+          "status" : {
+            "type" : "string"
           }
         }
       },
@@ -11580,13 +11583,13 @@
         "type" : "string",
         "enum" : [ "DOPPI", "RT_NO_IUF", "RT_NO_IUD", "IUV_NO_RT", "TES_NO_IUF_OR_IUV", "IUF_NO_TES", "IUD_RT_IUF", "RT_IUF", "RT_TES", "IUD_RT_IUF_TES", "RT_IUF_TES", "IUF_TES_DIV_IMP", "IUD_NO_RT", "TES_NO_MATCH", "UNKNOWN" ]
       },
-      "PagedTreasuredClassification" : {
+      "PagedTreasuredClassificationExtendedDTO" : {
         "type" : "object",
         "properties" : {
           "content" : {
             "type" : "array",
             "items" : {
-              "$ref" : "#/components/schemas/TreasuredClassificationView"
+              "$ref" : "#/components/schemas/TreasuredClassificationExtendedDTO"
             }
           },
           "size" : {
@@ -11608,7 +11611,7 @@
         },
         "required" : [ "content", "number", "size", "totalElements", "totalPages" ]
       },
-      "TreasuredClassificationView" : {
+      "TreasuredClassificationExtendedDTO" : {
         "type" : "object",
         "properties" : {
           "classificationId" : {
@@ -11875,6 +11878,9 @@
             "type" : "string"
           },
           "treasuryEndToEndId" : {
+            "type" : "string"
+          },
+          "status" : {
             "type" : "string"
           }
         }

@@ -2190,7 +2190,7 @@ paths:
           content:
             application/json:
               schema:
-                type: 'PagedTreasuredClassification'
+                $ref: '#/components/schemas/PagedTreasuredClassificationExtendedDTO'
         '401':
           description: Unauthorized - Missing or invalid token
         '403':
@@ -4460,6 +4460,31 @@ components:
           type: array
           items:
             type: 'OrgSilServiceView'
+        size:
+          type: integer
+          format: int64
+        totalElements:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer
+          format: int64
+        number:
+          type: integer
+          format: int64
+    PagedTreasuredClassificationExtendedDTO:
+      type: object
+      required:
+        - content
+        - size
+        - totalElements
+        - totalPages
+        - number
+      properties:
+        content:
+          type: array
+          items:
+            type: 'TreasuredClassificationExtendedDTO'
         size:
           type: integer
           format: int64

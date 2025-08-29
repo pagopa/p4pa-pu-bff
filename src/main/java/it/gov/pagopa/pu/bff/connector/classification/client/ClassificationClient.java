@@ -12,8 +12,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 
-import java.util.Collections;
-
 @Service
 @Slf4j
 public class ClassificationClient {
@@ -58,7 +56,7 @@ public class ClassificationClient {
         filters.getDocumentCode(),
         filters.getProvisionalAe(),
         filters.getProvisionalCode(),
-        Collections.emptySet(), //TODO [P4ADEV-3543] Replace with excludedLabels derived from Organization flags
+        filters.getExcludedLabels(),
         PageUtils.getPageNumber(pageable),
         PageUtils.getPageSize(pageable),
         PageUtils.getSortList(pageable));

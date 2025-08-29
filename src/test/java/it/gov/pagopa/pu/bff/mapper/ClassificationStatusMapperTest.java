@@ -1,41 +1,41 @@
 package it.gov.pagopa.pu.bff.mapper;
 
 import it.gov.pagopa.pu.classification.dto.generated.ClassificationsEnum;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class ClassificationStatusMapperTest {
 
-  @Test
-  void givenInfoLabels_whenMapStatus_thenReturnInfo() {
-    assertEquals("INFO", ClassificationStatusMapper.mapStatus(ClassificationsEnum.IUD_RT_IUF));
-    assertEquals("INFO", ClassificationStatusMapper.mapStatus(ClassificationsEnum.RT_IUF));
-    assertEquals("INFO", ClassificationStatusMapper.mapStatus(ClassificationsEnum.RT_TES));
-    assertEquals("INFO", ClassificationStatusMapper.mapStatus(ClassificationsEnum.IUD_RT_IUF_TES));
-    assertEquals("INFO", ClassificationStatusMapper.mapStatus(ClassificationsEnum.RT_IUF_TES));
+  @ParameterizedTest
+  @MethodSource("statusCases")
+  void givenLabelWhenMapStatusThenExpectedStatus(ClassificationsEnum label, String expectedStatus) {
+    assertEquals(expectedStatus, ClassificationStatusMapper.mapStatus(label));
   }
 
-  @Test
-  void givenWarningLabels_whenMapStatus_thenReturnWarning() {
-    assertEquals("WARNING", ClassificationStatusMapper.mapStatus(ClassificationsEnum.RT_NO_IUF));
-    assertEquals("WARNING", ClassificationStatusMapper.mapStatus(ClassificationsEnum.RT_NO_IUD));
-    assertEquals("WARNING", ClassificationStatusMapper.mapStatus(ClassificationsEnum.IUF_NO_TES));
-  }
-
-  @Test
-  void givenErrorLabels_whenMapStatus_thenReturnError() {
-    assertEquals("ERROR", ClassificationStatusMapper.mapStatus(ClassificationsEnum.DOPPI));
-    assertEquals("ERROR", ClassificationStatusMapper.mapStatus(ClassificationsEnum.IUV_NO_RT));
-    assertEquals("ERROR", ClassificationStatusMapper.mapStatus(ClassificationsEnum.TES_NO_IUF_OR_IUV));
-    assertEquals("ERROR", ClassificationStatusMapper.mapStatus(ClassificationsEnum.IUF_TES_DIV_IMP));
-    assertEquals("ERROR", ClassificationStatusMapper.mapStatus(ClassificationsEnum.IUD_NO_RT));
-    assertEquals("ERROR", ClassificationStatusMapper.mapStatus(ClassificationsEnum.TES_NO_MATCH));
-    assertEquals("ERROR", ClassificationStatusMapper.mapStatus(ClassificationsEnum.UNKNOWN));
-  }
-
-  @Test
-  void givenNullLabel_whenMapStatus_thenReturnError() {
-    assertEquals("ERROR", ClassificationStatusMapper.mapStatus(null));
+  static Stream<Arguments> statusCases() {
+    return Stream.of(
+      Arguments.of(ClassificationsEnum.IUD_RT_IUF, "INFO"),
+      Arguments.of(ClassificationsEnum.RT_IUF, "INFO"),
+      Arguments.of(ClassificationsEnum.RT_TES, "INFO"),
+      Arguments.of(ClassificationsEnum.IUD_RT_IUF_TES, "INFO"),
+      Arguments.of(ClassificationsEnum.RT_IUF_TES, "INFO"),
+      Arguments.of(ClassificationsEnum.RT_NO_IUF, "WARNING"),
+      Arguments.of(ClassificationsEnum.RT_NO_IUD, "WARNING"),
+      Arguments.of(ClassificationsEnum.IUF_NO_TES, "WARNING"),
+      Arguments.of(ClassificationsEnum.DOPPI, "ERROR"),
+      Arguments.of(ClassificationsEnum.IUV_NO_RT, "ERROR"),
+      Arguments.of(ClassificationsEnum.TES_NO_IUF_OR_IUV, "ERROR"),
+      Arguments.of(ClassificationsEnum.IUF_TES_DIV_IMP, "ERROR"),
+      Arguments.of(ClassificationsEnum.IUD_NO_RT, "ERROR"),
+      Arguments.of(ClassificationsEnum.TES_NO_MATCH, "ERROR"),
+      Arguments.of(ClassificationsEnum.UNKNOWN, "ERROR"),
+      Arguments.of(null, "ERROR")
+    );
   }
 }
+

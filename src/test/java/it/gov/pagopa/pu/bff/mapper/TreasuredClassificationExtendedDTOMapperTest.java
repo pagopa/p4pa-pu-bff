@@ -6,10 +6,13 @@ import it.gov.pagopa.pu.classification.dto.generated.ClassificationsEnum;
 import it.gov.pagopa.pu.classification.dto.generated.PagedTreasuredClassification;
 import it.gov.pagopa.pu.classification.dto.generated.TreasuredClassificationView;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mapstruct.factory.Mappers;
 
-import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -18,38 +21,42 @@ class TreasuredClassificationExtendedDTOMapperTest {
   private final TreasuredClassificationExtendedDTOMapper mapper =
     Mappers.getMapper(TreasuredClassificationExtendedDTOMapper.class);
 
-  @Test
-  void givenSingleView_whenMap_thenFieldsAndStatusAreMapped() {
+  @ParameterizedTest
+  @MethodSource("mapCases")
+  void givenViewWithLabel_whenMap_thenStatusMappedCorrectly(ClassificationsEnum label, String expectedStatus) {
     TreasuredClassificationView view = new TreasuredClassificationView();
-    view.setClassificationId(123L);
-    view.setOrganizationId(456L);
-    view.setLabel(ClassificationsEnum.RT_NO_IUF);
-    view.setLastClassificationDate(LocalDate.now());
+    view.setClassificationId(1L);
+    view.setOrganizationId(99L);
+    view.setLabel(label);
 
     TreasuredClassificationExtendedDTO dto = mapper.map(view);
 
     assertNotNull(dto);
     assertEquals(view.getClassificationId(), dto.getClassificationId());
     assertEquals(view.getOrganizationId(), dto.getOrganizationId());
-    assertEquals(view.getLabel(), dto.getLabel());
-    assertEquals("WARNING", dto.getStatus());
+    assertEquals(label, dto.getLabel());
+    assertEquals(expectedStatus, dto.getStatus());
   }
 
-  @Test
-  void givenListOfViews_whenMap_thenAllMapped() {
-    TreasuredClassificationView view1 = new TreasuredClassificationView();
-    view1.setClassificationId(1L);
-    view1.setLabel(ClassificationsEnum.IUD_RT_IUF);
-
-    TreasuredClassificationView view2 = new TreasuredClassificationView();
-    view2.setClassificationId(2L);
-    view2.setLabel(ClassificationsEnum.DOPPI);
-
-    List<TreasuredClassificationExtendedDTO> dtos = mapper.map(List.of(view1, view2));
-
-    assertEquals(2, dtos.size());
-    assertEquals("INFO", dtos.get(0).getStatus());
-    assertEquals("ERROR", dtos.get(1).getStatus());
+  static Stream<Arguments> mapCases() {
+    return Stream.of(
+      Arguments.of(ClassificationsEnum.IUD_RT_IUF, "INFO"),
+      Arguments.of(ClassificationsEnum.RT_IUF, "INFO"),
+      Arguments.of(ClassificationsEnum.RT_TES, "INFO"),
+      Arguments.of(ClassificationsEnum.IUD_RT_IUF_TES, "INFO"),
+      Arguments.of(ClassificationsEnum.RT_IUF_TES, "INFO"),
+      Arguments.of(ClassificationsEnum.RT_NO_IUF, "WARNING"),
+      Arguments.of(ClassificationsEnum.RT_NO_IUD, "WARNING"),
+      Arguments.of(ClassificationsEnum.IUF_NO_TES, "WARNING"),
+      Arguments.of(ClassificationsEnum.DOPPI, "ERROR"),
+      Arguments.of(ClassificationsEnum.IUV_NO_RT, "ERROR"),
+      Arguments.of(ClassificationsEnum.TES_NO_IUF_OR_IUV, "ERROR"),
+      Arguments.of(ClassificationsEnum.IUF_TES_DIV_IMP, "ERROR"),
+      Arguments.of(ClassificationsEnum.IUD_NO_RT, "ERROR"),
+      Arguments.of(ClassificationsEnum.TES_NO_MATCH, "ERROR"),
+      Arguments.of(ClassificationsEnum.UNKNOWN, "ERROR"),
+      Arguments.of(null, "ERROR")
+    );
   }
 
   @Test
@@ -83,3 +90,4 @@ class TreasuredClassificationExtendedDTOMapperTest {
     assertNull(mapper.map((PagedTreasuredClassification) null));
   }
 }
+

@@ -15,4 +15,6 @@ import lombok.experimental.SuperBuilder;
 public class TreasuredClassificationExtendedDTO extends TreasuredClassificationView {
 
   private String status;
+  private Boolean flagPaymentNotification;
+  private Boolean flagTreasury;
 }

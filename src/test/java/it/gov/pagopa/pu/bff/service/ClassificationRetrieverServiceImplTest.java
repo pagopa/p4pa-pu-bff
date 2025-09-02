@@ -593,13 +593,21 @@ class ClassificationRetrieverServiceImplTest {
     ClassificationDetailViewDTO classificationDetailViewDTO = new ClassificationDetailViewDTO();
     classificationDetailViewDTO.setDebtPositionTypeOrgCode("debtPositionTypeOrgCode");
     ClassificationDetailDTO expectedResult = new ClassificationDetailDTO();
+    Organization organization = new Organization();
+    organization.setFlagPaymentNotification(true);
+    organization.setFlagTreasury(true);
 
     try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
       authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)).thenAnswer(a -> null);
 
       when(classificationServiceMock.getClassificationDetail(organizationId, classificationId, accessToken))
         .thenReturn(classificationDetailViewDTO);
+
+      when(organizationServiceMock.getOrganizationByOrganizationId(organizationId, accessToken))
+        .thenReturn(organization);
+
       doNothing().when(debtPositionTypeOrgRetrieverServiceMock).validateOperator(organizationId,classificationDetailViewDTO.getDebtPositionTypeOrgCode(),loggedUser.getMappedExternalUserId(),accessToken);
+
       when(classificationDetailDTOMapperMock.map(classificationDetailViewDTO))
         .thenReturn(expectedResult);
 
@@ -622,12 +630,19 @@ class ClassificationRetrieverServiceImplTest {
     long classificationId = 123L;
     ClassificationDetailViewDTO classificationDetailViewDTO = new ClassificationDetailViewDTO();
     ClassificationDetailDTO expectedResult = new ClassificationDetailDTO();
+    Organization organization = new Organization();
+    organization.setFlagPaymentNotification(false);
+    organization.setFlagTreasury(true);
 
     try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
       authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)).thenAnswer(a -> null);
 
       when(classificationServiceMock.getClassificationDetail(organizationId, classificationId, accessToken))
         .thenReturn(classificationDetailViewDTO);
+
+      when(organizationServiceMock.getOrganizationByOrganizationId(organizationId, accessToken))
+        .thenReturn(organization);
+
       when(classificationDetailDTOMapperMock.map(classificationDetailViewDTO))
         .thenReturn(expectedResult);
 
@@ -655,8 +670,6 @@ class ClassificationRetrieverServiceImplTest {
 
       when(classificationServiceMock.getClassificationDetail(organizationId, classificationId, accessToken))
         .thenReturn(null);
-      when(classificationDetailDTOMapperMock.map(null))
-        .thenReturn(null);
 
       ClassificationDetailViewDTO result = classificationRetrieverService.getClassificationDetail(organizationId, classificationId, loggedUser, accessToken);
 
@@ -664,6 +677,48 @@ class ClassificationRetrieverServiceImplTest {
 
       authorizationServiceMockedStatic.verify(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser));
       verifyNoInteractions(debtPositionTypeOrgRetrieverServiceMock);
+    }
+  }
+
+  @Test
+  void givenOrganizationNotFoundWhenGetClassificationDetailThenThrowResourceNotFound() {
+    UserInfo loggedUser = new UserInfo();
+    loggedUser.setUserId("user-123");
+    loggedUser.setMappedExternalUserId("mappedExternalUserId");
+
+    long organizationId = 1L;
+    long classificationId = 10L;
+
+    ClassificationDetailViewDTO backendDetail = new ClassificationDetailViewDTO();
+    backendDetail.setDebtPositionTypeOrgCode("dummyCode");
+
+    try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic =
+           Mockito.mockStatic(AuthorizationService.class)) {
+
+      authorizationServiceMockedStatic.when(() ->
+          AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser))
+        .thenAnswer(a -> null);
+
+      when(classificationServiceMock.getClassificationDetail(organizationId, classificationId, accessToken))
+        .thenReturn(backendDetail);
+
+      when(organizationServiceMock.getOrganizationByOrganizationId(organizationId, accessToken))
+        .thenReturn(null);
+
+      doNothing().when(debtPositionTypeOrgRetrieverServiceMock).validateOperator(
+        organizationId,
+        backendDetail.getDebtPositionTypeOrgCode(),
+        loggedUser.getMappedExternalUserId(),
+        accessToken
+      );
+
+      ResourceNotFoundException ex = assertThrows(ResourceNotFoundException.class,
+        () -> classificationRetrieverService.getClassificationDetail(
+          organizationId, classificationId, loggedUser, accessToken));
+
+      assertEquals("Organization having ID " + organizationId + " not found", ex.getMessage());
+
+      verifyNoInteractions(classificationDetailDTOMapperMock);
     }
   }
 

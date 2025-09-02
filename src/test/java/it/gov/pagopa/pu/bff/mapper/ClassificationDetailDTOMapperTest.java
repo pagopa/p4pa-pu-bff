@@ -4,6 +4,7 @@ import it.gov.pagopa.pu.bff.dto.ClassificationDetailDTO;
 import it.gov.pagopa.pu.bff.util.TestUtils;
 import it.gov.pagopa.pu.classification.dto.generated.ClassificationDetailViewDTO;
 import it.gov.pagopa.pu.classification.dto.generated.ClassificationsEnum;
+import it.gov.pagopa.pu.organization.dto.generated.Organization;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -27,7 +28,11 @@ class ClassificationDetailDTOMapperTest {
     ClassificationDetailViewDTO classificationDetailViewDTO = podamFactory.manufacturePojo(ClassificationDetailViewDTO.class);
     classificationDetailViewDTO.setLabel(label);
 
-    ClassificationDetailDTO result = mapper.map(classificationDetailViewDTO);
+    Organization organization = new Organization();
+    organization.setFlagPaymentNotification(true);
+    organization.setFlagTreasury(true);
+
+    ClassificationDetailDTO result = mapper.map(classificationDetailViewDTO, organization);
 
     assertNotNull(result);
     TestUtils.reflectionEqualsByName(classificationDetailViewDTO,result);
@@ -35,6 +40,8 @@ class ClassificationDetailDTOMapperTest {
     assertEquals(reported,result.isReported());
     assertEquals(collected,result.isCollected());
     assertEquals(status, result.getStatus());
+    assertEquals(organization.getFlagPaymentNotification(), result.getFlagPaymentNotification());
+    assertEquals(organization.getFlagTreasury(), result.getFlagTreasury());
   }
 
   static Stream<Arguments> mapValueSource() {

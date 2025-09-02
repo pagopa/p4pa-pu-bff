@@ -3,6 +3,8 @@ package it.gov.pagopa.pu.bff.mapper;
 import it.gov.pagopa.pu.bff.dto.ClassificationDetailDTO;
 import it.gov.pagopa.pu.classification.dto.generated.ClassificationDetailViewDTO;
 import it.gov.pagopa.pu.classification.dto.generated.ClassificationsEnum;
+import it.gov.pagopa.pu.organization.dto.generated.Organization;
+import org.mapstruct.Context;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -12,7 +14,9 @@ public interface ClassificationDetailDTOMapper {
   @Mapping(target = "reported", expression = "java(isReported(classificationDetailViewDTO.getLabel()))")
   @Mapping(target = "collected", expression = "java(isCollected(classificationDetailViewDTO.getLabel()))")
   @Mapping(target = "status", expression = "java(ClassificationStatusMapper.mapStatus(classificationDetailViewDTO.getLabel()))")
-  ClassificationDetailDTO map(ClassificationDetailViewDTO classificationDetailViewDTO);
+  @Mapping(target = "flagPaymentNotification", expression = "java(organization.getFlagPaymentNotification())")
+  @Mapping(target = "flagTreasury", expression = "java(organization.getFlagTreasury())")
+  ClassificationDetailDTO map(ClassificationDetailViewDTO classificationDetailViewDTO, @Context Organization organization);
 
   default boolean isPayed(ClassificationsEnum classification) {
     return switch (classification) {

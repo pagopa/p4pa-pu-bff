@@ -72,13 +72,7 @@ public class ClassificationRetrieverServiceImpl implements ClassificationRetriev
 
     PagedTreasuredClassification backendPage = classificationService.getTreasuredClassifications(organizationId, treasuredClassificationFiltersDTO, pageable, accessToken);
 
-    PagedTreasuredClassificationExtendedDTO dto = treasuredClassificationExtendedDTOMapper.map(backendPage);
-    dto.getContent().forEach(item -> {
-      item.setFlagPaymentNotification(organization.getFlagPaymentNotification());
-      item.setFlagTreasury(organization.getFlagTreasury());
-    });
-
-    return dto;
+    return treasuredClassificationExtendedDTOMapper.map(backendPage, organization);
   }
 
   private static Set<String> getExcludedLabels(Organization organization) {
@@ -156,11 +150,7 @@ public class ClassificationRetrieverServiceImpl implements ClassificationRetriev
       throw new ResourceNotFoundException("Organization having ID " + organizationId + " not found");
     }
 
-    ClassificationDetailDTO dto = classificationDetailDTOMapper.map(classificationDetail);
-    dto.setFlagPaymentNotification(organization.getFlagPaymentNotification());
-    dto.setFlagTreasury(organization.getFlagTreasury());
-
-    return dto;
+    return classificationDetailDTOMapper.map(classificationDetail, organization);
   }
 
   @Override

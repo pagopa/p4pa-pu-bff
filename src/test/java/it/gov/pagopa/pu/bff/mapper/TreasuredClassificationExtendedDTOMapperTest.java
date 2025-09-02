@@ -5,6 +5,7 @@ import it.gov.pagopa.pu.bff.dto.generated.PagedTreasuredClassificationExtendedDT
 import it.gov.pagopa.pu.classification.dto.generated.ClassificationsEnum;
 import it.gov.pagopa.pu.classification.dto.generated.PagedTreasuredClassification;
 import it.gov.pagopa.pu.classification.dto.generated.TreasuredClassificationView;
+import it.gov.pagopa.pu.organization.dto.generated.Organization;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -23,19 +24,25 @@ class TreasuredClassificationExtendedDTOMapperTest {
 
   @ParameterizedTest
   @MethodSource("mapCases")
-  void givenViewWithLabelWhenMapThenStatusMappedCorrectly(ClassificationsEnum label, String expectedStatus) {
+  void givenViewWithLabelWhenMapThenStatusAndFlagsMappedCorrectly(ClassificationsEnum label, String expectedStatus) {
     TreasuredClassificationView view = new TreasuredClassificationView();
     view.setClassificationId(1L);
     view.setOrganizationId(99L);
     view.setLabel(label);
 
-    TreasuredClassificationExtendedDTO dto = mapper.map(view);
+    Organization organization = new Organization();
+    organization.setFlagPaymentNotification(true);
+    organization.setFlagTreasury(true);
+
+    TreasuredClassificationExtendedDTO dto = mapper.map(view, organization);
 
     assertNotNull(dto);
     assertEquals(view.getClassificationId(), dto.getClassificationId());
     assertEquals(view.getOrganizationId(), dto.getOrganizationId());
     assertEquals(label, dto.getLabel());
     assertEquals(expectedStatus, dto.getStatus());
+    assertEquals(organization.getFlagPaymentNotification(), dto.getFlagPaymentNotification());
+    assertEquals(organization.getFlagTreasury(), dto.getFlagTreasury());
   }
 
   static Stream<Arguments> mapCases() {
@@ -60,7 +67,7 @@ class TreasuredClassificationExtendedDTOMapperTest {
   }
 
   @Test
-  void givenPagedSourceWhenMapThenPagedMapped() {
+  void givenPagedSourceWhenMapThenPagedAndFlagsMapped() {
     TreasuredClassificationView view = new TreasuredClassificationView();
     view.setClassificationId(999L);
     view.setLabel(ClassificationsEnum.RT_IUF);
@@ -72,11 +79,17 @@ class TreasuredClassificationExtendedDTOMapperTest {
     paged.setTotalPages(1L);
     paged.setNumber(0L);
 
-    PagedTreasuredClassificationExtendedDTO extended = mapper.map(paged);
+    Organization organization = new Organization();
+    organization.setFlagPaymentNotification(false);
+    organization.setFlagTreasury(true);
+
+    PagedTreasuredClassificationExtendedDTO extended = mapper.map(paged, organization);
 
     assertNotNull(extended);
     assertEquals(1, extended.getContent().size());
     assertEquals("INFO", extended.getContent().get(0).getStatus());
+    assertEquals(organization.getFlagPaymentNotification(), extended.getContent().get(0).getFlagPaymentNotification());
+    assertEquals(organization.getFlagTreasury(), extended.getContent().get(0).getFlagTreasury());
     assertEquals(1L, extended.getSize());
     assertEquals(10L, extended.getTotalElements());
     assertEquals(1L, extended.getTotalPages());
@@ -85,17 +98,17 @@ class TreasuredClassificationExtendedDTOMapperTest {
 
   @Test
   void givenNullSingleViewWhenMapThenReturnNull() {
-    assertNull(mapper.map((TreasuredClassificationView) null));
+    assertNull(mapper.map((TreasuredClassificationView) null, new Organization()));
   }
 
   @Test
   void givenNullListWhenMapThenReturnNull() {
-    assertNull(mapper.map((List<TreasuredClassificationView>) null));
+    assertNull(mapper.map((List<TreasuredClassificationView>) null, new Organization()));
   }
 
   @Test
   void givenNullPagedWhenMapThenReturnNull() {
-    assertNull(mapper.map((PagedTreasuredClassification) null));
+    assertNull(mapper.map((PagedTreasuredClassification) null, new Organization()));
   }
 }
 

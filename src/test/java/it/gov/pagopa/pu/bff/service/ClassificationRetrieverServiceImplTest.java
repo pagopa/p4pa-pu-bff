@@ -121,7 +121,7 @@ class ClassificationRetrieverServiceImplTest {
       when(classificationServiceMock.getTreasuredClassifications(organizationId, treasuredClassificationFiltersDTO, pageable, accessToken))
         .thenReturn(backendPage);
 
-      when(treasuredClassificationExtendedDTOMapperMock.map(backendPage))
+      when(treasuredClassificationExtendedDTOMapperMock.map(backendPage, organization))
         .thenReturn(expectedResult);
 
       PagedTreasuredClassificationExtendedDTO result =
@@ -137,63 +137,6 @@ class ClassificationRetrieverServiceImplTest {
       assertSame(expectedResult, result);
 
       authorizationServiceMockedStatic.verify(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser));
-    }
-  }
-
-  @Test
-  void givenOrganizationWithFlagsWhenGetTreasuredClassificationThenItemsContainFlags() {
-    UserInfo loggedUser = new UserInfo();
-    loggedUser.setUserId("user-123");
-    loggedUser.setMappedExternalUserId("mappedExternalUserId");
-    Pageable pageable = PageRequest.of(0, 10);
-    long organizationId = 1L;
-
-    TreasuredClassificationFiltersDTO filtersDTO = TreasuredClassificationFiltersDTO.builder()
-      .iuv("IUV123")
-      .lastClassificationDate(new LocalDateIntervalFilter(LocalDate.now().minusDays(1), LocalDate.now()))
-      .build();
-
-    Organization organization = new Organization();
-    organization.setFlagPaymentNotification(true);
-    organization.setFlagTreasury(false);
-
-    PagedTreasuredClassification backendPage = new PagedTreasuredClassification();
-
-    TreasuredClassificationExtendedDTO item = new TreasuredClassificationExtendedDTO();
-    PagedTreasuredClassificationExtendedDTO expectedResult = new PagedTreasuredClassificationExtendedDTO();
-    expectedResult.setContent(Collections.singletonList(item));
-
-    try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic =
-           Mockito.mockStatic(AuthorizationService.class)) {
-
-      authorizationServiceMockedStatic.when(() ->
-          AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser))
-        .thenAnswer(a -> null);
-
-      when(debtPositionTypeOrgRetrieverServiceMock.getDebtPositionTypeOrgCodes(
-        organizationId, null, loggedUser.getMappedExternalUserId(), accessToken))
-        .thenReturn(Collections.singleton("dummyCode"));
-
-      when(organizationServiceMock.getOrganizationByOrganizationId(organizationId, accessToken))
-        .thenReturn(organization);
-
-      when(classificationServiceMock.getTreasuredClassifications(
-        eq(organizationId), any(TreasuredClassificationFiltersDTO.class), eq(pageable), eq(accessToken)))
-        .thenReturn(backendPage);
-
-      when(treasuredClassificationExtendedDTOMapperMock.map(backendPage))
-        .thenReturn(expectedResult);
-
-      PagedTreasuredClassificationExtendedDTO result =
-        classificationRetrieverService.getTreasuredClassification(
-          organizationId, filtersDTO, null, pageable, loggedUser, accessToken);
-
-      assertNotNull(result);
-      assertEquals(1, result.getContent().size());
-      TreasuredClassificationExtendedDTO mappedItem = result.getContent().get(0);
-
-      assertEquals(organization.getFlagPaymentNotification(), mappedItem.getFlagPaymentNotification());
-      assertEquals(organization.getFlagTreasury(), mappedItem.getFlagTreasury());
     }
   }
 
@@ -275,7 +218,7 @@ class ClassificationRetrieverServiceImplTest {
       when(classificationServiceMock.getTreasuredClassifications(eq(organizationId), any(), eq(pageable), eq(accessToken)))
         .thenReturn(backendPage);
 
-      when(treasuredClassificationExtendedDTOMapperMock.map(backendPage))
+      when(treasuredClassificationExtendedDTOMapperMock.map(backendPage, organization))
         .thenReturn(expectedResult);
 
       doNothing().when(debtPositionTypeOrgRetrieverServiceMock)
@@ -336,7 +279,7 @@ class ClassificationRetrieverServiceImplTest {
       when(classificationServiceMock.getTreasuredClassifications(eq(organizationId), any(), eq(pageable), eq(accessToken)))
         .thenReturn(backendPage);
 
-      when(treasuredClassificationExtendedDTOMapperMock.map(backendPage))
+      when(treasuredClassificationExtendedDTOMapperMock.map(backendPage, organization))
         .thenReturn(expectedResult);
 
       doNothing().when(debtPositionTypeOrgRetrieverServiceMock)
@@ -401,7 +344,7 @@ class ClassificationRetrieverServiceImplTest {
       when(classificationServiceMock.getTreasuredClassifications(eq(organizationId), any(), eq(pageable), eq(accessToken)))
         .thenReturn(backendPage);
 
-      when(treasuredClassificationExtendedDTOMapperMock.map(backendPage))
+      when(treasuredClassificationExtendedDTOMapperMock.map(backendPage, organization))
         .thenReturn(expectedResult);
 
       doNothing().when(debtPositionTypeOrgRetrieverServiceMock)
@@ -467,7 +410,7 @@ class ClassificationRetrieverServiceImplTest {
       )).thenReturn(backendPage);
 
 
-      when(treasuredClassificationExtendedDTOMapperMock.map(backendPage))
+      when(treasuredClassificationExtendedDTOMapperMock.map(backendPage, organization))
         .thenReturn(expectedResult);
 
       PagedTreasuredClassificationExtendedDTO result = classificationRetrieverService.getTreasuredClassification(organizationId, treasuredClassificationFiltersDTO, null, pageable, loggedUser, accessToken);
@@ -601,12 +544,12 @@ class ClassificationRetrieverServiceImplTest {
 
       when(classificationServiceMock.getTreasuredClassifications(
         eq(organizationId),
-        any(TreasuredClassificationFiltersDTO.class), // il service modifica excludedLabels
+        any(TreasuredClassificationFiltersDTO.class),
         eq(pageable),
         eq(accessToken)))
         .thenReturn(backendPage);
 
-      when(treasuredClassificationExtendedDTOMapperMock.map(backendPage))
+      when(treasuredClassificationExtendedDTOMapperMock.map(backendPage, organization))
         .thenReturn(expectedResult);
 
       PagedTreasuredClassificationExtendedDTO result =
@@ -665,7 +608,7 @@ class ClassificationRetrieverServiceImplTest {
 
       doNothing().when(debtPositionTypeOrgRetrieverServiceMock).validateOperator(organizationId,classificationDetailViewDTO.getDebtPositionTypeOrgCode(),loggedUser.getMappedExternalUserId(),accessToken);
 
-      when(classificationDetailDTOMapperMock.map(classificationDetailViewDTO))
+      when(classificationDetailDTOMapperMock.map(classificationDetailViewDTO, organization))
         .thenReturn(expectedResult);
 
       ClassificationDetailViewDTO result = classificationRetrieverService.getClassificationDetail(organizationId, classificationId, loggedUser, accessToken);
@@ -700,7 +643,7 @@ class ClassificationRetrieverServiceImplTest {
       when(organizationServiceMock.getOrganizationByOrganizationId(organizationId, accessToken))
         .thenReturn(organization);
 
-      when(classificationDetailDTOMapperMock.map(classificationDetailViewDTO))
+      when(classificationDetailDTOMapperMock.map(classificationDetailViewDTO, organization))
         .thenReturn(expectedResult);
 
       ClassificationDetailViewDTO result = classificationRetrieverService.getClassificationDetail(organizationId, classificationId, loggedUser, accessToken);

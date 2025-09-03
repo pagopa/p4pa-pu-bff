@@ -55,6 +55,7 @@ public class ClassificationRetrieverServiceImpl implements ClassificationRetriev
   @Override
   public PagedTreasuredClassificationExtendedDTO getTreasuredClassification(Long organizationId, TreasuredClassificationFiltersDTO treasuredClassificationFiltersDTO, String debtPositionTypeOrgCode, Pageable pageable, UserInfo loggedUser, String accessToken) {
     AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser);
+
     validateTreasuredClassificationFilters(treasuredClassificationFiltersDTO, debtPositionTypeOrgCode);
 
     if (StringUtils.isNotBlank(debtPositionTypeOrgCode)) {
@@ -70,9 +71,8 @@ public class ClassificationRetrieverServiceImpl implements ClassificationRetriev
     }
     treasuredClassificationFiltersDTO.setExcludedLabels(getExcludedLabels(organization));
 
-    PagedTreasuredClassification backendPage = classificationService.getTreasuredClassifications(organizationId, treasuredClassificationFiltersDTO, pageable, accessToken);
-
-    return treasuredClassificationExtendedDTOMapper.map(backendPage, organization);
+    return treasuredClassificationExtendedDTOMapper.map(
+      classificationService.getTreasuredClassifications(organizationId, treasuredClassificationFiltersDTO, pageable, accessToken), organization);
   }
 
   private static Set<String> getExcludedLabels(Organization organization) {

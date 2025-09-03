@@ -110,5 +110,46 @@ class TreasuredClassificationExtendedDTOMapperTest {
   void givenNullPagedWhenMapThenReturnNull() {
     assertNull(mapper.map((PagedTreasuredClassification) null, new Organization()));
   }
+
+  @Test
+  void givenSingleViewWhenOrganizationNullThenFlagsAreNull() {
+    TreasuredClassificationView view = new TreasuredClassificationView();
+    view.setClassificationId(123L);
+    view.setOrganizationId(456L);
+    view.setLabel(ClassificationsEnum.RT_TES);
+
+    TreasuredClassificationExtendedDTO dto = mapper.map(view, null);
+
+    assertNotNull(dto);
+    assertEquals(view.getClassificationId(), dto.getClassificationId());
+    assertEquals(view.getOrganizationId(), dto.getOrganizationId());
+    assertEquals("INFO", dto.getStatus());
+    assertNull(dto.getFlagPaymentNotification());
+    assertNull(dto.getFlagTreasury());
+  }
+
+  @Test
+  void givenPagedSourceWhenOrganizationNullThenFlagsAreNull() {
+    TreasuredClassificationView view = new TreasuredClassificationView();
+    view.setClassificationId(789L);
+    view.setLabel(ClassificationsEnum.DOPPI);
+
+    PagedTreasuredClassification paged = new PagedTreasuredClassification();
+    paged.setContent(List.of(view));
+    paged.setSize(1L);
+    paged.setTotalElements(5L);
+    paged.setTotalPages(1L);
+    paged.setNumber(0L);
+
+    PagedTreasuredClassificationExtendedDTO extended = mapper.map(paged, null);
+
+    assertNotNull(extended);
+    assertEquals(1, extended.getContent().size());
+    TreasuredClassificationExtendedDTO dto = extended.getContent().get(0);
+
+    assertEquals("ERROR", dto.getStatus());
+    assertNull(dto.getFlagPaymentNotification());
+    assertNull(dto.getFlagTreasury());
+  }
 }
 

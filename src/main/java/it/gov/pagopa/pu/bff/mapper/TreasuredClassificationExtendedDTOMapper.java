@@ -27,8 +27,8 @@ public interface TreasuredClassificationExtendedDTOMapper {
   List<TreasuredClassificationExtendedDTO> map(List<TreasuredClassificationView> source, @Context Organization organization);
 
   @Mapping(target = "status", expression = "java(ClassificationStatusMapper.mapStatus(source.getLabel()))")
-  @Mapping(target = "flagPaymentNotification", expression = "java(organization.getFlagPaymentNotification())")
-  @Mapping(target = "flagTreasury", expression = "java(organization.getFlagTreasury())")
+  @Mapping(target = "flagPaymentNotification", expression = "java(organization != null ? organization.getFlagPaymentNotification() : null)")
+  @Mapping(target = "flagTreasury", expression = "java(organization != null ? organization.getFlagTreasury() : null)")
   TreasuredClassificationExtendedDTO map(TreasuredClassificationView source, @Context Organization organization);
 }
 

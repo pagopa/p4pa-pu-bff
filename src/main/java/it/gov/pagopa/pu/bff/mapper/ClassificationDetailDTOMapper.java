@@ -14,8 +14,8 @@ public interface ClassificationDetailDTOMapper {
   @Mapping(target = "reported", expression = "java(isReported(classificationDetailViewDTO.getLabel()))")
   @Mapping(target = "collected", expression = "java(isCollected(classificationDetailViewDTO.getLabel()))")
   @Mapping(target = "status", expression = "java(ClassificationStatusMapper.mapStatus(classificationDetailViewDTO.getLabel()))")
-  @Mapping(target = "flagPaymentNotification", expression = "java(organization.getFlagPaymentNotification())")
-  @Mapping(target = "flagTreasury", expression = "java(organization.getFlagTreasury())")
+  @Mapping(target = "flagPaymentNotification", expression = "java(organization != null ? organization.getFlagPaymentNotification() : null)")
+  @Mapping(target = "flagTreasury", expression = "java(organization != null ? organization.getFlagTreasury() : null)")
   ClassificationDetailDTO map(ClassificationDetailViewDTO classificationDetailViewDTO, @Context Organization organization);
 
   default boolean isPayed(ClassificationsEnum classification) {

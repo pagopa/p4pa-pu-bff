@@ -4,6 +4,8 @@ import it.gov.pagopa.pu.bff.dto.ClassificationDetailDTO;
 import it.gov.pagopa.pu.bff.util.TestUtils;
 import it.gov.pagopa.pu.classification.dto.generated.ClassificationDetailViewDTO;
 import it.gov.pagopa.pu.classification.dto.generated.ClassificationsEnum;
+import it.gov.pagopa.pu.organization.dto.generated.Organization;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -13,8 +15,7 @@ import uk.co.jemos.podam.api.PodamFactory;
 import java.util.stream.Stream;
 
 import static it.gov.pagopa.pu.classification.dto.generated.ClassificationsEnum.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 class ClassificationDetailDTOMapperTest {
 
@@ -27,7 +28,11 @@ class ClassificationDetailDTOMapperTest {
     ClassificationDetailViewDTO classificationDetailViewDTO = podamFactory.manufacturePojo(ClassificationDetailViewDTO.class);
     classificationDetailViewDTO.setLabel(label);
 
-    ClassificationDetailDTO result = mapper.map(classificationDetailViewDTO);
+    Organization organization = new Organization();
+    organization.setFlagPaymentNotification(true);
+    organization.setFlagTreasury(true);
+
+    ClassificationDetailDTO result = mapper.map(classificationDetailViewDTO, organization);
 
     assertNotNull(result);
     TestUtils.reflectionEqualsByName(classificationDetailViewDTO,result);
@@ -35,6 +40,21 @@ class ClassificationDetailDTOMapperTest {
     assertEquals(reported,result.isReported());
     assertEquals(collected,result.isCollected());
     assertEquals(status, result.getStatus());
+    assertEquals(organization.getFlagPaymentNotification(), result.getFlagPaymentNotification());
+    assertEquals(organization.getFlagTreasury(), result.getFlagTreasury());
+  }
+
+  @Test
+  void givenOrganizationNullWhenMapThenFlagsAreNull() {
+    ClassificationDetailViewDTO classificationDetailViewDTO = new ClassificationDetailViewDTO();
+    classificationDetailViewDTO.setLabel(ClassificationsEnum.RT_TES);
+
+    ClassificationDetailDTO result = mapper.map(classificationDetailViewDTO, null);
+
+    assertNotNull(result);
+    assertEquals("INFO", result.getStatus());
+    assertNull(result.getFlagPaymentNotification());
+    assertNull(result.getFlagTreasury());
   }
 
   static Stream<Arguments> mapValueSource() {

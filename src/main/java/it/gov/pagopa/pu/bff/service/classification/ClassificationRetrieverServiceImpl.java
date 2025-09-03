@@ -55,7 +55,9 @@ public class ClassificationRetrieverServiceImpl implements ClassificationRetriev
   @Override
   public PagedTreasuredClassificationExtendedDTO getTreasuredClassification(Long organizationId, TreasuredClassificationFiltersDTO treasuredClassificationFiltersDTO, String debtPositionTypeOrgCode, Pageable pageable, UserInfo loggedUser, String accessToken) {
     AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser);
+
     validateTreasuredClassificationFilters(treasuredClassificationFiltersDTO, debtPositionTypeOrgCode);
+
     if (StringUtils.isNotBlank(debtPositionTypeOrgCode)) {
       debtPositionTypeOrgRetrieverService.validateOperator(organizationId, debtPositionTypeOrgCode, loggedUser.getMappedExternalUserId(), accessToken);
       treasuredClassificationFiltersDTO.setDebtPositionTypeOrgCodes(Collections.singleton(debtPositionTypeOrgCode));
@@ -69,9 +71,8 @@ public class ClassificationRetrieverServiceImpl implements ClassificationRetriev
     }
     treasuredClassificationFiltersDTO.setExcludedLabels(getExcludedLabels(organization));
 
-    PagedTreasuredClassification backendPage = classificationService.getTreasuredClassifications(organizationId, treasuredClassificationFiltersDTO, pageable, accessToken);
-
-    return treasuredClassificationExtendedDTOMapper.map(backendPage);
+    return treasuredClassificationExtendedDTOMapper.map(
+      classificationService.getTreasuredClassifications(organizationId, treasuredClassificationFiltersDTO, pageable, accessToken), organization);
   }
 
   private static Set<String> getExcludedLabels(Organization organization) {
@@ -133,11 +134,23 @@ public class ClassificationRetrieverServiceImpl implements ClassificationRetriev
   @Override
   public ClassificationDetailDTO getClassificationDetail(Long organizationId, Long classificationId, UserInfo loggedUser, String accessToken) {
     AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser);
+
     ClassificationDetailViewDTO classificationDetail = classificationService.getClassificationDetail(organizationId, classificationId, accessToken);
-    if (classificationDetail != null && StringUtils.isNotBlank(classificationDetail.getDebtPositionTypeOrgCode())) {
+
+    if (classificationDetail == null) {
+      return null;
+    }
+
+    if (StringUtils.isNotBlank(classificationDetail.getDebtPositionTypeOrgCode())) {
       debtPositionTypeOrgRetrieverService.validateOperator(organizationId, classificationDetail.getDebtPositionTypeOrgCode(), loggedUser.getMappedExternalUserId(), accessToken);
     }
-    return classificationDetailDTOMapper.map(classificationDetail);
+
+    Organization organization = organizationService.getOrganizationByOrganizationId(organizationId, accessToken);
+    if (organization == null) {
+      throw new ResourceNotFoundException("Organization having ID " + organizationId + " not found");
+    }
+
+    return classificationDetailDTOMapper.map(classificationDetail, organization);
   }
 
   @Override

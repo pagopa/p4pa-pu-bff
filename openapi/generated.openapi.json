@@ -11576,6 +11576,12 @@
           },
           "status" : {
             "type" : "string"
+          },
+          "flagPaymentNotification" : {
+            "type" : "boolean"
+          },
+          "flagTreasury" : {
+            "type" : "boolean"
           }
         }
       },
@@ -11882,6 +11888,12 @@
           },
           "status" : {
             "type" : "string"
+          },
+          "flagPaymentNotification" : {
+            "type" : "boolean"
+          },
+          "flagTreasury" : {
+            "type" : "boolean"
           }
         }
       },

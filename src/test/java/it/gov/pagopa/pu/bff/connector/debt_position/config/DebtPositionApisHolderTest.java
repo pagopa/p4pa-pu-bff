@@ -146,7 +146,7 @@ class DebtPositionApisHolderTest extends BaseApiHolderTest {
       accessToken -> debtPositionApisHolder.getInstallmentNoPiiSearchControllerApi(
           accessToken)
         .crudInstallmentsFindAuthorizedByTransferSemanticKey(1L, "iuv", "iur",
-          "transferIndex", "operatorExternalUserId"),
+          "transferIndex", "operatorExternalUserId", null),
       new ParameterizedTypeReference<>() {
       }, debtPositionApisHolder::unload);
   }

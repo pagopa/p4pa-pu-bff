@@ -5,6 +5,7 @@
   <link rel="stylesheet" href="styles/index.css" />
 </head>
 <body>
+
 <div class="header">
   <div class="ec-logo">
     <img src="${logo}" alt="Logo Ente Creditore" class="logo-image" />
@@ -18,15 +19,23 @@
 </div>
 
 <div class="transaction-section">
-  <div>
-    <div class="info-item">
-      <div class="info-label">Data e ora</div>
-      <div class="info-value">${paymentDate}</div>
-    </div>
+  <div class="info-item">
+    <div class="info-label">Gestore della transazione (PSP)</div>
+    <div class="info-value">${pspName}</div>
+  </div>
+  <div class="info-item">
+    <div class="info-label">Data e ora</div>
+    <div class="info-value">${paymentDate}</div>
   </div>
 </div>
 
 <div class="divider"></div>
+
+<div class="remittance-section">
+  <div class="info-value">
+    ${remittanceInformation}
+  </div>
+</div>
 
 <div class="debtor-grid">
   <div class="info-item">
@@ -62,13 +71,18 @@
 
 <div class="amounts-section">
   <div class="amount-row">
-    <div class="amount-label-psp">Commissione (applicata da ${pspName})</div>
-    <div class="amount-value-fee">${feeAmount}</div>
+    <div class="amount-label">Importo parziale</div>
+    <div class="amount-value">${amount}</div>
+  </div>
+
+  <div class="amount-row">
+    <div class="amount-label">Commissione (applicata da ${pspName})</div>
+    <div class="amount-value">${feeAmount}</div>
   </div>
 
   <div class="amount-row total-row">
-    <div class="amount-label">Totale</div>
-    <div class="amount-value">${totalAmount}</div>
+    <div class="total-amount-label">Totale</div>
+    <div class="amount-value total-amount">${totalAmount}</div>
   </div>
 </div>
 

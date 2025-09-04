@@ -166,8 +166,24 @@ class PagedOrganizationWithDebtPositionTypeOrgAndOperatorsCountMapperTest {
     organization.setOrganizationId(12345L);
 
     DebtPositionTypeOrgCountByOrganizationId debtPositionTypeOrgCountByOrganizationId = podamFactory.manufacturePojo(DebtPositionTypeOrgCountByOrganizationId.class);
-    debtPositionTypeOrgCountByOrganizationId.setActiveOrganizations(null);
     debtPositionTypeOrgCountByOrganizationId.setOrganizationId(null);
+    List<DebtPositionTypeOrgCountByOrganizationId> dptoCounts = List.of(debtPositionTypeOrgCountByOrganizationId);
+
+    // when
+    Integer result = mapper.dptoCount(organization, dptoCounts);
+
+    // then
+    assertEquals(0, result);
+  }
+
+  @Test
+  void givenDptoCountsWithNullActiveOrganizationsWhenDptoCountThenReturnZero() {
+    // given
+    Organization organization = podamFactory.manufacturePojo(Organization.class);
+    organization.setOrganizationId(12345L);
+
+    DebtPositionTypeOrgCountByOrganizationId debtPositionTypeOrgCountByOrganizationId = podamFactory.manufacturePojo(DebtPositionTypeOrgCountByOrganizationId.class);
+    debtPositionTypeOrgCountByOrganizationId.setActiveOrganizations(null);
     List<DebtPositionTypeOrgCountByOrganizationId> dptoCounts = List.of(debtPositionTypeOrgCountByOrganizationId);
 
     // when

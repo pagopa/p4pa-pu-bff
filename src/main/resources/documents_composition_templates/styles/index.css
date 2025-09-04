@@ -1,3 +1,4 @@
+/* ===== FONT FACES ===== */
 @font-face {
     font-family: 'Montserrat';
     src: url(../fonts/Montserrat/static/Montserrat-Regular.ttf);
@@ -12,32 +13,242 @@
     font-style: normal;
 }
 
+@font-face {
+    font-family: 'AnonymousPro';
+    src: url(../fonts/Anonymous_Pro/AnonymousPro-Regular.ttf);
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'AnonymousPro';
+    src: url(../fonts/Anonymous_Pro/AnonymousPro-Bold.ttf);
+    font-weight: bold;
+    font-style: normal;
+}
+
+/* ===== PRINT & RESET ===== */
+@page {
+    margin: 0mm;
+    size: A4;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* ===== BASE STYLES ===== */
 body {
     font-family: 'Montserrat', sans-serif;
-    margin: 40px;
+    font-size: 8px;
+    line-height: 1.4;
+    color: #000;
+    background: white;
+    padding: 40px;
+    max-width: 210mm;
+    margin: 0 auto;
+}
+
+/* ===== HEADER SECTION ===== */
+.header {
+    width: 100%;
+    margin-bottom: 40px;
+    min-height: 80px;
+    display: table;
+    table-layout: fixed;
+}
+
+.ec-logo,
+.pagopa-logo {
+    display: table-cell;
+    width: 60px;
+    vertical-align: middle;
+}
+
+.ec-logo {
+    text-align: left;
+}
+
+.pagopa-logo {
+    text-align: right;
+}
+
+.logo-image {
+    max-width: 60px;
+    max-height: 60px;
+    height: auto;
+    width: auto;
+}
+
+.header-text {
+    display: table-cell;
+    text-align: left;
+    vertical-align: top;
+    padding: 0 20px;
+}
+
+.header-text h1 {
+    font-size: 12px;
+    font-weight: bold;
+    color: #000;
+    margin-bottom: 4px;
+}
+
+/* ===== DIVIDER ===== */
+.divider {
+    width: 100%;
+    height: 1px;
+    background-color: #ddd;
+    margin: 40px 0;
+    clear: both;
+}
+
+/* ===== INFO COMPONENTS - BASE ===== */
+.info-item {
+    margin-bottom: 25px;
+}
+
+.info-label {
+    font-size: 10px;
+    color: #000;
+    margin-bottom: 3px;
+}
+
+.info-value {
+    font-size: 12px;
+    font-weight: 600;
+    color: #000;
+}
+
+/* ===== TRANSACTION SECTION ===== */
+.transaction-section {
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.transaction-section .info-item {
+    float: right;
+}
+
+.transaction-section .info-label {
+    text-align: left;
+}
+
+.transaction-section .info-value {
+    text-align: right;
+}
+
+/* ===== DEBTOR GRID ===== */
+.debtor-grid {
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+    margin-bottom: 30px;
+}
+
+.debtor-grid .info-item {
+    display: table-cell;
+    width: 33.333%;
+    vertical-align: top;
+    margin-bottom: 0;
+    padding-right: 15px;
+    text-align: left;
+}
+
+.debtor-grid .info-item:last-child {
+    text-align: right;
+    padding-right: 0;
+}
+
+/* ===== AMOUNT SECTION HEADER ===== */
+.amount-section-header {
+    width: 100%;
+    margin-bottom: 10px;
+    text-align: right;
+}
+
+.amount-header-label {
+    font-size: 10px;
+    color: #000;
+    margin-bottom: 3px;
+}
+
+.amount-header-value {
+    font-size: 12px;
+    font-weight: 600;
+    color: #000;
+}
+
+/* ===== AMOUNTS SECTION ===== */
+.amounts-section {
+    margin: 25px 0;
+    width: 100%;
+}
+
+/* ===== AMOUNT ROWS - SHARED LAYOUT ===== */
+.amount-row {
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+    margin-bottom: 5px;
+}
+
+/* ===== AMOUNT LABELS - SHARED STYLES ===== */
+.amount-label,
+.amount-label-psp {
+    display: table-cell;
+    width: 80%;
+    text-align: right;
+    padding-right: 5px;
+    color: #000;
+}
+
+.amount-label {
     font-size: 12px;
 }
 
-.header {
-    display: flex;
-    align-items: center;
-    margin-bottom: 20px;
+.amount-label-psp {
+    font-size: 10px;
 }
 
-.logo {
-    width: 100px;
-    height: auto;
-    margin-right: 20px;
+/* ===== AMOUNT VALUES - SHARED STYLES ===== */
+.amount-value,
+.amount-value-fee {
+    display: table-cell;
+    width: 20%;
+    text-align: right;
+    font-weight: 600;
+    color: #000;
 }
 
-.section {
-    margin-bottom: 20px;
+.amount-value {
+    font-size: 20px;
 }
 
-.field {
-    margin: 5px 0;
+.amount-value-fee {
+    font-size: 14px;
 }
 
-.label {
+/* ===== TOTAL ROW OVERRIDES ===== */
+.total-row {
+    padding-top: 15px;
+    margin-top: 20px;
+}
+
+.total-row .amount-label {
     font-weight: bold;
+}
+
+.total-row .amount-value {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+/* ===== MONOSPACE TEXT ===== */
+.fiscal-code,
+.org-fiscal-code,
+.payment-code {
+    font-family: 'AnonymousPro', monospace;
 }

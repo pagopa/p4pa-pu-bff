@@ -3,6 +3,8 @@ package it.gov.pagopa.pu.bff.controller;
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.dto.generated.OrganizationDTO;
 import it.gov.pagopa.pu.bff.dto.generated.OrganizationWithDebtPositionTypeOrgCount;
+
+import it.gov.pagopa.pu.bff.dto.generated.PagedOrganizationWithDebtPositionTypeOrgAndOperatorsCount;
 import it.gov.pagopa.pu.bff.dto.generated.PagedOrganizationWithDebtPositionTypeOrgCount;
 import it.gov.pagopa.pu.bff.security.SecurityUtilsTest;
 import it.gov.pagopa.pu.bff.service.organization.OrganizationRetrieverService;
@@ -22,7 +24,8 @@ import org.springframework.http.ResponseEntity;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
@@ -107,4 +110,16 @@ class OrganizationControllerTest {
     assertEquals(3, response.getBody().getContent().getFirst().getDebtPositionTypeOrgCount());
   }
 
+  @Test
+  void givenPageableWhenGetOrganizationsByBrokerIdThenReturnPagedOrganizationWithDebtPositionTypeOrgAndOperatorsCount() {
+    //given
+    PagedOrganizationWithDebtPositionTypeOrgAndOperatorsCount pagedOrganizationWithDebtPositionTypeOrgAndOperatorsCount = new PagedOrganizationWithDebtPositionTypeOrgAndOperatorsCount();
+    Mockito.when(organizationRetrieverServiceMock.getOrganizationsByBrokerId(eq(loggedUser), any(Pageable.class), eq(accessToken))).thenReturn(pagedOrganizationWithDebtPositionTypeOrgAndOperatorsCount);
+    //when
+    ResponseEntity<PagedOrganizationWithDebtPositionTypeOrgAndOperatorsCount> result = organizationController.getOrganizationsByBrokerId(Pageable.ofSize(1));
+    //then
+    assertEquals(HttpStatus.OK, result.getStatusCode());
+    assertNotNull(result.getBody());
+    assertEquals(pagedOrganizationWithDebtPositionTypeOrgAndOperatorsCount, result.getBody());
+  }
 }

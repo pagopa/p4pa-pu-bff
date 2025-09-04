@@ -62,6 +62,7 @@ class ReceiptFileServiceImplTest {
         && o.get(ReceiptFileServiceImpl.RECEIPT_FEE_AMOUNT).equals(Utilities.formatPrice(receiptDetailDTO.getFeeCents()))
         && o.get(ReceiptFileServiceImpl.RECEIPT_AMOUNT).equals(Utilities.formatPrice(receiptDetailDTO.getPaymentAmountCents()-receiptDetailDTO.getFeeCents()))
         && o.get(ReceiptFileServiceImpl.RECEIPT_ORG_FISCAL_CODE).equals(organization.getOrgFiscalCode())
+        && o.get(ReceiptFileServiceImpl.REMITTANCE_INFORMATION).equals(receiptDetailDTO.getRemittanceInformation())
     ))).thenReturn(expectedResult);
 
     byte[] result = receiptFileService.generateReceiptPdf(receiptDetailDTO, organization);
@@ -87,6 +88,7 @@ class ReceiptFileServiceImplTest {
         && o.get(ReceiptFileServiceImpl.RECEIPT_FEE_AMOUNT).equals(Utilities.formatPrice(receiptDetailDTO.getFeeCents()))
         && o.get(ReceiptFileServiceImpl.RECEIPT_AMOUNT).equals(Utilities.formatPrice(receiptDetailDTO.getPaymentAmountCents()-receiptDetailDTO.getFeeCents()))
         && o.get(ReceiptFileServiceImpl.RECEIPT_ORG_FISCAL_CODE).equals(organization.getOrgFiscalCode())
+        && o.get(ReceiptFileServiceImpl.REMITTANCE_INFORMATION).equals(receiptDetailDTO.getRemittanceInformation())
     ))).thenThrow(new IOException());
 
     Assertions.assertThrows(IllegalStateException.class,()-> receiptFileService.generateReceiptPdf(receiptDetailDTO,organization));
@@ -109,6 +111,7 @@ class ReceiptFileServiceImplTest {
         && o.get(ReceiptFileServiceImpl.RECEIPT_FEE_AMOUNT).equals(Utilities.formatPrice(receiptDetailDTO.getFeeCents()))
         && o.get(ReceiptFileServiceImpl.RECEIPT_AMOUNT).equals(Utilities.formatPrice(receiptDetailDTO.getPaymentAmountCents()-receiptDetailDTO.getFeeCents()))
         && o.get(ReceiptFileServiceImpl.RECEIPT_ORG_FISCAL_CODE).equals(organization.getOrgFiscalCode())
+        && o.get(ReceiptFileServiceImpl.REMITTANCE_INFORMATION).equals(receiptDetailDTO.getRemittanceInformation())
     ))).thenThrow(new TemplateException(null));
 
     Assertions.assertThrows(IllegalStateException.class,()-> receiptFileService.generateReceiptPdf(receiptDetailDTO,organization));

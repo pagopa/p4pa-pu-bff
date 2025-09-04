@@ -31,6 +31,7 @@ public class ReceiptFileServiceImpl implements ReceiptFileService{
     public static final String RECEIPT_AMOUNT = "amount";
     public static final String RECEIPT_ORG_FISCAL_CODE = "orgFiscalCode";
     public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("dd MMMM yyyy, HH:mm:ss", Locale.getDefault());
+    public static final String REMITTANCE_INFORMATION = "remittanceInformation";
 
     public ReceiptFileServiceImpl(DocumentComposition documentComposition) {
         this.documentComposition = documentComposition;
@@ -60,6 +61,7 @@ public class ReceiptFileServiceImpl implements ReceiptFileService{
         templateModel.put(RECEIPT_FEE_AMOUNT, Utilities.formatPrice(receiptDetail.getFeeCents()));
         templateModel.put(RECEIPT_AMOUNT, Utilities.formatPrice(receiptDetail.getPaymentAmountCents()-receiptDetail.getFeeCents()));
         templateModel.put(RECEIPT_ORG_FISCAL_CODE,organization.getOrgFiscalCode());
+        templateModel.put(REMITTANCE_INFORMATION,StringUtils.defaultString(receiptDetail.getRemittanceInformation()));
         return templateModel;
     }
 }

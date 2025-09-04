@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -104,13 +105,7 @@ public class OrganizationRetrieverServiceImpl implements OrganizationRetrieverSe
 
     if (pagedModelOrganization == null || pagedModelOrganization.getEmbedded() == null || pagedModelOrganization.getEmbedded().getOrganizations() == null || pagedModelOrganization.getEmbedded().getOrganizations().isEmpty()) {
       log.info("No results for getOrganizationsByBrokerId");
-      return PagedOrganizationWithDebtPositionTypeOrgAndOperatorsCount.builder()
-        .content(Collections.emptyList())
-        .size(0L)
-        .totalPages(0L)
-        .totalElements(0L)
-        .number(0L)
-        .build();
+      return pagedOrganizationWithDebtPositionTypeOrgAndOperatorsCountMapper.map(pagedModelOrganization, null, null);
     }
 
     List<Organization> orgList = pagedModelOrganization.getEmbedded().getOrganizations();
@@ -119,12 +114,27 @@ public class OrganizationRetrieverServiceImpl implements OrganizationRetrieverSe
       .map(Organization::getOrganizationId)
       .toList();
 
-    List<DebtPositionTypeOrgCountByOrganizationId> dptoCountsByOrgId = getDebtPositionTypeOrgCountByOrganizationId(
+    Map<Long, Integer> dptoCountsByOrgId = getDptoCountsByOrgIdMap(accessToken, organizationIds);
+
+    Map<Long, OperatorsPage> allOperatorsPages = getOperatorsPageMap(pageable, accessToken, orgList);
+
+    return pagedOrganizationWithDebtPositionTypeOrgAndOperatorsCountMapper.map(pagedModelOrganization, dptoCountsByOrgId, allOperatorsPages);
+  }
+
+  private Map<Long, Integer> getDptoCountsByOrgIdMap(String accessToken, List<Long> organizationIds) {
+    return getDebtPositionTypeOrgCountByOrganizationId(
       organizationIds,
       accessToken
-    );
+    )
+      .stream()
+      .filter(dpto -> dpto.getOrganizationId() != null && dpto.getActiveOrganizations() != null)
+      .collect(Collectors.toMap(
+        DebtPositionTypeOrgCountByOrganizationId::getOrganizationId,
+        DebtPositionTypeOrgCountByOrganizationId::getActiveOrganizations));
+  }
 
-    List<OperatorsPage> allOperatorsPages = new ArrayList<>();
+  private Map<Long, OperatorsPage> getOperatorsPageMap(Pageable pageable, String accessToken, List<Organization> orgList) {
+    Map<Long, OperatorsPage> allOperatorsPages = new HashMap<>();
 
     orgList
       .forEach(org -> {
@@ -137,10 +147,9 @@ public class OrganizationRetrieverServiceImpl implements OrganizationRetrieverSe
           pageable.getPageSize(),
           accessToken
         );
-        allOperatorsPages.add(organizationOperators);
+        allOperatorsPages.put(org.getOrganizationId(),organizationOperators);
       });
-
-    return pagedOrganizationWithDebtPositionTypeOrgAndOperatorsCountMapper.map(pagedModelOrganization, dptoCountsByOrgId, allOperatorsPages);
+    return allOperatorsPages;
   }
 
   private List<DebtPositionTypeOrgCountByOrganizationId> getDebtPositionTypeOrgCountByOrganizationId(List<Long> organizationIds, String accessToken) {

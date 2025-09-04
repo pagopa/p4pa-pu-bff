@@ -1,9 +1,10 @@
 package it.gov.pagopa.pu.bff.mapper;
 
 import it.gov.pagopa.pu.auth.dto.generated.OperatorDTO;
+import it.gov.pagopa.pu.auth.dto.generated.OperatorsPage;
+import it.gov.pagopa.pu.bff.dto.generated.OrganizationWithDebtPositionTypeOrgAndOperatorsCount;
 import it.gov.pagopa.pu.bff.dto.generated.PagedOrganizationWithDebtPositionTypeOrgAndOperatorsCount;
 import it.gov.pagopa.pu.bff.util.TestUtils;
-import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrgCountByOrganizationId;
 import it.gov.pagopa.pu.organization.dto.generated.Organization;
 import it.gov.pagopa.pu.organization.dto.generated.PagedModelOrganization;
 import org.junit.jupiter.api.Test;
@@ -13,14 +14,10 @@ import uk.co.jemos.podam.api.PodamFactory;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
-
-import it.gov.pagopa.pu.bff.dto.generated.OrganizationWithDebtPositionTypeOrgAndOperatorsCount;
-import it.gov.pagopa.pu.auth.dto.generated.OperatorsPage;
-
-import java.util.ArrayList;
-import java.util.stream.IntStream;
 
 class PagedOrganizationWithDebtPositionTypeOrgAndOperatorsCountMapperTest {
 
@@ -33,25 +30,17 @@ class PagedOrganizationWithDebtPositionTypeOrgAndOperatorsCountMapperTest {
     PagedModelOrganization pagedModelOrganization = podamFactory.manufacturePojo(PagedModelOrganization.class);
     List<Organization> organizations = pagedModelOrganization.getEmbedded().getOrganizations();
 
-    List<DebtPositionTypeOrgCountByOrganizationId> dptoCountsByOrgId = new ArrayList<>();
-    List<OperatorsPage> allOperatorsPages = new ArrayList<>();
+    Map<Long, Integer> dptoCountsByOrgId = organizations.stream()
+      .collect(Collectors.toMap(
+        Organization::getOrganizationId,
+        org -> 1
+      ));
 
-    IntStream.range(0, organizations.size()).forEach(i -> {
-      Organization org = organizations.get(i);
-
-      DebtPositionTypeOrgCountByOrganizationId dptoCount = podamFactory.manufacturePojo(DebtPositionTypeOrgCountByOrganizationId.class);
-      dptoCount.setOrganizationId(org.getOrganizationId());
-      dptoCount.setActiveOrganizations(i + 1);
-      dptoCountsByOrgId.add(dptoCount);
-
-      OperatorsPage operatorsPage = podamFactory.manufacturePojo(OperatorsPage.class);
-      OperatorDTO operatorDTO = podamFactory.manufacturePojo(OperatorDTO.class);
-      operatorDTO.setOrganizationIpaCode(org.getIpaCode());
-
-      operatorsPage.setContent(Collections.singletonList(operatorDTO));
-      operatorsPage.setTotalElements((i + 10));
-      allOperatorsPages.add(operatorsPage);
-    });
+    Map<Long, OperatorsPage> allOperatorsPages = organizations.stream()
+      .collect(Collectors.toMap(
+        Organization::getOrganizationId,
+        org -> podamFactory.manufacturePojo(OperatorsPage.class)
+      ));
 
     // when
     PagedOrganizationWithDebtPositionTypeOrgAndOperatorsCount result = mapper.map(pagedModelOrganization, dptoCountsByOrgId, allOperatorsPages);
@@ -72,8 +61,8 @@ class PagedOrganizationWithDebtPositionTypeOrgAndOperatorsCountMapperTest {
 
       commonCheckFields(originalOrg, mappedOrg);
 
-      assertEquals(Integer.valueOf(i + 1), mappedOrg.getDebtPositionTypeOrgCount());
-      assertEquals(1, mappedOrg.getOperatorsCount());
+      assertEquals(mapper.dptoCount(originalOrg, dptoCountsByOrgId), mappedOrg.getDebtPositionTypeOrgCount());
+      assertEquals(mapper.operatorsCount(originalOrg, allOperatorsPages), mappedOrg.getOperatorsCount());
     }
 
     TestUtils.checkNotNullFields(result);
@@ -84,20 +73,15 @@ class PagedOrganizationWithDebtPositionTypeOrgAndOperatorsCountMapperTest {
     // given
     Organization organization = podamFactory.manufacturePojo(Organization.class);
 
-    List<DebtPositionTypeOrgCountByOrganizationId> dptoCountsByOrgId = new ArrayList<>();
-    DebtPositionTypeOrgCountByOrganizationId dptoCount = podamFactory.manufacturePojo(DebtPositionTypeOrgCountByOrganizationId.class);
-    dptoCount.setOrganizationId(organization.getOrganizationId());
-    dptoCount.setActiveOrganizations(5);
-    dptoCountsByOrgId.add(dptoCount);
+    Map<Long, Integer> dptoCountsByOrgId = Map.of(
+      organization.getOrganizationId(), 5
+    );
 
-    List<OperatorsPage> allOperatorsPages = new ArrayList<>();
     OperatorsPage operatorsPage = podamFactory.manufacturePojo(OperatorsPage.class);
-    OperatorDTO operatorDTO = podamFactory.manufacturePojo(OperatorDTO.class);
-    operatorDTO.setOrganizationIpaCode(organization.getIpaCode());
-
-    operatorsPage.setContent(Collections.singletonList(operatorDTO));
     operatorsPage.setTotalElements(15);
-    allOperatorsPages.add(operatorsPage);
+    Map<Long, OperatorsPage> allOperatorsPages = Map.of(
+      organization.getOrganizationId(), operatorsPage
+    );
 
     // when
     OrganizationWithDebtPositionTypeOrgAndOperatorsCount result = mapper.mapToOrganizationWithDebtPositionTypeOrgAndOperatorsCount(organization, dptoCountsByOrgId, allOperatorsPages);
@@ -106,10 +90,10 @@ class PagedOrganizationWithDebtPositionTypeOrgAndOperatorsCountMapperTest {
     assertNotNull(result);
     commonCheckFields(organization, result);
 
-    TestUtils.checkNotNullFields(result);
-
     assertEquals(5, result.getDebtPositionTypeOrgCount());
-    assertEquals(1, result.getOperatorsCount());
+    assertEquals(15, result.getOperatorsCount());
+
+    TestUtils.checkNotNullFields(result);
   }
 
   void commonCheckFields(Organization organization, OrganizationWithDebtPositionTypeOrgAndOperatorsCount result) {
@@ -125,17 +109,10 @@ class PagedOrganizationWithDebtPositionTypeOrgAndOperatorsCountMapperTest {
     Organization organization = podamFactory.manufacturePojo(Organization.class);
     organization.setOrganizationId(12345L);
 
-    List<DebtPositionTypeOrgCountByOrganizationId> dptoCounts = new ArrayList<>();
-    DebtPositionTypeOrgCountByOrganizationId count1 = new DebtPositionTypeOrgCountByOrganizationId();
-    count1.setOrganizationId(54321L);
-    count1.setActiveOrganizations(10);
-
-    DebtPositionTypeOrgCountByOrganizationId count2 = new DebtPositionTypeOrgCountByOrganizationId();
-    count2.setOrganizationId(12345L);
-    count2.setActiveOrganizations(25);
-
-    dptoCounts.add(count1);
-    dptoCounts.add(count2);
+    Map<Long, Integer> dptoCounts = Map.of(
+      54321L, 10,
+      12345L, 25
+    );
 
     // when
     Integer result = mapper.dptoCount(organization, dptoCounts);
@@ -150,41 +127,7 @@ class PagedOrganizationWithDebtPositionTypeOrgAndOperatorsCountMapperTest {
     Organization organization = podamFactory.manufacturePojo(Organization.class);
     organization.setOrganizationId(12345L);
 
-    List<DebtPositionTypeOrgCountByOrganizationId> dptoCounts = Collections.emptyList();
-
-    // when
-    Integer result = mapper.dptoCount(organization, dptoCounts);
-
-    // then
-    assertEquals(0, result);
-  }
-
-  @Test
-  void givenDptoCountsWithNullOrganizationIdWhenDptoCountThenReturnZero() {
-    // given
-    Organization organization = podamFactory.manufacturePojo(Organization.class);
-    organization.setOrganizationId(12345L);
-
-    DebtPositionTypeOrgCountByOrganizationId debtPositionTypeOrgCountByOrganizationId = podamFactory.manufacturePojo(DebtPositionTypeOrgCountByOrganizationId.class);
-    debtPositionTypeOrgCountByOrganizationId.setOrganizationId(null);
-    List<DebtPositionTypeOrgCountByOrganizationId> dptoCounts = List.of(debtPositionTypeOrgCountByOrganizationId);
-
-    // when
-    Integer result = mapper.dptoCount(organization, dptoCounts);
-
-    // then
-    assertEquals(0, result);
-  }
-
-  @Test
-  void givenDptoCountsWithNullActiveOrganizationsWhenDptoCountThenReturnZero() {
-    // given
-    Organization organization = podamFactory.manufacturePojo(Organization.class);
-    organization.setOrganizationId(12345L);
-
-    DebtPositionTypeOrgCountByOrganizationId debtPositionTypeOrgCountByOrganizationId = podamFactory.manufacturePojo(DebtPositionTypeOrgCountByOrganizationId.class);
-    debtPositionTypeOrgCountByOrganizationId.setActiveOrganizations(null);
-    List<DebtPositionTypeOrgCountByOrganizationId> dptoCounts = List.of(debtPositionTypeOrgCountByOrganizationId);
+    Map<Long, Integer> dptoCounts = Collections.emptyMap();
 
     // when
     Integer result = mapper.dptoCount(organization, dptoCounts);
@@ -197,46 +140,34 @@ class PagedOrganizationWithDebtPositionTypeOrgAndOperatorsCountMapperTest {
   void givenOperatorsPagesWhenOperatorsCountThenReturnCorrectValue() {
     // given
     Organization organization = podamFactory.manufacturePojo(Organization.class);
-    organization.setIpaCode("IPA_CODE_TEST");
-
-    Organization organization2 = podamFactory.manufacturePojo(Organization.class);
-    organization2.setIpaCode("OTHER_IPA");
-
-    List<OperatorsPage> allOperators = new ArrayList<>();
+    organization.setOrganizationId(12345L);
 
     OperatorsPage page1 = new OperatorsPage();
-    OperatorDTO operator1 = new OperatorDTO();
-    operator1.setOrganizationIpaCode("OTHER_IPA");
-    page1.setContent(Collections.singletonList(operator1));
+    page1.setTotalElements(10);
 
     OperatorsPage page2 = new OperatorsPage();
-    OperatorDTO operator2 = new OperatorDTO();
-    operator2.setOrganizationIpaCode("IPA_CODE_TEST");
-    OperatorDTO operator3 = new OperatorDTO();
-    operator3.setOrganizationIpaCode("IPA_CODE_TEST");
-    OperatorDTO operator4 = new OperatorDTO();
-    operator4.setOrganizationIpaCode("IPA_CODE_TEST");
-    page2.setContent(List.of(operator2, operator3, operator4));
+    page2.setTotalElements(25);
+    page2.setContent(Collections.singletonList(new OperatorDTO()));
 
-    allOperators.add(page1);
-    allOperators.add(page2);
+    Map<Long, OperatorsPage> allOperators = Map.of(
+      111L, page1,
+      12345L, page2
+    );
 
     // when
-    Integer result1 = mapper.operatorsCount(organization, allOperators);
-    Integer result2 = mapper.operatorsCount(organization2, allOperators);
+    Integer result = mapper.operatorsCount(organization, allOperators);
 
     // then
-    assertEquals(3, result1);
-    assertEquals(1, result2);
+    assertEquals(25, result);
   }
 
   @Test
-  void givenEmptyOperatorsPagesWhenOperatorsCountThenReturnZero() {
+  void givenNoOperatorsPageForOrgWhenOperatorsCountThenReturnZero() {
     // given
     Organization organization = podamFactory.manufacturePojo(Organization.class);
-    organization.setIpaCode("IPA_CODE_TEST");
+    organization.setOrganizationId(12345L);
 
-    List<OperatorsPage> allOperators = Collections.emptyList();
+    Map<Long, OperatorsPage> allOperators = Collections.emptyMap();
 
     // when
     Integer result = mapper.operatorsCount(organization, allOperators);
@@ -246,34 +177,18 @@ class PagedOrganizationWithDebtPositionTypeOrgAndOperatorsCountMapperTest {
   }
 
   @Test
-  void givenOperatorsPagesWithEmptyContentWhenOperatorsCountThenReturnZero() {
+  void givenOperatorsPageWithEmptyContentWhenOperatorsCountThenReturnZero() {
     // given
     Organization organization = podamFactory.manufacturePojo(Organization.class);
-    organization.setIpaCode("IPA_CODE_TEST");
+    organization.setOrganizationId(12345L);
 
-    List<OperatorsPage> allOperators = new ArrayList<>();
-    OperatorsPage emptyPage = new OperatorsPage();
-    emptyPage.setContent(Collections.emptyList());
+    OperatorsPage operatorsPage = new OperatorsPage();
+    operatorsPage.setTotalElements(15);
+    operatorsPage.setContent(Collections.emptyList());
 
-    allOperators.add(emptyPage);
-
-    // when
-    Integer result = mapper.operatorsCount(organization, allOperators);
-
-    // then
-    assertEquals(0, result);
-  }
-
-  @Test
-  void givenNullOperatorsPagesWhenOperatorsCountThenReturnZero() {
-    // given
-    Organization organization = podamFactory.manufacturePojo(Organization.class);
-    organization.setIpaCode("IPA_CODE_TEST");
-
-    List<OperatorsPage> allOperators = new ArrayList<>();
-    OperatorsPage nullPage = null;
-
-    allOperators.add(nullPage);
+    Map<Long, OperatorsPage> allOperators = Map.of(
+      12345L, operatorsPage
+    );
 
     // when
     Integer result = mapper.operatorsCount(organization, allOperators);

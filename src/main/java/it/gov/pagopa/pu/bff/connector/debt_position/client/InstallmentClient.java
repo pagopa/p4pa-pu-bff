@@ -3,6 +3,7 @@ package it.gov.pagopa.pu.bff.connector.debt_position.client;
 import it.gov.pagopa.pu.bff.connector.debt_position.config.DebtPositionApisHolder;
 import it.gov.pagopa.pu.bff.dto.InstallmentViewFiltersDTO;
 import it.gov.pagopa.pu.bff.util.PageUtils;
+import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionOrigin;
 import it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentDetailDTO;
 import it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentNoPII;
 import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelInstallmentView;
@@ -10,6 +11,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
+
+import java.util.List;
 
 @Service
 @Slf4j
@@ -46,12 +49,12 @@ public class InstallmentClient {
     }
   }
 
-  public InstallmentNoPII getInstallmentFromTransferSemanticKey(Long organizationId, String iuv, String iur, String transferIndex, String operatorExternalUserId, String accessToken) {
+  public InstallmentNoPII getInstallmentFromTransferSemanticKey(Long organizationId, String iuv, String iur, String transferIndex, String operatorExternalUserId, List<DebtPositionOrigin> debtPositionOrigins, String accessToken) {
     try {
       return debtPositionApisHolder.getInstallmentNoPiiSearchControllerApi(
           accessToken)
         .crudInstallmentsFindAuthorizedByTransferSemanticKey(organizationId,
-          iuv, iur, transferIndex, operatorExternalUserId);
+          iuv, iur, transferIndex, operatorExternalUserId, debtPositionOrigins);
     } catch (HttpClientErrorException.NotFound e) {
       log.warn("Installment with this semantic key and operatorExternalUserId {} not found", operatorExternalUserId);
       return null;

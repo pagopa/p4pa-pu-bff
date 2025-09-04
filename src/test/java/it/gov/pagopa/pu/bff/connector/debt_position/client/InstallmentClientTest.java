@@ -135,10 +135,10 @@ class InstallmentClientTest {
 
     when(debtPositionApisHolderMock.getInstallmentNoPiiSearchControllerApi(accessToken))
       .thenReturn(installmentNoPiiSearchControllerApi);
-    when(installmentNoPiiSearchControllerApi.crudInstallmentsFindAuthorizedByTransferSemanticKey(organizationId, iuv, iur, transferIndex, operatorExternalUserId))
+    when(installmentNoPiiSearchControllerApi.crudInstallmentsFindAuthorizedByTransferSemanticKey(organizationId, iuv, iur, transferIndex, operatorExternalUserId, null))
       .thenReturn(expectedResult);
 
-    InstallmentNoPII result = installmentClient.getInstallmentFromTransferSemanticKey(organizationId, iuv, iur, transferIndex, operatorExternalUserId, accessToken);
+    InstallmentNoPII result = installmentClient.getInstallmentFromTransferSemanticKey(organizationId, iuv, iur, transferIndex, operatorExternalUserId, null, accessToken);
 
     assertSame(expectedResult, result);
   }
@@ -154,10 +154,10 @@ class InstallmentClientTest {
 
     when(debtPositionApisHolderMock.getInstallmentNoPiiSearchControllerApi(accessToken))
       .thenReturn(installmentNoPiiSearchControllerApi);
-    when(installmentNoPiiSearchControllerApi.crudInstallmentsFindAuthorizedByTransferSemanticKey(organizationId, iuv, iur, transferIndex, operatorExternalUserId))
+    when(installmentNoPiiSearchControllerApi.crudInstallmentsFindAuthorizedByTransferSemanticKey(organizationId, iuv, iur, transferIndex, operatorExternalUserId, null))
       .thenThrow(HttpClientErrorException.create(HttpStatus.NOT_FOUND, "NotFound", null, null, null));
 
-    InstallmentNoPII result = installmentClient.getInstallmentFromTransferSemanticKey(organizationId, iuv, iur, transferIndex, operatorExternalUserId, accessToken);
+    InstallmentNoPII result = installmentClient.getInstallmentFromTransferSemanticKey(organizationId, iuv, iur, transferIndex, operatorExternalUserId, null, accessToken);
 
     Assertions.assertNull(result);
   }

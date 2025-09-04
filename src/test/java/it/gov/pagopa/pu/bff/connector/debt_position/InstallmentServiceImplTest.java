@@ -69,10 +69,10 @@ class InstallmentServiceImplTest {
     String operatorExternalUserId = "operatorExternalUserId";
     InstallmentNoPII expectedResult = new InstallmentNoPII();
 
-    when(client.getInstallmentFromTransferSemanticKey(organizationId, iuv, iur, transferIndex, operatorExternalUserId, accessToken))
+    when(client.getInstallmentFromTransferSemanticKey(organizationId, iuv, iur, transferIndex, operatorExternalUserId, null, accessToken))
       .thenReturn(expectedResult);
 
-    InstallmentNoPII result = service.getInstallmentFromTransferSemanticKey(organizationId, iuv, iur, transferIndex, operatorExternalUserId, accessToken);
+    InstallmentNoPII result = service.getInstallmentFromTransferSemanticKey(organizationId, iuv, iur, transferIndex, operatorExternalUserId, null, accessToken);
 
     assertSame(expectedResult, result);
   }

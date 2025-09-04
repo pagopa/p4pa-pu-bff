@@ -306,7 +306,7 @@ class PaymentsReportingRetrieverServiceImplTest {
       when(
         installmentRetrieverServiceMock.getInstallmentFromTransferSemanticKey(
           organizationId, iuv, iur,
-          String.valueOf(transferIndex), loggedUser, accessToken))
+          String.valueOf(transferIndex), loggedUser, null, accessToken))
         .thenReturn(installmentNoPII);
 
       when(
@@ -392,7 +392,7 @@ class PaymentsReportingRetrieverServiceImplTest {
       when(
         installmentRetrieverServiceMock.getInstallmentFromTransferSemanticKey(
           organizationId, iuv, iur,
-          String.valueOf(transferIndex), loggedUser, accessToken))
+          String.valueOf(transferIndex), loggedUser, null, accessToken))
         .thenReturn(null);
 
       when(paymentsReportingMapperMock.mapToPaymentsReportingDetailDTO(

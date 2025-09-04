@@ -1,6 +1,9 @@
 package it.gov.pagopa.pu.bff.connector.organization;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 import it.gov.pagopa.pu.bff.connector.organization.client.OrganizationEntityClient;
@@ -71,5 +74,23 @@ class OrganizationServiceTest {
     Organization result = service.getOrganizationByOrganizationId(organizationId, accessToken);
 
     assertSame(expected, result);
+  }
+
+  @Test
+  void  givenBrokerIdWhenGetOrganizationsByBrokerIdThenReturnPagedModelOrganization(){
+    //given
+    String accessToken = "ACCESSTOKEN";
+    Long brokerId = 1L;
+    PagedModelOrganization expectedResult = new PagedModelOrganization();
+
+    when(organizationSearchClient.getOrganizationsByBrokerId(eq(brokerId), any(), eq(accessToken)))
+      .thenReturn(expectedResult);
+
+    //when
+    PagedModelOrganization result = service.getOrganizationsByBrokerId(brokerId, Pageable.ofSize(1), accessToken);
+
+    //then
+    assertNotNull(result);
+    assertSame(expectedResult, result);
   }
 }

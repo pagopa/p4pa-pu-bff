@@ -7386,6 +7386,90 @@
         "security" : [ ]
       }
     },
+    "/bff/brokers/organizations" : {
+      "get" : {
+        "tags" : [ "Organizations" ],
+        "summary" : "Retrieve the list of organizations from the brokers",
+        "operationId" : "getOrganizationsByBrokerId",
+        "parameters" : [ {
+          "name" : "page",
+          "in" : "query",
+          "description" : "Zero-based page index (0..N)",
+          "required" : false,
+          "schema" : {
+            "type" : "integer",
+            "default" : 0,
+            "minimum" : 0
+          }
+        }, {
+          "name" : "size",
+          "in" : "query",
+          "description" : "The size of the page to be returned",
+          "required" : false,
+          "schema" : {
+            "type" : "integer",
+            "default" : 20,
+            "minimum" : 1
+          }
+        }, {
+          "name" : "sort",
+          "in" : "query",
+          "description" : "Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/PagedOrganizationWithDebtPositionTypeOrgAndOperatorsCount"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Unauthorized - Missing or invalid token",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/PagedOrganizationWithDebtPositionTypeOrgAndOperatorsCount"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Forbidden - Access denied",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/PagedOrganizationWithDebtPositionTypeOrgAndOperatorsCount"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal Server Error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorDTO"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "BearerAuth" : [ ]
+        } ]
+      }
+    },
     "/bff/brokers/config" : {
       "get" : {
         "tags" : [ "Brokers" ],
@@ -12245,6 +12329,67 @@
             "description" : "Service status"
           }
         }
+      },
+      "OrganizationWithDebtPositionTypeOrgAndOperatorsCount" : {
+        "type" : "object",
+        "properties" : {
+          "organizationId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "ipaCode" : {
+            "type" : "string"
+          },
+          "orgName" : {
+            "type" : "string"
+          },
+          "orgFiscalCode" : {
+            "type" : "string"
+          },
+          "debtPositionTypeOrgCount" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "operatorsCount" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "status" : {
+            "$ref" : "#/components/schemas/StatusEnum"
+          }
+        }
+      },
+      "PagedOrganizationWithDebtPositionTypeOrgAndOperatorsCount" : {
+        "type" : "object",
+        "properties" : {
+          "content" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/OrganizationWithDebtPositionTypeOrgAndOperatorsCount"
+            }
+          },
+          "size" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "totalElements" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "totalPages" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "number" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        },
+        "required" : [ "content", "number", "size", "totalElements", "totalPages" ]
+      },
+      "StatusEnum" : {
+        "type" : "string",
+        "enum" : [ "ACTIVE", "DRAFT", "CANCELLED" ]
       },
       "ConfigFE" : {
         "type" : "object",

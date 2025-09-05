@@ -1,43 +1,222 @@
 @font-face {
-    font-family: 'Montserrat';
-    src: url(../fonts/Montserrat/static/Montserrat-Regular.ttf);
+    font-family: 'TitilliumWeb';
+    src: url(../fonts/Titillium_Web/TitilliumWeb-Regular.ttf);
     font-weight: normal;
     font-style: normal;
 }
 
 @font-face {
-    font-family: 'Montserrat';
-    src: url(../fonts/Montserrat/static/Montserrat-Bold.ttf);
+    font-family: 'TitilliumWeb';
+    src: url(../fonts/Titillium_Web/TitilliumWeb-bold.ttf);
     font-weight: bold;
     font-style: normal;
 }
 
+@font-face {
+    font-family: 'DMMono';
+    src: url(../fonts/DM_Mono/DMMono-Medium.ttf);
+    font-weight: bold;
+    font-style: normal;
+}
+
+@page {
+    margin: 0mm;
+    size: A4;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
 body {
-    font-family: 'Montserrat', sans-serif;
-    margin: 40px;
-    font-size: 12px;
+    font-family: 'TitilliumWeb', sans-serif;
+    font-size: 8px;
+    line-height: 1.4;
+    color: #000;
+    background: white;
+    padding: 40px;
+    max-width: 210mm;
+    margin: 0 auto;
 }
 
 .header {
-    display: flex;
-    align-items: center;
-    margin-bottom: 20px;
+    width: 100%;
+    margin-bottom: 50px;
+    min-height: 60px;
+    display: table;
+    table-layout: fixed;
 }
 
-.logo {
-    width: 100px;
+.ec-logo,
+.pagopa-logo {
+    display: table-cell;
+    width: 60px;
+    vertical-align: middle;
+}
+
+.ec-logo {
+    text-align: left;
+}
+
+.pagopa-logo {
+    text-align: right;
+}
+
+.logo-image {
+    max-width: 48px;
+    max-height: 48px;
     height: auto;
-    margin-right: 20px;
+    width: auto;
 }
 
-.section {
+.header-text {
+    display: table-cell;
+    text-align: left;
+    vertical-align: top;
+    padding: 0 20px;
+}
+
+.header-text h1 {
+    font-size: 12px;
+    font-weight: bold;
+    color: #000;
+    margin: 0;
+}
+
+.divider {
+    width: 100%;
+    height: 1px;
+    background-color: #E3E7EB;
+    margin: 20px 0;
+    clear: both;
+}
+
+.transaction-section {
+    width: 100%;
+    margin-bottom: 60px;
+}
+
+.info-item {
+    margin-bottom: 15px;
+}
+
+.info-label {
+    font-size: 14px;
+    font-weight: 400;
+    color: #000;
+    margin-bottom: 5px;
+}
+
+.info-value {
+    font-size: 12px;
+    font-weight: 700;
+    color: #000;
+}
+
+.remittance-section .info-value {
+    font-size: 12px;
+    font-weight: 700;
+    color: #000;
+    line-height: 1.5;
     margin-bottom: 20px;
 }
 
-.field {
-    margin: 5px 0;
+.debtor-grid {
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+    margin-bottom: 30px;
 }
 
-.label {
-    font-weight: bold;
+.debtor-grid .info-item {
+    display: table-cell;
+    width: 33.333%;
+    vertical-align: top;
+    padding-right: 20px;
+}
+
+.debtor-grid .info-item:last-child {
+    text-align: right;
+    padding-right: 0;
+}
+
+.fiscal-code,
+.org-fiscal-code,
+.payment-code {
+    font-family: 'DMMono', monospace;
+    font-size: 12px;
+    font-weight: 500;
+    color: #000;
+}
+
+.amount-section-header {
+    text-align: right;
+    margin-bottom: 10px;
+}
+
+.amount-header-label {
+    font-size: 14px;
+    font-weight: 400;
+    color: #000;
+    margin-bottom: 5px;
+}
+
+.amount-header-value {
+    font-size: 12px;
+    font-weight: 700;
+    color: #000;
+}
+
+.amounts-section {
+    margin: 25px 0;
+    width: 100%;
+}
+
+.amount-row {
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+    margin-bottom: 5px;
+}
+
+.amount-label {
+    display: table-cell;
+    width: 80%;
+    text-align: right;
+    padding-right: 5px;
+    color: #000;
+    font-size: 14px;
+    font-weight: 400;
+}
+
+.total-amount-label {
+    display: table-cell;
+    width: 80%;
+    text-align: right;
+    padding-right: 5px;
+    color: #000;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.amount-value {
+    display: table-cell;
+    width: 20%;
+    text-align: right;
+    font-size: 10px;
+    font-weight: 700;
+    color: #000;
+}
+
+.total-row .amount-label {
+    font-size: 14px;
+    font-weight: 400;
+}
+
+.total-amount {
+    font-size: 20px;
+    font-weight: 700;
+    color: #000;
 }

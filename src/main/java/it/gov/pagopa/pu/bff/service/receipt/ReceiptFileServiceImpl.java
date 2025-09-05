@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 @Service
@@ -27,7 +28,10 @@ public class ReceiptFileServiceImpl implements ReceiptFileService{
     public static final String RECEIPT_PAYMENT_DATE = "paymentDate";
     public static final String RECEIPT_PSP_NAME = "pspName";
     public static final String RECEIPT_FEE_AMOUNT = "feeAmount";
-    public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    public static final String RECEIPT_AMOUNT = "amount";
+    public static final String RECEIPT_ORG_FISCAL_CODE = "orgFiscalCode";
+    public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("dd MMMM yyyy, HH:mm:ss", Locale.getDefault());
+    public static final String REMITTANCE_INFORMATION = "remittanceInformation";
 
     public ReceiptFileServiceImpl(DocumentComposition documentComposition) {
         this.documentComposition = documentComposition;
@@ -55,6 +59,9 @@ public class ReceiptFileServiceImpl implements ReceiptFileService{
         templateModel.put(RECEIPT_PAYMENT_DATE,receiptDetail.getPaymentDateTime()!=null?receiptDetail.getPaymentDateTime().format(DATE_TIME_FORMATTER):"");
         templateModel.put(RECEIPT_PSP_NAME,receiptDetail.getPspCompanyName());
         templateModel.put(RECEIPT_FEE_AMOUNT, Utilities.formatPrice(receiptDetail.getFeeCents()));
+        templateModel.put(RECEIPT_AMOUNT, Utilities.formatPrice(receiptDetail.getPaymentAmountCents()-receiptDetail.getFeeCents()));
+        templateModel.put(RECEIPT_ORG_FISCAL_CODE,organization.getOrgFiscalCode());
+        templateModel.put(REMITTANCE_INFORMATION,StringUtils.defaultString(receiptDetail.getRemittanceInformation()));
         return templateModel;
     }
 }

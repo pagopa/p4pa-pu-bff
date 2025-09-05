@@ -15,5 +15,7 @@ public interface OrganizationService {
 
   PagedModelOrganization getOrganizationsByBrokerId(Long brokerId, Pageable pageable, String accessToken);
 
+  void updateOrganization(OrganizationDetailDTO organizationDetailDTO, String accessToken);
+
   OrganizationDetailDTO getOrganizationDetail(Long organizationId, String accessToken);
 }

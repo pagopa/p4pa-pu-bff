@@ -10,6 +10,7 @@ import it.gov.pagopa.pu.bff.connector.organization.OrganizationService;
 import it.gov.pagopa.pu.bff.dto.generated.OrganizationDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedOrganizationWithDebtPositionTypeOrgAndOperatorsCount;
 import it.gov.pagopa.pu.bff.dto.generated.PagedOrganizationWithDebtPositionTypeOrgCount;
+import it.gov.pagopa.pu.bff.exception.InvalidOrganizationException;
 import it.gov.pagopa.pu.bff.exception.ResourceNotFoundException;
 import it.gov.pagopa.pu.bff.mapper.OrganizationDTOMapper;
 import it.gov.pagopa.pu.bff.mapper.OrganizationWithDebtPositionTypeOrgCountMapper;
@@ -23,7 +24,9 @@ import it.gov.pagopa.pu.organization.dto.generated.Organization;
 import it.gov.pagopa.pu.organization.dto.generated.OrganizationDetailDTO;
 import it.gov.pagopa.pu.organization.dto.generated.PagedModelOrganization;
 import it.gov.pagopa.pu.organization.dto.generated.PagedModelOrganizationEmbedded;
+import jakarta.validation.ValidationException;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -385,6 +388,84 @@ class OrganizationRetrieverServiceImplTest {
     assertEquals(0L, result.getNumber());
   }
 
+
+  @Test
+  void givenAdminRoleWhenUpdateOrganizationThenOk() {
+    UserInfo loggedUser = new UserInfo();
+    loggedUser.setUserId("user-123");
+    loggedUser.setMappedExternalUserId("operatorExternalUserId");
+
+    Long organizationId = 1L;
+    OrganizationDetailDTO orgDTO = podamFactory.manufacturePojo(OrganizationDetailDTO.class);
+    orgDTO.setOrganizationId(organizationId);
+    Organization organization = podamFactory.manufacturePojo(Organization.class);
+    organization.setBrokerId(orgDTO.getBrokerId());
+    organization.setExternalOrganizationId(orgDTO.getExternalOrganizationId());
+    organization.setIpaCode(orgDTO.getIpaCode());
+    organization.setOrgFiscalCode(orgDTO.getOrgFiscalCode());
+    organization.setOrgName(orgDTO.getOrgName());
+    organization.setOrgTypeCode(orgDTO.getOrgTypeCode());
+
+    doNothing().when(authorizationServiceMock).validateOrganizationOrBrokerAdmin(organizationId,loggedUser,accessToken);
+    when(organizationServiceMock.getOrganizationByOrganizationId(organizationId,accessToken)).thenReturn(organization);
+    doNothing().when(organizationServiceMock).updateOrganization(orgDTO, accessToken);
+
+    organizationService.updateOrganization(organizationId, orgDTO, loggedUser, accessToken);
+  }
+
+  @Test
+  void givenUpdatedReadOnlyFieldWhenUpdateOrganizationThenValidationException() {
+    UserInfo loggedUser = new UserInfo();
+    loggedUser.setUserId("user-123");
+    loggedUser.setMappedExternalUserId("operatorExternalUserId");
+
+    Long organizationId = 1L;
+    OrganizationDetailDTO orgDTO = podamFactory.manufacturePojo(OrganizationDetailDTO.class);
+    orgDTO.setOrganizationId(organizationId);
+    Organization organization = podamFactory.manufacturePojo(Organization.class);
+    organization.setBrokerId(orgDTO.getBrokerId());
+    organization.setExternalOrganizationId(orgDTO.getExternalOrganizationId());
+    organization.setIpaCode(orgDTO.getIpaCode());
+    organization.setOrgFiscalCode(orgDTO.getOrgFiscalCode());
+    organization.setOrgName(orgDTO.getOrgName());
+    organization.setOrgTypeCode(orgDTO.getOrgTypeCode()+"old");
+
+    doNothing().when(authorizationServiceMock).validateOrganizationOrBrokerAdmin(organizationId,loggedUser,accessToken);
+    when(organizationServiceMock.getOrganizationByOrganizationId(organizationId,accessToken)).thenReturn(organization);
+
+    Assertions.assertThrows(ValidationException.class,() -> organizationService.updateOrganization(organizationId, orgDTO, loggedUser, accessToken));
+  }
+
+  @Test
+  void givenNoExistingOrganizationWhenUpdateOrganizationThenResourceNotFound() {
+    UserInfo loggedUser = new UserInfo();
+    loggedUser.setUserId("user-123");
+    loggedUser.setMappedExternalUserId("operatorExternalUserId");
+
+    Long organizationId = 1L;
+    OrganizationDetailDTO orgDTO = podamFactory.manufacturePojo(OrganizationDetailDTO.class);
+    orgDTO.setOrganizationId(organizationId);
+
+    doNothing().when(authorizationServiceMock).validateOrganizationOrBrokerAdmin(organizationId,loggedUser,accessToken);
+    when(organizationServiceMock.getOrganizationByOrganizationId(organizationId,accessToken)).thenReturn(null);
+
+    Assertions.assertThrows(ResourceNotFoundException.class,() -> organizationService.updateOrganization(organizationId, orgDTO, loggedUser, accessToken));
+  }
+
+  @Test
+  void givenWrongOrganizationIdWhenUpdateOrganizationThenInvalidOrganizationException() {
+    UserInfo loggedUser = new UserInfo();
+    loggedUser.setUserId("user-123");
+    loggedUser.setMappedExternalUserId("operatorExternalUserId");
+
+    Long organizationId = 1L;
+    OrganizationDetailDTO orgDTO = podamFactory.manufacturePojo(OrganizationDetailDTO.class);
+    orgDTO.setOrganizationId(organizationId+1);
+
+    doNothing().when(authorizationServiceMock).validateOrganizationOrBrokerAdmin(organizationId,loggedUser,accessToken);
+
+    Assertions.assertThrows(InvalidOrganizationException.class,() -> organizationService.updateOrganization(organizationId, orgDTO, loggedUser, accessToken));
+  }
   @Test
   void givenExistingOrganizationIdWhenGetOrganizationDetailThenReturnOrganizationDetailDTO() {
     Long organizationId = 123L;

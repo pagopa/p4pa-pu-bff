@@ -123,11 +123,11 @@ public class OrganizationApisHolder {
       return getApi(accessToken, organizationSilServiceApi);
     }
 
-    public OrganizationApi getOrganizationApi(String accessToken) {
+    public OrganizationApi getOrganizationApi(String accessToken){
       return getApi(accessToken, organizationApi);
     }
 
-  private <T extends BaseApi> T getApi(String accessToken, T api) {
+    private <T extends BaseApi> T getApi(String accessToken, T api) {
         bearerTokenHolder.set(accessToken);
         return api;
     }

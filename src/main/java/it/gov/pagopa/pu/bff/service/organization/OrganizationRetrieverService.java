@@ -19,5 +19,7 @@ public interface OrganizationRetrieverService {
 
   String getOrgFiscalCode(Long organizationId, UserInfo loggedUser, String accessToken);
 
+  void updateOrganization(Long organizationId, OrganizationDetailDTO organizationDetailDTO, UserInfo loggedUser, String accessToken);
+
   OrganizationDetailDTO getOrganizationDetail(Long organizationId, UserInfo loggedUser, String accessToken);
 }

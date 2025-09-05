@@ -7,11 +7,13 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 import it.gov.pagopa.pu.bff.connector.organization.client.OrganizationApiClient;
+import it.gov.pagopa.pu.bff.connector.organization.client.OrganizationClient;
 import it.gov.pagopa.pu.bff.connector.organization.client.OrganizationEntityClient;
 import it.gov.pagopa.pu.bff.connector.organization.client.OrganizationSearchClient;
 import it.gov.pagopa.pu.organization.dto.generated.Organization;
 import it.gov.pagopa.pu.organization.dto.generated.OrganizationDetailDTO;
 import it.gov.pagopa.pu.organization.dto.generated.PagedModelOrganization;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,6 +21,13 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Pageable;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class OrganizationServiceTest {
@@ -28,12 +37,21 @@ class OrganizationServiceTest {
   @Mock
   private OrganizationEntityClient organizationEntityClientMock;
   @Mock
+  private OrganizationEntityClient organizationEntityClient;
+  @Mock
+  private OrganizationClient organizationClientMock;
   private OrganizationApiClient organizationApiClientMock;
 
   private OrganizationService service;
 
   @BeforeEach
   void setUp() {
+    service = new OrganizationServiceImpl(organizationSearchClient, organizationEntityClient, organizationClientMock);
+  }
+
+  @AfterEach
+  void verifyNoMoreInteractions() {
+    Mockito.verifyNoMoreInteractions(organizationSearchClient, organizationEntityClient, organizationClientMock);
     service = new OrganizationServiceImpl(organizationSearchClientMock, organizationEntityClientMock, organizationApiClientMock);
   }
 
@@ -111,5 +129,17 @@ class OrganizationServiceTest {
 
     assertNotNull(result);
     assertSame(expectedResult, result);
+  }
+
+  @Test
+  void whenUpdateOrganizationThenInvokeClient() {
+    OrganizationDetailDTO organizationDetailDTO = new OrganizationDetailDTO();
+    String accessToken = "accessToken";
+
+    doNothing().when(organizationClientMock).updateOrganization(organizationDetailDTO, accessToken);
+
+    service.updateOrganization(organizationDetailDTO, accessToken);
+
+    Mockito.verifyNoMoreInteractions(organizationClientMock);
   }
 }

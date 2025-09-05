@@ -2,6 +2,7 @@ package it.gov.pagopa.pu.bff.connector.organization.config;
 
 import it.gov.pagopa.pu.bff.connector.BaseApiHolderTest;
 import it.gov.pagopa.pu.organization.dto.generated.OrgSilServiceType;
+import it.gov.pagopa.pu.organization.dto.generated.OrganizationDetailDTO;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -171,8 +172,11 @@ class OrganizationApisHolderTest extends BaseApiHolderTest {
   @Test
   void whenGetOrganizationApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
     assertAuthenticationShouldBeSetInThreadSafeMode(
-      accessToken -> organizationApisHolder.getOrganizationApi(accessToken)
-        .getOrganization(1L),
+      accessToken ->{
+        organizationApisHolder.getOrganizationApi(accessToken)
+                .updateOrganization(new OrganizationDetailDTO());
+        return voidMock;
+      },
       new ParameterizedTypeReference<>() {},
       organizationApisHolder::unload);
   }

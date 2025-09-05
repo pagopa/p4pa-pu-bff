@@ -8,6 +8,7 @@ import it.gov.pagopa.pu.bff.connector.organization.OrganizationService;
 import it.gov.pagopa.pu.bff.dto.generated.OrganizationDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedOrganizationWithDebtPositionTypeOrgAndOperatorsCount;
 import it.gov.pagopa.pu.bff.dto.generated.PagedOrganizationWithDebtPositionTypeOrgCount;
+import it.gov.pagopa.pu.bff.exception.InvalidOrganizationException;
 import it.gov.pagopa.pu.bff.exception.ResourceNotFoundException;
 import it.gov.pagopa.pu.bff.mapper.OrganizationDTOMapper;
 import it.gov.pagopa.pu.bff.mapper.OrganizationWithDebtPositionTypeOrgCountMapper;
@@ -18,6 +19,7 @@ import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrgCountByOr
 import it.gov.pagopa.pu.organization.dto.generated.Organization;
 import it.gov.pagopa.pu.organization.dto.generated.OrganizationDetailDTO;
 import it.gov.pagopa.pu.organization.dto.generated.PagedModelOrganization;
+import jakarta.validation.ValidationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -25,6 +27,8 @@ import org.springframework.util.CollectionUtils;
 
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static it.gov.pagopa.pu.bff.util.Utilities.checkImmutableField;
 
 @Service
 @Slf4j
@@ -179,5 +183,37 @@ public class OrganizationRetrieverServiceImpl implements OrganizationRetrieverSe
     }
 
     return organizationService.getOrganizationDetail(organizationId, accessToken);
+  }
+
+  @Override
+  public void updateOrganization(Long organizationId, OrganizationDetailDTO organizationDetailDTO, UserInfo loggedUser, String accessToken) {
+    authorizationService.validateOrganizationOrBrokerAdmin(organizationId,loggedUser,accessToken);
+    validateOrganization(organizationId, organizationDetailDTO, accessToken);
+    organizationService.updateOrganization(organizationDetailDTO,accessToken);
+  }
+
+  private void validateOrganization(Long organizationId, OrganizationDetailDTO organizationDetailDTO, String accessToken) {
+    if(!organizationId.equals(organizationDetailDTO.getOrganizationId())){
+      throw new InvalidOrganizationException("The Organization's id " + organizationDetailDTO.getOrganizationId() +
+              " does not match the given organizationId "+ organizationId);
+    }
+    Organization existingOrganization = organizationService.getOrganizationByOrganizationId(organizationId, accessToken);
+    if(existingOrganization==null){
+      throw new ResourceNotFoundException("Organization having id "+ organizationId +" not found");
+    }
+    checkReadOnlyFields(existingOrganization, organizationDetailDTO);
+  }
+
+  private void checkReadOnlyFields(Organization existingOrganization, OrganizationDetailDTO organization) {
+    List<String> modifiedFields = new ArrayList<>();
+    checkImmutableField("brokerId", existingOrganization.getBrokerId(), organization.getBrokerId(), modifiedFields);
+    checkImmutableField("externalOrganizationId", existingOrganization.getExternalOrganizationId(), organization.getExternalOrganizationId(), modifiedFields);
+    checkImmutableField("ipaCode", existingOrganization.getIpaCode(), organization.getIpaCode(), modifiedFields);
+    checkImmutableField("orgFiscalCode", existingOrganization.getOrgFiscalCode(), organization.getOrgFiscalCode(), modifiedFields);
+    checkImmutableField("orgName", existingOrganization.getOrgName(), organization.getOrgName(), modifiedFields);
+    checkImmutableField("orgTypeCode", existingOrganization.getOrgTypeCode(), organization.getOrgTypeCode(), modifiedFields);
+    if(!CollectionUtils.isEmpty(modifiedFields)){
+      throw new ValidationException("The following Organization fields are readOnly. "+modifiedFields);
+    }
   }
 }

@@ -1,6 +1,7 @@
 package it.gov.pagopa.pu.bff.connector.organization;
 
 import it.gov.pagopa.pu.bff.connector.organization.client.OrganizationApiClient;
+import it.gov.pagopa.pu.bff.connector.organization.client.OrganizationClient;
 import it.gov.pagopa.pu.bff.connector.organization.client.OrganizationEntityClient;
 import it.gov.pagopa.pu.bff.connector.organization.client.OrganizationSearchClient;
 import it.gov.pagopa.pu.organization.dto.generated.Organization;
@@ -18,13 +19,16 @@ public class OrganizationServiceImpl implements OrganizationService {
   private final OrganizationSearchClient organizationSearchClient;
   private final OrganizationEntityClient organizationEntityClient;
   private final OrganizationApiClient organizationApiClient;
+  private final OrganizationClient organizationClient;
 
   public OrganizationServiceImpl(OrganizationSearchClient organizationSearchClient,
                                  OrganizationEntityClient organizationEntityClient,
                                  OrganizationApiClient organizationApiClient) {
+                                 OrganizationEntityClient organizationEntityClient, OrganizationClient organizationClient) {
     this.organizationSearchClient = organizationSearchClient;
     this.organizationEntityClient = organizationEntityClient;
     this.organizationApiClient = organizationApiClient;
+      this.organizationClient = organizationClient;
   }
 
   @Override
@@ -53,5 +57,10 @@ public class OrganizationServiceImpl implements OrganizationService {
   @Override
   public OrganizationDetailDTO getOrganizationDetail(Long organizationId, String accessToken) {
     return organizationApiClient.getOrganizationDetail(organizationId, accessToken);
+  }
+
+  @Override
+  public void updateOrganization(OrganizationDetailDTO organizationDetailDTO, String accessToken) {
+    organizationClient.updateOrganization(organizationDetailDTO,accessToken);
   }
 }

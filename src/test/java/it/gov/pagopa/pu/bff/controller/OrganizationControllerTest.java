@@ -3,7 +3,6 @@ package it.gov.pagopa.pu.bff.controller;
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.dto.generated.OrganizationDTO;
 import it.gov.pagopa.pu.bff.dto.generated.OrganizationWithDebtPositionTypeOrgCount;
-
 import it.gov.pagopa.pu.bff.dto.generated.PagedOrganizationWithDebtPositionTypeOrgAndOperatorsCount;
 import it.gov.pagopa.pu.bff.dto.generated.PagedOrganizationWithDebtPositionTypeOrgCount;
 import it.gov.pagopa.pu.bff.security.SecurityUtilsTest;
@@ -29,6 +28,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -122,6 +122,17 @@ class OrganizationControllerTest {
     assertEquals(HttpStatus.OK, result.getStatusCode());
     assertNotNull(result.getBody());
     assertEquals(pagedOrganizationWithDebtPositionTypeOrgAndOperatorsCount, result.getBody());
+  }
+  @Test
+  void givenCorrectRequestWhenUpdateOrganizationThenOk() {
+    Long organizationId = 1L;
+    OrganizationDetailDTO organization = new OrganizationDetailDTO();
+
+    doNothing().when(organizationRetrieverServiceMock).updateOrganization(organizationId, organization, loggedUser, accessToken);
+
+    ResponseEntity<Void> response = organizationController.updateOrganization(organizationId, organization);
+
+    assertEquals(HttpStatus.OK, response.getStatusCode());
   }
 
   @Test

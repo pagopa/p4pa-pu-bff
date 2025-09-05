@@ -6,6 +6,7 @@ import it.gov.pagopa.pu.bff.dto.generated.PagedOrganizationWithDebtPositionTypeO
 import it.gov.pagopa.pu.bff.dto.generated.PagedOrganizationWithDebtPositionTypeOrgCount;
 import it.gov.pagopa.pu.bff.security.SecurityUtils;
 import it.gov.pagopa.pu.bff.service.organization.OrganizationRetrieverService;
+import it.gov.pagopa.pu.organization.dto.generated.OrganizationDetailDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -40,5 +41,11 @@ public class OrganizationController implements OrganizationsApi {
   public ResponseEntity<PagedOrganizationWithDebtPositionTypeOrgAndOperatorsCount> getOrganizationsByBrokerId(Pageable pageable) {
     log.info("User requested getOrganizationsByBrokerId()");
     return new ResponseEntity<>(organizationRetrieverService.getOrganizationsByBrokerId(SecurityUtils.getLoggedUser(),pageable, SecurityUtils.getAccessToken()), HttpStatus.OK);
+  }
+  @Override
+  public ResponseEntity<Void> updateOrganization(Long organizationId, OrganizationDetailDTO organizationDetailDTO) {
+    log.info("User requested updateOrganization having organizationId {}", organizationId);
+    organizationRetrieverService.updateOrganization(organizationId, organizationDetailDTO,SecurityUtils.getLoggedUser(),SecurityUtils.getAccessToken());
+    return ResponseEntity.ok().build();
   }
 }

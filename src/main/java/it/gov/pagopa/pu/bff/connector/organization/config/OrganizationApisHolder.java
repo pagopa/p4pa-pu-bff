@@ -26,6 +26,7 @@ public class OrganizationApisHolder {
     private final OrgSilServiceEntityControllerApi orgSilServiceEntityControllerApi;
     private final OrgSilServiceViewSearchControllerApi orgSilServiceViewSearchControllerApi;
     private final OrganizationSilServiceApi organizationSilServiceApi;
+    private final OrganizationApi organizationApi;
     private final ThreadLocal<String> bearerTokenHolder = new ThreadLocal<>();
 
     public OrganizationApisHolder(
@@ -56,6 +57,7 @@ public class OrganizationApisHolder {
         this.orgSilServiceEntityControllerApi = new OrgSilServiceEntityControllerApi(apiClient);
         this.orgSilServiceViewSearchControllerApi = new OrgSilServiceViewSearchControllerApi(apiClient);
         this.organizationSilServiceApi = new OrganizationSilServiceApi(apiClient);
+        this.organizationApi = new OrganizationApi(apiClient);
     }
 
     @PreDestroy
@@ -121,7 +123,11 @@ public class OrganizationApisHolder {
       return getApi(accessToken, organizationSilServiceApi);
     }
 
-    private <T extends BaseApi> T getApi(String accessToken, T api) {
+    public OrganizationApi getOrganizationApi(String accessToken) {
+      return getApi(accessToken, organizationApi);
+    }
+
+  private <T extends BaseApi> T getApi(String accessToken, T api) {
         bearerTokenHolder.set(accessToken);
         return api;
     }

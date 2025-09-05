@@ -16,6 +16,7 @@ import it.gov.pagopa.pu.bff.service.AuthorizationService;
 import it.gov.pagopa.pu.debtpositions.dto.generated.CollectionModelDebtPositionTypeOrgCountByOrganizationId;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrgCountByOrganizationId;
 import it.gov.pagopa.pu.organization.dto.generated.Organization;
+import it.gov.pagopa.pu.organization.dto.generated.OrganizationDetailDTO;
 import it.gov.pagopa.pu.organization.dto.generated.PagedModelOrganization;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -30,10 +31,8 @@ import java.util.stream.Collectors;
 public class OrganizationRetrieverServiceImpl implements OrganizationRetrieverService {
 
   private final AuthorizationService authorizationService;
-
   private final OrganizationService organizationService;
   private final DebtPositionTypeOrgService debtPositionTypeOrgService;
-
   private final OrganizationDTOMapper organizationDTOMapper;
   private final OrganizationWithDebtPositionTypeOrgCountMapper organizationWithDebtPositionTypeOrgCountMapper;
   private final AuthzService authzService;
@@ -168,5 +167,17 @@ public class OrganizationRetrieverServiceImpl implements OrganizationRetrieverSe
     }else{
       throw new ResourceNotFoundException("Organization having organizationId "+ organizationId +" and brokerId "+loggedUser.getBrokerId()+" not found");
     }
+  }
+
+  @Override
+  public OrganizationDetailDTO getOrganizationDetail(Long organizationId, UserInfo loggedUser, String accessToken) {
+    authorizationService.validateOrganizationOrBrokerAdmin(organizationId, loggedUser, accessToken);
+
+    Organization organization = organizationService.getOrganizationByOrganizationId(organizationId, accessToken);
+    if (organization == null) {
+      throw new ResourceNotFoundException("Organization having organizationId " + organizationId + " not found");
+    }
+
+    return organizationService.getOrganizationDetail(organizationId, accessToken);
   }
 }

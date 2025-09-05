@@ -20,6 +20,7 @@ import it.gov.pagopa.pu.debtpositions.dto.generated.CollectionModelDebtPositionT
 import it.gov.pagopa.pu.debtpositions.dto.generated.CollectionModelDebtPositionTypeOrgCountByOrganizationIdEmbedded;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrgCountByOrganizationId;
 import it.gov.pagopa.pu.organization.dto.generated.Organization;
+import it.gov.pagopa.pu.organization.dto.generated.OrganizationDetailDTO;
 import it.gov.pagopa.pu.organization.dto.generated.PagedModelOrganization;
 import it.gov.pagopa.pu.organization.dto.generated.PagedModelOrganizationEmbedded;
 import org.junit.jupiter.api.AfterEach;
@@ -39,6 +40,8 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class OrganizationRetrieverServiceImplTest {
@@ -107,9 +110,9 @@ class OrganizationRetrieverServiceImplTest {
 
   @Test
   void testGetOrganizations() {
-    Mockito.when(organizationServiceMock.getOrganizationByIpaCode(anyString(), anyString()))
+    when(organizationServiceMock.getOrganizationByIpaCode(anyString(), anyString()))
       .thenReturn(entityModelOrganization);
-    Mockito.when(organizationDTOMapperMock.mapToOrganizationDTO(any(Organization.class), anyList()))
+    when(organizationDTOMapperMock.mapToOrganizationDTO(any(Organization.class), anyList()))
       .thenReturn(organizationDTO);
 
     List<OrganizationDTO> result = organizationService.getOrganizations(userInfo, accessToken);
@@ -134,7 +137,7 @@ class OrganizationRetrieverServiceImplTest {
   void testGetOrganizations_GivenNullOrganization() {
     userOrganizationRoles.setRoles(Collections.emptyList());
 
-    Mockito.when(organizationServiceMock.getOrganizationByIpaCode(anyString(), anyString()))
+    when(organizationServiceMock.getOrganizationByIpaCode(anyString(), anyString()))
       .thenReturn(null);
 
     List<OrganizationDTO> result = organizationService.getOrganizations(userInfo, accessToken);
@@ -144,7 +147,7 @@ class OrganizationRetrieverServiceImplTest {
 
   @Test
   void testGetOrganizations_NotFound() {
-    Mockito.when(organizationServiceMock.getOrganizationByIpaCode(anyString(), anyString()))
+    when(organizationServiceMock.getOrganizationByIpaCode(anyString(), anyString()))
       .thenReturn(null);
 
     List<OrganizationDTO> result = organizationService.getOrganizations(userInfo, accessToken);
@@ -158,7 +161,7 @@ class OrganizationRetrieverServiceImplTest {
     loggedUser.setBrokerId(1L);
     String orgName = "orgName";
 
-    Mockito.doNothing().when(authorizationServiceMock)
+    doNothing().when(authorizationServiceMock)
       .validateBrokerAdminRole(any(UserInfo.class));
 
     PagedModelOrganization pagedModelOrganization = new PagedModelOrganization();
@@ -166,7 +169,7 @@ class OrganizationRetrieverServiceImplTest {
     pagedModelOrganization.setEmbedded(
       PagedModelOrganizationEmbedded.builder().organizations(organizations)
         .build());
-    Mockito.when(
+    when(
       organizationServiceMock.getOrganizationByBrokerIdAndOrgName(same(userInfo.getBrokerId()),
         same(orgName), any(
           Pageable.class), eq(null))).thenReturn(pagedModelOrganization);
@@ -178,12 +181,12 @@ class OrganizationRetrieverServiceImplTest {
       CollectionModelDebtPositionTypeOrgCountByOrganizationIdEmbedded.builder()
         .debtPositionTypeOrgCountByOrganizationIds(
           debtPositionTypeOrgCountByOrganizationIds).build());
-    Mockito.when(
+    when(
       debtPositionTypeOrgServiceMock.getDebtPositionTypeOrgCountByOrganizationId(
         anyList(), eq(null))).thenReturn(collectionDptoCountByOrgId);
 
     PagedOrganizationWithDebtPositionTypeOrgCount expectedResult = new PagedOrganizationWithDebtPositionTypeOrgCount();
-    Mockito.when(
+    when(
       organizationWithDebtPositionTypeOrgCountMapperMock.mapToPagedOrganizationWithDebtPositionTypeOrgCount(
         eq(organizations), eq(debtPositionTypeOrgCountByOrganizationIds), any())).thenReturn(expectedResult);
 
@@ -199,10 +202,10 @@ class OrganizationRetrieverServiceImplTest {
     loggedUser.setBrokerId(1L);
     String orgName = "orgName";
 
-    Mockito.doNothing().when(authorizationServiceMock)
+    doNothing().when(authorizationServiceMock)
       .validateBrokerAdminRole(any(UserInfo.class));
 
-    Mockito.when(
+    when(
       organizationServiceMock.getOrganizationByBrokerIdAndOrgName(same(userInfo.getBrokerId()),
         same(orgName), any(Pageable.class), eq(null))).thenReturn(null);
 
@@ -219,14 +222,14 @@ class OrganizationRetrieverServiceImplTest {
     loggedUser.setBrokerId(1L);
     String orgName = "orgName";
 
-    Mockito.doNothing().when(authorizationServiceMock)
+    doNothing().when(authorizationServiceMock)
       .validateBrokerAdminRole(any(UserInfo.class));
 
     PagedModelOrganization pagedModelOrganization = new PagedModelOrganization();
     pagedModelOrganization.setEmbedded(
       PagedModelOrganizationEmbedded.builder().organizations(Collections.emptyList())
         .build());
-    Mockito.when(
+    when(
       organizationServiceMock.getOrganizationByBrokerIdAndOrgName(same(loggedUser.getBrokerId()),
         same(orgName), any(
           Pageable.class), eq(null))).thenReturn(pagedModelOrganization);
@@ -245,7 +248,7 @@ class OrganizationRetrieverServiceImplTest {
     Organization organization = podamFactory.manufacturePojo(Organization.class);
     organization.setBrokerId(loggedUser.getBrokerId());
 
-    Mockito.when(organizationServiceMock.getOrganizationByOrganizationId(organization.getOrganizationId(),accessToken))
+    when(organizationServiceMock.getOrganizationByOrganizationId(organization.getOrganizationId(),accessToken))
             .thenReturn(organization);
 
     String result = organizationService.getOrgFiscalCode(organization.getOrganizationId(), loggedUser, accessToken);
@@ -262,7 +265,7 @@ class OrganizationRetrieverServiceImplTest {
     organization.setBrokerId(loggedUser.getBrokerId()+1);
     Long organizationId = organization.getOrganizationId();
 
-    Mockito.when(organizationServiceMock.getOrganizationByOrganizationId(organizationId,accessToken))
+    when(organizationServiceMock.getOrganizationByOrganizationId(organizationId,accessToken))
             .thenReturn(organization);
 
     assertThrows(ResourceNotFoundException.class,()->organizationService.getOrgFiscalCode(organizationId, loggedUser, accessToken));
@@ -276,7 +279,7 @@ class OrganizationRetrieverServiceImplTest {
     organization.setBrokerId(null);
     Long organizationId = organization.getOrganizationId();
 
-    Mockito.when(organizationServiceMock.getOrganizationByOrganizationId(organizationId,accessToken))
+    when(organizationServiceMock.getOrganizationByOrganizationId(organizationId,accessToken))
             .thenReturn(organization);
 
     assertThrows(ResourceNotFoundException.class,()->organizationService.getOrgFiscalCode(organizationId, loggedUser, accessToken));
@@ -288,7 +291,7 @@ class OrganizationRetrieverServiceImplTest {
     loggedUser.setBrokerId(1L);
     Long organizationId = 2L;
 
-    Mockito.when(organizationServiceMock.getOrganizationByOrganizationId(organizationId,accessToken))
+    when(organizationServiceMock.getOrganizationByOrganizationId(organizationId,accessToken))
             .thenReturn(null);
 
     assertThrows(ResourceNotFoundException.class,()->organizationService.getOrgFiscalCode(organizationId, loggedUser, accessToken));
@@ -307,8 +310,8 @@ class OrganizationRetrieverServiceImplTest {
     pagedModelOrganization.setEmbedded(
       PagedModelOrganizationEmbedded.builder().organizations(organizationsList).build());
 
-    Mockito.doNothing().when(authorizationServiceMock).validateBrokerAdminRole(userInfo);
-    Mockito.when(organizationServiceMock.getOrganizationsByBrokerId(
+    doNothing().when(authorizationServiceMock).validateBrokerAdminRole(userInfo);
+    when(organizationServiceMock.getOrganizationsByBrokerId(
         userInfo.getBrokerId(), Pageable.ofSize(1), accessToken))
       .thenReturn(pagedModelOrganization);
 
@@ -319,14 +322,14 @@ class OrganizationRetrieverServiceImplTest {
     collectionModelDebtPositionTypeOrgCountByOrganizationId.setEmbedded(new CollectionModelDebtPositionTypeOrgCountByOrganizationIdEmbedded());
     collectionModelDebtPositionTypeOrgCountByOrganizationId.getEmbedded().setDebtPositionTypeOrgCountByOrganizationIds(
       Collections.singletonList(mockDptoCount));
-    Mockito.when(debtPositionTypeOrgServiceMock.getDebtPositionTypeOrgCountByOrganizationId(
+    when(debtPositionTypeOrgServiceMock.getDebtPositionTypeOrgCountByOrganizationId(
         List.of(123L), accessToken))
       .thenReturn(collectionModelDebtPositionTypeOrgCountByOrganizationId);
 
     OperatorsPage mockOperatorsPage = new OperatorsPage();
     mockOperatorsPage.setContent(Collections.singletonList(new OperatorDTO()));
     mockOperatorsPage.setTotalElements(5);
-    Mockito.when(authzServiceMock.getOrganizationOperators(
+    when(authzServiceMock.getOrganizationOperators(
         "testIpaCode", null, null, null, 0, 1, accessToken))
       .thenReturn(mockOperatorsPage);
 
@@ -335,7 +338,7 @@ class OrganizationRetrieverServiceImplTest {
     PagedOrganizationWithDebtPositionTypeOrgAndOperatorsCount expectedResult = new PagedOrganizationWithDebtPositionTypeOrgAndOperatorsCount();
     expectedResult.setTotalElements(5L);
 
-    Mockito.when(pagedOrganizationWithDebtPositionTypeOrgAndOperatorsCountMapperMock.map(
+    when(pagedOrganizationWithDebtPositionTypeOrgAndOperatorsCountMapperMock.map(
         pagedModelOrganization, expectedDptoMap, expectedOperatorsMap))
       .thenReturn(expectedResult);
 
@@ -352,9 +355,9 @@ class OrganizationRetrieverServiceImplTest {
     // Given
     Pageable pageable = PageRequest.of(0, 10);
 
-    Mockito.doNothing().when(authorizationServiceMock).validateBrokerAdminRole(userInfo);
+    doNothing().when(authorizationServiceMock).validateBrokerAdminRole(userInfo);
 
-    Mockito.when(organizationServiceMock.getOrganizationsByBrokerId(
+    when(organizationServiceMock.getOrganizationsByBrokerId(
         userInfo.getBrokerId(), pageable, accessToken))
       .thenReturn(null);
 
@@ -366,7 +369,7 @@ class OrganizationRetrieverServiceImplTest {
       .number(0L)
       .build();
 
-    Mockito.when(pagedOrganizationWithDebtPositionTypeOrgAndOperatorsCountMapperMock.map(
+    when(pagedOrganizationWithDebtPositionTypeOrgAndOperatorsCountMapperMock.map(
         Mockito.isNull(), Mockito.isNull(), Mockito.isNull()))
       .thenReturn(expectedResult);
 
@@ -382,4 +385,40 @@ class OrganizationRetrieverServiceImplTest {
     assertEquals(0L, result.getNumber());
   }
 
+  @Test
+  void givenExistingOrganizationIdWhenGetOrganizationDetailThenReturnOrganizationDetailDTO() {
+    Long organizationId = 123L;
+    OrganizationDetailDTO expectedDetail = podamFactory.manufacturePojo(OrganizationDetailDTO.class);
+    Organization organization = podamFactory.manufacturePojo(Organization.class);
+
+    when(organizationServiceMock.getOrganizationByOrganizationId(organizationId, accessToken))
+      .thenReturn(organization);
+
+    doNothing().when(authorizationServiceMock)
+      .validateOrganizationOrBrokerAdmin(organizationId, userInfo, accessToken);
+
+    when(organizationServiceMock.getOrganizationDetail(organizationId, accessToken))
+      .thenReturn(expectedDetail);
+
+    OrganizationDetailDTO result = organizationService.getOrganizationDetail(organizationId, userInfo, accessToken);
+
+    assertNotNull(result);
+    assertEquals(expectedDetail, result);
+  }
+
+  @Test
+  void givenNonExistingOrganizationIdWhenGetOrganizationDetailThenThrowResourceNotFoundException() {
+    Long organizationId = 123L;
+
+    doNothing().when(authorizationServiceMock)
+      .validateOrganizationOrBrokerAdmin(organizationId, userInfo, accessToken);
+
+    when(organizationServiceMock.getOrganizationByOrganizationId(organizationId, accessToken))
+      .thenReturn(null);
+
+    ResourceNotFoundException ex = assertThrows(ResourceNotFoundException.class,
+      () -> organizationService.getOrganizationDetail(organizationId, userInfo, accessToken));
+
+    assertTrue(ex.getMessage().contains("Organization having organizationId " + organizationId + " not found"));
+  }
 }

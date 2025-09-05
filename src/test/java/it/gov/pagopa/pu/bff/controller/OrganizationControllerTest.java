@@ -9,6 +9,7 @@ import it.gov.pagopa.pu.bff.dto.generated.PagedOrganizationWithDebtPositionTypeO
 import it.gov.pagopa.pu.bff.security.SecurityUtilsTest;
 import it.gov.pagopa.pu.bff.service.organization.OrganizationRetrieverService;
 import it.gov.pagopa.pu.bff.util.TestUtils;
+import it.gov.pagopa.pu.organization.dto.generated.OrganizationDetailDTO;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -121,5 +122,19 @@ class OrganizationControllerTest {
     assertEquals(HttpStatus.OK, result.getStatusCode());
     assertNotNull(result.getBody());
     assertEquals(pagedOrganizationWithDebtPositionTypeOrgAndOperatorsCount, result.getBody());
+  }
+
+  @Test
+  void givenOrganizationIdWhenGetOrganizationDetailThenReturnOrganizationDetailDTO() {
+    OrganizationDetailDTO organizationDetailDTO = new OrganizationDetailDTO();
+    Long organizationId = 1L;
+
+    Mockito.when(organizationRetrieverServiceMock.getOrganizationDetail(organizationId, loggedUser, accessToken)).thenReturn(organizationDetailDTO);
+
+    ResponseEntity<OrganizationDetailDTO> result = organizationController.getOrganizationDetail(organizationId);
+
+    assertEquals(HttpStatus.OK, result.getStatusCode());
+    assertNotNull(result.getBody());
+    assertEquals(organizationDetailDTO, result.getBody());
   }
 }

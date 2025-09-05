@@ -1,8 +1,10 @@
 package it.gov.pagopa.pu.bff.connector.organization;
 
+import it.gov.pagopa.pu.bff.connector.organization.client.OrganizationApiClient;
 import it.gov.pagopa.pu.bff.connector.organization.client.OrganizationEntityClient;
 import it.gov.pagopa.pu.bff.connector.organization.client.OrganizationSearchClient;
 import it.gov.pagopa.pu.organization.dto.generated.Organization;
+import it.gov.pagopa.pu.organization.dto.generated.OrganizationDetailDTO;
 import it.gov.pagopa.pu.organization.dto.generated.PagedModelOrganization;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.Cacheable;
@@ -15,16 +17,19 @@ public class OrganizationServiceImpl implements OrganizationService {
 
   private final OrganizationSearchClient organizationSearchClient;
   private final OrganizationEntityClient organizationEntityClient;
+  private final OrganizationApiClient organizationApiClient;
 
   public OrganizationServiceImpl(OrganizationSearchClient organizationSearchClient,
-    OrganizationEntityClient organizationEntityClient) {
+                                 OrganizationEntityClient organizationEntityClient,
+                                 OrganizationApiClient organizationApiClient) {
     this.organizationSearchClient = organizationSearchClient;
     this.organizationEntityClient = organizationEntityClient;
+    this.organizationApiClient = organizationApiClient;
   }
 
   @Override
-  @Cacheable(key = "#ipaCode", unless="#result == null")
-  public Organization getOrganizationByIpaCode(String ipaCode, String accessToken){
+  @Cacheable(key = "#ipaCode", unless = "#result == null")
+  public Organization getOrganizationByIpaCode(String ipaCode, String accessToken) {
     return organizationSearchClient.getOrganizationByIpaCode(ipaCode, accessToken);
   }
 
@@ -35,13 +40,18 @@ public class OrganizationServiceImpl implements OrganizationService {
   }
 
   @Override
-  @Cacheable(key = "#organizationId", unless="#result == null")
-  public Organization getOrganizationByOrganizationId(Long organizationId, String accessToken){
+  @Cacheable(key = "#organizationId", unless = "#result == null")
+  public Organization getOrganizationByOrganizationId(Long organizationId, String accessToken) {
     return organizationEntityClient.getOrganizationByOrganizationId(organizationId, accessToken);
   }
 
   @Override
   public PagedModelOrganization getOrganizationsByBrokerId(Long brokerId, Pageable pageable, String accessToken) {
     return organizationSearchClient.getOrganizationsByBrokerId(brokerId, pageable, accessToken);
+  }
+
+  @Override
+  public OrganizationDetailDTO getOrganizationDetail(Long organizationId, String accessToken) {
+    return organizationApiClient.getOrganizationDetail(organizationId, accessToken);
   }
 }

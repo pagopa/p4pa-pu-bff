@@ -1,27 +1,20 @@
 @font-face {
-    font-family: 'Montserrat';
-    src: url(../fonts/Montserrat/static/Montserrat-Regular.ttf);
+    font-family: 'TitilliumWeb';
+    src: url(../fonts/Titillium_Web/TitilliumWeb-Regular.ttf);
     font-weight: normal;
     font-style: normal;
 }
 
 @font-face {
-    font-family: 'Montserrat';
-    src: url(../fonts/Montserrat/static/Montserrat-Bold.ttf);
+    font-family: 'TitilliumWeb';
+    src: url(../fonts/Titillium_Web/TitilliumWeb-bold.ttf);
     font-weight: bold;
     font-style: normal;
 }
 
 @font-face {
-    font-family: 'AnonymousPro';
-    src: url(../fonts/Anonymous_Pro/AnonymousPro-Regular.ttf);
-    font-weight: normal;
-    font-style: normal;
-}
-
-@font-face {
-    font-family: 'AnonymousPro';
-    src: url(../fonts/Anonymous_Pro/AnonymousPro-Bold.ttf);
+    font-family: 'DMMono';
+    src: url(../fonts/DM_Mono/DMMono-Medium.ttf);
     font-weight: bold;
     font-style: normal;
 }
@@ -38,7 +31,7 @@
 }
 
 body {
-    font-family: 'Montserrat', sans-serif;
+    font-family: 'TitilliumWeb', sans-serif;
     font-size: 8px;
     line-height: 1.4;
     color: #000;
@@ -152,9 +145,9 @@ body {
 .fiscal-code,
 .org-fiscal-code,
 .payment-code {
-    font-family: 'AnonymousPro', monospace;
+    font-family: 'DMMono', monospace;
     font-size: 12px;
-    font-weight: 700;
+    font-weight: 500;
     color: #000;
 }
 

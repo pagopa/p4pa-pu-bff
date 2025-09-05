@@ -1,8 +1,10 @@
 package it.gov.pagopa.pu.bff.connector.organization;
 
+import it.gov.pagopa.pu.bff.connector.organization.client.OrganizationClient;
 import it.gov.pagopa.pu.bff.connector.organization.client.OrganizationEntityClient;
 import it.gov.pagopa.pu.bff.connector.organization.client.OrganizationSearchClient;
 import it.gov.pagopa.pu.organization.dto.generated.Organization;
+import it.gov.pagopa.pu.organization.dto.generated.OrganizationDetailDTO;
 import it.gov.pagopa.pu.organization.dto.generated.PagedModelOrganization;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.Cacheable;
@@ -15,11 +17,13 @@ public class OrganizationServiceImpl implements OrganizationService {
 
   private final OrganizationSearchClient organizationSearchClient;
   private final OrganizationEntityClient organizationEntityClient;
+  private final OrganizationClient organizationClient;
 
   public OrganizationServiceImpl(OrganizationSearchClient organizationSearchClient,
-    OrganizationEntityClient organizationEntityClient) {
+                                 OrganizationEntityClient organizationEntityClient, OrganizationClient organizationClient) {
     this.organizationSearchClient = organizationSearchClient;
     this.organizationEntityClient = organizationEntityClient;
+      this.organizationClient = organizationClient;
   }
 
   @Override
@@ -43,5 +47,10 @@ public class OrganizationServiceImpl implements OrganizationService {
   @Override
   public PagedModelOrganization getOrganizationsByBrokerId(Long brokerId, Pageable pageable, String accessToken) {
     return organizationSearchClient.getOrganizationsByBrokerId(brokerId, pageable, accessToken);
+  }
+
+  @Override
+  public void updateOrganization(OrganizationDetailDTO organizationDetailDTO, String accessToken) {
+    organizationClient.updateOrganization(organizationDetailDTO,accessToken);
   }
 }

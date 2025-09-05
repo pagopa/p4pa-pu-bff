@@ -1,13 +1,17 @@
 package it.gov.pagopa.pu.bff.service.organization;
 
+import it.gov.pagopa.pu.auth.dto.generated.OperatorsPage;
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
+import it.gov.pagopa.pu.bff.connector.auth.AuthzService;
 import it.gov.pagopa.pu.bff.connector.debt_position.DebtPositionTypeOrgService;
 import it.gov.pagopa.pu.bff.connector.organization.OrganizationService;
 import it.gov.pagopa.pu.bff.dto.generated.OrganizationDTO;
+import it.gov.pagopa.pu.bff.dto.generated.PagedOrganizationWithDebtPositionTypeOrgAndOperatorsCount;
 import it.gov.pagopa.pu.bff.dto.generated.PagedOrganizationWithDebtPositionTypeOrgCount;
 import it.gov.pagopa.pu.bff.exception.ResourceNotFoundException;
 import it.gov.pagopa.pu.bff.mapper.OrganizationDTOMapper;
 import it.gov.pagopa.pu.bff.mapper.OrganizationWithDebtPositionTypeOrgCountMapper;
+import it.gov.pagopa.pu.bff.mapper.PagedOrganizationWithDebtPositionTypeOrgAndOperatorsCountMapper;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
 import it.gov.pagopa.pu.debtpositions.dto.generated.CollectionModelDebtPositionTypeOrgCountByOrganizationId;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrgCountByOrganizationId;
@@ -18,10 +22,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -34,16 +36,20 @@ public class OrganizationRetrieverServiceImpl implements OrganizationRetrieverSe
 
   private final OrganizationDTOMapper organizationDTOMapper;
   private final OrganizationWithDebtPositionTypeOrgCountMapper organizationWithDebtPositionTypeOrgCountMapper;
+  private final AuthzService authzService;
+  private final PagedOrganizationWithDebtPositionTypeOrgAndOperatorsCountMapper pagedOrganizationWithDebtPositionTypeOrgAndOperatorsCountMapper;
 
   public OrganizationRetrieverServiceImpl(
     AuthorizationService authorizationService, OrganizationService organizationService,
     DebtPositionTypeOrgService debtPositionTypeOrgService, OrganizationDTOMapper organizationDTOMapper,
-    OrganizationWithDebtPositionTypeOrgCountMapper organizationWithDebtPositionTypeOrgCountMapper) {
+    OrganizationWithDebtPositionTypeOrgCountMapper organizationWithDebtPositionTypeOrgCountMapper, AuthzService authzService, PagedOrganizationWithDebtPositionTypeOrgAndOperatorsCountMapper pagedOrganizationWithDebtPositionTypeOrgAndOperatorsCountMapper) {
     this.authorizationService = authorizationService;
     this.organizationService = organizationService;
     this.debtPositionTypeOrgService = debtPositionTypeOrgService;
     this.organizationDTOMapper = organizationDTOMapper;
     this.organizationWithDebtPositionTypeOrgCountMapper = organizationWithDebtPositionTypeOrgCountMapper;
+    this.authzService = authzService;
+    this.pagedOrganizationWithDebtPositionTypeOrgAndOperatorsCountMapper = pagedOrganizationWithDebtPositionTypeOrgAndOperatorsCountMapper;
   }
 
   @Override
@@ -89,6 +95,61 @@ public class OrganizationRetrieverServiceImpl implements OrganizationRetrieverSe
 
     return organizationWithDebtPositionTypeOrgCountMapper.mapToPagedOrganizationWithDebtPositionTypeOrgCount(
       organizations, dptoCountsByOrgId, pagedOrganizations.getPage());
+  }
+
+  @Override
+  public PagedOrganizationWithDebtPositionTypeOrgAndOperatorsCount getOrganizationsByBrokerId(UserInfo userInfo, Pageable pageable, String accessToken) {
+    authorizationService.validateBrokerAdminRole(userInfo);
+
+    PagedModelOrganization pagedModelOrganization = organizationService.getOrganizationsByBrokerId(userInfo.getBrokerId(), pageable, accessToken);
+
+    if (pagedModelOrganization == null || pagedModelOrganization.getEmbedded() == null || pagedModelOrganization.getEmbedded().getOrganizations() == null || pagedModelOrganization.getEmbedded().getOrganizations().isEmpty()) {
+      log.info("No results for getOrganizationsByBrokerId");
+      return pagedOrganizationWithDebtPositionTypeOrgAndOperatorsCountMapper.map(pagedModelOrganization, null, null);
+    }
+
+    List<Organization> orgList = pagedModelOrganization.getEmbedded().getOrganizations();
+
+    List<Long> organizationIds = orgList.stream()
+      .map(Organization::getOrganizationId)
+      .toList();
+
+    Map<Long, Integer> dptoCountsByOrgId = getDptoCountsByOrgIdMap(accessToken, organizationIds);
+
+    Map<Long, OperatorsPage> allOperatorsPages = getOperatorsPageMap(pageable, accessToken, orgList);
+
+    return pagedOrganizationWithDebtPositionTypeOrgAndOperatorsCountMapper.map(pagedModelOrganization, dptoCountsByOrgId, allOperatorsPages);
+  }
+
+  private Map<Long, Integer> getDptoCountsByOrgIdMap(String accessToken, List<Long> organizationIds) {
+    return getDebtPositionTypeOrgCountByOrganizationId(
+      organizationIds,
+      accessToken
+    )
+      .stream()
+      .filter(dpto -> dpto.getOrganizationId() != null && dpto.getActiveOrganizations() != null)
+      .collect(Collectors.toMap(
+        DebtPositionTypeOrgCountByOrganizationId::getOrganizationId,
+        DebtPositionTypeOrgCountByOrganizationId::getActiveOrganizations));
+  }
+
+  private Map<Long, OperatorsPage> getOperatorsPageMap(Pageable pageable, String accessToken, List<Organization> orgList) {
+    Map<Long, OperatorsPage> allOperatorsPages = new HashMap<>();
+
+    orgList
+      .forEach(org -> {
+        OperatorsPage organizationOperators = authzService.getOrganizationOperators(
+          org.getIpaCode(),
+          null,
+          null,
+          null,
+          pageable.getPageNumber(),
+          pageable.getPageSize(),
+          accessToken
+        );
+        allOperatorsPages.put(org.getOrganizationId(),organizationOperators);
+      });
+    return allOperatorsPages;
   }
 
   private List<DebtPositionTypeOrgCountByOrganizationId> getDebtPositionTypeOrgCountByOrganizationId(List<Long> organizationIds, String accessToken) {

@@ -32,6 +32,30 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorDTO'
+  /brokers/organizations:
+    get:
+      tags:
+        - Organizations
+      summary: "Retrieve the list of organizations from the brokers"
+      operationId: getOrganizationsByBrokerId
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PagedOrganizationWithDebtPositionTypeOrgAndOperatorsCount'
+        '401':
+          description: Unauthorized - Missing or invalid token
+        '403':
+          description: Forbidden - Access denied
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDTO'
+      x-spring-paginated: true
   /brokers/config:
     get:
       tags:
@@ -3864,6 +3888,31 @@ components:
         number:
           type: integer
           format: int64
+    PagedOrganizationWithDebtPositionTypeOrgAndOperatorsCount:
+      type: object
+      required:
+        - content
+        - size
+        - totalElements
+        - totalPages
+        - number
+      properties:
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrganizationWithDebtPositionTypeOrgAndOperatorsCount'
+        size:
+          type: integer
+          format: int64
+        totalElements:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer
+          format: int64
+        number:
+          type: integer
+          format: int64
     PagedOrganizationWithDebtPositionTypeOrgCount:
       type: object
       required:
@@ -3993,6 +4042,28 @@ components:
           type: string
         debtPositionTypeOrgCount:
           type: integer
+    OrganizationWithDebtPositionTypeOrgAndOperatorsCount:
+      type: object
+      properties:
+        organizationId:
+          type: integer
+          format: int64
+        ipaCode:
+          type: string
+        orgName:
+          type: string
+        orgFiscalCode:
+          type: string
+        debtPositionTypeOrgCount:
+          type: integer
+        operatorsCount:
+          type: integer
+        status:
+          type: string
+          enum:
+            - ACTIVE
+            - DRAFT
+            - CANCELLED
     PagedDebtPositionTypeOrgOperatorDTO:
       type: object
       required:

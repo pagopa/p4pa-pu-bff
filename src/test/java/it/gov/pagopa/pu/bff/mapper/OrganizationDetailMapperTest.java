@@ -21,10 +21,9 @@ class OrganizationDetailMapperTest {
   }
 
   @Test
-  void givenValidInputWhenMapToBffDtoThenAllFieldsAreMapped() {
-    it.gov.pagopa.pu.organization.dto.generated.OrganizationDetailDTO source = getSource();
-
-    OrganizationDetailsDTO result = mapper.mapToBffDTO(source);
+  void givenValidInputWhenMapToBffDtoThenBasicFieldsAreMapped() {
+    var source = getSource();
+    var result = mapper.mapToBffDTO(source);
 
     assertNotNull(result);
     assertEquals(source.getOrganizationId(), result.getOrganizationId());
@@ -40,6 +39,14 @@ class OrganizationDetailMapperTest {
     assertEquals(source.getPassword(), result.getPassword());
     assertEquals(source.getSegregationCode(), result.getSegregationCode());
     assertEquals(source.getCbillInterBankCode(), result.getCbillInterBankCode());
+  }
+
+  @Test
+  void givenValidInputWhenMapToBffDtoThenRemainingFieldsAreMapped() {
+    var source = getSource();
+    var result = mapper.mapToBffDTO(source);
+
+    assertNotNull(result);
     assertEquals(source.getOrgLogo(), result.getOrgLogo());
     assertEquals(source.getStatus(), result.getStatus());
     assertEquals(source.getAdditionalLanguage(), result.getAdditionalLanguage());

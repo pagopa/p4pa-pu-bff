@@ -87,7 +87,7 @@ public class GlobalExceptionHandler {
   }
 
   @ExceptionHandler(InvalidOrgSilServiceException.class)
-  public  ResponseEntity<ErrorDTO> handleInvalidApplicationNameException(Exception ex, HttpServletRequest request){
+  public  ResponseEntity<ErrorDTO> handleInvalidOrgSilServiceException(InvalidOrgSilServiceException ex, HttpServletRequest request){
     return handleException(ex, request, HttpStatus.BAD_REQUEST, TitleEnum.BAD_REQUEST);
   }
 

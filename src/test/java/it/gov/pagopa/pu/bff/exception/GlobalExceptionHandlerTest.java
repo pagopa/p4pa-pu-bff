@@ -314,7 +314,7 @@ class GlobalExceptionHandlerTest {
   }
 
   @Test
-  void handleInvalidApplicationNameException() throws Exception {
+  void handleInvalidOrgSilServiceException() throws Exception {
     doThrow(new InvalidOrgSilServiceException("Error")).when(testControllerSpy).testEndpoint(DATA, BODY);
 
     performRequest(DATA, MediaType.APPLICATION_JSON)

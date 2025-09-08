@@ -117,7 +117,7 @@ public class OrganizationRetrieverServiceImpl implements OrganizationRetrieverSe
 
     if (pagedModelOrganization == null || pagedModelOrganization.getEmbedded() == null || pagedModelOrganization.getEmbedded().getOrganizations() == null || pagedModelOrganization.getEmbedded().getOrganizations().isEmpty()) {
       log.info("No results for getOrganizationsByBrokerId");
-      return pagedOrganizationWithDebtPositionTypeOrgAndOperatorsCountMapper.map(pagedModelOrganization, null, null);
+      return pagedOrganizationWithDebtPositionTypeOrgAndOperatorsCountMapper.map(pagedModelOrganization, Collections.emptyMap(), Collections.emptyMap());
     }
 
     List<Organization> orgList = pagedModelOrganization.getEmbedded().getOrganizations();

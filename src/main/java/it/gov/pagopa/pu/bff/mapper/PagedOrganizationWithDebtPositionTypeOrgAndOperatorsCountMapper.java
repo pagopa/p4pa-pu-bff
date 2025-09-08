@@ -26,16 +26,20 @@ public interface PagedOrganizationWithDebtPositionTypeOrgAndOperatorsCountMapper
   OrganizationWithDebtPositionTypeOrgAndOperatorsCount mapToOrganizationWithDebtPositionTypeOrgAndOperatorsCount(Organization organization, @Context  Map<Long, Integer> dptoCountsByOrgId, @Context Map<Long, OperatorsPage> allOperatorsPages);
 
   default Integer dptoCount(Organization organization,  Map<Long, Integer> dptoCountsByOrgId){
-    return dptoCountsByOrgId.getOrDefault(organization.getOrganizationId(),0);
+    if (dptoCountsByOrgId != null){
+      return dptoCountsByOrgId.getOrDefault(organization.getOrganizationId(),0);
+    }
+    return 0;
   }
 
   default Integer operatorsCount(Organization organization, Map<Long, OperatorsPage> allOperators) {
-    OperatorsPage operatorsPage = allOperators.get(organization.getOrganizationId());
+    if (allOperators != null) {
+      OperatorsPage operatorsPage = allOperators.get(organization.getOrganizationId());
 
-    if (operatorsPage != null && !operatorsPage.getContent().isEmpty()) {
-      return operatorsPage.getTotalElements();
+      if (operatorsPage != null && !operatorsPage.getContent().isEmpty()) {
+        return operatorsPage.getTotalElements();
+      }
     }
-
     return 0;
   }
 

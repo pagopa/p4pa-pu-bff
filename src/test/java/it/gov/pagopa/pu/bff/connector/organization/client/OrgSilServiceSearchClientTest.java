@@ -187,4 +187,36 @@ class OrgSilServiceSearchClientTest {
     Assertions.assertNotNull(actualResponse);
     Assertions.assertEquals(expectedResponse, actualResponse);
   }
+
+  @Test
+  void givenApplicationNameWhenGetOrgSilServiceByOrganizationIdAndApplicationNameThenInvokeWithAccessToken() {
+    //given
+    String accessToken = "ACCESSTOKEN";
+    Long organizationId = 3L;
+    String applicationName = "applicationName";
+    OrgSilService orgSilService = podamFactory.manufacturePojo(OrgSilService.class);
+
+    when(organizationApisHolderMock.getOrgSilServiceSearchControllerApi(accessToken)).thenReturn(orgSilServiceSearchControllerApiMock);
+    when(orgSilServiceSearchControllerApiMock.crudOrgSilServicesFindByOrganizationIdAndApplicationName(organizationId, applicationName)).thenReturn(orgSilService);
+    //when
+    OrgSilService result = orgSilServiceSearchClient.getOrgSilServiceByOrganizationIdAndApplicationName(organizationId, applicationName, accessToken);
+    //then
+    Assertions.assertNotNull(result);
+    Assertions.assertEquals(orgSilService, result);
+  }
+
+  @Test
+  void givenNonExistingApplicationNameWhenGetOrgSilServiceByOrganizationIdAndApplicationNameThenReturnNull() {
+    //given
+    String accessToken = "ACCESSTOKEN";
+    Long organizationId = 3L;
+    String applicationName = "applicationName";
+
+    when(organizationApisHolderMock.getOrgSilServiceSearchControllerApi(accessToken)).thenReturn(orgSilServiceSearchControllerApiMock);
+    when(orgSilServiceSearchControllerApiMock.crudOrgSilServicesFindByOrganizationIdAndApplicationName(organizationId, applicationName)).thenThrow(HttpClientErrorException.create(HttpStatus.NOT_FOUND, "NotFound", null, null, null));
+    //when
+    OrgSilService result = orgSilServiceSearchClient.getOrgSilServiceByOrganizationIdAndApplicationName(organizationId, applicationName, accessToken);
+    //then
+    assertNull(result);
+  }
 }

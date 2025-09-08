@@ -384,7 +384,7 @@ class OrganizationRetrieverServiceImplTest {
       .build();
 
     Mockito.when(pagedOrganizationWithDebtPositionTypeOrgAndOperatorsCountMapperMock.map(
-        Mockito.isNull(), Mockito.isNull(), Mockito.isNull()))
+        Mockito.isNull(), eq(Collections.emptyMap()), eq(Collections.emptyMap())))
       .thenReturn(expectedResult);
 
     // When

@@ -86,6 +86,11 @@ public class GlobalExceptionHandler {
     return handleException(ex, request, ex.getStatusCode(), TitleEnum.GENERIC_ERROR);
   }
 
+  @ExceptionHandler(InvalidApplicationNameException.class)
+  public  ResponseEntity<ErrorDTO> handleInvalidApplicationNameException(Exception ex, HttpServletRequest request){
+    return handleException(ex, request, HttpStatus.BAD_REQUEST, TitleEnum.BAD_REQUEST);
+  }
+
   @ExceptionHandler({InvalidAssessmentsDetailException.class})
   public ResponseEntity<ErrorDTO> handleInvalidAssessmentsDetailException(InvalidAssessmentsDetailException ex, HttpServletRequest request) {
     return handleException(ex, request, HttpStatus.BAD_REQUEST, TitleEnum.BAD_REQUEST);

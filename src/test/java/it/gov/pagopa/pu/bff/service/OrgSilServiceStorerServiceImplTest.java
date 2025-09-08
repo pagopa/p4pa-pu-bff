@@ -3,6 +3,7 @@ package it.gov.pagopa.pu.bff.service;
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.connector.organization.OrgSilServiceService;
 import it.gov.pagopa.pu.bff.dto.OrgSilServiceDecryptedDTO;
+import it.gov.pagopa.pu.bff.exception.InvalidApplicationNameException;
 import it.gov.pagopa.pu.bff.exception.ResourceNotFoundException;
 import it.gov.pagopa.pu.bff.mapper.OrgSilServiceDTOMapper;
 import it.gov.pagopa.pu.bff.service.org_sil_service.OrgSilServiceStorerService;
@@ -11,6 +12,7 @@ import it.gov.pagopa.pu.bff.util.TestUtils;
 import it.gov.pagopa.pu.organization.dto.generated.*;
 import jakarta.validation.ValidationException;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -127,11 +129,13 @@ public class OrgSilServiceStorerServiceImplTest {
     UserInfo loggedUser = new UserInfo();
 
     OrgSilServiceDTO mappedDto = new OrgSilServiceDTO();
+    mappedDto.setApplicationName("applicationName");
     OrgSilServiceDTO createdDto = new OrgSilServiceDTO();
     OrgSilServiceDecryptedDTO expectedResponse = new OrgSilServiceDecryptedDTO();
 
     doNothing().when(authorizationServiceMock).validateAdminRole(organizationId, loggedUser);
     when(orgSilServiceDTOMapperMock.toOrgSilServiceDTO(body)).thenReturn(mappedDto);
+    when(orgSilServiceServiceMock.getOrgSilServiceByOrganizationIdAndApplicationName(organizationId, mappedDto.getApplicationName() , accessToken)).thenReturn(null);
     when(orgSilServiceServiceMock.createOrUpdateOrgSilService(mappedDto, accessToken)).thenReturn(createdDto);
     when(orgSilServiceDTOMapperMock.map(createdDto)).thenReturn(expectedResponse);
 
@@ -150,11 +154,13 @@ public class OrgSilServiceStorerServiceImplTest {
     UserInfo loggedUser = new UserInfo();
 
     OrgSilServiceDTO mappedDto = new OrgSilServiceDTO();
+    mappedDto.setApplicationName("applicationName");
     OrgSilServiceDTO createdDto = new OrgSilServiceDTO();
     OrgSilServiceDecryptedDTO expectedResponse = new OrgSilServiceDecryptedDTO();
 
     doNothing().when(authorizationServiceMock).validateAdminRole(organizationId, loggedUser);
     when(orgSilServiceDTOMapperMock.toOrgSilServiceDTO(body)).thenReturn(mappedDto);
+    when(orgSilServiceServiceMock.getOrgSilServiceByOrganizationIdAndApplicationName(organizationId, mappedDto.getApplicationName() , accessToken)).thenReturn(null);
     when(orgSilServiceServiceMock.createOrUpdateOrgSilService(mappedDto, accessToken)).thenReturn(createdDto);
     when(orgSilServiceDTOMapperMock.map(createdDto)).thenReturn(expectedResponse);
 
@@ -277,12 +283,14 @@ public class OrgSilServiceStorerServiceImplTest {
     existing.setServiceType(OrgSilServiceType.ACTUALIZATION);
 
     OrgSilServiceDTO mappedDto = new OrgSilServiceDTO();
+    mappedDto.setApplicationName("applicationName");
     OrgSilServiceDTO updatedDto = new OrgSilServiceDTO();
     OrgSilServiceDecryptedDTO expectedResponse = new OrgSilServiceDecryptedDTO();
 
     doNothing().when(authorizationServiceMock).validateAdminRole(organizationId, loggedUser);
     when(orgSilServiceServiceMock.getOrgSilServiceById(orgSilServiceId, accessToken)).thenReturn(existing);
     when(orgSilServiceDTOMapperMock.toOrgSilServiceDTO(body)).thenReturn(mappedDto);
+    when(orgSilServiceServiceMock.getOrgSilServiceByOrganizationIdAndApplicationName(organizationId, mappedDto.getApplicationName() , accessToken)).thenReturn(null);
     when(orgSilServiceServiceMock.createOrUpdateOrgSilService(mappedDto, accessToken)).thenReturn(updatedDto);
     when(orgSilServiceDTOMapperMock.map(updatedDto)).thenReturn(expectedResponse);
 
@@ -290,5 +298,59 @@ public class OrgSilServiceStorerServiceImplTest {
 
     assertNotNull(result);
     assertEquals(expectedResponse, result);
+  }
+
+  @Test
+  void givenExistingOrgSilServiceDTOWhenCreateOrgSilServiceThenThrowException(){
+    Long organizationId = 1L;
+    OrgSilServiceDecryptedDTO body = new OrgSilServiceDecryptedDTO();
+    body.setFlagLegacy(true);
+    body.setLegacyBasicAuthConfig(new SilServiceLegacyBasicAuthConfigDTO());
+    UserInfo loggedUser = new UserInfo();
+
+    OrgSilServiceDTO mappedDto = new OrgSilServiceDTO();
+    mappedDto.setApplicationName("applicationName");
+
+    doNothing().when(authorizationServiceMock).validateAdminRole(organizationId, loggedUser);
+    when(orgSilServiceDTOMapperMock.toOrgSilServiceDTO(body)).thenReturn(mappedDto);
+    when(orgSilServiceServiceMock.getOrgSilServiceByOrganizationIdAndApplicationName(organizationId, mappedDto.getApplicationName() , accessToken)).thenReturn( new OrgSilService());
+
+    InvalidApplicationNameException ex = assertThrows(InvalidApplicationNameException.class, () ->
+      orgSilServiceStorerService.createOrgSilService(organizationId, body, loggedUser, accessToken));
+
+    Assertions.assertEquals("OrgSilService with same applicationName applicationName already exist for the organization 1", ex.getMessage());
+  }
+
+  @Test
+  void givenExistingOrgSilServiceDTOWhenUpdateOrgSilServiceThenThrowException(){
+    Long organizationId = 1L;
+    Long orgSilServiceId = 123L;
+
+    OrgSilServiceDecryptedDTO body = new OrgSilServiceDecryptedDTO();
+    body.setOrgSilServiceId(orgSilServiceId);
+    body.setOrganizationId(organizationId);
+    body.setServiceType(OrgSilServiceType.ACTUALIZATION);
+    body.setFlagLegacy(true);
+    body.setLegacyBasicAuthConfig(new SilServiceLegacyBasicAuthConfigDTO());
+
+    UserInfo loggedUser = new UserInfo();
+
+    OrgSilService existing = new OrgSilService();
+    existing.setOrgSilServiceId(orgSilServiceId);
+    existing.setOrganizationId(organizationId);
+    existing.setServiceType(OrgSilServiceType.ACTUALIZATION);
+
+    OrgSilServiceDTO mappedDto = new OrgSilServiceDTO();
+    mappedDto.setApplicationName("applicationName");
+
+    doNothing().when(authorizationServiceMock).validateAdminRole(organizationId, loggedUser);
+    when(orgSilServiceServiceMock.getOrgSilServiceById(orgSilServiceId, accessToken)).thenReturn(existing);
+    when(orgSilServiceDTOMapperMock.toOrgSilServiceDTO(body)).thenReturn(mappedDto);
+    when(orgSilServiceServiceMock.getOrgSilServiceByOrganizationIdAndApplicationName(organizationId, mappedDto.getApplicationName() , accessToken)).thenReturn(existing);
+
+    InvalidApplicationNameException ex = assertThrows(InvalidApplicationNameException.class, () ->
+      orgSilServiceStorerService.updateOrgSilService(organizationId, body, loggedUser, accessToken));
+
+    Assertions.assertEquals("OrgSilService with same applicationName applicationName already exist for the organization 1", ex.getMessage());
   }
 }

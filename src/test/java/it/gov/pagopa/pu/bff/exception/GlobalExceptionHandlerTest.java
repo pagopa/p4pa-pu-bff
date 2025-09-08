@@ -312,4 +312,15 @@ class GlobalExceptionHandlerTest {
       .andExpect(MockMvcResultMatchers.jsonPath("$.title").value("BAD_REQUEST"))
       .andExpect(MockMvcResultMatchers.jsonPath("$.description").value("Error"));
   }
+
+  @Test
+  void handleInvalidApplicationNameException() throws Exception {
+    doThrow(new InvalidApplicationNameException("Error")).when(testControllerSpy).testEndpoint(DATA, BODY);
+
+    performRequest(DATA, MediaType.APPLICATION_JSON)
+      .andExpect(MockMvcResultMatchers.status().isBadRequest())
+      .andExpect(MockMvcResultMatchers.jsonPath("$.title").value("BAD_REQUEST"))
+      .andExpect(MockMvcResultMatchers.jsonPath("$.description").value("Error"));
+  }
+
 }

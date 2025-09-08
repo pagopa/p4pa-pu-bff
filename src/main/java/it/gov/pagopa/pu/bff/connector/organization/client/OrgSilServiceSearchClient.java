@@ -58,4 +58,13 @@ public class OrgSilServiceSearchClient {
     return organizationApisHolder.getOrganizationSilServiceApi(accessToken)
       .createOrUpdateOrgSilService(orgSilServiceDTO);
   }
+
+  public OrgSilService getOrgSilServiceByOrganizationIdAndApplicationName(Long organizationId, String applicationName, String accessToken) {
+    try {
+      return organizationApisHolder.getOrgSilServiceSearchControllerApi(accessToken).crudOrgSilServicesFindByOrganizationIdAndApplicationName(organizationId, applicationName);
+    } catch (HttpClientErrorException.NotFound e) {
+      log.info("OrgSilService with ID {} not found", organizationId);
+      return null;
+    }
+  }
 }

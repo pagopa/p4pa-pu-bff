@@ -46,4 +46,9 @@ public class OrgSilServiceServiceImpl implements OrgSilServiceService {
   public void deleteOrgSilService(Long orgSilServiceId, String accessToken) {
     orgSilServiceEntityClient.deleteOrgSilService(orgSilServiceId, accessToken);
   }
+
+  @Override
+  public OrgSilService getOrgSilServiceByOrganizationIdAndApplicationName(Long organizationId, String applicationName, String accessToken) {
+    return orgSilServiceSearchClient.getOrgSilServiceByOrganizationIdAndApplicationName(organizationId, applicationName, accessToken);
+  }
 }

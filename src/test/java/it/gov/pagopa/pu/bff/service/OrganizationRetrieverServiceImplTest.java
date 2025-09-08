@@ -8,7 +8,7 @@ import it.gov.pagopa.pu.bff.connector.auth.AuthzService;
 import it.gov.pagopa.pu.bff.connector.debt_position.DebtPositionTypeOrgService;
 import it.gov.pagopa.pu.bff.connector.organization.OrganizationService;
 import it.gov.pagopa.pu.bff.dto.generated.OrganizationDTO;
-import it.gov.pagopa.pu.bff.dto.generated.OrganizationDetailsDTO;
+import it.gov.pagopa.pu.bff.dto.generated.OrganizationDetail;
 import it.gov.pagopa.pu.bff.dto.generated.PagedOrganizationWithDebtPositionTypeOrgAndOperatorsCount;
 import it.gov.pagopa.pu.bff.dto.generated.PagedOrganizationWithDebtPositionTypeOrgCount;
 import it.gov.pagopa.pu.bff.exception.InvalidOrganizationException;
@@ -484,7 +484,7 @@ class OrganizationRetrieverServiceImplTest {
 
     OrganizationDetailDTO orgDetail = podamFactory.manufacturePojo(OrganizationDetailDTO.class);
 
-    OrganizationDetailsDTO expectedDetail = podamFactory.manufacturePojo(OrganizationDetailsDTO.class);
+    OrganizationDetail expectedDetail = podamFactory.manufacturePojo(OrganizationDetail.class);
 
     Organization organization = podamFactory.manufacturePojo(Organization.class);
 
@@ -500,7 +500,7 @@ class OrganizationRetrieverServiceImplTest {
     when(organizationDetailMapperMock.mapToBffDTO(orgDetail))
       .thenReturn(expectedDetail);
 
-    OrganizationDetailsDTO result = organizationService.getOrganizationDetail(organizationId, userInfo, accessToken);
+    OrganizationDetail result = organizationService.getOrganizationDetail(organizationId, userInfo, accessToken);
 
     assertNotNull(result);
     assertEquals(expectedDetail, result);

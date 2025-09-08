@@ -6,7 +6,7 @@ import it.gov.pagopa.pu.bff.connector.auth.AuthzService;
 import it.gov.pagopa.pu.bff.connector.debt_position.DebtPositionTypeOrgService;
 import it.gov.pagopa.pu.bff.connector.organization.OrganizationService;
 import it.gov.pagopa.pu.bff.dto.generated.OrganizationDTO;
-import it.gov.pagopa.pu.bff.dto.generated.OrganizationDetailsDTO;
+import it.gov.pagopa.pu.bff.dto.generated.OrganizationDetail;
 import it.gov.pagopa.pu.bff.dto.generated.PagedOrganizationWithDebtPositionTypeOrgAndOperatorsCount;
 import it.gov.pagopa.pu.bff.dto.generated.PagedOrganizationWithDebtPositionTypeOrgCount;
 import it.gov.pagopa.pu.bff.exception.InvalidOrganizationException;
@@ -183,7 +183,7 @@ public class OrganizationRetrieverServiceImpl implements OrganizationRetrieverSe
   }
 
   @Override
-  public OrganizationDetailsDTO getOrganizationDetail(Long organizationId, UserInfo loggedUser, String accessToken) {
+  public OrganizationDetail getOrganizationDetail(Long organizationId, UserInfo loggedUser, String accessToken) {
     authorizationService.validateOrganizationOrBrokerAdmin(organizationId, loggedUser, accessToken);
 
     Organization organization = organizationService.getOrganizationByOrganizationId(organizationId, accessToken);

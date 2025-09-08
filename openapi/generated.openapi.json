@@ -93,6 +93,75 @@
   } ],
   "paths" : {
     "/bff/organizations/{organizationId}" : {
+      "get" : {
+        "tags" : [ "Organizations" ],
+        "summary" : "Retrieve Organization detail",
+        "operationId" : "getOrganizationDetail",
+        "parameters" : [ {
+          "name" : "organizationId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OrganizationDetail"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Unauthorized - Missing or invalid token",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OrganizationDetail"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Forbidden - Access denied",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OrganizationDetail"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Not Found",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OrganizationDetail"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal Server Error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OrganizationDetail"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "BearerAuth" : [ ]
+        } ]
+      },
       "put" : {
         "tags" : [ "Organizations" ],
         "summary" : "update an organization",
@@ -5420,77 +5489,6 @@
         } ]
       }
     },
-    "/bff/organization/{organizationId}/detail" : {
-      "get" : {
-        "tags" : [ "Organizations" ],
-        "summary" : "Retrieve Organization detail",
-        "operationId" : "getOrganizationDetail",
-        "parameters" : [ {
-          "name" : "organizationId",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "type" : "integer",
-            "format" : "int64"
-          }
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : "OK",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/OrganizationDetailsDTO"
-                }
-              }
-            }
-          },
-          "401" : {
-            "description" : "Unauthorized - Missing or invalid token",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/OrganizationDetailsDTO"
-                }
-              }
-            }
-          },
-          "403" : {
-            "description" : "Forbidden - Access denied",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/OrganizationDetailsDTO"
-                }
-              }
-            }
-          },
-          "404" : {
-            "description" : "Not Found",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/OrganizationDetailsDTO"
-                }
-              }
-            }
-          },
-          "500" : {
-            "description" : "Internal Server Error",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/OrganizationDetailsDTO"
-                }
-              }
-            }
-          }
-        },
-        "security" : [ {
-          "BearerAuth" : [ ]
-        } ]
-      }
-    },
     "/bff/organization/{organizationId}/debt-positions" : {
       "get" : {
         "tags" : [ "DebtPositions" ],
@@ -9469,6 +9467,96 @@
         },
         "required" : [ "flagNotifyIo", "flagNotifyOutcomePush", "flagPaymentNotification", "ipaCode", "operatorRole", "orgFiscalCode", "orgName", "organizationId" ]
       },
+      "OrganizationDetail" : {
+        "type" : "object",
+        "properties" : {
+          "organizationId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "flagTreasury" : {
+            "type" : "boolean"
+          },
+          "externalOrganizationId" : {
+            "type" : "string",
+            "readOnly" : true
+          },
+          "ipaCode" : {
+            "type" : "string",
+            "readOnly" : true
+          },
+          "orgFiscalCode" : {
+            "type" : "string",
+            "readOnly" : true
+          },
+          "orgName" : {
+            "type" : "string",
+            "readOnly" : true
+          },
+          "orgTypeCode" : {
+            "type" : "string",
+            "readOnly" : true
+          },
+          "orgEmail" : {
+            "type" : "string"
+          },
+          "postalIban" : {
+            "type" : "string"
+          },
+          "iban" : {
+            "type" : "string"
+          },
+          "password" : {
+            "type" : "string"
+          },
+          "segregationCode" : {
+            "type" : "string"
+          },
+          "cbillInterBankCode" : {
+            "type" : "string"
+          },
+          "orgLogo" : {
+            "type" : "string"
+          },
+          "status" : {
+            "$ref" : "#/components/schemas/OrganizationStatus"
+          },
+          "additionalLanguage" : {
+            "type" : "string"
+          },
+          "startDate" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "brokerId" : {
+            "type" : "integer",
+            "format" : "int64",
+            "readOnly" : true
+          },
+          "ioApiKey" : {
+            "type" : "string"
+          },
+          "sendApiKey" : {
+            "type" : "string"
+          },
+          "generateNoticeApiKey" : {
+            "type" : "string"
+          },
+          "flagNotifyIo" : {
+            "type" : "boolean"
+          },
+          "flagNotifyOutcomePush" : {
+            "type" : "boolean"
+          },
+          "flagPaymentNotification" : {
+            "type" : "boolean"
+          },
+          "pdndEnabled" : {
+            "type" : "boolean"
+          }
+        },
+        "required" : [ "flagNotifyIo", "flagNotifyOutcomePush", "flagPaymentNotification", "flagTreasury", "ipaCode", "orgFiscalCode", "orgName", "organizationId", "pdndEnabled", "status" ]
+      },
       "OrganizationWithDebtPositionTypeOrgCount" : {
         "type" : "object",
         "properties" : {
@@ -11013,96 +11101,6 @@
           }
         },
         "required" : [ "content", "number", "size", "totalElements", "totalPages" ]
-      },
-      "OrganizationDetailsDTO" : {
-        "type" : "object",
-        "properties" : {
-          "organizationId" : {
-            "type" : "integer",
-            "format" : "int64"
-          },
-          "flagTreasury" : {
-            "type" : "boolean"
-          },
-          "externalOrganizationId" : {
-            "type" : "string",
-            "readOnly" : true
-          },
-          "ipaCode" : {
-            "type" : "string",
-            "readOnly" : true
-          },
-          "orgFiscalCode" : {
-            "type" : "string",
-            "readOnly" : true
-          },
-          "orgName" : {
-            "type" : "string",
-            "readOnly" : true
-          },
-          "orgTypeCode" : {
-            "type" : "string",
-            "readOnly" : true
-          },
-          "orgEmail" : {
-            "type" : "string"
-          },
-          "postalIban" : {
-            "type" : "string"
-          },
-          "iban" : {
-            "type" : "string"
-          },
-          "password" : {
-            "type" : "string"
-          },
-          "segregationCode" : {
-            "type" : "string"
-          },
-          "cbillInterBankCode" : {
-            "type" : "string"
-          },
-          "orgLogo" : {
-            "type" : "string"
-          },
-          "status" : {
-            "$ref" : "#/components/schemas/OrganizationStatus"
-          },
-          "additionalLanguage" : {
-            "type" : "string"
-          },
-          "startDate" : {
-            "type" : "string",
-            "format" : "date"
-          },
-          "brokerId" : {
-            "type" : "integer",
-            "format" : "int64",
-            "readOnly" : true
-          },
-          "ioApiKey" : {
-            "type" : "string"
-          },
-          "sendApiKey" : {
-            "type" : "string"
-          },
-          "generateNoticeApiKey" : {
-            "type" : "string"
-          },
-          "flagNotifyIo" : {
-            "type" : "boolean"
-          },
-          "flagNotifyOutcomePush" : {
-            "type" : "boolean"
-          },
-          "flagPaymentNotification" : {
-            "type" : "boolean"
-          },
-          "pdndEnabled" : {
-            "type" : "boolean"
-          }
-        },
-        "required" : [ "flagNotifyIo", "flagNotifyOutcomePush", "flagPaymentNotification", "flagTreasury", "ipaCode", "orgFiscalCode", "orgName", "organizationId", "pdndEnabled", "status" ]
       },
       "DebtPositionView" : {
         "type" : "object",

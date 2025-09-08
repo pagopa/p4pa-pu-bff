@@ -134,12 +134,12 @@ class OrganizationControllerTest {
 
   @Test
   void givenOrganizationIdWhenGetOrganizationDetailThenReturnOrganizationDetailDTO() {
-    OrganizationDetailsDTO organizationDetailDTO = new OrganizationDetailsDTO();
+    OrganizationDetail organizationDetailDTO = new OrganizationDetail();
     Long organizationId = 1L;
 
     Mockito.when(organizationRetrieverServiceMock.getOrganizationDetail(organizationId, loggedUser, accessToken)).thenReturn(organizationDetailDTO);
 
-    ResponseEntity<OrganizationDetailsDTO> result = organizationController.getOrganizationDetail(organizationId);
+    ResponseEntity<OrganizationDetail> result = organizationController.getOrganizationDetail(organizationId);
 
     assertEquals(HttpStatus.OK, result.getStatusCode());
     assertNotNull(result.getBody());

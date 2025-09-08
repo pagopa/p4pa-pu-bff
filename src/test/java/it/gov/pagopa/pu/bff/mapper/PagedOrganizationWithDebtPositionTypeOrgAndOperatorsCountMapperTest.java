@@ -137,6 +137,21 @@ class PagedOrganizationWithDebtPositionTypeOrgAndOperatorsCountMapperTest {
   }
 
   @Test
+  void givenNullDptoCountsWhenDptoCountThenReturnZero() {
+    // given
+    Organization organization = podamFactory.manufacturePojo(Organization.class);
+    organization.setOrganizationId(12345L);
+
+    Map<Long, Integer> dptoCounts = null;
+
+    // when
+    Integer result = mapper.dptoCount(organization, dptoCounts);
+
+    // then
+    assertNull(result);
+  }
+
+  @Test
   void givenOperatorsPagesWhenOperatorsCountThenReturnCorrectValue() {
     // given
     Organization organization = podamFactory.manufacturePojo(Organization.class);
@@ -174,6 +189,21 @@ class PagedOrganizationWithDebtPositionTypeOrgAndOperatorsCountMapperTest {
 
     // then
     assertEquals(0, result);
+  }
+
+  @Test
+  void givenNullOperatorsPageForOrgWhenOperatorsCountThenReturnZero() {
+    // given
+    Organization organization = podamFactory.manufacturePojo(Organization.class);
+    organization.setOrganizationId(12345L);
+
+    Map<Long, OperatorsPage> allOperators = null;
+
+    // when
+    Integer result = mapper.operatorsCount(organization, allOperators);
+
+    // then
+    assertNull(result);
   }
 
   @Test

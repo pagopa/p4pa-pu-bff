@@ -13,6 +13,7 @@ import org.springframework.web.client.HttpClientErrorException;
 public class OrgSilServiceSearchClient {
 
   private final OrganizationApisHolder organizationApisHolder;
+  private static final String ORG_SIL_SERVICE_NOT_FOUND_MESSAGE = "OrgSilService with ID {} not found";
 
   public OrgSilServiceSearchClient(OrganizationApisHolder organizationApisHolder) {
     this.organizationApisHolder = organizationApisHolder;
@@ -28,7 +29,7 @@ public class OrgSilServiceSearchClient {
       return organizationApisHolder.getOrgSilServiceEntityControllerApi(accessToken)
         .crudGetOrgsilservice(String.valueOf(orgSilServiceId));
     } catch (HttpClientErrorException.NotFound e) {
-      log.info("OrgSilService with ID {} not found", orgSilServiceId);
+      log.info(ORG_SIL_SERVICE_NOT_FOUND_MESSAGE, orgSilServiceId);
       return null;
     }
   }
@@ -49,7 +50,7 @@ public class OrgSilServiceSearchClient {
     try {
       return organizationApisHolder.getOrganizationSilServiceApi(accessToken).getOrgSilService(orgSilServiceId);
     } catch (HttpClientErrorException.NotFound e) {
-      log.info("OrgSilService with ID {} not found", orgSilServiceId);
+      log.info(ORG_SIL_SERVICE_NOT_FOUND_MESSAGE, orgSilServiceId);
       return null;
     }
   }
@@ -63,7 +64,7 @@ public class OrgSilServiceSearchClient {
     try {
       return organizationApisHolder.getOrgSilServiceSearchControllerApi(accessToken).crudOrgSilServicesFindByOrganizationIdAndApplicationName(organizationId, applicationName);
     } catch (HttpClientErrorException.NotFound e) {
-      log.info("OrgSilService with ID {} not found", organizationId);
+      log.info(ORG_SIL_SERVICE_NOT_FOUND_MESSAGE, organizationId);
       return null;
     }
   }

@@ -211,7 +211,6 @@ class OrgSilServiceSearchClientTest {
     String accessToken = "ACCESSTOKEN";
     Long organizationId = 3L;
     String applicationName = "applicationName";
-    OrgSilService orgSilService = podamFactory.manufacturePojo(OrgSilService.class);
 
     when(organizationApisHolderMock.getOrgSilServiceSearchControllerApi(accessToken)).thenReturn(orgSilServiceSearchControllerApiMock);
     when(orgSilServiceSearchControllerApiMock.crudOrgSilServicesFindByOrganizationIdAndApplicationName(organizationId, applicationName)).thenThrow(HttpClientErrorException.create(HttpStatus.NOT_FOUND, "NotFound", null, null, null));

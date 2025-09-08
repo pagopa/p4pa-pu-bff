@@ -57,6 +57,33 @@ paths:
                 $ref: '#/components/schemas/ErrorDTO'
       x-spring-paginated: true
   /organizations/{organizationId}:
+    get:
+      tags:
+        - Organizations
+      summary: "Retrieve Organization detail"
+      operationId: getOrganizationDetail
+      parameters:
+        - name: organizationId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrganizationDetail'
+        '401':
+          description: Unauthorized - Missing or invalid token
+        '403':
+          description: Forbidden - Access denied
+        '404':
+          description: Not Found
+        '500':
+          description: Internal Server Error
     put:
       tags:
         - Organizations
@@ -4575,6 +4602,79 @@ components:
         number:
           type: integer
           format: int64
+    OrganizationDetail:
+      type: object
+      required:
+        - organizationId
+        - flagTreasury
+        - ipaCode
+        - orgFiscalCode
+        - orgName
+        - status
+        - flagNotifyIo
+        - flagNotifyOutcomePush
+        - flagPaymentNotification
+        - pdndEnabled
+      properties:
+        organizationId:
+          type: integer
+          format: int64
+        flagTreasury:
+          type: boolean
+        externalOrganizationId:
+          type: string
+          readOnly: true
+        ipaCode:
+          type: string
+          readOnly: true
+        orgFiscalCode:
+          type: string
+          readOnly: true
+        orgName:
+          type: string
+          readOnly: true
+        orgTypeCode:
+          type: string
+          readOnly: true
+        orgEmail:
+          type: string
+        postalIban:
+          type: string
+        iban:
+          type: string
+        password:
+          type: string
+        segregationCode:
+          type: string
+        cbillInterBankCode:
+          type: string
+        orgLogo:
+          type: string
+        status:
+          type: 'OrganizationStatus'
+        additionalLanguage:
+          type: string
+        startDate:
+          type: string
+          format: date
+        brokerId:
+          type: integer
+          format: int64
+          readOnly: true
+        ioApiKey:
+          type: string
+        sendApiKey:
+          type: string
+        generateNoticeApiKey:
+          type: string
+        flagNotifyIo:
+          type: boolean
+        flagNotifyOutcomePush:
+          type: boolean
+        flagPaymentNotification:
+          type: boolean
+        pdndEnabled:
+          type: boolean
     PagedTreasuredClassificationExtendedDTO:
       type: object
       required:

@@ -8,11 +8,13 @@ import it.gov.pagopa.pu.bff.connector.auth.AuthzService;
 import it.gov.pagopa.pu.bff.connector.debt_position.DebtPositionTypeOrgService;
 import it.gov.pagopa.pu.bff.connector.organization.OrganizationService;
 import it.gov.pagopa.pu.bff.dto.generated.OrganizationDTO;
+import it.gov.pagopa.pu.bff.dto.generated.OrganizationDetail;
 import it.gov.pagopa.pu.bff.dto.generated.PagedOrganizationWithDebtPositionTypeOrgAndOperatorsCount;
 import it.gov.pagopa.pu.bff.dto.generated.PagedOrganizationWithDebtPositionTypeOrgCount;
 import it.gov.pagopa.pu.bff.exception.InvalidOrganizationException;
 import it.gov.pagopa.pu.bff.exception.ResourceNotFoundException;
 import it.gov.pagopa.pu.bff.mapper.OrganizationDTOMapper;
+import it.gov.pagopa.pu.bff.mapper.OrganizationDetailMapper;
 import it.gov.pagopa.pu.bff.mapper.OrganizationWithDebtPositionTypeOrgCountMapper;
 import it.gov.pagopa.pu.bff.mapper.PagedOrganizationWithDebtPositionTypeOrgAndOperatorsCountMapper;
 import it.gov.pagopa.pu.bff.service.organization.OrganizationRetrieverServiceImpl;
@@ -63,6 +65,8 @@ class OrganizationRetrieverServiceImplTest {
   private PagedOrganizationWithDebtPositionTypeOrgAndOperatorsCountMapper pagedOrganizationWithDebtPositionTypeOrgAndOperatorsCountMapperMock;
   @Mock
   private AuthzService authzServiceMock;
+  @Mock
+  private OrganizationDetailMapper organizationDetailMapperMock;
 
   private OrganizationRetrieverServiceImpl organizationService;
   private UserInfo userInfo;
@@ -81,7 +85,8 @@ class OrganizationRetrieverServiceImplTest {
       organizationDTOMapperMock,
       organizationWithDebtPositionTypeOrgCountMapperMock,
       authzServiceMock,
-      pagedOrganizationWithDebtPositionTypeOrgAndOperatorsCountMapperMock);
+      pagedOrganizationWithDebtPositionTypeOrgAndOperatorsCountMapperMock,
+      organizationDetailMapperMock);
   }
 
   @BeforeEach
@@ -107,8 +112,14 @@ class OrganizationRetrieverServiceImplTest {
       .build();
 
     organizationService = new OrganizationRetrieverServiceImpl(
-      authorizationServiceMock, organizationServiceMock,
-      debtPositionTypeOrgServiceMock, organizationDTOMapperMock, organizationWithDebtPositionTypeOrgCountMapperMock, authzServiceMock, pagedOrganizationWithDebtPositionTypeOrgAndOperatorsCountMapperMock);
+      authorizationServiceMock,
+      organizationServiceMock,
+      debtPositionTypeOrgServiceMock,
+      organizationDTOMapperMock,
+      organizationWithDebtPositionTypeOrgCountMapperMock,
+      authzServiceMock,
+      pagedOrganizationWithDebtPositionTypeOrgAndOperatorsCountMapperMock,
+      organizationDetailMapperMock);
   }
 
   @Test
@@ -252,7 +263,7 @@ class OrganizationRetrieverServiceImplTest {
     organization.setBrokerId(loggedUser.getBrokerId());
 
     Mockito.when(organizationServiceMock.getOrganizationByOrganizationId(organization.getOrganizationId(),accessToken))
-            .thenReturn(organization);
+      .thenReturn(organization);
 
     String result = organizationService.getOrgFiscalCode(organization.getOrganizationId(), loggedUser, accessToken);
 
@@ -269,7 +280,7 @@ class OrganizationRetrieverServiceImplTest {
     Long organizationId = organization.getOrganizationId();
 
     Mockito.when(organizationServiceMock.getOrganizationByOrganizationId(organizationId,accessToken))
-            .thenReturn(organization);
+      .thenReturn(organization);
 
     assertThrows(ResourceNotFoundException.class,()->organizationService.getOrgFiscalCode(organizationId, loggedUser, accessToken));
   }
@@ -283,7 +294,7 @@ class OrganizationRetrieverServiceImplTest {
     Long organizationId = organization.getOrganizationId();
 
     Mockito.when(organizationServiceMock.getOrganizationByOrganizationId(organizationId,accessToken))
-            .thenReturn(organization);
+      .thenReturn(organization);
 
     assertThrows(ResourceNotFoundException.class,()->organizationService.getOrgFiscalCode(organizationId, loggedUser, accessToken));
   }
@@ -295,7 +306,7 @@ class OrganizationRetrieverServiceImplTest {
     Long organizationId = 2L;
 
     Mockito.when(organizationServiceMock.getOrganizationByOrganizationId(organizationId,accessToken))
-            .thenReturn(null);
+      .thenReturn(null);
 
     assertThrows(ResourceNotFoundException.class,()->organizationService.getOrgFiscalCode(organizationId, loggedUser, accessToken));
   }
@@ -465,5 +476,49 @@ class OrganizationRetrieverServiceImplTest {
     doNothing().when(authorizationServiceMock).validateOrganizationOrBrokerAdmin(organizationId,loggedUser,accessToken);
 
     Assertions.assertThrows(InvalidOrganizationException.class,() -> organizationService.updateOrganization(organizationId, orgDTO, loggedUser, accessToken));
+  }
+
+  @Test
+  void givenExistingOrganizationIdWhenGetOrganizationDetailThenReturnMappedOrganizationDetailDTO() {
+    Long organizationId = 123L;
+
+    OrganizationDetailDTO orgDetail = podamFactory.manufacturePojo(OrganizationDetailDTO.class);
+
+    OrganizationDetail expectedDetail = podamFactory.manufacturePojo(OrganizationDetail.class);
+
+    Organization organization = podamFactory.manufacturePojo(Organization.class);
+
+    when(organizationServiceMock.getOrganizationByOrganizationId(organizationId, accessToken))
+      .thenReturn(organization);
+
+    doNothing().when(authorizationServiceMock)
+      .validateOrganizationOrBrokerAdmin(organizationId, userInfo, accessToken);
+
+    when(organizationServiceMock.getOrganizationDetail(organizationId, accessToken))
+      .thenReturn(orgDetail);
+
+    when(organizationDetailMapperMock.mapToBffDTO(orgDetail))
+      .thenReturn(expectedDetail);
+
+    OrganizationDetail result = organizationService.getOrganizationDetail(organizationId, userInfo, accessToken);
+
+    assertNotNull(result);
+    assertEquals(expectedDetail, result);
+  }
+
+  @Test
+  void givenNonExistingOrganizationIdWhenGetOrganizationDetailThenThrowResourceNotFoundException() {
+    Long organizationId = 123L;
+
+    doNothing().when(authorizationServiceMock)
+      .validateOrganizationOrBrokerAdmin(organizationId, userInfo, accessToken);
+
+    when(organizationServiceMock.getOrganizationByOrganizationId(organizationId, accessToken))
+      .thenReturn(null);
+
+    ResourceNotFoundException ex = assertThrows(ResourceNotFoundException.class,
+      () -> organizationService.getOrganizationDetail(organizationId, userInfo, accessToken));
+
+    assertTrue(ex.getMessage().contains("Organization having organizationId " + organizationId + " not found"));
   }
 }

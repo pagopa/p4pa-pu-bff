@@ -1,10 +1,7 @@
 package it.gov.pagopa.pu.bff.controller;
 
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
-import it.gov.pagopa.pu.bff.dto.generated.OrganizationDTO;
-import it.gov.pagopa.pu.bff.dto.generated.OrganizationWithDebtPositionTypeOrgCount;
-import it.gov.pagopa.pu.bff.dto.generated.PagedOrganizationWithDebtPositionTypeOrgAndOperatorsCount;
-import it.gov.pagopa.pu.bff.dto.generated.PagedOrganizationWithDebtPositionTypeOrgCount;
+import it.gov.pagopa.pu.bff.dto.generated.*;
 import it.gov.pagopa.pu.bff.security.SecurityUtilsTest;
 import it.gov.pagopa.pu.bff.service.organization.OrganizationRetrieverService;
 import it.gov.pagopa.pu.bff.util.TestUtils;
@@ -133,5 +130,19 @@ class OrganizationControllerTest {
     ResponseEntity<Void> response = organizationController.updateOrganization(organizationId, organization);
 
     assertEquals(HttpStatus.OK, response.getStatusCode());
+  }
+
+  @Test
+  void givenOrganizationIdWhenGetOrganizationDetailThenReturnOrganizationDetailDTO() {
+    OrganizationDetail organizationDetailDTO = new OrganizationDetail();
+    Long organizationId = 1L;
+
+    Mockito.when(organizationRetrieverServiceMock.getOrganizationDetail(organizationId, loggedUser, accessToken)).thenReturn(organizationDetailDTO);
+
+    ResponseEntity<OrganizationDetail> result = organizationController.getOrganizationDetail(organizationId);
+
+    assertEquals(HttpStatus.OK, result.getStatusCode());
+    assertNotNull(result.getBody());
+    assertEquals(organizationDetailDTO, result.getBody());
   }
 }

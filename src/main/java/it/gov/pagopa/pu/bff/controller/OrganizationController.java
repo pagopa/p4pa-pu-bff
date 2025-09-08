@@ -2,6 +2,7 @@ package it.gov.pagopa.pu.bff.controller;
 
 import it.gov.pagopa.pu.bff.controller.generated.OrganizationsApi;
 import it.gov.pagopa.pu.bff.dto.generated.OrganizationDTO;
+import it.gov.pagopa.pu.bff.dto.generated.OrganizationDetail;
 import it.gov.pagopa.pu.bff.dto.generated.PagedOrganizationWithDebtPositionTypeOrgAndOperatorsCount;
 import it.gov.pagopa.pu.bff.dto.generated.PagedOrganizationWithDebtPositionTypeOrgCount;
 import it.gov.pagopa.pu.bff.security.SecurityUtils;
@@ -42,10 +43,17 @@ public class OrganizationController implements OrganizationsApi {
     log.info("User requested getOrganizationsByBrokerId()");
     return new ResponseEntity<>(organizationRetrieverService.getOrganizationsByBrokerId(SecurityUtils.getLoggedUser(),pageable, SecurityUtils.getAccessToken()), HttpStatus.OK);
   }
+
   @Override
   public ResponseEntity<Void> updateOrganization(Long organizationId, OrganizationDetailDTO organizationDetailDTO) {
     log.info("User requested updateOrganization having organizationId {}", organizationId);
     organizationRetrieverService.updateOrganization(organizationId, organizationDetailDTO,SecurityUtils.getLoggedUser(),SecurityUtils.getAccessToken());
     return ResponseEntity.ok().build();
+  }
+
+  @Override
+  public ResponseEntity<OrganizationDetail> getOrganizationDetail(Long organizationId) {
+    log.info("User requested getOrganizationDetail having organizationId {}", organizationId);
+    return ResponseEntity.ok(organizationRetrieverService.getOrganizationDetail(organizationId, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken()));
   }
 }

@@ -8,8 +8,14 @@ import org.springframework.data.domain.Pageable;
 public interface OrganizationService {
 
   Organization getOrganizationByIpaCode(String ipaCode, String accessToken);
+
   PagedModelOrganization getOrganizationByBrokerIdAndOrgName(Long brokerId, String orgName, Pageable pageable, String accessToken);
+
   Organization getOrganizationByOrganizationId(Long organizationId, String accessToken);
+
   PagedModelOrganization getOrganizationsByBrokerId(Long brokerId, Pageable pageable, String accessToken);
+
   void updateOrganization(OrganizationDetailDTO organizationDetailDTO, String accessToken);
+
+  OrganizationDetailDTO getOrganizationDetail(Long organizationId, String accessToken);
 }

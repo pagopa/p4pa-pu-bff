@@ -1,5 +1,6 @@
 package it.gov.pagopa.pu.bff.connector.organization;
 
+import it.gov.pagopa.pu.bff.connector.organization.client.OrganizationApiClient;
 import it.gov.pagopa.pu.bff.connector.organization.client.OrganizationClient;
 import it.gov.pagopa.pu.bff.connector.organization.client.OrganizationEntityClient;
 import it.gov.pagopa.pu.bff.connector.organization.client.OrganizationSearchClient;
@@ -26,22 +27,24 @@ import static org.mockito.Mockito.when;
 class OrganizationServiceTest {
 
   @Mock
-  private OrganizationSearchClient organizationSearchClient;
+  private OrganizationSearchClient organizationSearchClientMock;
   @Mock
-  private OrganizationEntityClient organizationEntityClient;
+  private OrganizationEntityClient organizationEntityClientMock;
   @Mock
   private OrganizationClient organizationClientMock;
+  @Mock
+  private OrganizationApiClient organizationApiClientMock;
 
   private OrganizationService service;
 
   @BeforeEach
   void setUp() {
-    service = new OrganizationServiceImpl(organizationSearchClient, organizationEntityClient, organizationClientMock);
+    service = new OrganizationServiceImpl(organizationSearchClientMock, organizationEntityClientMock, organizationClientMock, organizationApiClientMock);
   }
 
   @AfterEach
   void verifyNoMoreInteractions() {
-    Mockito.verifyNoMoreInteractions(organizationSearchClient, organizationEntityClient, organizationClientMock);
+    Mockito.verifyNoMoreInteractions(organizationSearchClientMock, organizationEntityClientMock, organizationClientMock, organizationApiClientMock);
   }
 
   @Test
@@ -50,7 +53,7 @@ class OrganizationServiceTest {
     String ipaCode = "ipaCode";
     String accessToken = "accessToken";
 
-    when(organizationSearchClient.getOrganizationByIpaCode(Mockito.same(ipaCode), Mockito.same(accessToken)))
+    when(organizationSearchClientMock.getOrganizationByIpaCode(Mockito.same(ipaCode), Mockito.same(accessToken)))
       .thenReturn(expected);
 
     Organization result = service.getOrganizationByIpaCode(ipaCode, accessToken);
@@ -65,7 +68,7 @@ class OrganizationServiceTest {
     String orgName = "orgName";
     String accessToken = "accessToken";
 
-    when(organizationSearchClient.getOrganizationByBrokerIdAndOrgName(Mockito.same(brokerId), Mockito.same(orgName), Mockito.any(), Mockito.same(accessToken)))
+    when(organizationSearchClientMock.getOrganizationByBrokerIdAndOrgName(Mockito.same(brokerId), Mockito.same(orgName), Mockito.any(), Mockito.same(accessToken)))
       .thenReturn(expected);
 
     PagedModelOrganization result = service.getOrganizationByBrokerIdAndOrgName(brokerId, orgName, Pageable.unpaged(), accessToken);
@@ -79,7 +82,7 @@ class OrganizationServiceTest {
     Long organizationId = 1L;
     String accessToken = "accessToken";
 
-    when(organizationEntityClient.getOrganizationByOrganizationId(Mockito.same(organizationId), Mockito.same(accessToken)))
+    when(organizationEntityClientMock.getOrganizationByOrganizationId(Mockito.same(organizationId), Mockito.same(accessToken)))
       .thenReturn(expected);
 
     Organization result = service.getOrganizationByOrganizationId(organizationId, accessToken);
@@ -94,7 +97,7 @@ class OrganizationServiceTest {
     Long brokerId = 1L;
     PagedModelOrganization expectedResult = new PagedModelOrganization();
 
-    when(organizationSearchClient.getOrganizationsByBrokerId(eq(brokerId), any(), eq(accessToken)))
+    when(organizationSearchClientMock.getOrganizationsByBrokerId(eq(brokerId), any(), eq(accessToken)))
       .thenReturn(expectedResult);
 
     //when
@@ -115,5 +118,20 @@ class OrganizationServiceTest {
     service.updateOrganization(organizationDetailDTO, accessToken);
 
     Mockito.verifyNoMoreInteractions(organizationClientMock);
+  }
+
+  @Test
+  void  givenOrganizationIdWhenGetOrganizationDetailThenReturnOrganizationDetailDTO(){
+    String accessToken = "ACCESSTOKEN";
+    Long organizationId = 1L;
+    OrganizationDetailDTO expectedResult = new OrganizationDetailDTO();
+
+    when(organizationApiClientMock.getOrganizationDetail(organizationId, accessToken))
+      .thenReturn(expectedResult);
+
+    OrganizationDetailDTO result = service.getOrganizationDetail(organizationId, accessToken);
+
+    assertNotNull(result);
+    assertSame(expectedResult, result);
   }
 }

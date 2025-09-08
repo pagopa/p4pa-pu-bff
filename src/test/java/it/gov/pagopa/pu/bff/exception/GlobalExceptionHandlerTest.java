@@ -315,7 +315,7 @@ class GlobalExceptionHandlerTest {
 
   @Test
   void handleInvalidApplicationNameException() throws Exception {
-    doThrow(new InvalidApplicationNameException("Error")).when(testControllerSpy).testEndpoint(DATA, BODY);
+    doThrow(new InvalidOrgSilServiceException("Error")).when(testControllerSpy).testEndpoint(DATA, BODY);
 
     performRequest(DATA, MediaType.APPLICATION_JSON)
       .andExpect(MockMvcResultMatchers.status().isBadRequest())

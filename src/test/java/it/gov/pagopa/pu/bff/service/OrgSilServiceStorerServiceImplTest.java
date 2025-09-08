@@ -3,7 +3,7 @@ package it.gov.pagopa.pu.bff.service;
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.connector.organization.OrgSilServiceService;
 import it.gov.pagopa.pu.bff.dto.OrgSilServiceDecryptedDTO;
-import it.gov.pagopa.pu.bff.exception.InvalidApplicationNameException;
+import it.gov.pagopa.pu.bff.exception.InvalidOrgSilServiceException;
 import it.gov.pagopa.pu.bff.exception.ResourceNotFoundException;
 import it.gov.pagopa.pu.bff.mapper.OrgSilServiceDTOMapper;
 import it.gov.pagopa.pu.bff.service.org_sil_service.OrgSilServiceStorerService;
@@ -315,7 +315,7 @@ public class OrgSilServiceStorerServiceImplTest {
     when(orgSilServiceDTOMapperMock.toOrgSilServiceDTO(body)).thenReturn(mappedDto);
     when(orgSilServiceServiceMock.getOrgSilServiceByOrganizationIdAndApplicationName(organizationId, mappedDto.getApplicationName() , accessToken)).thenReturn( new OrgSilService());
 
-    InvalidApplicationNameException ex = assertThrows(InvalidApplicationNameException.class, () ->
+    InvalidOrgSilServiceException ex = assertThrows(InvalidOrgSilServiceException.class, () ->
       orgSilServiceStorerService.createOrgSilService(organizationId, body, loggedUser, accessToken));
 
     Assertions.assertEquals("OrgSilService with same applicationName applicationName already exist for the organization 1", ex.getMessage());
@@ -348,7 +348,7 @@ public class OrgSilServiceStorerServiceImplTest {
     when(orgSilServiceDTOMapperMock.toOrgSilServiceDTO(body)).thenReturn(mappedDto);
     when(orgSilServiceServiceMock.getOrgSilServiceByOrganizationIdAndApplicationName(organizationId, mappedDto.getApplicationName() , accessToken)).thenReturn(existing);
 
-    InvalidApplicationNameException ex = assertThrows(InvalidApplicationNameException.class, () ->
+    InvalidOrgSilServiceException ex = assertThrows(InvalidOrgSilServiceException.class, () ->
       orgSilServiceStorerService.updateOrgSilService(organizationId, body, loggedUser, accessToken));
 
     Assertions.assertEquals("OrgSilService with same applicationName applicationName already exist for the organization 1", ex.getMessage());

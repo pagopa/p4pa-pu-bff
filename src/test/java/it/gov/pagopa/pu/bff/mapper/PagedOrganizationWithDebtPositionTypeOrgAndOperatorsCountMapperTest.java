@@ -148,7 +148,8 @@ class PagedOrganizationWithDebtPositionTypeOrgAndOperatorsCountMapperTest {
     Integer result = mapper.dptoCount(organization, dptoCounts);
 
     // then
-    assertNull(result);
+    assertNotNull(result);
+    assertEquals(0,result);
   }
 
   @Test
@@ -203,7 +204,8 @@ class PagedOrganizationWithDebtPositionTypeOrgAndOperatorsCountMapperTest {
     Integer result = mapper.operatorsCount(organization, allOperators);
 
     // then
-    assertNull(result);
+    assertNotNull(result);
+    assertEquals(0,result);
   }
 
   @Test

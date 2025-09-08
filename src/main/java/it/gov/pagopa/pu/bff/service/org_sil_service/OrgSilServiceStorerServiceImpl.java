@@ -3,7 +3,7 @@ package it.gov.pagopa.pu.bff.service.org_sil_service;
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.connector.organization.OrgSilServiceService;
 import it.gov.pagopa.pu.bff.dto.OrgSilServiceDecryptedDTO;
-import it.gov.pagopa.pu.bff.exception.InvalidApplicationNameException;
+import it.gov.pagopa.pu.bff.exception.InvalidOrgSilServiceException;
 import it.gov.pagopa.pu.bff.exception.ResourceNotFoundException;
 import it.gov.pagopa.pu.bff.mapper.OrgSilServiceDTOMapper;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
@@ -103,7 +103,7 @@ public class OrgSilServiceStorerServiceImpl implements OrgSilServiceStorerServic
 
   private void verifyIfOrgSilServiceWithSameApplicationNameAlreadyExist(Long organizationId, String applicationName, String accessToken){
     if (orgSilServiceService.getOrgSilServiceByOrganizationIdAndApplicationName(organizationId, applicationName, accessToken) != null){
-      throw new InvalidApplicationNameException("OrgSilService with same applicationName %s already exist for the organization %d".formatted(applicationName, organizationId));
+      throw new InvalidOrgSilServiceException("OrgSilService with same applicationName %s already exist for the organization %d".formatted(applicationName, organizationId));
     }
   }
 }

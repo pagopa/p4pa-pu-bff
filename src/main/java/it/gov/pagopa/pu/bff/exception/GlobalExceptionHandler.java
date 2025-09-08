@@ -86,7 +86,7 @@ public class GlobalExceptionHandler {
     return handleException(ex, request, ex.getStatusCode(), TitleEnum.GENERIC_ERROR);
   }
 
-  @ExceptionHandler(InvalidApplicationNameException.class)
+  @ExceptionHandler(InvalidOrgSilServiceException.class)
   public  ResponseEntity<ErrorDTO> handleInvalidApplicationNameException(Exception ex, HttpServletRequest request){
     return handleException(ex, request, HttpStatus.BAD_REQUEST, TitleEnum.BAD_REQUEST);
   }

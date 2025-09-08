@@ -2,6 +2,7 @@ package it.gov.pagopa.pu.bff.controller;
 
 import it.gov.pagopa.pu.bff.controller.generated.OrganizationsApi;
 import it.gov.pagopa.pu.bff.dto.generated.OrganizationDTO;
+import it.gov.pagopa.pu.bff.dto.generated.OrganizationDetailsDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedOrganizationWithDebtPositionTypeOrgAndOperatorsCount;
 import it.gov.pagopa.pu.bff.dto.generated.PagedOrganizationWithDebtPositionTypeOrgCount;
 import it.gov.pagopa.pu.bff.security.SecurityUtils;
@@ -51,7 +52,7 @@ public class OrganizationController implements OrganizationsApi {
   }
 
   @Override
-  public ResponseEntity<OrganizationDetailDTO> getOrganizationDetail(Long organizationId) {
+  public ResponseEntity<OrganizationDetailsDTO> getOrganizationDetail(Long organizationId) {
     log.info("User requested getOrganizationDetail having organizationId {}", organizationId);
     return ResponseEntity.ok(organizationRetrieverService.getOrganizationDetail(organizationId, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken()));
   }

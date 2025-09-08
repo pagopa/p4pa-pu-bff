@@ -6,11 +6,13 @@ import it.gov.pagopa.pu.bff.connector.auth.AuthzService;
 import it.gov.pagopa.pu.bff.connector.debt_position.DebtPositionTypeOrgService;
 import it.gov.pagopa.pu.bff.connector.organization.OrganizationService;
 import it.gov.pagopa.pu.bff.dto.generated.OrganizationDTO;
+import it.gov.pagopa.pu.bff.dto.generated.OrganizationDetailsDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedOrganizationWithDebtPositionTypeOrgAndOperatorsCount;
 import it.gov.pagopa.pu.bff.dto.generated.PagedOrganizationWithDebtPositionTypeOrgCount;
 import it.gov.pagopa.pu.bff.exception.InvalidOrganizationException;
 import it.gov.pagopa.pu.bff.exception.ResourceNotFoundException;
 import it.gov.pagopa.pu.bff.mapper.OrganizationDTOMapper;
+import it.gov.pagopa.pu.bff.mapper.OrganizationDetailMapper;
 import it.gov.pagopa.pu.bff.mapper.OrganizationWithDebtPositionTypeOrgCountMapper;
 import it.gov.pagopa.pu.bff.mapper.PagedOrganizationWithDebtPositionTypeOrgAndOperatorsCountMapper;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
@@ -41,11 +43,17 @@ public class OrganizationRetrieverServiceImpl implements OrganizationRetrieverSe
   private final OrganizationWithDebtPositionTypeOrgCountMapper organizationWithDebtPositionTypeOrgCountMapper;
   private final AuthzService authzService;
   private final PagedOrganizationWithDebtPositionTypeOrgAndOperatorsCountMapper pagedOrganizationWithDebtPositionTypeOrgAndOperatorsCountMapper;
+  private final OrganizationDetailMapper organizationDetailMapper;
 
   public OrganizationRetrieverServiceImpl(
-    AuthorizationService authorizationService, OrganizationService organizationService,
-    DebtPositionTypeOrgService debtPositionTypeOrgService, OrganizationDTOMapper organizationDTOMapper,
-    OrganizationWithDebtPositionTypeOrgCountMapper organizationWithDebtPositionTypeOrgCountMapper, AuthzService authzService, PagedOrganizationWithDebtPositionTypeOrgAndOperatorsCountMapper pagedOrganizationWithDebtPositionTypeOrgAndOperatorsCountMapper) {
+    AuthorizationService authorizationService,
+    OrganizationService organizationService,
+    DebtPositionTypeOrgService debtPositionTypeOrgService,
+    OrganizationDTOMapper organizationDTOMapper,
+    OrganizationWithDebtPositionTypeOrgCountMapper organizationWithDebtPositionTypeOrgCountMapper,
+    AuthzService authzService,
+    PagedOrganizationWithDebtPositionTypeOrgAndOperatorsCountMapper pagedOrganizationWithDebtPositionTypeOrgAndOperatorsCountMapper,
+    OrganizationDetailMapper organizationDetailMapper) {
     this.authorizationService = authorizationService;
     this.organizationService = organizationService;
     this.debtPositionTypeOrgService = debtPositionTypeOrgService;
@@ -53,6 +61,7 @@ public class OrganizationRetrieverServiceImpl implements OrganizationRetrieverSe
     this.organizationWithDebtPositionTypeOrgCountMapper = organizationWithDebtPositionTypeOrgCountMapper;
     this.authzService = authzService;
     this.pagedOrganizationWithDebtPositionTypeOrgAndOperatorsCountMapper = pagedOrganizationWithDebtPositionTypeOrgAndOperatorsCountMapper;
+    this.organizationDetailMapper = organizationDetailMapper;
   }
 
   @Override
@@ -174,7 +183,7 @@ public class OrganizationRetrieverServiceImpl implements OrganizationRetrieverSe
   }
 
   @Override
-  public OrganizationDetailDTO getOrganizationDetail(Long organizationId, UserInfo loggedUser, String accessToken) {
+  public OrganizationDetailsDTO getOrganizationDetail(Long organizationId, UserInfo loggedUser, String accessToken) {
     authorizationService.validateOrganizationOrBrokerAdmin(organizationId, loggedUser, accessToken);
 
     Organization organization = organizationService.getOrganizationByOrganizationId(organizationId, accessToken);
@@ -182,7 +191,9 @@ public class OrganizationRetrieverServiceImpl implements OrganizationRetrieverSe
       throw new ResourceNotFoundException("Organization having organizationId " + organizationId + " not found");
     }
 
-    return organizationService.getOrganizationDetail(organizationId, accessToken);
+    OrganizationDetailDTO orgDetail = organizationService.getOrganizationDetail(organizationId, accessToken);
+
+    return organizationDetailMapper.mapToBffDTO(orgDetail);
   }
 
   @Override

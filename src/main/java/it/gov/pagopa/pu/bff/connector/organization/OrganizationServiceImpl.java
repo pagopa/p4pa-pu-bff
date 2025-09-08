@@ -18,22 +18,22 @@ public class OrganizationServiceImpl implements OrganizationService {
 
   private final OrganizationSearchClient organizationSearchClient;
   private final OrganizationEntityClient organizationEntityClient;
-  private final OrganizationApiClient organizationApiClient;
   private final OrganizationClient organizationClient;
+  private final OrganizationApiClient organizationApiClient;
 
   public OrganizationServiceImpl(OrganizationSearchClient organizationSearchClient,
                                  OrganizationEntityClient organizationEntityClient,
+                                 OrganizationClient organizationClient,
                                  OrganizationApiClient organizationApiClient) {
-                                 OrganizationEntityClient organizationEntityClient, OrganizationClient organizationClient) {
     this.organizationSearchClient = organizationSearchClient;
     this.organizationEntityClient = organizationEntityClient;
+    this.organizationClient = organizationClient;
     this.organizationApiClient = organizationApiClient;
-      this.organizationClient = organizationClient;
   }
 
   @Override
-  @Cacheable(key = "#ipaCode", unless = "#result == null")
-  public Organization getOrganizationByIpaCode(String ipaCode, String accessToken) {
+  @Cacheable(key = "#ipaCode", unless="#result == null")
+  public Organization getOrganizationByIpaCode(String ipaCode, String accessToken){
     return organizationSearchClient.getOrganizationByIpaCode(ipaCode, accessToken);
   }
 
@@ -44,8 +44,8 @@ public class OrganizationServiceImpl implements OrganizationService {
   }
 
   @Override
-  @Cacheable(key = "#organizationId", unless = "#result == null")
-  public Organization getOrganizationByOrganizationId(Long organizationId, String accessToken) {
+  @Cacheable(key = "#organizationId", unless="#result == null")
+  public Organization getOrganizationByOrganizationId(Long organizationId, String accessToken){
     return organizationEntityClient.getOrganizationByOrganizationId(organizationId, accessToken);
   }
 
@@ -55,12 +55,12 @@ public class OrganizationServiceImpl implements OrganizationService {
   }
 
   @Override
-  public OrganizationDetailDTO getOrganizationDetail(Long organizationId, String accessToken) {
-    return organizationApiClient.getOrganizationDetail(organizationId, accessToken);
+  public void updateOrganization(OrganizationDetailDTO organizationDetailDTO, String accessToken) {
+    organizationClient.updateOrganization(organizationDetailDTO,accessToken);
   }
 
   @Override
-  public void updateOrganization(OrganizationDetailDTO organizationDetailDTO, String accessToken) {
-    organizationClient.updateOrganization(organizationDetailDTO,accessToken);
+  public OrganizationDetailDTO getOrganizationDetail(Long organizationId, String accessToken) {
+    return organizationApiClient.getOrganizationDetail(organizationId, accessToken);
   }
 }

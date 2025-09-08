@@ -5440,7 +5440,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/OrganizationDetailDTO"
+                  "$ref" : "#/components/schemas/OrganizationDetailsDTO"
                 }
               }
             }
@@ -5450,7 +5450,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/OrganizationDetailDTO"
+                  "$ref" : "#/components/schemas/OrganizationDetailsDTO"
                 }
               }
             }
@@ -5460,7 +5460,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/OrganizationDetailDTO"
+                  "$ref" : "#/components/schemas/OrganizationDetailsDTO"
                 }
               }
             }
@@ -5470,7 +5470,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/OrganizationDetailDTO"
+                  "$ref" : "#/components/schemas/OrganizationDetailsDTO"
                 }
               }
             }
@@ -5480,7 +5480,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/OrganizationDetailDTO"
+                  "$ref" : "#/components/schemas/OrganizationDetailsDTO"
                 }
               }
             }
@@ -11014,7 +11014,7 @@
         },
         "required" : [ "content", "number", "size", "totalElements", "totalPages" ]
       },
-      "OrganizationDetailDTO" : {
+      "OrganizationDetailsDTO" : {
         "type" : "object",
         "properties" : {
           "organizationId" : {
@@ -11025,19 +11025,24 @@
             "type" : "boolean"
           },
           "externalOrganizationId" : {
-            "type" : "string"
+            "type" : "string",
+            "readOnly" : true
           },
           "ipaCode" : {
-            "type" : "string"
+            "type" : "string",
+            "readOnly" : true
           },
           "orgFiscalCode" : {
-            "type" : "string"
+            "type" : "string",
+            "readOnly" : true
           },
           "orgName" : {
-            "type" : "string"
+            "type" : "string",
+            "readOnly" : true
           },
           "orgTypeCode" : {
-            "type" : "string"
+            "type" : "string",
+            "readOnly" : true
           },
           "orgEmail" : {
             "type" : "string"
@@ -11072,7 +11077,8 @@
           },
           "brokerId" : {
             "type" : "integer",
-            "format" : "int64"
+            "format" : "int64",
+            "readOnly" : true
           },
           "ioApiKey" : {
             "type" : "string"
@@ -11097,10 +11103,6 @@
           }
         },
         "required" : [ "flagNotifyIo", "flagNotifyOutcomePush", "flagPaymentNotification", "flagTreasury", "ipaCode", "orgFiscalCode", "orgName", "organizationId", "pdndEnabled", "status" ]
-      },
-      "OrganizationStatus" : {
-        "type" : "string",
-        "enum" : [ "ACTIVE", "CANCELLED", "DRAFT" ]
       },
       "DebtPositionView" : {
         "type" : "object",

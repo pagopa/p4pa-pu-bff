@@ -12,8 +12,10 @@ import org.mapstruct.factory.Mappers;
 public interface AssessmentsRowsDetailMapper {
 
   @Mapping(target = "pagedAssessmentsRowsDetail", source = "pagedModelAssessmentsDetail")
+  @Mapping(target = "assessmentId", source = "assessments.assessmentId")
   @Mapping(target = "assessmentsName", source = "assessments.assessmentName")
   @Mapping(target = "status", source = "assessments.status")
+  @Mapping(target = "debtPositionTypeOrgCode", source = "assessments.debtPositionTypeOrgCode")
   @Mapping(target = "debtPositionTypeOrgDescription", source = "debtPositionTypeOrgDescription")
   @Mapping(target = "updateOperatorExternalId", source = "assessments.updateOperatorExternalId")
   @Mapping(target = "flagManualGeneration", source = "assessments.flagManualGeneration")

@@ -12429,7 +12429,14 @@
           "pagedAssessmentsRowsDetail" : {
             "$ref" : "#/components/schemas/PagedAssessmentsRowsDetail"
           },
+          "assessmentId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
           "assessmentsName" : {
+            "type" : "string"
+          },
+          "debtPositionTypeOrgCode" : {
             "type" : "string"
           },
           "debtPositionTypeOrgDescription" : {
@@ -12445,7 +12452,7 @@
             "type" : "boolean"
           }
         },
-        "required" : [ "assessmentsName", "debtPositionTypeOrgDescription", "flagManualGeneration", "pagedAssessmentsRowsDetail", "status" ]
+        "required" : [ "assessmentId", "assessmentsName", "debtPositionTypeOrgCode", "debtPositionTypeOrgDescription", "flagManualGeneration", "pagedAssessmentsRowsDetail", "status" ]
       },
       "PagedAssessmentsRowsDetail" : {
         "type" : "object",

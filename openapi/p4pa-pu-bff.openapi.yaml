@@ -4477,14 +4477,21 @@ components:
       type: object
       required:
         - pagedAssessmentsRowsDetail
+        - assessmentId
         - assessmentsName
+        - debtPositionTypeOrgCode
         - debtPositionTypeOrgDescription
         - status
         - flagManualGeneration
       properties:
         pagedAssessmentsRowsDetail:
           $ref: "#/components/schemas/PagedAssessmentsRowsDetail"
+        assessmentId:
+          type: integer
+          format: int64
         assessmentsName:
+          type: string
+        debtPositionTypeOrgCode:
           type: string
         debtPositionTypeOrgDescription:
           type: string

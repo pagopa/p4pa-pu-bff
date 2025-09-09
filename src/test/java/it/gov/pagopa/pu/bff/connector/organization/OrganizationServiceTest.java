@@ -91,17 +91,19 @@ class OrganizationServiceTest {
   }
 
   @Test
-  void  givenBrokerIdWhenGetOrganizationsByBrokerIdThenReturnPagedModelOrganization(){
+  void  givenBrokerIdAndFiltersWhenGetOrganizationsByBrokerIdAndFiltersThenReturnPagedModelOrganization(){
     //given
     String accessToken = "ACCESSTOKEN";
     Long brokerId = 1L;
+    String orgName = "orgName";
+    String ipaCode = "ipaCode";
     PagedModelOrganization expectedResult = new PagedModelOrganization();
 
-    when(organizationSearchClientMock.getOrganizationsByBrokerId(eq(brokerId), any(), eq(accessToken)))
+    when(organizationSearchClientMock.getOrganizationsByBrokerIdAndFilters(eq(brokerId), eq(orgName), eq(ipaCode), any(), eq(accessToken)))
       .thenReturn(expectedResult);
 
     //when
-    PagedModelOrganization result = service.getOrganizationsByBrokerId(brokerId, Pageable.ofSize(1), accessToken);
+    PagedModelOrganization result = service.getOrganizationsByBrokerIdAndFilters(brokerId, orgName, ipaCode, Pageable.ofSize(1), accessToken);
 
     //then
     assertNotNull(result);

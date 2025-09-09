@@ -7509,8 +7509,22 @@
       "get" : {
         "tags" : [ "Organizations" ],
         "summary" : "Retrieve the list of organizations from the brokers",
-        "operationId" : "getOrganizationsByBrokerId",
+        "operationId" : "getOrganizationsByBrokerIdAndFilters",
         "parameters" : [ {
+          "name" : "orgName",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "ipaCode",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
           "name" : "page",
           "in" : "query",
           "description" : "Zero-based page index (0..N)",

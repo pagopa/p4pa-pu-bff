@@ -13,7 +13,7 @@ public interface OrganizationService {
 
   Organization getOrganizationByOrganizationId(Long organizationId, String accessToken);
 
-  PagedModelOrganization getOrganizationsByBrokerId(Long brokerId, Pageable pageable, String accessToken);
+  PagedModelOrganization getOrganizationsByBrokerIdAndFilters(Long brokerId,  String orgName, String ipaCode, Pageable pageable, String accessToken);
 
   void updateOrganization(OrganizationDetailDTO organizationDetailDTO, String accessToken);
 

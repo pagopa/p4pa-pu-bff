@@ -109,12 +109,14 @@ class OrganizationControllerTest {
   }
 
   @Test
-  void givenPageableWhenGetOrganizationsByBrokerIdThenReturnPagedOrganizationWithDebtPositionTypeOrgAndOperatorsCount() {
+  void givenPageableWhenGetOrganizationsByBrokerIdAndFiltersThenReturnPagedOrganizationWithDebtPositionTypeOrgAndOperatorsCount() {
     //given
+    String orgName = "TestOrg";
+    String ipaCode = "IPA123";
     PagedOrganizationWithDebtPositionTypeOrgAndOperatorsCount pagedOrganizationWithDebtPositionTypeOrgAndOperatorsCount = new PagedOrganizationWithDebtPositionTypeOrgAndOperatorsCount();
-    Mockito.when(organizationRetrieverServiceMock.getOrganizationsByBrokerId(eq(loggedUser), any(Pageable.class), eq(accessToken))).thenReturn(pagedOrganizationWithDebtPositionTypeOrgAndOperatorsCount);
+    Mockito.when(organizationRetrieverServiceMock.getOrganizationsByBrokerIdAndFilters(eq(loggedUser), eq(orgName), eq(ipaCode), any(Pageable.class), eq(accessToken))).thenReturn(pagedOrganizationWithDebtPositionTypeOrgAndOperatorsCount);
     //when
-    ResponseEntity<PagedOrganizationWithDebtPositionTypeOrgAndOperatorsCount> result = organizationController.getOrganizationsByBrokerId(Pageable.ofSize(1));
+    ResponseEntity<PagedOrganizationWithDebtPositionTypeOrgAndOperatorsCount> result = organizationController.getOrganizationsByBrokerIdAndFilters(orgName, ipaCode, Pageable.ofSize(1));
     //then
     assertEquals(HttpStatus.OK, result.getStatusCode());
     assertNotNull(result.getBody());

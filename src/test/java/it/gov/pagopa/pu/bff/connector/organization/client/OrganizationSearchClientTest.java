@@ -102,19 +102,21 @@ class OrganizationSearchClientTest {
   }
 
   @Test
-  void whenGetOrganizationsByBrokerIdThenInvokeWithAccessToken() {
+  void whenGetOrganizationsByBrokerIdAndFiltersThenInvokeWithAccessToken() {
     //given
     Long brokerId = 1L;
+    String orgName = "orgName";
+    String ipaCode = "ipaCode";
     String accessToken = "ACCESSTOKEN";
     PagedModelOrganization expectedResult = new PagedModelOrganization();
 
     Mockito.when(organizationApisHolder.getOrganizationSearchControllerApi(accessToken))
       .thenReturn(organizationSearchControllerApiMock);
-    Mockito.when(organizationSearchControllerApiMock.crudOrganizationsFindByBrokerId(eq(brokerId), any(), any(), anyList()))
+    Mockito.when(organizationSearchControllerApiMock.crudOrganizationsFindByBrokerIdAndFilters(eq(brokerId), eq(orgName), eq(ipaCode), any(), any(), anyList()))
       .thenReturn(expectedResult);
     //when
 
-    PagedModelOrganization result = organizationSearchClient.getOrganizationsByBrokerId(brokerId, Pageable.ofSize(1), accessToken);
+    PagedModelOrganization result = organizationSearchClient.getOrganizationsByBrokerIdAndFilters(brokerId, orgName, ipaCode, Pageable.ofSize(1), accessToken);
     //then
     Assertions.assertNotNull(result);
     Assertions.assertSame(expectedResult, result);

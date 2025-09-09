@@ -110,13 +110,13 @@ public class OrganizationRetrieverServiceImpl implements OrganizationRetrieverSe
   }
 
   @Override
-  public PagedOrganizationWithDebtPositionTypeOrgAndOperatorsCount getOrganizationsByBrokerId(UserInfo userInfo, Pageable pageable, String accessToken) {
+  public PagedOrganizationWithDebtPositionTypeOrgAndOperatorsCount getOrganizationsByBrokerIdAndFilters(UserInfo userInfo, String orgName, String ipaCode, Pageable pageable, String accessToken) {
     authorizationService.validateBrokerAdminRole(userInfo);
 
-    PagedModelOrganization pagedModelOrganization = organizationService.getOrganizationsByBrokerId(userInfo.getBrokerId(), pageable, accessToken);
+    PagedModelOrganization pagedModelOrganization = organizationService.getOrganizationsByBrokerIdAndFilters(userInfo.getBrokerId(), orgName, ipaCode, pageable, accessToken);
 
     if (pagedModelOrganization == null || pagedModelOrganization.getEmbedded() == null || pagedModelOrganization.getEmbedded().getOrganizations() == null || pagedModelOrganization.getEmbedded().getOrganizations().isEmpty()) {
-      log.info("No results for getOrganizationsByBrokerId");
+      log.info("No results for getOrganizationsByBrokerIdAndFilters");
       return pagedOrganizationWithDebtPositionTypeOrgAndOperatorsCountMapper.map(pagedModelOrganization, Collections.emptyMap(), Collections.emptyMap());
     }
 

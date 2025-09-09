@@ -3,6 +3,7 @@ package it.gov.pagopa.pu.bff.service.org_sil_service;
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.connector.organization.OrgSilServiceService;
 import it.gov.pagopa.pu.bff.dto.OrgSilServiceDecryptedDTO;
+import it.gov.pagopa.pu.bff.exception.InvalidOrgSilServiceException;
 import it.gov.pagopa.pu.bff.exception.ResourceNotFoundException;
 import it.gov.pagopa.pu.bff.mapper.OrgSilServiceDTOMapper;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
@@ -45,6 +46,8 @@ public class OrgSilServiceStorerServiceImpl implements OrgSilServiceStorerServic
 
     OrgSilServiceDTO orgSilServiceDTO = orgSilServiceDTOMapper.toOrgSilServiceDTO(body);
 
+    verifyIfOrgSilServiceWithSameApplicationNameAlreadyExist(organizationId, orgSilServiceDTO.getApplicationName(), accessToken);
+
     return orgSilServiceDTOMapper.map(
       orgSilServiceService.createOrUpdateOrgSilService(orgSilServiceDTO, accessToken));
   }
@@ -63,6 +66,8 @@ public class OrgSilServiceStorerServiceImpl implements OrgSilServiceStorerServic
     validateAuthConfig(body);
 
     OrgSilServiceDTO orgSilServiceDTO = orgSilServiceDTOMapper.toOrgSilServiceDTO(body);
+
+    verifyIfOrgSilServiceWithSameApplicationNameAlreadyExist(organizationId, orgSilServiceDTO.getApplicationName(), accessToken);
 
     return orgSilServiceDTOMapper.map(
       orgSilServiceService.createOrUpdateOrgSilService(orgSilServiceDTO, accessToken));
@@ -93,6 +98,12 @@ public class OrgSilServiceStorerServiceImpl implements OrgSilServiceStorerServic
       if (hasBasicAuthConfig == hasJwtAuthConfig) { // both true or both false
         throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "When flagLegacy is true, exactly one authConfig (legacyBasic or legacyJwt) must be provided.");
       }
+    }
+  }
+
+  private void verifyIfOrgSilServiceWithSameApplicationNameAlreadyExist(Long organizationId, String applicationName, String accessToken){
+    if (orgSilServiceService.getOrgSilServiceByOrganizationIdAndApplicationName(organizationId, applicationName, accessToken) != null){
+      throw new InvalidOrgSilServiceException("OrgSilService with same applicationName %s already exist for the organization %d".formatted(applicationName, organizationId));
     }
   }
 }

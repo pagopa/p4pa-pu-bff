@@ -1,9 +1,5 @@
 package it.gov.pagopa.pu.bff.connector.debt_position.client;
 
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.mockito.Mockito.when;
-
 import it.gov.pagopa.pu.bff.connector.debt_position.config.DebtPositionApisHolder;
 import it.gov.pagopa.pu.debtpositions.controller.generated.DebtPositionTypeOrgOperatorsSearchControllerApi;
 import it.gov.pagopa.pu.debtpositions.dto.generated.CollectionModelDebtPositionTypeOrgOperators;
@@ -16,19 +12,23 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.mockito.Mockito.when;
+
 @ExtendWith(MockitoExtension.class)
-class DebtPositionTypeOrgOperatorsClientTest {
+class DebtPositionTypeOrgOperatorsSearchClientTest {
 
   @Mock
   private DebtPositionApisHolder debtPositionApisHolderMock;
   @Mock
   private DebtPositionTypeOrgOperatorsSearchControllerApi debtPositionTypeOrgOperatorsSearchControllerApiMock;
 
-  private DebtPositionTypeOrgOperatorsClient debtPositionTypeOrgOperatorsClient;
+  private DebtPositionTypeOrgOperatorsSearchClient debtPositionTypeOrgOperatorsSearchClient;
 
   @BeforeEach
   void setUp() {
-    debtPositionTypeOrgOperatorsClient = new DebtPositionTypeOrgOperatorsClient(debtPositionApisHolderMock);
+    debtPositionTypeOrgOperatorsSearchClient = new DebtPositionTypeOrgOperatorsSearchClient(debtPositionApisHolderMock);
   }
 
   @AfterEach
@@ -50,7 +50,7 @@ class DebtPositionTypeOrgOperatorsClientTest {
     when(debtPositionTypeOrgOperatorsSearchControllerApiMock.crudDebtPositionTypeOrgOperatorsFindByDebtPositionTypeOrgId(debtPositionTypeOrgId))
       .thenReturn(expectedResult);
 
-    CollectionModelDebtPositionTypeOrgOperators result = debtPositionTypeOrgOperatorsClient.getDebtPositionTypeOrgOperators(debtPositionTypeOrgId, accessToken);
+    CollectionModelDebtPositionTypeOrgOperators result = debtPositionTypeOrgOperatorsSearchClient.getDebtPositionTypeOrgOperators(debtPositionTypeOrgId, accessToken);
 
     assertSame(expectedResult, result);
   }
@@ -67,7 +67,7 @@ class DebtPositionTypeOrgOperatorsClientTest {
     when(debtPositionTypeOrgOperatorsSearchControllerApiMock.crudDebtPositionTypeOrgOperatorsFindByDebtPositionTypeOrgIdAndOperatorExternalUserId(debtPositionTypeOrgId,operatorExternalUserId))
       .thenReturn(expectedResult);
 
-    DebtPositionTypeOrgOperators result = debtPositionTypeOrgOperatorsClient.findByDebtPositionTypeOrgIdAndOperatorExternalUserId(debtPositionTypeOrgId, operatorExternalUserId, accessToken);
+    DebtPositionTypeOrgOperators result = debtPositionTypeOrgOperatorsSearchClient.findByDebtPositionTypeOrgIdAndOperatorExternalUserId(debtPositionTypeOrgId, operatorExternalUserId, accessToken);
 
     assertSame(expectedResult, result);
   }
@@ -83,7 +83,7 @@ class DebtPositionTypeOrgOperatorsClientTest {
     when(debtPositionTypeOrgOperatorsSearchControllerApiMock.crudDebtPositionTypeOrgOperatorsFindByDebtPositionTypeOrgIdAndOperatorExternalUserId(debtPositionTypeOrgId,operatorExternalUserId))
       .thenReturn(null);
 
-    DebtPositionTypeOrgOperators result = debtPositionTypeOrgOperatorsClient.findByDebtPositionTypeOrgIdAndOperatorExternalUserId(debtPositionTypeOrgId, operatorExternalUserId, accessToken);
+    DebtPositionTypeOrgOperators result = debtPositionTypeOrgOperatorsSearchClient.findByDebtPositionTypeOrgIdAndOperatorExternalUserId(debtPositionTypeOrgId, operatorExternalUserId, accessToken);
 
     assertNull(result);
   }

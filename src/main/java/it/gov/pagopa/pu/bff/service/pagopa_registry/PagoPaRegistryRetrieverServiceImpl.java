@@ -42,6 +42,7 @@ public class PagoPaRegistryRetrieverServiceImpl implements PagoPaRegistryRetriev
     private void validateFilters(PagoPaRegistryFiltersDTO filters) {
         DateUtils.validateDateFilters(filters.getEventDate(),"eventDate");
         if (filters.getEventType() == null &&
+          filters.getOutcome() == null &&
                 StringUtils.isBlank(filters.getIuv()) &&
                 DateUtils.isNullOrInvalidOffsetDateTimeRange(filters.getEventDate().getFrom(), filters.getEventDate().getTo())) {
             throw new IllegalArgumentException("At least one filter must be provided, and all date intervals must have both 'from' and 'to' set or be null");

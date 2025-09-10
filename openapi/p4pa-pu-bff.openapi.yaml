@@ -4590,9 +4590,9 @@ components:
     ScheduleLastUpdatedTimeDTO:
       type: object
       required:
-        - lastUpdatedAt
+        - lastStartedAt
       properties:
-        lastUpdatedAt:
+        lastStartedAt:
           type: string
           format: date-time
     PagedOrgSilServiceView:

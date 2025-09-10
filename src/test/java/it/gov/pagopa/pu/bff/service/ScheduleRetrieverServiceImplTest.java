@@ -47,7 +47,7 @@ class ScheduleRetrieverServiceImplTest {
     scheduleInfoDTO.setScheduleId(scheduleId);
 
     ScheduleLastUpdatedTimeDTO expectedDto = ScheduleLastUpdatedTimeDTO.builder()
-      .lastUpdatedAt(scheduleInfoDTO.getLastUpdatedAt())
+      .lastStartedAt(scheduleInfoDTO.getLastUpdatedAt())
       .build();
 
     when(workflowScheduleServiceMock.getScheduleLastUpdatedTime(scheduleId, accessToken))

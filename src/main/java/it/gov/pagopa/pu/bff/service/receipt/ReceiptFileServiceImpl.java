@@ -30,7 +30,7 @@ public class ReceiptFileServiceImpl implements ReceiptFileService{
     public static final String RECEIPT_FEE_AMOUNT = "feeAmount";
     public static final String RECEIPT_AMOUNT = "amount";
     public static final String RECEIPT_ORG_FISCAL_CODE = "orgFiscalCode";
-    public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("dd MMMM yyyy, HH:mm:ss", Locale.getDefault());
+    public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("dd MMMM yyyy, HH:mm:ss", Locale.ITALIAN);
     public static final String REMITTANCE_INFORMATION = "remittanceInformation";
 
     public ReceiptFileServiceImpl(DocumentComposition documentComposition) {

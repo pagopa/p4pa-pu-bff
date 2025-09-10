@@ -1,0 +1,72 @@
+package it.gov.pagopa.pu.bff.controller;
+
+import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
+import it.gov.pagopa.pu.bff.dto.generated.PagedOrganizationOperator;
+import it.gov.pagopa.pu.bff.security.SecurityUtilsTest;
+import it.gov.pagopa.pu.bff.service.operator.OperatorRetrieverService;
+import it.gov.pagopa.pu.bff.util.TestUtils;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import uk.co.jemos.podam.api.PodamFactory;
+
+@ExtendWith(MockitoExtension.class)
+class OperatorControllerTest {
+
+  @Mock
+  private OperatorRetrieverService operatorRetrieverServiceMock;
+
+  @InjectMocks
+  private OperatorController operatorController;
+
+  private final String accessToken = "fakeAccessToken";
+  private final PodamFactory podamFactory = TestUtils.getPodamFactory();
+  private final UserInfo loggedUser = podamFactory.manufacturePojo(UserInfo.class);
+
+  @BeforeEach
+  void setUp() {
+    SecurityUtilsTest.configureSecurityContext(accessToken, loggedUser);
+  }
+
+  @AfterEach
+  void verifyNoMoreInteractions() {
+    Mockito.verifyNoMoreInteractions(
+      operatorRetrieverServiceMock
+    );
+  }
+
+  @AfterEach
+  void clearContext() {
+    SecurityUtilsTest.clearSecurityContext();
+  }
+
+  @Test
+  void whenGetOrganizationOperatorsThenOk() {
+    long organizationId = 1L;
+    String firstName = "firstName";
+    String lastName = "lastName";
+    String fiscalCode = "fiscalCode";
+    Pageable pageable = PageRequest.of(0,20);
+
+    PagedOrganizationOperator expectedResult = new PagedOrganizationOperator();
+
+    Mockito.when(operatorRetrieverServiceMock.getOrganizationOperators(
+      organizationId,firstName, lastName, fiscalCode, pageable,loggedUser,accessToken)).thenReturn(expectedResult);
+
+    ResponseEntity<PagedOrganizationOperator> response = operatorController.getOrganizationOperators(organizationId, firstName, lastName, fiscalCode, pageable);
+
+    Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
+    Assertions.assertNotNull(response.getBody());
+    Assertions.assertSame(expectedResult, response.getBody());
+  }
+}

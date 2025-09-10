@@ -59,4 +59,17 @@ public class DebtPositionTypeOrgSearchClient {
     return debtPositionApisHolder.getDebtPositionTypeOrgSearchControllerApi(accessToken)
       .crudDebtPositionTypeOrgsCountByOrgSilServiceId(orgSilServiceId);
   }
+
+  public PagedModelDebtPositionTypeOrg findPagedDebtPositionTypeOrg(Long organizationId, String mappedExternalUserId, String debtPositionTypeOrgCode, String description, Long debtPositionTypeId, Pageable pageable,String accessToken){
+    return debtPositionApisHolder.getDebtPositionTypeOrgSearchControllerApi(accessToken)
+      .crudDebtPositionTypeOrgsFindPagedDebtPositionTypeOrg(
+        organizationId,
+        mappedExternalUserId,
+        debtPositionTypeOrgCode,
+        description,
+        debtPositionTypeId,
+        PageUtils.getPageNumber(pageable),
+        PageUtils.getPageSize(pageable),
+        PageUtils.getSortList(pageable));
+  }
 }

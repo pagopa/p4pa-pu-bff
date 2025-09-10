@@ -88,4 +88,9 @@ public class DebtPositionTypeOrgServiceImpl implements DebtPositionTypeOrgServic
   public Long countByOrgSilServiceId(Long orgSilServiceId, String accessToken) {
     return debtPositionTypeOrgSearchClient.countByOrgSilServiceId(orgSilServiceId, accessToken);
   }
+
+  @Override
+  public PagedModelDebtPositionTypeOrg findPagedDebtPositionTypeOrg(Long organizationId, String mappedExternalUserId, String debtPositionTypeOrgCode,String description, Long debtPositionTypeId, Pageable pageable, String accessToken) {
+    return debtPositionTypeOrgSearchClient.findPagedDebtPositionTypeOrg(organizationId, mappedExternalUserId, debtPositionTypeOrgCode, description, debtPositionTypeId, pageable, accessToken);
+  }
 }

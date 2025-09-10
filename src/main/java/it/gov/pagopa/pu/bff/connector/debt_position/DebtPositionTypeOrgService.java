@@ -28,4 +28,5 @@ public interface DebtPositionTypeOrgService {
   void updateFlagActiveDebtPositionTypeOrg(Long debtPositionTypeOrgId, Boolean flagActive, String accessToken);
 
   Long countByOrgSilServiceId(Long orgSilServiceId, String accessToken);
+  PagedModelDebtPositionTypeOrg findPagedDebtPositionTypeOrg(Long organizationId, String mappedExternalUserId, String debtPositionTypeOrgCode, String description, Long debtPositionTypeId, Pageable pageable,String accessToken);
 }

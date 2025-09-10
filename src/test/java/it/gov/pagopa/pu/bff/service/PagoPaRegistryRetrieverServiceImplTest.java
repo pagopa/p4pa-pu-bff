@@ -13,6 +13,7 @@ import it.gov.pagopa.pu.bff.service.pagopa_registry.PagoPaRegistryRetrieverServi
 import it.gov.pagopa.pu.bff.util.TestUtils;
 import it.gov.pagopa.pu.registries.dto.generated.PagedModelPagoPaRegistry;
 import it.gov.pagopa.pu.registries.dto.generated.PagoPaRegistryDTO;
+import it.gov.pagopa.pu.registries.dto.generated.RegistryOutcome;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -75,6 +76,37 @@ class PagoPaRegistryRetrieverServiceImplTest {
 
       assertNotNull(result);
       assertSame(expectedResult, result);
+  }
+
+  @Test
+  void givenOnlyOutcomeFilterWhenGetPagoPaRegistriesThenOk() {
+    Long organizationId = 1L;
+    UserInfo loggedUser = new UserInfo();
+    loggedUser.setUserId("user-123");
+    loggedUser.setMappedExternalUserId("mappedExternalUserId");
+    loggedUser.setBrokerId(2L);
+    String orgFiscalCode = "orgFiscalCode";
+
+    PagoPaRegistryFiltersDTO filters = PagoPaRegistryFiltersDTO.builder()
+      .outcome(RegistryOutcome.OK)
+      .eventDate(new OffsetDateTimeIntervalFilter())
+      .build();
+
+    Pageable pageable = Pageable.ofSize(10);
+    PagedModelPagoPaRegistry pagedModelSilRegistry = podamFactory.manufacturePojo(PagedModelPagoPaRegistry.class);
+    PagedPagoPaRegistry expectedResult = podamFactory.manufacturePojo(PagedPagoPaRegistry.class);
+
+    doNothing().when(authorizationServiceMock).validateBrokerAdminRole(loggedUser);
+    when(organizationRetrieverServiceMock.getOrgFiscalCode(organizationId, loggedUser, accessToken)).thenReturn(orgFiscalCode);
+    when(pagoPaRegistryServiceMock.searchByFilters(orgFiscalCode, filters, pageable, accessToken)).thenReturn(pagedModelSilRegistry);
+    when(pagoPaRegistryMapperMock.mapToPagedPagoPaRegistry(pagedModelSilRegistry)).thenReturn(expectedResult);
+
+    PagedPagoPaRegistry result = pagoPaRegistryRetrieverService.getPagoPaRegistries(
+      organizationId, filters, pageable, loggedUser, accessToken
+    );
+
+    assertNotNull(result);
+    assertSame(expectedResult, result);
   }
 
   @Test

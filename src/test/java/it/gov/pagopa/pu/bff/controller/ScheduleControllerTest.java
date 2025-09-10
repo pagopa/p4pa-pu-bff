@@ -36,7 +36,7 @@ class ScheduleControllerTest {
     String accessToken = "fakeAccessToken";
     ScheduleEnum scheduleId = ScheduleEnum.SYNCHRONIZE_TAXONOMY_PAGOPA_FETCH;
     ScheduleLastUpdatedTimeDTO expectedDto = new ScheduleLastUpdatedTimeDTO();
-    expectedDto.setLastStartedAt(OffsetDateTime.now().minusDays(1));
+    expectedDto.setLastUpdatedAt(OffsetDateTime.now().minusDays(1));
 
     try (MockedStatic<SecurityUtils> mockedSecurityUtils = Mockito.mockStatic(SecurityUtils.class)) {
       mockedSecurityUtils.when(SecurityUtils::getAccessToken).thenReturn(accessToken);

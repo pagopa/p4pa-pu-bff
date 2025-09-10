@@ -9199,12 +9199,12 @@
       "ScheduleLastUpdatedTimeDTO" : {
         "type" : "object",
         "properties" : {
-          "lastStartedAt" : {
+          "lastUpdatedAt" : {
             "type" : "string",
             "format" : "date-time"
           }
         },
-        "required" : [ "lastStartedAt" ]
+        "required" : [ "lastUpdatedAt" ]
       },
       "ScheduleEnum" : {
         "type" : "string",

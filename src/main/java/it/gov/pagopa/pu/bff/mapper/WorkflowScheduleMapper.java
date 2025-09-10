@@ -22,7 +22,7 @@ public class WorkflowScheduleMapper {
       .orElseThrow(() -> new IllegalStateException("No actions found"));
 
     return ScheduleLastUpdatedTimeDTO.builder()
-      .lastStartedAt(lastStartedAt)
+      .lastUpdatedAt(lastStartedAt)
       .build();
   }
 }

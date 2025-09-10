@@ -40,7 +40,7 @@ class WorkflowScheduleMapperTest {
     ScheduleLastUpdatedTimeDTO result = mapper.mapToScheduleLastUpdatedTimeDTO(scheduleInfoDTO);
 
     TestUtils.checkNotNullFields(result);
-    Assertions.assertEquals(action2.getStartedAt(), result.getLastStartedAt());
+    Assertions.assertEquals(action2.getStartedAt(), result.getLastUpdatedAt());
   }
 
   @Test

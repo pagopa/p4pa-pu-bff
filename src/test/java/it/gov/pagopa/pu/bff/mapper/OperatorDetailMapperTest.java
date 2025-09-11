@@ -3,6 +3,7 @@ package it.gov.pagopa.pu.bff.mapper;
 import it.gov.pagopa.pu.auth.dto.generated.OperatorDTO;
 import it.gov.pagopa.pu.bff.dto.generated.OperatorRole;
 import it.gov.pagopa.pu.bff.dto.generated.OperatorsDetail;
+import it.gov.pagopa.pu.bff.exception.InvalidOperatorRoleException;
 import it.gov.pagopa.pu.bff.util.TestUtils;
 import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelDebtPositionTypeOrg;
 import org.junit.jupiter.api.Assertions;
@@ -10,7 +11,10 @@ import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
 import uk.co.jemos.podam.api.PodamFactory;
 
+import java.util.Collections;
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 class OperatorDetailMapperTest {
 
@@ -40,4 +44,28 @@ class OperatorDetailMapperTest {
     TestUtils.checkNotNullFields(result);
   }
 
+  @Test
+  void testMap_InvalidRole() {
+    PagedModelDebtPositionTypeOrg pagedModelDebtPositionTypeOrg = podamFactory.manufacturePojo(PagedModelDebtPositionTypeOrg.class);
+    OperatorDTO operatorDTO = podamFactory.manufacturePojo(OperatorDTO.class);
+    List<String> roles = Collections.singletonList("INVALID_ROLE");
+    operatorDTO.setRoles(roles);
+
+    Exception exception = assertThrows(InvalidOperatorRoleException.class, () ->
+      mapper.map(pagedModelDebtPositionTypeOrg, operatorDTO));
+
+    assertEquals("INVALID_OPERATOR_ROLE: INVALID_ROLE", exception.getMessage());
+  }
+
+  @Test
+  void testMap_EmptyRoles() {
+    PagedModelDebtPositionTypeOrg pagedModelDebtPositionTypeOrg = podamFactory.manufacturePojo(PagedModelDebtPositionTypeOrg.class);
+    OperatorDTO operatorDTO = podamFactory.manufacturePojo(OperatorDTO.class);
+    List<String> roles = Collections.emptyList();
+    operatorDTO.setRoles(roles);
+
+    OperatorsDetail result = mapper.map(pagedModelDebtPositionTypeOrg, operatorDTO);
+
+    assertNull(result.getOperatorRole());
+  }
 }

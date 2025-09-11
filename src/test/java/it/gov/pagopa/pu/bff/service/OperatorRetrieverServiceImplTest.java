@@ -180,7 +180,8 @@ public class OperatorRetrieverServiceImplTest {
     Long organizationId = 1L;
     UserInfo loggedUser = podamFactory.manufacturePojo(UserInfo.class);
     loggedUser.setUserId("user-123");
-    loggedUser.setMappedExternalUserId("mappedExternalUserId");
+    String mappedExternalUserId = "mappedExternalUserId";
+    loggedUser.setMappedExternalUserId(mappedExternalUserId);
     UserOrganizationRoles organizationRoles = loggedUser.getOrganizations().getFirst();
     organizationRoles.setOrganizationIpaCode("IPACODE");
     organizationRoles.setOrganizationId(organizationId);
@@ -197,7 +198,7 @@ public class OperatorRetrieverServiceImplTest {
     doNothing().when(authorizationServiceMock).validateOrganizationOrBrokerAdmin(organizationId,loggedUser,accessToken);
     Mockito.when(operatorDetailMapperMock.map(pagedModelDebtPositionTypeOrg, operatorDTO)).thenReturn(operatorsDetail);
     //when
-    OperatorsDetail result = operatorRetrieverService.findPagedDebtPositionTypeOrg(organizationId, debtPositionTypeOrgCode, debtPositionTypeOrgDescription, debtPositionTypeId, Pageable.ofSize(1), loggedUser, accessToken);
+    OperatorsDetail result = operatorRetrieverService.findPagedDebtPositionTypeOrg(organizationId, mappedExternalUserId, debtPositionTypeOrgCode, debtPositionTypeOrgDescription, debtPositionTypeId, Pageable.ofSize(1), loggedUser, accessToken);
     //then
     Assertions.assertNotNull(result);
     Assertions.assertEquals(operatorsDetail, result);
@@ -209,7 +210,8 @@ public class OperatorRetrieverServiceImplTest {
     Long organizationId = 1L;
     UserInfo loggedUser = podamFactory.manufacturePojo(UserInfo.class);
     loggedUser.setUserId("user-123");
-    loggedUser.setMappedExternalUserId("mappedExternalUserId");
+    String mappedExternalUserId = "mappedExternalUserId";
+    loggedUser.setMappedExternalUserId(mappedExternalUserId);
     UserOrganizationRoles organizationRoles = loggedUser.getOrganizations().getFirst();
     organizationRoles.setOrganizationIpaCode("IPACODE");
     organizationRoles.setOrganizationId(organizationId);
@@ -225,11 +227,11 @@ public class OperatorRetrieverServiceImplTest {
 
     ResourceNotFoundException ex = assertThrows(ResourceNotFoundException.class, () ->
       operatorRetrieverService.findPagedDebtPositionTypeOrg(
-        organizationId, debtPositionTypeOrgCode, description, debtPositionTypeId, pageable, loggedUser, accessToken
+        organizationId, mappedExternalUserId, debtPositionTypeOrgCode, description, debtPositionTypeId, pageable, loggedUser, accessToken
       )
     );
     Assertions.assertEquals("Operator not found for organization ipaCode IPACODE and userId mappedExternalUserId", ex.getMessage());
-    Mockito.verifyNoInteractions(operatorDetailMapperMock);
+    Mockito.verifyNoInteractions(debtPositionTypeOrgServiceMock, operatorDetailMapperMock);
   }
 
   @Test
@@ -239,6 +241,7 @@ public class OperatorRetrieverServiceImplTest {
     Long organizationId = 1L;
     userOrgRole.setOrganizationId(organizationId+1);
 
+    String mappedExternalUserId = "mappedExternalUserId";
     loggedUser.setOrganizations(List.of(userOrgRole));
     Pageable pageable = PageRequest.of(0,20);
     String debtPositionTypeOrgCode = "code";
@@ -247,7 +250,7 @@ public class OperatorRetrieverServiceImplTest {
 
     doNothing().when(authorizationServiceMock).validateOrganizationOrBrokerAdmin(organizationId,loggedUser,accessToken);
 
-    assertThrows(IllegalArgumentException.class,()-> operatorRetrieverService.findPagedDebtPositionTypeOrg(organizationId, debtPositionTypeOrgCode, description, debtPositionTypeId, pageable, loggedUser, accessToken));
+    assertThrows(IllegalArgumentException.class,()-> operatorRetrieverService.findPagedDebtPositionTypeOrg(organizationId, mappedExternalUserId, debtPositionTypeOrgCode, description, debtPositionTypeId, pageable, loggedUser, accessToken));
 
     verifyNoInteractions(authzServiceMock,debtPositionTypeOrgServiceMock, operatorDetailMapperMock);
   }

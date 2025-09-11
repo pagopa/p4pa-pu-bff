@@ -7,5 +7,5 @@ import org.springframework.data.domain.Pageable;
 
 public interface OperatorRetrieverService {
   PagedOrganizationOperator getOrganizationOperators(Long organizationId, String firstName, String lastName, String fiscalCode, Pageable pageable, UserInfo loggedUser, String accessToken);
-  OperatorsDetail findPagedDebtPositionTypeOrg(Long organizationId, String debtPositionTypeOrgCode, String description, Long debtPositionTypeId, Pageable pageable, UserInfo loggedUser, String accessToken);
+  OperatorsDetail findPagedDebtPositionTypeOrg(Long organizationId,String mappedExternalUserId, String debtPositionTypeOrgCode, String description, Long debtPositionTypeId, Pageable pageable, UserInfo loggedUser, String accessToken);
 }

@@ -5074,10 +5074,10 @@
         } ]
       }
     },
-    "/bff/organization/{organizationId}/operators-details" : {
+    "/bff/organization/{organizationId}/operators/{mappedExternalUserId}" : {
       "get" : {
         "tags" : [ "Operators" ],
-        "operationId" : "operatorDetails",
+        "operationId" : "getOperatorDetails",
         "parameters" : [ {
           "name" : "organizationId",
           "in" : "path",
@@ -5085,6 +5085,13 @@
           "schema" : {
             "type" : "integer",
             "format" : "int64"
+          }
+        }, {
+          "name" : "mappedExternalUserId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
           }
         }, {
           "name" : "debtPositionTypeOrgCode",
@@ -8312,7 +8319,7 @@
       },
       "DebtPositionOrigin" : {
         "type" : "string",
-        "enum" : [ "ORDINARY", "ORDINARY_SIL", "SPONTANEOUS", "SPONTANEOUS_SIL", "SECONDARY_ORG", "RECEIPT_FILE", "RECEIPT_PAGOPA", "REPORTING_PAGOPA" ]
+        "enum" : [ "ORDINARY", "ORDINARY_SIL", "SPONTANEOUS", "SPONTANEOUS_SIL", "SPONTANEOUS_MIXED", "SECONDARY_ORG", "RECEIPT_FILE", "RECEIPT_PAGOPA", "REPORTING_PAGOPA" ]
       },
       "DebtPositionStatus" : {
         "type" : "string",
@@ -11085,6 +11092,12 @@
           "operatorId" : {
             "type" : "string"
           },
+          "operatorName" : {
+            "type" : "string"
+          },
+          "operatorLastName" : {
+            "type" : "string"
+          },
           "operatorFiscalCode" : {
             "type" : "string"
           },
@@ -11095,7 +11108,7 @@
             }
           }
         },
-        "required" : [ "operatorFiscalCode", "operatorId", "operatorRole", "pagedOperatorsDetails" ]
+        "required" : [ "operatorFiscalCode", "operatorId", "operatorLastName", "operatorName", "operatorRole", "pagedOperatorsDetails" ]
       },
       "PagedOperatorsDetails" : {
         "type" : "object",

@@ -15,6 +15,8 @@ public interface OperatorDetailMapper {
   @Mapping(target = "operatorId", source = "organizationOperator.operatorId")
   @Mapping(target = "operatorFiscalCode", source = "organizationOperator.fiscalCode")
   @Mapping(target = "operatorRole", source = "organizationOperator.roles")
+  @Mapping(target= "operatorName", source = "organizationOperator.firstName")
+  @Mapping(target= "operatorLastName", source = "organizationOperator.lastName")
   OperatorsDetail map(PagedModelDebtPositionTypeOrg pagedModelDebtPositionTypeOrg, OperatorDTO organizationOperator);
 
   default PagedOperatorsDetails mapToPagedOperatorsDetails(PagedModelDebtPositionTypeOrg pagedModelDebtPositionTypeOrg) {

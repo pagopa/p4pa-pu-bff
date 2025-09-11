@@ -27,8 +27,8 @@ public class OperatorController implements OperatorsApi {
   }
 
   @Override
-  public ResponseEntity<OperatorsDetail> operatorDetails(Long organizationId, String debtPositionTypeOrgCode, String debtPositionTypeOrgDescription, Long debtPositionTypeId, Pageable pageable) {
-    log.info("User requested operatorDetails having organizationId {}", organizationId);
-    return ResponseEntity.ok(operatorRetrieverService.findPagedDebtPositionTypeOrg(organizationId, debtPositionTypeOrgCode, debtPositionTypeOrgDescription, debtPositionTypeId, pageable, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken()));
+  public ResponseEntity<OperatorsDetail> getOperatorDetails(Long organizationId, String mappedExternalUserId, String debtPositionTypeOrgCode, String debtPositionTypeOrgDescription, Long debtPositionTypeId, Pageable pageable) {
+    log.info("User requested getOperatorDetails having organizationId {}", organizationId);
+    return ResponseEntity.ok(operatorRetrieverService.findPagedDebtPositionTypeOrg(organizationId, mappedExternalUserId, debtPositionTypeOrgCode, debtPositionTypeOrgDescription, debtPositionTypeId, pageable, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken()));
   }
 }

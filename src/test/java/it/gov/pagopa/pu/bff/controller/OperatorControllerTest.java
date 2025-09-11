@@ -72,17 +72,18 @@ class OperatorControllerTest {
   }
 
   @Test
-  void givenParametersWhenOperatorDetailsThenReturnOperatorsDetail() {
+  void givenParametersWhenGetOperatorDetailsThenReturnOperatorsDetail() {
     //given
     Long organizationId = 1L;
     Long debtPositionId = 1L;
     String debtPositionTypeOrgCode = "code";
     String debtPositionTypeOrgDescription = "description";
+    String mappedExternalUserId = "mappedExternalUserId";
     OperatorsDetail expectedResult = new OperatorsDetail();
 
-    Mockito.when(operatorRetrieverServiceMock.findPagedDebtPositionTypeOrg(organizationId, debtPositionTypeOrgCode, debtPositionTypeOrgDescription, debtPositionId, Pageable.ofSize(1), loggedUser, accessToken)).thenReturn(expectedResult);
+    Mockito.when(operatorRetrieverServiceMock.findPagedDebtPositionTypeOrg(organizationId, mappedExternalUserId, debtPositionTypeOrgCode, debtPositionTypeOrgDescription, debtPositionId, Pageable.ofSize(1), loggedUser, accessToken)).thenReturn(expectedResult);
     //when
-    ResponseEntity<OperatorsDetail> result = operatorController.operatorDetails(organizationId, debtPositionTypeOrgCode, debtPositionTypeOrgDescription, debtPositionId, Pageable.ofSize(1));
+    ResponseEntity<OperatorsDetail> result = operatorController.getOperatorDetails(organizationId, mappedExternalUserId, debtPositionTypeOrgCode, debtPositionTypeOrgDescription, debtPositionId, Pageable.ofSize(1));
     //then
     Assertions.assertEquals(HttpStatus.OK, result.getStatusCode());
     Assertions.assertNotNull(result.getBody());

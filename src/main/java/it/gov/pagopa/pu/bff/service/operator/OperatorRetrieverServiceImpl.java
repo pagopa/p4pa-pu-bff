@@ -75,26 +75,31 @@ public class OperatorRetrieverServiceImpl implements OperatorRetrieverService {
   }
 
   @Override
-  public OperatorsDetail findPagedDebtPositionTypeOrg(Long organizationId, String debtPositionTypeOrgCode, String description, Long debtPositionTypeId,
+  public OperatorsDetail findPagedDebtPositionTypeOrg(Long organizationId, String mappedExternalUserId, String debtPositionTypeOrgCode, String description, Long debtPositionTypeId,
                                                       Pageable pageable, UserInfo loggedUser, String accessToken) {
     authorizationService.validateOrganizationOrBrokerAdmin(organizationId,loggedUser,accessToken);
 
-    String userOrganizationIpaCode = getUserOrganizationIpaCode(organizationId, loggedUser);
-    OperatorDTO organizationOperator = authzService.getOrganizationOperator(
-      userOrganizationIpaCode,
-      loggedUser.getMappedExternalUserId(),
-      accessToken
-    );
-
-    if (organizationOperator == null) {
-      throw new ResourceNotFoundException("Operator not found for organization ipaCode %s and userId %s".formatted(userOrganizationIpaCode, loggedUser.getMappedExternalUserId()));
-    }
+    OperatorDTO organizationOperator = getOperatorDTO(organizationId, mappedExternalUserId, loggedUser, accessToken);
 
     PagedModelDebtPositionTypeOrg pagedDebtPositionTypeOrg = debtPositionTypeOrgService.findPagedDebtPositionTypeOrg(
-      organizationId, loggedUser.getMappedExternalUserId(), debtPositionTypeOrgCode, description, debtPositionTypeId,
+      organizationId, mappedExternalUserId, debtPositionTypeOrgCode, description, debtPositionTypeId,
       pageable, accessToken
     );
 
     return operatorDetailMapper.map(pagedDebtPositionTypeOrg, organizationOperator);
+  }
+
+  private OperatorDTO getOperatorDTO(Long organizationId, String mappedExternalUserId, UserInfo loggedUser, String accessToken) {
+    String userOrganizationIpaCode = getUserOrganizationIpaCode(organizationId, loggedUser);
+    OperatorDTO organizationOperator = authzService.getOrganizationOperator(
+      userOrganizationIpaCode,
+      mappedExternalUserId,
+      accessToken
+    );
+
+    if (organizationOperator == null) {
+      throw new ResourceNotFoundException("Operator not found for organization ipaCode %s and userId %s".formatted(userOrganizationIpaCode, mappedExternalUserId));
+    }
+    return organizationOperator;
   }
 }

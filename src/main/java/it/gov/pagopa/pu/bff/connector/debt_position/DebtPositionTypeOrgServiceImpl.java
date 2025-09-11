@@ -4,6 +4,7 @@ import it.gov.pagopa.pu.bff.config.CacheConfig.Fields;
 import it.gov.pagopa.pu.bff.connector.debt_position.client.DebtPositionTypeOrgClient;
 import it.gov.pagopa.pu.bff.connector.debt_position.client.DebtPositionTypeOrgSearchClient;
 import it.gov.pagopa.pu.bff.connector.debt_position.client.DebtPositionTypeOrgWithCountClient;
+import it.gov.pagopa.pu.bff.dto.OperatorDetailsFiltersDTO;
 import it.gov.pagopa.pu.debtpositions.dto.generated.*;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
@@ -90,7 +91,7 @@ public class DebtPositionTypeOrgServiceImpl implements DebtPositionTypeOrgServic
   }
 
   @Override
-  public PagedModelDebtPositionTypeOrg findPagedDebtPositionTypeOrg(Long organizationId, String mappedExternalUserId, String debtPositionTypeOrgCode,String description, Long debtPositionTypeId, Pageable pageable, String accessToken) {
-    return debtPositionTypeOrgSearchClient.findPagedDebtPositionTypeOrg(organizationId, mappedExternalUserId, debtPositionTypeOrgCode, description, debtPositionTypeId, pageable, accessToken);
+  public PagedModelDebtPositionTypeOrg findPagedDebtPositionTypeOrg(OperatorDetailsFiltersDTO operatorDetailsFiltersDTO, Pageable pageable, String accessToken) {
+    return debtPositionTypeOrgSearchClient.findPagedDebtPositionTypeOrg(operatorDetailsFiltersDTO, pageable, accessToken);
   }
 }

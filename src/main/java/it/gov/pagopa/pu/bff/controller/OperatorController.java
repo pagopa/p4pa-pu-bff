@@ -1,6 +1,7 @@
 package it.gov.pagopa.pu.bff.controller;
 
 import it.gov.pagopa.pu.bff.controller.generated.OperatorsApi;
+import it.gov.pagopa.pu.bff.dto.OperatorDetailsFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.generated.OperatorsDetail;
 import it.gov.pagopa.pu.bff.dto.generated.PagedOrganizationOperator;
 import it.gov.pagopa.pu.bff.security.SecurityUtils;
@@ -29,6 +30,12 @@ public class OperatorController implements OperatorsApi {
   @Override
   public ResponseEntity<OperatorsDetail> getOperatorDetails(Long organizationId, String mappedExternalUserId, String debtPositionTypeOrgCode, String debtPositionTypeOrgDescription, Long debtPositionTypeId, Pageable pageable) {
     log.info("User requested getOperatorDetails having organizationId {}", organizationId);
-    return ResponseEntity.ok(operatorRetrieverService.findPagedDebtPositionTypeOrg(organizationId, mappedExternalUserId, debtPositionTypeOrgCode, debtPositionTypeOrgDescription, debtPositionTypeId, pageable, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken()));
+    return ResponseEntity.ok(operatorRetrieverService.findPagedDebtPositionTypeOrg(new OperatorDetailsFiltersDTO(
+      organizationId,
+      mappedExternalUserId,
+      debtPositionTypeOrgCode,
+      debtPositionTypeOrgDescription,
+      debtPositionTypeId
+    ), pageable, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken()));
   }
 }

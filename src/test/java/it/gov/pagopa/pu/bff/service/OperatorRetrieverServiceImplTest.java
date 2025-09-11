@@ -7,6 +7,7 @@ import it.gov.pagopa.pu.auth.dto.generated.UserOrganizationRoles;
 import it.gov.pagopa.pu.bff.connector.auth.AuthzService;
 import it.gov.pagopa.pu.bff.connector.debt_position.DebtPositionTypeOrgOperatorsService;
 import it.gov.pagopa.pu.bff.connector.debt_position.DebtPositionTypeOrgService;
+import it.gov.pagopa.pu.bff.dto.OperatorDetailsFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.generated.OperatorsDetail;
 import it.gov.pagopa.pu.bff.dto.generated.PagedOrganizationOperator;
 import it.gov.pagopa.pu.bff.exception.ResourceNotFoundException;
@@ -193,12 +194,14 @@ public class OperatorRetrieverServiceImplTest {
     PagedModelDebtPositionTypeOrg pagedModelDebtPositionTypeOrg = new PagedModelDebtPositionTypeOrg();
     OperatorsDetail operatorsDetail = new OperatorsDetail();
 
+    OperatorDetailsFiltersDTO operatorDetailsFiltersDTO = new OperatorDetailsFiltersDTO(organizationId, mappedExternalUserId, debtPositionTypeOrgCode, debtPositionTypeOrgDescription, debtPositionTypeId);
+
     Mockito.when(authzServiceMock.getOrganizationOperator(organizationRoles.getOrganizationIpaCode(), loggedUser.getMappedExternalUserId(), accessToken)).thenReturn(operatorDTO);
-    Mockito.when(debtPositionTypeOrgServiceMock.findPagedDebtPositionTypeOrg(organizationId,loggedUser.getMappedExternalUserId(), debtPositionTypeOrgCode, debtPositionTypeOrgDescription, debtPositionTypeId, Pageable.ofSize(1), accessToken)).thenReturn(pagedModelDebtPositionTypeOrg);
+    Mockito.when(debtPositionTypeOrgServiceMock.findPagedDebtPositionTypeOrg(operatorDetailsFiltersDTO, Pageable.ofSize(1), accessToken)).thenReturn(pagedModelDebtPositionTypeOrg);
     doNothing().when(authorizationServiceMock).validateOrganizationOrBrokerAdmin(organizationId,loggedUser,accessToken);
     Mockito.when(operatorDetailMapperMock.map(pagedModelDebtPositionTypeOrg, operatorDTO)).thenReturn(operatorsDetail);
     //when
-    OperatorsDetail result = operatorRetrieverService.findPagedDebtPositionTypeOrg(organizationId, mappedExternalUserId, debtPositionTypeOrgCode, debtPositionTypeOrgDescription, debtPositionTypeId, Pageable.ofSize(1), loggedUser, accessToken);
+    OperatorsDetail result = operatorRetrieverService.findPagedDebtPositionTypeOrg(operatorDetailsFiltersDTO, Pageable.ofSize(1), loggedUser, accessToken);
     //then
     Assertions.assertNotNull(result);
     Assertions.assertEquals(operatorsDetail, result);
@@ -221,14 +224,15 @@ public class OperatorRetrieverServiceImplTest {
     Long debtPositionTypeId = 1L;
     Pageable pageable = Pageable.ofSize(1);
 
+    OperatorDetailsFiltersDTO operatorDetailsFiltersDTO = new OperatorDetailsFiltersDTO(organizationId, mappedExternalUserId, debtPositionTypeOrgCode, description, debtPositionTypeId);
+
     Mockito.when(authzServiceMock.getOrganizationOperator(loggedUser.getOrganizations().getFirst().getOrganizationIpaCode(), loggedUser.getMappedExternalUserId(), accessToken))
       .thenReturn(null);
     doNothing().when(authorizationServiceMock).validateOrganizationOrBrokerAdmin(organizationId,loggedUser,accessToken);
 
     ResourceNotFoundException ex = assertThrows(ResourceNotFoundException.class, () ->
       operatorRetrieverService.findPagedDebtPositionTypeOrg(
-        organizationId, mappedExternalUserId, debtPositionTypeOrgCode, description, debtPositionTypeId, pageable, loggedUser, accessToken
-      )
+        operatorDetailsFiltersDTO, pageable, loggedUser, accessToken)
     );
     Assertions.assertEquals("Operator not found for organization ipaCode IPACODE and userId mappedExternalUserId", ex.getMessage());
     Mockito.verifyNoInteractions(debtPositionTypeOrgServiceMock, operatorDetailMapperMock);
@@ -248,9 +252,10 @@ public class OperatorRetrieverServiceImplTest {
     String description = "description";
     Long debtPositionTypeId = 1L;
 
+    OperatorDetailsFiltersDTO operatorDetailsFiltersDTO = new OperatorDetailsFiltersDTO(organizationId, mappedExternalUserId, debtPositionTypeOrgCode, description, debtPositionTypeId);
     doNothing().when(authorizationServiceMock).validateOrganizationOrBrokerAdmin(organizationId,loggedUser,accessToken);
 
-    assertThrows(IllegalArgumentException.class,()-> operatorRetrieverService.findPagedDebtPositionTypeOrg(organizationId, mappedExternalUserId, debtPositionTypeOrgCode, description, debtPositionTypeId, pageable, loggedUser, accessToken));
+    assertThrows(IllegalArgumentException.class,()-> operatorRetrieverService.findPagedDebtPositionTypeOrg(operatorDetailsFiltersDTO, pageable, loggedUser, accessToken));
 
     verifyNoInteractions(authzServiceMock,debtPositionTypeOrgServiceMock, operatorDetailMapperMock);
   }

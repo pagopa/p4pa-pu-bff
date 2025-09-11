@@ -6,6 +6,7 @@ import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.connector.auth.AuthzService;
 import it.gov.pagopa.pu.bff.connector.debt_position.DebtPositionTypeOrgOperatorsService;
 import it.gov.pagopa.pu.bff.connector.debt_position.DebtPositionTypeOrgService;
+import it.gov.pagopa.pu.bff.dto.OperatorDetailsFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.generated.OperatorsDetail;
 import it.gov.pagopa.pu.bff.dto.generated.PagedOrganizationOperator;
 import it.gov.pagopa.pu.bff.exception.ResourceNotFoundException;
@@ -75,30 +76,27 @@ public class OperatorRetrieverServiceImpl implements OperatorRetrieverService {
   }
 
   @Override
-  public OperatorsDetail findPagedDebtPositionTypeOrg(Long organizationId, String mappedExternalUserId, String debtPositionTypeOrgCode, String description, Long debtPositionTypeId,
+  public OperatorsDetail findPagedDebtPositionTypeOrg(OperatorDetailsFiltersDTO operatorDetailsFiltersDTO,
                                                       Pageable pageable, UserInfo loggedUser, String accessToken) {
-    authorizationService.validateOrganizationOrBrokerAdmin(organizationId,loggedUser,accessToken);
+    authorizationService.validateOrganizationOrBrokerAdmin(operatorDetailsFiltersDTO.getOrganizationId(), loggedUser,accessToken);
 
-    OperatorDTO organizationOperator = getOperatorDTO(organizationId, mappedExternalUserId, loggedUser, accessToken);
+    OperatorDTO organizationOperator = getOperatorDTO(operatorDetailsFiltersDTO, loggedUser, accessToken);
 
-    PagedModelDebtPositionTypeOrg pagedDebtPositionTypeOrg = debtPositionTypeOrgService.findPagedDebtPositionTypeOrg(
-      organizationId, mappedExternalUserId, debtPositionTypeOrgCode, description, debtPositionTypeId,
-      pageable, accessToken
-    );
+    PagedModelDebtPositionTypeOrg pagedDebtPositionTypeOrg = debtPositionTypeOrgService.findPagedDebtPositionTypeOrg(operatorDetailsFiltersDTO, pageable, accessToken );
 
     return operatorDetailMapper.map(pagedDebtPositionTypeOrg, organizationOperator);
   }
 
-  private OperatorDTO getOperatorDTO(Long organizationId, String mappedExternalUserId, UserInfo loggedUser, String accessToken) {
-    String userOrganizationIpaCode = getUserOrganizationIpaCode(organizationId, loggedUser);
+  private OperatorDTO getOperatorDTO(OperatorDetailsFiltersDTO operatorDetailsFiltersDTO, UserInfo loggedUser, String accessToken) {
+    String userOrganizationIpaCode = getUserOrganizationIpaCode(operatorDetailsFiltersDTO.getOrganizationId(), loggedUser);
     OperatorDTO organizationOperator = authzService.getOrganizationOperator(
       userOrganizationIpaCode,
-      mappedExternalUserId,
+      operatorDetailsFiltersDTO.getMappedExternalUserId(),
       accessToken
     );
 
     if (organizationOperator == null) {
-      throw new ResourceNotFoundException("Operator not found for organization ipaCode %s and userId %s".formatted(userOrganizationIpaCode, mappedExternalUserId));
+      throw new ResourceNotFoundException("Operator not found for organization ipaCode %s and userId %s".formatted(userOrganizationIpaCode, operatorDetailsFiltersDTO.getMappedExternalUserId()));
     }
     return organizationOperator;
   }

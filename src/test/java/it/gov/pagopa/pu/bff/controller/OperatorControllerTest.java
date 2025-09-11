@@ -1,6 +1,7 @@
 package it.gov.pagopa.pu.bff.controller;
 
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
+import it.gov.pagopa.pu.bff.dto.OperatorDetailsFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.generated.OperatorsDetail;
 import it.gov.pagopa.pu.bff.dto.generated.PagedOrganizationOperator;
 import it.gov.pagopa.pu.bff.security.SecurityUtilsTest;
@@ -81,7 +82,8 @@ class OperatorControllerTest {
     String mappedExternalUserId = "mappedExternalUserId";
     OperatorsDetail expectedResult = new OperatorsDetail();
 
-    Mockito.when(operatorRetrieverServiceMock.findPagedDebtPositionTypeOrg(organizationId, mappedExternalUserId, debtPositionTypeOrgCode, debtPositionTypeOrgDescription, debtPositionId, Pageable.ofSize(1), loggedUser, accessToken)).thenReturn(expectedResult);
+    OperatorDetailsFiltersDTO operatorDetailsFiltersDTO = new OperatorDetailsFiltersDTO(organizationId, mappedExternalUserId, debtPositionTypeOrgCode, debtPositionTypeOrgDescription, debtPositionId);
+    Mockito.when(operatorRetrieverServiceMock.findPagedDebtPositionTypeOrg(operatorDetailsFiltersDTO, Pageable.ofSize(1), loggedUser, accessToken)).thenReturn(expectedResult);
     //when
     ResponseEntity<OperatorsDetail> result = operatorController.getOperatorDetails(organizationId, mappedExternalUserId, debtPositionTypeOrgCode, debtPositionTypeOrgDescription, debtPositionId, Pageable.ofSize(1));
     //then

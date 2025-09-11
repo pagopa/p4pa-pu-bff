@@ -3,6 +3,7 @@ package it.gov.pagopa.pu.bff.connector.debt_position;
 import it.gov.pagopa.pu.bff.connector.debt_position.client.DebtPositionTypeOrgClient;
 import it.gov.pagopa.pu.bff.connector.debt_position.client.DebtPositionTypeOrgSearchClient;
 import it.gov.pagopa.pu.bff.connector.debt_position.client.DebtPositionTypeOrgWithCountClient;
+import it.gov.pagopa.pu.bff.dto.OperatorDetailsFiltersDTO;
 import it.gov.pagopa.pu.bff.util.TestUtils;
 import it.gov.pagopa.pu.debtpositions.dto.generated.*;
 import org.junit.jupiter.api.BeforeEach;
@@ -205,12 +206,13 @@ class DebtPositionTypeOrgServiceTest {
     String debtPositionTypeOrgCode = "code";
     String debtPositionTypeOrgDescription = "description";
 
+    OperatorDetailsFiltersDTO operatorDetailsFiltersDTO = new OperatorDetailsFiltersDTO(organizationId, mappedExternalUserId, debtPositionTypeOrgCode, debtPositionTypeOrgDescription, debtPositionTypeId);
     PagedModelDebtPositionTypeOrg expectedResult = new PagedModelDebtPositionTypeOrg();
 
-    when(debtPositionTypeOrgSearchClientMock.findPagedDebtPositionTypeOrg(organizationId, mappedExternalUserId, debtPositionTypeOrgCode, debtPositionTypeOrgDescription, debtPositionTypeId, Pageable.ofSize(1), accessToken))
+    when(debtPositionTypeOrgSearchClientMock.findPagedDebtPositionTypeOrg(operatorDetailsFiltersDTO, Pageable.ofSize(1), accessToken))
       .thenReturn(expectedResult);
 
-    PagedModelDebtPositionTypeOrg result = service.findPagedDebtPositionTypeOrg(organizationId, mappedExternalUserId, debtPositionTypeOrgCode, debtPositionTypeOrgDescription, debtPositionTypeId, Pageable.ofSize(1), accessToken);
+    PagedModelDebtPositionTypeOrg result = service.findPagedDebtPositionTypeOrg(operatorDetailsFiltersDTO, Pageable.ofSize(1), accessToken);
 
     assertNotNull(result);
     assertEquals(expectedResult, result);

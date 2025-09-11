@@ -1,6 +1,7 @@
 package it.gov.pagopa.pu.bff.connector.debt_position.client;
 
 import it.gov.pagopa.pu.bff.connector.debt_position.config.DebtPositionApisHolder;
+import it.gov.pagopa.pu.bff.dto.OperatorDetailsFiltersDTO;
 import it.gov.pagopa.pu.bff.util.TestUtils;
 import it.gov.pagopa.pu.debtpositions.controller.generated.DebtPositionTypeOrgSearchControllerApi;
 import it.gov.pagopa.pu.debtpositions.dto.generated.CollectionModelDebtPositionTypeOrg;
@@ -203,6 +204,8 @@ class DebtPositionTypeOrgSearchClientTest {
     String debtPositionTypeOrgDescription = "description";
     String accessToken = "ACCESS_TOKEN";
 
+    OperatorDetailsFiltersDTO operatorDetailsFiltersDTO = new OperatorDetailsFiltersDTO(organizationId, mappedExternalUserId, debtPositionTypeOrgCode, debtPositionTypeOrgDescription, debtPositionId);
+
     PagedModelDebtPositionTypeOrg expectedResult = new PagedModelDebtPositionTypeOrg();
     when(debtPositionApisHolderMock.getDebtPositionTypeOrgSearchControllerApi(accessToken))
       .thenReturn(debtPositionTypeOrgSearchControllerApiMock);
@@ -211,7 +214,7 @@ class DebtPositionTypeOrgSearchClientTest {
       .thenReturn(expectedResult);
 
     //when
-    PagedModelDebtPositionTypeOrg result = debtPositionTypeOrgSearchClient.findPagedDebtPositionTypeOrg(organizationId, mappedExternalUserId, debtPositionTypeOrgCode, debtPositionTypeOrgDescription,debtPositionId, Pageable.ofSize(1), accessToken);
+    PagedModelDebtPositionTypeOrg result = debtPositionTypeOrgSearchClient.findPagedDebtPositionTypeOrg(operatorDetailsFiltersDTO, Pageable.ofSize(1), accessToken);
     //then
     Assertions.assertNotNull(result);
     Assertions.assertSame(expectedResult, result);

@@ -9684,7 +9684,7 @@
         },
         "required" : [ "collectionReason", "macroAreaCode", "macroAreaDescription", "macroAreaName", "organizationType", "organizationTypeDescription", "serviceType", "serviceTypeCode", "serviceTypeDescription" ]
       },
-      "OperatorRoleEnum" : {
+      "OperatorRole" : {
         "type" : "string",
         "enum" : [ "ROLE_ADMIN", "ROLE_OPER" ]
       },
@@ -9705,8 +9705,7 @@
             "description" : "Organization name"
           },
           "operatorRole" : {
-            "$ref" : "#/components/schemas/OperatorRoleEnum",
-            "description" : "Operator role"
+            "$ref" : "#/components/schemas/OperatorRole"
           },
           "orgLogo" : {
             "type" : "string",
@@ -11102,10 +11101,7 @@
             "type" : "string"
           },
           "operatorRole" : {
-            "type" : "array",
-            "items" : {
-              "type" : "string"
-            }
+            "$ref" : "#/components/schemas/OperatorRole"
           }
         },
         "required" : [ "operatorFiscalCode", "operatorId", "operatorLastName", "operatorName", "operatorRole", "pagedOperatorsDetails" ]

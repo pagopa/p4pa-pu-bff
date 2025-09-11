@@ -3568,11 +3568,7 @@ components:
           type: string
           description: Organization name
         operatorRole:
-          type: string
-          enum:
-            - ROLE_ADMIN
-            - ROLE_OPER
-          description: Operator role
+          $ref: '#/components/schemas/OperatorRole'
         orgLogo:
           type: string
           format: base64
@@ -3726,9 +3722,7 @@ components:
         operatorFiscalCode:
           type: string
         operatorRole:
-          type: array
-          items:
-            type: string
+          $ref: '#/components/schemas/OperatorRole'
     PagedDebtPositionTypeWithCount:
       type: object
       required:
@@ -3754,6 +3748,11 @@ components:
         number:
           type: integer
           format: int64
+    OperatorRole:
+      type: string
+      enum:
+        - ROLE_ADMIN
+        - ROLE_OPER
     DebtPositionTypeWithCount:
       type: object
       required:

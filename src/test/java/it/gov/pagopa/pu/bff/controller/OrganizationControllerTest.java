@@ -47,7 +47,7 @@ class OrganizationControllerTest {
     SecurityUtilsTest.configureSecurityContext(accessToken, loggedUser);
 
     organizationDTOList = new ArrayList<>();
-    OrganizationDTO.OperatorRoleEnum operatorRole = OrganizationDTO.OperatorRoleEnum.ROLE_ADMIN;
+    OperatorRole operatorRole = OperatorRole.ROLE_ADMIN;
 
     OrganizationDTO organizationDTO = OrganizationDTO.builder()
       .organizationId(123L)
@@ -81,7 +81,7 @@ class OrganizationControllerTest {
     assertNotNull(response.getBody());
     assertEquals(1, response.getBody().size());
     assertEquals("Test Organization", response.getBody().getFirst().getOrgName());
-    assertEquals(OrganizationDTO.OperatorRoleEnum.ROLE_ADMIN, response.getBody().getFirst().getOperatorRole());
+    assertEquals(OperatorRole.ROLE_ADMIN, response.getBody().getFirst().getOperatorRole());
   }
 
   @Test

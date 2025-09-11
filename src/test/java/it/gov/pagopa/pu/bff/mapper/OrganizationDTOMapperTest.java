@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import it.gov.pagopa.pu.bff.dto.generated.OperatorRole;
 import it.gov.pagopa.pu.bff.dto.generated.OrganizationDTO;
 import it.gov.pagopa.pu.bff.exception.InvalidOperatorRoleException;
 import it.gov.pagopa.pu.bff.util.TestUtils;
@@ -39,7 +40,7 @@ class OrganizationDTOMapperTest {
     assertEquals(123L, result.getOrganizationId());
     assertEquals("testIpaCode", result.getIpaCode());
     assertEquals("Test Organization", result.getOrgName());
-    assertEquals(OrganizationDTO.OperatorRoleEnum.ROLE_ADMIN, result.getOperatorRole());
+    assertEquals(OperatorRole.ROLE_ADMIN, result.getOperatorRole());
     assertEquals("base64LogoString", result.getOrgLogo());
     assertEquals("orgFiscalCode", result.getOrgFiscalCode());
     assertEquals(false, result.getFlagNotifyIo());

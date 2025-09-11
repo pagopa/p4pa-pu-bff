@@ -29,7 +29,7 @@ public class OperatorController implements OperatorsApi {
 
   @Override
   public ResponseEntity<OperatorsDetail> getOperatorDetails(Long organizationId, String mappedExternalUserId, String debtPositionTypeOrgCode, String debtPositionTypeOrgDescription, Long debtPositionTypeId, Pageable pageable) {
-    log.info("User requested getOperatorDetails having organizationId {}", organizationId);
+    log.info("User requested getOperatorDetails having organizationId {} and mappedExternalUserId {}", organizationId, mappedExternalUserId);
     return ResponseEntity.ok(operatorRetrieverService.findPagedDebtPositionTypeOrg(new OperatorDetailsFiltersDTO(
       organizationId,
       mappedExternalUserId,

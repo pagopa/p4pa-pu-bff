@@ -9,11 +9,11 @@ import org.springframework.web.client.HttpClientErrorException;
 
 @Service
 @Slf4j
-public class DebtPositionTypeOrgOperatorsClient {
+public class DebtPositionTypeOrgOperatorsSearchClient {
 
   private final DebtPositionApisHolder debtPositionApisHolder;
 
-  public DebtPositionTypeOrgOperatorsClient(DebtPositionApisHolder debtPositionApisHolder) {
+  public DebtPositionTypeOrgOperatorsSearchClient(DebtPositionApisHolder debtPositionApisHolder) {
     this.debtPositionApisHolder = debtPositionApisHolder;
   }
 

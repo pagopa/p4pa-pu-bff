@@ -3,11 +3,11 @@ package it.gov.pagopa.pu.bff.controller;
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.dto.ClassificationDetailDTO;
 import it.gov.pagopa.pu.bff.dto.TreasuredClassificationFiltersDTO;
+import it.gov.pagopa.pu.bff.dto.generated.PagedTreasuredClassificationExtendedDTO;
 import it.gov.pagopa.pu.bff.security.SecurityUtilsTest;
 import it.gov.pagopa.pu.bff.service.classification.ClassificationRetrieverService;
 import it.gov.pagopa.pu.bff.util.TestUtils;
 import it.gov.pagopa.pu.classification.dto.generated.PagedClassificationPaidInstallmentsView;
-import it.gov.pagopa.pu.classification.dto.generated.PagedTreasuredClassification;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -27,8 +27,7 @@ import java.time.OffsetDateTime;
 import java.time.ZoneId;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.argThat;
-import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -69,12 +68,20 @@ class ClassificationControllerTest {
     treasuredClassificationFiltersDTO.getLastClassificationDate().getFrom().atStartOfDay(ZoneId.systemDefault());
 
     PageRequest pageable = PageRequest.of(0, 10);
-    PagedTreasuredClassification mockPagedTreasuredClassification = new PagedTreasuredClassification();
-    when(classificationRetrieverServiceMock.getTreasuredClassification(
-      organizationId, treasuredClassificationFiltersDTO, debtPositionTypeOrgCode, pageable, loggedUser, accessToken))
-      .thenReturn(mockPagedTreasuredClassification);
 
-    ResponseEntity<PagedTreasuredClassification> response = classificationController.getTreasuredClassifications(organizationId,
+    PagedTreasuredClassificationExtendedDTO mockPagedTreasuredClassificationExtended = new PagedTreasuredClassificationExtendedDTO();
+
+    when(classificationRetrieverServiceMock.getTreasuredClassification(
+      eq(organizationId),
+      any(TreasuredClassificationFiltersDTO.class),
+      eq(debtPositionTypeOrgCode),
+      eq(pageable),
+      eq(loggedUser),
+      eq(accessToken))
+    ).thenReturn(mockPagedTreasuredClassificationExtended);
+
+    ResponseEntity<PagedTreasuredClassificationExtendedDTO> response = classificationController.getTreasuredClassifications(
+      organizationId,
       treasuredClassificationFiltersDTO.getLabel(),
       treasuredClassificationFiltersDTO.getIud(),
       treasuredClassificationFiltersDTO.getIuv(),
@@ -109,7 +116,7 @@ class ClassificationControllerTest {
       pageable);
 
     assertEquals(HttpStatus.OK, response.getStatusCode());
-    assertEquals(mockPagedTreasuredClassification, response.getBody());
+    assertEquals(mockPagedTreasuredClassificationExtended, response.getBody());
   }
 
   @Test

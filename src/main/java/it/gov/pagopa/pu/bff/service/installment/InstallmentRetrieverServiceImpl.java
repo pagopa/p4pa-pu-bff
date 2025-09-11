@@ -7,6 +7,7 @@ import it.gov.pagopa.pu.bff.dto.generated.PagedInstallmentView;
 import it.gov.pagopa.pu.bff.mapper.InstallmentViewMapper;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
 import it.gov.pagopa.pu.bff.util.DateUtils;
+import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionOrigin;
 import it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentDetailDTO;
 import it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentNoPII;
 import it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentStatus;
@@ -60,10 +61,10 @@ public class InstallmentRetrieverServiceImpl implements InstallmentRetrieverServ
 
   @Override
   public InstallmentNoPII getInstallmentFromTransferSemanticKey(
-    Long organizationId, String iuv, String iur, String transferIndex, UserInfo loggedUser, String accessToken) {
+    Long organizationId, String iuv, String iur, String transferIndex, UserInfo loggedUser, List<DebtPositionOrigin> debtPositionOrigins, String accessToken) {
     AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser);
     return installmentService.getInstallmentFromTransferSemanticKey(organizationId, iuv, iur, transferIndex,
-      loggedUser.getMappedExternalUserId(), accessToken);
+      loggedUser.getMappedExternalUserId(), debtPositionOrigins, accessToken);
   }
 
 

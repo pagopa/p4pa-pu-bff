@@ -1,49 +1,67 @@
 package it.gov.pagopa.pu.bff.service.organization;
 
+import it.gov.pagopa.pu.auth.dto.generated.OperatorsPage;
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
+import it.gov.pagopa.pu.bff.connector.auth.AuthzService;
 import it.gov.pagopa.pu.bff.connector.debt_position.DebtPositionTypeOrgService;
 import it.gov.pagopa.pu.bff.connector.organization.OrganizationService;
 import it.gov.pagopa.pu.bff.dto.generated.OrganizationDTO;
+import it.gov.pagopa.pu.bff.dto.generated.OrganizationDetail;
+import it.gov.pagopa.pu.bff.dto.generated.PagedOrganizationWithDebtPositionTypeOrgAndOperatorsCount;
 import it.gov.pagopa.pu.bff.dto.generated.PagedOrganizationWithDebtPositionTypeOrgCount;
+import it.gov.pagopa.pu.bff.exception.InvalidOrganizationException;
 import it.gov.pagopa.pu.bff.exception.ResourceNotFoundException;
 import it.gov.pagopa.pu.bff.mapper.OrganizationDTOMapper;
+import it.gov.pagopa.pu.bff.mapper.OrganizationDetailMapper;
 import it.gov.pagopa.pu.bff.mapper.OrganizationWithDebtPositionTypeOrgCountMapper;
+import it.gov.pagopa.pu.bff.mapper.PagedOrganizationWithDebtPositionTypeOrgAndOperatorsCountMapper;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
 import it.gov.pagopa.pu.debtpositions.dto.generated.CollectionModelDebtPositionTypeOrgCountByOrganizationId;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrgCountByOrganizationId;
 import it.gov.pagopa.pu.organization.dto.generated.Organization;
+import it.gov.pagopa.pu.organization.dto.generated.OrganizationDetailDTO;
 import it.gov.pagopa.pu.organization.dto.generated.PagedModelOrganization;
+import jakarta.validation.ValidationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
+
+import static it.gov.pagopa.pu.bff.util.Utilities.checkImmutableField;
 
 @Service
 @Slf4j
 public class OrganizationRetrieverServiceImpl implements OrganizationRetrieverService {
 
   private final AuthorizationService authorizationService;
-
   private final OrganizationService organizationService;
   private final DebtPositionTypeOrgService debtPositionTypeOrgService;
-
   private final OrganizationDTOMapper organizationDTOMapper;
   private final OrganizationWithDebtPositionTypeOrgCountMapper organizationWithDebtPositionTypeOrgCountMapper;
+  private final AuthzService authzService;
+  private final PagedOrganizationWithDebtPositionTypeOrgAndOperatorsCountMapper pagedOrganizationWithDebtPositionTypeOrgAndOperatorsCountMapper;
+  private final OrganizationDetailMapper organizationDetailMapper;
 
   public OrganizationRetrieverServiceImpl(
-    AuthorizationService authorizationService, OrganizationService organizationService,
-    DebtPositionTypeOrgService debtPositionTypeOrgService, OrganizationDTOMapper organizationDTOMapper,
-    OrganizationWithDebtPositionTypeOrgCountMapper organizationWithDebtPositionTypeOrgCountMapper) {
+    AuthorizationService authorizationService,
+    OrganizationService organizationService,
+    DebtPositionTypeOrgService debtPositionTypeOrgService,
+    OrganizationDTOMapper organizationDTOMapper,
+    OrganizationWithDebtPositionTypeOrgCountMapper organizationWithDebtPositionTypeOrgCountMapper,
+    AuthzService authzService,
+    PagedOrganizationWithDebtPositionTypeOrgAndOperatorsCountMapper pagedOrganizationWithDebtPositionTypeOrgAndOperatorsCountMapper,
+    OrganizationDetailMapper organizationDetailMapper) {
     this.authorizationService = authorizationService;
     this.organizationService = organizationService;
     this.debtPositionTypeOrgService = debtPositionTypeOrgService;
     this.organizationDTOMapper = organizationDTOMapper;
     this.organizationWithDebtPositionTypeOrgCountMapper = organizationWithDebtPositionTypeOrgCountMapper;
+    this.authzService = authzService;
+    this.pagedOrganizationWithDebtPositionTypeOrgAndOperatorsCountMapper = pagedOrganizationWithDebtPositionTypeOrgAndOperatorsCountMapper;
+    this.organizationDetailMapper = organizationDetailMapper;
   }
 
   @Override
@@ -91,6 +109,61 @@ public class OrganizationRetrieverServiceImpl implements OrganizationRetrieverSe
       organizations, dptoCountsByOrgId, pagedOrganizations.getPage());
   }
 
+  @Override
+  public PagedOrganizationWithDebtPositionTypeOrgAndOperatorsCount getOrganizationsByBrokerIdAndFilters(UserInfo userInfo, String orgName, String ipaCode, Pageable pageable, String accessToken) {
+    authorizationService.validateBrokerAdminRole(userInfo);
+
+    PagedModelOrganization pagedModelOrganization = organizationService.getOrganizationsByBrokerIdAndFilters(userInfo.getBrokerId(), orgName, ipaCode, pageable, accessToken);
+
+    if (pagedModelOrganization == null || pagedModelOrganization.getEmbedded() == null || pagedModelOrganization.getEmbedded().getOrganizations() == null || pagedModelOrganization.getEmbedded().getOrganizations().isEmpty()) {
+      log.info("No results for getOrganizationsByBrokerIdAndFilters");
+      return pagedOrganizationWithDebtPositionTypeOrgAndOperatorsCountMapper.map(pagedModelOrganization, Collections.emptyMap(), Collections.emptyMap());
+    }
+
+    List<Organization> orgList = pagedModelOrganization.getEmbedded().getOrganizations();
+
+    List<Long> organizationIds = orgList.stream()
+      .map(Organization::getOrganizationId)
+      .toList();
+
+    Map<Long, Integer> dptoCountsByOrgId = getDptoCountsByOrgIdMap(accessToken, organizationIds);
+
+    Map<Long, OperatorsPage> allOperatorsPages = getOperatorsPageMap(pageable, accessToken, orgList);
+
+    return pagedOrganizationWithDebtPositionTypeOrgAndOperatorsCountMapper.map(pagedModelOrganization, dptoCountsByOrgId, allOperatorsPages);
+  }
+
+  private Map<Long, Integer> getDptoCountsByOrgIdMap(String accessToken, List<Long> organizationIds) {
+    return getDebtPositionTypeOrgCountByOrganizationId(
+      organizationIds,
+      accessToken
+    )
+      .stream()
+      .filter(dpto -> dpto.getOrganizationId() != null && dpto.getActiveOrganizations() != null)
+      .collect(Collectors.toMap(
+        DebtPositionTypeOrgCountByOrganizationId::getOrganizationId,
+        DebtPositionTypeOrgCountByOrganizationId::getActiveOrganizations));
+  }
+
+  private Map<Long, OperatorsPage> getOperatorsPageMap(Pageable pageable, String accessToken, List<Organization> orgList) {
+    Map<Long, OperatorsPage> allOperatorsPages = new HashMap<>();
+
+    orgList
+      .forEach(org -> {
+        OperatorsPage organizationOperators = authzService.getOrganizationOperators(
+          org.getIpaCode(),
+          null,
+          null,
+          null,
+          pageable.getPageNumber(),
+          pageable.getPageSize(),
+          accessToken
+        );
+        allOperatorsPages.put(org.getOrganizationId(),organizationOperators);
+      });
+    return allOperatorsPages;
+  }
+
   private List<DebtPositionTypeOrgCountByOrganizationId> getDebtPositionTypeOrgCountByOrganizationId(List<Long> organizationIds, String accessToken) {
     CollectionModelDebtPositionTypeOrgCountByOrganizationId collection = debtPositionTypeOrgService.getDebtPositionTypeOrgCountByOrganizationId(organizationIds, accessToken);
 
@@ -106,6 +179,52 @@ public class OrganizationRetrieverServiceImpl implements OrganizationRetrieverSe
       return organization.getOrgFiscalCode();
     }else{
       throw new ResourceNotFoundException("Organization having organizationId "+ organizationId +" and brokerId "+loggedUser.getBrokerId()+" not found");
+    }
+  }
+
+  @Override
+  public OrganizationDetail getOrganizationDetail(Long organizationId, UserInfo loggedUser, String accessToken) {
+    authorizationService.validateOrganizationOrBrokerAdmin(organizationId, loggedUser, accessToken);
+
+    Organization organization = organizationService.getOrganizationByOrganizationId(organizationId, accessToken);
+    if (organization == null) {
+      throw new ResourceNotFoundException("Organization having organizationId " + organizationId + " not found");
+    }
+
+    OrganizationDetailDTO orgDetail = organizationService.getOrganizationDetail(organizationId, accessToken);
+
+    return organizationDetailMapper.mapToBffDTO(orgDetail);
+  }
+
+  @Override
+  public void updateOrganization(Long organizationId, OrganizationDetailDTO organizationDetailDTO, UserInfo loggedUser, String accessToken) {
+    authorizationService.validateOrganizationOrBrokerAdmin(organizationId,loggedUser,accessToken);
+    validateOrganization(organizationId, organizationDetailDTO, accessToken);
+    organizationService.updateOrganization(organizationDetailDTO,accessToken);
+  }
+
+  private void validateOrganization(Long organizationId, OrganizationDetailDTO organizationDetailDTO, String accessToken) {
+    if(!organizationId.equals(organizationDetailDTO.getOrganizationId())){
+      throw new InvalidOrganizationException("The Organization's id " + organizationDetailDTO.getOrganizationId() +
+              " does not match the given organizationId "+ organizationId);
+    }
+    Organization existingOrganization = organizationService.getOrganizationByOrganizationId(organizationId, accessToken);
+    if(existingOrganization==null){
+      throw new ResourceNotFoundException("Organization having id "+ organizationId +" not found");
+    }
+    checkReadOnlyFields(existingOrganization, organizationDetailDTO);
+  }
+
+  private void checkReadOnlyFields(Organization existingOrganization, OrganizationDetailDTO organization) {
+    List<String> modifiedFields = new ArrayList<>();
+    checkImmutableField("brokerId", existingOrganization.getBrokerId(), organization.getBrokerId(), modifiedFields);
+    checkImmutableField("externalOrganizationId", existingOrganization.getExternalOrganizationId(), organization.getExternalOrganizationId(), modifiedFields);
+    checkImmutableField("ipaCode", existingOrganization.getIpaCode(), organization.getIpaCode(), modifiedFields);
+    checkImmutableField("orgFiscalCode", existingOrganization.getOrgFiscalCode(), organization.getOrgFiscalCode(), modifiedFields);
+    checkImmutableField("orgName", existingOrganization.getOrgName(), organization.getOrgName(), modifiedFields);
+    checkImmutableField("orgTypeCode", existingOrganization.getOrgTypeCode(), organization.getOrgTypeCode(), modifiedFields);
+    if(!CollectionUtils.isEmpty(modifiedFields)){
+      throw new ValidationException("The following Organization fields are readOnly. "+modifiedFields);
     }
   }
 }

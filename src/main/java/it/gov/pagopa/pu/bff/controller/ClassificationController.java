@@ -2,12 +2,12 @@ package it.gov.pagopa.pu.bff.controller;
 
 import it.gov.pagopa.pu.bff.controller.generated.ClassificationsApi;
 import it.gov.pagopa.pu.bff.dto.*;
+import it.gov.pagopa.pu.bff.dto.generated.PagedTreasuredClassificationExtendedDTO;
 import it.gov.pagopa.pu.bff.security.SecurityUtils;
 import it.gov.pagopa.pu.bff.service.classification.ClassificationRetrieverService;
 import it.gov.pagopa.pu.bff.util.DateUtils;
 import it.gov.pagopa.pu.classification.dto.generated.ClassificationsEnum;
 import it.gov.pagopa.pu.classification.dto.generated.PagedClassificationPaidInstallmentsView;
-import it.gov.pagopa.pu.classification.dto.generated.PagedTreasuredClassification;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -27,7 +27,7 @@ public class ClassificationController implements ClassificationsApi {
   }
 
   @Override
-  public ResponseEntity<PagedTreasuredClassification> getTreasuredClassifications(
+  public ResponseEntity<PagedTreasuredClassificationExtendedDTO> getTreasuredClassifications(
     Long organizationId, ClassificationsEnum label, String iud, String iuv, String iur,
     OffsetDateTime lastClassificationDateTimeFrom, OffsetDateTime lastClassificationDateTimeTo,
     OffsetDateTime payDateTimeFrom, OffsetDateTime payDateTimeTo, OffsetDateTime paymentDateTimeFrom,

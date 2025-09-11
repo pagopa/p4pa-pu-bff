@@ -12,6 +12,7 @@ import it.gov.pagopa.pu.bff.service.sil_registry.SilRegistryRetrieverService;
 import it.gov.pagopa.pu.bff.service.sil_registry.SilRegistryRetrieverServiceImpl;
 import it.gov.pagopa.pu.bff.util.TestUtils;
 import it.gov.pagopa.pu.registries.dto.generated.PagedModelSilRegistry;
+import it.gov.pagopa.pu.registries.dto.generated.RegistryOutcome;
 import it.gov.pagopa.pu.registries.dto.generated.SilRegistryDTO;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -167,6 +168,37 @@ class SilRegistryRetrieverServiceImplTest {
     when(silRegistryMapperMock.mapToPagedSilRegistry(pagedModelSilRegistry)).thenReturn(expectedResult);
 
     PagedSilRegistry result = silRegistryRetrieverService.getSilRegistries(organizationId, filters, pageable, loggedUser, accessToken);
+
+    assertNotNull(result);
+    assertSame(expectedResult, result);
+  }
+
+  @Test
+  void givenOnlyOutcomeFilterWhenGetSilRegistriesThenOk() {
+    Long organizationId = 1L;
+    UserInfo loggedUser = new UserInfo();
+    loggedUser.setUserId("user-123");
+    loggedUser.setMappedExternalUserId("mappedExternalUserId");
+    loggedUser.setBrokerId(2L);
+    String orgFiscalCode = "orgFiscalCode";
+
+    SilRegistryFiltersDTO filters = SilRegistryFiltersDTO.builder()
+      .outcome(RegistryOutcome.OK)
+      .eventDate(new OffsetDateTimeIntervalFilter())
+      .build();
+
+    Pageable pageable = Pageable.ofSize(10);
+    PagedModelSilRegistry pagedModelSilRegistry = podamFactory.manufacturePojo(PagedModelSilRegistry.class);
+    PagedSilRegistry expectedResult = podamFactory.manufacturePojo(PagedSilRegistry.class);
+
+    doNothing().when(authorizationServiceMock).validateBrokerAdminRole(loggedUser);
+    when(organizationRetrieverServiceMock.getOrgFiscalCode(organizationId, loggedUser, accessToken)).thenReturn(orgFiscalCode);
+    when(silRegistryServiceMock.searchByFilters(orgFiscalCode, filters, pageable, accessToken)).thenReturn(pagedModelSilRegistry);
+    when(silRegistryMapperMock.mapToPagedSilRegistry(pagedModelSilRegistry)).thenReturn(expectedResult);
+
+    PagedSilRegistry result = silRegistryRetrieverService.getSilRegistries(
+      organizationId, filters, pageable, loggedUser, accessToken
+    );
 
     assertNotNull(result);
     assertSame(expectedResult, result);

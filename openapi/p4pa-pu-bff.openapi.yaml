@@ -32,6 +32,100 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorDTO'
+  /brokers/organizations:
+    get:
+      tags:
+        - Organizations
+      summary: "Retrieve the list of organizations from the brokers"
+      operationId: getOrganizationsByBrokerIdAndFilters
+      parameters:
+        - name: orgName
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: ipaCode
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PagedOrganizationWithDebtPositionTypeOrgAndOperatorsCount'
+        '401':
+          description: Unauthorized - Missing or invalid token
+        '403':
+          description: Forbidden - Access denied
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDTO'
+      x-spring-paginated: true
+  /organizations/{organizationId}:
+    get:
+      tags:
+        - Organizations
+      summary: "Retrieve Organization detail"
+      operationId: getOrganizationDetail
+      parameters:
+        - name: organizationId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrganizationDetail'
+        '401':
+          description: Unauthorized - Missing or invalid token
+        '403':
+          description: Forbidden - Access denied
+        '404':
+          description: Not Found
+        '500':
+          description: Internal Server Error
+    put:
+      tags:
+        - Organizations
+      summary: "update an organization"
+      operationId: updateOrganization
+      parameters:
+        - name: organizationId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: 'Organization'
+      responses:
+        '200':
+          description: OK
+        '401':
+          description: Unauthorized - Missing or invalid token
+        '403':
+          description: Forbidden - Access denied
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDTO'
   /brokers/config:
     get:
       tags:
@@ -2190,7 +2284,7 @@ paths:
           content:
             application/json:
               schema:
-                type: 'PagedTreasuredClassification'
+                $ref: '#/components/schemas/PagedTreasuredClassificationExtendedDTO'
         '401':
           description: Unauthorized - Missing or invalid token
         '403':
@@ -3228,6 +3322,49 @@ paths:
           description: Not Found
         '500':
           description: Internal Server Error
+  /organization/{organizationId}/operators:
+    get:
+      tags:
+        - Operators
+      summary: "Retrieve a paged list of the organization's operators"
+      operationId: getOrganizationOperators
+      parameters:
+        - name: organizationId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: firstName
+          in: query
+          schema:
+            type: string
+        - name: lastName
+          in: query
+          schema:
+            type: string
+        - name: fiscalCode
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PagedOrganizationOperator'
+        '401':
+          description: Unauthorized - Missing or invalid token
+        '403':
+          description: Forbidden - Access denied
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDTO'
+      x-spring-paginated: true
 security:
   - BearerAuth: [ ]
 components:
@@ -3864,6 +4001,73 @@ components:
         number:
           type: integer
           format: int64
+    PagedOrganizationWithDebtPositionTypeOrgAndOperatorsCount:
+      type: object
+      required:
+        - content
+        - size
+        - totalElements
+        - totalPages
+        - number
+      properties:
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrganizationWithDebtPositionTypeOrgAndOperatorsCount'
+        size:
+          type: integer
+          format: int64
+        totalElements:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer
+          format: int64
+        number:
+          type: integer
+          format: int64
+    PagedOrganizationOperator:
+      type: object
+      required:
+        - content
+        - size
+        - totalElements
+        - totalPages
+        - number
+      properties:
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrganizationOperator'
+        size:
+          type: integer
+          format: int64
+        totalElements:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer
+          format: int64
+        number:
+          type: integer
+          format: int64
+    OrganizationOperator:
+      type: object
+      required:
+        - mappedExternalUserId
+        - debtPositionTypeOrgCount
+      properties:
+        mappedExternalUserId:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        fiscalCode:
+          type: string
+        debtPositionTypeOrgCount:
+          type: integer
+          format: int64
     PagedOrganizationWithDebtPositionTypeOrgCount:
       type: object
       required:
@@ -3993,6 +4197,28 @@ components:
           type: string
         debtPositionTypeOrgCount:
           type: integer
+    OrganizationWithDebtPositionTypeOrgAndOperatorsCount:
+      type: object
+      properties:
+        organizationId:
+          type: integer
+          format: int64
+        ipaCode:
+          type: string
+        orgName:
+          type: string
+        orgFiscalCode:
+          type: string
+        debtPositionTypeOrgCount:
+          type: integer
+        operatorsCount:
+          type: integer
+        status:
+          type: string
+          enum:
+            - ACTIVE
+            - DRAFT
+            - CANCELLED
     PagedDebtPositionTypeOrgOperatorDTO:
       type: object
       required:
@@ -4347,14 +4573,21 @@ components:
       type: object
       required:
         - pagedAssessmentsRowsDetail
+        - assessmentId
         - assessmentsName
+        - debtPositionTypeOrgCode
         - debtPositionTypeOrgDescription
         - status
         - flagManualGeneration
       properties:
         pagedAssessmentsRowsDetail:
           $ref: "#/components/schemas/PagedAssessmentsRowsDetail"
+        assessmentId:
+          type: integer
+          format: int64
         assessmentsName:
+          type: string
+        debtPositionTypeOrgCode:
           type: string
         debtPositionTypeOrgDescription:
           type: string
@@ -4460,6 +4693,104 @@ components:
           type: array
           items:
             type: 'OrgSilServiceView'
+        size:
+          type: integer
+          format: int64
+        totalElements:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer
+          format: int64
+        number:
+          type: integer
+          format: int64
+    OrganizationDetail:
+      type: object
+      required:
+        - organizationId
+        - flagTreasury
+        - ipaCode
+        - orgFiscalCode
+        - orgName
+        - status
+        - flagNotifyIo
+        - flagNotifyOutcomePush
+        - flagPaymentNotification
+        - pdndEnabled
+      properties:
+        organizationId:
+          type: integer
+          format: int64
+        flagTreasury:
+          type: boolean
+        externalOrganizationId:
+          type: string
+          readOnly: true
+        ipaCode:
+          type: string
+          readOnly: true
+        orgFiscalCode:
+          type: string
+          readOnly: true
+        orgName:
+          type: string
+          readOnly: true
+        orgTypeCode:
+          type: string
+          readOnly: true
+        orgEmail:
+          type: string
+        postalIban:
+          type: string
+        iban:
+          type: string
+        password:
+          type: string
+        segregationCode:
+          type: string
+        cbillInterBankCode:
+          type: string
+        orgLogo:
+          type: string
+        status:
+          type: 'OrganizationStatus'
+        additionalLanguage:
+          type: string
+        startDate:
+          type: string
+          format: date
+        brokerId:
+          type: integer
+          format: int64
+          readOnly: true
+        ioApiKey:
+          type: string
+        sendApiKey:
+          type: string
+        generateNoticeApiKey:
+          type: string
+        flagNotifyIo:
+          type: boolean
+        flagNotifyOutcomePush:
+          type: boolean
+        flagPaymentNotification:
+          type: boolean
+        pdndEnabled:
+          type: boolean
+    PagedTreasuredClassificationExtendedDTO:
+      type: object
+      required:
+        - content
+        - size
+        - totalElements
+        - totalPages
+        - number
+      properties:
+        content:
+          type: array
+          items:
+            type: 'TreasuredClassificationExtendedDTO'
         size:
           type: integer
           format: int64

@@ -35,6 +35,11 @@ public class GlobalExceptionHandler {
     return handleException(ex, request, HttpStatus.BAD_REQUEST, ErrorDTO.TitleEnum.BAD_REQUEST);
   }
 
+  @ExceptionHandler(InvalidOrganizationException.class)
+  public ResponseEntity<ErrorDTO> handleInvalidOrganizationException(InvalidOrganizationException ex, HttpServletRequest request) {
+    return handleException(ex, request, HttpStatus.BAD_REQUEST, ErrorDTO.TitleEnum.BAD_REQUEST);
+  }
+
   @ExceptionHandler(InvalidDebtPositionTypeOrgException.class)
   public ResponseEntity<ErrorDTO> handleInvalidDebtPositionTypeOrgException(InvalidDebtPositionTypeOrgException ex, HttpServletRequest request) {
     return handleException(ex, request, HttpStatus.BAD_REQUEST, ErrorDTO.TitleEnum.BAD_REQUEST);
@@ -79,6 +84,11 @@ public class GlobalExceptionHandler {
   @ExceptionHandler({HttpClientErrorException.class})
   public ResponseEntity<ErrorDTO> handleHttpClientErrorException(HttpClientErrorException ex, HttpServletRequest request) {
     return handleException(ex, request, ex.getStatusCode(), TitleEnum.GENERIC_ERROR);
+  }
+
+  @ExceptionHandler(InvalidOrgSilServiceException.class)
+  public  ResponseEntity<ErrorDTO> handleInvalidOrgSilServiceException(InvalidOrgSilServiceException ex, HttpServletRequest request){
+    return handleException(ex, request, HttpStatus.BAD_REQUEST, TitleEnum.BAD_REQUEST);
   }
 
   @ExceptionHandler({InvalidAssessmentsDetailException.class})

@@ -15,4 +15,5 @@ public interface OrgSilServiceService {
   OrgSilServiceDTO createOrUpdateOrgSilService(OrgSilServiceDTO orgSilServiceDTO, String accessToken);
 
   void deleteOrgSilService(Long orgSilServiceId, String accessToken);
+  OrgSilService getOrgSilServiceByOrganizationIdAndApplicationName(Long organizationId, String applicationName, String accessToken);
 }

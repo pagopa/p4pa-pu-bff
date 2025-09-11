@@ -39,4 +39,14 @@ public class OrganizationSearchClient {
         PageUtils.getSortList(pageable));
   }
 
+  public PagedModelOrganization getOrganizationsByBrokerIdAndFilters(Long brokerId, String orgName, String ipaCode, Pageable pageable, String accessToken){
+    return organizationApisHolder.getOrganizationSearchControllerApi(accessToken)
+      .crudOrganizationsFindByBrokerIdAndFilters(
+        brokerId,
+        orgName,
+        ipaCode,
+        PageUtils.getPageNumber(pageable),
+        PageUtils.getPageSize(pageable),
+        PageUtils.getSortList(pageable));
+  }
 }

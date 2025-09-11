@@ -1,12 +1,11 @@
 package it.gov.pagopa.pu.bff.controller;
 
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
-import it.gov.pagopa.pu.bff.dto.generated.OrganizationDTO;
-import it.gov.pagopa.pu.bff.dto.generated.OrganizationWithDebtPositionTypeOrgCount;
-import it.gov.pagopa.pu.bff.dto.generated.PagedOrganizationWithDebtPositionTypeOrgCount;
+import it.gov.pagopa.pu.bff.dto.generated.*;
 import it.gov.pagopa.pu.bff.security.SecurityUtilsTest;
 import it.gov.pagopa.pu.bff.service.organization.OrganizationRetrieverService;
 import it.gov.pagopa.pu.bff.util.TestUtils;
+import it.gov.pagopa.pu.organization.dto.generated.OrganizationDetailDTO;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -22,9 +21,11 @@ import org.springframework.http.ResponseEntity;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -107,4 +108,43 @@ class OrganizationControllerTest {
     assertEquals(3, response.getBody().getContent().getFirst().getDebtPositionTypeOrgCount());
   }
 
+  @Test
+  void givenPageableWhenGetOrganizationsByBrokerIdAndFiltersThenReturnPagedOrganizationWithDebtPositionTypeOrgAndOperatorsCount() {
+    //given
+    String orgName = "TestOrg";
+    String ipaCode = "IPA123";
+    PagedOrganizationWithDebtPositionTypeOrgAndOperatorsCount pagedOrganizationWithDebtPositionTypeOrgAndOperatorsCount = new PagedOrganizationWithDebtPositionTypeOrgAndOperatorsCount();
+    Mockito.when(organizationRetrieverServiceMock.getOrganizationsByBrokerIdAndFilters(eq(loggedUser), eq(orgName), eq(ipaCode), any(Pageable.class), eq(accessToken))).thenReturn(pagedOrganizationWithDebtPositionTypeOrgAndOperatorsCount);
+    //when
+    ResponseEntity<PagedOrganizationWithDebtPositionTypeOrgAndOperatorsCount> result = organizationController.getOrganizationsByBrokerIdAndFilters(orgName, ipaCode, Pageable.ofSize(1));
+    //then
+    assertEquals(HttpStatus.OK, result.getStatusCode());
+    assertNotNull(result.getBody());
+    assertEquals(pagedOrganizationWithDebtPositionTypeOrgAndOperatorsCount, result.getBody());
+  }
+  @Test
+  void givenCorrectRequestWhenUpdateOrganizationThenOk() {
+    Long organizationId = 1L;
+    OrganizationDetailDTO organization = new OrganizationDetailDTO();
+
+    doNothing().when(organizationRetrieverServiceMock).updateOrganization(organizationId, organization, loggedUser, accessToken);
+
+    ResponseEntity<Void> response = organizationController.updateOrganization(organizationId, organization);
+
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+  }
+
+  @Test
+  void givenOrganizationIdWhenGetOrganizationDetailThenReturnOrganizationDetailDTO() {
+    OrganizationDetail organizationDetailDTO = new OrganizationDetail();
+    Long organizationId = 1L;
+
+    Mockito.when(organizationRetrieverServiceMock.getOrganizationDetail(organizationId, loggedUser, accessToken)).thenReturn(organizationDetailDTO);
+
+    ResponseEntity<OrganizationDetail> result = organizationController.getOrganizationDetail(organizationId);
+
+    assertEquals(HttpStatus.OK, result.getStatusCode());
+    assertNotNull(result.getBody());
+    assertEquals(organizationDetailDTO, result.getBody());
+  }
 }

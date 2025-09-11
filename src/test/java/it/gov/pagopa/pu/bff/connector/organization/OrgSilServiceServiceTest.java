@@ -15,6 +15,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import uk.co.jemos.podam.api.PodamFactory;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.Mockito.*;
 
@@ -121,5 +122,18 @@ class OrgSilServiceServiceTest {
 
     verify(orgSilServiceEntityClientMock, times(1))
       .deleteOrgSilService(orgSilServiceId, accessToken);
+  }
+
+  @Test
+  void whenGetOrgSilServiceByOrganizationIdAndApplicationNameThenInvokeClient() {
+    Long organizationId= 123L;
+    String applicationName = "applicationName";
+    OrgSilService orgSilService= podamFactory.manufacturePojo(OrgSilService.class);
+
+    when(orgSilServiceSearchClientMock.getOrgSilServiceByOrganizationIdAndApplicationName(organizationId, applicationName, accessToken)).thenReturn(orgSilService);
+    OrgSilService result = service.getOrgSilServiceByOrganizationIdAndApplicationName(organizationId, applicationName, accessToken);
+
+    assertNotNull(result);
+    assertSame(orgSilService, result);
   }
 }

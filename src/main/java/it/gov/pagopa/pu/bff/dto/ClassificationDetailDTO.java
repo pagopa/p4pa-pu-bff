@@ -16,4 +16,7 @@ public class ClassificationDetailDTO extends ClassificationDetailViewDTO {
   private boolean payed;
   private boolean reported;
   private boolean collected;
+  private String status;
+  private Boolean flagPaymentNotification;
+  private Boolean flagTreasury;
 }

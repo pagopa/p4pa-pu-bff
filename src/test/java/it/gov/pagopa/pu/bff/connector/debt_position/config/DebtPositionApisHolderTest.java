@@ -146,7 +146,7 @@ class DebtPositionApisHolderTest extends BaseApiHolderTest {
       accessToken -> debtPositionApisHolder.getInstallmentNoPiiSearchControllerApi(
           accessToken)
         .crudInstallmentsFindAuthorizedByTransferSemanticKey(1L, "iuv", "iur",
-          "transferIndex", "operatorExternalUserId"),
+          "transferIndex", "operatorExternalUserId", null),
       new ParameterizedTypeReference<>() {
       }, debtPositionApisHolder::unload);
   }
@@ -231,6 +231,17 @@ class DebtPositionApisHolderTest extends BaseApiHolderTest {
       accessToken -> debtPositionApisHolder.getDebtPositionTypeSearchControllerApi(accessToken)
         .crudDebtPositionTypesFindAllByBrokerIdAndOrgType(
           1L,"01"),
+      new ParameterizedTypeReference<>() {
+      },
+      debtPositionApisHolder::unload);
+  }
+
+  @Test
+  void whenGetDebtPositionTypeOrgOperatorsDptoCountViewSearchControllerApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
+    assertAuthenticationShouldBeSetInThreadSafeMode(
+      accessToken -> debtPositionApisHolder.getDebtPositionTypeOrgOperatorsDptoCountViewSearchControllerApi(accessToken)
+        .crudDebtPositionTypeOrgOperatorsCountViewFindByOrganizationIdAndOperatorExternalUserIds(
+          1L, Collections.emptySet()),
       new ParameterizedTypeReference<>() {
       },
       debtPositionApisHolder::unload);

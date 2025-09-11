@@ -1,12 +1,13 @@
 package it.gov.pagopa.pu.bff.connector.organization;
 
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.mockito.Mockito.when;
-
+import it.gov.pagopa.pu.bff.connector.organization.client.OrganizationApiClient;
+import it.gov.pagopa.pu.bff.connector.organization.client.OrganizationClient;
 import it.gov.pagopa.pu.bff.connector.organization.client.OrganizationEntityClient;
 import it.gov.pagopa.pu.bff.connector.organization.client.OrganizationSearchClient;
 import it.gov.pagopa.pu.organization.dto.generated.Organization;
+import it.gov.pagopa.pu.organization.dto.generated.OrganizationDetailDTO;
 import it.gov.pagopa.pu.organization.dto.generated.PagedModelOrganization;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,19 +16,35 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Pageable;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.when;
+
 @ExtendWith(MockitoExtension.class)
 class OrganizationServiceTest {
 
   @Mock
-  private OrganizationSearchClient organizationSearchClient;
+  private OrganizationSearchClient organizationSearchClientMock;
   @Mock
-  private OrganizationEntityClient organizationEntityClient;
+  private OrganizationEntityClient organizationEntityClientMock;
+  @Mock
+  private OrganizationClient organizationClientMock;
+  @Mock
+  private OrganizationApiClient organizationApiClientMock;
 
   private OrganizationService service;
 
   @BeforeEach
   void setUp() {
-    service = new OrganizationServiceImpl(organizationSearchClient,organizationEntityClient);
+    service = new OrganizationServiceImpl(organizationSearchClientMock, organizationEntityClientMock, organizationClientMock, organizationApiClientMock);
+  }
+
+  @AfterEach
+  void verifyNoMoreInteractions() {
+    Mockito.verifyNoMoreInteractions(organizationSearchClientMock, organizationEntityClientMock, organizationClientMock, organizationApiClientMock);
   }
 
   @Test
@@ -36,7 +53,7 @@ class OrganizationServiceTest {
     String ipaCode = "ipaCode";
     String accessToken = "accessToken";
 
-    when(organizationSearchClient.getOrganizationByIpaCode(Mockito.same(ipaCode), Mockito.same(accessToken)))
+    when(organizationSearchClientMock.getOrganizationByIpaCode(Mockito.same(ipaCode), Mockito.same(accessToken)))
       .thenReturn(expected);
 
     Organization result = service.getOrganizationByIpaCode(ipaCode, accessToken);
@@ -51,7 +68,7 @@ class OrganizationServiceTest {
     String orgName = "orgName";
     String accessToken = "accessToken";
 
-    when(organizationSearchClient.getOrganizationByBrokerIdAndOrgName(Mockito.same(brokerId), Mockito.same(orgName), Mockito.any(), Mockito.same(accessToken)))
+    when(organizationSearchClientMock.getOrganizationByBrokerIdAndOrgName(Mockito.same(brokerId), Mockito.same(orgName), Mockito.any(), Mockito.same(accessToken)))
       .thenReturn(expected);
 
     PagedModelOrganization result = service.getOrganizationByBrokerIdAndOrgName(brokerId, orgName, Pageable.unpaged(), accessToken);
@@ -65,11 +82,58 @@ class OrganizationServiceTest {
     Long organizationId = 1L;
     String accessToken = "accessToken";
 
-    when(organizationEntityClient.getOrganizationByOrganizationId(Mockito.same(organizationId), Mockito.same(accessToken)))
+    when(organizationEntityClientMock.getOrganizationByOrganizationId(Mockito.same(organizationId), Mockito.same(accessToken)))
       .thenReturn(expected);
 
     Organization result = service.getOrganizationByOrganizationId(organizationId, accessToken);
 
     assertSame(expected, result);
+  }
+
+  @Test
+  void  givenBrokerIdAndFiltersWhenGetOrganizationsByBrokerIdAndFiltersThenReturnPagedModelOrganization(){
+    //given
+    String accessToken = "ACCESSTOKEN";
+    Long brokerId = 1L;
+    String orgName = "orgName";
+    String ipaCode = "ipaCode";
+    PagedModelOrganization expectedResult = new PagedModelOrganization();
+
+    when(organizationSearchClientMock.getOrganizationsByBrokerIdAndFilters(eq(brokerId), eq(orgName), eq(ipaCode), any(), eq(accessToken)))
+      .thenReturn(expectedResult);
+
+    //when
+    PagedModelOrganization result = service.getOrganizationsByBrokerIdAndFilters(brokerId, orgName, ipaCode, Pageable.ofSize(1), accessToken);
+
+    //then
+    assertNotNull(result);
+    assertSame(expectedResult, result);
+  }
+
+  @Test
+  void whenUpdateOrganizationThenInvokeClient() {
+    OrganizationDetailDTO organizationDetailDTO = new OrganizationDetailDTO();
+    String accessToken = "accessToken";
+
+    doNothing().when(organizationClientMock).updateOrganization(organizationDetailDTO, accessToken);
+
+    service.updateOrganization(organizationDetailDTO, accessToken);
+
+    Mockito.verifyNoMoreInteractions(organizationClientMock);
+  }
+
+  @Test
+  void  givenOrganizationIdWhenGetOrganizationDetailThenReturnOrganizationDetailDTO(){
+    String accessToken = "ACCESSTOKEN";
+    Long organizationId = 1L;
+    OrganizationDetailDTO expectedResult = new OrganizationDetailDTO();
+
+    when(organizationApiClientMock.getOrganizationDetail(organizationId, accessToken))
+      .thenReturn(expectedResult);
+
+    OrganizationDetailDTO result = service.getOrganizationDetail(organizationId, accessToken);
+
+    assertNotNull(result);
+    assertSame(expectedResult, result);
   }
 }

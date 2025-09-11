@@ -1,8 +1,11 @@
 package it.gov.pagopa.pu.bff.connector.organization;
 
+import it.gov.pagopa.pu.bff.connector.organization.client.OrganizationApiClient;
+import it.gov.pagopa.pu.bff.connector.organization.client.OrganizationClient;
 import it.gov.pagopa.pu.bff.connector.organization.client.OrganizationEntityClient;
 import it.gov.pagopa.pu.bff.connector.organization.client.OrganizationSearchClient;
 import it.gov.pagopa.pu.organization.dto.generated.Organization;
+import it.gov.pagopa.pu.organization.dto.generated.OrganizationDetailDTO;
 import it.gov.pagopa.pu.organization.dto.generated.PagedModelOrganization;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.Cacheable;
@@ -15,11 +18,17 @@ public class OrganizationServiceImpl implements OrganizationService {
 
   private final OrganizationSearchClient organizationSearchClient;
   private final OrganizationEntityClient organizationEntityClient;
+  private final OrganizationClient organizationClient;
+  private final OrganizationApiClient organizationApiClient;
 
   public OrganizationServiceImpl(OrganizationSearchClient organizationSearchClient,
-    OrganizationEntityClient organizationEntityClient) {
+                                 OrganizationEntityClient organizationEntityClient,
+                                 OrganizationClient organizationClient,
+                                 OrganizationApiClient organizationApiClient) {
     this.organizationSearchClient = organizationSearchClient;
     this.organizationEntityClient = organizationEntityClient;
+    this.organizationClient = organizationClient;
+    this.organizationApiClient = organizationApiClient;
   }
 
   @Override
@@ -38,5 +47,20 @@ public class OrganizationServiceImpl implements OrganizationService {
   @Cacheable(key = "#organizationId", unless="#result == null")
   public Organization getOrganizationByOrganizationId(Long organizationId, String accessToken){
     return organizationEntityClient.getOrganizationByOrganizationId(organizationId, accessToken);
+  }
+
+  @Override
+  public PagedModelOrganization getOrganizationsByBrokerIdAndFilters(Long brokerId, String orgName, String ipaCode, Pageable pageable, String accessToken) {
+    return organizationSearchClient.getOrganizationsByBrokerIdAndFilters(brokerId, orgName, ipaCode, pageable, accessToken);
+  }
+
+  @Override
+  public void updateOrganization(OrganizationDetailDTO organizationDetailDTO, String accessToken) {
+    organizationClient.updateOrganization(organizationDetailDTO,accessToken);
+  }
+
+  @Override
+  public OrganizationDetailDTO getOrganizationDetail(Long organizationId, String accessToken) {
+    return organizationApiClient.getOrganizationDetail(organizationId, accessToken);
   }
 }

@@ -82,7 +82,7 @@ public class PaymentsReportingRetrieverServiceImpl implements
 
     InstallmentNoPII installment = installmentRetrieverService.getInstallmentFromTransferSemanticKey(
       organizationId, paymentsReporting.getIuv(), paymentsReporting.getIur(),
-      String.valueOf(paymentsReporting.getTransferIndex()), loggedUser,
+      String.valueOf(paymentsReporting.getTransferIndex()), loggedUser, null,
       accessToken);
     ReceiptDetailDTO receiptDetailDTO = installment != null ?
       receiptRetrieverService.getReceiptDetail(organizationId,

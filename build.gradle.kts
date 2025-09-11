@@ -195,7 +195,6 @@ tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>("ope
     "Transfer" to "it.gov.pagopa.pu.debtpositions.dto.generated.Transfer",
     "UserInfo" to "it.gov.pagopa.pu.auth.dto.generated.UserInfo",
     "DebtPositionTypeResponseBody" to "it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionType",
-    "PagedTreasuredClassification" to "it.gov.pagopa.pu.classification.dto.generated.PagedTreasuredClassification",
     "ClassificationsEnum" to "it.gov.pagopa.pu.classification.dto.generated.ClassificationsEnum",
     "DebtPositionOrigin" to "it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionOrigin",
     "LocalDateInterval" to "it.gov.pagopa.pu.bff.dto.LocalDateIntervalFilter",
@@ -228,7 +227,10 @@ tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>("ope
     "ClientDTOPage" to "it.gov.pagopa.pu.auth.dto.generated.ClientDTOPage",
     "ClientDTO" to "it.gov.pagopa.pu.auth.dto.generated.ClientDTO",
     "CreateClientRequest" to "it.gov.pagopa.pu.auth.dto.generated.CreateClientRequest",
-    "AssessmentsRegistryExtendedDTO" to "it.gov.pagopa.pu.bff.dto.AssessmentsRegistryExtendedDTO"
+    "AssessmentsRegistryExtendedDTO" to "it.gov.pagopa.pu.bff.dto.AssessmentsRegistryExtendedDTO",
+    "TreasuredClassificationExtendedDTO" to "it.gov.pagopa.pu.bff.dto.TreasuredClassificationExtendedDTO",
+    "Organization" to "it.gov.pagopa.pu.organization.dto.generated.OrganizationDetailDTO",
+    "OrganizationStatus" to "it.gov.pagopa.pu.organization.dto.generated.OrganizationStatus"
   ))
   configOptions.set(mapOf(
     "dateLibrary" to "java8",

@@ -34,6 +34,9 @@
     "name" : "DebtPositionTypeOrgs",
     "description" : "the DebtPositionTypeOrgs API"
   }, {
+    "name" : "Operators",
+    "description" : "the Operators API"
+  }, {
     "name" : "assessmentsDetail",
     "description" : "the assessmentsDetail API"
   }, {
@@ -92,6 +95,125 @@
     "description" : "the Organizations API"
   } ],
   "paths" : {
+    "/bff/organizations/{organizationId}" : {
+      "get" : {
+        "tags" : [ "Organizations" ],
+        "summary" : "Retrieve Organization detail",
+        "operationId" : "getOrganizationDetail",
+        "parameters" : [ {
+          "name" : "organizationId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OrganizationDetail"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Unauthorized - Missing or invalid token",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OrganizationDetail"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Forbidden - Access denied",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OrganizationDetail"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Not Found",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OrganizationDetail"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal Server Error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OrganizationDetail"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "BearerAuth" : [ ]
+        } ]
+      },
+      "put" : {
+        "tags" : [ "Organizations" ],
+        "summary" : "update an organization",
+        "operationId" : "updateOrganization",
+        "parameters" : [ {
+          "name" : "organizationId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/OrganizationDetailDTO"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          },
+          "401" : {
+            "description" : "Unauthorized - Missing or invalid token"
+          },
+          "403" : {
+            "description" : "Forbidden - Access denied"
+          },
+          "500" : {
+            "description" : "Internal Server Error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorDTO"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "BearerAuth" : [ ]
+        } ]
+      }
+    },
     "/bff/organization/{organizationId}/org-sil-services" : {
       "get" : {
         "tags" : [ "OrgSilService" ],
@@ -4839,6 +4961,119 @@
         } ]
       }
     },
+    "/bff/organization/{organizationId}/operators" : {
+      "get" : {
+        "tags" : [ "Operators" ],
+        "summary" : "Retrieve a paged list of the organization's operators",
+        "operationId" : "getOrganizationOperators",
+        "parameters" : [ {
+          "name" : "organizationId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }, {
+          "name" : "firstName",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "lastName",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "fiscalCode",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "page",
+          "in" : "query",
+          "description" : "Zero-based page index (0..N)",
+          "required" : false,
+          "schema" : {
+            "type" : "integer",
+            "default" : 0,
+            "minimum" : 0
+          }
+        }, {
+          "name" : "size",
+          "in" : "query",
+          "description" : "The size of the page to be returned",
+          "required" : false,
+          "schema" : {
+            "type" : "integer",
+            "default" : 20,
+            "minimum" : 1
+          }
+        }, {
+          "name" : "sort",
+          "in" : "query",
+          "description" : "Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/PagedOrganizationOperator"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Unauthorized - Missing or invalid token",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/PagedOrganizationOperator"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Forbidden - Access denied",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/PagedOrganizationOperator"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal Server Error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorDTO"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "BearerAuth" : [ ]
+        } ]
+      }
+    },
     "/bff/organization/{organizationId}/installments" : {
       "get" : {
         "tags" : [ "Installments" ],
@@ -6846,7 +7081,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/PagedTreasuredClassification"
+                  "$ref" : "#/components/schemas/PagedTreasuredClassificationExtendedDTO"
                 }
               }
             }
@@ -6856,7 +7091,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/PagedTreasuredClassification"
+                  "$ref" : "#/components/schemas/PagedTreasuredClassificationExtendedDTO"
                 }
               }
             }
@@ -6866,7 +7101,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/PagedTreasuredClassification"
+                  "$ref" : "#/components/schemas/PagedTreasuredClassificationExtendedDTO"
                 }
               }
             }
@@ -6876,7 +7111,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/PagedTreasuredClassification"
+                  "$ref" : "#/components/schemas/PagedTreasuredClassificationExtendedDTO"
                 }
               }
             }
@@ -7386,6 +7621,104 @@
         "security" : [ ]
       }
     },
+    "/bff/brokers/organizations" : {
+      "get" : {
+        "tags" : [ "Organizations" ],
+        "summary" : "Retrieve the list of organizations from the brokers",
+        "operationId" : "getOrganizationsByBrokerIdAndFilters",
+        "parameters" : [ {
+          "name" : "orgName",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "ipaCode",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "page",
+          "in" : "query",
+          "description" : "Zero-based page index (0..N)",
+          "required" : false,
+          "schema" : {
+            "type" : "integer",
+            "default" : 0,
+            "minimum" : 0
+          }
+        }, {
+          "name" : "size",
+          "in" : "query",
+          "description" : "The size of the page to be returned",
+          "required" : false,
+          "schema" : {
+            "type" : "integer",
+            "default" : 20,
+            "minimum" : 1
+          }
+        }, {
+          "name" : "sort",
+          "in" : "query",
+          "description" : "Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/PagedOrganizationWithDebtPositionTypeOrgAndOperatorsCount"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Unauthorized - Missing or invalid token",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/PagedOrganizationWithDebtPositionTypeOrgAndOperatorsCount"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Forbidden - Access denied",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/PagedOrganizationWithDebtPositionTypeOrgAndOperatorsCount"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal Server Error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorDTO"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "BearerAuth" : [ ]
+        } ]
+      }
+    },
     "/bff/brokers/config" : {
       "get" : {
         "tags" : [ "Brokers" ],
@@ -7589,6 +7922,112 @@
   },
   "components" : {
     "schemas" : {
+      "ErrorDTO" : {
+        "type" : "object",
+        "properties" : {
+          "title" : {
+            "$ref" : "#/components/schemas/TitleEnum",
+            "description" : "The title describing the error"
+          },
+          "description" : {
+            "type" : "string",
+            "description" : "Description of the error"
+          }
+        },
+        "required" : [ "description", "title" ]
+      },
+      "TitleEnum" : {
+        "type" : "string",
+        "enum" : [ "NOT_FOUND", "BAD_REQUEST", "GENERIC_ERROR", "FORBIDDEN", "CONFLICT" ]
+      },
+      "OrganizationDetailDTO" : {
+        "type" : "object",
+        "properties" : {
+          "organizationId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "flagTreasury" : {
+            "type" : "boolean"
+          },
+          "externalOrganizationId" : {
+            "type" : "string"
+          },
+          "ipaCode" : {
+            "type" : "string"
+          },
+          "orgFiscalCode" : {
+            "type" : "string"
+          },
+          "orgName" : {
+            "type" : "string"
+          },
+          "orgTypeCode" : {
+            "type" : "string"
+          },
+          "orgEmail" : {
+            "type" : "string"
+          },
+          "postalIban" : {
+            "type" : "string"
+          },
+          "iban" : {
+            "type" : "string"
+          },
+          "password" : {
+            "type" : "string"
+          },
+          "segregationCode" : {
+            "type" : "string"
+          },
+          "cbillInterBankCode" : {
+            "type" : "string"
+          },
+          "orgLogo" : {
+            "type" : "string"
+          },
+          "status" : {
+            "$ref" : "#/components/schemas/OrganizationStatus"
+          },
+          "additionalLanguage" : {
+            "type" : "string"
+          },
+          "startDate" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "brokerId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "ioApiKey" : {
+            "type" : "string"
+          },
+          "sendApiKey" : {
+            "type" : "string"
+          },
+          "generateNoticeApiKey" : {
+            "type" : "string"
+          },
+          "flagNotifyIo" : {
+            "type" : "boolean"
+          },
+          "flagNotifyOutcomePush" : {
+            "type" : "boolean"
+          },
+          "flagPaymentNotification" : {
+            "type" : "boolean"
+          },
+          "pdndEnabled" : {
+            "type" : "boolean"
+          }
+        },
+        "required" : [ "flagNotifyIo", "flagNotifyOutcomePush", "flagPaymentNotification", "flagTreasury", "ipaCode", "orgFiscalCode", "orgName", "organizationId", "pdndEnabled", "status" ]
+      },
+      "OrganizationStatus" : {
+        "type" : "string",
+        "enum" : [ "ACTIVE", "CANCELLED", "DRAFT" ]
+      },
       "JwtAlgorithm" : {
         "type" : "string",
         "enum" : [ "HS256", "HS384", "HS512", "RS256", "RS384", "RS512", "ES256", "ES384", "ES512" ]
@@ -9158,23 +9597,95 @@
         },
         "required" : [ "flagNotifyIo", "flagNotifyOutcomePush", "flagPaymentNotification", "ipaCode", "operatorRole", "orgFiscalCode", "orgName", "organizationId" ]
       },
-      "ErrorDTO" : {
+      "OrganizationDetail" : {
         "type" : "object",
         "properties" : {
-          "title" : {
-            "$ref" : "#/components/schemas/TitleEnum",
-            "description" : "The title describing the error"
+          "organizationId" : {
+            "type" : "integer",
+            "format" : "int64"
           },
-          "description" : {
+          "flagTreasury" : {
+            "type" : "boolean"
+          },
+          "externalOrganizationId" : {
             "type" : "string",
-            "description" : "Description of the error"
+            "readOnly" : true
+          },
+          "ipaCode" : {
+            "type" : "string",
+            "readOnly" : true
+          },
+          "orgFiscalCode" : {
+            "type" : "string",
+            "readOnly" : true
+          },
+          "orgName" : {
+            "type" : "string",
+            "readOnly" : true
+          },
+          "orgTypeCode" : {
+            "type" : "string",
+            "readOnly" : true
+          },
+          "orgEmail" : {
+            "type" : "string"
+          },
+          "postalIban" : {
+            "type" : "string"
+          },
+          "iban" : {
+            "type" : "string"
+          },
+          "password" : {
+            "type" : "string"
+          },
+          "segregationCode" : {
+            "type" : "string"
+          },
+          "cbillInterBankCode" : {
+            "type" : "string"
+          },
+          "orgLogo" : {
+            "type" : "string"
+          },
+          "status" : {
+            "$ref" : "#/components/schemas/OrganizationStatus"
+          },
+          "additionalLanguage" : {
+            "type" : "string"
+          },
+          "startDate" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "brokerId" : {
+            "type" : "integer",
+            "format" : "int64",
+            "readOnly" : true
+          },
+          "ioApiKey" : {
+            "type" : "string"
+          },
+          "sendApiKey" : {
+            "type" : "string"
+          },
+          "generateNoticeApiKey" : {
+            "type" : "string"
+          },
+          "flagNotifyIo" : {
+            "type" : "boolean"
+          },
+          "flagNotifyOutcomePush" : {
+            "type" : "boolean"
+          },
+          "flagPaymentNotification" : {
+            "type" : "boolean"
+          },
+          "pdndEnabled" : {
+            "type" : "boolean"
           }
         },
-        "required" : [ "description", "title" ]
-      },
-      "TitleEnum" : {
-        "type" : "string",
-        "enum" : [ "NOT_FOUND", "BAD_REQUEST", "GENERIC_ERROR", "FORBIDDEN", "CONFLICT" ]
+        "required" : [ "flagNotifyIo", "flagNotifyOutcomePush", "flagPaymentNotification", "flagTreasury", "ipaCode", "orgFiscalCode", "orgName", "organizationId", "pdndEnabled", "status" ]
       },
       "OrganizationWithDebtPositionTypeOrgCount" : {
         "type" : "object",
@@ -10392,6 +10903,56 @@
         },
         "required" : [ "content", "number", "size", "totalElements", "totalPages" ]
       },
+      "OrganizationOperator" : {
+        "type" : "object",
+        "properties" : {
+          "mappedExternalUserId" : {
+            "type" : "string"
+          },
+          "firstName" : {
+            "type" : "string"
+          },
+          "lastName" : {
+            "type" : "string"
+          },
+          "fiscalCode" : {
+            "type" : "string"
+          },
+          "debtPositionTypeOrgCount" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        },
+        "required" : [ "debtPositionTypeOrgCount", "mappedExternalUserId" ]
+      },
+      "PagedOrganizationOperator" : {
+        "type" : "object",
+        "properties" : {
+          "content" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/OrganizationOperator"
+            }
+          },
+          "size" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "totalElements" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "totalPages" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "number" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        },
+        "required" : [ "content", "number", "size", "totalElements", "totalPages" ]
+      },
       "InstallmentView" : {
         "type" : "object",
         "properties" : {
@@ -11573,6 +12134,15 @@
           },
           "collected" : {
             "type" : "boolean"
+          },
+          "status" : {
+            "type" : "string"
+          },
+          "flagPaymentNotification" : {
+            "type" : "boolean"
+          },
+          "flagTreasury" : {
+            "type" : "boolean"
           }
         }
       },
@@ -11580,13 +12150,13 @@
         "type" : "string",
         "enum" : [ "DOPPI", "RT_NO_IUF", "RT_NO_IUD", "IUV_NO_RT", "TES_NO_IUF_OR_IUV", "IUF_NO_TES", "IUD_RT_IUF", "RT_IUF", "RT_TES", "IUD_RT_IUF_TES", "RT_IUF_TES", "IUF_TES_DIV_IMP", "IUD_NO_RT", "TES_NO_MATCH", "UNKNOWN" ]
       },
-      "PagedTreasuredClassification" : {
+      "PagedTreasuredClassificationExtendedDTO" : {
         "type" : "object",
         "properties" : {
           "content" : {
             "type" : "array",
             "items" : {
-              "$ref" : "#/components/schemas/TreasuredClassificationView"
+              "$ref" : "#/components/schemas/TreasuredClassificationExtendedDTO"
             }
           },
           "size" : {
@@ -11608,7 +12178,7 @@
         },
         "required" : [ "content", "number", "size", "totalElements", "totalPages" ]
       },
-      "TreasuredClassificationView" : {
+      "TreasuredClassificationExtendedDTO" : {
         "type" : "object",
         "properties" : {
           "classificationId" : {
@@ -11876,6 +12446,15 @@
           },
           "treasuryEndToEndId" : {
             "type" : "string"
+          },
+          "status" : {
+            "type" : "string"
+          },
+          "flagPaymentNotification" : {
+            "type" : "boolean"
+          },
+          "flagTreasury" : {
+            "type" : "boolean"
           }
         }
       },
@@ -12030,7 +12609,14 @@
           "pagedAssessmentsRowsDetail" : {
             "$ref" : "#/components/schemas/PagedAssessmentsRowsDetail"
           },
+          "assessmentId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
           "assessmentsName" : {
+            "type" : "string"
+          },
+          "debtPositionTypeOrgCode" : {
             "type" : "string"
           },
           "debtPositionTypeOrgDescription" : {
@@ -12046,7 +12632,7 @@
             "type" : "boolean"
           }
         },
-        "required" : [ "assessmentsName", "debtPositionTypeOrgDescription", "flagManualGeneration", "pagedAssessmentsRowsDetail", "status" ]
+        "required" : [ "assessmentId", "assessmentsName", "debtPositionTypeOrgCode", "debtPositionTypeOrgDescription", "flagManualGeneration", "pagedAssessmentsRowsDetail", "status" ]
       },
       "PagedAssessmentsRowsDetail" : {
         "type" : "object",
@@ -12227,6 +12813,67 @@
             "description" : "Service status"
           }
         }
+      },
+      "OrganizationWithDebtPositionTypeOrgAndOperatorsCount" : {
+        "type" : "object",
+        "properties" : {
+          "organizationId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "ipaCode" : {
+            "type" : "string"
+          },
+          "orgName" : {
+            "type" : "string"
+          },
+          "orgFiscalCode" : {
+            "type" : "string"
+          },
+          "debtPositionTypeOrgCount" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "operatorsCount" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "status" : {
+            "$ref" : "#/components/schemas/StatusEnum"
+          }
+        }
+      },
+      "PagedOrganizationWithDebtPositionTypeOrgAndOperatorsCount" : {
+        "type" : "object",
+        "properties" : {
+          "content" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/OrganizationWithDebtPositionTypeOrgAndOperatorsCount"
+            }
+          },
+          "size" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "totalElements" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "totalPages" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "number" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        },
+        "required" : [ "content", "number", "size", "totalElements", "totalPages" ]
+      },
+      "StatusEnum" : {
+        "type" : "string",
+        "enum" : [ "ACTIVE", "DRAFT", "CANCELLED" ]
       },
       "ConfigFE" : {
         "type" : "object",

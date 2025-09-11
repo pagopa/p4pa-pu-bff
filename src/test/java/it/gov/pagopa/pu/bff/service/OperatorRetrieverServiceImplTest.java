@@ -184,7 +184,6 @@ public class OperatorRetrieverServiceImplTest {
     UserOrganizationRoles organizationRoles = loggedUser.getOrganizations().getFirst();
     organizationRoles.setOrganizationIpaCode("IPACODE");
     organizationRoles.setOrganizationId(organizationId);
-    String accessToken = "ACCESSTOKEN";
 
     Long debtPositionTypeId = 1L;
     String debtPositionTypeOrgCode = "code";
@@ -214,7 +213,6 @@ public class OperatorRetrieverServiceImplTest {
     UserOrganizationRoles organizationRoles = loggedUser.getOrganizations().getFirst();
     organizationRoles.setOrganizationIpaCode("IPACODE");
     organizationRoles.setOrganizationId(organizationId);
-    String accessToken = "ACCESSTOKEN";
 
     String debtPositionTypeOrgCode = "code";
     String description = "description";

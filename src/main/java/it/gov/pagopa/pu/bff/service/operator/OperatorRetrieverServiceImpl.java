@@ -77,7 +77,7 @@ public class OperatorRetrieverServiceImpl implements OperatorRetrieverService {
   @Override
   public OperatorsDetail findPagedDebtPositionTypeOrg(Long organizationId, String debtPositionTypeOrgCode, String description, Long debtPositionTypeId,
                                                       Pageable pageable, UserInfo loggedUser, String accessToken) {
-    authorizationService.validateBrokerAdminRole(loggedUser);
+    authorizationService.validateOrganizationOrBrokerAdmin(organizationId,loggedUser,accessToken);
 
     String userOrganizationIpaCode = getUserOrganizationIpaCode(organizationId, loggedUser);
     OperatorDTO organizationOperator = authzService.getOrganizationOperator(

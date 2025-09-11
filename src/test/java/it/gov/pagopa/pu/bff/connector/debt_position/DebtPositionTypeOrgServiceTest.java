@@ -18,8 +18,7 @@ import uk.co.jemos.podam.api.PodamFactory;
 import java.util.List;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -196,5 +195,26 @@ class DebtPositionTypeOrgServiceTest {
 
     assertEquals(expectedCount, result);
   }
+
+  @Test
+  void whenFindPagedDebtPositionTypeOrgThenInvokeClient() {
+    Long organizationId = 1L;
+    Long debtPositionTypeId = 1L;
+    String accessToken = "ACCESS_TOKEN";
+    String mappedExternalUserId = "mappedExternalUserId";
+    String debtPositionTypeOrgCode = "code";
+    String debtPositionTypeOrgDescription = "description";
+
+    PagedModelDebtPositionTypeOrg expectedResult = new PagedModelDebtPositionTypeOrg();
+
+    when(debtPositionTypeOrgSearchClientMock.findPagedDebtPositionTypeOrg(organizationId, mappedExternalUserId, debtPositionTypeOrgCode, debtPositionTypeOrgDescription, debtPositionTypeId, Pageable.ofSize(1), accessToken))
+      .thenReturn(expectedResult);
+
+    PagedModelDebtPositionTypeOrg result = service.findPagedDebtPositionTypeOrg(organizationId, mappedExternalUserId, debtPositionTypeOrgCode, debtPositionTypeOrgDescription, debtPositionTypeId, Pageable.ofSize(1), accessToken);
+
+    assertNotNull(result);
+    assertEquals(expectedResult, result);
+  }
+
 }
 

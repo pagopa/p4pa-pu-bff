@@ -198,4 +198,36 @@ class AuthzClientTest {
 
     assertTrue(thrown.getMessage().contains(clientId));
   }
+
+  @Test
+  void givenIpaCodeAndMappedExternalUserIdWhenGetOrganizationOperatorThenReturnResult() {
+    //given
+    String accessToken = "ACCESSTOKEN";
+    String organizationIpaCode = "IPACODE";
+    String mappedExternalUserId = "mappedExternalUserId";
+    OperatorDTO expectedResult = new OperatorDTO();
+
+    when(authApisHolderMock.getAuthzApi(accessToken)).thenReturn(authzApiMock);
+    when(authzApiMock.getOrganizationOperator(organizationIpaCode, mappedExternalUserId)).thenReturn(expectedResult);
+    //when
+    OperatorDTO result = authzClient.getOrganizationOperator(organizationIpaCode, mappedExternalUserId, accessToken);
+    //then
+    Assertions.assertNotNull(result);
+    Assertions.assertEquals(expectedResult, result);
+  }
+
+  @Test
+  void givenIpaCodeAndMappedExternalUserIdWhenGetOrganizationOperatorThenReturnNull() {
+    //given
+    String accessToken = "ACCESSTOKEN";
+    String organizationIpaCode = "IPACODE";
+    String mappedExternalUserId = "mappedExternalUserId";
+
+    when(authApisHolderMock.getAuthzApi(accessToken)).thenReturn(authzApiMock);
+    doThrow(HttpClientErrorException.create(HttpStatus.NOT_FOUND, "NotFound", null, null, null)).when(authzApiMock).getOrganizationOperator(organizationIpaCode, mappedExternalUserId);
+    //when
+    OperatorDTO result = authzClient.getOrganizationOperator(organizationIpaCode, mappedExternalUserId, accessToken);
+    //then
+    Assertions.assertNull(result);
+  }
 }

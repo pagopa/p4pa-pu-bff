@@ -7,6 +7,7 @@ import it.gov.pagopa.pu.debtpositions.dto.generated.CollectionModelDebtPositionT
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrg;
 import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelDebtPositionTypeOrg;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,6 +15,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.util.CollectionUtils;
 import uk.co.jemos.podam.api.PodamFactory;
 
@@ -190,4 +192,29 @@ class DebtPositionTypeOrgSearchClientTest {
 
     assertEquals(expectedCount, result);
   }
+
+  @Test
+  void givenParametersWhenFindPagedDebtPositionTypeOrgThenInvokeWithAccessToken() {
+    //given
+    Long organizationId = 1L;
+    Long debtPositionId = 1L;
+    String mappedExternalUserId = "userId";
+    String debtPositionTypeOrgCode = "code";
+    String debtPositionTypeOrgDescription = "description";
+    String accessToken = "ACCESS_TOKEN";
+
+    PagedModelDebtPositionTypeOrg expectedResult = new PagedModelDebtPositionTypeOrg();
+    when(debtPositionApisHolderMock.getDebtPositionTypeOrgSearchControllerApi(accessToken))
+      .thenReturn(debtPositionTypeOrgSearchControllerApiMock);
+    when(debtPositionTypeOrgSearchControllerApiMock
+      .crudDebtPositionTypeOrgsFindPagedDebtPositionTypeOrg(organizationId, mappedExternalUserId, debtPositionTypeOrgCode, debtPositionTypeOrgDescription, debtPositionId, 0,1,List.of()))
+      .thenReturn(expectedResult);
+
+    //when
+    PagedModelDebtPositionTypeOrg result = debtPositionTypeOrgSearchClient.findPagedDebtPositionTypeOrg(organizationId, mappedExternalUserId, debtPositionTypeOrgCode, debtPositionTypeOrgDescription,debtPositionId, Pageable.ofSize(1), accessToken);
+    //then
+    Assertions.assertNotNull(result);
+    Assertions.assertSame(expectedResult, result);
+  }
+
 }

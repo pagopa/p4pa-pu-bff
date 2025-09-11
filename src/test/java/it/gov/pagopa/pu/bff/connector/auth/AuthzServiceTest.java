@@ -3,6 +3,7 @@ package it.gov.pagopa.pu.bff.connector.auth;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.Mockito.when;
 
+import it.gov.pagopa.pu.auth.dto.generated.OperatorDTO;
 import it.gov.pagopa.pu.auth.dto.generated.OperatorsPage;
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.connector.auth.client.AuthzClient;
@@ -50,6 +51,20 @@ class AuthzServiceTest {
       .thenReturn(expectedResult);
 
     OperatorsPage result = service.getOrganizationOperators(organizationIpaCode, null, null, null, 0, 10, accessToken);
+
+    assertSame(expectedResult, result);
+  }
+
+  @Test
+  void whenGetOrganizationOperatorThenInvokeClient() {
+    String accessToken = "ACCESSTOKEN";
+    String organizationIpaCode = "IPACODE";
+    String mappedExternalUserId = "mappedExternalUserId";
+    OperatorDTO expectedResult = new OperatorDTO();
+
+    when(client.getOrganizationOperator(organizationIpaCode, mappedExternalUserId,accessToken)).thenReturn(expectedResult);
+
+    OperatorDTO result = service.getOrganizationOperator(organizationIpaCode, mappedExternalUserId, accessToken);
 
     assertSame(expectedResult, result);
   }

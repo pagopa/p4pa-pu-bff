@@ -7,10 +7,7 @@ import it.gov.pagopa.pu.auth.dto.generated.UserOrganizationRoles;
 import it.gov.pagopa.pu.bff.connector.auth.AuthzService;
 import it.gov.pagopa.pu.bff.connector.debt_position.DebtPositionTypeOrgService;
 import it.gov.pagopa.pu.bff.connector.organization.OrganizationService;
-import it.gov.pagopa.pu.bff.dto.generated.OrganizationDTO;
-import it.gov.pagopa.pu.bff.dto.generated.OrganizationDetail;
-import it.gov.pagopa.pu.bff.dto.generated.PagedOrganizationWithDebtPositionTypeOrgAndOperatorsCount;
-import it.gov.pagopa.pu.bff.dto.generated.PagedOrganizationWithDebtPositionTypeOrgCount;
+import it.gov.pagopa.pu.bff.dto.generated.*;
 import it.gov.pagopa.pu.bff.exception.InvalidOrganizationException;
 import it.gov.pagopa.pu.bff.exception.ResourceNotFoundException;
 import it.gov.pagopa.pu.bff.mapper.OrganizationDTOMapper;
@@ -108,7 +105,7 @@ class OrganizationRetrieverServiceImplTest {
       .organizationId(123L)
       .ipaCode("testIpaCode")
       .orgName("Test Organization")
-      .operatorRole(OrganizationDTO.OperatorRoleEnum.ROLE_ADMIN)
+      .operatorRole(OperatorRole.ROLE_ADMIN)
       .build();
 
     organizationService = new OrganizationRetrieverServiceImpl(
@@ -135,7 +132,7 @@ class OrganizationRetrieverServiceImplTest {
     assertEquals(123L, result.getFirst().getOrganizationId());
     assertEquals("testIpaCode", result.getFirst().getIpaCode());
     assertEquals("Test Organization", result.getFirst().getOrgName());
-    assertEquals(OrganizationDTO.OperatorRoleEnum.ROLE_ADMIN, result.getFirst().getOperatorRole());
+    assertEquals(OperatorRole.ROLE_ADMIN, result.getFirst().getOperatorRole());
   }
 
   @Test

@@ -1,10 +1,6 @@
 package it.gov.pagopa.pu.bff.connector.auth.client;
 
-import it.gov.pagopa.pu.auth.dto.generated.ClientDTO;
-import it.gov.pagopa.pu.auth.dto.generated.ClientDTOPage;
-import it.gov.pagopa.pu.auth.dto.generated.CreateClientRequest;
-import it.gov.pagopa.pu.auth.dto.generated.OperatorsPage;
-import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
+import it.gov.pagopa.pu.auth.dto.generated.*;
 import it.gov.pagopa.pu.bff.connector.auth.config.AuthApisHolder;
 import it.gov.pagopa.pu.bff.exception.ResourceNotFoundException;
 import it.gov.pagopa.pu.bff.util.PageUtils;
@@ -35,7 +31,7 @@ public class AuthzClient {
 
   public OperatorsPage getOrganizationOperators(String organizationIpaCode, String fiscalCode, String firstName, String lastName, Integer page, Integer size, String accessToken) {
     return authApisHolder.getAuthzApi(accessToken)
-        .getOrganizationOperators(organizationIpaCode, fiscalCode, firstName, lastName, page, size);
+      .getOrganizationOperators(organizationIpaCode, fiscalCode, firstName, lastName, page, size);
   }
 
   public ClientDTOPage getClients(String organizationIpaCode, String clientId, String clientName, Pageable pageable, String accessToken) {
@@ -43,7 +39,7 @@ public class AuthzClient {
       .getClientsSearch(organizationIpaCode, clientId, clientName, pageable.getPageNumber(), pageable.getPageSize(), PageUtils.getSortList(pageable));
   }
 
-  public ClientDTO registerClient(String organizationIpaCode, CreateClientRequest createClientRequest, String accessToken){
+  public ClientDTO registerClient(String organizationIpaCode, CreateClientRequest createClientRequest, String accessToken) {
     return authApisHolder.getAuthzApi(accessToken)
       .registerClient(organizationIpaCode, createClientRequest);
   }
@@ -53,7 +49,7 @@ public class AuthzClient {
       .getClient(organizationIpaCode, clientId);
   }
 
-  public void revokeClient(String organizationIpaCode, String clientId, String accessToken){
+  public void revokeClient(String organizationIpaCode, String clientId, String accessToken) {
     authApisHolder.getAuthzApi(accessToken).revokeClient(organizationIpaCode, clientId);
   }
 
@@ -63,6 +59,15 @@ public class AuthzClient {
         .generateClientSecret(organizationIpaCode, clientId);
     } catch (HttpClientErrorException.NotFound e) {
       throw new ResourceNotFoundException("Client with ID not found: " + clientId);
+    }
+  }
+
+  public OperatorDTO getOrganizationOperator(String organizationIpaCode, String mappedExternalUserId, String accessToken) {
+    try {
+      return authApisHolder.getAuthzApi(accessToken).getOrganizationOperator(organizationIpaCode, mappedExternalUserId);
+    } catch (HttpClientErrorException.NotFound e) {
+      log.warn("Operator with mappedExternalUserId {} not found", mappedExternalUserId);
+      return null;
     }
   }
 }

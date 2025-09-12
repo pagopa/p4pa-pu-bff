@@ -1,6 +1,8 @@
 package it.gov.pagopa.pu.bff.controller;
 
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
+import it.gov.pagopa.pu.bff.dto.OperatorDetailsFiltersDTO;
+import it.gov.pagopa.pu.bff.dto.generated.OperatorsDetail;
 import it.gov.pagopa.pu.bff.dto.generated.PagedOrganizationOperator;
 import it.gov.pagopa.pu.bff.security.SecurityUtilsTest;
 import it.gov.pagopa.pu.bff.service.operator.OperatorRetrieverService;
@@ -68,5 +70,25 @@ class OperatorControllerTest {
     Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
     Assertions.assertNotNull(response.getBody());
     Assertions.assertSame(expectedResult, response.getBody());
+  }
+
+  @Test
+  void givenParametersWhenGetOperatorDetailsThenReturnOperatorsDetail() {
+    //given
+    Long organizationId = 1L;
+    Long debtPositionId = 1L;
+    String debtPositionTypeOrgCode = "code";
+    String debtPositionTypeOrgDescription = "description";
+    String mappedExternalUserId = "mappedExternalUserId";
+    OperatorsDetail expectedResult = new OperatorsDetail();
+
+    OperatorDetailsFiltersDTO operatorDetailsFiltersDTO = new OperatorDetailsFiltersDTO(organizationId, mappedExternalUserId, debtPositionTypeOrgCode, debtPositionTypeOrgDescription, debtPositionId);
+    Mockito.when(operatorRetrieverServiceMock.findPagedDebtPositionTypeOrg(operatorDetailsFiltersDTO, Pageable.ofSize(1), loggedUser, accessToken)).thenReturn(expectedResult);
+    //when
+    ResponseEntity<OperatorsDetail> result = operatorController.getOperatorDetails(organizationId, mappedExternalUserId, debtPositionTypeOrgCode, debtPositionTypeOrgDescription, debtPositionId, Pageable.ofSize(1));
+    //then
+    Assertions.assertEquals(HttpStatus.OK, result.getStatusCode());
+    Assertions.assertNotNull(result.getBody());
+    Assertions.assertSame(expectedResult, result.getBody());
   }
 }

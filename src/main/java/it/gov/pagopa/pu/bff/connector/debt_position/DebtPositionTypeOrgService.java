@@ -1,5 +1,6 @@
 package it.gov.pagopa.pu.bff.connector.debt_position;
 
+import it.gov.pagopa.pu.bff.dto.OperatorDetailsFiltersDTO;
 import it.gov.pagopa.pu.debtpositions.dto.generated.*;
 import org.springframework.data.domain.Pageable;
 
@@ -28,4 +29,5 @@ public interface DebtPositionTypeOrgService {
   void updateFlagActiveDebtPositionTypeOrg(Long debtPositionTypeOrgId, Boolean flagActive, String accessToken);
 
   Long countByOrgSilServiceId(Long orgSilServiceId, String accessToken);
+  PagedModelDebtPositionTypeOrg findPagedDebtPositionTypeOrg(OperatorDetailsFiltersDTO operatorDetailsFiltersDTO, Pageable pageable, String accessToken);
 }

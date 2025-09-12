@@ -3,6 +3,7 @@ package it.gov.pagopa.pu.bff.connector.debt_position;
 import it.gov.pagopa.pu.bff.connector.debt_position.client.DebtPositionTypeOrgClient;
 import it.gov.pagopa.pu.bff.connector.debt_position.client.DebtPositionTypeOrgSearchClient;
 import it.gov.pagopa.pu.bff.connector.debt_position.client.DebtPositionTypeOrgWithCountClient;
+import it.gov.pagopa.pu.bff.dto.OperatorDetailsFiltersDTO;
 import it.gov.pagopa.pu.bff.util.TestUtils;
 import it.gov.pagopa.pu.debtpositions.dto.generated.*;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,8 +19,7 @@ import uk.co.jemos.podam.api.PodamFactory;
 import java.util.List;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -196,5 +196,27 @@ class DebtPositionTypeOrgServiceTest {
 
     assertEquals(expectedCount, result);
   }
+
+  @Test
+  void whenFindPagedDebtPositionTypeOrgThenInvokeClient() {
+    Long organizationId = 1L;
+    Long debtPositionTypeId = 1L;
+    String accessToken = "ACCESS_TOKEN";
+    String mappedExternalUserId = "mappedExternalUserId";
+    String debtPositionTypeOrgCode = "code";
+    String debtPositionTypeOrgDescription = "description";
+
+    OperatorDetailsFiltersDTO operatorDetailsFiltersDTO = new OperatorDetailsFiltersDTO(organizationId, mappedExternalUserId, debtPositionTypeOrgCode, debtPositionTypeOrgDescription, debtPositionTypeId);
+    PagedModelDebtPositionTypeOrg expectedResult = new PagedModelDebtPositionTypeOrg();
+
+    when(debtPositionTypeOrgSearchClientMock.findPagedDebtPositionTypeOrg(operatorDetailsFiltersDTO, Pageable.ofSize(1), accessToken))
+      .thenReturn(expectedResult);
+
+    PagedModelDebtPositionTypeOrg result = service.findPagedDebtPositionTypeOrg(operatorDetailsFiltersDTO, Pageable.ofSize(1), accessToken);
+
+    assertNotNull(result);
+    assertEquals(expectedResult, result);
+  }
+
 }
 

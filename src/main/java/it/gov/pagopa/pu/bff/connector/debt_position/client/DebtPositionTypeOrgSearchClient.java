@@ -1,6 +1,7 @@
 package it.gov.pagopa.pu.bff.connector.debt_position.client;
 
 import it.gov.pagopa.pu.bff.connector.debt_position.config.DebtPositionApisHolder;
+import it.gov.pagopa.pu.bff.dto.OperatorDetailsFiltersDTO;
 import it.gov.pagopa.pu.bff.util.PageUtils;
 import it.gov.pagopa.pu.debtpositions.dto.generated.CollectionModelDebtPositionTypeOrg;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrg;
@@ -58,5 +59,18 @@ public class DebtPositionTypeOrgSearchClient {
   public Long countByOrgSilServiceId(Long orgSilServiceId, String accessToken) {
     return debtPositionApisHolder.getDebtPositionTypeOrgSearchControllerApi(accessToken)
       .crudDebtPositionTypeOrgsCountByOrgSilServiceId(orgSilServiceId);
+  }
+
+  public PagedModelDebtPositionTypeOrg findPagedDebtPositionTypeOrg(OperatorDetailsFiltersDTO operatorDetailsFiltersDTO, Pageable pageable, String accessToken){
+    return debtPositionApisHolder.getDebtPositionTypeOrgSearchControllerApi(accessToken)
+      .crudDebtPositionTypeOrgsFindPagedDebtPositionTypeOrg(
+        operatorDetailsFiltersDTO.getOrganizationId(),
+        operatorDetailsFiltersDTO.getMappedExternalUserId(),
+        operatorDetailsFiltersDTO.getDebtPositionTypeOrgCode(),
+        operatorDetailsFiltersDTO.getDebtPositionTypeOrgDescription(),
+        operatorDetailsFiltersDTO.getDebtPositionTypeId(),
+        PageUtils.getPageNumber(pageable),
+        PageUtils.getPageSize(pageable),
+        PageUtils.getSortList(pageable));
   }
 }

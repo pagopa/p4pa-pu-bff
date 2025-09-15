@@ -3,6 +3,7 @@ package it.gov.pagopa.pu.bff.connector.classification.client;
 import it.gov.pagopa.pu.bff.connector.classification.config.ClassificationApisHolder;
 import it.gov.pagopa.pu.classification.controller.generated.TreasurySearchControllerApi;
 import it.gov.pagopa.pu.classification.dto.generated.Treasury;
+import it.gov.pagopa.pu.classification.dto.generated.TreasuryOrigin;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -57,6 +58,7 @@ class TreasurySearchClientTest {
       .pspLastName("PSPLastName")
       .orgBtCode("orgBtCode")
       .orgIstatCode("orgIstatCode")
+      .treasuryOrigin(TreasuryOrigin.TREASURY_OPI)
       .build();
 
     when(classificationApisHolderMock.getTreasurySearchControllerApi(accessToken))

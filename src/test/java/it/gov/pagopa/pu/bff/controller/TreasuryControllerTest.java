@@ -8,6 +8,7 @@ import it.gov.pagopa.pu.bff.security.SecurityUtilsTest;
 import it.gov.pagopa.pu.bff.service.treasury.TreasuryRetrieverService;
 import it.gov.pagopa.pu.bff.util.TestUtils;
 import it.gov.pagopa.pu.classification.dto.generated.Treasury;
+import it.gov.pagopa.pu.classification.dto.generated.TreasuryOrigin;
 import it.gov.pagopa.pu.classification.dto.generated.TreasuryView;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -131,6 +132,7 @@ class TreasuryControllerTest {
       .pspLastName("PSPLastName")
       .orgBtCode("orgBtCode")
       .orgIstatCode("orgIstatCode")
+      .treasuryOrigin(TreasuryOrigin.TREASURY_OPI)
       .build();
 
     Mockito.when(treasuryRetrieverServiceMock.getTreasuryDetail(Mockito.eq(organizationId), Mockito.eq(treasuryId), Mockito.same(loggedUser), Mockito.same(accessToken)))

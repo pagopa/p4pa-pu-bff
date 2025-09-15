@@ -3,29 +3,32 @@ package it.gov.pagopa.pu.bff.mapper;
 import it.gov.pagopa.pu.auth.dto.generated.OperatorDTO;
 import it.gov.pagopa.pu.bff.dto.generated.OperatorRole;
 import it.gov.pagopa.pu.bff.dto.generated.OperatorsDetail;
-import it.gov.pagopa.pu.bff.dto.generated.PagedOperatorsDetails;
+import it.gov.pagopa.pu.bff.dto.generated.PagedDebtPositionTypeOrgDTO;
 import it.gov.pagopa.pu.bff.exception.InvalidOperatorRoleException;
+import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionType;
 import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelDebtPositionTypeOrg;
+import org.mapstruct.Context;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 import org.mapstruct.factory.Mappers;
 
 import java.util.List;
+import java.util.Map;
 
 @Mapper(componentModel = "spring")
 public interface OperatorDetailMapper {
 
-  @Mapping(target = "pagedOperatorsDetails", source = "pagedModelDebtPositionTypeOrg")
+  @Mapping(target = "pagedDebtPositionTypeOrg", source = "pagedModelDebtPositionTypeOrg")
   @Mapping(target = "operatorId", source = "organizationOperator.operatorId")
   @Mapping(target = "operatorFiscalCode", source = "organizationOperator.fiscalCode")
   @Mapping(target = "operatorRole", source = "organizationOperator.roles", qualifiedByName = "determineOperatorRole")
   @Mapping(target= "operatorName", source = "organizationOperator.firstName")
   @Mapping(target= "operatorLastName", source = "organizationOperator.lastName")
-  OperatorsDetail map(PagedModelDebtPositionTypeOrg pagedModelDebtPositionTypeOrg, OperatorDTO organizationOperator);
+  OperatorsDetail map(PagedModelDebtPositionTypeOrg pagedModelDebtPositionTypeOrg, OperatorDTO organizationOperator, @Context Map<Long, DebtPositionType> debtPositionTypes);
 
-  default PagedOperatorsDetails mapToPagedOperatorsDetails(PagedModelDebtPositionTypeOrg pagedModelDebtPositionTypeOrg) {
-    return Mappers.getMapper(PagedOperatorsDetailsMapper.class).map(pagedModelDebtPositionTypeOrg);
+  default PagedDebtPositionTypeOrgDTO mapToPagedDebtPositionTypeOrgDTO(PagedModelDebtPositionTypeOrg pagedModelDebtPositionTypeOrg, @Context Map<Long, DebtPositionType> debtPositionTypes) {
+    return Mappers.getMapper(PagedDebtPositionTypeOrgDTOMapper.class).map(pagedModelDebtPositionTypeOrg, debtPositionTypes);
   }
 
   @Named("determineOperatorRole")

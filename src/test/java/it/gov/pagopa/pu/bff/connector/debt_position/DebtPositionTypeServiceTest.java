@@ -1,13 +1,11 @@
 package it.gov.pagopa.pu.bff.connector.debt_position;
 
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.mockito.Mockito.when;
-
 import it.gov.pagopa.pu.bff.connector.debt_position.client.DebtPositionTypeClient;
 import it.gov.pagopa.pu.debtpositions.dto.generated.CollectionModelDebtPositionType;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionType;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeRequestBody;
 import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelDebtPositionTypeWithCount;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,6 +13,13 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Pageable;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class DebtPositionTypeServiceTest {
@@ -27,6 +32,11 @@ class DebtPositionTypeServiceTest {
   @BeforeEach
   void setUp() {
     service = new DebtPositionTypeServiceImpl(client);
+  }
+
+  @AfterEach
+  void verifyNoMoreInteractions() {
+    Mockito.verifyNoMoreInteractions(client);
   }
 
   @Test
@@ -98,7 +108,6 @@ class DebtPositionTypeServiceTest {
     service.deleteDebtPositionType(debtPositionTypeId, accessToken);
 
     Mockito.verify(client).deleteDebtPositionType(debtPositionTypeId, accessToken);
-    Mockito.verifyNoMoreInteractions(client);
   }
 
   @Test
@@ -114,7 +123,20 @@ class DebtPositionTypeServiceTest {
     CollectionModelDebtPositionType result = service.getDebtPositionTypesByBrokerIdAndOrgType(brokerId, orgType, accessToken);
 
     assertSame(expectedResult, result);
-    Mockito.verify(client).getDebtPositionTypesByBrokerIdAndOrgType(brokerId, orgType, accessToken);
+  }
+
+  @Test
+  void whenFindByDebtPositionTypeIdsThenInvokeClient() {
+    Set<Long> debtPositionTypeIds = Set.of(1L);
+    String accessToken = "ACCESSTOKEN";
+    List<DebtPositionType> expectedResult = new ArrayList<>();
+
+    when(client.findByDebtPositionTypeIds(debtPositionTypeIds, accessToken))
+      .thenReturn(expectedResult);
+
+    List<DebtPositionType> result = service.findByDebtPositionTypeIds(debtPositionTypeIds, accessToken);
+
+    assertSame(expectedResult, result);
   }
 
 }

@@ -3676,7 +3676,7 @@ components:
         number:
           type: integer
           format: int64
-    PagedOperatorsDetails:
+    PagedDebtPositionTypeOrgDTO:
       type: object
       required:
         - content
@@ -3688,7 +3688,7 @@ components:
         content:
           type: array
           items:
-            type: 'DebtPositionTypeOrg'
+            $ref: "#/components/schemas/DebtPositionTypeOrgDTO"
         size:
           type: integer
           format: int64
@@ -3704,15 +3704,15 @@ components:
     OperatorsDetail:
       type: object
       required:
-        - pagedOperatorsDetails
+        - pagedDebtPositionTypeOrg
         - operatorId
         - operatorFiscalCode
         - operatorRole
         - operatorName
         - operatorLastName
       properties:
-        pagedOperatorsDetails:
-          $ref: '#/components/schemas/PagedOperatorsDetails'
+        pagedDebtPositionTypeOrg:
+          $ref: '#/components/schemas/PagedDebtPositionTypeOrgDTO'
         operatorId:
           type: string
         operatorName:

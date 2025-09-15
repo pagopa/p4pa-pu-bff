@@ -12,6 +12,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
+
 @Service
 @Slf4j
 public class DebtPositionTypeClient {
@@ -75,6 +79,12 @@ public class DebtPositionTypeClient {
   public CollectionModelDebtPositionType getDebtPositionTypesByBrokerIdAndOrgType(Long brokerId, String orgType, String accessToken) {
     return debtPositionApisHolder.getDebtPositionTypeSearchControllerApi(accessToken)
       .crudDebtPositionTypesFindAllByBrokerIdAndOrgType(brokerId, orgType);
+  }
+
+  public List<DebtPositionType> findByDebtPositionTypeIds(Set<Long> debtPositionTypeIds, String accessToken) {
+    CollectionModelDebtPositionType collectionModelDebtPositionType = debtPositionApisHolder.getDebtPositionTypeSearchControllerApi(accessToken)
+            .crudDebtPositionTypesFindByDebtPositionTypeIdIn(debtPositionTypeIds);
+    return collectionModelDebtPositionType!=null && collectionModelDebtPositionType.getEmbedded()!=null?collectionModelDebtPositionType.getEmbedded().getDebtPositionTypes() : Collections.emptyList();
   }
 
 }

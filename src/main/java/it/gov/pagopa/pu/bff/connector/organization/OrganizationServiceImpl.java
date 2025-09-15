@@ -8,6 +8,7 @@ import it.gov.pagopa.pu.organization.dto.generated.Organization;
 import it.gov.pagopa.pu.organization.dto.generated.OrganizationDetailDTO;
 import it.gov.pagopa.pu.organization.dto.generated.PagedModelOrganization;
 import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -54,6 +55,7 @@ public class OrganizationServiceImpl implements OrganizationService {
     return organizationSearchClient.getOrganizationsByBrokerIdAndFilters(brokerId, orgName, ipaCode, pageable, accessToken);
   }
 
+  @CacheEvict(key = "#organizationDetailDTO.organizationId", condition = "#organizationDetailDTO!=null && #organizationDetailDTO.organizationId!=null")
   @Override
   public void updateOrganization(OrganizationDetailDTO organizationDetailDTO, String accessToken) {
     organizationClient.updateOrganization(organizationDetailDTO,accessToken);

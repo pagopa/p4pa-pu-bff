@@ -11,6 +11,9 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Set;
+
 @Service
 @CacheConfig(cacheNames = it.gov.pagopa.pu.bff.config.CacheConfig.Fields.debtPositionType)
 public class DebtPositionTypeServiceImpl implements DebtPositionTypeService {
@@ -57,4 +60,11 @@ public class DebtPositionTypeServiceImpl implements DebtPositionTypeService {
   public CollectionModelDebtPositionType getDebtPositionTypesByBrokerIdAndOrgType(Long brokerId, String orgType, String accessToken) {
     return client.getDebtPositionTypesByBrokerIdAndOrgType(brokerId, orgType, accessToken);
   }
+
+  @Override
+  public List<DebtPositionType> findByDebtPositionTypeIds(Set<Long> debtPositionTypeIds, String accessToken) {
+    return client.findByDebtPositionTypeIds(debtPositionTypeIds, accessToken);
+  }
+
+
 }

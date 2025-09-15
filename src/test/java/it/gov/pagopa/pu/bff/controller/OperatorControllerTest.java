@@ -83,7 +83,7 @@ class OperatorControllerTest {
     OperatorsDetail expectedResult = new OperatorsDetail();
 
     OperatorDetailsFiltersDTO operatorDetailsFiltersDTO = new OperatorDetailsFiltersDTO(organizationId, mappedExternalUserId, debtPositionTypeOrgCode, debtPositionTypeOrgDescription, debtPositionId);
-    Mockito.when(operatorRetrieverServiceMock.findPagedDebtPositionTypeOrg(operatorDetailsFiltersDTO, Pageable.ofSize(1), loggedUser, accessToken)).thenReturn(expectedResult);
+    Mockito.when(operatorRetrieverServiceMock.getOperatorDetails(operatorDetailsFiltersDTO, Pageable.ofSize(1), loggedUser, accessToken)).thenReturn(expectedResult);
     //when
     ResponseEntity<OperatorsDetail> result = operatorController.getOperatorDetails(organizationId, mappedExternalUserId, debtPositionTypeOrgCode, debtPositionTypeOrgDescription, debtPositionId, Pageable.ofSize(1));
     //then

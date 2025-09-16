@@ -31,6 +31,7 @@ public class DebtPositionApisHolder {
   private final DebtPositionTypeOrgOperatorsSearchControllerApi debtPositionTypeOrgOperatorsSearchControllerApi;
   private final DebtPositionTypeSearchControllerApi debtPositionTypeSearchControllerApi;
   private final DebtPositionTypeOrgOperatorsDptoCountViewSearchControllerApi debtPositionTypeOrgOperatorsDptoCountViewSearchControllerApi;
+  private final DebtPositionTypeOrgOperatorsApi debtPositionTypeOrgOperatorsApi;
   private final ThreadLocal<String> bearerTokenHolder = new ThreadLocal<>();
 
   public DebtPositionApisHolder(
@@ -66,6 +67,7 @@ public class DebtPositionApisHolder {
     this.debtPositionTypeOrgOperatorsSearchControllerApi = new DebtPositionTypeOrgOperatorsSearchControllerApi(apiClient);
     this.debtPositionTypeSearchControllerApi = new DebtPositionTypeSearchControllerApi(apiClient);
     this.debtPositionTypeOrgOperatorsDptoCountViewSearchControllerApi = new DebtPositionTypeOrgOperatorsDptoCountViewSearchControllerApi(apiClient);
+    this.debtPositionTypeOrgOperatorsApi = new DebtPositionTypeOrgOperatorsApi(apiClient);
   }
 
   @PreDestroy
@@ -183,6 +185,10 @@ public class DebtPositionApisHolder {
    */
   public DebtPositionTypeOrgOperatorsDptoCountViewSearchControllerApi getDebtPositionTypeOrgOperatorsDptoCountViewSearchControllerApi(String accessToken) {
     return getApi(accessToken, debtPositionTypeOrgOperatorsDptoCountViewSearchControllerApi);
+  }
+
+  public DebtPositionTypeOrgOperatorsApi getDebtPositionTypeOrgOperatorsApi(String accessToken) {
+    return getApi(accessToken, debtPositionTypeOrgOperatorsApi);
   }
 
   private <T extends BaseApi> T getApi(String accessToken, T api) {

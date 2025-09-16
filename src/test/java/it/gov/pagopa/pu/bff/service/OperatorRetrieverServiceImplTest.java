@@ -380,4 +380,23 @@ public class OperatorRetrieverServiceImplTest {
 
     verifyNoInteractions(authzServiceMock,debtPositionTypeOrgServiceMock, operatorDetailMapperMock);
   }
+
+  @Test
+  void givenValidInputWhenDeleteOperatorsThenReturnNumberOfDeletedOperators() {
+    Long organizationId = 1L;
+    Long debtPositionTypeOrgId = 2L;
+    Set<String> externalOperatorUserIds = Set.of("user1", "user2");
+    UserInfo loggedUser = podamFactory.manufacturePojo(UserInfo.class);
+    int expectedDeleted = 2;
+
+    doNothing().when(authorizationServiceMock)
+      .validateOrganizationOrBrokerAdmin(organizationId, loggedUser, accessToken);
+
+    when(debtPositionTypeOrgOperatorsServiceMock.deleteOperators(debtPositionTypeOrgId, externalOperatorUserIds, accessToken))
+      .thenReturn(expectedDeleted);
+
+    int result = operatorRetrieverService.deleteOperators(organizationId, debtPositionTypeOrgId, externalOperatorUserIds, loggedUser, accessToken);
+
+    Assertions.assertEquals(expectedDeleted, result);
+  }
 }

@@ -119,4 +119,10 @@ public class OperatorRetrieverServiceImpl implements OperatorRetrieverService {
     }
     return organizationOperator;
   }
+
+  @Override
+  public int deleteOperators(Long organizationId, Long debtPositionTypeOrgId, Set<String> externalOperatorUserIds, UserInfo loggedUser, String accessToken) {
+    authorizationService.validateOrganizationOrBrokerAdmin(organizationId, loggedUser, accessToken);
+    return debtPositionTypeOrgOperatorsService.deleteOperators(debtPositionTypeOrgId, externalOperatorUserIds, accessToken);
+  }
 }

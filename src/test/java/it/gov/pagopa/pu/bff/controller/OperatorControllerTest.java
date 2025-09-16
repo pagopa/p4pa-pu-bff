@@ -22,6 +22,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import uk.co.jemos.podam.api.PodamFactory;
 
+import java.util.Set;
+
 @ExtendWith(MockitoExtension.class)
 class OperatorControllerTest {
 
@@ -90,5 +92,22 @@ class OperatorControllerTest {
     Assertions.assertEquals(HttpStatus.OK, result.getStatusCode());
     Assertions.assertNotNull(result.getBody());
     Assertions.assertSame(expectedResult, result.getBody());
+  }
+
+  @Test
+  void whenDeleteOperatorsThenOk() {
+    Long organizationId = 1L;
+    Long debtPositionTypeOrgId = 10L;
+    Set<String> externalOperatorUserIds = Set.of("user1", "user2");
+    int expectedDeleted = 2;
+
+    Mockito.when(operatorRetrieverServiceMock.deleteOperators(organizationId, debtPositionTypeOrgId, externalOperatorUserIds, loggedUser, accessToken))
+      .thenReturn(expectedDeleted);
+
+    ResponseEntity<Integer> response = operatorController.deleteOperators(organizationId, debtPositionTypeOrgId, externalOperatorUserIds);
+
+    Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
+    Assertions.assertNotNull(response.getBody());
+    Assertions.assertEquals(expectedDeleted, response.getBody());
   }
 }

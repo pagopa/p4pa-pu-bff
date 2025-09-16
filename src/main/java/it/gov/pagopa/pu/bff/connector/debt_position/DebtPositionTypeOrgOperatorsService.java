@@ -11,4 +11,5 @@ public interface DebtPositionTypeOrgOperatorsService {
   CollectionModelDebtPositionTypeOrgOperators getDebtPositionTypeOrgOperators(Long debtPositionTypeOrgId, String accessToken);
   DebtPositionTypeOrgOperators findByDebtPositionTypeOrgIdAndOperatorExternalUserId(Long debtPositionTypeOrgId, String operatorExternalUserId, String accessToken);
   List<DebtPositionTypeOrgOperatorsDptoCountView> findByOrganizationIdAndOperatorExternalUserIds(Long organizationId, Set<String> operatorIds, String accessToken);
+  int deleteOperators(Long debtPositionTypeOrgId, Set<String> externalOperatorUserIds, String accessToken);
 }

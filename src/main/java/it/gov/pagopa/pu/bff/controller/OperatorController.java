@@ -11,8 +11,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Set;
-
 @RestController
 @Slf4j
 public class OperatorController implements OperatorsApi {
@@ -42,9 +40,9 @@ public class OperatorController implements OperatorsApi {
   }
 
   @Override
-  public ResponseEntity<Integer> deleteOperators(Long organizationId, Long debtPositionTypeOrgId, Set<String> externalOperatorUserIds) {
+  public ResponseEntity<Integer> deleteOperator(Long organizationId, String mappedExternalUserId, Long debtPositionTypeOrgId) {
     log.info("User requested deleteOperators having organizationId {} and debtPositionTypeOrgId {}", organizationId, debtPositionTypeOrgId);
-    return ResponseEntity.ok(operatorRetrieverService.deleteOperators(
-      organizationId, debtPositionTypeOrgId, externalOperatorUserIds, SecurityUtils.getLoggedUser(),SecurityUtils.getAccessToken()));
+    return ResponseEntity.ok(operatorRetrieverService.deleteOperator(
+      organizationId, mappedExternalUserId, debtPositionTypeOrgId, SecurityUtils.getLoggedUser(),SecurityUtils.getAccessToken()));
   }
 }

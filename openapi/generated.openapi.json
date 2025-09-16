@@ -8003,10 +8003,10 @@
         } ]
       }
     },
-    "/bff/organization/{organizationId}/operators/{debtPositionTypeOrgId}" : {
+    "/bff/organization/{organizationId}/operators/{mappedExternalUserId}/debt-position-type-orgs/{debtPositionTypeOrgId}" : {
       "delete" : {
         "tags" : [ "Operators" ],
-        "operationId" : "deleteOperators",
+        "operationId" : "deleteOperator",
         "parameters" : [ {
           "name" : "organizationId",
           "in" : "path",
@@ -8016,23 +8016,19 @@
             "format" : "int64"
           }
         }, {
+          "name" : "mappedExternalUserId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
           "name" : "debtPositionTypeOrgId",
           "in" : "path",
           "required" : true,
           "schema" : {
             "type" : "integer",
             "format" : "int64"
-          }
-        }, {
-          "name" : "externalOperatorUserIds",
-          "in" : "query",
-          "required" : true,
-          "schema" : {
-            "type" : "array",
-            "items" : {
-              "type" : "string"
-            },
-            "uniqueItems" : true
           }
         } ],
         "responses" : {

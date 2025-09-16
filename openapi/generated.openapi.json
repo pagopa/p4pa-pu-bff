@@ -8006,7 +8006,7 @@
     "/bff/organization/{organizationId}/operators/{mappedExternalUserId}/debt-position-type-orgs/{debtPositionTypeOrgId}" : {
       "delete" : {
         "tags" : [ "Operators" ],
-        "operationId" : "deleteOperator",
+        "operationId" : "removeDebtPositionTypeOrgFromOperator",
         "parameters" : [ {
           "name" : "organizationId",
           "in" : "path",

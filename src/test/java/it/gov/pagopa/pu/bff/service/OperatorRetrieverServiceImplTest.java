@@ -382,7 +382,7 @@ public class OperatorRetrieverServiceImplTest {
   }
 
   @Test
-  void givenValidInputWhenDeleteOperatorThenReturnNumberOfDeletedOperators() {
+  void givenValidInputWhenRemoveDebtPositionTypeOrgFromOperatorThenReturnNumberOfRemovedOnes() {
     Long organizationId = 1L;
     Long debtPositionTypeOrgId = 2L;
     String mappedExternalUserId = "user1";
@@ -395,7 +395,7 @@ public class OperatorRetrieverServiceImplTest {
     when(debtPositionTypeOrgOperatorsServiceMock.deleteOperators(debtPositionTypeOrgId, Set.of(mappedExternalUserId), accessToken))
       .thenReturn(expectedDeleted);
 
-    int result = operatorRetrieverService.deleteOperator(organizationId, mappedExternalUserId, debtPositionTypeOrgId, loggedUser, accessToken);
+    int result = operatorRetrieverService.removeDebtPositionTypeOrgFromOperator(organizationId, mappedExternalUserId, debtPositionTypeOrgId, loggedUser, accessToken);
 
     Assertions.assertEquals(expectedDeleted, result);
   }

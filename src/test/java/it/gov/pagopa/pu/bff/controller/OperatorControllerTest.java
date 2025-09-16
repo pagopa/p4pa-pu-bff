@@ -93,16 +93,16 @@ class OperatorControllerTest {
   }
 
   @Test
-  void whenDeleteOperatorThenOk() {
+  void whenRemoveDebtPositionTypeOrgFromOperatorThenOk() {
     Long organizationId = 1L;
     Long debtPositionTypeOrgId = 10L;
     String mappedExternalUserId = "user1";
     int expectedDeleted = 2;
 
-    Mockito.when(operatorRetrieverServiceMock.deleteOperator(organizationId, mappedExternalUserId, debtPositionTypeOrgId, loggedUser, accessToken))
+    Mockito.when(operatorRetrieverServiceMock.removeDebtPositionTypeOrgFromOperator(organizationId, mappedExternalUserId, debtPositionTypeOrgId, loggedUser, accessToken))
       .thenReturn(expectedDeleted);
 
-    ResponseEntity<Integer> response = operatorController.deleteOperator(organizationId, mappedExternalUserId, debtPositionTypeOrgId);
+    ResponseEntity<Integer> response = operatorController.removeDebtPositionTypeOrgFromOperator(organizationId, mappedExternalUserId, debtPositionTypeOrgId);
 
     Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
     Assertions.assertNotNull(response.getBody());

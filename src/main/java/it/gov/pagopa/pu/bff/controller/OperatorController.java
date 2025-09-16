@@ -40,9 +40,9 @@ public class OperatorController implements OperatorsApi {
   }
 
   @Override
-  public ResponseEntity<Integer> deleteOperator(Long organizationId, String mappedExternalUserId, Long debtPositionTypeOrgId) {
-    log.info("User requested deleteOperators having organizationId {} and debtPositionTypeOrgId {}", organizationId, debtPositionTypeOrgId);
-    return ResponseEntity.ok(operatorRetrieverService.deleteOperator(
+  public ResponseEntity<Integer> removeDebtPositionTypeOrgFromOperator(Long organizationId, String mappedExternalUserId, Long debtPositionTypeOrgId) {
+    log.info("User requested deleteOperators having organizationId {}, debtPositionTypeOrgId {} and mappedExternalUserId {}", organizationId, debtPositionTypeOrgId, mappedExternalUserId);
+    return ResponseEntity.ok(operatorRetrieverService.removeDebtPositionTypeOrgFromOperator(
       organizationId, mappedExternalUserId, debtPositionTypeOrgId, SecurityUtils.getLoggedUser(),SecurityUtils.getAccessToken()));
   }
 }

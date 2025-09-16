@@ -38,4 +38,11 @@ public class OperatorController implements OperatorsApi {
       debtPositionTypeId
     ), pageable, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken()));
   }
+
+  @Override
+  public ResponseEntity<Integer> removeDebtPositionTypeOrgFromOperator(Long organizationId, String mappedExternalUserId, Long debtPositionTypeOrgId) {
+    log.info("User requested removeDebtPositionTypeOrgFromOperator having organizationId {}, debtPositionTypeOrgId {} and mappedExternalUserId {}", organizationId, debtPositionTypeOrgId, mappedExternalUserId);
+    return ResponseEntity.ok(operatorRetrieverService.removeDebtPositionTypeOrgFromOperator(
+      organizationId, mappedExternalUserId, debtPositionTypeOrgId, SecurityUtils.getLoggedUser(),SecurityUtils.getAccessToken()));
+  }
 }

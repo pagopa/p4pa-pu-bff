@@ -1,6 +1,7 @@
 package it.gov.pagopa.pu.bff.connector.debt_position;
 
 import it.gov.pagopa.pu.bff.config.CacheConfig.Fields;
+import it.gov.pagopa.pu.bff.connector.debt_position.client.DebtPositionTypeOrgOperatorsApiClient;
 import it.gov.pagopa.pu.bff.connector.debt_position.client.DebtPositionTypeOrgOperatorsDptoCountViewClient;
 import it.gov.pagopa.pu.bff.connector.debt_position.client.DebtPositionTypeOrgOperatorsSearchClient;
 import it.gov.pagopa.pu.debtpositions.dto.generated.CollectionModelDebtPositionTypeOrgOperators;
@@ -18,11 +19,14 @@ public class DebtPositionTypeOrgOperatorsServiceImpl implements DebtPositionType
 
   private final DebtPositionTypeOrgOperatorsSearchClient debtPositionTypeOrgOperatorsSearchClient;
   private final DebtPositionTypeOrgOperatorsDptoCountViewClient debtPositionTypeOrgOperatorsDptoCountViewClient;
+  private final DebtPositionTypeOrgOperatorsApiClient debtPositionTypeOrgOperatorsApiClient;
 
-  public DebtPositionTypeOrgOperatorsServiceImpl(
-          DebtPositionTypeOrgOperatorsSearchClient debtPositionTypeOrgOperatorsSearchClient, DebtPositionTypeOrgOperatorsDptoCountViewClient debtPositionTypeOrgOperatorsDptoCountViewClient) {
-    this.debtPositionTypeOrgOperatorsSearchClient = debtPositionTypeOrgOperatorsSearchClient;
+  public DebtPositionTypeOrgOperatorsServiceImpl(DebtPositionTypeOrgOperatorsSearchClient debtPositionTypeOrgOperatorsSearchClient,
+                                                 DebtPositionTypeOrgOperatorsDptoCountViewClient debtPositionTypeOrgOperatorsDptoCountViewClient,
+                                                 DebtPositionTypeOrgOperatorsApiClient debtPositionTypeOrgOperatorsApiClient) {
+      this.debtPositionTypeOrgOperatorsSearchClient = debtPositionTypeOrgOperatorsSearchClient;
       this.debtPositionTypeOrgOperatorsDptoCountViewClient = debtPositionTypeOrgOperatorsDptoCountViewClient;
+      this.debtPositionTypeOrgOperatorsApiClient = debtPositionTypeOrgOperatorsApiClient;
   }
 
   @Override
@@ -38,5 +42,10 @@ public class DebtPositionTypeOrgOperatorsServiceImpl implements DebtPositionType
   @Override
   public List<DebtPositionTypeOrgOperatorsDptoCountView> findByOrganizationIdAndOperatorExternalUserIds(Long organizationId, Set<String> operatorIds, String accessToken) {
     return debtPositionTypeOrgOperatorsDptoCountViewClient.findByOrganizationIdAndOperatorExternalUserIds(organizationId,operatorIds, accessToken);
+  }
+
+  @Override
+  public int deleteOperators(Long debtPositionTypeOrgId, Set<String> externalOperatorUserIds, String accessToken) {
+    return debtPositionTypeOrgOperatorsApiClient.deleteOperators(debtPositionTypeOrgId, externalOperatorUserIds, accessToken);
   }
 }

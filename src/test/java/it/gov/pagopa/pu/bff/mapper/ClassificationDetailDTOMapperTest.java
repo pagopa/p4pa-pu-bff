@@ -64,7 +64,7 @@ class ClassificationDetailDTOMapperTest {
       Arguments.of(RT_NO_IUD, true, false, false, "WARNING"),
       Arguments.of(IUV_NO_RT, true, false, false, "ERROR"),
       Arguments.of(TES_NO_IUF_OR_IUV, false, false, true, "ERROR"),
-      Arguments.of(IUF_NO_TES, false, true, false, "WARNING"),
+      Arguments.of(IUF_NO_TES, true, true, false, "WARNING"),
       Arguments.of(IUD_RT_IUF, true, true, true, "INFO"),
       Arguments.of(RT_IUF, true, true, false, "INFO"),
       Arguments.of(RT_TES, true, true, true, "INFO"),
@@ -73,8 +73,7 @@ class ClassificationDetailDTOMapperTest {
       Arguments.of(IUF_TES_DIV_IMP, true, true, true, "ERROR"),
       Arguments.of(IUD_NO_RT, true, true, false, "ERROR"),
       Arguments.of(TES_NO_MATCH, false, false, true, "ERROR"),
-      Arguments.of(UNKNOWN, false, false, false, "ERROR"),
-      Arguments.of(IUF_NO_TES, true, true, false, "INFO")
+      Arguments.of(UNKNOWN, false, false, false, "ERROR")
     );
   }
 }

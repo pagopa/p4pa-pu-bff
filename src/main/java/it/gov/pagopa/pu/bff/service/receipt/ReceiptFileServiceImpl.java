@@ -50,16 +50,19 @@ public class ReceiptFileServiceImpl implements ReceiptFileService{
 
     private Map<String, Object> buildTemplateModel(it.gov.pagopa.pu.debtpositions.dto.generated.ReceiptDetailDTO receiptDetail, Organization organization) {
         Map<String, Object> templateModel = new HashMap<>();
+
+        Long feeCents = receiptDetail.getFeeCents() != null ? receiptDetail.getFeeCents() : 0L;
+
         templateModel.put(RECEIPT_LOGO, StringUtils.defaultString(organization.getOrgLogo()));
         templateModel.put(RECEIPT_ORG_NAME,organization.getOrgName());
         templateModel.put(RECEIPT_IUV,StringUtils.defaultString(receiptDetail.getIuv()));
         templateModel.put(RECEIPT_DEBTOR_NAME,receiptDetail.getDebtor().getFullName());
         templateModel.put(RECEIPT_DEBTOR_FISCAL_CODE,receiptDetail.getDebtor().getFiscalCode());
-        templateModel.put(RECEIPT_TOTAL_AMOUNT, Utilities.formatPrice(receiptDetail.getPaymentAmountCents()));
+        templateModel.put(RECEIPT_TOTAL_AMOUNT, Utilities.formatPrice(receiptDetail.getPaymentAmountCents()+feeCents));
         templateModel.put(RECEIPT_PAYMENT_DATE,receiptDetail.getPaymentDateTime()!=null?receiptDetail.getPaymentDateTime().format(DATE_TIME_FORMATTER):"");
         templateModel.put(RECEIPT_PSP_NAME,receiptDetail.getPspCompanyName());
         templateModel.put(RECEIPT_FEE_AMOUNT, Utilities.formatPrice(receiptDetail.getFeeCents()));
-        templateModel.put(RECEIPT_AMOUNT, Utilities.formatPrice(receiptDetail.getPaymentAmountCents()-receiptDetail.getFeeCents()));
+        templateModel.put(RECEIPT_AMOUNT, Utilities.formatPrice(receiptDetail.getPaymentAmountCents()));
         templateModel.put(RECEIPT_ORG_FISCAL_CODE,organization.getOrgFiscalCode());
         templateModel.put(REMITTANCE_INFORMATION,StringUtils.defaultString(receiptDetail.getRemittanceInformation()));
         return templateModel;

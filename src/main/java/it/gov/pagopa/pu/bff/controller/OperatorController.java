@@ -3,6 +3,7 @@ package it.gov.pagopa.pu.bff.controller;
 import it.gov.pagopa.pu.bff.controller.generated.OperatorsApi;
 import it.gov.pagopa.pu.bff.dto.OperatorDetailsFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.generated.OperatorsDetail;
+import it.gov.pagopa.pu.bff.dto.generated.PagedDebtPositionTypeOrgDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedOrganizationOperator;
 import it.gov.pagopa.pu.bff.security.SecurityUtils;
 import it.gov.pagopa.pu.bff.service.operator.OperatorRetrieverService;
@@ -44,5 +45,18 @@ public class OperatorController implements OperatorsApi {
     log.info("User requested removeDebtPositionTypeOrgFromOperator having organizationId {}, debtPositionTypeOrgId {} and mappedExternalUserId {}", organizationId, debtPositionTypeOrgId, mappedExternalUserId);
     return ResponseEntity.ok(operatorRetrieverService.removeDebtPositionTypeOrgFromOperator(
       organizationId, mappedExternalUserId, debtPositionTypeOrgId, SecurityUtils.getLoggedUser(),SecurityUtils.getAccessToken()));
+  }
+
+  @Override
+  public ResponseEntity<PagedDebtPositionTypeOrgDTO> getDebtPositionTypeOrgsNotEnabledForOperator(Long organizationId, String mappedExternalUserId, String debtPositionTypeOrgCode,
+      String debtPositionTypeOrgDescription, Long debtPositionTypeId, Pageable pageable) {
+    log.info("User requested getDebtPositionTypeOrgsNotEnabledForOperator having organizationId {} and mappedExternalUserId {}", organizationId, mappedExternalUserId);
+    return ResponseEntity.ok(operatorRetrieverService.getDebtPositionTypeOrgsNotEnabledForOperator(new OperatorDetailsFiltersDTO(
+        organizationId,
+        mappedExternalUserId,
+        debtPositionTypeOrgCode,
+        debtPositionTypeOrgDescription,
+        debtPositionTypeId
+    ), pageable, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken()));
   }
 }

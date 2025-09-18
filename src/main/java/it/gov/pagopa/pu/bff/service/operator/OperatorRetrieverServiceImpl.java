@@ -9,26 +9,27 @@ import it.gov.pagopa.pu.bff.connector.debt_position.DebtPositionTypeOrgService;
 import it.gov.pagopa.pu.bff.connector.debt_position.DebtPositionTypeService;
 import it.gov.pagopa.pu.bff.dto.OperatorDetailsFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.generated.OperatorsDetail;
+import it.gov.pagopa.pu.bff.dto.generated.PagedDebtPositionTypeOrgDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedOrganizationOperator;
 import it.gov.pagopa.pu.bff.exception.ResourceNotFoundException;
 import it.gov.pagopa.pu.bff.mapper.OperatorDetailMapper;
+import it.gov.pagopa.pu.bff.mapper.PagedDebtPositionTypeOrgDTOMapper;
 import it.gov.pagopa.pu.bff.mapper.PagedOrganizationOperatorMapper;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionType;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrg;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrgOperatorsDptoCountView;
 import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelDebtPositionTypeOrg;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
-
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 @Service
 @Slf4j
@@ -41,8 +42,10 @@ public class OperatorRetrieverServiceImpl implements OperatorRetrieverService {
   private final DebtPositionTypeOrgService debtPositionTypeOrgService;
   private final OperatorDetailMapper operatorDetailMapper;
   private final DebtPositionTypeService debtPositionTypeService;
+  private final PagedDebtPositionTypeOrgDTOMapper pagedDebtPositionTypeOrgDTOMapper;
 
-    public OperatorRetrieverServiceImpl(AuthorizationService authorizationService, AuthzService authzService, DebtPositionTypeOrgOperatorsService debtPositionTypeOrgOperatorsService, PagedOrganizationOperatorMapper pagedOrganizationOperatorMapper, DebtPositionTypeOrgService debtPositionTypeOrgService, OperatorDetailMapper operatorDetailMapper, DebtPositionTypeService debtPositionTypeService) {
+    public OperatorRetrieverServiceImpl(AuthorizationService authorizationService, AuthzService authzService, DebtPositionTypeOrgOperatorsService debtPositionTypeOrgOperatorsService, PagedOrganizationOperatorMapper pagedOrganizationOperatorMapper, DebtPositionTypeOrgService debtPositionTypeOrgService, OperatorDetailMapper operatorDetailMapper, DebtPositionTypeService debtPositionTypeService,
+        PagedDebtPositionTypeOrgDTOMapper pagedDebtPositionTypeOrgDTOMapper) {
         this.authorizationService = authorizationService;
         this.authzService = authzService;
         this.debtPositionTypeOrgOperatorsService = debtPositionTypeOrgOperatorsService;
@@ -50,6 +53,7 @@ public class OperatorRetrieverServiceImpl implements OperatorRetrieverService {
         this.debtPositionTypeOrgService = debtPositionTypeOrgService;
         this.operatorDetailMapper = operatorDetailMapper;
         this.debtPositionTypeService = debtPositionTypeService;
+      this.pagedDebtPositionTypeOrgDTOMapper = pagedDebtPositionTypeOrgDTOMapper;
     }
 
     @Override
@@ -124,5 +128,16 @@ public class OperatorRetrieverServiceImpl implements OperatorRetrieverService {
   public int removeDebtPositionTypeOrgFromOperator(Long organizationId, String mappedExternalUserId, Long debtPositionTypeOrgId, UserInfo loggedUser, String accessToken) {
     authorizationService.validateOrganizationOrBrokerAdmin(organizationId, loggedUser, accessToken);
     return debtPositionTypeOrgOperatorsService.deleteOperators(debtPositionTypeOrgId, Set.of(mappedExternalUserId), accessToken);
+  }
+
+  @Override
+  public PagedDebtPositionTypeOrgDTO getDebtPositionTypeOrgsNotEnabledForOperator(OperatorDetailsFiltersDTO operatorDetailsFiltersDTO, Pageable pageable, UserInfo loggedUser,
+      String accessToken) {
+    authorizationService.validateOrganizationOrBrokerAdmin(operatorDetailsFiltersDTO.getOrganizationId(), loggedUser,accessToken);
+    getOperatorDTO(operatorDetailsFiltersDTO, loggedUser, accessToken);
+    PagedModelDebtPositionTypeOrg pagedDebtPositionTypeOrg = debtPositionTypeOrgService.findDebtPositionTypeOrgNotEnabledForOperator(operatorDetailsFiltersDTO, pageable, accessToken );
+    return pagedDebtPositionTypeOrgDTOMapper.map(pagedDebtPositionTypeOrg,
+        getDebtPositionTypes(pagedDebtPositionTypeOrg,accessToken)
+    );
   }
 }

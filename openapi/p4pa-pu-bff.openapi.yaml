@@ -4336,6 +4336,11 @@ components:
           type: integer
     OrganizationWithDebtPositionTypeOrgAndOperatorsCount:
       type: object
+      required:
+        - organizationId
+        - ipaCode
+        - orgName
+        - orgFiscalCode
       properties:
         organizationId:
           type: integer

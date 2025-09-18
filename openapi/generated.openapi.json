@@ -13139,7 +13139,8 @@
           "status" : {
             "$ref" : "#/components/schemas/StatusEnum"
           }
-        }
+        },
+        "required" : [ "ipaCode", "orgFiscalCode", "orgName", "organizationId" ]
       },
       "PagedOrganizationWithDebtPositionTypeOrgAndOperatorsCount" : {
         "type" : "object",

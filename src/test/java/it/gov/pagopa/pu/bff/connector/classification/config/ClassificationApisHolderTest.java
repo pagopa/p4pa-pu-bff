@@ -141,7 +141,7 @@ class ClassificationApisHolderTest extends BaseApiHolderTest {
   void whenGetAssessmentsControllerApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
     assertAuthenticationShouldBeSetInThreadSafeMode(
       accessToken -> classificationApisHolder.getAssessmentsControllerApi(accessToken)
-        .getPagedAssessmentsList("assessmentName", OffsetDateTime.now(), OffsetDateTime.now() , "iuv", List.of("code"), AssessmentStatus.ACTIVE, 0, 1, Collections.emptyList()),
+        .getPagedAssessmentsList(1L, "assessmentName", OffsetDateTime.now(), OffsetDateTime.now() , "iuv", List.of("code"), AssessmentStatus.ACTIVE, 0, 1, Collections.emptyList()),
       new ParameterizedTypeReference<>() {
       },
       classificationApisHolder::unload);

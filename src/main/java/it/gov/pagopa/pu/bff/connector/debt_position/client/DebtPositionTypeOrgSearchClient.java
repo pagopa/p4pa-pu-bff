@@ -6,14 +6,13 @@ import it.gov.pagopa.pu.bff.util.PageUtils;
 import it.gov.pagopa.pu.debtpositions.dto.generated.CollectionModelDebtPositionTypeOrg;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrg;
 import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelDebtPositionTypeOrg;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
-
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
 
 @Slf4j
 @Service
@@ -64,6 +63,19 @@ public class DebtPositionTypeOrgSearchClient {
   public PagedModelDebtPositionTypeOrg findPagedDebtPositionTypeOrg(OperatorDetailsFiltersDTO operatorDetailsFiltersDTO, Pageable pageable, String accessToken){
     return debtPositionApisHolder.getDebtPositionTypeOrgSearchControllerApi(accessToken)
       .crudDebtPositionTypeOrgsFindPagedDebtPositionTypeOrg(
+        operatorDetailsFiltersDTO.getOrganizationId(),
+        operatorDetailsFiltersDTO.getMappedExternalUserId(),
+        operatorDetailsFiltersDTO.getDebtPositionTypeOrgCode(),
+        operatorDetailsFiltersDTO.getDebtPositionTypeOrgDescription(),
+        operatorDetailsFiltersDTO.getDebtPositionTypeId(),
+        PageUtils.getPageNumber(pageable),
+        PageUtils.getPageSize(pageable),
+        PageUtils.getSortList(pageable));
+  }
+
+  public PagedModelDebtPositionTypeOrg findDebtPositionTypeOrgNotEnabledForOperator(OperatorDetailsFiltersDTO operatorDetailsFiltersDTO, Pageable pageable, String accessToken) {
+    return debtPositionApisHolder.getDebtPositionTypeOrgSearchControllerApi(accessToken)
+        .crudDebtPositionTypeOrgsFindDebtPositionTypeOrgNotEnabledForOperator(
         operatorDetailsFiltersDTO.getOrganizationId(),
         operatorDetailsFiltersDTO.getMappedExternalUserId(),
         operatorDetailsFiltersDTO.getDebtPositionTypeOrgCode(),

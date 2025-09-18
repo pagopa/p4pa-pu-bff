@@ -1,5 +1,11 @@
 package it.gov.pagopa.pu.bff.service;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.when;
+
 import it.gov.pagopa.pu.auth.dto.generated.OperatorDTO;
 import it.gov.pagopa.pu.auth.dto.generated.OperatorsPage;
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
@@ -10,9 +16,11 @@ import it.gov.pagopa.pu.bff.connector.debt_position.DebtPositionTypeOrgService;
 import it.gov.pagopa.pu.bff.connector.debt_position.DebtPositionTypeService;
 import it.gov.pagopa.pu.bff.dto.OperatorDetailsFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.generated.OperatorsDetail;
+import it.gov.pagopa.pu.bff.dto.generated.PagedDebtPositionTypeOrgDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedOrganizationOperator;
 import it.gov.pagopa.pu.bff.exception.ResourceNotFoundException;
 import it.gov.pagopa.pu.bff.mapper.OperatorDetailMapper;
+import it.gov.pagopa.pu.bff.mapper.PagedDebtPositionTypeOrgDTOMapper;
 import it.gov.pagopa.pu.bff.mapper.PagedOrganizationOperatorMapper;
 import it.gov.pagopa.pu.bff.service.operator.OperatorRetrieverService;
 import it.gov.pagopa.pu.bff.service.operator.OperatorRetrieverServiceImpl;
@@ -21,6 +29,13 @@ import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionType;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrg;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrgOperatorsDptoCountView;
 import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelDebtPositionTypeOrg;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -32,13 +47,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import uk.co.jemos.podam.api.PodamFactory;
-
-import java.util.*;
-import java.util.stream.Collectors;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class OperatorRetrieverServiceImplTest {
@@ -58,6 +66,8 @@ public class OperatorRetrieverServiceImplTest {
   private OperatorDetailMapper operatorDetailMapperMock;
   @Mock
   private DebtPositionTypeService debtPositionTypeServiceMock;
+  @Mock
+  private PagedDebtPositionTypeOrgDTOMapper pagedDebtPositionTypeOrgDTOMapperMock;
 
   private OperatorRetrieverService operatorRetrieverService;
 
@@ -66,13 +76,13 @@ public class OperatorRetrieverServiceImplTest {
   @BeforeEach
   void setUp() {
     operatorRetrieverService = new OperatorRetrieverServiceImpl(
-      authorizationServiceMock,authzServiceMock,debtPositionTypeOrgOperatorsServiceMock,pagedOrganizationOperatorMapperMock, debtPositionTypeOrgServiceMock, operatorDetailMapperMock, debtPositionTypeServiceMock);
+      authorizationServiceMock,authzServiceMock,debtPositionTypeOrgOperatorsServiceMock,pagedOrganizationOperatorMapperMock, debtPositionTypeOrgServiceMock, operatorDetailMapperMock, debtPositionTypeServiceMock, pagedDebtPositionTypeOrgDTOMapperMock);
   }
 
   @AfterEach
   void verifyNoMoreInteractions() {
     Mockito.verifyNoMoreInteractions(
-            authorizationServiceMock,authzServiceMock,debtPositionTypeOrgOperatorsServiceMock,pagedOrganizationOperatorMapperMock, debtPositionTypeOrgServiceMock, operatorDetailMapperMock, debtPositionTypeServiceMock
+            authorizationServiceMock,authzServiceMock,debtPositionTypeOrgOperatorsServiceMock,pagedOrganizationOperatorMapperMock, debtPositionTypeOrgServiceMock, operatorDetailMapperMock, debtPositionTypeServiceMock, pagedDebtPositionTypeOrgDTOMapperMock
     );
   }
 
@@ -296,7 +306,7 @@ public class OperatorRetrieverServiceImplTest {
   }
 
   @Test
-  void givenNullPAgedModelDebtPositionTypeOrgWhenGetOperatorDetailThenReturnOperatorsDetails() {
+  void givenNullPagedModelDebtPositionTypeOrgWhenGetOperatorDetailThenReturnOperatorsDetails() {
     //given
     Long organizationId = 1L;
     UserInfo loggedUser = podamFactory.manufacturePojo(UserInfo.class);
@@ -398,5 +408,194 @@ public class OperatorRetrieverServiceImplTest {
     int result = operatorRetrieverService.removeDebtPositionTypeOrgFromOperator(organizationId, mappedExternalUserId, debtPositionTypeOrgId, loggedUser, accessToken);
 
     Assertions.assertEquals(expectedDeleted, result);
+  }
+
+  @Test
+  void whenGetDebtPositionTypeOrgsNotEnabledForOperatorThenOk() {
+    //given
+    Long organizationId = 1L;
+    UserInfo loggedUser = podamFactory.manufacturePojo(UserInfo.class);
+    loggedUser.setUserId("user-123");
+    String mappedExternalUserId = "mappedExternalUserId";
+    loggedUser.setMappedExternalUserId(mappedExternalUserId);
+    UserOrganizationRoles organizationRoles = loggedUser.getOrganizations().getFirst();
+    organizationRoles.setOrganizationIpaCode("IPACODE");
+    organizationRoles.setOrganizationId(organizationId);
+
+    Long debtPositionTypeId = 1L;
+    String debtPositionTypeOrgCode = "code";
+    String debtPositionTypeOrgDescription = "description";
+    OperatorDTO operatorDTO = podamFactory.manufacturePojo(OperatorDTO.class);
+    PagedModelDebtPositionTypeOrg pagedModelDebtPositionTypeOrg = podamFactory.manufacturePojo(PagedModelDebtPositionTypeOrg.class);
+    Map<Long, DebtPositionType> debtPositionTypes = getDebtPositionTypes(pagedModelDebtPositionTypeOrg);
+    PagedDebtPositionTypeOrgDTO expectedResult = new PagedDebtPositionTypeOrgDTO();
+
+    OperatorDetailsFiltersDTO operatorDetailsFiltersDTO = new OperatorDetailsFiltersDTO(organizationId, mappedExternalUserId, debtPositionTypeOrgCode, debtPositionTypeOrgDescription, debtPositionTypeId);
+
+    doNothing().when(authorizationServiceMock).validateOrganizationOrBrokerAdmin(organizationId,loggedUser,accessToken);
+    Mockito.when(authzServiceMock.getOrganizationOperator(organizationRoles.getOrganizationIpaCode(), loggedUser.getMappedExternalUserId(), accessToken)).thenReturn(operatorDTO);
+    Mockito.when(debtPositionTypeOrgServiceMock.findDebtPositionTypeOrgNotEnabledForOperator(operatorDetailsFiltersDTO, Pageable.ofSize(1), accessToken)).thenReturn(pagedModelDebtPositionTypeOrg);
+    Mockito.when(debtPositionTypeServiceMock.findByDebtPositionTypeIds(debtPositionTypes.keySet(),accessToken)).thenReturn(new ArrayList<>(debtPositionTypes.values()));
+    Mockito.when(pagedDebtPositionTypeOrgDTOMapperMock.map(pagedModelDebtPositionTypeOrg,debtPositionTypes)).thenReturn(expectedResult);
+    //when
+    PagedDebtPositionTypeOrgDTO result = operatorRetrieverService.getDebtPositionTypeOrgsNotEnabledForOperator(operatorDetailsFiltersDTO, Pageable.ofSize(1), loggedUser, accessToken);
+    //then
+    Assertions.assertNotNull(result);
+    Assertions.assertEquals(expectedResult, result);
+  }
+
+  @Test
+  void givenEmptyPagedDptoWhenGetDebtPositionTypeOrgsNotEnabledForOperatorThenEmptyDebtPositionTypeMap() {
+    //given
+    Long organizationId = 1L;
+    UserInfo loggedUser = podamFactory.manufacturePojo(UserInfo.class);
+    loggedUser.setUserId("user-123");
+    String mappedExternalUserId = "mappedExternalUserId";
+    loggedUser.setMappedExternalUserId(mappedExternalUserId);
+    UserOrganizationRoles organizationRoles = loggedUser.getOrganizations().getFirst();
+    organizationRoles.setOrganizationIpaCode("IPACODE");
+    organizationRoles.setOrganizationId(organizationId);
+
+    Long debtPositionTypeId = 1L;
+    String debtPositionTypeOrgCode = "code";
+    String debtPositionTypeOrgDescription = "description";
+    OperatorDTO operatorDTO = podamFactory.manufacturePojo(OperatorDTO.class);
+    PagedModelDebtPositionTypeOrg pagedModelDebtPositionTypeOrg = podamFactory.manufacturePojo(PagedModelDebtPositionTypeOrg.class);
+    pagedModelDebtPositionTypeOrg.getEmbedded().setDebtPositionTypeOrgs(Collections.emptyList());
+    PagedDebtPositionTypeOrgDTO expectedResult = new PagedDebtPositionTypeOrgDTO();
+
+    OperatorDetailsFiltersDTO operatorDetailsFiltersDTO = new OperatorDetailsFiltersDTO(organizationId, mappedExternalUserId, debtPositionTypeOrgCode, debtPositionTypeOrgDescription, debtPositionTypeId);
+
+    doNothing().when(authorizationServiceMock).validateOrganizationOrBrokerAdmin(organizationId,loggedUser,accessToken);
+    Mockito.when(authzServiceMock.getOrganizationOperator(organizationRoles.getOrganizationIpaCode(), loggedUser.getMappedExternalUserId(), accessToken)).thenReturn(operatorDTO);
+    Mockito.when(debtPositionTypeOrgServiceMock.findDebtPositionTypeOrgNotEnabledForOperator(operatorDetailsFiltersDTO, Pageable.ofSize(1), accessToken)).thenReturn(pagedModelDebtPositionTypeOrg);
+    Mockito.when(pagedDebtPositionTypeOrgDTOMapperMock.map(pagedModelDebtPositionTypeOrg,Collections.emptyMap())).thenReturn(expectedResult);
+    //when
+    PagedDebtPositionTypeOrgDTO result = operatorRetrieverService.getDebtPositionTypeOrgsNotEnabledForOperator(operatorDetailsFiltersDTO, Pageable.ofSize(1), loggedUser, accessToken);
+    //then
+    Assertions.assertNotNull(result);
+    Assertions.assertEquals(expectedResult, result);
+    verifyNoInteractions(debtPositionTypeServiceMock);
+  }
+
+  @Test
+  void givenNullEmbeddedWhenGetDebtPositionTypeOrgsNotEnabledForOperatorThenEmptyDebtPositionTypeMap() {
+    //given
+    Long organizationId = 1L;
+    UserInfo loggedUser = podamFactory.manufacturePojo(UserInfo.class);
+    loggedUser.setUserId("user-123");
+    String mappedExternalUserId = "mappedExternalUserId";
+    loggedUser.setMappedExternalUserId(mappedExternalUserId);
+    UserOrganizationRoles organizationRoles = loggedUser.getOrganizations().getFirst();
+    organizationRoles.setOrganizationIpaCode("IPACODE");
+    organizationRoles.setOrganizationId(organizationId);
+
+    Long debtPositionTypeId = 1L;
+    String debtPositionTypeOrgCode = "code";
+    String debtPositionTypeOrgDescription = "description";
+    OperatorDTO operatorDTO = podamFactory.manufacturePojo(OperatorDTO.class);
+    PagedModelDebtPositionTypeOrg pagedModelDebtPositionTypeOrg = podamFactory.manufacturePojo(PagedModelDebtPositionTypeOrg.class);
+    pagedModelDebtPositionTypeOrg.setEmbedded(null);
+    PagedDebtPositionTypeOrgDTO expectedResult = new PagedDebtPositionTypeOrgDTO();
+
+    OperatorDetailsFiltersDTO operatorDetailsFiltersDTO = new OperatorDetailsFiltersDTO(organizationId, mappedExternalUserId, debtPositionTypeOrgCode, debtPositionTypeOrgDescription, debtPositionTypeId);
+
+    doNothing().when(authorizationServiceMock).validateOrganizationOrBrokerAdmin(organizationId,loggedUser,accessToken);
+    Mockito.when(authzServiceMock.getOrganizationOperator(organizationRoles.getOrganizationIpaCode(), loggedUser.getMappedExternalUserId(), accessToken)).thenReturn(operatorDTO);
+    Mockito.when(debtPositionTypeOrgServiceMock.findDebtPositionTypeOrgNotEnabledForOperator(operatorDetailsFiltersDTO, Pageable.ofSize(1), accessToken)).thenReturn(pagedModelDebtPositionTypeOrg);
+    Mockito.when(pagedDebtPositionTypeOrgDTOMapperMock.map(pagedModelDebtPositionTypeOrg,Collections.emptyMap())).thenReturn(expectedResult);
+    //when
+    PagedDebtPositionTypeOrgDTO result = operatorRetrieverService.getDebtPositionTypeOrgsNotEnabledForOperator(operatorDetailsFiltersDTO, Pageable.ofSize(1), loggedUser, accessToken);
+    //then
+    Assertions.assertNotNull(result);
+    Assertions.assertEquals(expectedResult, result);
+    verifyNoInteractions(debtPositionTypeServiceMock);
+  }
+
+  @Test
+  void givenNullPagedDptoWhenGetDebtPositionTypeOrgsNotEnabledForOperatorThenEmptyDebtPositionTypeMap() {
+    //given
+    Long organizationId = 1L;
+    UserInfo loggedUser = podamFactory.manufacturePojo(UserInfo.class);
+    loggedUser.setUserId("user-123");
+    String mappedExternalUserId = "mappedExternalUserId";
+    loggedUser.setMappedExternalUserId(mappedExternalUserId);
+    UserOrganizationRoles organizationRoles = loggedUser.getOrganizations().getFirst();
+    organizationRoles.setOrganizationIpaCode("IPACODE");
+    organizationRoles.setOrganizationId(organizationId);
+
+    Long debtPositionTypeId = 1L;
+    String debtPositionTypeOrgCode = "code";
+    String debtPositionTypeOrgDescription = "description";
+    OperatorDTO operatorDTO = podamFactory.manufacturePojo(OperatorDTO.class);
+    PagedDebtPositionTypeOrgDTO expectedResult = new PagedDebtPositionTypeOrgDTO();
+
+    OperatorDetailsFiltersDTO operatorDetailsFiltersDTO = new OperatorDetailsFiltersDTO(organizationId, mappedExternalUserId, debtPositionTypeOrgCode, debtPositionTypeOrgDescription, debtPositionTypeId);
+
+    doNothing().when(authorizationServiceMock).validateOrganizationOrBrokerAdmin(organizationId,loggedUser,accessToken);
+    Mockito.when(authzServiceMock.getOrganizationOperator(organizationRoles.getOrganizationIpaCode(), loggedUser.getMappedExternalUserId(), accessToken)).thenReturn(operatorDTO);
+    Mockito.when(debtPositionTypeOrgServiceMock.findDebtPositionTypeOrgNotEnabledForOperator(operatorDetailsFiltersDTO, Pageable.ofSize(1), accessToken)).thenReturn(null);
+    Mockito.when(pagedDebtPositionTypeOrgDTOMapperMock.map((PagedModelDebtPositionTypeOrg) null,Collections.emptyMap())).thenReturn(expectedResult);
+    //when
+    PagedDebtPositionTypeOrgDTO result = operatorRetrieverService.getDebtPositionTypeOrgsNotEnabledForOperator(operatorDetailsFiltersDTO, Pageable.ofSize(1), loggedUser, accessToken);
+    //then
+    Assertions.assertNotNull(result);
+    Assertions.assertEquals(expectedResult, result);
+    verifyNoInteractions(debtPositionTypeServiceMock);
+  }
+
+  @Test
+  void givenNoOperatorWhenGetDebtPositionTypeOrgsNotEnabledForOperatorThenResourceNotFoundException() {
+    //given
+    Long organizationId = 1L;
+    UserInfo loggedUser = podamFactory.manufacturePojo(UserInfo.class);
+    loggedUser.setUserId("user-123");
+    String mappedExternalUserId = "mappedExternalUserId";
+    loggedUser.setMappedExternalUserId(mappedExternalUserId);
+    UserOrganizationRoles organizationRoles = loggedUser.getOrganizations().getFirst();
+    organizationRoles.setOrganizationIpaCode("IPACODE");
+    organizationRoles.setOrganizationId(organizationId);
+
+    Long debtPositionTypeId = 1L;
+    String debtPositionTypeOrgCode = "code";
+    String debtPositionTypeOrgDescription = "description";
+    Pageable pageable = Pageable.ofSize(1);
+
+    OperatorDetailsFiltersDTO operatorDetailsFiltersDTO = new OperatorDetailsFiltersDTO(organizationId, mappedExternalUserId, debtPositionTypeOrgCode, debtPositionTypeOrgDescription, debtPositionTypeId);
+
+    doNothing().when(authorizationServiceMock).validateOrganizationOrBrokerAdmin(organizationId,loggedUser,accessToken);
+    Mockito.when(authzServiceMock.getOrganizationOperator(organizationRoles.getOrganizationIpaCode(), loggedUser.getMappedExternalUserId(), accessToken)).thenReturn(null);
+    //when
+    assertThrows(ResourceNotFoundException.class, ()-> operatorRetrieverService.getDebtPositionTypeOrgsNotEnabledForOperator(operatorDetailsFiltersDTO, pageable, loggedUser, accessToken));
+    //then
+
+    verifyNoInteractions(debtPositionTypeServiceMock, debtPositionTypeOrgServiceMock, pagedDebtPositionTypeOrgDTOMapperMock);
+  }
+
+  @Test
+  void givenNoMatchingOrganizationWhenGetDebtPositionTypeOrgsNotEnabledForOperatorThenIllegalArgumentException() {
+    //given
+    Long organizationId = 1L;
+    UserInfo loggedUser = podamFactory.manufacturePojo(UserInfo.class);
+    loggedUser.setUserId("user-123");
+    String mappedExternalUserId = "mappedExternalUserId";
+    loggedUser.setMappedExternalUserId(mappedExternalUserId);
+    UserOrganizationRoles organizationRoles = loggedUser.getOrganizations().getFirst();
+    organizationRoles.setOrganizationIpaCode("IPACODE");
+    organizationRoles.setOrganizationId(organizationId+1);
+
+    Long debtPositionTypeId = 1L;
+    String debtPositionTypeOrgCode = "code";
+    String debtPositionTypeOrgDescription = "description";
+    Pageable pageable = Pageable.ofSize(1);
+
+    OperatorDetailsFiltersDTO operatorDetailsFiltersDTO = new OperatorDetailsFiltersDTO(organizationId, mappedExternalUserId, debtPositionTypeOrgCode, debtPositionTypeOrgDescription, debtPositionTypeId);
+
+    doNothing().when(authorizationServiceMock).validateOrganizationOrBrokerAdmin(organizationId,loggedUser,accessToken);
+    //when
+    assertThrows(IllegalArgumentException.class, ()-> operatorRetrieverService.getDebtPositionTypeOrgsNotEnabledForOperator(operatorDetailsFiltersDTO, pageable, loggedUser, accessToken));
+    //then
+
+    verifyNoInteractions(debtPositionTypeServiceMock, debtPositionTypeOrgServiceMock, pagedDebtPositionTypeOrgDTOMapperMock, authzServiceMock);
   }
 }

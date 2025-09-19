@@ -13,6 +13,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -52,4 +53,22 @@ class DebtPositionTypeOrgOperatorsApiClientTest {
 
     assertEquals(expectedDeleted, result);
   }
+
+  @Test
+  void whenSaveDebtPositionTypeOrgOperatorsForOperatorThenInvokeApi() {
+    String accessToken = "ACCESSTOKEN";
+    String operatorExternalUserId = "operator123";
+    Set<Long> debtPositionTypeOrgIds = Set.of(10L, 20L);
+
+    when(debtPositionApisHolderMock.getDebtPositionTypeOrgOperatorsApi(accessToken))
+      .thenReturn(debtPositionTypeOrgOperatorsApiMock);
+
+    debtPositionTypeOrgOperatorsApiClient
+      .saveDebtPositionTypeOrgOperatorsForOperator(operatorExternalUserId, debtPositionTypeOrgIds, accessToken);
+
+    verify(debtPositionApisHolderMock).getDebtPositionTypeOrgOperatorsApi(accessToken);
+    verify(debtPositionTypeOrgOperatorsApiMock)
+      .saveDebtPositionTypeOrgOperatorsForOperator(operatorExternalUserId, debtPositionTypeOrgIds);
+  }
+
 }

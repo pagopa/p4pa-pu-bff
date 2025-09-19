@@ -19,4 +19,9 @@ public class DebtPositionTypeOrgOperatorsApiClient {
     return debtPositionApisHolder.getDebtPositionTypeOrgOperatorsApi(accessToken)
       .deleteOperators(debtPositionTypeOrgId, externalOperatorUserIds);
   }
+
+  public void saveDebtPositionTypeOrgOperatorsForOperator(String operatorExternalUserId, Set<Long> debtPositionTypeOrgIds, String accessToken) {
+     debtPositionApisHolder.getDebtPositionTypeOrgOperatorsApi(accessToken)
+      .saveDebtPositionTypeOrgOperatorsForOperator(operatorExternalUserId, debtPositionTypeOrgIds);
+  }
 }

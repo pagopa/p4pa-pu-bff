@@ -48,4 +48,9 @@ public class DebtPositionTypeOrgOperatorsServiceImpl implements DebtPositionType
   public int deleteOperators(Long debtPositionTypeOrgId, Set<String> externalOperatorUserIds, String accessToken) {
     return debtPositionTypeOrgOperatorsApiClient.deleteOperators(debtPositionTypeOrgId, externalOperatorUserIds, accessToken);
   }
+
+  @Override
+  public void saveDebtPositionTypeOrgOperatorsForOperator(String operatorExternalUserId, Set<Long> debtPositionTypeOrgIds, String accessToken) {
+    debtPositionTypeOrgOperatorsApiClient.saveDebtPositionTypeOrgOperatorsForOperator(operatorExternalUserId, debtPositionTypeOrgIds, accessToken);
+  }
 }

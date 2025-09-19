@@ -9,8 +9,11 @@ import it.gov.pagopa.pu.bff.security.SecurityUtils;
 import it.gov.pagopa.pu.bff.service.operator.OperatorRetrieverService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Set;
 
 @RestController
 @Slf4j
@@ -58,5 +61,12 @@ public class OperatorController implements OperatorsApi {
         debtPositionTypeOrgDescription,
         debtPositionTypeId
     ), pageable, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken()));
+  }
+
+  @Override
+  public ResponseEntity<Void> saveDebtPositionTypeOrgOperatorsForOperator(Long organizationId, String mappedExternalUserId, Set<Long> debtPositionTypeOrgIds) {
+    log.info("User requested saveDebtPositionTypeOrgOperatorsForOperator having organizationId {}, mappedExternalUserId {} and debtPositionTypeOrgIds {}", organizationId, mappedExternalUserId, debtPositionTypeOrgIds);
+    operatorRetrieverService.saveDebtPositionTypeOrgOperatorsForOperator(organizationId, mappedExternalUserId, debtPositionTypeOrgIds, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken());
+    return ResponseEntity.status(HttpStatus.CREATED).build();
   }
 }

@@ -16,14 +16,8 @@ import it.gov.pagopa.pu.bff.mapper.OperatorDetailMapper;
 import it.gov.pagopa.pu.bff.mapper.PagedDebtPositionTypeOrgDTOMapper;
 import it.gov.pagopa.pu.bff.mapper.PagedOrganizationOperatorMapper;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
-import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionType;
-import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrg;
-import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrgOperatorsDptoCountView;
-import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelDebtPositionTypeOrg;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import it.gov.pagopa.pu.debtpositions.dto.generated.*;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
@@ -139,5 +133,37 @@ public class OperatorRetrieverServiceImpl implements OperatorRetrieverService {
     return pagedDebtPositionTypeOrgDTOMapper.map(pagedDebtPositionTypeOrg,
         getDebtPositionTypes(pagedDebtPositionTypeOrg,accessToken)
     );
+  }
+
+  @Override
+  public void saveDebtPositionTypeOrgOperatorsForOperator(Long organizationId, String operatorExternalUserId, Set<Long> debtPositionTypeOrgIds, UserInfo loggedUser, String accessToken) {
+    authorizationService.validateOrganizationOrBrokerAdmin(organizationId, loggedUser, accessToken);
+
+    CollectionModelDebtPositionTypeOrg collection = debtPositionTypeOrgService.getByDebtPositionTypeOrgIdIn(debtPositionTypeOrgIds, accessToken);
+
+    if (collection == null || collection.getEmbedded() == null) {
+      throw new ResourceNotFoundException("No debtPositionTypeOrg found for the id: " + debtPositionTypeOrgIds);
+    }
+
+    PagedModelDebtPositionTypeOrgEmbedded embedded = collection.getEmbedded();
+
+    if (embedded.getDebtPositionTypeOrgs() == null) {
+      throw new ResourceNotFoundException("No debtPositionTypeOrg found for the id: " + debtPositionTypeOrgIds);
+    }
+
+    Set<Long> existingIds = embedded.getDebtPositionTypeOrgs()
+      .stream()
+      .map(DebtPositionTypeOrg::getDebtPositionTypeOrgId)
+      .filter(Objects::nonNull)
+      .collect(Collectors.toSet());
+
+    Set<Long> missing = new HashSet<>(debtPositionTypeOrgIds);
+    missing.removeAll(existingIds);
+
+    if (!missing.isEmpty()) {
+      throw new ResourceNotFoundException("The following debtPositionTypeOrgIds do not exist: " + missing);
+    }
+
+    debtPositionTypeOrgOperatorsService.saveDebtPositionTypeOrgOperatorsForOperator(operatorExternalUserId, debtPositionTypeOrgIds, accessToken);
   }
 }

@@ -2,9 +2,7 @@ package it.gov.pagopa.pu.bff.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.verifyNoInteractions;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 import it.gov.pagopa.pu.auth.dto.generated.OperatorDTO;
 import it.gov.pagopa.pu.auth.dto.generated.OperatorsPage;
@@ -25,10 +23,7 @@ import it.gov.pagopa.pu.bff.mapper.PagedOrganizationOperatorMapper;
 import it.gov.pagopa.pu.bff.service.operator.OperatorRetrieverService;
 import it.gov.pagopa.pu.bff.service.operator.OperatorRetrieverServiceImpl;
 import it.gov.pagopa.pu.bff.util.TestUtils;
-import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionType;
-import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrg;
-import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrgOperatorsDptoCountView;
-import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelDebtPositionTypeOrg;
+import it.gov.pagopa.pu.debtpositions.dto.generated.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -597,5 +592,114 @@ public class OperatorRetrieverServiceImplTest {
     //then
 
     verifyNoInteractions(debtPositionTypeServiceMock, debtPositionTypeOrgServiceMock, pagedDebtPositionTypeOrgDTOMapperMock, authzServiceMock);
+  }
+
+  @Test
+  void givenAllIdsExistWhenSaveDebtPositionTypeOrgOperatorsForOperatorThenInvokeService() {
+    Long organizationId = 1L;
+    String operatorExternalUserId = "user123";
+    UserInfo loggedUser = podamFactory.manufacturePojo(UserInfo.class);
+    Set<Long> ids = Set.of(10L, 20L);
+
+    doNothing().when(authorizationServiceMock)
+      .validateOrganizationOrBrokerAdmin(organizationId, loggedUser, accessToken);
+
+    DebtPositionTypeOrg org1 = new DebtPositionTypeOrg(); org1.setDebtPositionTypeOrgId(10L);
+    DebtPositionTypeOrg org2 = new DebtPositionTypeOrg(); org2.setDebtPositionTypeOrgId(20L);
+    PagedModelDebtPositionTypeOrgEmbedded embedded = new PagedModelDebtPositionTypeOrgEmbedded();
+    embedded.setDebtPositionTypeOrgs(List.of(org1, org2));
+    CollectionModelDebtPositionTypeOrg collection = new CollectionModelDebtPositionTypeOrg();
+    collection.setEmbedded(embedded);
+
+    when(debtPositionTypeOrgServiceMock.getByDebtPositionTypeOrgIdIn(ids, accessToken))
+      .thenReturn(collection);
+
+    operatorRetrieverService.saveDebtPositionTypeOrgOperatorsForOperator(
+      organizationId, operatorExternalUserId, ids, loggedUser, accessToken);
+
+    verify(debtPositionTypeOrgOperatorsServiceMock).saveDebtPositionTypeOrgOperatorsForOperator(operatorExternalUserId, ids, accessToken);
+  }
+
+  @Test
+  void givenNullCollectionWhenSaveDebtPositionTypeOrgOperatorsForOperatorThenThrowNotFound() {
+    Long organizationId = 1L;
+    String operatorExternalUserId = "user123";
+    UserInfo loggedUser = podamFactory.manufacturePojo(UserInfo.class);
+    Set<Long> ids = Set.of(10L);
+
+    doNothing().when(authorizationServiceMock)
+      .validateOrganizationOrBrokerAdmin(organizationId, loggedUser, accessToken);
+    when(debtPositionTypeOrgServiceMock.getByDebtPositionTypeOrgIdIn(ids, accessToken))
+      .thenReturn(null);
+
+    assertThrows(ResourceNotFoundException.class, () ->
+      operatorRetrieverService.saveDebtPositionTypeOrgOperatorsForOperator(
+        organizationId, operatorExternalUserId, ids, loggedUser, accessToken));
+  }
+
+  @Test
+  void givenNullEmbeddedWhenSaveDebtPositionTypeOrgOperatorsForOperatorThenThrowNotFound() {
+    Long organizationId = 1L;
+    String operatorExternalUserId = "user123";
+    UserInfo loggedUser = podamFactory.manufacturePojo(UserInfo.class);
+    Set<Long> ids = Set.of(10L);
+
+    doNothing().when(authorizationServiceMock)
+      .validateOrganizationOrBrokerAdmin(organizationId, loggedUser, accessToken);
+
+    CollectionModelDebtPositionTypeOrg collection = new CollectionModelDebtPositionTypeOrg();
+    collection.setEmbedded(null);
+    when(debtPositionTypeOrgServiceMock.getByDebtPositionTypeOrgIdIn(ids, accessToken))
+      .thenReturn(collection);
+
+    assertThrows(ResourceNotFoundException.class, () ->
+      operatorRetrieverService.saveDebtPositionTypeOrgOperatorsForOperator(
+        organizationId, operatorExternalUserId, ids, loggedUser, accessToken));
+  }
+
+  @Test
+  void givenNullDebtPositionTypeOrgsWhenSaveDebtPositionTypeOrgOperatorsForOperatorThenThrowNotFound() {
+    Long organizationId = 1L;
+    String operatorExternalUserId = "user123";
+    UserInfo loggedUser = podamFactory.manufacturePojo(UserInfo.class);
+    Set<Long> ids = Set.of(10L);
+
+    doNothing().when(authorizationServiceMock)
+      .validateOrganizationOrBrokerAdmin(organizationId, loggedUser, accessToken);
+
+    PagedModelDebtPositionTypeOrgEmbedded embedded = new PagedModelDebtPositionTypeOrgEmbedded();
+    embedded.setDebtPositionTypeOrgs(null);
+    CollectionModelDebtPositionTypeOrg collection = new CollectionModelDebtPositionTypeOrg();
+    collection.setEmbedded(embedded);
+    when(debtPositionTypeOrgServiceMock.getByDebtPositionTypeOrgIdIn(ids, accessToken))
+      .thenReturn(collection);
+
+    assertThrows(ResourceNotFoundException.class, () ->
+      operatorRetrieverService.saveDebtPositionTypeOrgOperatorsForOperator(
+        organizationId, operatorExternalUserId, ids, loggedUser, accessToken));
+  }
+
+  @Test
+  void givenMissingIdsWhenSaveDebtPositionTypeOrgOperatorsForOperatorThenThrowNotFound() {
+    Long organizationId = 1L;
+    String operatorExternalUserId = "user123";
+    UserInfo loggedUser = podamFactory.manufacturePojo(UserInfo.class);
+    Set<Long> ids = Set.of(10L, 20L);
+
+    doNothing().when(authorizationServiceMock)
+      .validateOrganizationOrBrokerAdmin(organizationId, loggedUser, accessToken);
+
+    DebtPositionTypeOrg org1 = new DebtPositionTypeOrg(); org1.setDebtPositionTypeOrgId(10L);
+    PagedModelDebtPositionTypeOrgEmbedded embedded = new PagedModelDebtPositionTypeOrgEmbedded();
+    embedded.setDebtPositionTypeOrgs(List.of(org1));
+    CollectionModelDebtPositionTypeOrg collection = new CollectionModelDebtPositionTypeOrg();
+    collection.setEmbedded(embedded);
+
+    when(debtPositionTypeOrgServiceMock.getByDebtPositionTypeOrgIdIn(ids, accessToken))
+      .thenReturn(collection);
+
+    assertThrows(ResourceNotFoundException.class, () ->
+      operatorRetrieverService.saveDebtPositionTypeOrgOperatorsForOperator(
+        organizationId, operatorExternalUserId, ids, loggedUser, accessToken));
   }
 }

@@ -611,8 +611,12 @@ public class OperatorRetrieverServiceImplTest {
     when(authzServiceMock.getOrganizationOperator("IPACODE", operatorExternalUserId, accessToken))
       .thenReturn(new OperatorDTO());
 
-    DebtPositionTypeOrg org1 = new DebtPositionTypeOrg(); org1.setDebtPositionTypeOrgId(10L); org1.setOrganizationId(organizationId);
-    DebtPositionTypeOrg org2 = new DebtPositionTypeOrg(); org2.setDebtPositionTypeOrgId(20L); org2.setOrganizationId(organizationId);
+    DebtPositionTypeOrg org1 = new DebtPositionTypeOrg();
+    org1.setDebtPositionTypeOrgId(10L);
+    org1.setOrganizationId(organizationId);
+    DebtPositionTypeOrg org2 = new DebtPositionTypeOrg();
+    org2.setDebtPositionTypeOrgId(20L);
+    org2.setOrganizationId(organizationId);
     PagedModelDebtPositionTypeOrgEmbedded embedded = new PagedModelDebtPositionTypeOrgEmbedded();
     embedded.setDebtPositionTypeOrgs(List.of(org1, org2));
     CollectionModelDebtPositionTypeOrg collection = new CollectionModelDebtPositionTypeOrg();
@@ -620,16 +624,39 @@ public class OperatorRetrieverServiceImplTest {
 
     when(debtPositionTypeOrgServiceMock.getByDebtPositionTypeOrgIdIn(ids, accessToken))
       .thenReturn(collection);
+    doNothing().when(debtPositionTypeOrgOperatorsServiceMock)
+      .saveDebtPositionTypeOrgOperatorsForOperator(operatorExternalUserId, ids, accessToken);
 
     operatorRetrieverService.enableDebtPositionTypeOrgsForOperator(
       organizationId, operatorExternalUserId, ids, loggedUser, accessToken);
-
-    verify(debtPositionTypeOrgOperatorsServiceMock)
-      .saveDebtPositionTypeOrgOperatorsForOperator(operatorExternalUserId, ids, accessToken);
   }
 
   @Test
-  void givenNullCollectionWhenEnableDebtPositionTypeOrgsForOperatorThenThrowNotFound() {
+  void givenNoMatchingOrganizationWhenEnableDebtPositionTypeOrgsForOperatorThenIllegalArgumentException() {
+    Long organizationId = 1L;
+    UserInfo loggedUser = podamFactory.manufacturePojo(UserInfo.class);
+    loggedUser.setUserId("user-123");
+    String mappedExternalUserId = "mappedExternalUserId";
+    loggedUser.setMappedExternalUserId(mappedExternalUserId);
+
+    UserOrganizationRoles organizationRoles = loggedUser.getOrganizations().getFirst();
+    organizationRoles.setOrganizationIpaCode("IPACODE");
+    organizationRoles.setOrganizationId(organizationId + 1);
+
+    Set<Long> ids = Set.of(10L);
+
+    doNothing().when(authorizationServiceMock)
+      .validateOrganizationOrBrokerAdmin(organizationId, loggedUser, accessToken);
+
+    assertThrows(IllegalArgumentException.class, () ->
+      operatorRetrieverService.enableDebtPositionTypeOrgsForOperator(
+        organizationId, mappedExternalUserId, ids, loggedUser, accessToken));
+
+    verifyNoInteractions(debtPositionTypeOrgServiceMock, debtPositionTypeOrgOperatorsServiceMock, authzServiceMock);
+  }
+
+  @Test
+  void givenNullCollectionWhenEnableDebtPositionTypeOrgsForOperatorThenThrowResourceNotFoundException() {
     Long organizationId = 1L;
     String operatorExternalUserId = "user123";
     UserInfo loggedUser = podamFactory.manufacturePojo(UserInfo.class);
@@ -650,10 +677,12 @@ public class OperatorRetrieverServiceImplTest {
     assertThrows(ResourceNotFoundException.class, () ->
       operatorRetrieverService.enableDebtPositionTypeOrgsForOperator(
         organizationId, operatorExternalUserId, ids, loggedUser, accessToken));
+
+    verifyNoInteractions(debtPositionTypeOrgOperatorsServiceMock);
   }
 
   @Test
-  void givenNullEmbeddedWhenEnableDebtPositionTypeOrgsForOperatorThenThrowNotFound() {
+  void givenNullEmbeddedWhenEnableDebtPositionTypeOrgsForOperatorThenThrowResourceNotFoundException() {
     Long organizationId = 1L;
     String operatorExternalUserId = "user123";
     UserInfo loggedUser = podamFactory.manufacturePojo(UserInfo.class);
@@ -677,10 +706,12 @@ public class OperatorRetrieverServiceImplTest {
     assertThrows(ResourceNotFoundException.class, () ->
       operatorRetrieverService.enableDebtPositionTypeOrgsForOperator(
         organizationId, operatorExternalUserId, ids, loggedUser, accessToken));
+
+    verifyNoInteractions(debtPositionTypeOrgOperatorsServiceMock);
   }
 
   @Test
-  void givenNullDebtPositionTypeOrgsWhenEnableDebtPositionTypeOrgsForOperatorThenThrowNotFound() {
+  void givenNullDebtPositionTypeOrgsWhenEnableDebtPositionTypeOrgsForOperatorThenThrowResourceNotFoundException() {
     Long organizationId = 1L;
     String operatorExternalUserId = "user123";
     UserInfo loggedUser = podamFactory.manufacturePojo(UserInfo.class);
@@ -706,10 +737,12 @@ public class OperatorRetrieverServiceImplTest {
     assertThrows(ResourceNotFoundException.class, () ->
       operatorRetrieverService.enableDebtPositionTypeOrgsForOperator(
         organizationId, operatorExternalUserId, ids, loggedUser, accessToken));
+
+    verifyNoInteractions(debtPositionTypeOrgOperatorsServiceMock);
   }
 
   @Test
-  void givenMissingIdsWhenEnableDebtPositionTypeOrgsForOperatorThenThrowNotFound() {
+  void givenMissingIdsWhenEnableDebtPositionTypeOrgsForOperatorThenThrowResourceNotFoundException() {
     Long organizationId = 1L;
     String operatorExternalUserId = "user123";
     UserInfo loggedUser = podamFactory.manufacturePojo(UserInfo.class);
@@ -739,10 +772,12 @@ public class OperatorRetrieverServiceImplTest {
     assertThrows(ResourceNotFoundException.class, () ->
       operatorRetrieverService.enableDebtPositionTypeOrgsForOperator(
         organizationId, operatorExternalUserId, ids, loggedUser, accessToken));
+
+    verifyNoInteractions(debtPositionTypeOrgOperatorsServiceMock);
   }
 
   @Test
-  void givenOrgMismatchWhenEnableDebtPositionTypeOrgsForOperatorThenThrowNotFound() {
+  void givenOrgMismatchWhenEnableDebtPositionTypeOrgsForOperatorThenThrowResourceNotFoundException() {
     Long organizationId = 1L;
     String operatorExternalUserId = "user123";
     UserInfo loggedUser = podamFactory.manufacturePojo(UserInfo.class);
@@ -772,10 +807,12 @@ public class OperatorRetrieverServiceImplTest {
     assertThrows(ResourceNotFoundException.class, () ->
       operatorRetrieverService.enableDebtPositionTypeOrgsForOperator(
         organizationId, operatorExternalUserId, ids, loggedUser, accessToken));
+
+    verifyNoInteractions(debtPositionTypeOrgOperatorsServiceMock);
   }
 
   @Test
-  void givenOperatorNotFoundWhenEnableDebtPositionTypeOrgsForOperatorThenThrowNotFound() {
+  void givenOperatorNotFoundWhenEnableDebtPositionTypeOrgsForOperatorThenThrowResourceNotFoundException() {
     Long organizationId = 1L;
     String operatorExternalUserId = "user123";
     UserInfo loggedUser = podamFactory.manufacturePojo(UserInfo.class);
@@ -794,5 +831,7 @@ public class OperatorRetrieverServiceImplTest {
     assertThrows(ResourceNotFoundException.class, () ->
       operatorRetrieverService.enableDebtPositionTypeOrgsForOperator(
         organizationId, operatorExternalUserId, ids, loggedUser, accessToken));
+
+    verifyNoInteractions(debtPositionTypeOrgOperatorsServiceMock);
   }
 }

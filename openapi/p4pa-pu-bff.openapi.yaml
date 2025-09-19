@@ -3463,6 +3463,44 @@ paths:
         '500':
           description: Internal Server Error
       x-spring-paginated: true
+    post:
+      tags:
+        - Operators
+      operationId: enableDebtPositionTypeOrgsForOperator
+      parameters:
+        - name: organizationId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: mappedExternalUserId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: debtPositionTypeOrgIds
+          in: query
+          required: true
+          schema:
+            type: array
+            uniqueItems: true
+            items:
+              type: integer
+              format: int64
+      responses:
+        '201':
+          description: Created
+        '400':
+          description: Invalid request
+        '401':
+          description: Unauthorized - Missing or invalid token
+        '403':
+          description: Forbidden
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
   /organization/{organizationId}/operators/{mappedExternalUserId}/debt-position-type-orgs/{debtPositionTypeOrgId}:
     delete:
       tags:

@@ -247,5 +247,18 @@ class DebtPositionTypeOrgServiceTest {
     assertEquals(expectedResult, result);
   }
 
+  @Test
+  void whenGetByDebtPositionTypeOrgIdInThenInvokeClient() {
+    Set<Long> debtPositionTypeOrgIds = Set.of(1L, 2L, 3L);
+    String accessToken = "ACCESSTOKEN";
+    CollectionModelDebtPositionTypeOrg expectedResult = new CollectionModelDebtPositionTypeOrg();
+
+    when(debtPositionTypeOrgClientMock.getByDebtPositionTypeOrgIdIn(debtPositionTypeOrgIds, accessToken))
+      .thenReturn(expectedResult);
+
+    CollectionModelDebtPositionTypeOrg result = service.getByDebtPositionTypeOrgIdIn(debtPositionTypeOrgIds, accessToken);
+
+    assertSame(expectedResult, result);
+  }
 }
 

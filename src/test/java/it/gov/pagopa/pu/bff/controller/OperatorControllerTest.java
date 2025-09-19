@@ -23,6 +23,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import uk.co.jemos.podam.api.PodamFactory;
 
+import java.util.Set;
+
 @ExtendWith(MockitoExtension.class)
 class OperatorControllerTest {
 
@@ -128,5 +130,25 @@ class OperatorControllerTest {
     Assertions.assertEquals(HttpStatus.OK, result.getStatusCode());
     Assertions.assertNotNull(result.getBody());
     Assertions.assertSame(expectedResult, result.getBody());
+  }
+
+  @Test
+  void whenSaveDebtPositionTypeOrgOperatorsForOperatorThenCreated() {
+    Long organizationId = 1L;
+    String mappedExternalUserId = "user123";
+    Set<Long> debtPositionTypeOrgIds = Set.of(100L, 200L);
+
+    ResponseEntity<Void> response = operatorController.enableDebtPositionTypeOrgsForOperator(
+      organizationId, mappedExternalUserId, debtPositionTypeOrgIds);
+
+    Assertions.assertEquals(HttpStatus.CREATED, response.getStatusCode());
+    Assertions.assertNull(response.getBody());
+
+    Mockito.verify(operatorRetrieverServiceMock).enableDebtPositionTypeOrgsForOperator(
+      organizationId,
+      mappedExternalUserId,
+      debtPositionTypeOrgIds,
+      loggedUser,
+      accessToken);
   }
 }

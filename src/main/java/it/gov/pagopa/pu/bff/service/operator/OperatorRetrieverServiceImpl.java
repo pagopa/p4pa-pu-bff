@@ -16,14 +16,8 @@ import it.gov.pagopa.pu.bff.mapper.OperatorDetailMapper;
 import it.gov.pagopa.pu.bff.mapper.PagedDebtPositionTypeOrgDTOMapper;
 import it.gov.pagopa.pu.bff.mapper.PagedOrganizationOperatorMapper;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
-import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionType;
-import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrg;
-import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrgOperatorsDptoCountView;
-import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelDebtPositionTypeOrg;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import it.gov.pagopa.pu.debtpositions.dto.generated.*;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
@@ -139,5 +133,36 @@ public class OperatorRetrieverServiceImpl implements OperatorRetrieverService {
     return pagedDebtPositionTypeOrgDTOMapper.map(pagedDebtPositionTypeOrg,
         getDebtPositionTypes(pagedDebtPositionTypeOrg,accessToken)
     );
+  }
+
+  @Override
+  public void enableDebtPositionTypeOrgsForOperator(Long organizationId, String operatorExternalUserId, Set<Long> debtPositionTypeOrgIds, UserInfo loggedUser, String accessToken) {
+    authorizationService.validateOrganizationOrBrokerAdmin(organizationId, loggedUser, accessToken);
+
+    OperatorDetailsFiltersDTO filtersDTO = new OperatorDetailsFiltersDTO(organizationId, operatorExternalUserId, null, null, null);
+    getOperatorDTO(filtersDTO, loggedUser, accessToken);
+
+    validateDebtPositionTypeOrgIds(organizationId, debtPositionTypeOrgIds, accessToken);
+
+    debtPositionTypeOrgOperatorsService.saveDebtPositionTypeOrgOperatorsForOperator(operatorExternalUserId, debtPositionTypeOrgIds, accessToken);
+  }
+
+  private void validateDebtPositionTypeOrgIds(Long organizationId, Set<Long> debtPositionTypeOrgIds, String accessToken) {
+    CollectionModelDebtPositionTypeOrg collection = debtPositionTypeOrgService.getByDebtPositionTypeOrgIdIn(debtPositionTypeOrgIds, accessToken);
+    if (collection == null || collection.getEmbedded() == null || collection.getEmbedded().getDebtPositionTypeOrgs() == null) {
+      throw new ResourceNotFoundException("No debtPositionTypeOrg found for the id: " + debtPositionTypeOrgIds);
+    }
+
+    List<DebtPositionTypeOrg> foundDptos = collection.getEmbedded().getDebtPositionTypeOrgs();
+    if (foundDptos.size() != debtPositionTypeOrgIds.size()) {
+      throw new ResourceNotFoundException("Some debtPositionTypeOrgIds do not exist: " + debtPositionTypeOrgIds);
+    }
+
+    boolean allMatchOrg = foundDptos.stream()
+      .map(DebtPositionTypeOrg::getOrganizationId)
+      .allMatch(organizationId::equals);
+    if (!allMatchOrg) {
+      throw new ResourceNotFoundException("One or more DebtPositionTypeOrg do not belong to organizationId: " + organizationId);
+    }
   }
 }

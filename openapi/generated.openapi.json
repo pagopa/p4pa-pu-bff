@@ -9953,9 +9953,12 @@
           },
           "flagPaymentNotification" : {
             "type" : "boolean"
+          },
+          "status" : {
+            "$ref" : "#/components/schemas/OrganizationStatus"
           }
         },
-        "required" : [ "flagNotifyIo", "flagNotifyOutcomePush", "flagPaymentNotification", "ipaCode", "operatorRole", "orgFiscalCode", "orgName", "organizationId" ]
+        "required" : [ "flagNotifyIo", "flagNotifyOutcomePush", "flagPaymentNotification", "ipaCode", "operatorRole", "orgFiscalCode", "orgName", "organizationId", "status" ]
       },
       "OrganizationDetail" : {
         "type" : "object",

@@ -9,6 +9,7 @@ import it.gov.pagopa.pu.bff.dto.generated.OrganizationDTO;
 import it.gov.pagopa.pu.bff.exception.InvalidOperatorRoleException;
 import it.gov.pagopa.pu.bff.util.TestUtils;
 import it.gov.pagopa.pu.organization.dto.generated.Organization;
+import it.gov.pagopa.pu.organization.dto.generated.OrganizationStatus;
 import java.util.Collections;
 import java.util.List;
 import org.junit.jupiter.api.Test;
@@ -32,6 +33,7 @@ class OrganizationDTOMapperTest {
     organization.setFlagNotifyIo(false);
     organization.setFlagNotifyOutcomePush(false);
     organization.setFlagPaymentNotification(false);
+    organization.setStatus(OrganizationStatus.ACTIVE);
 
     OrganizationDTO result = mapper.mapToOrganizationDTO(organization, roles);
 
@@ -46,6 +48,7 @@ class OrganizationDTOMapperTest {
     assertEquals(false, result.getFlagNotifyIo());
     assertEquals(false, result.getFlagNotifyOutcomePush());
     assertEquals(false, result.getFlagPaymentNotification());
+    assertEquals(OrganizationStatus.ACTIVE,result.getStatus());
   }
 
   @Test
@@ -72,6 +75,7 @@ class OrganizationDTOMapperTest {
     organization.setFlagNotifyIo(false);
     organization.setFlagNotifyOutcomePush(false);
     organization.setFlagPaymentNotification(false);
+    organization.setStatus(OrganizationStatus.ACTIVE);
 
     OrganizationDTO result = mapper.mapToOrganizationDTO(organization, Collections.emptyList());
 
@@ -86,6 +90,7 @@ class OrganizationDTOMapperTest {
     assertEquals(false, result.getFlagNotifyIo());
     assertEquals(false, result.getFlagNotifyOutcomePush());
     assertEquals(false, result.getFlagPaymentNotification());
+    assertEquals(OrganizationStatus.ACTIVE,result.getStatus());
   }
 
 }

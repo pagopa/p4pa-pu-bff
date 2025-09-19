@@ -3645,6 +3645,7 @@ components:
         - flagNotifyIo
         - flagNotifyOutcomePush
         - flagPaymentNotification
+        - status
       properties:
         organizationId:
           type: integer
@@ -3670,6 +3671,8 @@ components:
           type: boolean
         flagPaymentNotification:
           type: boolean
+        status:
+          type: 'OrganizationStatus'
     ConfigFE:
       type: object
       required:

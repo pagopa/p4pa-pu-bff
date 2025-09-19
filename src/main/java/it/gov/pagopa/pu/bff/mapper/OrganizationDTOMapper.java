@@ -23,6 +23,7 @@ public class OrganizationDTOMapper {
       .flagNotifyIo(organization.getFlagNotifyIo())
       .flagNotifyOutcomePush(organization.getFlagNotifyOutcomePush())
       .flagPaymentNotification(organization.getFlagPaymentNotification())
+      .status(organization.getStatus())
       .build();
   }
 

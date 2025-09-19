@@ -14,5 +14,5 @@ public interface OperatorRetrieverService {
   OperatorsDetail getOperatorDetails(OperatorDetailsFiltersDTO operatorDetailsFiltersDTO, Pageable pageable, UserInfo loggedUser, String accessToken);
   int removeDebtPositionTypeOrgFromOperator(Long organizationId, String mappedExternalUserId, Long debtPositionTypeOrgId, UserInfo loggedUser, String accessToken);
   PagedDebtPositionTypeOrgDTO getDebtPositionTypeOrgsNotEnabledForOperator(OperatorDetailsFiltersDTO operatorDetailsFiltersDTO, Pageable pageable, UserInfo loggedUser, String accessToken);
-  void saveDebtPositionTypeOrgOperatorsForOperator(Long organizationId, String operatorExternalUserId, Set<Long> debtPositionTypeOrgIds, UserInfo loggedUser, String accessToken);
+  void enableDebtPositionTypeOrgsForOperator(Long organizationId, String operatorExternalUserId, Set<Long> debtPositionTypeOrgIds, UserInfo loggedUser, String accessToken);
 }

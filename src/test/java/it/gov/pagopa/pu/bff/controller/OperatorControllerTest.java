@@ -138,13 +138,13 @@ class OperatorControllerTest {
     String mappedExternalUserId = "user123";
     Set<Long> debtPositionTypeOrgIds = Set.of(100L, 200L);
 
-    ResponseEntity<Void> response = operatorController.saveDebtPositionTypeOrgOperatorsForOperator(
+    ResponseEntity<Void> response = operatorController.enableDebtPositionTypeOrgsForOperator(
       organizationId, mappedExternalUserId, debtPositionTypeOrgIds);
 
     Assertions.assertEquals(HttpStatus.CREATED, response.getStatusCode());
     Assertions.assertNull(response.getBody());
 
-    Mockito.verify(operatorRetrieverServiceMock).saveDebtPositionTypeOrgOperatorsForOperator(
+    Mockito.verify(operatorRetrieverServiceMock).enableDebtPositionTypeOrgsForOperator(
       organizationId,
       mappedExternalUserId,
       debtPositionTypeOrgIds,

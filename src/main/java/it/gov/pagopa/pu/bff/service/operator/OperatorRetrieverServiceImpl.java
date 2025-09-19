@@ -136,11 +136,39 @@ public class OperatorRetrieverServiceImpl implements OperatorRetrieverService {
   }
 
   @Override
-  public void saveDebtPositionTypeOrgOperatorsForOperator(Long organizationId, String operatorExternalUserId, Set<Long> debtPositionTypeOrgIds, UserInfo loggedUser, String accessToken) {
+  public void enableDebtPositionTypeOrgsForOperator(Long organizationId, String operatorExternalUserId, Set<Long> debtPositionTypeOrgIds, UserInfo loggedUser, String accessToken) {
     authorizationService.validateOrganizationOrBrokerAdmin(organizationId, loggedUser, accessToken);
+
+    OperatorDetailsFiltersDTO filtersDTO = new OperatorDetailsFiltersDTO(organizationId, operatorExternalUserId, null, null, null);
+    getOperatorDTO(filtersDTO, loggedUser, accessToken);
 
     CollectionModelDebtPositionTypeOrg collection = debtPositionTypeOrgService.getByDebtPositionTypeOrgIdIn(debtPositionTypeOrgIds, accessToken);
 
+    List<DebtPositionTypeOrg> foundOrgs = getDebtPositionTypeOrgs(debtPositionTypeOrgIds, collection);
+
+    long foundCount = foundOrgs.stream()
+      .map(DebtPositionTypeOrg::getDebtPositionTypeOrgId)
+      .filter(Objects::nonNull)
+      .count();
+
+    if (foundCount != debtPositionTypeOrgIds.size()) {
+      throw new ResourceNotFoundException("Some debtPositionTypeOrgIds do not exist: " + debtPositionTypeOrgIds);
+    }
+
+    boolean allMatchOrg = foundOrgs.stream()
+      .map(DebtPositionTypeOrg::getOrganizationId)
+      .allMatch(organizationId::equals);
+
+    if (!allMatchOrg) {
+      throw new ResourceNotFoundException(
+        "One or more DebtPositionTypeOrg do not belong to organizationId: " + organizationId);
+    }
+
+    debtPositionTypeOrgOperatorsService.saveDebtPositionTypeOrgOperatorsForOperator(
+      operatorExternalUserId, debtPositionTypeOrgIds, accessToken);
+  }
+
+  private static List<DebtPositionTypeOrg> getDebtPositionTypeOrgs(Set<Long> debtPositionTypeOrgIds, CollectionModelDebtPositionTypeOrg collection) {
     if (collection == null || collection.getEmbedded() == null) {
       throw new ResourceNotFoundException("No debtPositionTypeOrg found for the id: " + debtPositionTypeOrgIds);
     }
@@ -151,19 +179,6 @@ public class OperatorRetrieverServiceImpl implements OperatorRetrieverService {
       throw new ResourceNotFoundException("No debtPositionTypeOrg found for the id: " + debtPositionTypeOrgIds);
     }
 
-    Set<Long> existingIds = embedded.getDebtPositionTypeOrgs()
-      .stream()
-      .map(DebtPositionTypeOrg::getDebtPositionTypeOrgId)
-      .filter(Objects::nonNull)
-      .collect(Collectors.toSet());
-
-    Set<Long> missing = new HashSet<>(debtPositionTypeOrgIds);
-    missing.removeAll(existingIds);
-
-    if (!missing.isEmpty()) {
-      throw new ResourceNotFoundException("The following debtPositionTypeOrgIds do not exist: " + missing);
-    }
-
-    debtPositionTypeOrgOperatorsService.saveDebtPositionTypeOrgOperatorsForOperator(operatorExternalUserId, debtPositionTypeOrgIds, accessToken);
+      return embedded.getDebtPositionTypeOrgs();
   }
 }

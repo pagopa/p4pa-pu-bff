@@ -64,9 +64,9 @@ public class OperatorController implements OperatorsApi {
   }
 
   @Override
-  public ResponseEntity<Void> saveDebtPositionTypeOrgOperatorsForOperator(Long organizationId, String mappedExternalUserId, Set<Long> debtPositionTypeOrgIds) {
-    log.info("User requested saveDebtPositionTypeOrgOperatorsForOperator having organizationId {}, mappedExternalUserId {} and debtPositionTypeOrgIds {}", organizationId, mappedExternalUserId, debtPositionTypeOrgIds);
-    operatorRetrieverService.saveDebtPositionTypeOrgOperatorsForOperator(organizationId, mappedExternalUserId, debtPositionTypeOrgIds, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken());
+  public ResponseEntity<Void> enableDebtPositionTypeOrgsForOperator(Long organizationId, String mappedExternalUserId, Set<Long> debtPositionTypeOrgIds) {
+    log.info("User requested enableDebtPositionTypeOrgsForOperator having organizationId {}, mappedExternalUserId {} and debtPositionTypeOrgIds {}", organizationId, mappedExternalUserId, debtPositionTypeOrgIds);
+    operatorRetrieverService.enableDebtPositionTypeOrgsForOperator(organizationId, mappedExternalUserId, debtPositionTypeOrgIds, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken());
     return ResponseEntity.status(HttpStatus.CREATED).build();
   }
 }

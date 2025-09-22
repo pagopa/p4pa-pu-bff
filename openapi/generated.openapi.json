@@ -4092,11 +4092,14 @@
             "format" : "int64"
           }
         }, {
-          "name" : "receiptOrigin",
+          "name" : "receiptOrigins",
           "in" : "query",
           "required" : false,
           "schema" : {
-            "$ref" : "#/components/schemas/ReceiptOriginType"
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/ReceiptOriginType"
+            }
           }
         }, {
           "name" : "iuv",

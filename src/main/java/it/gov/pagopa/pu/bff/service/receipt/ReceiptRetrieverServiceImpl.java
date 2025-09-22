@@ -46,7 +46,7 @@ public class ReceiptRetrieverServiceImpl implements ReceiptRetrieverService {
   }
 
   private void validateReceiptViewFilters(ReceiptViewFiltersDTO filtersDTO) {
-    if (filtersDTO.getReceiptOrigin() == null &&
+    if ((filtersDTO.getReceiptOrigins() == null || filtersDTO.getReceiptOrigins().isEmpty()) &&
       StringUtils.isBlank(filtersDTO.getIuv()) &&
       StringUtils.isBlank(filtersDTO.getIur()) &&
       StringUtils.isBlank(filtersDTO.getIud()) &&

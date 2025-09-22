@@ -79,7 +79,7 @@ class DebtPositionApisHolderTest extends BaseApiHolderTest {
   void whenGetReceiptViewSearchControllerApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
     assertAuthenticationShouldBeSetInThreadSafeMode(
       accessToken -> debtPositionApisHolder.getReceiptViewSearchControllerApi(accessToken)
-        .crudReceiptsViewFindReceiptsByFilters("1", "operator", ReceiptOriginType.RECEIPT_PAGOPA,  "iuv", "iur", "iud", 1L, null, null, 0, 10, Collections.emptyList()),
+        .crudReceiptsViewFindReceiptsByFilters("1", "operator", List.of(ReceiptOriginType.RECEIPT_PAGOPA),  "iuv", "iur", "iud", 1L, null, null, 0, 10, Collections.emptyList()),
       new ParameterizedTypeReference<>() {
       },
       debtPositionApisHolder::unload);

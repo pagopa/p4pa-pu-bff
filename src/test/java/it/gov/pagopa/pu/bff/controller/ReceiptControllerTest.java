@@ -66,7 +66,7 @@ class ReceiptControllerTest {
   @Test
   void givenCorrectRequestWhenGetReceiptsThenOk() {
     long organizationId = 1L;
-    ReceiptOriginType receiptOrigin = ReceiptOriginType.RECEIPT_PAGOPA;
+    List<ReceiptOriginType> receiptOrigins = List.of(ReceiptOriginType.RECEIPT_PAGOPA);
     String iuv = "IUV123";
     String iur = "IUR123";
     String iud = "IUD123";
@@ -77,14 +77,14 @@ class ReceiptControllerTest {
 
     OffsetDateTimeIntervalFilter paymentDateTimeFilter = new OffsetDateTimeIntervalFilter(fromDate, toDate);
 
-    ReceiptViewFiltersDTO filtersDTO = new ReceiptViewFiltersDTO(organizationId, receiptOrigin, loggedUser.getMappedExternalUserId(), iuv, iur, iud, debtPositionTypeOrgId, paymentDateTimeFilter);
+    ReceiptViewFiltersDTO filtersDTO = new ReceiptViewFiltersDTO(organizationId, receiptOrigins, loggedUser.getMappedExternalUserId(), iuv, iur, iud, debtPositionTypeOrgId, paymentDateTimeFilter);
 
     PagedReceiptView expectedResult = new PagedReceiptView();
     expectedResult.setContent(List.of(ReceiptView.builder()
       .receiptId(100L)
       .paymentAmountCents(1000L)
       .paymentDateTime(OffsetDateTime.now())
-      .receiptOrigin(receiptOrigin)
+      .receiptOrigin(ReceiptOriginType.RECEIPT_PAGOPA)
       .iuv(iuv)
       .installmentId(200L)
       .debtPositionTypeOrgDescription("Description")
@@ -97,7 +97,7 @@ class ReceiptControllerTest {
     Mockito.when(receiptRetrieverServiceMock.getReceipts(filtersDTO, pageable, loggedUser, accessToken))
       .thenReturn(expectedResult);
 
-    ResponseEntity<PagedReceiptView> response = receiptController.getReceipts(organizationId, receiptOrigin, iuv, iur, iud, debtPositionTypeOrgId, fromDate, toDate, pageable);
+    ResponseEntity<PagedReceiptView> response = receiptController.getReceipts(organizationId, receiptOrigins, iuv, iur, iud, debtPositionTypeOrgId, fromDate, toDate, pageable);
 
     Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
     Assertions.assertNotNull(response.getBody());

@@ -25,7 +25,7 @@ public class ReceiptClient {
       .crudReceiptsViewFindReceiptsByFilters(
         String.valueOf(receiptViewFiltersDTO.getOrganizationId()),
         receiptViewFiltersDTO.getOperatorExternalUserId(),
-        receiptViewFiltersDTO.getReceiptOrigin(),
+        receiptViewFiltersDTO.getReceiptOrigins(),
         receiptViewFiltersDTO.getIuv(),
         receiptViewFiltersDTO.getIur(),
         receiptViewFiltersDTO.getIud(),

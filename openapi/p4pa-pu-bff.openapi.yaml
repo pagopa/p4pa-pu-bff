@@ -1339,11 +1339,13 @@ paths:
           schema:
             type: integer
             format: int64
-        - name: receiptOrigin
+        - name: receiptOrigins
           in: query
           required: false
           schema:
-            type: 'ReceiptOriginType'
+            type: array
+            items:
+              type: 'ReceiptOriginType'
         - name: iuv
           in: query
           required: false

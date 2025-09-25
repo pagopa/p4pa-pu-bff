@@ -33,6 +33,8 @@ import org.springframework.security.authorization.AuthorizationDeniedException;
 import uk.co.jemos.podam.api.PodamFactory;
 
 import java.time.OffsetDateTime;
+import java.util.Collections;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -72,12 +74,12 @@ class ReceiptRetrieverServiceImplTest {
     UserInfo loggedUser = new UserInfo();
     loggedUser.setUserId("user-123");
 
-    ReceiptOriginType receiptOrigin = ReceiptOriginType.RECEIPT_PAGOPA;
+    List<ReceiptOriginType> receiptOrigins = List.of(ReceiptOriginType.RECEIPT_PAGOPA);
     OffsetDateTime paymentDateTimeFrom = OffsetDateTime.now().minusDays(1);
     OffsetDateTime paymentDateTimeTo = OffsetDateTime.now();
     OffsetDateTimeIntervalFilter paymentDateTimeFilter = new OffsetDateTimeIntervalFilter(paymentDateTimeFrom, paymentDateTimeTo);
 
-    ReceiptViewFiltersDTO filtersDTO = new ReceiptViewFiltersDTO(1L, receiptOrigin, null, "IUV123", "IUR456", "IUD789", null, paymentDateTimeFilter);
+    ReceiptViewFiltersDTO filtersDTO = new ReceiptViewFiltersDTO(1L, receiptOrigins, null, "IUV123", "IUR456", "IUD789", null, paymentDateTimeFilter);
     Pageable pageable = PageRequest.of(0, 10);
 
     PagedModelReceiptView pagedModelReceiptView = new PagedModelReceiptView();
@@ -132,12 +134,12 @@ class ReceiptRetrieverServiceImplTest {
     UserInfo loggedUser = new UserInfo();
     loggedUser.setUserId("user-123");
 
-    ReceiptOriginType receiptOrigin = ReceiptOriginType.RECEIPT_PAGOPA;
+    List<ReceiptOriginType> receiptOrigins = List.of(ReceiptOriginType.RECEIPT_PAGOPA);
     OffsetDateTime paymentDateTimeFrom = OffsetDateTime.now().minusDays(1);
     OffsetDateTime paymentDateTimeTo = OffsetDateTime.now();
     OffsetDateTimeIntervalFilter paymentDateTimeFilter = new OffsetDateTimeIntervalFilter(paymentDateTimeFrom, paymentDateTimeTo);
 
-    ReceiptViewFiltersDTO filtersDTO = new ReceiptViewFiltersDTO(1L, receiptOrigin, null, "IUV123", "IUR456", "IUD789", null, paymentDateTimeFilter);
+    ReceiptViewFiltersDTO filtersDTO = new ReceiptViewFiltersDTO(1L, receiptOrigins, null, "IUV123", "IUR456", "IUD789", null, paymentDateTimeFilter);
     Pageable pageable = PageRequest.of(0, 10);
 
     try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
@@ -223,8 +225,31 @@ class ReceiptRetrieverServiceImplTest {
 
   @Test
   void givenReceiptOriginOnlyWhenGetReceiptsThenOk() {
-    ReceiptViewFiltersDTO filtersDTO = new ReceiptViewFiltersDTO(1L, ReceiptOriginType.RECEIPT_PAGOPA, null, null, null, null, null, null);
+    ReceiptViewFiltersDTO filtersDTO = new ReceiptViewFiltersDTO(1L, List.of(ReceiptOriginType.RECEIPT_PAGOPA), null, null, null, null, null, null);
     testSingleFilterSuccess(filtersDTO);
+  }
+
+  @Test
+  void givenEmptyReceiptOriginsWhenGetReceiptsThenIllegalArgumentException() {
+    ReceiptViewFiltersDTO filtersDTO = new ReceiptViewFiltersDTO(1L, Collections.emptyList(), null, null, null, null, null, null);
+    UserInfo loggedUser = new UserInfo();
+    loggedUser.setUserId("user-123");
+    Pageable pageable = PageRequest.of(0, 10);
+
+    try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic =
+           Mockito.mockStatic(AuthorizationService.class)) {
+
+      authorizationServiceMockedStatic.when(() ->
+          AuthorizationService.validateUserForOrganizationId(filtersDTO.getOrganizationId(), loggedUser))
+        .thenAnswer(a -> null);
+
+      Assertions.assertThrows(
+        IllegalArgumentException.class,
+        () -> receiptViewService.getReceipts(filtersDTO, pageable, loggedUser, accessToken)
+      );
+    }
+
+    Mockito.verifyNoInteractions(receiptServiceMock, receiptViewMapperMock);
   }
 
   private void testSingleFilterSuccess(ReceiptViewFiltersDTO filtersDTO) {

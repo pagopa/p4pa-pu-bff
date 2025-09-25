@@ -1,5 +1,6 @@
 package it.gov.pagopa.pu.bff.mapper;
 
+import it.gov.pagopa.pu.bff.dto.generated.OperatorRole;
 import it.gov.pagopa.pu.bff.dto.generated.OrganizationDTO;
 import it.gov.pagopa.pu.bff.exception.InvalidOperatorRoleException;
 import it.gov.pagopa.pu.organization.dto.generated.Organization;
@@ -10,7 +11,7 @@ import org.springframework.stereotype.Component;
 public class OrganizationDTOMapper {
 
   public OrganizationDTO mapToOrganizationDTO(Organization organization, List<String> roles) {
-    OrganizationDTO.OperatorRoleEnum operatorRole = determineOperatorRole(roles);
+    OperatorRole operatorRole = determineOperatorRole(roles);
 
     return OrganizationDTO.builder()
       .organizationId(organization.getOrganizationId())
@@ -22,10 +23,11 @@ public class OrganizationDTOMapper {
       .flagNotifyIo(organization.getFlagNotifyIo())
       .flagNotifyOutcomePush(organization.getFlagNotifyOutcomePush())
       .flagPaymentNotification(organization.getFlagPaymentNotification())
+      .status(organization.getStatus())
       .build();
   }
 
-  private OrganizationDTO.OperatorRoleEnum determineOperatorRole(List<String> roles) {
+  private OperatorRole determineOperatorRole(List<String> roles) {
     if (roles == null || roles.isEmpty()) {
       return null;
     }
@@ -36,7 +38,7 @@ public class OrganizationDTOMapper {
       .orElse(roles.getFirst());
 
     try {
-      return OrganizationDTO.OperatorRoleEnum.fromValue(operatorRoleValue);
+      return OperatorRole.fromValue(operatorRoleValue);
     } catch (IllegalArgumentException e) {
       throw new InvalidOperatorRoleException("INVALID_OPERATOR_ROLE: " + operatorRoleValue);
     }

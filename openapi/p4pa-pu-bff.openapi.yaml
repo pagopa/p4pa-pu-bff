@@ -1339,11 +1339,13 @@ paths:
           schema:
             type: integer
             format: int64
-        - name: receiptOrigin
+        - name: receiptOrigins
           in: query
           required: false
           schema:
-            type: 'ReceiptOriginType'
+            type: array
+            items:
+              type: 'ReceiptOriginType'
         - name: iuv
           in: query
           required: false
@@ -3365,6 +3367,182 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorDTO'
       x-spring-paginated: true
+  /organization/{organizationId}/operators/{mappedExternalUserId}:
+    get:
+      tags:
+        - Operators
+      operationId: getOperatorDetails
+      parameters:
+        - name: organizationId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: mappedExternalUserId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: debtPositionTypeOrgCode
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: debtPositionTypeOrgDescription
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: debtPositionTypeId
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/hal+json:
+              schema:
+                $ref: '#/components/schemas/OperatorsDetail'
+        '401':
+          description: Unauthorized - Missing or invalid token
+        '403':
+          description: Forbidden - Access denied
+        '404':
+          description: Not Found
+        '500':
+          description: Internal Server Error
+      x-spring-paginated: true
+  /organization/{organizationId}/operators/{mappedExternalUserId}/debt-position-type-orgs:
+    get:
+      tags:
+        - Operators
+      operationId: getDebtPositionTypeOrgsNotEnabledForOperator
+      parameters:
+        - name: organizationId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: mappedExternalUserId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: debtPositionTypeOrgCode
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: debtPositionTypeOrgDescription
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: debtPositionTypeId
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PagedDebtPositionTypeOrgDTO'
+        '401':
+          description: Unauthorized - Missing or invalid token
+        '403':
+          description: Forbidden - Access denied
+        '404':
+          description: Not Found
+        '500':
+          description: Internal Server Error
+      x-spring-paginated: true
+    post:
+      tags:
+        - Operators
+      operationId: enableDebtPositionTypeOrgsForOperator
+      parameters:
+        - name: organizationId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: mappedExternalUserId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: debtPositionTypeOrgIds
+          in: query
+          required: true
+          schema:
+            type: array
+            uniqueItems: true
+            items:
+              type: integer
+              format: int64
+      responses:
+        '201':
+          description: Created
+        '400':
+          description: Invalid request
+        '401':
+          description: Unauthorized - Missing or invalid token
+        '403':
+          description: Forbidden
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+  /organization/{organizationId}/operators/{mappedExternalUserId}/debt-position-type-orgs/{debtPositionTypeOrgId}:
+    delete:
+      tags:
+        - Operators
+      operationId: removeDebtPositionTypeOrgFromOperator
+      parameters:
+        - name: organizationId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: mappedExternalUserId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: debtPositionTypeOrgId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Number of operators successfully deleted
+          content:
+            application/json:
+              schema:
+                type: integer
+        '400':
+          description: Invalid request
+        '401':
+          description: Unauthorized - Missing or invalid token
+        '403':
+          description: Forbidden
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
 security:
   - BearerAuth: [ ]
 components:
@@ -3507,6 +3685,7 @@ components:
         - flagNotifyIo
         - flagNotifyOutcomePush
         - flagPaymentNotification
+        - status
       properties:
         organizationId:
           type: integer
@@ -3519,11 +3698,7 @@ components:
           type: string
           description: Organization name
         operatorRole:
-          type: string
-          enum:
-            - ROLE_ADMIN
-            - ROLE_OPER
-          description: Operator role
+          $ref: '#/components/schemas/OperatorRole'
         orgLogo:
           type: string
           format: base64
@@ -3536,6 +3711,8 @@ components:
           type: boolean
         flagPaymentNotification:
           type: boolean
+        status:
+          type: 'OrganizationStatus'
     ConfigFE:
       type: object
       required:
@@ -3631,6 +3808,53 @@ components:
         number:
           type: integer
           format: int64
+    PagedDebtPositionTypeOrgDTO:
+      type: object
+      required:
+        - content
+        - size
+        - totalElements
+        - totalPages
+        - number
+      properties:
+        content:
+          type: array
+          items:
+            $ref: "#/components/schemas/DebtPositionTypeOrgDTO"
+        size:
+          type: integer
+          format: int64
+        totalElements:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer
+          format: int64
+        number:
+          type: integer
+          format: int64
+    OperatorsDetail:
+      type: object
+      required:
+        - pagedDebtPositionTypeOrg
+        - operatorId
+        - operatorFiscalCode
+        - operatorRole
+        - operatorName
+        - operatorLastName
+      properties:
+        pagedDebtPositionTypeOrg:
+          $ref: '#/components/schemas/PagedDebtPositionTypeOrgDTO'
+        operatorId:
+          type: string
+        operatorName:
+          type: string
+        operatorLastName:
+          type: string
+        operatorFiscalCode:
+          type: string
+        operatorRole:
+          $ref: '#/components/schemas/OperatorRole'
     PagedDebtPositionTypeWithCount:
       type: object
       required:
@@ -3656,6 +3880,11 @@ components:
         number:
           type: integer
           format: int64
+    OperatorRole:
+      type: string
+      enum:
+        - ROLE_ADMIN
+        - ROLE_OPER
     DebtPositionTypeWithCount:
       type: object
       required:
@@ -4199,6 +4428,11 @@ components:
           type: integer
     OrganizationWithDebtPositionTypeOrgAndOperatorsCount:
       type: object
+      required:
+        - organizationId
+        - ipaCode
+        - orgName
+        - orgFiscalCode
       properties:
         organizationId:
           type: integer

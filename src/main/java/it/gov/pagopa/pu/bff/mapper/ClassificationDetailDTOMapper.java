@@ -21,7 +21,7 @@ public interface ClassificationDetailDTOMapper {
   default boolean isPayed(ClassificationsEnum classification) {
     return switch (classification) {
       case DOPPI, RT_NO_IUF, RT_NO_IUD, IUV_NO_RT, IUD_RT_IUF, RT_IUF, RT_TES,
-           IUD_RT_IUF_TES, RT_IUF_TES, IUF_TES_DIV_IMP, IUD_NO_RT -> true;
+           IUD_RT_IUF_TES, RT_IUF_TES, IUF_TES_DIV_IMP, IUD_NO_RT, IUF_NO_TES -> true;
       default -> false;
     };
   }

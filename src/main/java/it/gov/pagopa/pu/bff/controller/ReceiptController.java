@@ -20,6 +20,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.OffsetDateTime;
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -32,13 +33,13 @@ public class ReceiptController implements ReceiptsApi {
   }
 
   @Override
-  public ResponseEntity<PagedReceiptView> getReceipts(Long organizationId, ReceiptOriginType receiptOrigin, String iuv, String iur, String iud, Long debtPositionTypeOrgId, OffsetDateTime paymentDateTimeFrom, OffsetDateTime paymentDateTimeTo, Pageable pageable) {
-    log.info("User requested getReceipts having organizationId {} and receiptOrigin {}", organizationId, receiptOrigin);
+  public ResponseEntity<PagedReceiptView> getReceipts(Long organizationId, List<ReceiptOriginType> receiptOrigins, String iuv, String iur, String iud, Long debtPositionTypeOrgId, OffsetDateTime paymentDateTimeFrom, OffsetDateTime paymentDateTimeTo, Pageable pageable) {
+    log.info("User requested getReceipts having organizationId {} and receiptOrigins {}", organizationId, receiptOrigins);
     UserInfo userInfo = SecurityUtils.getLoggedUser();
     OffsetDateTimeIntervalFilter paymentDateTimeFilter = new OffsetDateTimeIntervalFilter(paymentDateTimeFrom, paymentDateTimeTo);
 
     return ResponseEntity.ok(receiptRetrieverService.getReceipts(
-      new ReceiptViewFiltersDTO(organizationId, receiptOrigin, userInfo.getMappedExternalUserId(), iuv, iur, iud, debtPositionTypeOrgId, paymentDateTimeFilter),
+      new ReceiptViewFiltersDTO(organizationId, receiptOrigins, userInfo.getMappedExternalUserId(), iuv, iur, iud, debtPositionTypeOrgId, paymentDateTimeFilter),
       pageable, userInfo, SecurityUtils.getAccessToken()));
   }
 

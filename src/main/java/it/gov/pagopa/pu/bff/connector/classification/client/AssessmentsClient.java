@@ -28,6 +28,7 @@ public class AssessmentsClient {
   public PagedAssessmentsView findPagedAssessmentsView(AssessmentsFiltersDTO filters, Pageable pageable, String accessToken){
     return classificationApisHolder.getAssessmentsControllerApi(accessToken)
       .getPagedAssessmentsList(
+        filters.getOrganizationId(),
         filters.getAssessmentName(),
         filters.getUpdateDateTimeFrom(),
         filters.getUpdateDateTimeTo(),

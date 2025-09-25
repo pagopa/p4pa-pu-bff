@@ -1,12 +1,23 @@
 package it.gov.pagopa.pu.bff.connector.debt_position.client;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.when;
+
 import it.gov.pagopa.pu.bff.connector.debt_position.config.DebtPositionApisHolder;
+import it.gov.pagopa.pu.bff.dto.OperatorDetailsFiltersDTO;
 import it.gov.pagopa.pu.bff.util.TestUtils;
 import it.gov.pagopa.pu.debtpositions.controller.generated.DebtPositionTypeOrgSearchControllerApi;
 import it.gov.pagopa.pu.debtpositions.dto.generated.CollectionModelDebtPositionTypeOrg;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrg;
 import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelDebtPositionTypeOrg;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,15 +25,9 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.util.CollectionUtils;
 import uk.co.jemos.podam.api.PodamFactory;
-
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class DebtPositionTypeOrgSearchClientTest {
@@ -190,4 +195,57 @@ class DebtPositionTypeOrgSearchClientTest {
 
     assertEquals(expectedCount, result);
   }
+
+  @Test
+  void givenParametersWhenFindPagedDebtPositionTypeOrgThenInvokeWithAccessToken() {
+    //given
+    Long organizationId = 1L;
+    Long debtPositionId = 1L;
+    String mappedExternalUserId = "userId";
+    String debtPositionTypeOrgCode = "code";
+    String debtPositionTypeOrgDescription = "description";
+    String accessToken = "ACCESS_TOKEN";
+
+    OperatorDetailsFiltersDTO operatorDetailsFiltersDTO = new OperatorDetailsFiltersDTO(organizationId, mappedExternalUserId, debtPositionTypeOrgCode, debtPositionTypeOrgDescription, debtPositionId);
+
+    PagedModelDebtPositionTypeOrg expectedResult = new PagedModelDebtPositionTypeOrg();
+    when(debtPositionApisHolderMock.getDebtPositionTypeOrgSearchControllerApi(accessToken))
+      .thenReturn(debtPositionTypeOrgSearchControllerApiMock);
+    when(debtPositionTypeOrgSearchControllerApiMock
+      .crudDebtPositionTypeOrgsFindPagedDebtPositionTypeOrg(organizationId, mappedExternalUserId, debtPositionTypeOrgCode, debtPositionTypeOrgDescription, debtPositionId, 0,1,List.of()))
+      .thenReturn(expectedResult);
+
+    //when
+    PagedModelDebtPositionTypeOrg result = debtPositionTypeOrgSearchClient.findPagedDebtPositionTypeOrg(operatorDetailsFiltersDTO, Pageable.ofSize(1), accessToken);
+    //then
+    Assertions.assertNotNull(result);
+    Assertions.assertSame(expectedResult, result);
+  }
+
+  @Test
+  void givenParametersWhenFindDebtPositionTypeOrgNotEnabledForOperatorThenInvokeWithAccessToken() {
+    //given
+    Long organizationId = 1L;
+    Long debtPositionId = 2L;
+    String mappedExternalUserId = "userId";
+    String debtPositionTypeOrgCode = "code";
+    String debtPositionTypeOrgDescription = "description";
+    String accessToken = "ACCESS_TOKEN";
+
+    OperatorDetailsFiltersDTO operatorDetailsFiltersDTO = new OperatorDetailsFiltersDTO(organizationId, mappedExternalUserId, debtPositionTypeOrgCode, debtPositionTypeOrgDescription, debtPositionId);
+
+    PagedModelDebtPositionTypeOrg expectedResult = new PagedModelDebtPositionTypeOrg();
+    when(debtPositionApisHolderMock.getDebtPositionTypeOrgSearchControllerApi(accessToken))
+      .thenReturn(debtPositionTypeOrgSearchControllerApiMock);
+    when(debtPositionTypeOrgSearchControllerApiMock
+      .crudDebtPositionTypeOrgsFindDebtPositionTypeOrgNotEnabledForOperator(organizationId, mappedExternalUserId, debtPositionTypeOrgCode, debtPositionTypeOrgDescription, debtPositionId, 0,1,List.of()))
+      .thenReturn(expectedResult);
+
+    //when
+    PagedModelDebtPositionTypeOrg result = debtPositionTypeOrgSearchClient.findDebtPositionTypeOrgNotEnabledForOperator(operatorDetailsFiltersDTO, Pageable.ofSize(1), accessToken);
+    //then
+    Assertions.assertNotNull(result);
+    Assertions.assertSame(expectedResult, result);
+  }
+
 }

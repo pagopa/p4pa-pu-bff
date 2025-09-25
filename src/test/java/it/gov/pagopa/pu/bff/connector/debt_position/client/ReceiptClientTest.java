@@ -24,6 +24,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.client.HttpClientErrorException;
 
 import java.time.OffsetDateTime;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.Mockito.when;
@@ -58,7 +59,7 @@ class ReceiptClientTest {
     String accessToken = "ACCESSTOKEN";
     PagedModelReceiptView expectedResult = new PagedModelReceiptView();
 
-    ReceiptOriginType receiptOrigin = ReceiptOriginType.RECEIPT_PAGOPA;
+    List<ReceiptOriginType> receiptOrigins = List.of(ReceiptOriginType.RECEIPT_PAGOPA);
     String iuv = "iuv123";
     String iur = "iur123";
     String iud = "iud123";
@@ -68,7 +69,7 @@ class ReceiptClientTest {
     OffsetDateTimeIntervalFilter paymentDateTimeFilter = new OffsetDateTimeIntervalFilter(paymentDateTimeFrom, paymentDateTimeTo);
 
     ReceiptViewFiltersDTO filtersDTO = new ReceiptViewFiltersDTO(
-      1L, receiptOrigin, "operator", iuv, iur, iud, debtPositionTypeOrgId, paymentDateTimeFilter);
+      1L, receiptOrigins, "operator", iuv, iur, iud, debtPositionTypeOrgId, paymentDateTimeFilter);
     Pageable pageable = PageRequest.of(0, 10, Sort.unsorted());
 
     when(debtPositionApisHolderMock.getReceiptViewSearchControllerApi(accessToken))
@@ -77,7 +78,7 @@ class ReceiptClientTest {
     when(receiptViewSearchControllerApiMock.crudReceiptsViewFindReceiptsByFilters(
       String.valueOf(filtersDTO.getOrganizationId()),
       filtersDTO.getOperatorExternalUserId(),
-      filtersDTO.getReceiptOrigin(),
+      filtersDTO.getReceiptOrigins(),
       filtersDTO.getIuv(),
       filtersDTO.getIur(),
       filtersDTO.getIud(),

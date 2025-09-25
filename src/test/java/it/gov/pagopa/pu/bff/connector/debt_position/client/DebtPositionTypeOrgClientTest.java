@@ -18,6 +18,8 @@ import it.gov.pagopa.pu.debtpositions.dto.generated.CollectionModelDebtPositionT
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrg;
 import it.gov.pagopa.pu.debtpositions.dto.generated.SaveDebtPositionTypeOrgDTO;
 import java.util.List;
+import java.util.Set;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -195,5 +197,23 @@ class DebtPositionTypeOrgClientTest {
 
     Assertions.assertThrows(ResourceNotFoundException.class,()->
       debtPositionTypeOrgClient.updateFlagActiveDebtPositionTypeOrg(debtPositionTypeOrgId, false, accessToken));
+  }
+
+  @Test
+  void givenDebtPositionTypeOrgIdsWhenGetByDebtPositionTypeOrgIdInThenInvokeWithAccessToken() {
+    Set<Long> debtPositionTypeOrgIds = Set.of(10L, 20L);
+    String accessToken = "ACCESSTOKEN";
+    CollectionModelDebtPositionTypeOrg expectedResult = new CollectionModelDebtPositionTypeOrg();
+
+    when(debtPositionApisHolderMock.getDebtPositionTypeOrgSearchControllerApi(accessToken))
+      .thenReturn(debtPositionTypeOrgSearchControllerApiMock);
+    when(debtPositionTypeOrgSearchControllerApiMock
+      .crudDebtPositionTypeOrgsFindByDebtPositionTypeOrgIdIn(debtPositionTypeOrgIds))
+      .thenReturn(expectedResult);
+
+    CollectionModelDebtPositionTypeOrg result =
+      debtPositionTypeOrgClient.getByDebtPositionTypeOrgIdIn(debtPositionTypeOrgIds, accessToken);
+
+    assertSame(expectedResult, result);
   }
 }

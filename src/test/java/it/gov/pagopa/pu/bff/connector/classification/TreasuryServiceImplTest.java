@@ -5,6 +5,7 @@ import it.gov.pagopa.pu.bff.connector.classification.client.TreasuryViewSearchCl
 import it.gov.pagopa.pu.bff.dto.TreasuryViewFiltersDTO;
 import it.gov.pagopa.pu.classification.dto.generated.PagedModelTreasuryView;
 import it.gov.pagopa.pu.classification.dto.generated.Treasury;
+import it.gov.pagopa.pu.classification.dto.generated.TreasuryOrigin;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -63,6 +64,7 @@ class TreasuryServiceImplTest {
       .pspLastName("PSPLastName")
       .orgBtCode("orgBtCode")
       .orgIstatCode("orgIstatCode")
+      .treasuryOrigin(TreasuryOrigin.TREASURY_OPI)
       .build();
 
     when(treasurySearchClient.getTreasuryDetail(Mockito.same(organizationId), Mockito.same(treasuryId), Mockito.same(accessToken)))

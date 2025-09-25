@@ -4,15 +4,20 @@ import it.gov.pagopa.pu.bff.config.CacheConfig.Fields;
 import it.gov.pagopa.pu.bff.connector.debt_position.client.DebtPositionTypeOrgClient;
 import it.gov.pagopa.pu.bff.connector.debt_position.client.DebtPositionTypeOrgSearchClient;
 import it.gov.pagopa.pu.bff.connector.debt_position.client.DebtPositionTypeOrgWithCountClient;
-import it.gov.pagopa.pu.debtpositions.dto.generated.*;
+import it.gov.pagopa.pu.bff.dto.OperatorDetailsFiltersDTO;
+import it.gov.pagopa.pu.debtpositions.dto.generated.CollectionModelDebtPositionTypeOrg;
+import it.gov.pagopa.pu.debtpositions.dto.generated.CollectionModelDebtPositionTypeOrgCountByOrganizationId;
+import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrg;
+import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelDebtPositionTypeOrg;
+import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelDebtPositionTypeOrgWithCount;
+import it.gov.pagopa.pu.debtpositions.dto.generated.SaveDebtPositionTypeOrgDTO;
+import java.util.List;
+import java.util.Set;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.Set;
 
 @Service
 @CacheConfig(cacheNames = Fields.debtPositionTypeOrg)
@@ -62,10 +67,10 @@ public class DebtPositionTypeOrgServiceImpl implements DebtPositionTypeOrgServic
 
   @Override
   @CacheEvict(key = "#saveDebtPositionTypeOrg.debtPositionTypeOrg.debtPositionTypeOrgId",
-          condition = "#saveDebtPositionTypeOrg!=null && #saveDebtPositionTypeOrg.debtPositionTypeOrg!=null && #saveDebtPositionTypeOrg.debtPositionTypeOrg.debtPositionTypeOrgId!=null")
+    condition = "#saveDebtPositionTypeOrg!=null && #saveDebtPositionTypeOrg.debtPositionTypeOrg!=null && #saveDebtPositionTypeOrg.debtPositionTypeOrg.debtPositionTypeOrgId!=null")
   public DebtPositionTypeOrg saveDebtPositionTypeOrg(
     SaveDebtPositionTypeOrgDTO saveDebtPositionTypeOrg, String accessToken) {
-    return debtPositionTypeOrgClient.saveDebtPositionTypeOrg(saveDebtPositionTypeOrg,accessToken);
+    return debtPositionTypeOrgClient.saveDebtPositionTypeOrg(saveDebtPositionTypeOrg, accessToken);
   }
 
   @Override
@@ -87,5 +92,20 @@ public class DebtPositionTypeOrgServiceImpl implements DebtPositionTypeOrgServic
   @Override
   public Long countByOrgSilServiceId(Long orgSilServiceId, String accessToken) {
     return debtPositionTypeOrgSearchClient.countByOrgSilServiceId(orgSilServiceId, accessToken);
+  }
+
+  @Override
+  public PagedModelDebtPositionTypeOrg findPagedDebtPositionTypeOrg(OperatorDetailsFiltersDTO operatorDetailsFiltersDTO, Pageable pageable, String accessToken) {
+    return debtPositionTypeOrgSearchClient.findPagedDebtPositionTypeOrg(operatorDetailsFiltersDTO, pageable, accessToken);
+  }
+
+  @Override
+  public PagedModelDebtPositionTypeOrg findDebtPositionTypeOrgNotEnabledForOperator(OperatorDetailsFiltersDTO operatorDetailsFiltersDTO, Pageable pageable, String accessToken) {
+    return debtPositionTypeOrgSearchClient.findDebtPositionTypeOrgNotEnabledForOperator(operatorDetailsFiltersDTO, pageable, accessToken);
+  }
+
+  @Override
+  public CollectionModelDebtPositionTypeOrg getByDebtPositionTypeOrgIdIn(Set<Long> debtPositionTypeOrgIds, String accessToken) {
+    return debtPositionTypeOrgClient.getByDebtPositionTypeOrgIdIn(debtPositionTypeOrgIds, accessToken);
   }
 }

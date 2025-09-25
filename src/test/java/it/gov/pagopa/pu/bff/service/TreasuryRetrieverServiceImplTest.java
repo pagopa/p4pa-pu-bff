@@ -9,6 +9,7 @@ import it.gov.pagopa.pu.bff.mapper.TreasuryViewMapper;
 import it.gov.pagopa.pu.bff.service.treasury.TreasuryRetrieverServiceImpl;
 import it.gov.pagopa.pu.classification.dto.generated.PagedModelTreasuryView;
 import it.gov.pagopa.pu.classification.dto.generated.Treasury;
+import it.gov.pagopa.pu.classification.dto.generated.TreasuryOrigin;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -221,6 +222,7 @@ class TreasuryRetrieverServiceImplTest {
       .pspLastName("PSPLastName")
       .orgBtCode("orgBtCode")
       .orgIstatCode("orgIstatCode")
+      .treasuryOrigin(TreasuryOrigin.TREASURY_OPI)
       .build();
 
     try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {

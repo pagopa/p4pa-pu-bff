@@ -26,6 +26,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import it.gov.pagopa.pu.auth.dto.generated.UserOrganizationRoles;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -120,15 +121,31 @@ public class OrganizationRetrieverServiceImpl implements OrganizationRetrieverSe
       return pagedOrganizationWithDebtPositionTypeOrgAndOperatorsCountMapper.map(pagedModelOrganization, Collections.emptyMap(), Collections.emptyMap());
     }
 
-    List<Organization> orgList = pagedModelOrganization.getEmbedded().getOrganizations();
+    Set<Long> allowedOrgIds = userInfo.getOrganizations().stream()
+      .map(UserOrganizationRoles::getOrganizationId)
+      .collect(Collectors.toSet());
 
-    List<Long> organizationIds = orgList.stream()
+    List<Organization> filteredOrgList = pagedModelOrganization.getEmbedded()
+      .getOrganizations()
+      .stream()
+      .filter(org -> allowedOrgIds.contains(org.getOrganizationId()))
+      .toList();
+
+    if (filteredOrgList.isEmpty()) {
+      log.info("No organizations for this user");
+      return pagedOrganizationWithDebtPositionTypeOrgAndOperatorsCountMapper
+        .map(pagedModelOrganization, Collections.emptyMap(), Collections.emptyMap());
+    }
+
+    pagedModelOrganization.getEmbedded().setOrganizations(filteredOrgList);
+
+    List<Long> organizationIds = filteredOrgList.stream()
       .map(Organization::getOrganizationId)
       .toList();
 
     Map<Long, Integer> dptoCountsByOrgId = getDptoCountsByOrgIdMap(accessToken, organizationIds);
 
-    Map<Long, OperatorsPage> allOperatorsPages = getOperatorsPageMap(pageable, accessToken, orgList);
+    Map<Long, OperatorsPage> allOperatorsPages = getOperatorsPageMap(pageable, accessToken, filteredOrgList);
 
     return pagedOrganizationWithDebtPositionTypeOrgAndOperatorsCountMapper.map(pagedModelOrganization, dptoCountsByOrgId, allOperatorsPages);
   }

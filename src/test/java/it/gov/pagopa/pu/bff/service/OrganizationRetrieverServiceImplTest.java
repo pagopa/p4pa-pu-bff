@@ -311,6 +311,9 @@ class OrganizationRetrieverServiceImplTest {
   @Test
   void givenPagedModelOrganizationWhenGetOrganizationsByBrokerIdAndFiltersThenReturnCorrectPagedDto() {
     // Given
+    UserOrganizationRoles role = new UserOrganizationRoles();
+    role.setOrganizationId(123L);
+    userInfo.setOrganizations(List.of(role));
     String orgName = "TestOrg";
     String ipaCode = "IPA123";
     Organization organization = new Organization();
@@ -395,6 +398,32 @@ class OrganizationRetrieverServiceImplTest {
     assertEquals(0L, result.getTotalElements());
     assertEquals(0L, result.getTotalPages());
     assertEquals(0L, result.getNumber());
+  }
+
+  @Test
+  void givenOrganizationsNotInUserInfoWhenGetOrganizationsByBrokerIdAndFiltersThenReturnEmptyPagedDto() {
+    Organization org = new Organization();
+    org.setOrganizationId(999L);
+    org.setIpaCode("IPA999");
+    PagedModelOrganization pagedModelOrganization = new PagedModelOrganization();
+    pagedModelOrganization.setEmbedded(PagedModelOrganizationEmbedded.builder().organizations(List.of(org)).build());
+
+    Mockito.doNothing().when(authorizationServiceMock).validateBrokerAdminRole(userInfo);
+    Mockito.when(organizationServiceMock.getOrganizationsByBrokerIdAndFilters(
+        userInfo.getBrokerId(), null, null, Pageable.ofSize(1), accessToken))
+      .thenReturn(pagedModelOrganization);
+
+    PagedOrganizationWithDebtPositionTypeOrgAndOperatorsCount expected = new PagedOrganizationWithDebtPositionTypeOrgAndOperatorsCount();
+
+    Mockito.when(pagedOrganizationWithDebtPositionTypeOrgAndOperatorsCountMapperMock
+        .map(pagedModelOrganization, Collections.emptyMap(), Collections.emptyMap()))
+      .thenReturn(expected);
+
+    PagedOrganizationWithDebtPositionTypeOrgAndOperatorsCount result =
+      organizationService.getOrganizationsByBrokerIdAndFilters(userInfo, null, null, Pageable.ofSize(1), accessToken);
+
+    assertNotNull(result);
+    assertEquals(expected, result);
   }
 
   @Test

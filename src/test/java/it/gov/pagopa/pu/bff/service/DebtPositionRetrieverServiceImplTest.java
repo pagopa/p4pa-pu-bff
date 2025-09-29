@@ -271,6 +271,22 @@ class DebtPositionRetrieverServiceImplTest {
     testSingleFilterSuccess(filtersDTO);
   }
 
+  @Test
+  void givenOnlyStatusFieldWhenGetDebtPositionViewsThenOk() {
+    DebtPositionViewFiltersDTO filtersDTO = new DebtPositionViewFiltersDTO();
+    filtersDTO.setOrganizationId(1L);
+    filtersDTO.setStatus(DebtPositionStatus.PAID);
+    testSingleFilterSuccess(filtersDTO);
+  }
+
+  @Test
+  void givenOnlyIuvFieldWhenGetDebtPositionViewsThenOk() {
+    DebtPositionViewFiltersDTO filtersDTO = new DebtPositionViewFiltersDTO();
+    filtersDTO.setOrganizationId(1L);
+    filtersDTO.setIuv("IUV123");
+    testSingleFilterSuccess(filtersDTO);
+  }
+
   private void testSingleFilterSuccess(DebtPositionViewFiltersDTO filtersDTO) {
     UserInfo loggedUser = new UserInfo();
     loggedUser.setMappedExternalUserId("mappedExternalUserId");

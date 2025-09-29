@@ -95,6 +95,7 @@ class DebtPositionClientTest {
       filtersDTO.getFiscalCode(),
       filtersDTO.getDebtPositionTypeOrgId(),
       filtersDTO.getStatus(),
+      filtersDTO.getIuv(),
       1,
       10,
       Collections.emptyList()

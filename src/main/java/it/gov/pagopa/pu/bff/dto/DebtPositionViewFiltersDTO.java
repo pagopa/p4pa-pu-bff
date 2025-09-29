@@ -17,4 +17,5 @@ public class DebtPositionViewFiltersDTO {
   private String fiscalCode;
   private Long debtPositionTypeOrgId;
   private DebtPositionStatus status;
+  private String iuv;
 }

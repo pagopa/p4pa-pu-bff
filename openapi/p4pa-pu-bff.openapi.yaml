@@ -4608,10 +4608,8 @@ components:
           type: string
         flagAnonymousFiscalCode:
           type: boolean
-          readOnly: true
         flagMandatoryDueDate:
           type: boolean
-          readOnly: true
         flagSpontaneous:
           type: boolean
         flagNotifyIo:

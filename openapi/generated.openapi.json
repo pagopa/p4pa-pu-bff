@@ -11454,12 +11454,10 @@
             "type" : "string"
           },
           "flagAnonymousFiscalCode" : {
-            "type" : "boolean",
-            "readOnly" : true
+            "type" : "boolean"
           },
           "flagMandatoryDueDate" : {
-            "type" : "boolean",
-            "readOnly" : true
+            "type" : "boolean"
           },
           "flagSpontaneous" : {
             "type" : "boolean"

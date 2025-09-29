@@ -89,6 +89,7 @@ class DebtPositionControllerTest {
     String fiscalCode = "fiscalCode";
     Long debtPositionTypeOrgId = 2L;
     DebtPositionStatus status = DebtPositionStatus.REPORTED;
+    String iuv = "IUV123";
 
     PagedDebtPositionView expectedResult = podamFactory.manufacturePojo(PagedDebtPositionView.class);
 
@@ -100,6 +101,7 @@ class DebtPositionControllerTest {
             && f.getFiscalCode().equals(fiscalCode)
             && f.getDebtPositionTypeOrgId().equals(debtPositionTypeOrgId)
             && f.getStatus().equals(status)
+            && f.getIuv().equals(iuv)
         ),
         Mockito.argThat(p -> p.getPageNumber() == 0 && p.getPageSize() == 10 && p.getSort().isUnsorted()),
         Mockito.same(loggedUser), Mockito.same(accessToken)))
@@ -112,6 +114,7 @@ class DebtPositionControllerTest {
       fiscalCode,
       debtPositionTypeOrgId,
       status,
+      iuv,
       PageRequest.of(0, 10));
 
     Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());

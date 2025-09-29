@@ -173,7 +173,8 @@ class DebtPositionApisHolderTest extends BaseApiHolderTest {
           LocalDateTime.now(),
           "fiscalCode",
           1L,
-          DebtPositionStatus.PAID, 0, 10, Collections.emptyList()),
+          DebtPositionStatus.PAID,
+          "IUV123", 0, 10, Collections.emptyList()),
       new ParameterizedTypeReference<>() {
       },
       debtPositionApisHolder::unload);

@@ -11416,8 +11416,7 @@
             "readOnly" : true
           },
           "balance" : {
-            "type" : "string",
-            "readOnly" : true
+            "type" : "string"
           },
           "code" : {
             "type" : "string",

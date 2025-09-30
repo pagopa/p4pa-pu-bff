@@ -1,5 +1,8 @@
 package it.gov.pagopa.pu.bff.connector.debt_position.client;
 
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.mockito.Mockito.when;
+
 import it.gov.pagopa.pu.bff.connector.debt_position.config.DebtPositionApisHolder;
 import it.gov.pagopa.pu.bff.dto.InstallmentViewFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.LocalDateIntervalFilter;
@@ -10,6 +13,8 @@ import it.gov.pagopa.pu.debtpositions.controller.generated.InstallmentViewSearch
 import it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentDetailDTO;
 import it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentNoPII;
 import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelInstallmentView;
+import java.time.LocalDate;
+import java.util.Collections;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,11 +28,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.client.HttpClientErrorException;
-
-import java.time.LocalDate;
-
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class InstallmentClientTest {
@@ -66,7 +66,7 @@ class InstallmentClientTest {
     LocalDateIntervalFilter dueDateFilter = new LocalDateIntervalFilter(dueDateFrom, dueDateTo);
 
     InstallmentViewFiltersDTO filtersDTO = new InstallmentViewFiltersDTO(
-      1L, "operatorExternalUserId", dueDateFilter, "iuv", "fiscalCode", 2L);
+      1L, "operatorExternalUserId", dueDateFilter, "iuv", "fiscalCode", Collections.emptyList(), 2L);
     Pageable pageable = PageRequest.of(0, 10, Sort.unsorted());
 
     when(debtPositionApisHolderMock.getInstallmentViewSearchControllerApi(accessToken))
@@ -79,6 +79,7 @@ class InstallmentClientTest {
       filtersDTO.getDueDate().getTo(),
       filtersDTO.getIuv(),
       filtersDTO.getFiscalCode(),
+      filtersDTO.getDebtPositionOrigins(),
       filtersDTO.getDebtPositionTypeOrgId(),
       PageUtils.getPageNumber(pageable),
       PageUtils.getPageSize(pageable),

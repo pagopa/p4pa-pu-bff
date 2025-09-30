@@ -9,6 +9,7 @@ import it.gov.pagopa.pu.bff.security.SecurityUtils;
 import it.gov.pagopa.pu.bff.service.installment.InstallmentRetrieverService;
 import it.gov.pagopa.pu.bff.util.DateUtils;
 import it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentDetailDTO;
+import java.util.Collections;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -34,7 +35,7 @@ public class InstallmentController implements InstallmentsApi {
 
     return ResponseEntity.ok(installmentRetrieverService.getInstallments(
       new InstallmentViewFiltersDTO(
-        organizationId, userInfo.getMappedExternalUserId(), dueDateFilter, iuv, fiscalCode, debtPositionTypeOrgId), pageable, userInfo, SecurityUtils.getAccessToken()));
+        organizationId, userInfo.getMappedExternalUserId(), dueDateFilter, iuv, fiscalCode, Collections.emptyList(), debtPositionTypeOrgId), pageable, userInfo, SecurityUtils.getAccessToken()));
   }
 
   @Override

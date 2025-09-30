@@ -404,6 +404,89 @@ class OrganizationRetrieverServiceImplTest {
   }
 
   @Test
+  void givenEmbeddedNullWhenGetOrganizationsByBrokerIdAndFiltersThenReturnEmptyPagedDto() {
+    // Given
+    PagedModelOrganization pagedModelOrganization = new PagedModelOrganization();
+    pagedModelOrganization.setEmbedded(null);
+
+    Mockito.doNothing().when(authorizationServiceMock).validateBrokerAdminRole(userInfo);
+    Mockito.when(organizationServiceMock.getOrganizationsByBrokerIdAndFilters(
+        eq(userInfo.getBrokerId()), isNull(), isNull(), anySet(), any(Pageable.class), eq(accessToken)))
+      .thenReturn(pagedModelOrganization);
+
+    PagedOrganizationWithDebtPositionTypeOrgAndOperatorsCount expectedResult =
+      new PagedOrganizationWithDebtPositionTypeOrgAndOperatorsCount();
+    Mockito.when(pagedOrganizationWithDebtPositionTypeOrgAndOperatorsCountMapperMock
+        .map(pagedModelOrganization, Collections.emptyMap(), Collections.emptyMap()))
+      .thenReturn(expectedResult);
+
+    // When
+    PagedOrganizationWithDebtPositionTypeOrgAndOperatorsCount result =
+      organizationService.getOrganizationsByBrokerIdAndFilters(
+        userInfo, null, null, Pageable.ofSize(1), accessToken);
+
+    // Then
+    assertNotNull(result);
+    assertEquals(expectedResult, result);
+  }
+
+  @Test
+  void givenOrganizationsNullWhenGetOrganizationsByBrokerIdAndFiltersThenReturnEmptyPagedDto() {
+    // Given
+    PagedModelOrganization pagedModelOrganization = new PagedModelOrganization();
+    pagedModelOrganization.setEmbedded(new PagedModelOrganizationEmbedded());
+    pagedModelOrganization.getEmbedded().setOrganizations(null);
+
+    Mockito.doNothing().when(authorizationServiceMock).validateBrokerAdminRole(userInfo);
+    Mockito.when(organizationServiceMock.getOrganizationsByBrokerIdAndFilters(
+        eq(userInfo.getBrokerId()), isNull(), isNull(), anySet(), any(Pageable.class), eq(accessToken)))
+      .thenReturn(pagedModelOrganization);
+
+    PagedOrganizationWithDebtPositionTypeOrgAndOperatorsCount expectedResult =
+      new PagedOrganizationWithDebtPositionTypeOrgAndOperatorsCount();
+    Mockito.when(pagedOrganizationWithDebtPositionTypeOrgAndOperatorsCountMapperMock
+        .map(pagedModelOrganization, Collections.emptyMap(), Collections.emptyMap()))
+      .thenReturn(expectedResult);
+
+    // When
+    PagedOrganizationWithDebtPositionTypeOrgAndOperatorsCount result =
+      organizationService.getOrganizationsByBrokerIdAndFilters(
+        userInfo, null, null, Pageable.ofSize(1), accessToken);
+
+    // Then
+    assertNotNull(result);
+    assertEquals(expectedResult, result);
+  }
+
+  @Test
+  void givenEmptyOrganizationsListWhenGetOrganizationsByBrokerIdAndFiltersThenReturnEmptyPagedDto() {
+    // Given
+    PagedModelOrganization pagedModelOrganization = new PagedModelOrganization();
+    pagedModelOrganization.setEmbedded(
+      PagedModelOrganizationEmbedded.builder().organizations(Collections.emptyList()).build());
+
+    Mockito.doNothing().when(authorizationServiceMock).validateBrokerAdminRole(userInfo);
+    Mockito.when(organizationServiceMock.getOrganizationsByBrokerIdAndFilters(
+        eq(userInfo.getBrokerId()), isNull(), isNull(), anySet(), any(Pageable.class), eq(accessToken)))
+      .thenReturn(pagedModelOrganization);
+
+    PagedOrganizationWithDebtPositionTypeOrgAndOperatorsCount expectedResult =
+      new PagedOrganizationWithDebtPositionTypeOrgAndOperatorsCount();
+    Mockito.when(pagedOrganizationWithDebtPositionTypeOrgAndOperatorsCountMapperMock
+        .map(pagedModelOrganization, Collections.emptyMap(), Collections.emptyMap()))
+      .thenReturn(expectedResult);
+
+    // When
+    PagedOrganizationWithDebtPositionTypeOrgAndOperatorsCount result =
+      organizationService.getOrganizationsByBrokerIdAndFilters(
+        userInfo, null, null, Pageable.ofSize(1), accessToken);
+
+    // Then
+    assertNotNull(result);
+    assertEquals(expectedResult, result);
+  }
+
+  @Test
   void givenAdminRoleWhenUpdateOrganizationThenOk() {
     UserInfo loggedUser = new UserInfo();
     loggedUser.setUserId("user-123");

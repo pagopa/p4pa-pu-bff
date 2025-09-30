@@ -114,38 +114,27 @@ public class OrganizationRetrieverServiceImpl implements OrganizationRetrieverSe
   public PagedOrganizationWithDebtPositionTypeOrgAndOperatorsCount getOrganizationsByBrokerIdAndFilters(UserInfo userInfo, String orgName, String ipaCode, Pageable pageable, String accessToken) {
     authorizationService.validateBrokerAdminRole(userInfo);
 
-    PagedModelOrganization pagedModelOrganization = organizationService.getOrganizationsByBrokerIdAndFilters(userInfo.getBrokerId(), orgName, ipaCode, pageable, accessToken);
+    Set<Long> allowedOrganizationIds = userInfo.getOrganizations().stream()
+      .map(UserOrganizationRoles::getOrganizationId)
+      .collect(Collectors.toSet());
 
-    if (pagedModelOrganization == null || pagedModelOrganization.getEmbedded() == null || pagedModelOrganization.getEmbedded().getOrganizations() == null || pagedModelOrganization.getEmbedded().getOrganizations().isEmpty()) {
+    PagedModelOrganization pagedModelOrganization = organizationService.getOrganizationsByBrokerIdAndFilters(userInfo.getBrokerId(), orgName, ipaCode, allowedOrganizationIds, pageable, accessToken);
+
+    if (pagedModelOrganization == null
+      || pagedModelOrganization.getEmbedded() == null
+      || CollectionUtils.isEmpty(pagedModelOrganization.getEmbedded().getOrganizations())) {
       log.info("No results for getOrganizationsByBrokerIdAndFilters");
       return pagedOrganizationWithDebtPositionTypeOrgAndOperatorsCountMapper.map(pagedModelOrganization, Collections.emptyMap(), Collections.emptyMap());
     }
 
-    Set<Long> allowedOrgIds = userInfo.getOrganizations().stream()
-      .map(UserOrganizationRoles::getOrganizationId)
-      .collect(Collectors.toSet());
+    List<Organization> organizationList = pagedModelOrganization.getEmbedded().getOrganizations();
 
-    List<Organization> filteredOrgList = pagedModelOrganization.getEmbedded()
-      .getOrganizations()
-      .stream()
-      .filter(org -> allowedOrgIds.contains(org.getOrganizationId()))
-      .toList();
-
-    if (filteredOrgList.isEmpty()) {
-      log.info("No organizations for this user");
-      return pagedOrganizationWithDebtPositionTypeOrgAndOperatorsCountMapper
-        .map(pagedModelOrganization, Collections.emptyMap(), Collections.emptyMap());
-    }
-
-    pagedModelOrganization.getEmbedded().setOrganizations(filteredOrgList);
-
-    List<Long> organizationIds = filteredOrgList.stream()
+    List<Long> organizationIds = organizationList.stream()
       .map(Organization::getOrganizationId)
       .toList();
 
     Map<Long, Integer> dptoCountsByOrgId = getDptoCountsByOrgIdMap(accessToken, organizationIds);
-
-    Map<Long, OperatorsPage> allOperatorsPages = getOperatorsPageMap(pageable, accessToken, filteredOrgList);
+    Map<Long, OperatorsPage> allOperatorsPages = getOperatorsPageMap(pageable, accessToken, organizationList);
 
     return pagedOrganizationWithDebtPositionTypeOrgAndOperatorsCountMapper.map(pagedModelOrganization, dptoCountsByOrgId, allOperatorsPages);
   }

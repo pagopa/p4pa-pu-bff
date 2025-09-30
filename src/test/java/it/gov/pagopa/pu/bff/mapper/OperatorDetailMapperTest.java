@@ -48,6 +48,7 @@ class OperatorDetailMapperTest {
       Assertions.assertEquals(operatorDTO.getFiscalCode(), result.getOperatorFiscalCode());
       Assertions.assertEquals(OperatorRole.ROLE_ADMIN, result.getOperatorRole());
       Assertions.assertEquals(pagedDebtPositionTypeOrg, result.getPagedDebtPositionTypeOrg());
+      Assertions.assertEquals(operatorDTO.getEmail(), result.getOperatorEmail());
 
       TestUtils.checkNotNullFields(result);
       mappersMockedStatic.verify(() -> Mappers.getMapper(PagedDebtPositionTypeOrgDTOMapper.class));

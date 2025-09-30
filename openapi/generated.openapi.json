@@ -11530,11 +11530,14 @@
           "operatorFiscalCode" : {
             "type" : "string"
           },
+          "operatorEmail" : {
+            "type" : "string"
+          },
           "operatorRole" : {
             "$ref" : "#/components/schemas/OperatorRole"
           }
         },
-        "required" : [ "operatorFiscalCode", "operatorId", "operatorLastName", "operatorName", "operatorRole", "pagedDebtPositionTypeOrg" ]
+        "required" : [ "operatorEmail", "operatorFiscalCode", "operatorId", "operatorLastName", "operatorName", "operatorRole", "pagedDebtPositionTypeOrg" ]
       },
       "PagedDebtPositionTypeOrgDTO" : {
         "type" : "object",

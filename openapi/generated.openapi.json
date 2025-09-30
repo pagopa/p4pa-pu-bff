@@ -11573,7 +11573,15 @@
             "type" : "integer",
             "format" : "int64"
           },
+          "debtPositionId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
           "paymentOptionId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "receiptId" : {
             "type" : "integer",
             "format" : "int64"
           },
@@ -11611,7 +11619,7 @@
             }
           }
         },
-        "required" : [ "amountCents", "debtPositionTypeOrgDescription", "debtorFiscalCodeHash", "paymentOptionId", "remittanceInformation", "status" ]
+        "required" : [ "amountCents", "debtPositionId", "debtPositionTypeOrgDescription", "debtorFiscalCodeHash", "paymentOptionId", "remittanceInformation", "status" ]
       },
       "PagedInstallmentView" : {
         "type" : "object",

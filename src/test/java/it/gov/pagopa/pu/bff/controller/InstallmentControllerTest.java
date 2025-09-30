@@ -1,5 +1,10 @@
 package it.gov.pagopa.pu.bff.controller;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.mockito.Mockito.when;
+
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.dto.InstallmentViewFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.LocalDateIntervalFilter;
@@ -10,6 +15,10 @@ import it.gov.pagopa.pu.bff.util.TestUtils;
 import it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentDetailDTO;
 import it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentStatus;
 import it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentView;
+import java.time.LocalDate;
+import java.time.OffsetDateTime;
+import java.util.Collections;
+import java.util.List;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,13 +32,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-
-import java.time.LocalDate;
-import java.time.OffsetDateTime;
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class InstallmentControllerTest {
@@ -73,12 +75,14 @@ class InstallmentControllerTest {
 
     LocalDateIntervalFilter paymentDateFilter = new LocalDateIntervalFilter(dueDateTimeFrom.toLocalDate(), dueDateTimeTo.toLocalDate());
 
-    InstallmentViewFiltersDTO filtersDTO = new InstallmentViewFiltersDTO(organizationId, loggedUser.getMappedExternalUserId(), paymentDateFilter, iuv, fiscalCode, debtPositionTypeOrgId);
+    InstallmentViewFiltersDTO filtersDTO = new InstallmentViewFiltersDTO(organizationId, loggedUser.getMappedExternalUserId(), paymentDateFilter, iuv, fiscalCode, Collections.emptyList(), debtPositionTypeOrgId);
 
     PagedInstallmentView expectedResult = new PagedInstallmentView();
     expectedResult.setContent(List.of(InstallmentView.builder()
       .installmentId(100L)
+      .debtPositionId(200L)
       .paymentOptionId(200L)
+      .receiptId(201L)
       .iuv(iuv)
       .status(InstallmentStatus.PAID)
       .dueDate(LocalDate.now())

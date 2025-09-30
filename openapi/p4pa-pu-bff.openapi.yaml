@@ -3843,6 +3843,7 @@ components:
         - pagedDebtPositionTypeOrg
         - operatorId
         - operatorFiscalCode
+        - operatorEmail
         - operatorRole
         - operatorName
         - operatorLastName
@@ -3856,6 +3857,8 @@ components:
         operatorLastName:
           type: string
         operatorFiscalCode:
+          type: string
+        operatorEmail:
           type: string
         operatorRole:
           $ref: '#/components/schemas/OperatorRole'
@@ -4608,10 +4611,8 @@ components:
           type: string
         flagAnonymousFiscalCode:
           type: boolean
-          readOnly: true
         flagMandatoryDueDate:
           type: boolean
-          readOnly: true
         flagSpontaneous:
           type: boolean
         flagNotifyIo:

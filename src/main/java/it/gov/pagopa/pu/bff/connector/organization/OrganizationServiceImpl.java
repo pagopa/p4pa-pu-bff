@@ -13,6 +13,8 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.Set;
+
 @Service
 @CacheConfig(cacheNames = it.gov.pagopa.pu.bff.config.CacheConfig.Fields.organization)
 public class OrganizationServiceImpl implements OrganizationService {
@@ -51,8 +53,8 @@ public class OrganizationServiceImpl implements OrganizationService {
   }
 
   @Override
-  public PagedModelOrganization getOrganizationsByBrokerIdAndFilters(Long brokerId, String orgName, String ipaCode, Pageable pageable, String accessToken) {
-    return organizationSearchClient.getOrganizationsByBrokerIdAndFilters(brokerId, orgName, ipaCode, pageable, accessToken);
+  public PagedModelOrganization getOrganizationsByBrokerIdAndFilters(Long brokerId, String orgName, String ipaCode, Set<Long> allowedOrganizationIds, Pageable pageable, String accessToken) {
+    return organizationSearchClient.getOrganizationsByBrokerIdAndFilters(brokerId, orgName, ipaCode, allowedOrganizationIds, pageable, accessToken);
   }
 
   @CacheEvict(key = "#organizationDetailDTO.organizationId", condition = "#organizationDetailDTO!=null && #organizationDetailDTO.organizationId!=null")

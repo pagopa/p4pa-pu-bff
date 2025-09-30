@@ -39,6 +39,7 @@ import uk.co.jemos.podam.api.PodamFactory;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
@@ -311,6 +312,10 @@ class OrganizationRetrieverServiceImplTest {
   @Test
   void givenPagedModelOrganizationWhenGetOrganizationsByBrokerIdAndFiltersThenReturnCorrectPagedDto() {
     // Given
+    Long expectedOrgId = 123L;
+    UserOrganizationRoles role = new UserOrganizationRoles();
+    role.setOrganizationId(expectedOrgId);
+    userInfo.setOrganizations(List.of(role));
     String orgName = "TestOrg";
     String ipaCode = "IPA123";
     Organization organization = new Organization();
@@ -322,9 +327,11 @@ class OrganizationRetrieverServiceImplTest {
     pagedModelOrganization.setEmbedded(
       PagedModelOrganizationEmbedded.builder().organizations(organizationsList).build());
 
+    Set<Long> allowedOrganizationIds = Set.of(expectedOrgId);
+
     Mockito.doNothing().when(authorizationServiceMock).validateBrokerAdminRole(userInfo);
     Mockito.when(organizationServiceMock.getOrganizationsByBrokerIdAndFilters(
-        userInfo.getBrokerId(), orgName, ipaCode, Pageable.ofSize(1), accessToken))
+        userInfo.getBrokerId(), orgName, ipaCode, allowedOrganizationIds, Pageable.ofSize(1), accessToken))
       .thenReturn(pagedModelOrganization);
 
     DebtPositionTypeOrgCountByOrganizationId mockDptoCount = new DebtPositionTypeOrgCountByOrganizationId();
@@ -332,8 +339,7 @@ class OrganizationRetrieverServiceImplTest {
     mockDptoCount.setActiveOrganizations(10);
     CollectionModelDebtPositionTypeOrgCountByOrganizationId collectionModelDebtPositionTypeOrgCountByOrganizationId = new CollectionModelDebtPositionTypeOrgCountByOrganizationId();
     collectionModelDebtPositionTypeOrgCountByOrganizationId.setEmbedded(new CollectionModelDebtPositionTypeOrgCountByOrganizationIdEmbedded());
-    collectionModelDebtPositionTypeOrgCountByOrganizationId.getEmbedded().setDebtPositionTypeOrgCountByOrganizationIds(
-      Collections.singletonList(mockDptoCount));
+    collectionModelDebtPositionTypeOrgCountByOrganizationId.getEmbedded().setDebtPositionTypeOrgCountByOrganizationIds(Collections.singletonList(mockDptoCount));
     Mockito.when(debtPositionTypeOrgServiceMock.getDebtPositionTypeOrgCountByOrganizationId(
         List.of(123L), accessToken))
       .thenReturn(collectionModelDebtPositionTypeOrgCountByOrganizationId);
@@ -370,7 +376,7 @@ class OrganizationRetrieverServiceImplTest {
     Mockito.doNothing().when(authorizationServiceMock).validateBrokerAdminRole(userInfo);
 
     Mockito.when(organizationServiceMock.getOrganizationsByBrokerIdAndFilters(
-        userInfo.getBrokerId(), null, null, pageable, accessToken))
+        eq(userInfo.getBrokerId()), isNull(), isNull(), anySet(), eq(pageable), eq(accessToken)))
       .thenReturn(null);
 
     PagedOrganizationWithDebtPositionTypeOrgAndOperatorsCount expectedResult = PagedOrganizationWithDebtPositionTypeOrgAndOperatorsCount.builder()
@@ -395,6 +401,92 @@ class OrganizationRetrieverServiceImplTest {
     assertEquals(0L, result.getTotalElements());
     assertEquals(0L, result.getTotalPages());
     assertEquals(0L, result.getNumber());
+  }
+
+  @Test
+  void givenEmbeddedNullWhenGetOrganizationsByBrokerIdAndFiltersThenReturnEmptyPagedDto() {
+    // Given
+    PagedModelOrganization pagedModelOrganization = new PagedModelOrganization();
+    pagedModelOrganization.setEmbedded(null);
+    Pageable pageable = Pageable.ofSize(1);
+
+    Mockito.doNothing().when(authorizationServiceMock).validateBrokerAdminRole(userInfo);
+    Mockito.when(organizationServiceMock.getOrganizationsByBrokerIdAndFilters(
+        eq(userInfo.getBrokerId()), isNull(), isNull(), anySet(), eq(pageable), eq(accessToken)))
+      .thenReturn(pagedModelOrganization);
+
+    PagedOrganizationWithDebtPositionTypeOrgAndOperatorsCount expectedResult =
+      new PagedOrganizationWithDebtPositionTypeOrgAndOperatorsCount();
+    Mockito.when(pagedOrganizationWithDebtPositionTypeOrgAndOperatorsCountMapperMock
+        .map(pagedModelOrganization, Collections.emptyMap(), Collections.emptyMap()))
+      .thenReturn(expectedResult);
+
+    // When
+    PagedOrganizationWithDebtPositionTypeOrgAndOperatorsCount result =
+      organizationService.getOrganizationsByBrokerIdAndFilters(
+        userInfo, null, null, pageable, accessToken);
+
+    // Then
+    assertNotNull(result);
+    assertEquals(expectedResult, result);
+  }
+
+  @Test
+  void givenOrganizationsNullWhenGetOrganizationsByBrokerIdAndFiltersThenReturnEmptyPagedDto() {
+    // Given
+    PagedModelOrganization pagedModelOrganization = new PagedModelOrganization();
+    pagedModelOrganization.setEmbedded(new PagedModelOrganizationEmbedded());
+    pagedModelOrganization.getEmbedded().setOrganizations(null);
+    Pageable pageable = Pageable.ofSize(1);
+
+    Mockito.doNothing().when(authorizationServiceMock).validateBrokerAdminRole(userInfo);
+    Mockito.when(organizationServiceMock.getOrganizationsByBrokerIdAndFilters(
+        eq(userInfo.getBrokerId()), isNull(), isNull(), anySet(), eq(pageable), eq(accessToken)))
+      .thenReturn(pagedModelOrganization);
+
+    PagedOrganizationWithDebtPositionTypeOrgAndOperatorsCount expectedResult =
+      new PagedOrganizationWithDebtPositionTypeOrgAndOperatorsCount();
+    Mockito.when(pagedOrganizationWithDebtPositionTypeOrgAndOperatorsCountMapperMock
+        .map(pagedModelOrganization, Collections.emptyMap(), Collections.emptyMap()))
+      .thenReturn(expectedResult);
+
+    // When
+    PagedOrganizationWithDebtPositionTypeOrgAndOperatorsCount result =
+      organizationService.getOrganizationsByBrokerIdAndFilters(
+        userInfo, null, null, pageable, accessToken);
+
+    // Then
+    assertNotNull(result);
+    assertEquals(expectedResult, result);
+  }
+
+  @Test
+  void givenEmptyOrganizationsListWhenGetOrganizationsByBrokerIdAndFiltersThenReturnEmptyPagedDto() {
+    // Given
+    PagedModelOrganization pagedModelOrganization = new PagedModelOrganization();
+    pagedModelOrganization.setEmbedded(
+      PagedModelOrganizationEmbedded.builder().organizations(Collections.emptyList()).build());
+    Pageable pageable = Pageable.ofSize(1);
+
+    Mockito.doNothing().when(authorizationServiceMock).validateBrokerAdminRole(userInfo);
+    Mockito.when(organizationServiceMock.getOrganizationsByBrokerIdAndFilters(
+        eq(userInfo.getBrokerId()), isNull(), isNull(), anySet(), eq(pageable), eq(accessToken)))
+      .thenReturn(pagedModelOrganization);
+
+    PagedOrganizationWithDebtPositionTypeOrgAndOperatorsCount expectedResult =
+      new PagedOrganizationWithDebtPositionTypeOrgAndOperatorsCount();
+    Mockito.when(pagedOrganizationWithDebtPositionTypeOrgAndOperatorsCountMapperMock
+        .map(pagedModelOrganization, Collections.emptyMap(), Collections.emptyMap()))
+      .thenReturn(expectedResult);
+
+    // When
+    PagedOrganizationWithDebtPositionTypeOrgAndOperatorsCount result =
+      organizationService.getOrganizationsByBrokerIdAndFilters(
+        userInfo, null, null, pageable, accessToken);
+
+    // Then
+    assertNotNull(result);
+    assertEquals(expectedResult, result);
   }
 
   @Test

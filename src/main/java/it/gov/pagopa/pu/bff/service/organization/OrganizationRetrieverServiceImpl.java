@@ -26,6 +26,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import it.gov.pagopa.pu.auth.dto.generated.UserOrganizationRoles;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -113,22 +114,27 @@ public class OrganizationRetrieverServiceImpl implements OrganizationRetrieverSe
   public PagedOrganizationWithDebtPositionTypeOrgAndOperatorsCount getOrganizationsByBrokerIdAndFilters(UserInfo userInfo, String orgName, String ipaCode, Pageable pageable, String accessToken) {
     authorizationService.validateBrokerAdminRole(userInfo);
 
-    PagedModelOrganization pagedModelOrganization = organizationService.getOrganizationsByBrokerIdAndFilters(userInfo.getBrokerId(), orgName, ipaCode, pageable, accessToken);
+    Set<Long> allowedOrganizationIds = userInfo.getOrganizations().stream()
+      .map(UserOrganizationRoles::getOrganizationId)
+      .collect(Collectors.toSet());
 
-    if (pagedModelOrganization == null || pagedModelOrganization.getEmbedded() == null || pagedModelOrganization.getEmbedded().getOrganizations() == null || pagedModelOrganization.getEmbedded().getOrganizations().isEmpty()) {
+    PagedModelOrganization pagedModelOrganization = organizationService.getOrganizationsByBrokerIdAndFilters(userInfo.getBrokerId(), orgName, ipaCode, allowedOrganizationIds, pageable, accessToken);
+
+    if (pagedModelOrganization == null
+      || pagedModelOrganization.getEmbedded() == null
+      || CollectionUtils.isEmpty(pagedModelOrganization.getEmbedded().getOrganizations())) {
       log.info("No results for getOrganizationsByBrokerIdAndFilters");
       return pagedOrganizationWithDebtPositionTypeOrgAndOperatorsCountMapper.map(pagedModelOrganization, Collections.emptyMap(), Collections.emptyMap());
     }
 
-    List<Organization> orgList = pagedModelOrganization.getEmbedded().getOrganizations();
+    List<Organization> organizationList = pagedModelOrganization.getEmbedded().getOrganizations();
 
-    List<Long> organizationIds = orgList.stream()
+    List<Long> organizationIds = organizationList.stream()
       .map(Organization::getOrganizationId)
       .toList();
 
     Map<Long, Integer> dptoCountsByOrgId = getDptoCountsByOrgIdMap(accessToken, organizationIds);
-
-    Map<Long, OperatorsPage> allOperatorsPages = getOperatorsPageMap(pageable, accessToken, orgList);
+    Map<Long, OperatorsPage> allOperatorsPages = getOperatorsPageMap(pageable, accessToken, organizationList);
 
     return pagedOrganizationWithDebtPositionTypeOrgAndOperatorsCountMapper.map(pagedModelOrganization, dptoCountsByOrgId, allOperatorsPages);
   }

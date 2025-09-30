@@ -1,9 +1,5 @@
 package it.gov.pagopa.pu.bff.connector.organization.client;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.ArgumentMatchers.eq;
-
 import it.gov.pagopa.pu.bff.connector.organization.config.OrganizationApisHolder;
 import it.gov.pagopa.pu.organization.controller.generated.OrganizationSearchControllerApi;
 import it.gov.pagopa.pu.organization.dto.generated.Organization;
@@ -19,6 +15,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.client.HttpClientErrorException;
+
+import java.util.Collections;
+import java.util.Set;
+
+import static org.mockito.ArgumentMatchers.*;
 
 @ExtendWith(MockitoExtension.class)
 class OrganizationSearchClientTest {
@@ -108,15 +109,17 @@ class OrganizationSearchClientTest {
     String orgName = "orgName";
     String ipaCode = "ipaCode";
     String accessToken = "ACCESSTOKEN";
+    Set<Long> allowedOrganizationIds = Set.of(123L);
     PagedModelOrganization expectedResult = new PagedModelOrganization();
 
     Mockito.when(organizationApisHolder.getOrganizationSearchControllerApi(accessToken))
       .thenReturn(organizationSearchControllerApiMock);
-    Mockito.when(organizationSearchControllerApiMock.crudOrganizationsFindByBrokerIdAndFilters(eq(brokerId), eq(orgName), eq(ipaCode), any(), any(), anyList()))
+    Mockito.when(organizationSearchControllerApiMock.crudOrganizationsFindByBrokerIdAndFilters(brokerId, orgName, ipaCode, allowedOrganizationIds, 0, 1, Collections.emptyList()))
       .thenReturn(expectedResult);
-    //when
 
-    PagedModelOrganization result = organizationSearchClient.getOrganizationsByBrokerIdAndFilters(brokerId, orgName, ipaCode, Pageable.ofSize(1), accessToken);
+    //when
+    PagedModelOrganization result = organizationSearchClient.getOrganizationsByBrokerIdAndFilters(brokerId, orgName, ipaCode, allowedOrganizationIds, Pageable.ofSize(1), accessToken);
+
     //then
     Assertions.assertNotNull(result);
     Assertions.assertSame(expectedResult, result);

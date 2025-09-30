@@ -33,6 +33,7 @@ public class InstallmentClient {
         installmentViewFiltersDTO.getDueDate().getTo(),
         installmentViewFiltersDTO.getIuv(),
         installmentViewFiltersDTO.getFiscalCode(),
+        installmentViewFiltersDTO.getDebtPositionOrigins(),
         installmentViewFiltersDTO.getDebtPositionTypeOrgId(),
         PageUtils.getPageNumber(pageable),
         PageUtils.getPageSize(pageable),

@@ -1652,6 +1652,10 @@ paths:
           in: query
           schema:
             type: 'DebtPositionStatus'
+        - name: iuv
+          in: query
+          schema:
+            type: string
       responses:
         '200':
           description: OK
@@ -3839,6 +3843,7 @@ components:
         - pagedDebtPositionTypeOrg
         - operatorId
         - operatorFiscalCode
+        - operatorEmail
         - operatorRole
         - operatorName
         - operatorLastName
@@ -3852,6 +3857,8 @@ components:
         operatorLastName:
           type: string
         operatorFiscalCode:
+          type: string
+        operatorEmail:
           type: string
         operatorRole:
           $ref: '#/components/schemas/OperatorRole'
@@ -4577,7 +4584,6 @@ components:
           readOnly: true
         balance:
           type: string
-          readOnly: true
         code:
           type: string
           readOnly: true
@@ -4604,10 +4610,8 @@ components:
           type: string
         flagAnonymousFiscalCode:
           type: boolean
-          readOnly: true
         flagMandatoryDueDate:
           type: boolean
-          readOnly: true
         flagSpontaneous:
           type: boolean
         flagNotifyIo:

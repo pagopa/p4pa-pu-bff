@@ -90,7 +90,8 @@ public class DebtPositionRetrieverServiceImpl implements DebtPositionRetrieverSe
     if (DateUtils.isNullOrInvalidOffsetDateTimeRange(filtersDTO.getCreationDateTimeFrom(), filtersDTO.getCreationDateTimeTo()) &&
       StringUtils.isBlank(filtersDTO.getFiscalCode()) &&
       filtersDTO.getDebtPositionTypeOrgId() == null &&
-      filtersDTO.getStatus() == null) {
+      filtersDTO.getStatus() == null &&
+      filtersDTO.getIuv() == null) {
       throw new IllegalArgumentException("At least one of the research fields must be provided, and both 'from' and 'to' creation dates must be set together");
     }
   }

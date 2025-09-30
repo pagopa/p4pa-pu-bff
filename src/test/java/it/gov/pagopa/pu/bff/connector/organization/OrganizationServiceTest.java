@@ -16,6 +16,8 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Pageable;
 
+import java.util.Set;
+
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.ArgumentMatchers.any;
@@ -97,13 +99,14 @@ class OrganizationServiceTest {
     Long brokerId = 1L;
     String orgName = "orgName";
     String ipaCode = "ipaCode";
+    Set<Long> allowedOrganizationIds = Set.of(123L, 456L);
     PagedModelOrganization expectedResult = new PagedModelOrganization();
 
-    when(organizationSearchClientMock.getOrganizationsByBrokerIdAndFilters(eq(brokerId), eq(orgName), eq(ipaCode), any(), eq(accessToken)))
+    when(organizationSearchClientMock.getOrganizationsByBrokerIdAndFilters(eq(brokerId), eq(orgName), eq(ipaCode), eq(allowedOrganizationIds), any(Pageable.class), eq(accessToken)))
       .thenReturn(expectedResult);
 
     //when
-    PagedModelOrganization result = service.getOrganizationsByBrokerIdAndFilters(brokerId, orgName, ipaCode, Pageable.ofSize(1), accessToken);
+    PagedModelOrganization result = service.getOrganizationsByBrokerIdAndFilters(brokerId, orgName, ipaCode, allowedOrganizationIds, Pageable.ofSize(1), accessToken);
 
     //then
     assertNotNull(result);

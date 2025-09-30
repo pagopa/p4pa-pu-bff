@@ -25,6 +25,7 @@ public interface OperatorDetailMapper {
   @Mapping(target = "operatorRole", source = "organizationOperator.roles", qualifiedByName = "determineOperatorRole")
   @Mapping(target= "operatorName", source = "organizationOperator.firstName")
   @Mapping(target= "operatorLastName", source = "organizationOperator.lastName")
+  @Mapping(target= "operatorEmail", source= "organizationOperator.email")
   OperatorsDetail map(PagedModelDebtPositionTypeOrg pagedModelDebtPositionTypeOrg, OperatorDTO organizationOperator, @Context Map<Long, DebtPositionType> debtPositionTypes);
 
   default PagedDebtPositionTypeOrgDTO mapToPagedDebtPositionTypeOrgDTO(PagedModelDebtPositionTypeOrg pagedModelDebtPositionTypeOrg, @Context Map<Long, DebtPositionType> debtPositionTypes) {

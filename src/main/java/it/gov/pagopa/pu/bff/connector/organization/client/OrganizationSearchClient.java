@@ -9,6 +9,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 
+import java.util.Set;
+
 @Service
 @Slf4j
 public class OrganizationSearchClient {
@@ -39,12 +41,13 @@ public class OrganizationSearchClient {
         PageUtils.getSortList(pageable));
   }
 
-  public PagedModelOrganization getOrganizationsByBrokerIdAndFilters(Long brokerId, String orgName, String ipaCode, Pageable pageable, String accessToken){
+  public PagedModelOrganization getOrganizationsByBrokerIdAndFilters(Long brokerId, String orgName, String ipaCode, Set<Long> allowedOrganizationIds, Pageable pageable, String accessToken) {
     return organizationApisHolder.getOrganizationSearchControllerApi(accessToken)
       .crudOrganizationsFindByBrokerIdAndFilters(
         brokerId,
         orgName,
         ipaCode,
+        allowedOrganizationIds,
         PageUtils.getPageNumber(pageable),
         PageUtils.getPageSize(pageable),
         PageUtils.getSortList(pageable));

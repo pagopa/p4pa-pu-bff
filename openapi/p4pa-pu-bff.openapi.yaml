@@ -4581,7 +4581,6 @@ components:
           readOnly: true
         balance:
           type: string
-          readOnly: true
         code:
           type: string
           readOnly: true

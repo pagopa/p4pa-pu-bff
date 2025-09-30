@@ -16,6 +16,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.client.HttpClientErrorException;
 
+import java.util.Collections;
 import java.util.Set;
 
 import static org.mockito.ArgumentMatchers.*;
@@ -113,14 +114,7 @@ class OrganizationSearchClientTest {
 
     Mockito.when(organizationApisHolder.getOrganizationSearchControllerApi(accessToken))
       .thenReturn(organizationSearchControllerApiMock);
-    Mockito.when(organizationSearchControllerApiMock.crudOrganizationsFindByBrokerIdAndFilters(
-        eq(brokerId),
-        eq(orgName),
-        eq(ipaCode),
-        eq(allowedOrganizationIds),
-        anyInt(),
-        anyInt(),
-        anyList()))
+    Mockito.when(organizationSearchControllerApiMock.crudOrganizationsFindByBrokerIdAndFilters(brokerId, orgName, ipaCode, allowedOrganizationIds, 0, 1, Collections.emptyList()))
       .thenReturn(expectedResult);
 
     //when

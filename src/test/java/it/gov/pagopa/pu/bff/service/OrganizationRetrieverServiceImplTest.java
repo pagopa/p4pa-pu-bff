@@ -408,10 +408,11 @@ class OrganizationRetrieverServiceImplTest {
     // Given
     PagedModelOrganization pagedModelOrganization = new PagedModelOrganization();
     pagedModelOrganization.setEmbedded(null);
+    Pageable pageable = Pageable.ofSize(1);
 
     Mockito.doNothing().when(authorizationServiceMock).validateBrokerAdminRole(userInfo);
     Mockito.when(organizationServiceMock.getOrganizationsByBrokerIdAndFilters(
-        eq(userInfo.getBrokerId()), isNull(), isNull(), anySet(), any(Pageable.class), eq(accessToken)))
+        eq(userInfo.getBrokerId()), isNull(), isNull(), anySet(), eq(pageable), eq(accessToken)))
       .thenReturn(pagedModelOrganization);
 
     PagedOrganizationWithDebtPositionTypeOrgAndOperatorsCount expectedResult =
@@ -423,7 +424,7 @@ class OrganizationRetrieverServiceImplTest {
     // When
     PagedOrganizationWithDebtPositionTypeOrgAndOperatorsCount result =
       organizationService.getOrganizationsByBrokerIdAndFilters(
-        userInfo, null, null, Pageable.ofSize(1), accessToken);
+        userInfo, null, null, pageable, accessToken);
 
     // Then
     assertNotNull(result);
@@ -436,10 +437,11 @@ class OrganizationRetrieverServiceImplTest {
     PagedModelOrganization pagedModelOrganization = new PagedModelOrganization();
     pagedModelOrganization.setEmbedded(new PagedModelOrganizationEmbedded());
     pagedModelOrganization.getEmbedded().setOrganizations(null);
+    Pageable pageable = Pageable.ofSize(1);
 
     Mockito.doNothing().when(authorizationServiceMock).validateBrokerAdminRole(userInfo);
     Mockito.when(organizationServiceMock.getOrganizationsByBrokerIdAndFilters(
-        eq(userInfo.getBrokerId()), isNull(), isNull(), anySet(), any(Pageable.class), eq(accessToken)))
+        eq(userInfo.getBrokerId()), isNull(), isNull(), anySet(), eq(pageable), eq(accessToken)))
       .thenReturn(pagedModelOrganization);
 
     PagedOrganizationWithDebtPositionTypeOrgAndOperatorsCount expectedResult =
@@ -451,7 +453,7 @@ class OrganizationRetrieverServiceImplTest {
     // When
     PagedOrganizationWithDebtPositionTypeOrgAndOperatorsCount result =
       organizationService.getOrganizationsByBrokerIdAndFilters(
-        userInfo, null, null, Pageable.ofSize(1), accessToken);
+        userInfo, null, null, pageable, accessToken);
 
     // Then
     assertNotNull(result);
@@ -464,10 +466,11 @@ class OrganizationRetrieverServiceImplTest {
     PagedModelOrganization pagedModelOrganization = new PagedModelOrganization();
     pagedModelOrganization.setEmbedded(
       PagedModelOrganizationEmbedded.builder().organizations(Collections.emptyList()).build());
+    Pageable pageable = Pageable.ofSize(1);
 
     Mockito.doNothing().when(authorizationServiceMock).validateBrokerAdminRole(userInfo);
     Mockito.when(organizationServiceMock.getOrganizationsByBrokerIdAndFilters(
-        eq(userInfo.getBrokerId()), isNull(), isNull(), anySet(), any(Pageable.class), eq(accessToken)))
+        eq(userInfo.getBrokerId()), isNull(), isNull(), anySet(), eq(pageable), eq(accessToken)))
       .thenReturn(pagedModelOrganization);
 
     PagedOrganizationWithDebtPositionTypeOrgAndOperatorsCount expectedResult =
@@ -479,7 +482,7 @@ class OrganizationRetrieverServiceImplTest {
     // When
     PagedOrganizationWithDebtPositionTypeOrgAndOperatorsCount result =
       organizationService.getOrganizationsByBrokerIdAndFilters(
-        userInfo, null, null, Pageable.ofSize(1), accessToken);
+        userInfo, null, null, pageable, accessToken);
 
     // Then
     assertNotNull(result);

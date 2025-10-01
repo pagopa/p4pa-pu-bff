@@ -33,6 +33,6 @@ public class DashboardServiceImpl implements DashboardService {
     PagedInstallmentView installments = installmentRetrieverService.getInstallments(
       filters, Pageable.ofSize(10), loggedUser, accessToken);
 
-    return dashboardMapper.mapToPagedDashboardDTO(installments);
+    return dashboardMapper.mapToPagedDashboardByFcDTO(installments);
   }
 }

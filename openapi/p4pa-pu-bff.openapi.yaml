@@ -3553,7 +3553,7 @@ paths:
           description: Not found
         '500':
           description: Internal server error
-  /organization/{organizationId}/dashboard:
+  /organization/{organizationId}/dashboard-by-fc:
     get:
       tags:
         - Dashboard
@@ -5093,7 +5093,7 @@ components:
         content:
           type: array
           items:
-            $ref: "#/components/schemas/DashboardDTO"
+            $ref: "#/components/schemas/DashboardByFc"
         size:
           type: integer
           format: int64
@@ -5106,7 +5106,7 @@ components:
         number:
           type: integer
           format: int64
-    DashboardDTO:
+    DashboardByFc:
       type: object
       properties:
         hasInstallment:

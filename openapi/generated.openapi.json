@@ -6931,7 +6931,7 @@
         } ]
       }
     },
-    "/bff/organization/{organizationId}/dashboard" : {
+    "/bff/organization/{organizationId}/dashboard-by-fc" : {
       "get" : {
         "tags" : [ "Dashboard" ],
         "operationId" : "getInstallmentsDashboardByFiscalCode",
@@ -12366,7 +12366,7 @@
           }
         }
       },
-      "DashboardDTO" : {
+      "DashboardByFc" : {
         "type" : "object",
         "properties" : {
           "hasInstallment" : {
@@ -12398,7 +12398,7 @@
           "content" : {
             "type" : "array",
             "items" : {
-              "$ref" : "#/components/schemas/DashboardDTO"
+              "$ref" : "#/components/schemas/DashboardByFc"
             }
           },
           "size" : {

@@ -8,14 +8,14 @@ import it.gov.pagopa.pu.bff.dto.generated.PagedInstallmentView;
 import it.gov.pagopa.pu.bff.security.SecurityUtils;
 import it.gov.pagopa.pu.bff.service.installment.InstallmentRetrieverService;
 import it.gov.pagopa.pu.bff.util.DateUtils;
+import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionOrigin;
 import it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentDetailDTO;
-import java.util.Collections;
+import java.time.OffsetDateTime;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.time.OffsetDateTime;
 
 @Slf4j
 @RestController
@@ -28,14 +28,14 @@ public class InstallmentController implements InstallmentsApi {
   }
 
   @Override
-  public ResponseEntity<PagedInstallmentView> getInstallments(Long organizationId, OffsetDateTime dueDateTimeFrom, OffsetDateTime dueDateTimeTo, String iuv, String fiscalCode, Long debtPositionTypeOrgId, Pageable pageable) {
+  public ResponseEntity<PagedInstallmentView> getInstallments(Long organizationId, OffsetDateTime dueDateTimeFrom, OffsetDateTime dueDateTimeTo, String iuv, String fiscalCode, List<DebtPositionOrigin> debtPositionOrigins, Long debtPositionTypeOrgId, Pageable pageable) {
     log.info("User requested getInstallments having organizationId {}, dueDateTimeFrom {} and dueDateTimeTo {}", organizationId, dueDateTimeFrom, dueDateTimeTo);
     UserInfo userInfo = SecurityUtils.getLoggedUser();
     LocalDateIntervalFilter dueDateFilter = new LocalDateIntervalFilter(DateUtils.fromOffsetDateTimeToLocalDate(dueDateTimeFrom), DateUtils.fromOffsetDateTimeToLocalDate(dueDateTimeTo));
 
     return ResponseEntity.ok(installmentRetrieverService.getInstallments(
       new InstallmentViewFiltersDTO(
-        organizationId, userInfo.getMappedExternalUserId(), dueDateFilter, iuv, fiscalCode, Collections.emptyList(), debtPositionTypeOrgId), pageable, userInfo, SecurityUtils.getAccessToken()));
+        organizationId, userInfo.getMappedExternalUserId(), dueDateFilter, iuv, fiscalCode, debtPositionOrigins, debtPositionTypeOrgId), pageable, userInfo, SecurityUtils.getAccessToken()));
   }
 
   @Override

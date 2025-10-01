@@ -896,6 +896,12 @@ paths:
           in: query
           schema:
             type: string
+        - name: debtPositionOrigins
+          in: query
+          schema:
+            type: array
+            items:
+              type: 'DebtPositionOrigin'
         - name: debtPositionTypeOrgId
           in: query
           schema:
@@ -3547,6 +3553,40 @@ paths:
           description: Not found
         '500':
           description: Internal server error
+  /organization/{organizationId}/dashboard:
+    get:
+      tags:
+        - Dashboard
+      operationId: getInstallmentsDashboardByFiscalCode
+      parameters:
+        - name: organizationId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: fiscalCode
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PagedDashboardDTO'
+        '400':
+          description: Invalid request
+        '401':
+          description: Unauthorized - Missing or invalid token
+        '403':
+          description: Forbidden
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
 security:
   - BearerAuth: [ ]
 components:
@@ -5039,5 +5079,48 @@ components:
           type: integer
           format: int64
         number:
+          type: integer
+          format: int64
+    PagedDashboardDTO:
+      type: object
+      required:
+        - content
+        - size
+        - totalElements
+        - totalPages
+        - number
+      properties:
+        content:
+          type: array
+          items:
+            $ref: "#/components/schemas/DashboardDTO"
+        size:
+          type: integer
+          format: int64
+        totalElements:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer
+          format: int64
+        number:
+          type: integer
+          format: int64
+    DashboardDTO:
+      type: object
+      properties:
+        hasInstallment:
+          type: boolean
+        installmentId:
+          type: integer
+          format: int64
+        hasDebtPosition:
+          type: boolean
+        debtPositionId:
+          type: integer
+          format: int64
+        hasReceipt:
+          type: boolean
+        receiptId:
           type: integer
           format: int64

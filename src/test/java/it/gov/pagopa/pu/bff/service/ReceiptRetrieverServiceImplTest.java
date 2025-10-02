@@ -79,7 +79,7 @@ class ReceiptRetrieverServiceImplTest {
     OffsetDateTime paymentDateTimeTo = OffsetDateTime.now();
     OffsetDateTimeIntervalFilter paymentDateTimeFilter = new OffsetDateTimeIntervalFilter(paymentDateTimeFrom, paymentDateTimeTo);
 
-    ReceiptViewFiltersDTO filtersDTO = new ReceiptViewFiltersDTO(1L, receiptOrigins, null, "IUV123", "IUR456", "IUD789", null, paymentDateTimeFilter);
+    ReceiptViewFiltersDTO filtersDTO = new ReceiptViewFiltersDTO(1L, receiptOrigins, null, "IUV123", "IUR456", "IUD789", null, paymentDateTimeFilter, "fiscalCode");
     Pageable pageable = PageRequest.of(0, 10);
 
     PagedModelReceiptView pagedModelReceiptView = new PagedModelReceiptView();
@@ -112,8 +112,7 @@ class ReceiptRetrieverServiceImplTest {
     loggedUser.setUserId("user-123");
 
     ReceiptViewFiltersDTO filtersDTO = new ReceiptViewFiltersDTO(
-      1L, null, null, null, null, null, null, new OffsetDateTimeIntervalFilter(null, null)
-    );
+      1L, null, null, null, null, null, null, new OffsetDateTimeIntervalFilter(null, null), null);
     Pageable pageable = PageRequest.of(0, 10);
 
     try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
@@ -139,7 +138,7 @@ class ReceiptRetrieverServiceImplTest {
     OffsetDateTime paymentDateTimeTo = OffsetDateTime.now();
     OffsetDateTimeIntervalFilter paymentDateTimeFilter = new OffsetDateTimeIntervalFilter(paymentDateTimeFrom, paymentDateTimeTo);
 
-    ReceiptViewFiltersDTO filtersDTO = new ReceiptViewFiltersDTO(1L, receiptOrigins, null, "IUV123", "IUR456", "IUD789", null, paymentDateTimeFilter);
+    ReceiptViewFiltersDTO filtersDTO = new ReceiptViewFiltersDTO(1L, receiptOrigins, null, "IUV123", "IUR456", "IUD789", null, paymentDateTimeFilter, "fiscalCode");
     Pageable pageable = PageRequest.of(0, 10);
 
     try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
@@ -157,21 +156,21 @@ class ReceiptRetrieverServiceImplTest {
   @Test
   void givenOnlyPaymentDateTimeFromWhenGetReceiptsThenThrowIllegalArgumentException() {
     OffsetDateTimeIntervalFilter paymentDateTime = new OffsetDateTimeIntervalFilter(OffsetDateTime.now().minusDays(2), null);
-    ReceiptViewFiltersDTO filtersDTO = new ReceiptViewFiltersDTO(1L, null, null, null, null, null, null, paymentDateTime);
+    ReceiptViewFiltersDTO filtersDTO = new ReceiptViewFiltersDTO(1L, null, null, null, null, null, null, paymentDateTime, null);
     assertThrowsIllegalArgument(filtersDTO);
   }
 
   @Test
   void givenOnlyPaymentDateTimeToWhenGetReceiptsThenThrowIllegalArgumentException() {
     OffsetDateTimeIntervalFilter paymentDateTime = new OffsetDateTimeIntervalFilter(null, OffsetDateTime.now());
-    ReceiptViewFiltersDTO filtersDTO = new ReceiptViewFiltersDTO(1L, null, null, null, null, null, null, paymentDateTime);
+    ReceiptViewFiltersDTO filtersDTO = new ReceiptViewFiltersDTO(1L, null, null, null, null, null, null, paymentDateTime, null);
     assertThrowsIllegalArgument(filtersDTO);
   }
 
   @Test
   void givenEmptyPaymentDateTimeIntervalWhenGetReceiptsThenThrowIllegalArgumentException() {
     OffsetDateTimeIntervalFilter paymentDateTime = new OffsetDateTimeIntervalFilter(null, null);
-    ReceiptViewFiltersDTO filtersDTO = new ReceiptViewFiltersDTO(1L, null, null, null, null, null, null, paymentDateTime);
+    ReceiptViewFiltersDTO filtersDTO = new ReceiptViewFiltersDTO(1L, null, null, null, null, null, null, paymentDateTime, null);
     assertThrowsIllegalArgument(filtersDTO);
   }
 
@@ -195,43 +194,49 @@ class ReceiptRetrieverServiceImplTest {
   @Test
   void givenValidPaymentDateTimeRangeWhenGetReceiptsThenOk() {
     OffsetDateTimeIntervalFilter paymentDateTime = new OffsetDateTimeIntervalFilter(OffsetDateTime.now().minusDays(2), OffsetDateTime.now());
-    ReceiptViewFiltersDTO filtersDTO = new ReceiptViewFiltersDTO(1L, null, null, null, null, null, null, paymentDateTime);
+    ReceiptViewFiltersDTO filtersDTO = new ReceiptViewFiltersDTO(1L, null, null, null, null, null, null, paymentDateTime, null);
     testSingleFilterSuccess(filtersDTO);
   }
 
   @Test
   void givenDebtPositionTypeOrgIdOnlyWhenGetReceiptsThenOk() {
-    ReceiptViewFiltersDTO filtersDTO = new ReceiptViewFiltersDTO(1L, null, null, null, null, null, 99L, null);
+    ReceiptViewFiltersDTO filtersDTO = new ReceiptViewFiltersDTO(1L, null, null, null, null, null, 99L, null, null);
     testSingleFilterSuccess(filtersDTO);
   }
 
   @Test
   void givenIudOnlyWhenGetReceiptsThenOk() {
-    ReceiptViewFiltersDTO filtersDTO = new ReceiptViewFiltersDTO(1L, null, null, null, null, "IUD789", null, null);
+    ReceiptViewFiltersDTO filtersDTO = new ReceiptViewFiltersDTO(1L, null, null, null, null, "IUD789", null, null, null);
     testSingleFilterSuccess(filtersDTO);
   }
 
   @Test
   void givenIurOnlyWhenGetReceiptsThenOk() {
-    ReceiptViewFiltersDTO filtersDTO = new ReceiptViewFiltersDTO(1L, null, null, null, "IUR456", null, null, null);
+    ReceiptViewFiltersDTO filtersDTO = new ReceiptViewFiltersDTO(1L, null, null, null, "IUR456", null, null, null, null);
     testSingleFilterSuccess(filtersDTO);
   }
 
   @Test
   void givenIuvOnlyWhenGetReceiptsThenOk() {
-    ReceiptViewFiltersDTO filtersDTO = new ReceiptViewFiltersDTO(1L, null, null, "IUV123", null, null, null, null);
+    ReceiptViewFiltersDTO filtersDTO = new ReceiptViewFiltersDTO(1L, null, null, "IUV123", null, null, null, null, null);
     testSingleFilterSuccess(filtersDTO);
   }
 
   @Test
   void givenReceiptOriginOnlyWhenGetReceiptsThenOk() {
-    ReceiptViewFiltersDTO filtersDTO = new ReceiptViewFiltersDTO(1L, List.of(ReceiptOriginType.RECEIPT_PAGOPA), null, null, null, null, null, null);
+    ReceiptViewFiltersDTO filtersDTO = new ReceiptViewFiltersDTO(1L, List.of(ReceiptOriginType.RECEIPT_PAGOPA), null, null, null, null, null, null, null);
+    testSingleFilterSuccess(filtersDTO);
+  }
+
+  @Test
+  void givenFiscalCodeOnlyWhenGetReceiptsThenOk() {
+    ReceiptViewFiltersDTO filtersDTO = new ReceiptViewFiltersDTO(1L, null, null, null, null, null, null, null, "ABCDEF12G34H567I");
     testSingleFilterSuccess(filtersDTO);
   }
 
   @Test
   void givenEmptyReceiptOriginsWhenGetReceiptsThenIllegalArgumentException() {
-    ReceiptViewFiltersDTO filtersDTO = new ReceiptViewFiltersDTO(1L, Collections.emptyList(), null, null, null, null, null, null);
+    ReceiptViewFiltersDTO filtersDTO = new ReceiptViewFiltersDTO(1L, Collections.emptyList(), null, null, null, null, null, null, null);
     UserInfo loggedUser = new UserInfo();
     loggedUser.setUserId("user-123");
     Pageable pageable = PageRequest.of(0, 10);

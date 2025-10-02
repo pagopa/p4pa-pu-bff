@@ -51,6 +51,7 @@ public class ReceiptRetrieverServiceImpl implements ReceiptRetrieverService {
       StringUtils.isBlank(filtersDTO.getIur()) &&
       StringUtils.isBlank(filtersDTO.getIud()) &&
       filtersDTO.getDebtPositionTypeOrgId() == null &&
+      StringUtils.isBlank(filtersDTO.getFiscalCode()) &&
       (filtersDTO.getPaymentDateTime() == null ||
         DateUtils.isNullOrInvalidOffsetDateTimeRange(filtersDTO.getPaymentDateTime().getFrom(), filtersDTO.getPaymentDateTime().getTo()))) {
       throw new IllegalArgumentException("At least one of the research fields must be provided, and both 'from' and 'to' payment dates must be set together");

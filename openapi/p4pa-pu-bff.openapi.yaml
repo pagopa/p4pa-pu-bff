@@ -1373,6 +1373,10 @@ paths:
           schema:
             type: integer
             format: int64
+        - name: fiscalCode
+          in: query
+          schema:
+            type: string
         - name: paymentDateTimeFrom
           in: query
           required: false

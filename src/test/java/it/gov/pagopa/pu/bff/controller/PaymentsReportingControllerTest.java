@@ -82,6 +82,7 @@ class PaymentsReportingControllerTest {
       .totalPayments(100L)
       .iuf(iuf)
       .totalAmountCents(1000L)
+      .iuv("iuv")
       .build()));
     expectedResult.setSize(10L);
     expectedResult.setTotalElements(1L);

@@ -70,6 +70,9 @@
     "name" : "Monitoring",
     "description" : "the Monitoring API"
   }, {
+    "name" : "SpontaneousForms",
+    "description" : "the SpontaneousForms API"
+  }, {
     "name" : "Schedule",
     "description" : "the Schedule API"
   }, {
@@ -3842,6 +3845,78 @@
                   "type" : "array",
                   "items" : {
                     "$ref" : "#/components/schemas/Transfer"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "BearerAuth" : [ ]
+        } ]
+      }
+    },
+    "/bff/organization/{organizationId}/spontaneous-forms" : {
+      "get" : {
+        "tags" : [ "SpontaneousForms" ],
+        "operationId" : "getSpontaneousForms",
+        "parameters" : [ {
+          "name" : "organizationId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/SpontaneousForm"
+                  }
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Unauthorized - Missing or invalid token",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/SpontaneousForm"
+                  }
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Forbidden - Access denied",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/SpontaneousForm"
+                  }
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal Server Error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/SpontaneousForm"
                   }
                 }
               }
@@ -10517,6 +10592,217 @@
           }
         },
         "required" : [ "amountCents", "category", "installmentId", "orgFiscalCode", "remittanceInformation", "transferIndex" ]
+      },
+      "RenderType" : {
+        "type" : "string",
+        "enum" : [ "TEXT", "INTEGER", "DOUBLE", "BOOLEAN", "DATE", "DATETIME", "TEXTAREA", "HTMLAREA", "IMAGE", "SELECT", "MULTILINK", "FILE", "NONE", "SINGLESELECT", "MULTISELECT", "MULTIFIELD", "ASSOCIATION", "LINKGENERATOR", "TAGS", "TAB", "LABEL", "CURRENCY", "CURRENCY_LABEL" ]
+      },
+      "SpontaneousForm" : {
+        "type" : "object",
+        "properties" : {
+          "creationDate" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "updateDate" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "updateOperatorExternalId" : {
+            "type" : "string"
+          },
+          "updateTraceId" : {
+            "type" : "string"
+          },
+          "spontaneousFormId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "organizationId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "code" : {
+            "type" : "string"
+          },
+          "structure" : {
+            "$ref" : "#/components/schemas/SpontaneousFormStructure"
+          },
+          "dictionary" : {
+            "type" : "object",
+            "additionalProperties" : {
+              "type" : "object",
+              "additionalProperties" : {
+                "type" : "object",
+                "additionalProperties" : {
+                  "type" : "string"
+                }
+              }
+            }
+          },
+          "_links" : {
+            "type" : "object",
+            "additionalProperties" : {
+              "$ref" : "#/components/schemas/Link"
+            }
+          }
+        },
+        "required" : [ "code", "organizationId", "structure" ]
+      },
+      "SpontaneousFormField" : {
+        "type" : "object",
+        "properties" : {
+          "name" : {
+            "type" : "string"
+          },
+          "required" : {
+            "type" : "boolean"
+          },
+          "regex" : {
+            "type" : "string"
+          },
+          "htmlRender" : {
+            "$ref" : "#/components/schemas/RenderType"
+          },
+          "htmlClass" : {
+            "type" : "string"
+          },
+          "htmlLabel" : {
+            "type" : "string"
+          },
+          "htmlPlaceholder" : {
+            "type" : "string"
+          },
+          "bindCms" : {
+            "type" : "string"
+          },
+          "defaultValue" : {
+            "type" : "string"
+          },
+          "insertableOrder" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "indexable" : {
+            "type" : "boolean"
+          },
+          "renderableOrder" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "searchableOrder" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "listableOrder" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "insertable" : {
+            "type" : "boolean"
+          },
+          "renderable" : {
+            "type" : "boolean"
+          },
+          "searchable" : {
+            "type" : "boolean"
+          },
+          "listable" : {
+            "type" : "boolean"
+          },
+          "association" : {
+            "type" : "boolean"
+          },
+          "detailLink" : {
+            "type" : "boolean"
+          },
+          "associationField" : {
+            "type" : "string"
+          },
+          "minOccurences" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "maxOccurences" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "groupBy" : {
+            "type" : "string"
+          },
+          "extraAttr" : {
+            "type" : "object",
+            "additionalProperties" : {
+              "type" : "string"
+            }
+          },
+          "enumerationList" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "subfields" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/SpontaneousFormField"
+            }
+          },
+          "validDependsOn" : {
+            "type" : "string"
+          },
+          "validDependsOnUids" : {
+            "type" : "string"
+          },
+          "valueDependsOn" : {
+            "type" : "string"
+          },
+          "valueDependsOnUids" : {
+            "type" : "string"
+          },
+          "hiddenDependsOn" : {
+            "type" : "string"
+          },
+          "hiddenDependsOnUids" : {
+            "type" : "string"
+          },
+          "mandatoryDependsOn" : {
+            "type" : "string"
+          },
+          "mandatoryDependsOnUids" : {
+            "type" : "string"
+          },
+          "enabledDependsOn" : {
+            "type" : "string"
+          },
+          "enabledDependsOnUids" : {
+            "type" : "string"
+          },
+          "errorMessage" : {
+            "type" : "string"
+          },
+          "helpMessage" : {
+            "type" : "string"
+          }
+        },
+        "required" : [ "association", "detailLink", "htmlRender", "indexable", "insertable", "insertableOrder", "listable", "listableOrder", "maxOccurences", "minOccurences", "name", "renderable", "renderableOrder", "searchable", "searchableOrder" ]
+      },
+      "SpontaneousFormStructure" : {
+        "type" : "object",
+        "properties" : {
+          "fields" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/SpontaneousFormField"
+            }
+          },
+          "amountFieldName" : {
+            "type" : "string"
+          },
+          "hasAmountInForm" : {
+            "type" : "boolean"
+          }
+        }
       },
       "PagedSilRegistry" : {
         "type" : "object",

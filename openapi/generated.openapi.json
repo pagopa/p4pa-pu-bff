@@ -4131,6 +4131,13 @@
             "format" : "int64"
           }
         }, {
+          "name" : "fiscalCode",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
           "name" : "paymentDateTimeFrom",
           "in" : "query",
           "required" : false,
@@ -9060,6 +9067,10 @@
           "flagExternal" : {
             "type" : "boolean"
           },
+          "spontaneousFormId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
           "_links" : {
             "type" : "object",
             "additionalProperties" : {
@@ -10709,6 +10720,10 @@
           "debtPositionTypeOrgDescription" : {
             "type" : "string"
           },
+          "debtorFiscalCodeHash" : {
+            "type" : "string",
+            "format" : "byte"
+          },
           "_links" : {
             "type" : "object",
             "additionalProperties" : {
@@ -10716,7 +10731,7 @@
             }
           }
         },
-        "required" : [ "debtPositionTypeOrgDescription", "installmentId", "paymentAmountCents", "receiptOrigin" ]
+        "required" : [ "debtPositionTypeOrgDescription", "debtorFiscalCodeHash", "installmentId", "paymentAmountCents", "receiptOrigin" ]
       },
       "ReceiptDetailDTO" : {
         "type" : "object",
@@ -10807,6 +10822,9 @@
           "iuf" : {
             "type" : "string"
           },
+          "iuv" : {
+            "type" : "string"
+          },
           "regulationUniqueIdentifier" : {
             "type" : "string"
           },
@@ -10833,7 +10851,7 @@
             }
           }
         },
-        "required" : [ "flowDateTime", "ingestionFlowFileId", "iuf", "organizationId", "regulationDate", "regulationUniqueIdentifier", "totalAmountCents", "totalPayments" ]
+        "required" : [ "flowDateTime", "ingestionFlowFileId", "iuf", "iuv", "organizationId", "regulationDate", "regulationUniqueIdentifier", "totalAmountCents", "totalPayments" ]
       },
       "PagedPaymentsReportingRow" : {
         "type" : "object",

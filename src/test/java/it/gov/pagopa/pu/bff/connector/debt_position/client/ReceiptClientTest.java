@@ -64,12 +64,13 @@ class ReceiptClientTest {
     String iur = "iur123";
     String iud = "iud123";
     Long debtPositionTypeOrgId = 1L;
+    String fiscalCode = "KNILSE99D44G600L";
     OffsetDateTime paymentDateTimeFrom = OffsetDateTime.now().minusDays(1);
     OffsetDateTime paymentDateTimeTo = OffsetDateTime.now();
     OffsetDateTimeIntervalFilter paymentDateTimeFilter = new OffsetDateTimeIntervalFilter(paymentDateTimeFrom, paymentDateTimeTo);
 
     ReceiptViewFiltersDTO filtersDTO = new ReceiptViewFiltersDTO(
-      1L, receiptOrigins, "operator", iuv, iur, iud, debtPositionTypeOrgId, paymentDateTimeFilter);
+      1L, receiptOrigins, "operator", iuv, iur, iud, debtPositionTypeOrgId, paymentDateTimeFilter, fiscalCode);
     Pageable pageable = PageRequest.of(0, 10, Sort.unsorted());
 
     when(debtPositionApisHolderMock.getReceiptViewSearchControllerApi(accessToken))
@@ -85,6 +86,7 @@ class ReceiptClientTest {
       filtersDTO.getDebtPositionTypeOrgId(),
       paymentDateTimeFrom,
       paymentDateTimeTo,
+      filtersDTO.getFiscalCode(),
       PageUtils.getPageNumber(pageable),
       PageUtils.getPageSize(pageable),
       PageUtils.getSortList(pageable)))

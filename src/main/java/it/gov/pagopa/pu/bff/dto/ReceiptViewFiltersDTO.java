@@ -20,5 +20,6 @@ public class ReceiptViewFiltersDTO {
   private String iud;
   private Long debtPositionTypeOrgId;
   private OffsetDateTimeIntervalFilter paymentDateTime;
+  private String fiscalCode;
 
 }

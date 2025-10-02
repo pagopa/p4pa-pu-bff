@@ -1203,6 +1203,11 @@ paths:
           required: false
           schema:
             type: string
+        - name: iuv
+          in: query
+          required: false
+          schema:
+            type: string
         - name: regulationUniqueIdentifier
           in: query
           required: false

@@ -85,6 +85,7 @@ class ReceiptClientTest {
       filtersDTO.getDebtPositionTypeOrgId(),
       paymentDateTimeFrom,
       paymentDateTimeTo,
+      null,
       PageUtils.getPageNumber(pageable),
       PageUtils.getPageSize(pageable),
       PageUtils.getSortList(pageable)))

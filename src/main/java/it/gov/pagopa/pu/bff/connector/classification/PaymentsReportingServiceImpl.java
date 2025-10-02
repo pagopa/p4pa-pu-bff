@@ -25,10 +25,10 @@ public class PaymentsReportingServiceImpl implements PaymentsReportingService {
   @Override
   public PagedModelPaymentsReportingView getPaymentsReporting(
     Long organizationId, String iuf, String regulationUniqueIdentifier,
-    LocalDateIntervalFilter regulationDateFilter,
+    LocalDateIntervalFilter regulationDateFilter, String iuv,
     Pageable pageable, String accessToken) {
     return paymentsReportingViewSearchClient.getPaymentsReporting(
-      organizationId, iuf, regulationUniqueIdentifier, regulationDateFilter,
+      organizationId, iuf, regulationUniqueIdentifier, regulationDateFilter, iuv,
       pageable, accessToken);
   }
 

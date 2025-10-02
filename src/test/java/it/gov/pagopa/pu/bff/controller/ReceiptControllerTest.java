@@ -74,10 +74,12 @@ class ReceiptControllerTest {
     Pageable pageable = PageRequest.of(0, 10);
     OffsetDateTime fromDate = OffsetDateTime.now().minusDays(10);
     OffsetDateTime toDate = OffsetDateTime.now();
+    String fiscalCode = "FRTMRA90C41F205D";
 
     OffsetDateTimeIntervalFilter paymentDateTimeFilter = new OffsetDateTimeIntervalFilter(fromDate, toDate);
 
-    ReceiptViewFiltersDTO filtersDTO = new ReceiptViewFiltersDTO(organizationId, receiptOrigins, loggedUser.getMappedExternalUserId(), iuv, iur, iud, debtPositionTypeOrgId, paymentDateTimeFilter);
+    ReceiptViewFiltersDTO filtersDTO = new ReceiptViewFiltersDTO(
+      organizationId, receiptOrigins, loggedUser.getMappedExternalUserId(), iuv, iur, iud, debtPositionTypeOrgId, paymentDateTimeFilter, fiscalCode);
 
     PagedReceiptView expectedResult = new PagedReceiptView();
     expectedResult.setContent(List.of(ReceiptView.builder()
@@ -88,6 +90,7 @@ class ReceiptControllerTest {
       .iuv(iuv)
       .installmentId(200L)
       .debtPositionTypeOrgDescription("Description")
+      .debtorFiscalCodeHash(new byte[]{1, 2, 3})
       .build()));
     expectedResult.setSize(10L);
     expectedResult.setTotalElements(1L);
@@ -97,7 +100,8 @@ class ReceiptControllerTest {
     Mockito.when(receiptRetrieverServiceMock.getReceipts(filtersDTO, pageable, loggedUser, accessToken))
       .thenReturn(expectedResult);
 
-    ResponseEntity<PagedReceiptView> response = receiptController.getReceipts(organizationId, receiptOrigins, iuv, iur, iud, debtPositionTypeOrgId, fromDate, toDate, pageable);
+    ResponseEntity<PagedReceiptView> response = receiptController.getReceipts(
+      organizationId, receiptOrigins, iuv, iur, iud, debtPositionTypeOrgId, fiscalCode, fromDate, toDate, pageable);
 
     Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
     Assertions.assertNotNull(response.getBody());

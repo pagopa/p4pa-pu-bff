@@ -58,12 +58,13 @@ class PaymentsReportingViewSearchClientTest {
     when(classificationApisHolderMock.getPaymentsReportingViewSearchControllerApi(accessToken))
       .thenReturn(paymentsReportingViewSearchControllerApiMock);
 
-    when(paymentsReportingViewSearchControllerApiMock.crudPaymentsReportingViewFindDistinctByIufAndRegulationUniqueIdentifier(
+    when(paymentsReportingViewSearchControllerApiMock.crudPaymentsReportingViewFindDistinctByIufAndRegulationUniqueIdentifierAndIuv(
       String.valueOf(organizationId),
       iuf,
       regulationUniqueIdentifier,
       regulationDateFilter.getFrom(),
       regulationDateFilter.getTo(),
+      null, //TODO P4ADEV-3852 add iuv filter
       PageUtils.getPageNumber(pageable),
       PageUtils.getPageSize(pageable),
       PageUtils.getSortList(pageable)))

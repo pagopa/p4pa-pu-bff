@@ -33,13 +33,13 @@ public class ReceiptController implements ReceiptsApi {
   }
 
   @Override
-  public ResponseEntity<PagedReceiptView> getReceipts(Long organizationId, List<ReceiptOriginType> receiptOrigins, String iuv, String iur, String iud, Long debtPositionTypeOrgId, OffsetDateTime paymentDateTimeFrom, OffsetDateTime paymentDateTimeTo, Pageable pageable) {
+  public ResponseEntity<PagedReceiptView> getReceipts(Long organizationId, List<ReceiptOriginType> receiptOrigins, String iuv, String iur, String iud, Long debtPositionTypeOrgId, String fiscalCode, OffsetDateTime paymentDateTimeFrom, OffsetDateTime paymentDateTimeTo, Pageable pageable) {
     log.info("User requested getReceipts having organizationId {} and receiptOrigins {}", organizationId, receiptOrigins);
     UserInfo userInfo = SecurityUtils.getLoggedUser();
     OffsetDateTimeIntervalFilter paymentDateTimeFilter = new OffsetDateTimeIntervalFilter(paymentDateTimeFrom, paymentDateTimeTo);
 
     return ResponseEntity.ok(receiptRetrieverService.getReceipts(
-      new ReceiptViewFiltersDTO(organizationId, receiptOrigins, userInfo.getMappedExternalUserId(), iuv, iur, iud, debtPositionTypeOrgId, paymentDateTimeFilter),
+      new ReceiptViewFiltersDTO(organizationId, receiptOrigins, userInfo.getMappedExternalUserId(), iuv, iur, iud, debtPositionTypeOrgId, paymentDateTimeFilter, fiscalCode),
       pageable, userInfo, SecurityUtils.getAccessToken()));
   }
 

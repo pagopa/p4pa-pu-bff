@@ -21,7 +21,9 @@ public class DashboardController implements DashboardApi {
   @Override
   public ResponseEntity<PagedDashboardDTO> getInstallmentsDashboardByFiscalCode(
     Long organizationId, String fiscalCode) {
-    log.info("User requested getInstallmentDashboardByFiscalCode with organizationId {}", organizationId);
+    log.info(
+      "User requested getInstallmentDashboardByFiscalCode with organizationId {}",
+      organizationId);
 
     return ResponseEntity.ofNullable(
       dashboardService.getInstallmentsByFiscalCode(organizationId, fiscalCode,

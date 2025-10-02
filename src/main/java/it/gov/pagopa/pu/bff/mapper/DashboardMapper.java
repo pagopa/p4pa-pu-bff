@@ -36,6 +36,7 @@ public class DashboardMapper {
       out.setInstallmentId(installment.getInstallmentId());
       out.setHasDebtPosition(true);
       out.setDebtPositionId(installment.getDebtPositionId());
+      out.setHasReceipt(false);
 
       if (installment.getReceiptId() != null) {
         out.setHasReceipt(true);

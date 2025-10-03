@@ -10,7 +10,7 @@ public interface PaymentsReportingService {
 
   PagedModelPaymentsReportingView getPaymentsReporting(Long organizationId,
     String iuf, String regulationUniqueIdentifier,
-    LocalDateIntervalFilter regulationDateFilter,
+    LocalDateIntervalFilter regulationDateFilter, String iuv,
     Pageable pageable, String accessToken);
 
   PagedModelPaymentsReporting getPaymentsReportingRows(Long organizationId,

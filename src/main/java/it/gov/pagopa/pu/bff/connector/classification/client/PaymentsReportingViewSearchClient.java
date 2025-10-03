@@ -16,8 +16,15 @@ public class PaymentsReportingViewSearchClient {
     this.classificationApisHolder = classificationApisHolder;
   }
 
-  public PagedModelPaymentsReportingView getPaymentsReporting(Long organizationId, String iuf, String regulationUniqueIdentifier, LocalDateIntervalFilter regulationDateFilter,
-                                                              Pageable pageable, String accessToken) {
+  public PagedModelPaymentsReportingView getPaymentsReporting(
+    Long organizationId,
+    String iuf,
+    String regulationUniqueIdentifier,
+    LocalDateIntervalFilter regulationDateFilter,
+    String iuv,
+    Pageable pageable,
+    String accessToken
+  ) {
     return classificationApisHolder.getPaymentsReportingViewSearchControllerApi(accessToken)
       .crudPaymentsReportingViewFindDistinctByIufAndRegulationUniqueIdentifierAndIuv(
         String.valueOf(organizationId),
@@ -25,7 +32,7 @@ public class PaymentsReportingViewSearchClient {
         regulationUniqueIdentifier,
         regulationDateFilter.getFrom(),
         regulationDateFilter.getTo(),
-        null,//TODO P4ADEV-3852 add iuv filter
+        iuv,
         PageUtils.getPageNumber(pageable),
         PageUtils.getPageSize(pageable),
         PageUtils.getSortList(pageable));

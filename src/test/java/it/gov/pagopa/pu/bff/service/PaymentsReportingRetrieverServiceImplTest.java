@@ -77,6 +77,7 @@ class PaymentsReportingRetrieverServiceImplTest {
 
     long organizationId = 1L;
     String iuf = "IUF123";
+    String iuv = "IUV123";
     String regulationUniqueIdentifier = "RUI123";
     LocalDate regulationDateFrom = LocalDate.now().minusDays(10);
     LocalDate regulationDateTo = LocalDate.now();
@@ -96,7 +97,7 @@ class PaymentsReportingRetrieverServiceImplTest {
 
       when(
         paymentsReportingServiceMock.getPaymentsReporting(organizationId, iuf,
-          regulationUniqueIdentifier, regulationDateFilter, pageable,
+          regulationUniqueIdentifier, regulationDateFilter, iuv, pageable,
           accessToken))
         .thenReturn(pagedModelPaymentsReportingView);
 
@@ -106,7 +107,7 @@ class PaymentsReportingRetrieverServiceImplTest {
 
       PagedPaymentsReportingView result = paymentsReportingRetrieverService.getPaymentsReporting(
         organizationId, iuf, regulationUniqueIdentifier, regulationDateFilter,
-        pageable, loggedUser, accessToken);
+        iuv, pageable, loggedUser, accessToken);
 
       assertNotNull(result);
       assertSame(expectedPagedPaymentsReportingView, result);
@@ -124,6 +125,7 @@ class PaymentsReportingRetrieverServiceImplTest {
 
     long organizationId = 1L;
     String iuf = "IUF123";
+    String iuv = "IUV123";
     String regulationUniqueIdentifier = "RUI123";
     LocalDate regulationDateFrom = LocalDate.now().minusDays(10);
     LocalDate regulationDateTo = LocalDate.now();
@@ -140,7 +142,7 @@ class PaymentsReportingRetrieverServiceImplTest {
 
       assertThrows(AuthorizationDeniedException.class, () ->
         paymentsReportingRetrieverService.getPaymentsReporting(organizationId,
-          iuf, regulationUniqueIdentifier, regulationDateFilter, pageable,
+          iuf, regulationUniqueIdentifier, regulationDateFilter, iuv, pageable,
           loggedUser, accessToken));
 
       authorizationServiceMockedStatic.verify(

@@ -11918,6 +11918,13 @@
           },
           "debtPositionTypeCode" : {
             "type" : "string"
+          },
+          "spontaneousFormId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "spontaneousFormCode" : {
+            "type" : "string"
           }
         },
         "required" : [ "code", "debtPositionTypeId", "description", "organizationId" ]

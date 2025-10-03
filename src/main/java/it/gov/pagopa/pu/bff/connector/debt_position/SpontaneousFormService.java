@@ -5,4 +5,5 @@ import java.util.List;
 
 public interface SpontaneousFormService {
   List<SpontaneousForm> findAllByOrganizationId(Long organizationId, String accessToken);
+  SpontaneousForm getSpontaneousForm(Long spontaneousFormId, String accessToken);
 }

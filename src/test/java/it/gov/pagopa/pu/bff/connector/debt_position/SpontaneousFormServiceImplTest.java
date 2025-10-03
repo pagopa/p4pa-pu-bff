@@ -41,4 +41,20 @@ class SpontaneousFormServiceImplTest {
 
     assertSame(expectedResult, result);
   }
+
+  @Test
+  void whenGetSpontaneousFormBySpontaneousFormIdThenInvokeClient() {
+    String accessToken = "ACCESSTOKEN";
+    Long spontaneousFormId = 1L;
+
+    SpontaneousForm expectedResult = podamFactory.manufacturePojo(SpontaneousForm.class);
+
+    when(spontaneousFormSearchClient.getSpontaneousForm(spontaneousFormId,accessToken))
+      .thenReturn(expectedResult);
+
+    SpontaneousForm result = service.getSpontaneousForm(spontaneousFormId, accessToken);
+
+    assertSame(expectedResult, result);
+  }
+
 }

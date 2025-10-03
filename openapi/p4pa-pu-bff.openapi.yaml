@@ -4723,6 +4723,11 @@ components:
           type: string
         debtPositionTypeCode:
           type: string
+        spontaneousFormId:
+          type: integer
+          format: int64
+        spontaneousFormCode:
+          type: string
     PaidExportFileRequest:
       type: object
       required:

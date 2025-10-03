@@ -3,10 +3,7 @@ package it.gov.pagopa.pu.bff.service.debt_position_type_org;
 import it.gov.pagopa.pu.auth.dto.generated.OperatorsPage;
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.connector.auth.AuthzService;
-import it.gov.pagopa.pu.bff.connector.debt_position.DebtPositionService;
-import it.gov.pagopa.pu.bff.connector.debt_position.DebtPositionTypeOrgOperatorsService;
-import it.gov.pagopa.pu.bff.connector.debt_position.DebtPositionTypeOrgService;
-import it.gov.pagopa.pu.bff.connector.debt_position.DebtPositionTypeService;
+import it.gov.pagopa.pu.bff.connector.debt_position.*;
 import it.gov.pagopa.pu.bff.dto.generated.DebtPositionTypeOrgDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedDebtPositionTypeOrgOperatorDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedDebtPositionTypeOrgWithCount;
@@ -49,18 +46,19 @@ public class DebtPositionTypeOrgRetrieverServiceImpl implements DebtPositionType
   private final DebtPositionTypeOrgMapper debtPositionTypeOrgMapper;
   private final DebtPositionTypeOrgDTOMapper debtPositionTypeOrgDTOMapper;
   private final OrgSilServiceRetrieverService orgSilServiceRetrieverService;
+  private final SpontaneousFormService spontaneousFormService;
 
   public DebtPositionTypeOrgRetrieverServiceImpl(
-          DebtPositionTypeOrgService debtPositionTypeOrgService,
-          DebtPositionTypeOrgOperatorsService debtPositionTypeOrgOperatorsService,
-          DebtPositionService debtPositionService,
-          AuthorizationService authorizationService,
-          AuthzService authzService, DebtPositionTypeService debtPositionTypeService,
-          DebtPositionTypeOrgWithCountMapper debtPositionTypeOrgWithCountMapper,
-          DebtPositionTypeOrgOperatorsMapper debtPositionTypeOrgOperatorsMapper,
-          DebtPositionTypeOrgMapper debtPositionTypeOrgMapper,
-          DebtPositionTypeOrgDTOMapper debtPositionTypeOrgDTOMapper,
-          OrgSilServiceRetrieverService orgSilServiceRetrieverService) {
+    DebtPositionTypeOrgService debtPositionTypeOrgService,
+    DebtPositionTypeOrgOperatorsService debtPositionTypeOrgOperatorsService,
+    DebtPositionService debtPositionService,
+    AuthorizationService authorizationService,
+    AuthzService authzService, DebtPositionTypeService debtPositionTypeService,
+    DebtPositionTypeOrgWithCountMapper debtPositionTypeOrgWithCountMapper,
+    DebtPositionTypeOrgOperatorsMapper debtPositionTypeOrgOperatorsMapper,
+    DebtPositionTypeOrgMapper debtPositionTypeOrgMapper,
+    DebtPositionTypeOrgDTOMapper debtPositionTypeOrgDTOMapper,
+    OrgSilServiceRetrieverService orgSilServiceRetrieverService, SpontaneousFormService spontaneousFormService) {
     this.debtPositionTypeOrgService = debtPositionTypeOrgService;
     this.debtPositionTypeOrgOperatorsService = debtPositionTypeOrgOperatorsService;
     this.debtPositionService = debtPositionService;
@@ -72,6 +70,7 @@ public class DebtPositionTypeOrgRetrieverServiceImpl implements DebtPositionType
     this.debtPositionTypeOrgMapper = debtPositionTypeOrgMapper;
     this.debtPositionTypeOrgDTOMapper = debtPositionTypeOrgDTOMapper;
     this.orgSilServiceRetrieverService = orgSilServiceRetrieverService;
+    this.spontaneousFormService = spontaneousFormService;
   }
 
   @Override
@@ -89,7 +88,30 @@ public class DebtPositionTypeOrgRetrieverServiceImpl implements DebtPositionType
 
     String amountActualizationOrgSilServiceApplicationName = orgSilServiceRetrieverService.getOrgSilServiceApplicationName(debtPositionTypeOrg.getAmountActualizationOrgSilServiceId(), accessToken);
 
-    return debtPositionTypeOrgDTOMapper.map(debtPositionTypeOrg, debtPositionType, notifyOutcomePushOrgSilServiceApplicationName, amountActualizationOrgSilServiceApplicationName);
+    String spontaneousFormCode = null;
+    if (debtPositionTypeOrg.getSpontaneousFormId() != null){
+      SpontaneousForm spontaneousForm = spontaneousFormService.getSpontaneousForm(debtPositionTypeOrg.getSpontaneousFormId(), accessToken);
+      validateSpontaneousForm(spontaneousForm, debtPositionTypeOrg);
+      spontaneousFormCode = spontaneousForm.getCode();
+    }
+
+    return debtPositionTypeOrgDTOMapper.map(debtPositionTypeOrg, debtPositionType, notifyOutcomePushOrgSilServiceApplicationName, amountActualizationOrgSilServiceApplicationName, spontaneousFormCode);
+  }
+
+  private static void validateSpontaneousForm(SpontaneousForm spontaneousForm, DebtPositionTypeOrg debtPositionTypeOrg) {
+    if (spontaneousForm == null){
+      throw new ResourceNotFoundException("SpontaneousForm with id %d not found".formatted(debtPositionTypeOrg.getSpontaneousFormId()));
+    }
+
+    if (!debtPositionTypeOrg.getOrganizationId().equals(spontaneousForm.getOrganizationId())){
+      throw new ConflictException(
+        "OrganizationId %d of DebtPositionTypeOrg does not match OrganizationId %d of SpontaneousForm %d"
+          .formatted(
+            debtPositionTypeOrg.getOrganizationId(),
+            spontaneousForm.getOrganizationId(),
+            debtPositionTypeOrg.getSpontaneousFormId()
+          ));
+    }
   }
 
   @Override

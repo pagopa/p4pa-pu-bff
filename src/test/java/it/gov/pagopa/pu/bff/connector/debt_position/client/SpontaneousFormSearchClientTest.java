@@ -1,11 +1,11 @@
 package it.gov.pagopa.pu.bff.connector.debt_position.client;
 
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 import it.gov.pagopa.pu.bff.connector.debt_position.config.DebtPositionApisHolder;
 import it.gov.pagopa.pu.bff.util.TestUtils;
+import it.gov.pagopa.pu.debtpositions.controller.generated.SpontaneousFormEntityControllerApi;
 import it.gov.pagopa.pu.debtpositions.controller.generated.SpontaneousFormSearchControllerApi;
 import it.gov.pagopa.pu.debtpositions.dto.generated.CollectionModelSpontaneousForm;
 import it.gov.pagopa.pu.debtpositions.dto.generated.SpontaneousForm;
@@ -29,6 +29,8 @@ class SpontaneousFormSearchClientTest {
   private DebtPositionApisHolder debtPositionApisHolderMock;
   @Mock
   private SpontaneousFormSearchControllerApi spontaneousFormSearchControllerApiMock;
+  @Mock
+  private SpontaneousFormEntityControllerApi spontaneousFormEntityControllerApiMock;
 
   private SpontaneousFormSearchClient spontaneousFormSearchClient;
 
@@ -41,7 +43,8 @@ class SpontaneousFormSearchClientTest {
   void verifyNoMoreInteractions() {
     Mockito.verifyNoMoreInteractions(
       debtPositionApisHolderMock,
-      spontaneousFormSearchControllerApiMock
+      spontaneousFormSearchControllerApiMock,
+      spontaneousFormEntityControllerApiMock
     );
   }
 
@@ -113,5 +116,24 @@ class SpontaneousFormSearchClientTest {
     List<SpontaneousForm> result = spontaneousFormSearchClient.findAllByOrganizationId(organizationId, accessToken);
 
     assertTrue(CollectionUtils.isEmpty(result));
+  }
+
+  @Test
+  void givenSpontaneousFormIdWhenGetSpontaneousFormThenReturnSpontaneousForm() {
+    //given
+    String accessToken = "ACCESSTOKEN";
+    Long spontaneousFormId = 1L;
+
+    SpontaneousForm expectedResult = new SpontaneousForm();
+
+    when(debtPositionApisHolderMock.getSpontaneousFormEntityControllerApi(accessToken))
+      .thenReturn(spontaneousFormEntityControllerApiMock);
+    when(spontaneousFormEntityControllerApiMock.crudGetSpontaneousform(String.valueOf(spontaneousFormId)))
+      .thenReturn(expectedResult);
+    //when
+    SpontaneousForm result = spontaneousFormSearchClient.getSpontaneousForm(spontaneousFormId, accessToken);
+    //then
+    assertNotNull(result);
+    assertEquals(expectedResult, result);
   }
 }

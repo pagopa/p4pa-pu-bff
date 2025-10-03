@@ -21,4 +21,9 @@ public class SpontaneousFormSearchClient {
         .crudSpontaneousFormsFindAllByOrganizationId(organizationId);
     return collectionModelSpontaneousForm != null && collectionModelSpontaneousForm.getEmbedded()!=null?collectionModelSpontaneousForm.getEmbedded().getSpontaneousForms():Collections.emptyList();
   }
+
+  public SpontaneousForm getSpontaneousForm(Long spontaneousFormId, String accessToken){
+    return debtPositionApisHolder.getSpontaneousFormEntityControllerApi(accessToken).crudGetSpontaneousform(String.valueOf(spontaneousFormId));
+  }
+
 }

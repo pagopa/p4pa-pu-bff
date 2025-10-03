@@ -19,4 +19,8 @@ public class SpontaneousFormServiceImpl implements SpontaneousFormService {
     return spontaneousFormSearchClient.findAllByOrganizationId(organizationId, accessToken);
   }
 
+  @Override
+  public SpontaneousForm getSpontaneousForm(Long spontaneousFormId, String accessToken) {
+    return spontaneousFormSearchClient.getSpontaneousForm(spontaneousFormId, accessToken);
+  }
 }

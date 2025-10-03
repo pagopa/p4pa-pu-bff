@@ -18,7 +18,7 @@ class DebtPositionTypeOrgDTOMapperTest {
   void givenDtoWhenMapThenMapIt() {
     DebtPositionTypeOrg dto = TestUtils.getPodamFactory().manufacturePojo(DebtPositionTypeOrg.class);
 
-    DebtPositionTypeOrgDTO result = mapper.map(dto, "DebtPositionTypeDescription", "DebtPositionTypeCode", "NotifyOutcomePushOrgSilServiceApplicationName", "AmountActualizationOrgSilServiceApplicationName");
+    DebtPositionTypeOrgDTO result = mapper.map(dto, "DebtPositionTypeDescription", "DebtPositionTypeCode", "NotifyOutcomePushOrgSilServiceApplicationName", "AmountActualizationOrgSilServiceApplicationName", "spontaneousFormCode");
 
     TestUtils.reflectionEqualsByName(dto, result);
     TestUtils.checkNotNullFields(result);
@@ -36,7 +36,7 @@ class DebtPositionTypeOrgDTOMapperTest {
     debtPositionType.setDescription("Test Description");
     debtPositionType.setCode("Test Code");
 
-    DebtPositionTypeOrgDTO result = mapper.map(debtPositionTypeOrg, debtPositionType, "NotifyOutcomePushOrgSilServiceApplicationName", "AmountActualizationOrgSilServiceApplicationName");
+    DebtPositionTypeOrgDTO result = mapper.map(debtPositionTypeOrg, debtPositionType, "NotifyOutcomePushOrgSilServiceApplicationName", "AmountActualizationOrgSilServiceApplicationName", "spontaneousFormCode");
 
     TestUtils.reflectionEqualsByName(debtPositionTypeOrg, result);
     TestUtils.checkNotNullFields(result);
@@ -51,7 +51,7 @@ class DebtPositionTypeOrgDTOMapperTest {
   void givenNullDebtPositionTypeAndNullApplicationNamesWhenMapThenMapWithNullFields() {
     DebtPositionTypeOrg debtPositionTypeOrg = TestUtils.getPodamFactory().manufacturePojo(DebtPositionTypeOrg.class);
 
-    DebtPositionTypeOrgDTO result = mapper.map(debtPositionTypeOrg, null, null, null);
+    DebtPositionTypeOrgDTO result = mapper.map(debtPositionTypeOrg, null, null, null, null);
 
     TestUtils.reflectionEqualsByName(debtPositionTypeOrg, result);
 

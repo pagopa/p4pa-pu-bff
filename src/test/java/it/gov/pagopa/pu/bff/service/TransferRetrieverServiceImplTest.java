@@ -48,14 +48,10 @@ class TransferRetrieverServiceImplTest {
 
     long organizationId = 1L;
     long installmentId = 1L;
-    Transfer transfer1 = new Transfer();
-    transfer1.setTransferIndex(1);
-    Transfer transfer2 = new Transfer();
-    transfer2.setTransferIndex(2);
-
+    Transfer transfer = new Transfer();
 
     CollectionModelTransferEmbedded embedded = new CollectionModelTransferEmbedded();
-    embedded.setTransfers(List.of(transfer1, transfer2));
+    embedded.setTransfers(List.of(transfer));
     CollectionModelTransfer collectionModel = new CollectionModelTransfer();
     collectionModel.setEmbedded(embedded);
 
@@ -69,7 +65,7 @@ class TransferRetrieverServiceImplTest {
 
       assertNotNull(result);
       assertFalse(result.isEmpty());
-      assertSame(transfer2, result.getFirst());
+      assertSame(transfer, result.getFirst());
 
       authorizationServiceMockedStatic.verify(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser));
     }
@@ -122,7 +118,6 @@ class TransferRetrieverServiceImplTest {
     }
   }
 
-
   @Test
   void givenInvalidUserWhenGetTransfersThenAuthorizationDeniedException() {
     UserInfo loggedUser = new UserInfo();
@@ -141,39 +136,4 @@ class TransferRetrieverServiceImplTest {
       authorizationServiceMockedStatic.verify(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser));
     }
   }
-
-  @Test
-  void givenTransferWithIndexOneWhenGetTransfersThenExcluded() {
-    UserInfo loggedUser = new UserInfo();
-    loggedUser.setUserId("user-123");
-
-    long organizationId = 1L;
-    long installmentId = 1L;
-    Transfer transfer1 = new Transfer();
-    transfer1.setTransferIndex(1);
-    Transfer transfer2 = new Transfer();
-    transfer2.setTransferIndex(2);
-
-    CollectionModelTransferEmbedded embedded = new CollectionModelTransferEmbedded();
-    embedded.setTransfers(List.of(transfer1, transfer2));
-    CollectionModelTransfer collectionModel = new CollectionModelTransfer();
-    collectionModel.setEmbedded(embedded);
-
-    try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
-      authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)).thenAnswer(a -> null);
-
-      Mockito.when(transferServiceMock.getTransfers(installmentId, loggedUser.getMappedExternalUserId(), accessToken))
-        .thenReturn(collectionModel);
-
-      List<Transfer> result = transferRetrieverService.getTransfers(organizationId, installmentId, loggedUser, accessToken);
-
-      assertNotNull(result);
-      assertFalse(result.isEmpty());
-      assertEquals(1, result.size());
-      assertSame(transfer2, result.getFirst());
-
-      authorizationServiceMockedStatic.verify(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser));
-    }
-  }
-
 }

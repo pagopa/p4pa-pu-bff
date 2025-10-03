@@ -30,8 +30,6 @@ public class TransferRetrieverServiceImpl implements TransferRetrieverService {
     }
     return collection.getEmbedded().getTransfers()
       .stream()
-      .filter(transfer -> transfer.getTransferIndex() != 1)
       .toList();
   }
-
 }

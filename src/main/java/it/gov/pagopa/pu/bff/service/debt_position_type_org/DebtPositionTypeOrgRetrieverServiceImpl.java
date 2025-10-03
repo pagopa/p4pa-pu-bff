@@ -17,6 +17,7 @@ import it.gov.pagopa.pu.bff.mapper.DebtPositionTypeOrgOperatorsMapper;
 import it.gov.pagopa.pu.bff.mapper.DebtPositionTypeOrgWithCountMapper;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
 import it.gov.pagopa.pu.bff.service.org_sil_service.OrgSilServiceRetrieverService;
+import it.gov.pagopa.pu.bff.service.spontaneous_form.SpontaneousFormRetrieverService;
 import it.gov.pagopa.pu.debtpositions.dto.generated.*;
 import jakarta.validation.ValidationException;
 import org.springframework.data.domain.PageRequest;
@@ -46,7 +47,7 @@ public class DebtPositionTypeOrgRetrieverServiceImpl implements DebtPositionType
   private final DebtPositionTypeOrgMapper debtPositionTypeOrgMapper;
   private final DebtPositionTypeOrgDTOMapper debtPositionTypeOrgDTOMapper;
   private final OrgSilServiceRetrieverService orgSilServiceRetrieverService;
-  private final SpontaneousFormService spontaneousFormService;
+  private final SpontaneousFormRetrieverService spontaneousFormRetrieverService;
 
   public DebtPositionTypeOrgRetrieverServiceImpl(
     DebtPositionTypeOrgService debtPositionTypeOrgService,
@@ -58,7 +59,8 @@ public class DebtPositionTypeOrgRetrieverServiceImpl implements DebtPositionType
     DebtPositionTypeOrgOperatorsMapper debtPositionTypeOrgOperatorsMapper,
     DebtPositionTypeOrgMapper debtPositionTypeOrgMapper,
     DebtPositionTypeOrgDTOMapper debtPositionTypeOrgDTOMapper,
-    OrgSilServiceRetrieverService orgSilServiceRetrieverService, SpontaneousFormService spontaneousFormService) {
+    OrgSilServiceRetrieverService orgSilServiceRetrieverService,
+    SpontaneousFormRetrieverService spontaneousFormRetrieverService) {
     this.debtPositionTypeOrgService = debtPositionTypeOrgService;
     this.debtPositionTypeOrgOperatorsService = debtPositionTypeOrgOperatorsService;
     this.debtPositionService = debtPositionService;
@@ -70,7 +72,7 @@ public class DebtPositionTypeOrgRetrieverServiceImpl implements DebtPositionType
     this.debtPositionTypeOrgMapper = debtPositionTypeOrgMapper;
     this.debtPositionTypeOrgDTOMapper = debtPositionTypeOrgDTOMapper;
     this.orgSilServiceRetrieverService = orgSilServiceRetrieverService;
-    this.spontaneousFormService = spontaneousFormService;
+    this.spontaneousFormRetrieverService = spontaneousFormRetrieverService;
   }
 
   @Override
@@ -90,29 +92,14 @@ public class DebtPositionTypeOrgRetrieverServiceImpl implements DebtPositionType
 
     String spontaneousFormCode = null;
     if (debtPositionTypeOrg.getSpontaneousFormId() != null){
-      SpontaneousForm spontaneousForm = spontaneousFormService.getSpontaneousForm(debtPositionTypeOrg.getSpontaneousFormId(), accessToken);
-      validateSpontaneousForm(spontaneousForm, debtPositionTypeOrg);
+      SpontaneousForm spontaneousForm = spontaneousFormRetrieverService.getSpontaneousFormAndValidate(debtPositionTypeOrg.getSpontaneousFormId(), debtPositionTypeOrg, accessToken);
       spontaneousFormCode = spontaneousForm.getCode();
     }
 
     return debtPositionTypeOrgDTOMapper.map(debtPositionTypeOrg, debtPositionType, notifyOutcomePushOrgSilServiceApplicationName, amountActualizationOrgSilServiceApplicationName, spontaneousFormCode);
   }
 
-  private static void validateSpontaneousForm(SpontaneousForm spontaneousForm, DebtPositionTypeOrg debtPositionTypeOrg) {
-    if (spontaneousForm == null){
-      throw new ResourceNotFoundException("SpontaneousForm with id %d not found".formatted(debtPositionTypeOrg.getSpontaneousFormId()));
-    }
 
-    if (!debtPositionTypeOrg.getOrganizationId().equals(spontaneousForm.getOrganizationId())){
-      throw new ConflictException(
-        "OrganizationId %d of DebtPositionTypeOrg does not match OrganizationId %d of SpontaneousForm %d"
-          .formatted(
-            debtPositionTypeOrg.getOrganizationId(),
-            spontaneousForm.getOrganizationId(),
-            debtPositionTypeOrg.getSpontaneousFormId()
-          ));
-    }
-  }
 
   @Override
   public List<DebtPositionTypeOrg> getDebtPositionTypeOrgs(Long organizationId, Boolean flagActive, UserInfo loggedUser, String accessToken) {

@@ -18,6 +18,7 @@ import it.gov.pagopa.pu.bff.mapper.DebtPositionTypeOrgOperatorsMapper;
 import it.gov.pagopa.pu.bff.mapper.DebtPositionTypeOrgWithCountMapper;
 import it.gov.pagopa.pu.bff.service.debt_position_type_org.DebtPositionTypeOrgRetrieverServiceImpl;
 import it.gov.pagopa.pu.bff.service.org_sil_service.OrgSilServiceRetrieverService;
+import it.gov.pagopa.pu.bff.service.spontaneous_form.SpontaneousFormRetrieverService;
 import it.gov.pagopa.pu.bff.util.TestUtils;
 import it.gov.pagopa.pu.debtpositions.dto.generated.*;
 import jakarta.validation.ValidationException;
@@ -70,7 +71,7 @@ class DebtPositionTypeOrgRetrieverServiceImplTest {
   @Mock
   private OrgSilServiceRetrieverService orgSilServiceRetrieverServiceMock;
   @Mock
-  private SpontaneousFormService spontaneousFormServiceMock;
+  private SpontaneousFormRetrieverService spontaneousFormRetrieverServiceMock;
 
   private DebtPositionTypeOrgRetrieverServiceImpl debtPositionTypeOrgService;
 
@@ -82,14 +83,14 @@ class DebtPositionTypeOrgRetrieverServiceImplTest {
   void setUp() {
     debtPositionTypeOrgService = new DebtPositionTypeOrgRetrieverServiceImpl(debtPositionTypeOrgServiceMock, debtPositionTypeOrgOperatorsServiceMock,
       debtPositionServiceMock, authorizationServiceMock, authzServiceMock, debtPositionTypeServiceMock, debtPositionTypeOrgWithCountMapperMock,
-      debtPositionTypeOrgOperatorsMapperMock, debtPositionTypeOrgMapperMock, debtPositionTypeOrgMapperDTOMock, orgSilServiceRetrieverServiceMock, spontaneousFormServiceMock);
+      debtPositionTypeOrgOperatorsMapperMock, debtPositionTypeOrgMapperMock, debtPositionTypeOrgMapperDTOMock, orgSilServiceRetrieverServiceMock, spontaneousFormRetrieverServiceMock);
   }
 
   @AfterEach
   void verifyNoMoreInteractions() {
     Mockito.verifyNoMoreInteractions(debtPositionTypeOrgServiceMock, debtPositionTypeOrgOperatorsServiceMock,
       debtPositionServiceMock, authorizationServiceMock, authzServiceMock, debtPositionTypeServiceMock, debtPositionTypeOrgWithCountMapperMock,
-      debtPositionTypeOrgOperatorsMapperMock, debtPositionTypeOrgMapperMock, debtPositionTypeOrgMapperDTOMock, orgSilServiceRetrieverServiceMock, spontaneousFormServiceMock);
+      debtPositionTypeOrgOperatorsMapperMock, debtPositionTypeOrgMapperMock, debtPositionTypeOrgMapperDTOMock, orgSilServiceRetrieverServiceMock, spontaneousFormRetrieverServiceMock);
   }
 
   @Test
@@ -144,7 +145,7 @@ class DebtPositionTypeOrgRetrieverServiceImplTest {
         .thenReturn("AmountApp");
       Mockito.when(debtPositionTypeOrgMapperDTOMock.map(debtPositionTypeOrg, debtPositionType, "NotifyApp", "AmountApp", spontaneousForm.getCode()))
         .thenReturn(expectedResult);
-      Mockito.when(spontaneousFormServiceMock.getSpontaneousForm(debtPositionTypeOrg.getSpontaneousFormId(), accessToken))
+      Mockito.when(spontaneousFormRetrieverServiceMock.getSpontaneousFormAndValidate(debtPositionTypeOrg.getSpontaneousFormId(), debtPositionTypeOrg, accessToken))
         .thenReturn(spontaneousForm);
 
       DebtPositionTypeOrgDTO result = debtPositionTypeOrgService.getDebtPositionTypeOrgById(
@@ -232,7 +233,7 @@ class DebtPositionTypeOrgRetrieverServiceImplTest {
       assertNull(result.getAmountActualizationOrgSilServiceApplicationName());
 
       authorizationServiceMockedStatic.verify(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser));
-      Mockito.verifyNoInteractions(spontaneousFormServiceMock);
+      Mockito.verifyNoInteractions(spontaneousFormRetrieverServiceMock);
     }
   }
 
@@ -285,107 +286,7 @@ class DebtPositionTypeOrgRetrieverServiceImplTest {
       assertNull(result.getAmountActualizationOrgSilServiceApplicationName());
 
       authorizationServiceMockedStatic.verify(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser));
-      Mockito.verifyNoInteractions(spontaneousFormServiceMock);
-    }
-  }
-
-  @Test
-  void givenSpontaneousFormNotFoundWhenGetDebtPositionTypeOrgByIdThenThrowsException() {
-    UserInfo loggedUser = new UserInfo();
-    loggedUser.setUserId("user-123");
-
-    long organizationId = 1L;
-    long debtPositionTypeOrgId = 1L;
-    long debtPositionTypeId = 10L;
-
-    DebtPositionTypeOrg debtPositionTypeOrg = new DebtPositionTypeOrg();
-    debtPositionTypeOrg.setDebtPositionTypeId(debtPositionTypeId);
-    debtPositionTypeOrg.setSpontaneousFormId(999L);
-
-    try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic =
-           Mockito.mockStatic(AuthorizationService.class)) {
-      authorizationServiceMockedStatic.when(() ->
-        AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)
-      ).thenAnswer(a -> null);
-
-      Mockito.when(debtPositionTypeOrgServiceMock.getDebtPositionTypeOrg(debtPositionTypeOrgId, accessToken))
-        .thenReturn(debtPositionTypeOrg);
-
-      Mockito.when(debtPositionTypeServiceMock.getDebtPositionTypeById(debtPositionTypeId, accessToken))
-        .thenReturn(new DebtPositionType());
-
-      Mockito.when(orgSilServiceRetrieverServiceMock.getOrgSilServiceApplicationName(null, accessToken))
-        .thenReturn(null);
-
-      Mockito.when(spontaneousFormServiceMock.getSpontaneousForm(999L,accessToken))
-        .thenReturn(null);
-
-      ResourceNotFoundException ex = Assertions.assertThrows(
-        ResourceNotFoundException.class,
-        () -> debtPositionTypeOrgService.getDebtPositionTypeOrgById(
-          organizationId, debtPositionTypeOrgId, loggedUser, accessToken
-        )
-      );
-
-      Assertions.assertEquals(
-        "SpontaneousForm with id 999 not found",
-        ex.getMessage()
-      );
-
-      Mockito.verifyNoInteractions(debtPositionTypeOrgMapperDTOMock);
-    }
-  }
-
-  @Test
-  void givenSpontaneousFormMismatchOrganizationIdWhenGetDebtPositionTypeOrgByIdThenThrowsException() {
-    UserInfo loggedUser = new UserInfo();
-    loggedUser.setUserId("user-123");
-
-    long organizationId = 1L;
-    long debtPositionTypeOrgId = 1L;
-    long debtPositionTypeId = 10L;
-
-    DebtPositionTypeOrg debtPositionTypeOrg = new DebtPositionTypeOrg();
-    debtPositionTypeOrg.setOrganizationId(organizationId);
-    debtPositionTypeOrg.setDebtPositionTypeId(debtPositionTypeId);
-    debtPositionTypeOrg.setSpontaneousFormId(999L);
-
-    SpontaneousForm spontaneousForm = new SpontaneousForm();
-    spontaneousForm.setOrganizationId(3L);
-    spontaneousForm.setSpontaneousFormId(999L);
-
-
-    try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic =
-           Mockito.mockStatic(AuthorizationService.class)) {
-      authorizationServiceMockedStatic.when(() ->
-        AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)
-      ).thenAnswer(a -> null);
-
-      Mockito.when(debtPositionTypeOrgServiceMock.getDebtPositionTypeOrg(debtPositionTypeOrgId, accessToken))
-        .thenReturn(debtPositionTypeOrg);
-
-      Mockito.when(debtPositionTypeServiceMock.getDebtPositionTypeById(debtPositionTypeId, accessToken))
-        .thenReturn(new DebtPositionType());
-
-      Mockito.when(orgSilServiceRetrieverServiceMock.getOrgSilServiceApplicationName(null, accessToken))
-        .thenReturn(null);
-
-      Mockito.when(spontaneousFormServiceMock.getSpontaneousForm(999L,accessToken))
-        .thenReturn(spontaneousForm);
-
-      ConflictException ex = Assertions.assertThrows(
-        ConflictException.class,
-        () -> debtPositionTypeOrgService.getDebtPositionTypeOrgById(
-          organizationId, debtPositionTypeOrgId, loggedUser, accessToken
-        )
-      );
-
-      Assertions.assertEquals(
-        "OrganizationId 1 of DebtPositionTypeOrg does not match OrganizationId 3 of SpontaneousForm 999",
-        ex.getMessage()
-      );
-
-      Mockito.verifyNoInteractions(debtPositionTypeOrgMapperDTOMock);
+      Mockito.verifyNoInteractions(spontaneousFormRetrieverServiceMock);
     }
   }
 

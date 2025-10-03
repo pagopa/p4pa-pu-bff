@@ -1,16 +1,10 @@
 package it.gov.pagopa.pu.bff.connector.debt_position.client;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.when;
-
 import it.gov.pagopa.pu.bff.connector.debt_position.config.DebtPositionApisHolder;
 import it.gov.pagopa.pu.bff.util.TestUtils;
-import it.gov.pagopa.pu.debtpositions.controller.generated.SpontaneousFormEntityControllerApi;
 import it.gov.pagopa.pu.debtpositions.controller.generated.SpontaneousFormSearchControllerApi;
 import it.gov.pagopa.pu.debtpositions.dto.generated.CollectionModelSpontaneousForm;
 import it.gov.pagopa.pu.debtpositions.dto.generated.SpontaneousForm;
-import java.util.Collections;
-import java.util.List;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -21,6 +15,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.util.CollectionUtils;
 import uk.co.jemos.podam.api.PodamFactory;
 
+import java.util.Collections;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.when;
+
 @ExtendWith(MockitoExtension.class)
 class SpontaneousFormSearchClientTest {
 
@@ -29,8 +30,6 @@ class SpontaneousFormSearchClientTest {
   private DebtPositionApisHolder debtPositionApisHolderMock;
   @Mock
   private SpontaneousFormSearchControllerApi spontaneousFormSearchControllerApiMock;
-  @Mock
-  private SpontaneousFormEntityControllerApi spontaneousFormEntityControllerApiMock;
 
   private SpontaneousFormSearchClient spontaneousFormSearchClient;
 
@@ -43,8 +42,7 @@ class SpontaneousFormSearchClientTest {
   void verifyNoMoreInteractions() {
     Mockito.verifyNoMoreInteractions(
       debtPositionApisHolderMock,
-      spontaneousFormSearchControllerApiMock,
-      spontaneousFormEntityControllerApiMock
+      spontaneousFormSearchControllerApiMock
     );
   }
 
@@ -118,22 +116,4 @@ class SpontaneousFormSearchClientTest {
     assertTrue(CollectionUtils.isEmpty(result));
   }
 
-  @Test
-  void givenSpontaneousFormIdWhenGetSpontaneousFormThenReturnSpontaneousForm() {
-    //given
-    String accessToken = "ACCESSTOKEN";
-    Long spontaneousFormId = 1L;
-
-    SpontaneousForm expectedResult = new SpontaneousForm();
-
-    when(debtPositionApisHolderMock.getSpontaneousFormEntityControllerApi(accessToken))
-      .thenReturn(spontaneousFormEntityControllerApiMock);
-    when(spontaneousFormEntityControllerApiMock.crudGetSpontaneousform(String.valueOf(spontaneousFormId)))
-      .thenReturn(expectedResult);
-    //when
-    SpontaneousForm result = spontaneousFormSearchClient.getSpontaneousForm(spontaneousFormId, accessToken);
-    //then
-    assertNotNull(result);
-    assertEquals(expectedResult, result);
-  }
 }

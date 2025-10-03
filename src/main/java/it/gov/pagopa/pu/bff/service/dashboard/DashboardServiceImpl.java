@@ -2,7 +2,7 @@ package it.gov.pagopa.pu.bff.service.dashboard;
 
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.dto.InstallmentViewFiltersDTO;
-import it.gov.pagopa.pu.bff.dto.generated.PagedDashboardDTO;
+import it.gov.pagopa.pu.bff.dto.generated.DashboardByFc;
 import it.gov.pagopa.pu.bff.dto.generated.PagedInstallmentView;
 import it.gov.pagopa.pu.bff.mapper.DashboardMapper;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
@@ -19,7 +19,7 @@ public class DashboardServiceImpl implements DashboardService {
   private final DashboardMapper dashboardMapper;
 
   @Override
-  public PagedDashboardDTO getInstallmentsByFiscalCode(Long organizationId,
+  public DashboardByFc getDashboardByFiscalCode(Long organizationId,
     String fiscalCode, UserInfo loggedUser, String accessToken) {
     AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser);
 
@@ -33,6 +33,6 @@ public class DashboardServiceImpl implements DashboardService {
     PagedInstallmentView installments = installmentRetrieverService.getInstallments(
       filters, Pageable.ofSize(10), loggedUser, accessToken);
 
-    return dashboardMapper.mapToPagedDashboardByFcDTO(installments);
+    return dashboardMapper.mapToDashboardByFc(installments);
   }
 }

@@ -1,12 +1,12 @@
 package it.gov.pagopa.pu.bff.mapper;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import it.gov.pagopa.pu.bff.dto.generated.DashboardByFc;
-import it.gov.pagopa.pu.bff.dto.generated.PagedDashboardDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedInstallmentView;
 import it.gov.pagopa.pu.bff.util.TestUtils;
 import it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentView;
+import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -20,60 +20,57 @@ class DashboardMapperTest {
   private final PodamFactory podamFactory = TestUtils.getPodamFactory();
 
   @Test
-  void givenValidInputWhenMapToPagedDashboardByFcThenCorrectMapping() {
+  void givenValidInputWhenMapToDashboardByFcThenCorrectMapping() {
     PagedInstallmentView installments = podamFactory.manufacturePojo(
       PagedInstallmentView.class);
 
-    PagedDashboardDTO result = mapper.mapToPagedDashboardByFcDTO(installments);
+    DashboardByFc expected = DashboardByFc.builder()
+      .hasInstallment(true)
+      .hasDebtPosition(true)
+      .hasReceipt(true)
+      .build();
 
-    assertEquals(installments.getContent().size(), result.getContent().size());
-    assertEquals(installments.getSize(), result.getSize());
-    assertEquals(installments.getTotalPages(), result.getTotalPages());
-    assertEquals(installments.getTotalElements(), result.getTotalElements());
-    assertEquals(installments.getNumber(), result.getNumber());
+    DashboardByFc result = mapper.mapToDashboardByFc(
+      installments);
+
+    assertEquals(expected, result);
   }
 
   @Test
-  void givenNullInputWhenMapToPagedDashboardByFcDTOThenNull() {
-    assertNull(mapper.mapToPagedDashboardByFcDTO(null));
-  }
+  void givenValidInputWithSingleInstallmentWhenMapToDashboardByFcThenCorrectMapping() {
+    List<InstallmentView> content = List.of(
+      podamFactory.manufacturePojo(InstallmentView.class));
+    PagedInstallmentView installments = PagedInstallmentView.builder()
+      .content(content)
+      .size(1L)
+      .totalPages(1L)
+      .totalElements(1L)
+      .number(0L)
+      .build();
 
-  @Test
-  void givenValidInputWhenMapToDashboardByFcThenCorrectMapping() {
-    InstallmentView installmentWithReceipt = podamFactory.manufacturePojo(
-      InstallmentView.class);
-    InstallmentView installmentNoReceipt = podamFactory.manufacturePojo(
-      InstallmentView.class);
-    installmentNoReceipt.setReceiptId(null);
+    DashboardByFc expected = DashboardByFc.builder()
+      .hasInstallment(true)
+      .installmentId(content.getLast().getInstallmentId())
+      .hasDebtPosition(true)
+      .debtPositionId(content.getFirst().getDebtPositionId())
+      .hasReceipt(true)
+      .receiptId(content.getFirst().getReceiptId())
+      .build();
 
-    DashboardByFc resultWithReceipt = mapper.mapToDashboardByFc(
-      installmentWithReceipt);
+    DashboardByFc result = mapper.mapToDashboardByFc(
+      installments);
 
-    assertTrue(resultWithReceipt.getHasInstallment());
-    assertEquals(installmentWithReceipt.getInstallmentId(),
-      resultWithReceipt.getInstallmentId());
-    assertTrue(resultWithReceipt.getHasDebtPosition());
-    assertEquals(installmentWithReceipt.getDebtPositionId(),
-      resultWithReceipt.getDebtPositionId());
-    assertTrue(resultWithReceipt.getHasReceipt());
-    assertEquals(installmentWithReceipt.getReceiptId(),
-      resultWithReceipt.getReceiptId());
-
-    DashboardByFc resultNoReceipt = mapper.mapToDashboardByFc(
-      installmentNoReceipt);
-
-    assertTrue(resultNoReceipt.getHasInstallment());
-    assertEquals(installmentNoReceipt.getInstallmentId(),
-      resultNoReceipt.getInstallmentId());
-    assertTrue(resultNoReceipt.getHasDebtPosition());
-    assertEquals(installmentNoReceipt.getDebtPositionId(),
-      resultNoReceipt.getDebtPositionId());
-    assertFalse(resultNoReceipt.getHasReceipt());
-    assertNull(resultNoReceipt.getReceiptId());
+    assertEquals(expected, result);
   }
 
   @Test
   void givenNullInputWhenMapToDashboardByFcThenEmptyDTO() {
-    assertEquals(new DashboardByFc(), mapper.mapToDashboardByFc(null));
+    DashboardByFc expected = DashboardByFc.builder()
+      .hasInstallment(false)
+      .hasDebtPosition(false)
+      .hasReceipt(false)
+      .build();
+
+    assertEquals(expected, mapper.mapToDashboardByFc(null));
   }
 }

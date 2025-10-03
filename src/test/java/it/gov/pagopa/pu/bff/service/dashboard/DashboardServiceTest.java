@@ -5,7 +5,7 @@ import static org.mockito.Mockito.when;
 
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.dto.InstallmentViewFiltersDTO;
-import it.gov.pagopa.pu.bff.dto.generated.PagedDashboardDTO;
+import it.gov.pagopa.pu.bff.dto.generated.DashboardByFc;
 import it.gov.pagopa.pu.bff.dto.generated.PagedInstallmentView;
 import it.gov.pagopa.pu.bff.mapper.DashboardMapper;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
@@ -48,7 +48,7 @@ class DashboardServiceTest {
   }
 
   @Test
-  void whenGetInstallmentsByFiscalCodeThenOk() {
+  void whenGetDashboardByFiscalCodeThenOk() {
     Long organizationId = 1L;
     String fiscalCode = "fiscalCode";
     UserInfo loggedUser = new UserInfo();
@@ -64,7 +64,7 @@ class DashboardServiceTest {
 
     PagedInstallmentView installments = podamFactory.manufacturePojo(PagedInstallmentView.class);
 
-    PagedDashboardDTO expected = new PagedDashboardDTO();
+    DashboardByFc expected = new DashboardByFc();
 
     try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
       authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)).thenAnswer(a -> null);
@@ -72,10 +72,10 @@ class DashboardServiceTest {
       when(installmentRetrieverServiceMock.getInstallments(expectedFilters, Pageable.ofSize(10), loggedUser, accessToken))
         .thenReturn(installments);
 
-      when(dashboardMapperMock.mapToPagedDashboardByFcDTO(installments))
+      when(dashboardMapperMock.mapToDashboardByFc(installments))
         .thenReturn(expected);
 
-      PagedDashboardDTO result = dashboardService.getInstallmentsByFiscalCode(organizationId, fiscalCode, loggedUser, accessToken);
+      DashboardByFc result = dashboardService.getDashboardByFiscalCode(organizationId, fiscalCode, loggedUser, accessToken);
 
       assertSame(expected, result);
     }

@@ -3561,7 +3561,7 @@ paths:
     get:
       tags:
         - Dashboard
-      operationId: getInstallmentsDashboardByFiscalCode
+      operationId: getDashboardByFiscalCode
       parameters:
         - name: organizationId
           in: path
@@ -3580,7 +3580,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PagedDashboardDTO'
+                $ref: '#/components/schemas/DashboardByFc'
         '400':
           description: Invalid request
         '401':
@@ -5100,31 +5100,6 @@ components:
           type: array
           items:
             type: 'TreasuredClassificationExtendedDTO'
-        size:
-          type: integer
-          format: int64
-        totalElements:
-          type: integer
-          format: int64
-        totalPages:
-          type: integer
-          format: int64
-        number:
-          type: integer
-          format: int64
-    PagedDashboardDTO:
-      type: object
-      required:
-        - content
-        - size
-        - totalElements
-        - totalPages
-        - number
-      properties:
-        content:
-          type: array
-          items:
-            $ref: "#/components/schemas/DashboardByFc"
         size:
           type: integer
           format: int64

@@ -1,7 +1,7 @@
 package it.gov.pagopa.pu.bff.controller;
 
 import it.gov.pagopa.pu.bff.controller.generated.DashboardApi;
-import it.gov.pagopa.pu.bff.dto.generated.PagedDashboardDTO;
+import it.gov.pagopa.pu.bff.dto.generated.DashboardByFc;
 import it.gov.pagopa.pu.bff.security.SecurityUtils;
 import it.gov.pagopa.pu.bff.service.dashboard.DashboardService;
 import lombok.extern.slf4j.Slf4j;
@@ -19,14 +19,14 @@ public class DashboardController implements DashboardApi {
   }
 
   @Override
-  public ResponseEntity<PagedDashboardDTO> getInstallmentsDashboardByFiscalCode(
+  public ResponseEntity<DashboardByFc> getDashboardByFiscalCode(
     Long organizationId, String fiscalCode) {
     log.info(
-      "User requested getInstallmentDashboardByFiscalCode with organizationId {}",
+      "User requested getDashboardByFiscalCode with organizationId {}",
       organizationId);
 
-    return ResponseEntity.ofNullable(
-      dashboardService.getInstallmentsByFiscalCode(organizationId, fiscalCode,
+    return ResponseEntity.ok(
+      dashboardService.getDashboardByFiscalCode(organizationId, fiscalCode,
         SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken()));
   }
 }

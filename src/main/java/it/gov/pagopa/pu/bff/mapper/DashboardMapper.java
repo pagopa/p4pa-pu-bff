@@ -1,49 +1,58 @@
 package it.gov.pagopa.pu.bff.mapper;
 
 import it.gov.pagopa.pu.bff.dto.generated.DashboardByFc;
-import it.gov.pagopa.pu.bff.dto.generated.PagedDashboardDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedInstallmentView;
 import it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentView;
+import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import org.springframework.stereotype.Service;
 
 @Service
 public class DashboardMapper {
 
-  public PagedDashboardDTO mapToPagedDashboardByFcDTO(
-    PagedInstallmentView installments) {
-    if (installments == null) {
-      return null;
-    }
+  public DashboardByFc mapToDashboardByFc(PagedInstallmentView pagedInstallments) {
+    List<InstallmentView> installments = Optional.ofNullable(pagedInstallments)
+      .map(PagedInstallmentView::getContent)
+      .orElseGet(Collections::emptyList);
 
-    List<DashboardByFc> content = installments.getContent().stream().map(
-      this::mapToDashboardByFc).toList();
+    DashboardByFc dashboard = new DashboardByFc();
+    boolean hasInstallment = !installments.isEmpty();
+    dashboard.setHasInstallment(hasInstallment);
 
-    return PagedDashboardDTO.builder()
-      .content(content)
-      .size(installments.getSize())
-      .totalElements(installments.getTotalElements())
-      .totalPages(installments.getTotalPages())
-      .number(installments.getNumber())
-      .build();
-  }
-
-  public DashboardByFc mapToDashboardByFc(InstallmentView installment) {
-    DashboardByFc out = new DashboardByFc();
-
-    if (installment != null) {
-      out.setHasInstallment(true);
-      out.setInstallmentId(installment.getInstallmentId());
-      out.setHasDebtPosition(true);
-      out.setDebtPositionId(installment.getDebtPositionId());
-      out.setHasReceipt(false);
-
-      if (installment.getReceiptId() != null) {
-        out.setHasReceipt(true);
-        out.setReceiptId(installment.getReceiptId());
+    if (hasInstallment) {
+      if (installments.size() == 1) {
+        dashboard.setInstallmentId(installments.getFirst().getInstallmentId());
       }
+
+      List<Long> distinctDebtPositionIds = installments.stream()
+        .map(InstallmentView::getDebtPositionId)
+        .distinct()
+        .toList();
+      boolean hasDebtPosition = !distinctDebtPositionIds.isEmpty();
+      dashboard.setHasDebtPosition(hasDebtPosition);
+
+      if (hasDebtPosition && distinctDebtPositionIds.size() == 1) {
+        dashboard.setDebtPositionId(distinctDebtPositionIds.getFirst());
+      }
+
+      List<Long> distinctReceiptIds = installments.stream()
+        .map(InstallmentView::getReceiptId)
+        .filter(Objects::nonNull)
+        .distinct()
+        .toList();
+      boolean hasReceipt = !distinctReceiptIds.isEmpty();
+      dashboard.setHasReceipt(hasReceipt);
+
+      if (hasReceipt && distinctReceiptIds.size() == 1) {
+        dashboard.setReceiptId(distinctReceiptIds.getFirst());
+      }
+    } else {
+      dashboard.setHasDebtPosition(false);
+      dashboard.setHasReceipt(false);
     }
 
-    return out;
+    return dashboard;
   }
 }

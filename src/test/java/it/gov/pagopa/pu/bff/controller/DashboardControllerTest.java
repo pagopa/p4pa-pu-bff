@@ -1,7 +1,7 @@
 package it.gov.pagopa.pu.bff.controller;
 
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
-import it.gov.pagopa.pu.bff.dto.generated.PagedDashboardDTO;
+import it.gov.pagopa.pu.bff.dto.generated.DashboardByFc;
 import it.gov.pagopa.pu.bff.security.SecurityUtilsTest;
 import it.gov.pagopa.pu.bff.service.dashboard.DashboardService;
 import it.gov.pagopa.pu.bff.util.TestUtils;
@@ -55,37 +55,19 @@ class DashboardControllerTest {
     Long organizationId = 1L;
     String fiscalCode = "FRTMRA90C41F205D";
 
-    PagedDashboardDTO expected = podamFactory.manufacturePojo(
-      PagedDashboardDTO.class);
+    DashboardByFc expected = podamFactory.manufacturePojo(
+      DashboardByFc.class);
 
     Mockito.when(
-        dashboardServiceMock.getInstallmentsByFiscalCode(organizationId,
+        dashboardServiceMock.getDashboardByFiscalCode(organizationId,
           fiscalCode, loggedUser, accessToken))
       .thenReturn(expected);
 
-    ResponseEntity<PagedDashboardDTO> response = dashboardController.getInstallmentsDashboardByFiscalCode(
+    ResponseEntity<DashboardByFc> response = dashboardController.getDashboardByFiscalCode(
       organizationId, fiscalCode);
 
     Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
     Assertions.assertNotNull(response.getBody());
     Assertions.assertSame(expected, response.getBody());
-  }
-
-
-  @Test
-  void givenNotFoundInstallmentsWhenGetInstallmentsDashboardByFiscalCodeThenNotFound() {
-    Long organizationId = 1L;
-    String fiscalCode = "FRTMRA90C41F205D";
-
-    Mockito.when(
-        dashboardServiceMock.getInstallmentsByFiscalCode(organizationId,
-          fiscalCode, loggedUser, accessToken))
-      .thenReturn(null);
-
-    ResponseEntity<PagedDashboardDTO> response = dashboardController.getInstallmentsDashboardByFiscalCode(
-      organizationId, fiscalCode);
-
-    Assertions.assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
-    Assertions.assertNull(response.getBody());
   }
 }

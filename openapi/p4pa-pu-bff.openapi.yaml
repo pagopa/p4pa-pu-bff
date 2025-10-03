@@ -671,6 +671,8 @@ paths:
           description: Forbidden - Access denied
         '404':
           description: Not Found - DebtPositionTypeOrg Not Found
+        '409':
+          description: Conflict
         '500':
           description: Internal Server Error
     put:

@@ -13077,7 +13077,7 @@
             "type" : "boolean"
           },
           "status" : {
-            "type" : "string"
+            "$ref" : "#/components/schemas/ClassificationStatus"
           },
           "flagPaymentNotification" : {
             "type" : "boolean"
@@ -13086,6 +13086,10 @@
             "type" : "boolean"
           }
         }
+      },
+      "ClassificationStatus" : {
+        "type" : "string",
+        "enum" : [ "INFO", "WARNING", "ERROR" ]
       },
       "ClassificationsEnum" : {
         "type" : "string",
@@ -13389,7 +13393,7 @@
             "type" : "string"
           },
           "status" : {
-            "type" : "string"
+            "$ref" : "#/components/schemas/ClassificationStatus"
           },
           "flagPaymentNotification" : {
             "type" : "boolean"

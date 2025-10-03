@@ -30,10 +30,9 @@ public class DashboardMapper {
         .map(InstallmentView::getDebtPositionId)
         .distinct()
         .toList();
-      boolean hasDebtPosition = !distinctDebtPositionIds.isEmpty();
-      dashboard.setHasDebtPosition(hasDebtPosition);
+      dashboard.setHasDebtPosition(!distinctDebtPositionIds.isEmpty());
 
-      if (hasDebtPosition && distinctDebtPositionIds.size() == 1) {
+      if (distinctDebtPositionIds.size() == 1) {
         dashboard.setDebtPositionId(distinctDebtPositionIds.getFirst());
       }
 
@@ -42,10 +41,9 @@ public class DashboardMapper {
         .filter(Objects::nonNull)
         .distinct()
         .toList();
-      boolean hasReceipt = !distinctReceiptIds.isEmpty();
-      dashboard.setHasReceipt(hasReceipt);
+      dashboard.setHasReceipt(!distinctReceiptIds.isEmpty());
 
-      if (hasReceipt && distinctReceiptIds.size() == 1) {
+      if (distinctReceiptIds.size() == 1) {
         dashboard.setReceiptId(distinctReceiptIds.getFirst());
       }
     } else {

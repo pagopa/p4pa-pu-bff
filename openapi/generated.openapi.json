@@ -10332,6 +10332,12 @@
           "documentYear" : {
             "type" : "string"
           },
+          "orgBtCode" : {
+            "type" : "string"
+          },
+          "orgIstatCode" : {
+            "type" : "string"
+          },
           "_links" : {
             "type" : "object",
             "additionalProperties" : {
@@ -10339,7 +10345,7 @@
             }
           }
         },
-        "required" : [ "billAmountCents", "billCode", "billDate", "billYear", "organizationId", "pspLastName", "treasuryId" ]
+        "required" : [ "billAmountCents", "billCode", "billDate", "billYear", "orgBtCode", "orgIstatCode", "organizationId", "pspLastName", "treasuryId" ]
       },
       "Treasury" : {
         "type" : "object",

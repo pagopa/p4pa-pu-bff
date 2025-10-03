@@ -65,7 +65,7 @@ class PaymentsReportingViewSearchClientTest {
       regulationUniqueIdentifier,
       regulationDateFilter.getFrom(),
       regulationDateFilter.getTo(),
-      null, //TODO P4ADEV-3852 add iuv filter
+      iuv,
       PageUtils.getPageNumber(pageable),
       PageUtils.getPageSize(pageable),
       PageUtils.getSortList(pageable)))

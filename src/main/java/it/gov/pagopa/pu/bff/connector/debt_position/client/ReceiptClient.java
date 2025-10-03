@@ -32,7 +32,7 @@ public class ReceiptClient {
         receiptViewFiltersDTO.getDebtPositionTypeOrgId(),
         receiptViewFiltersDTO.getPaymentDateTime().getFrom(),
         receiptViewFiltersDTO.getPaymentDateTime().getTo(),
-        receiptViewFiltersDTO.getIuv(),
+        receiptViewFiltersDTO.getFiscalCode(),
         PageUtils.getPageNumber(pageable),
         PageUtils.getPageSize(pageable),
         PageUtils.getSortList(pageable));

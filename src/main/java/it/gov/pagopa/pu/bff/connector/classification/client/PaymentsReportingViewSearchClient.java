@@ -32,7 +32,7 @@ public class PaymentsReportingViewSearchClient {
         regulationUniqueIdentifier,
         regulationDateFilter.getFrom(),
         regulationDateFilter.getTo(),
-        iuv,
+        null,//TODO P4ADEV-3852 add iuv filter
         PageUtils.getPageNumber(pageable),
         PageUtils.getPageSize(pageable),
         PageUtils.getSortList(pageable));

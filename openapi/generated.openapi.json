@@ -79,6 +79,9 @@
     "name" : "InstallmentRegistry",
     "description" : "the InstallmentRegistry API"
   }, {
+    "name" : "Dashboard",
+    "description" : "the Dashboard API"
+  }, {
     "name" : "Transfers",
     "description" : "the Transfers API"
   }, {
@@ -5525,6 +5528,16 @@
             "type" : "string"
           }
         }, {
+          "name" : "debtPositionOrigins",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/DebtPositionOrigin"
+            }
+          }
+        }, {
           "name" : "debtPositionTypeOrgId",
           "in" : "query",
           "required" : false,
@@ -6997,6 +7010,93 @@
                   "items" : {
                     "$ref" : "#/components/schemas/DebtPositionRegistry"
                   }
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "BearerAuth" : [ ]
+        } ]
+      }
+    },
+    "/bff/organization/{organizationId}/dashboard-by-fc" : {
+      "get" : {
+        "tags" : [ "Dashboard" ],
+        "operationId" : "getDashboardByFiscalCode",
+        "parameters" : [ {
+          "name" : "organizationId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }, {
+          "name" : "fiscalCode",
+          "in" : "query",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/DashboardByFc"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Invalid request",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/DashboardByFc"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Unauthorized - Missing or invalid token",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/DashboardByFc"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Forbidden",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/DashboardByFc"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Not found",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/DashboardByFc"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal server error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/DashboardByFc"
                 }
               }
             }
@@ -12570,6 +12670,32 @@
             "additionalProperties" : {
               "$ref" : "#/components/schemas/Link"
             }
+          }
+        }
+      },
+      "DashboardByFc" : {
+        "type" : "object",
+        "properties" : {
+          "hasInstallment" : {
+            "type" : "boolean"
+          },
+          "installmentId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "hasDebtPosition" : {
+            "type" : "boolean"
+          },
+          "debtPositionId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "hasReceipt" : {
+            "type" : "boolean"
+          },
+          "receiptId" : {
+            "type" : "integer",
+            "format" : "int64"
           }
         }
       },

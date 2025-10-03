@@ -71,6 +71,33 @@ class SpontaneousFormRetrieverServiceImplTest {
   }
 
   @Test
+  void givenValidSpontaneousFormWhenGetSpontaneousFormAndValidateThenReturnSpontaneousForm() {
+    long organizationId = 1L;
+    long debtPositionTypeId = 10L;
+    long spontaneousFormId = 999L;
+
+    DebtPositionTypeOrg debtPositionTypeOrg = new DebtPositionTypeOrg();
+    debtPositionTypeOrg.setOrganizationId(organizationId);
+    debtPositionTypeOrg.setDebtPositionTypeId(debtPositionTypeId);
+    debtPositionTypeOrg.setSpontaneousFormId(spontaneousFormId);
+
+    SpontaneousForm spontaneousForm = new SpontaneousForm();
+    spontaneousForm.setOrganizationId(organizationId);
+    spontaneousForm.setSpontaneousFormId(spontaneousFormId);
+
+    Mockito.when(spontaneousFormServiceMock.getSpontaneousForm(spontaneousFormId, accessToken))
+      .thenReturn(spontaneousForm);
+
+    SpontaneousForm result = spontaneousFormRetrieverService
+      .getSpontaneousFormAndValidate(spontaneousFormId, debtPositionTypeOrg, accessToken);
+
+    Assertions.assertNotNull(result);
+    Assertions.assertSame(spontaneousForm, result);
+
+    Mockito.verify(spontaneousFormServiceMock).getSpontaneousForm(spontaneousFormId, accessToken);
+  }
+
+  @Test
   void givenSpontaneousFormNotFoundWhenGetSpontaneousFormAndValidateThenThrowsException() {
     UserInfo loggedUser = new UserInfo();
     loggedUser.setUserId("user-123");
@@ -148,4 +175,5 @@ class SpontaneousFormRetrieverServiceImplTest {
 
     }
   }
+
 }

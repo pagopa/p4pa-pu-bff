@@ -26,12 +26,12 @@ public class PaymentsReportingController implements PaymentsReportingApi {
   }
 
   @Override
-  public ResponseEntity<PagedPaymentsReportingView> getPaymentsReporting(Long organizationId, String iuf, String regulationUniqueIdentifier, OffsetDateTime regulationDateTimeFrom, OffsetDateTime regulationDateTimeTo, Pageable pageable) {
+  public ResponseEntity<PagedPaymentsReportingView> getPaymentsReporting(Long organizationId, String iuf, String iuv, String regulationUniqueIdentifier, OffsetDateTime regulationDateTimeFrom, OffsetDateTime regulationDateTimeTo, Pageable pageable) {
     log.info("User requested getPaymentsReporting having organizationId {}", organizationId);
     LocalDateIntervalFilter regulationDateFilter = new LocalDateIntervalFilter(DateUtils.fromOffsetDateTimeToLocalDate(regulationDateTimeFrom), DateUtils.fromOffsetDateTimeToLocalDate(regulationDateTimeTo));
 
     return ResponseEntity.ok(paymentsReportingRetrieverService.getPaymentsReporting(
-      organizationId, iuf, regulationUniqueIdentifier, regulationDateFilter, pageable, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken()));
+      organizationId, iuf, regulationUniqueIdentifier, regulationDateFilter, iuv, pageable, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken()));
   }
 
   @Override

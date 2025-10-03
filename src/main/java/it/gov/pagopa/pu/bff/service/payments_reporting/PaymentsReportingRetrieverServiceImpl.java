@@ -43,14 +43,14 @@ public class PaymentsReportingRetrieverServiceImpl implements
   @Override
   public PagedPaymentsReportingView getPaymentsReporting(Long organizationId,
     String iuf, String regulationUniqueIdentifier,
-    LocalDateIntervalFilter regulationDateFilter, Pageable pageable,
+    LocalDateIntervalFilter regulationDateFilter, String iuv, Pageable pageable,
     UserInfo loggedUser, String accessToken) {
     AuthorizationService.validateUserForOrganizationId(organizationId,
       loggedUser);
 
     return paymentsReportingViewMapper.mapToPagedPaymentsReporting(
       paymentsReportingService.getPaymentsReporting(organizationId, iuf,
-        regulationUniqueIdentifier, regulationDateFilter, pageable,
+        regulationUniqueIdentifier, regulationDateFilter, iuv ,pageable,
         accessToken));
   }
 

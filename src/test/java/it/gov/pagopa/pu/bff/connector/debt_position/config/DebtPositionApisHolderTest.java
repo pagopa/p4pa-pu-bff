@@ -267,5 +267,15 @@ class DebtPositionApisHolderTest extends BaseApiHolderTest {
       },
       debtPositionApisHolder::unload);
   }
+
+  @Test
+  void whenGetSpontaneousFormEntityControllerApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
+    assertAuthenticationShouldBeSetInThreadSafeMode(
+      accessToken -> debtPositionApisHolder.getSpontaneousFormEntityControllerApi(accessToken)
+        .crudGetSpontaneousform("1"),
+      new ParameterizedTypeReference<>() {
+      },
+      debtPositionApisHolder::unload);
+  }
 }
 

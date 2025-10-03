@@ -3,10 +3,7 @@ package it.gov.pagopa.pu.bff.service.debt_position_type_org;
 import it.gov.pagopa.pu.auth.dto.generated.OperatorsPage;
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.connector.auth.AuthzService;
-import it.gov.pagopa.pu.bff.connector.debt_position.DebtPositionService;
-import it.gov.pagopa.pu.bff.connector.debt_position.DebtPositionTypeOrgOperatorsService;
-import it.gov.pagopa.pu.bff.connector.debt_position.DebtPositionTypeOrgService;
-import it.gov.pagopa.pu.bff.connector.debt_position.DebtPositionTypeService;
+import it.gov.pagopa.pu.bff.connector.debt_position.*;
 import it.gov.pagopa.pu.bff.dto.generated.DebtPositionTypeOrgDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedDebtPositionTypeOrgOperatorDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedDebtPositionTypeOrgWithCount;
@@ -20,6 +17,7 @@ import it.gov.pagopa.pu.bff.mapper.DebtPositionTypeOrgOperatorsMapper;
 import it.gov.pagopa.pu.bff.mapper.DebtPositionTypeOrgWithCountMapper;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
 import it.gov.pagopa.pu.bff.service.org_sil_service.OrgSilServiceRetrieverService;
+import it.gov.pagopa.pu.bff.service.spontaneous_form.SpontaneousFormRetrieverService;
 import it.gov.pagopa.pu.debtpositions.dto.generated.*;
 import jakarta.validation.ValidationException;
 import org.springframework.data.domain.PageRequest;
@@ -49,18 +47,20 @@ public class DebtPositionTypeOrgRetrieverServiceImpl implements DebtPositionType
   private final DebtPositionTypeOrgMapper debtPositionTypeOrgMapper;
   private final DebtPositionTypeOrgDTOMapper debtPositionTypeOrgDTOMapper;
   private final OrgSilServiceRetrieverService orgSilServiceRetrieverService;
+  private final SpontaneousFormRetrieverService spontaneousFormRetrieverService;
 
   public DebtPositionTypeOrgRetrieverServiceImpl(
-          DebtPositionTypeOrgService debtPositionTypeOrgService,
-          DebtPositionTypeOrgOperatorsService debtPositionTypeOrgOperatorsService,
-          DebtPositionService debtPositionService,
-          AuthorizationService authorizationService,
-          AuthzService authzService, DebtPositionTypeService debtPositionTypeService,
-          DebtPositionTypeOrgWithCountMapper debtPositionTypeOrgWithCountMapper,
-          DebtPositionTypeOrgOperatorsMapper debtPositionTypeOrgOperatorsMapper,
-          DebtPositionTypeOrgMapper debtPositionTypeOrgMapper,
-          DebtPositionTypeOrgDTOMapper debtPositionTypeOrgDTOMapper,
-          OrgSilServiceRetrieverService orgSilServiceRetrieverService) {
+    DebtPositionTypeOrgService debtPositionTypeOrgService,
+    DebtPositionTypeOrgOperatorsService debtPositionTypeOrgOperatorsService,
+    DebtPositionService debtPositionService,
+    AuthorizationService authorizationService,
+    AuthzService authzService, DebtPositionTypeService debtPositionTypeService,
+    DebtPositionTypeOrgWithCountMapper debtPositionTypeOrgWithCountMapper,
+    DebtPositionTypeOrgOperatorsMapper debtPositionTypeOrgOperatorsMapper,
+    DebtPositionTypeOrgMapper debtPositionTypeOrgMapper,
+    DebtPositionTypeOrgDTOMapper debtPositionTypeOrgDTOMapper,
+    OrgSilServiceRetrieverService orgSilServiceRetrieverService,
+    SpontaneousFormRetrieverService spontaneousFormRetrieverService) {
     this.debtPositionTypeOrgService = debtPositionTypeOrgService;
     this.debtPositionTypeOrgOperatorsService = debtPositionTypeOrgOperatorsService;
     this.debtPositionService = debtPositionService;
@@ -72,6 +72,7 @@ public class DebtPositionTypeOrgRetrieverServiceImpl implements DebtPositionType
     this.debtPositionTypeOrgMapper = debtPositionTypeOrgMapper;
     this.debtPositionTypeOrgDTOMapper = debtPositionTypeOrgDTOMapper;
     this.orgSilServiceRetrieverService = orgSilServiceRetrieverService;
+    this.spontaneousFormRetrieverService = spontaneousFormRetrieverService;
   }
 
   @Override
@@ -89,8 +90,16 @@ public class DebtPositionTypeOrgRetrieverServiceImpl implements DebtPositionType
 
     String amountActualizationOrgSilServiceApplicationName = orgSilServiceRetrieverService.getOrgSilServiceApplicationName(debtPositionTypeOrg.getAmountActualizationOrgSilServiceId(), accessToken);
 
-    return debtPositionTypeOrgDTOMapper.map(debtPositionTypeOrg, debtPositionType, notifyOutcomePushOrgSilServiceApplicationName, amountActualizationOrgSilServiceApplicationName);
+    String spontaneousFormCode = null;
+    if (debtPositionTypeOrg.getSpontaneousFormId() != null){
+      SpontaneousForm spontaneousForm = spontaneousFormRetrieverService.getSpontaneousFormAndValidate(debtPositionTypeOrg.getSpontaneousFormId(), debtPositionTypeOrg, accessToken);
+      spontaneousFormCode = spontaneousForm.getCode();
+    }
+
+    return debtPositionTypeOrgDTOMapper.map(debtPositionTypeOrg, debtPositionType, notifyOutcomePushOrgSilServiceApplicationName, amountActualizationOrgSilServiceApplicationName, spontaneousFormCode);
   }
+
+
 
   @Override
   public List<DebtPositionTypeOrg> getDebtPositionTypeOrgs(Long organizationId, Boolean flagActive, UserInfo loggedUser, String accessToken) {

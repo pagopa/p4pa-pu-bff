@@ -3,27 +3,7 @@ package it.gov.pagopa.pu.bff.connector.debt_position.config;
 import it.gov.pagopa.pu.bff.config.rest.RestTemplateConfig;
 import it.gov.pagopa.pu.debtpositions.controller.ApiClient;
 import it.gov.pagopa.pu.debtpositions.controller.BaseApi;
-import it.gov.pagopa.pu.debtpositions.controller.generated.DebtPositionApi;
-import it.gov.pagopa.pu.debtpositions.controller.generated.DebtPositionSearchControllerApi;
-import it.gov.pagopa.pu.debtpositions.controller.generated.DebtPositionTypeEntityControllerApi;
-import it.gov.pagopa.pu.debtpositions.controller.generated.DebtPositionTypeOrgApi;
-import it.gov.pagopa.pu.debtpositions.controller.generated.DebtPositionTypeOrgCountByOrganizationIdSearchControllerApi;
-import it.gov.pagopa.pu.debtpositions.controller.generated.DebtPositionTypeOrgEntityControllerApi;
-import it.gov.pagopa.pu.debtpositions.controller.generated.DebtPositionTypeOrgOperatorsApi;
-import it.gov.pagopa.pu.debtpositions.controller.generated.DebtPositionTypeOrgOperatorsDptoCountViewSearchControllerApi;
-import it.gov.pagopa.pu.debtpositions.controller.generated.DebtPositionTypeOrgOperatorsSearchControllerApi;
-import it.gov.pagopa.pu.debtpositions.controller.generated.DebtPositionTypeOrgSearchControllerApi;
-import it.gov.pagopa.pu.debtpositions.controller.generated.DebtPositionTypeOrgWithCountSearchControllerApi;
-import it.gov.pagopa.pu.debtpositions.controller.generated.DebtPositionTypeSearchControllerApi;
-import it.gov.pagopa.pu.debtpositions.controller.generated.DebtPositionTypeWithCountSearchControllerApi;
-import it.gov.pagopa.pu.debtpositions.controller.generated.DebtPositionViewSearchControllerApi;
-import it.gov.pagopa.pu.debtpositions.controller.generated.InstallmentApi;
-import it.gov.pagopa.pu.debtpositions.controller.generated.InstallmentNoPiiSearchControllerApi;
-import it.gov.pagopa.pu.debtpositions.controller.generated.InstallmentViewSearchControllerApi;
-import it.gov.pagopa.pu.debtpositions.controller.generated.ReceiptApi;
-import it.gov.pagopa.pu.debtpositions.controller.generated.ReceiptViewSearchControllerApi;
-import it.gov.pagopa.pu.debtpositions.controller.generated.SpontaneousFormSearchControllerApi;
-import it.gov.pagopa.pu.debtpositions.controller.generated.TransferSearchControllerApi;
+import it.gov.pagopa.pu.debtpositions.controller.generated.*;
 import jakarta.annotation.PreDestroy;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.stereotype.Service;
@@ -53,6 +33,7 @@ public class DebtPositionApisHolder {
   private final DebtPositionTypeOrgOperatorsDptoCountViewSearchControllerApi debtPositionTypeOrgOperatorsDptoCountViewSearchControllerApi;
   private final DebtPositionTypeOrgOperatorsApi debtPositionTypeOrgOperatorsApi;
   private final SpontaneousFormSearchControllerApi spontaneousFormSearchControllerApi;
+  private final SpontaneousFormEntityControllerApi spontaneousFormEntityControllerApi;
   private final ThreadLocal<String> bearerTokenHolder = new ThreadLocal<>();
 
   public DebtPositionApisHolder(
@@ -90,6 +71,7 @@ public class DebtPositionApisHolder {
     this.debtPositionTypeOrgOperatorsDptoCountViewSearchControllerApi = new DebtPositionTypeOrgOperatorsDptoCountViewSearchControllerApi(apiClient);
     this.debtPositionTypeOrgOperatorsApi = new DebtPositionTypeOrgOperatorsApi(apiClient);
     this.spontaneousFormSearchControllerApi = new SpontaneousFormSearchControllerApi(apiClient);
+    this.spontaneousFormEntityControllerApi = new SpontaneousFormEntityControllerApi(apiClient);
   }
 
   @PreDestroy
@@ -218,6 +200,13 @@ public class DebtPositionApisHolder {
    */
   public SpontaneousFormSearchControllerApi getSpontaneousFormSearchControllerApi(String accessToken) {
     return getApi(accessToken, spontaneousFormSearchControllerApi);
+  }
+
+  /**
+   * It will return a {@link SpontaneousFormEntityControllerApi} instrumented with the provided accessToken. Use null if auth is not required
+   */
+  public SpontaneousFormEntityControllerApi getSpontaneousFormEntityControllerApi(String accessToken) {
+    return getApi(accessToken, spontaneousFormEntityControllerApi);
   }
 
   private <T extends BaseApi> T getApi(String accessToken, T api) {

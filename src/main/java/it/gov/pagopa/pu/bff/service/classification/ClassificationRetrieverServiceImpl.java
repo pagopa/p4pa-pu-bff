@@ -12,6 +12,7 @@ import it.gov.pagopa.pu.bff.mapper.TreasuredClassificationExtendedDTOMapper;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
 import it.gov.pagopa.pu.bff.service.debt_position_type_org.DebtPositionTypeOrgRetrieverService;
 import it.gov.pagopa.pu.bff.util.DateUtils;
+import it.gov.pagopa.pu.bff.util.OrganizationUtils;
 import it.gov.pagopa.pu.classification.dto.generated.*;
 import it.gov.pagopa.pu.organization.dto.generated.Organization;
 import org.apache.commons.lang3.StringUtils;
@@ -69,27 +70,10 @@ public class ClassificationRetrieverServiceImpl implements ClassificationRetriev
     if(organization == null) {
       throw new ResourceNotFoundException("Organization having ID " + organizationId + " not found");
     }
-    treasuredClassificationFiltersDTO.setExcludedLabels(getExcludedLabels(organization));
+    treasuredClassificationFiltersDTO.setExcludedLabels(OrganizationUtils.getExcludedLabels(organization));
 
     return treasuredClassificationExtendedDTOMapper.map(
       classificationService.getTreasuredClassifications(organizationId, treasuredClassificationFiltersDTO, pageable, accessToken), organization);
-  }
-
-  private static Set<String> getExcludedLabels(Organization organization) {
-    Set<String> excludedLabels = new HashSet<>();
-    if (Boolean.FALSE.equals(organization.getFlagPaymentNotification())) {
-      excludedLabels.add(ClassificationsEnum.RT_NO_IUD.getValue());
-      excludedLabels.add(ClassificationsEnum.IUD_NO_RT.getValue());
-    }
-    if (Boolean.FALSE.equals(organization.getFlagTreasury())) {
-      excludedLabels.add(ClassificationsEnum.RT_TES.getValue());
-      excludedLabels.add(ClassificationsEnum.RT_IUF_TES.getValue());
-      excludedLabels.add(ClassificationsEnum.IUF_NO_TES.getValue());
-      excludedLabels.add(ClassificationsEnum.TES_NO_IUF_OR_IUV.getValue());
-      excludedLabels.add(ClassificationsEnum.IUF_TES_DIV_IMP.getValue());
-      excludedLabels.add(ClassificationsEnum.TES_NO_MATCH.getValue());
-    }
-    return excludedLabels;
   }
 
   private Set<String> getDebtPositionTypeOrgCodes(Long organizationId, String mappedExternalUserId, String accessToken) {
@@ -206,5 +190,13 @@ public class ClassificationRetrieverServiceImpl implements ClassificationRetriev
       .stream()
       .map(AssessmentsDetail::getIud)
       .collect(Collectors.toSet());
+  }
+
+  @Override
+  public PagedModelClassification getClassifications(
+    Long organizationId, ClassificationFiltersDTO filters, Pageable pageable, UserInfo loggedUser, String accessToken) {
+    AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser);
+
+    return classificationService.getClassifications(organizationId, filters, pageable, accessToken);
   }
 }

@@ -4,6 +4,7 @@ import it.gov.pagopa.pu.auth.dto.generated.OperatorDTO;
 import it.gov.pagopa.pu.auth.dto.generated.OperatorsPage;
 import it.gov.pagopa.pu.bff.connector.auth.AuthzService;
 import it.gov.pagopa.pu.bff.dto.generated.OperatorsSelection;
+import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrg;
 import it.gov.pagopa.pu.debtpositions.dto.generated.SaveDebtPositionTypeOrgDTO;
 import java.util.HashSet;
 import java.util.Set;
@@ -28,8 +29,11 @@ public class DebtPositionTypeOrgMapper {
       return null;
     }
 
+    DebtPositionTypeOrg debtPositionTypeOrg = saveDebtPositionTypeOrgDTO.getDebtPositionTypeOrg();
+    debtPositionTypeOrg.setFlagActive(true);
+
     return SaveDebtPositionTypeOrgDTO.builder()
-      .debtPositionTypeOrg(saveDebtPositionTypeOrgDTO.getDebtPositionTypeOrg())
+      .debtPositionTypeOrg(debtPositionTypeOrg)
       .enabledOperators(getEnabledOperators(saveDebtPositionTypeOrgDTO.getEnabledOperators(),operatorExternalUserId,saveDebtPositionTypeOrgDTO.getOperatorsSelection(), organizationIpaCode, accessToken))
       .disabledOperators(OperatorsSelection.SELECTED.equals(saveDebtPositionTypeOrgDTO.getOperatorsSelection())?saveDebtPositionTypeOrgDTO.getDisabledOperators():null)
       .removeEnabledOperators(OperatorsSelection.NONE.equals(saveDebtPositionTypeOrgDTO.getOperatorsSelection()))

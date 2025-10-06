@@ -6,6 +6,7 @@ import it.gov.pagopa.pu.auth.dto.generated.OperatorsPage;
 import it.gov.pagopa.pu.bff.connector.auth.AuthzService;
 import it.gov.pagopa.pu.bff.dto.generated.OperatorsSelection;
 import it.gov.pagopa.pu.bff.util.TestUtils;
+import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrg;
 import it.gov.pagopa.pu.debtpositions.dto.generated.SaveDebtPositionTypeOrgDTO;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -55,6 +56,10 @@ class DebtPositionTypeOrgMapperTest {
     Set<String> operatorsSet = operatorsPage.getContent().stream().map(
       OperatorDTO::getMappedExternalUserId).collect(Collectors.toSet());
     operatorsSet.add(operatorExternalUserId);
+
+    DebtPositionTypeOrg expectedDebtPositionTypeOrg = saveDebtPositionTypeOrgDTO.getDebtPositionTypeOrg();
+    expectedDebtPositionTypeOrg.setFlagActive(true);
+
     Mockito.when(authzServiceMock.getOrganizationOperators(organizationIpaCode,null,null,null,0,PAGE_MAX_SIZE,accessToken))
       .thenReturn(operatorsPage);
 
@@ -62,7 +67,7 @@ class DebtPositionTypeOrgMapperTest {
 
     //verify
     Assertions.assertNotNull(result);
-    Assertions.assertEquals(saveDebtPositionTypeOrgDTO.getDebtPositionTypeOrg(),result.getDebtPositionTypeOrg());
+    Assertions.assertEquals(expectedDebtPositionTypeOrg,result.getDebtPositionTypeOrg());
     Assertions.assertEquals(operatorsSet.size(),result.getEnabledOperators().size());
     for (String operator : result.getEnabledOperators()) {
       Assertions.assertTrue(operatorsSet.contains(operator));
@@ -79,6 +84,9 @@ class DebtPositionTypeOrgMapperTest {
     String organizationIpaCode = "organizationIpaCode";
     it.gov.pagopa.pu.bff.dto.generated.SaveDebtPositionTypeOrgDTO saveDebtPositionTypeOrgDTO = podamFactory.manufacturePojo(it.gov.pagopa.pu.bff.dto.generated.SaveDebtPositionTypeOrgDTO.class);
     saveDebtPositionTypeOrgDTO.setOperatorsSelection(OperatorsSelection.SELECTED);
+
+    DebtPositionTypeOrg expectedDebtPositionTypeOrg = saveDebtPositionTypeOrgDTO.getDebtPositionTypeOrg();
+    expectedDebtPositionTypeOrg.setFlagActive(true);
 
     SaveDebtPositionTypeOrgDTO result = mapper.mapToSaveDebtPositionTypeOrgDTO(saveDebtPositionTypeOrgDTO,operatorExternalUserId,organizationIpaCode,accessToken);
 
@@ -98,6 +106,9 @@ class DebtPositionTypeOrgMapperTest {
     String organizationIpaCode = "organizationIpaCode";
     it.gov.pagopa.pu.bff.dto.generated.SaveDebtPositionTypeOrgDTO saveDebtPositionTypeOrgDTO = podamFactory.manufacturePojo(it.gov.pagopa.pu.bff.dto.generated.SaveDebtPositionTypeOrgDTO.class);
     saveDebtPositionTypeOrgDTO.setOperatorsSelection(OperatorsSelection.NONE);
+
+    DebtPositionTypeOrg expectedDebtPositionTypeOrg = saveDebtPositionTypeOrgDTO.getDebtPositionTypeOrg();
+    expectedDebtPositionTypeOrg.setFlagActive(true);
 
     SaveDebtPositionTypeOrgDTO result = mapper.mapToSaveDebtPositionTypeOrgDTO(saveDebtPositionTypeOrgDTO,operatorExternalUserId,organizationIpaCode,accessToken);
 

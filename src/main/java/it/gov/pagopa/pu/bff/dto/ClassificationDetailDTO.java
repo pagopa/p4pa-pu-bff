@@ -1,5 +1,6 @@
 package it.gov.pagopa.pu.bff.dto;
 
+import it.gov.pagopa.pu.bff.enums.ClassificationStatus;
 import it.gov.pagopa.pu.classification.dto.generated.ClassificationDetailViewDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -16,7 +17,7 @@ public class ClassificationDetailDTO extends ClassificationDetailViewDTO {
   private boolean payed;
   private boolean reported;
   private boolean collected;
-  private String status;
+  private ClassificationStatus status;
   private Boolean flagPaymentNotification;
   private Boolean flagTreasury;
 }

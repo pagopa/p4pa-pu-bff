@@ -1,5 +1,6 @@
 package it.gov.pagopa.pu.bff.dto;
 
+import it.gov.pagopa.pu.bff.enums.ClassificationStatus;
 import it.gov.pagopa.pu.classification.dto.generated.TreasuredClassificationView;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -14,7 +15,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder(toBuilder = true)
 public class TreasuredClassificationExtendedDTO extends TreasuredClassificationView {
 
-  private String status;
+  private ClassificationStatus status;
   private Boolean flagPaymentNotification;
   private Boolean flagTreasury;
 }

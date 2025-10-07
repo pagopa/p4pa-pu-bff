@@ -85,9 +85,11 @@ class DebtPositionTypeOrgMapperTest {
     Set<String> operatorsSet = operatorsPage.getContent().stream().map(
       OperatorDTO::getMappedExternalUserId).collect(Collectors.toSet());
     operatorsSet.add(operatorExternalUserId);
-    saveDebtPositionTypeOrgDTO.getDebtPositionTypeOrg().setFlagActive(null);
 
     DebtPositionTypeOrg expectedDebtPositionTypeOrg = saveDebtPositionTypeOrgDTO.getDebtPositionTypeOrg();
+    expectedDebtPositionTypeOrg.setFlagActive(null);
+    saveDebtPositionTypeOrgDTO.setDebtPositionTypeOrg(expectedDebtPositionTypeOrg);
+
     expectedDebtPositionTypeOrg.setFlagActive(true);
 
     Mockito.when(authzServiceMock.getOrganizationOperators(organizationIpaCode,null,null,null,0,PAGE_MAX_SIZE,accessToken))

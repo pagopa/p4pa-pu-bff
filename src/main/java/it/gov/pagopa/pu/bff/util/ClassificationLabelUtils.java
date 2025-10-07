@@ -3,12 +3,13 @@ package it.gov.pagopa.pu.bff.util;
 import it.gov.pagopa.pu.classification.dto.generated.ClassificationsEnum;
 import it.gov.pagopa.pu.organization.dto.generated.Organization;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class OrganizationUtils {
-  private OrganizationUtils() {
+public class ClassificationLabelUtils {
+  private ClassificationLabelUtils() {
   }
 
   public static Set<String> getExcludedLabels(Organization organization) {
@@ -17,8 +18,13 @@ public class OrganizationUtils {
       .collect(Collectors.toSet());
   }
 
-  public static Set<ClassificationsEnum> getExcludedLabelsAsEnum(Organization organization) {
-    return getExcludedEnums(organization);
+  public static Set<ClassificationsEnum> getLabelsAsEnum(Organization organization) {
+    Set<ClassificationsEnum> includedEnums = new HashSet<>(Arrays.asList(ClassificationsEnum.values()));
+    Set<ClassificationsEnum> excludedEnums = getExcludedEnums(organization);
+
+    includedEnums.removeAll(excludedEnums);
+
+    return includedEnums;
   }
 
   private static Set<ClassificationsEnum> getExcludedEnums(Organization organization) {

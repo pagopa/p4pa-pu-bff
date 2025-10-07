@@ -12,7 +12,7 @@ import it.gov.pagopa.pu.bff.mapper.TreasuredClassificationExtendedDTOMapper;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
 import it.gov.pagopa.pu.bff.service.debt_position_type_org.DebtPositionTypeOrgRetrieverService;
 import it.gov.pagopa.pu.bff.util.DateUtils;
-import it.gov.pagopa.pu.bff.util.OrganizationUtils;
+import it.gov.pagopa.pu.bff.util.ClassificationLabelUtils;
 import it.gov.pagopa.pu.classification.dto.generated.*;
 import it.gov.pagopa.pu.organization.dto.generated.Organization;
 import org.apache.commons.lang3.StringUtils;
@@ -70,7 +70,7 @@ public class ClassificationRetrieverServiceImpl implements ClassificationRetriev
     if(organization == null) {
       throw new ResourceNotFoundException("Organization having ID " + organizationId + " not found");
     }
-    treasuredClassificationFiltersDTO.setExcludedLabels(OrganizationUtils.getExcludedLabels(organization));
+    treasuredClassificationFiltersDTO.setExcludedLabels(ClassificationLabelUtils.getExcludedLabels(organization));
 
     return treasuredClassificationExtendedDTOMapper.map(
       classificationService.getTreasuredClassifications(organizationId, treasuredClassificationFiltersDTO, pageable, accessToken), organization);

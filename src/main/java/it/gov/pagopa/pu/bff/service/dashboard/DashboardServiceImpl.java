@@ -12,7 +12,7 @@ import it.gov.pagopa.pu.bff.mapper.DashboardMapper;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
 import it.gov.pagopa.pu.bff.service.classification.ClassificationRetrieverService;
 import it.gov.pagopa.pu.bff.service.installment.InstallmentRetrieverService;
-import it.gov.pagopa.pu.bff.util.OrganizationUtils;
+import it.gov.pagopa.pu.bff.util.ClassificationLabelUtils;
 import it.gov.pagopa.pu.classification.dto.generated.PagedModelClassification;
 import it.gov.pagopa.pu.organization.dto.generated.Organization;
 import lombok.RequiredArgsConstructor;
@@ -74,7 +74,7 @@ public class DashboardServiceImpl implements DashboardService {
 
     ClassificationFiltersDTO classificationFilters = ClassificationFiltersDTO.builder()
       .iuv(iuv)
-      .labels(OrganizationUtils.getExcludedLabelsAsEnum(organization).stream().toList())
+      .labels(ClassificationLabelUtils.getLabelsAsEnum(organization).stream().toList())
       .build();
 
     PagedModelClassification classifications = classificationRetrieverService.getClassifications(

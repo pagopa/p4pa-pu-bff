@@ -199,4 +199,14 @@ class ClassificationApisHolderTest extends BaseApiHolderTest {
       },
       classificationApisHolder::unload);
   }
+
+  @Test
+  void whenGetClassificationSearchControllerApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
+    assertAuthenticationShouldBeSetInThreadSafeMode(
+      accessToken -> classificationApisHolder.getClassificationSearchControllerApi(accessToken)
+        .crudClassificationsFindByFilters(1L, "iuv", List.of("code"), Collections.emptyList(), 1,1, Collections.emptyList()),
+      new ParameterizedTypeReference<>() {
+      },
+      classificationApisHolder::unload);
+  }
 }

@@ -14,8 +14,8 @@ import it.gov.pagopa.pu.bff.mapper.DashboardMapper;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
 import it.gov.pagopa.pu.bff.service.classification.ClassificationRetrieverService;
 import it.gov.pagopa.pu.bff.service.installment.InstallmentRetrieverService;
-import it.gov.pagopa.pu.bff.util.ClassificationLabelUtils;
 import it.gov.pagopa.pu.bff.util.TestUtils;
+import it.gov.pagopa.pu.classification.dto.generated.ClassificationsEnum;
 import it.gov.pagopa.pu.classification.dto.generated.PagedModelClassification;
 import it.gov.pagopa.pu.organization.dto.generated.Organization;
 import org.junit.jupiter.api.AfterEach;
@@ -28,6 +28,8 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Pageable;
 import uk.co.jemos.podam.api.PodamFactory;
+
+import java.util.Arrays;
 
 @ExtendWith(MockitoExtension.class)
 class DashboardServiceTest {
@@ -115,7 +117,7 @@ class DashboardServiceTest {
 
     ClassificationFiltersDTO expectedClassificationFilters = ClassificationFiltersDTO.builder()
       .iuv(iuv)
-      .labels(ClassificationLabelUtils.getLabelsAsEnum(organization).stream().toList())
+      .labels(Arrays.asList(ClassificationsEnum.values()))
       .build();
 
     PagedInstallmentView installments = podamFactory.manufacturePojo(PagedInstallmentView.class);

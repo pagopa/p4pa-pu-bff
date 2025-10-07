@@ -13,7 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 public class ClassificationFiltersDTO {
-  String iuv;
-  List<String> debtPositionTypeOrgCodes;
-  List<ClassificationsEnum> labels;
+  private String iuv;
+  private List<String> debtPositionTypeOrgCodes;
+  private List<ClassificationsEnum> labels;
 }

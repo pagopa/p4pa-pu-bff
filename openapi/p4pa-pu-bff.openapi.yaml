@@ -3625,6 +3625,40 @@ paths:
           description: Forbidden - Access denied
         '500':
           description: Internal Server Error
+  /organization/{organizationId}/spontaneous-forms/paged:
+    get:
+      tags:
+        - SpontaneousForms
+      operationId: getPagedSpontaneousForms
+      parameters:
+        - name: organizationId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: code
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PagedSpontaneousForm'
+        '401':
+          description: Unauthorized - Missing or invalid token
+        '403':
+          description: Forbidden - Access denied
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDTO'
+      x-spring-paginated: true
 security:
   - BearerAuth: [ ]
 components:
@@ -5112,6 +5146,31 @@ components:
           type: array
           items:
             type: 'TreasuredClassificationExtendedDTO'
+        size:
+          type: integer
+          format: int64
+        totalElements:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer
+          format: int64
+        number:
+          type: integer
+          format: int64
+    PagedSpontaneousForm:
+      type: object
+      required:
+        - content
+        - size
+        - totalElements
+        - totalPages
+        - number
+      properties:
+        content:
+          type: array
+          items:
+            type: 'SpontaneousForm'
         size:
           type: integer
           format: int64

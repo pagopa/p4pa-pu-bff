@@ -1,6 +1,7 @@
 package it.gov.pagopa.pu.bff.controller;
 
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
+import it.gov.pagopa.pu.bff.dto.generated.PagedSpontaneousForm;
 import it.gov.pagopa.pu.bff.security.SecurityUtilsTest;
 import it.gov.pagopa.pu.bff.service.spontaneous_form.SpontaneousFormRetrieverService;
 import it.gov.pagopa.pu.bff.util.TestUtils;
@@ -15,6 +16,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import uk.co.jemos.podam.api.PodamFactory;
@@ -47,7 +50,7 @@ class SpontaneousFormControllerTest {
   }
 
   @Test
-  void givenCorrectRequestWhenUpdateDebtPositionTypeOrgThenOk() {
+  void givenCorrectRequestWhenGetSpontaneousFormsThenOk() {
     long organizationId = 1L;
     List<SpontaneousForm> expectedResult = podamFactory.manufacturePojo(List.class,SpontaneousForm.class);
 
@@ -55,6 +58,23 @@ class SpontaneousFormControllerTest {
 
     ResponseEntity<List<SpontaneousForm>> response = spontaneousFormController.getSpontaneousForms(
         organizationId);
+
+    Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
+    Assertions.assertNotNull(response.getBody());
+    Assertions.assertSame(expectedResult, response.getBody());
+  }
+
+  @Test
+  void givenCorrectRequestWhenGetPagedSpontaneousFormsThenOk() {
+    long organizationId = 1L;
+    String code = "code";
+    Pageable pageable = PageRequest.ofSize(10);
+    PagedSpontaneousForm expectedResult = podamFactory.manufacturePojo(PagedSpontaneousForm.class);
+
+    Mockito.when(spontaneousFormRetrieverServiceMock.getPagedSpontaneousForms(organizationId, code, pageable, loggedUser, accessToken)).thenReturn(expectedResult);
+
+    ResponseEntity<PagedSpontaneousForm> response = spontaneousFormController.getPagedSpontaneousForms(
+        organizationId, code, pageable);
 
     Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
     Assertions.assertNotNull(response.getBody());

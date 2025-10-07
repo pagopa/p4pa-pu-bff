@@ -6,13 +6,18 @@ import static org.mockito.Mockito.when;
 import it.gov.pagopa.pu.bff.connector.debt_position.client.SpontaneousFormEntityClient;
 import it.gov.pagopa.pu.bff.connector.debt_position.client.SpontaneousFormSearchClient;
 import it.gov.pagopa.pu.bff.util.TestUtils;
+import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelSpontaneousForm;
 import it.gov.pagopa.pu.debtpositions.dto.generated.SpontaneousForm;
 import java.util.List;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import uk.co.jemos.podam.api.PodamFactory;
 
 @ExtendWith(MockitoExtension.class)
@@ -29,6 +34,11 @@ class SpontaneousFormServiceImplTest {
   @BeforeEach
   void setUp() {
     service = new SpontaneousFormServiceImpl(spontaneousFormSearchClientMock, spontaneousFormEntityClientMock);
+  }
+
+  @AfterEach
+  void verifyNoMoreInteractions() {
+    Mockito.verifyNoMoreInteractions(spontaneousFormSearchClientMock, spontaneousFormEntityClientMock);
   }
 
   @Test
@@ -60,4 +70,19 @@ class SpontaneousFormServiceImplTest {
     assertSame(expectedResult, result);
   }
 
+  @Test
+  void whenFindAllByOrganizationIdAndCodeThenInvokeClient() {
+    Long organizationId = 1L;
+    String code = "code";
+    Pageable pageable = PageRequest.ofSize(10);
+    String accessToken = "ACCESSTOKEN";
+    PagedModelSpontaneousForm expectedResult = podamFactory.manufacturePojo(PagedModelSpontaneousForm.class);
+
+    when(spontaneousFormSearchClientMock.findAllByOrganizationIdAndCode(organizationId, code, pageable, accessToken))
+        .thenReturn(expectedResult);
+
+    PagedModelSpontaneousForm result = service.findAllByOrganizationIdAndCode(organizationId, code, pageable, accessToken);
+
+    assertSame(expectedResult, result);
+  }
 }

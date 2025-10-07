@@ -1,14 +1,21 @@
 package it.gov.pagopa.pu.bff.service;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.connector.debt_position.SpontaneousFormService;
+import it.gov.pagopa.pu.bff.dto.generated.PagedSpontaneousForm;
 import it.gov.pagopa.pu.bff.exception.ConflictException;
 import it.gov.pagopa.pu.bff.exception.ResourceNotFoundException;
+import it.gov.pagopa.pu.bff.mapper.PagedSpontaneousFormMapper;
 import it.gov.pagopa.pu.bff.service.spontaneous_form.SpontaneousFormRetrieverService;
 import it.gov.pagopa.pu.bff.service.spontaneous_form.SpontaneousFormRetrieverServiceImpl;
 import it.gov.pagopa.pu.bff.util.TestUtils;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrg;
+import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelSpontaneousForm;
 import it.gov.pagopa.pu.debtpositions.dto.generated.SpontaneousForm;
+import java.util.List;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,12 +25,9 @@ import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import uk.co.jemos.podam.api.PodamFactory;
-
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertSame;
 
 @ExtendWith(MockitoExtension.class)
 class SpontaneousFormRetrieverServiceImplTest {
@@ -31,6 +35,8 @@ class SpontaneousFormRetrieverServiceImplTest {
   public static final PodamFactory podamFactory = TestUtils.getPodamFactory();
   @Mock
   private SpontaneousFormService spontaneousFormServiceMock;
+  @Mock
+  private PagedSpontaneousFormMapper pagedSpontaneousFormMapperMock;
 
   private SpontaneousFormRetrieverService spontaneousFormRetrieverService;
 
@@ -38,12 +44,12 @@ class SpontaneousFormRetrieverServiceImplTest {
 
   @BeforeEach
   void setUp() {
-    spontaneousFormRetrieverService = new SpontaneousFormRetrieverServiceImpl(spontaneousFormServiceMock);
+    spontaneousFormRetrieverService = new SpontaneousFormRetrieverServiceImpl(spontaneousFormServiceMock, pagedSpontaneousFormMapperMock);
   }
 
   @AfterEach
   void verifyNoMoreInteractions() {
-    Mockito.verifyNoMoreInteractions(spontaneousFormServiceMock);
+    Mockito.verifyNoMoreInteractions(spontaneousFormServiceMock, pagedSpontaneousFormMapperMock);
   }
 
   @Test
@@ -176,4 +182,32 @@ class SpontaneousFormRetrieverServiceImplTest {
     }
   }
 
+  @Test
+  void givenValidUserWhenGetPagedSpontaneousFormsThenOk() {
+    UserInfo loggedUser = new UserInfo();
+    loggedUser.setUserId("user-123");
+
+    long organizationId = 1L;
+    String code = "code";
+    Pageable pageable = PageRequest.ofSize(10);
+
+    PagedModelSpontaneousForm pagedModelSpontaneousForm = podamFactory.manufacturePojo(PagedModelSpontaneousForm.class);
+    PagedSpontaneousForm expectedResult = podamFactory.manufacturePojo(PagedSpontaneousForm.class);
+
+    try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
+      authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)).thenAnswer(a -> null);
+
+      Mockito.when(spontaneousFormServiceMock.findAllByOrganizationIdAndCode(organizationId, code, pageable, accessToken))
+          .thenReturn(pagedModelSpontaneousForm);
+      Mockito.when(pagedSpontaneousFormMapperMock.map(pagedModelSpontaneousForm))
+          .thenReturn(expectedResult);
+
+      PagedSpontaneousForm result = spontaneousFormRetrieverService.getPagedSpontaneousForms(organizationId, code, pageable, loggedUser, accessToken);
+
+      assertNotNull(result);
+      assertSame(expectedResult, result);
+
+      authorizationServiceMockedStatic.verify(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser));
+    }
+  }
 }

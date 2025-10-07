@@ -90,8 +90,6 @@ class DebtPositionTypeOrgMapperTest {
     expectedDebtPositionTypeOrg.setFlagActive(null);
     saveDebtPositionTypeOrgDTO.setDebtPositionTypeOrg(expectedDebtPositionTypeOrg);
 
-    expectedDebtPositionTypeOrg.setFlagActive(true);
-
     Mockito.when(authzServiceMock.getOrganizationOperators(organizationIpaCode,null,null,null,0,PAGE_MAX_SIZE,accessToken))
       .thenReturn(operatorsPage);
 
@@ -99,7 +97,10 @@ class DebtPositionTypeOrgMapperTest {
 
     //verify
     Assertions.assertNotNull(result);
+
+    expectedDebtPositionTypeOrg.setFlagActive(true);
     Assertions.assertEquals(expectedDebtPositionTypeOrg,result.getDebtPositionTypeOrg());
+
     Assertions.assertEquals(operatorsSet.size(),result.getEnabledOperators().size());
     for (String operator : result.getEnabledOperators()) {
       Assertions.assertTrue(operatorsSet.contains(operator));

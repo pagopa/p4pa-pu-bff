@@ -30,7 +30,9 @@ public class DebtPositionTypeOrgMapper {
     }
 
     DebtPositionTypeOrg debtPositionTypeOrg = saveDebtPositionTypeOrgDTO.getDebtPositionTypeOrg();
-    debtPositionTypeOrg.setFlagActive(true);
+    debtPositionTypeOrg.setFlagActive(
+      debtPositionTypeOrg.getFlagActive() == null
+        || debtPositionTypeOrg.getFlagActive());
 
     return SaveDebtPositionTypeOrgDTO.builder()
       .debtPositionTypeOrg(debtPositionTypeOrg)

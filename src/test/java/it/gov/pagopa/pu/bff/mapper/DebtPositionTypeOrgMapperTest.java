@@ -92,7 +92,7 @@ class DebtPositionTypeOrgMapperTest {
 
     //verify
     Assertions.assertNotNull(result);
-    Assertions.assertEquals(saveDebtPositionTypeOrgDTO.getDebtPositionTypeOrg(),result.getDebtPositionTypeOrg());
+    Assertions.assertEquals(expectedDebtPositionTypeOrg,result.getDebtPositionTypeOrg());
     Assertions.assertEquals(saveDebtPositionTypeOrgDTO.getEnabledOperators(),result.getEnabledOperators());
     Assertions.assertEquals(saveDebtPositionTypeOrgDTO.getDisabledOperators(),result.getDisabledOperators());
     Assertions.assertFalse(result.getRemoveEnabledOperators());
@@ -114,7 +114,7 @@ class DebtPositionTypeOrgMapperTest {
 
     //verify
     Assertions.assertNotNull(result);
-    Assertions.assertEquals(saveDebtPositionTypeOrgDTO.getDebtPositionTypeOrg(),result.getDebtPositionTypeOrg());
+    Assertions.assertEquals(expectedDebtPositionTypeOrg,result.getDebtPositionTypeOrg());
     Assertions.assertEquals(1,result.getEnabledOperators().size());
     Assertions.assertTrue(result.getEnabledOperators().contains(operatorExternalUserId));
     Assertions.assertNull(result.getDisabledOperators());

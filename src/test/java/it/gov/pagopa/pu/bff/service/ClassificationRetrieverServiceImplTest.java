@@ -972,6 +972,30 @@ class ClassificationRetrieverServiceImplTest {
       verifyNoInteractions(classificationServiceMock);
     }
   }
+
+  @Test
+  void givenValidFiltersWhenGetClassificationsThenOk() {
+    long organizationId = 1L;
+    ClassificationFiltersDTO filters = new ClassificationFiltersDTO();
+    PageRequest pageable = PageRequest.of(0, 10);
+
+    UserInfo loggedUser = new UserInfo();
+    loggedUser.setUserId("user-123");
+
+    PagedModelClassification expected = new PagedModelClassification();
+    try (MockedStatic<AuthorizationService> authorizationMock = Mockito.mockStatic(AuthorizationService.class)) {
+      authorizationMock.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser))
+        .thenAnswer(a -> null);
+
+      when(classificationServiceMock.getClassifications(organizationId, filters, pageable, accessToken))
+        .thenReturn(expected);
+
+      PagedModelClassification result = classificationRetrieverService.getClassifications(organizationId, filters, pageable, loggedUser, accessToken);
+
+      assertNotNull(result);
+      assertSame(expected, result);
+    }
+  }
 }
 
 

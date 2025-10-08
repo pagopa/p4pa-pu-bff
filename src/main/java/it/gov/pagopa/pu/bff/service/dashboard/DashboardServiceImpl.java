@@ -57,7 +57,7 @@ public class DashboardServiceImpl implements DashboardService {
       .build();
 
     PagedInstallmentView installments = installmentRetrieverService.getInstallments(
-      installmentFilters, Pageable.ofSize(10), loggedUser, accessToken);
+      installmentFilters, PAGE_CONFIG, loggedUser, accessToken);
 
     if (installments == null || installments.getTotalElements() == 0) {
       return dashboardMapper.mapToDashboardByIuv(installments, null);

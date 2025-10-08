@@ -6,6 +6,7 @@ import it.gov.pagopa.pu.auth.dto.generated.OperatorsPage;
 import it.gov.pagopa.pu.bff.connector.auth.AuthzService;
 import it.gov.pagopa.pu.bff.dto.generated.OperatorsSelection;
 import it.gov.pagopa.pu.bff.util.TestUtils;
+import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrg;
 import it.gov.pagopa.pu.debtpositions.dto.generated.SaveDebtPositionTypeOrgDTO;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -55,6 +56,7 @@ class DebtPositionTypeOrgMapperTest {
     Set<String> operatorsSet = operatorsPage.getContent().stream().map(
       OperatorDTO::getMappedExternalUserId).collect(Collectors.toSet());
     operatorsSet.add(operatorExternalUserId);
+
     Mockito.when(authzServiceMock.getOrganizationOperators(organizationIpaCode,null,null,null,0,PAGE_MAX_SIZE,accessToken))
       .thenReturn(operatorsPage);
 
@@ -63,6 +65,42 @@ class DebtPositionTypeOrgMapperTest {
     //verify
     Assertions.assertNotNull(result);
     Assertions.assertEquals(saveDebtPositionTypeOrgDTO.getDebtPositionTypeOrg(),result.getDebtPositionTypeOrg());
+    Assertions.assertEquals(operatorsSet.size(),result.getEnabledOperators().size());
+    for (String operator : result.getEnabledOperators()) {
+      Assertions.assertTrue(operatorsSet.contains(operator));
+      operatorsSet.remove(operator);
+    }
+    Assertions.assertNull(result.getDisabledOperators());
+    Assertions.assertFalse(result.getRemoveEnabledOperators());
+  }
+
+  @Test
+  void givenNullFlagActiveWhenToSaveDebtPositionTypeOrgDTOThenFlagActiveTrue() {
+    String accessToken = "accessToken";
+    String operatorExternalUserId = "operatorExternalUserId";
+    String organizationIpaCode = "organizationIpaCode";
+    it.gov.pagopa.pu.bff.dto.generated.SaveDebtPositionTypeOrgDTO saveDebtPositionTypeOrgDTO = podamFactory.manufacturePojo(it.gov.pagopa.pu.bff.dto.generated.SaveDebtPositionTypeOrgDTO.class);
+    saveDebtPositionTypeOrgDTO.setOperatorsSelection(OperatorsSelection.ALL);
+    OperatorsPage operatorsPage = podamFactory.manufacturePojo(OperatorsPage.class);
+    Set<String> operatorsSet = operatorsPage.getContent().stream().map(
+      OperatorDTO::getMappedExternalUserId).collect(Collectors.toSet());
+    operatorsSet.add(operatorExternalUserId);
+
+    DebtPositionTypeOrg expectedDebtPositionTypeOrg = saveDebtPositionTypeOrgDTO.getDebtPositionTypeOrg();
+    expectedDebtPositionTypeOrg.setFlagActive(null);
+    saveDebtPositionTypeOrgDTO.setDebtPositionTypeOrg(expectedDebtPositionTypeOrg);
+
+    Mockito.when(authzServiceMock.getOrganizationOperators(organizationIpaCode,null,null,null,0,PAGE_MAX_SIZE,accessToken))
+      .thenReturn(operatorsPage);
+
+    SaveDebtPositionTypeOrgDTO result = mapper.mapToSaveDebtPositionTypeOrgDTO(saveDebtPositionTypeOrgDTO,operatorExternalUserId,organizationIpaCode,accessToken);
+
+    //verify
+    Assertions.assertNotNull(result);
+
+    expectedDebtPositionTypeOrg.setFlagActive(true);
+    Assertions.assertEquals(expectedDebtPositionTypeOrg,result.getDebtPositionTypeOrg());
+
     Assertions.assertEquals(operatorsSet.size(),result.getEnabledOperators().size());
     for (String operator : result.getEnabledOperators()) {
       Assertions.assertTrue(operatorsSet.contains(operator));

@@ -5133,6 +5133,12 @@ components:
           type: boolean
         pdndEnabled:
           type: boolean
+        debtPositionTypeOrgCount:
+          type: integer
+          format: int32
+        operatorsCount:
+          type: integer
+          format: int32
     PagedTreasuredClassificationExtendedDTO:
       type: object
       required:

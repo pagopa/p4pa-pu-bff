@@ -199,7 +199,17 @@ public class OrganizationRetrieverServiceImpl implements OrganizationRetrieverSe
 
     OrganizationDetailDTO orgDetail = organizationService.getOrganizationDetail(organizationId, accessToken);
 
-    return organizationDetailMapper.mapToBffDTO(orgDetail);
+    Map<Long, Integer> dptoCountsByOrgId = getDptoCountsByOrgIdMap(accessToken, List.of(organizationId));
+    Integer debtPositionTypeOrgCount = dptoCountsByOrgId.getOrDefault(organizationId, 0);
+
+    Map<Long, OperatorsPage> operatorsPageMap = getOperatorsPageMap(accessToken, List.of(organization));
+    OperatorsPage operatorsPage = operatorsPageMap.get(organizationId);
+
+    OrganizationDetail organizationDetail = organizationDetailMapper.mapToBffDTO(orgDetail);
+    organizationDetail.setDebtPositionTypeOrgCount(debtPositionTypeOrgCount);
+    organizationDetail.setOperatorsCount(operatorsPage != null ? operatorsPage.getTotalElements() : 0);
+
+    return organizationDetail;
   }
 
   @Override

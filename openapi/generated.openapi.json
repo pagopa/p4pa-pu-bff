@@ -10412,6 +10412,14 @@
           },
           "pdndEnabled" : {
             "type" : "boolean"
+          },
+          "debtPositionTypeOrgCount" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "operatorsCount" : {
+            "type" : "integer",
+            "format" : "int32"
           }
         },
         "required" : [ "flagNotifyIo", "flagNotifyOutcomePush", "flagPaymentNotification", "flagTreasury", "ipaCode", "orgFiscalCode", "orgName", "organizationId", "pdndEnabled", "status" ]

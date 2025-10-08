@@ -75,23 +75,6 @@ public class ClassificationRetrieverServiceImpl implements ClassificationRetriev
       classificationService.getTreasuredClassifications(organizationId, treasuredClassificationFiltersDTO, pageable, accessToken), organization);
   }
 
-  private static Set<String> getExcludedLabels(Organization organization) {
-    Set<String> excludedLabels = new HashSet<>();
-    if (Boolean.FALSE.equals(organization.getFlagPaymentNotification())) {
-      excludedLabels.add(ClassificationsEnum.RT_NO_IUD.getValue());
-      excludedLabels.add(ClassificationsEnum.IUD_NO_RT.getValue());
-    }
-    if (Boolean.FALSE.equals(organization.getFlagTreasury())) {
-      excludedLabels.add(ClassificationsEnum.RT_TES.getValue());
-      excludedLabels.add(ClassificationsEnum.RT_IUF_TES.getValue());
-      excludedLabels.add(ClassificationsEnum.IUF_NO_TES.getValue());
-      excludedLabels.add(ClassificationsEnum.TES_NO_IUF_OR_IUV.getValue());
-      excludedLabels.add(ClassificationsEnum.IUF_TES_DIV_IMP.getValue());
-      excludedLabels.add(ClassificationsEnum.TES_NO_MATCH.getValue());
-    }
-    return excludedLabels;
-  }
-
   private Set<String> getDebtPositionTypeOrgCodes(Long organizationId, String mappedExternalUserId, String accessToken) {
     Set<String> debtPositionTypeOrgCodes = debtPositionTypeOrgRetrieverService.getDebtPositionTypeOrgCodes(organizationId, null, mappedExternalUserId, accessToken);
     if (CollectionUtils.isEmpty(debtPositionTypeOrgCodes)) {
@@ -213,6 +196,48 @@ public class ClassificationRetrieverServiceImpl implements ClassificationRetriev
     Long organizationId, ClassificationFiltersDTO filters, Pageable pageable, UserInfo loggedUser, String accessToken) {
     AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser);
 
+    Organization organization = organizationService.getOrganizationByOrganizationId(organizationId, accessToken);
+
+    if(organization == null) {
+      throw new ResourceNotFoundException("Organization having ID " + organizationId + " not found");
+    }
+
+    filters.setLabels(getLabels(organization));
+
     return classificationService.getClassifications(organizationId, filters, pageable, accessToken);
+  }
+
+  private static List<ClassificationsEnum> getLabels(Organization organization) {
+    Set<ClassificationsEnum> excludedLabels = getExcludedClassificationsEnums(organization);
+
+    return Arrays.stream(ClassificationsEnum.values())
+      .filter(label -> !excludedLabels.contains(label))
+      .collect(Collectors.toList());
+  }
+
+  public static Set<String> getExcludedLabels(Organization organization) {
+    return getExcludedClassificationsEnums(organization).stream()
+      .map(ClassificationsEnum::getValue)
+      .collect(Collectors.toSet());
+  }
+
+  private static Set<ClassificationsEnum> getExcludedClassificationsEnums(Organization organization) {
+    Set<ClassificationsEnum> excludedEnums = new HashSet<>();
+
+    if (Boolean.FALSE.equals(organization.getFlagPaymentNotification())) {
+      excludedEnums.add(ClassificationsEnum.RT_NO_IUD);
+      excludedEnums.add(ClassificationsEnum.IUD_NO_RT);
+    }
+
+    if (Boolean.FALSE.equals(organization.getFlagTreasury())) {
+      excludedEnums.add(ClassificationsEnum.RT_TES);
+      excludedEnums.add(ClassificationsEnum.RT_IUF_TES);
+      excludedEnums.add(ClassificationsEnum.IUF_NO_TES);
+      excludedEnums.add(ClassificationsEnum.TES_NO_IUF_OR_IUV);
+      excludedEnums.add(ClassificationsEnum.IUF_TES_DIV_IMP);
+      excludedEnums.add(ClassificationsEnum.TES_NO_MATCH);
+    }
+
+    return excludedEnums;
   }
 }

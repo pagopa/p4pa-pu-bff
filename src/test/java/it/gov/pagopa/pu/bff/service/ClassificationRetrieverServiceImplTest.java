@@ -979,6 +979,10 @@ class ClassificationRetrieverServiceImplTest {
     ClassificationFiltersDTO filters = new ClassificationFiltersDTO();
     PageRequest pageable = PageRequest.of(0, 10);
 
+    Organization organization = new Organization();
+    organization.setFlagPaymentNotification(true);
+    organization.setFlagTreasury(true);
+
     UserInfo loggedUser = new UserInfo();
     loggedUser.setUserId("user-123");
 
@@ -986,6 +990,9 @@ class ClassificationRetrieverServiceImplTest {
     try (MockedStatic<AuthorizationService> authorizationMock = Mockito.mockStatic(AuthorizationService.class)) {
       authorizationMock.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser))
         .thenAnswer(a -> null);
+
+      when(organizationServiceMock.getOrganizationByOrganizationId(organizationId, accessToken))
+        .thenReturn(organization);
 
       when(classificationServiceMock.getClassifications(organizationId, filters, pageable, accessToken))
         .thenReturn(expected);

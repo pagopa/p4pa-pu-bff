@@ -32,4 +32,10 @@ public class SpontaneousFormController implements SpontaneousFormsApi {
     log.info("User requested getPagedSpontaneousForms having organizationId {}", organizationId);
     return ResponseEntity.ok(spontaneousFormRetrieverService.getPagedSpontaneousForms(organizationId, code, pageable, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken()));
   }
+
+  @Override
+  public ResponseEntity<SpontaneousForm> getSpontaneousFormDetail(Long organizationId, Long spontaneousFormId) {
+    log.info("User requested getSpontaneousFormDetail having organizationId {} and spontaneousFormId {}", organizationId, spontaneousFormId);
+    return ResponseEntity.ok(spontaneousFormRetrieverService.getSpontaneousFormDetail(organizationId, spontaneousFormId, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken()));
+  }
 }

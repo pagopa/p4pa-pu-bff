@@ -32,22 +32,22 @@ public class SpontaneousFormRetrieverServiceImpl implements SpontaneousFormRetri
   @Override
   public SpontaneousForm getSpontaneousFormAndValidate(Long spontaneousFormId, DebtPositionTypeOrg debtPositionTypeOrg, String accessToken) {
     SpontaneousForm spontaneousForm = spontaneousFormService.getSpontaneousForm(spontaneousFormId, accessToken);
-    validateSpontaneousForm(spontaneousForm, debtPositionTypeOrg);
+    validateSpontaneousForm(spontaneousForm, debtPositionTypeOrg.getOrganizationId(), debtPositionTypeOrg.getSpontaneousFormId());
     return spontaneousForm;
   }
 
-  private static void validateSpontaneousForm(SpontaneousForm spontaneousForm, DebtPositionTypeOrg debtPositionTypeOrg) {
+  private static void validateSpontaneousForm(SpontaneousForm spontaneousForm, Long organizationId, Long spontaneousFormId) {
     if (spontaneousForm == null){
-      throw new ResourceNotFoundException("SpontaneousForm with id %d not found".formatted(debtPositionTypeOrg.getSpontaneousFormId()));
+      throw new ResourceNotFoundException("SpontaneousForm with id %d not found".formatted(spontaneousFormId));
     }
 
-    if (!debtPositionTypeOrg.getOrganizationId().equals(spontaneousForm.getOrganizationId())){
+    if (!organizationId.equals(spontaneousForm.getOrganizationId())){
       throw new ConflictException(
-        "OrganizationId %d of DebtPositionTypeOrg does not match OrganizationId %d of SpontaneousForm %d"
+        "OrganizationId %d does not match OrganizationId %d of SpontaneousForm %d"
           .formatted(
-            debtPositionTypeOrg.getOrganizationId(),
+            organizationId,
             spontaneousForm.getOrganizationId(),
-            debtPositionTypeOrg.getSpontaneousFormId()
+            spontaneousFormId
           ));
     }
   }
@@ -56,5 +56,13 @@ public class SpontaneousFormRetrieverServiceImpl implements SpontaneousFormRetri
   public PagedSpontaneousForm getPagedSpontaneousForms(Long organizationId, String code, Pageable pageable, UserInfo loggedUser, String accessToken) {
     AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser);
     return pagedSpontaneousFormMapper.map(spontaneousFormService.findAllByOrganizationIdAndCode(organizationId, code, pageable, accessToken));
+  }
+
+  @Override
+  public SpontaneousForm getSpontaneousFormDetail(Long organizationId, Long spontaneousFormId, UserInfo loggedUser, String accessToken) {
+    AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser);
+    SpontaneousForm spontaneousForm = spontaneousFormService.getSpontaneousForm(spontaneousFormId, accessToken);
+    validateSpontaneousForm(spontaneousForm,organizationId,spontaneousFormId);
+    return spontaneousForm;
   }
 }

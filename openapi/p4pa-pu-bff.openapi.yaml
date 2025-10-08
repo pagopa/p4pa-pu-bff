@@ -3659,6 +3659,39 @@ paths:
           description: Forbidden - Access denied
         '500':
           description: Internal Server Error
+  /organization/{organizationId}/spontaneous-forms/{spontaneousFormId}:
+    get:
+      tags:
+        - SpontaneousForms
+      operationId: getSpontaneousFormDetail
+      parameters:
+        - name: organizationId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: spontaneousFormId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: 'SpontaneousForm'
+        '401':
+          description: Unauthorized - Missing or invalid token
+        '403':
+          description: Forbidden - Access denied
+        '404':
+          description: Not found
+        '500':
+          description: Internal Server Error
   /organization/{organizationId}/spontaneous-forms/paged:
     get:
       tags:

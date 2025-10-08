@@ -80,4 +80,19 @@ class SpontaneousFormControllerTest {
     Assertions.assertNotNull(response.getBody());
     Assertions.assertSame(expectedResult, response.getBody());
   }
+
+  @Test
+  void givenCorrectRequestWhenGetSpontaneousFormDetailThenOk() {
+    long organizationId = 1L;
+    SpontaneousForm expectedResult = podamFactory.manufacturePojo(SpontaneousForm.class);
+
+    Mockito.when(spontaneousFormRetrieverServiceMock.getSpontaneousFormDetail(organizationId, expectedResult.getSpontaneousFormId(), loggedUser, accessToken)).thenReturn(expectedResult);
+
+    ResponseEntity<SpontaneousForm> response = spontaneousFormController.getSpontaneousFormDetail(
+        organizationId, expectedResult.getSpontaneousFormId());
+
+    Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
+    Assertions.assertNotNull(response.getBody());
+    Assertions.assertSame(expectedResult, response.getBody());
+  }
 }

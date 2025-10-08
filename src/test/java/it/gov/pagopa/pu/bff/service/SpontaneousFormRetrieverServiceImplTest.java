@@ -175,7 +175,7 @@ class SpontaneousFormRetrieverServiceImplTest {
       );
 
       Assertions.assertEquals(
-        "OrganizationId 1 of DebtPositionTypeOrg does not match OrganizationId 3 of SpontaneousForm 999",
+        "OrganizationId 1 does not match OrganizationId 3 of SpontaneousForm 999",
         ex.getMessage()
       );
 
@@ -206,6 +206,77 @@ class SpontaneousFormRetrieverServiceImplTest {
 
       assertNotNull(result);
       assertSame(expectedResult, result);
+
+      authorizationServiceMockedStatic.verify(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser));
+    }
+  }
+
+  @Test
+  void whenGetSpontaneousFormDetailThenOk() {
+    UserInfo loggedUser = new UserInfo();
+    loggedUser.setUserId("user-123");
+
+    long organizationId = 1L;
+    Long spontaneousFormId = 2L;
+
+    SpontaneousForm expectedResult = podamFactory.manufacturePojo(SpontaneousForm.class);
+    expectedResult.setSpontaneousFormId(spontaneousFormId);
+    expectedResult.setOrganizationId(organizationId);
+
+    try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
+      authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)).thenAnswer(a -> null);
+
+      Mockito.when(spontaneousFormServiceMock.getSpontaneousForm(spontaneousFormId, accessToken))
+          .thenReturn(expectedResult);
+
+      SpontaneousForm result = spontaneousFormRetrieverService.getSpontaneousFormDetail(organizationId, spontaneousFormId, loggedUser, accessToken);
+
+      assertNotNull(result);
+      assertSame(expectedResult, result);
+
+      authorizationServiceMockedStatic.verify(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser));
+    }
+  }
+
+  @Test
+  void givenSpontaneousFormMismatchOrganizationIdWhenGetSpontaneousFormDetailThenConflictException() {
+    UserInfo loggedUser = new UserInfo();
+    loggedUser.setUserId("user-123");
+
+    long organizationId = 1L;
+    Long spontaneousFormId = 2L;
+
+    SpontaneousForm spontaneousForm = podamFactory.manufacturePojo(SpontaneousForm.class);
+    spontaneousForm.setSpontaneousFormId(spontaneousFormId);
+    spontaneousForm.setOrganizationId(organizationId+1);
+
+    try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
+      authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)).thenAnswer(a -> null);
+
+      Mockito.when(spontaneousFormServiceMock.getSpontaneousForm(spontaneousFormId, accessToken))
+          .thenReturn(spontaneousForm);
+
+      Assertions.assertThrows(ConflictException.class,()-> spontaneousFormRetrieverService.getSpontaneousFormDetail(organizationId, spontaneousFormId, loggedUser, accessToken));
+
+      authorizationServiceMockedStatic.verify(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser));
+    }
+  }
+
+  @Test
+  void givenNoSpontaneousFormWhenGetSpontaneousFormDetailThenResourceNotFoundException() {
+    UserInfo loggedUser = new UserInfo();
+    loggedUser.setUserId("user-123");
+
+    long organizationId = 1L;
+    Long spontaneousFormId = 2L;
+
+    try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
+      authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)).thenAnswer(a -> null);
+
+      Mockito.when(spontaneousFormServiceMock.getSpontaneousForm(spontaneousFormId, accessToken))
+          .thenReturn(null);
+
+      Assertions.assertThrows(ResourceNotFoundException.class,()-> spontaneousFormRetrieverService.getSpontaneousFormDetail(organizationId, spontaneousFormId, loggedUser, accessToken));
 
       authorizationServiceMockedStatic.verify(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser));
     }

@@ -11,4 +11,5 @@ public interface SpontaneousFormRetrieverService {
   List<SpontaneousForm> getSpontaneousForms(Long organizationId, UserInfo loggedUser, String accessToken);
   SpontaneousForm getSpontaneousFormAndValidate(Long spontaneousFormId, DebtPositionTypeOrg debtPositionTypeOrg, String accessToken);
   PagedSpontaneousForm getPagedSpontaneousForms(Long organizationId, String code, Pageable pageable, UserInfo loggedUser, String accessToken);
+  SpontaneousForm getSpontaneousFormDetail(Long organizationId, Long spontaneousFormId, UserInfo loggedUser, String accessToken);
 }

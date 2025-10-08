@@ -1,16 +1,20 @@
 package it.gov.pagopa.pu.bff.service.dashboard;
 
-import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
+import it.gov.pagopa.pu.bff.dto.ClassificationFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.InstallmentViewFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.generated.DashboardByFc;
+import it.gov.pagopa.pu.bff.dto.generated.DashboardByIuv;
 import it.gov.pagopa.pu.bff.dto.generated.PagedInstallmentView;
 import it.gov.pagopa.pu.bff.mapper.DashboardMapper;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
+import it.gov.pagopa.pu.bff.service.classification.ClassificationRetrieverService;
 import it.gov.pagopa.pu.bff.service.installment.InstallmentRetrieverService;
 import it.gov.pagopa.pu.bff.util.TestUtils;
+import it.gov.pagopa.pu.classification.dto.generated.PagedModelClassification;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -30,19 +34,22 @@ class DashboardServiceTest {
   @Mock
   private InstallmentRetrieverService installmentRetrieverServiceMock;
   @Mock
+  private ClassificationRetrieverService classificationRetrieverServiceMock;
+  @Mock
   private DashboardMapper dashboardMapperMock;
 
   private final PodamFactory podamFactory = TestUtils.getPodamFactory();
 
   @BeforeEach
   void setup() {
-    dashboardService = new DashboardServiceImpl(installmentRetrieverServiceMock, dashboardMapperMock);
+    dashboardService = new DashboardServiceImpl(installmentRetrieverServiceMock, classificationRetrieverServiceMock, dashboardMapperMock);
   }
 
   @AfterEach
   void verifyNoMoreInteractions() {
     Mockito.verifyNoMoreInteractions(
       installmentRetrieverServiceMock,
+      classificationRetrieverServiceMock,
       dashboardMapperMock
     );
   }
@@ -76,6 +83,48 @@ class DashboardServiceTest {
         .thenReturn(expected);
 
       DashboardByFc result = dashboardService.getDashboardByFiscalCode(organizationId, fiscalCode, loggedUser, accessToken);
+
+      assertSame(expected, result);
+    }
+  }
+
+  @Test
+  void whenGetDashboardByIuvThenOk() {
+    Long organizationId = 1L;
+    String iuv = "iuv";
+    UserInfo loggedUser = new UserInfo();
+    loggedUser.setMappedExternalUserId("mappedExternalUserId");
+    String accessToken = "TOKEN";
+
+    InstallmentViewFiltersDTO expectedInstallmentFilters = InstallmentViewFiltersDTO.builder()
+      .organizationId(organizationId)
+      .operatorExternalUserId(loggedUser.getMappedExternalUserId())
+      .iuv(iuv)
+      .debtPositionOrigins(null)
+      .build();
+
+    ClassificationFiltersDTO expectedClassificationFilters = ClassificationFiltersDTO.builder()
+      .iuv(iuv)
+      .build();
+
+    PagedInstallmentView installments = podamFactory.manufacturePojo(PagedInstallmentView.class);
+    PagedModelClassification classifications = podamFactory.manufacturePojo(PagedModelClassification.class);
+
+    DashboardByIuv expected = new DashboardByIuv();
+
+    try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
+      authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)).thenAnswer(a -> null);
+
+      when(installmentRetrieverServiceMock.getInstallments(expectedInstallmentFilters, Pageable.ofSize(10), loggedUser, accessToken))
+        .thenReturn(installments);
+
+      when(classificationRetrieverServiceMock.getClassifications(organizationId, expectedClassificationFilters, Pageable.ofSize(10), loggedUser, accessToken))
+        .thenReturn(classifications);
+
+      when(dashboardMapperMock.mapToDashboardByIuv(installments, classifications))
+        .thenReturn(expected);
+
+      DashboardByIuv result = dashboardService.getDashboardByIuv(organizationId, iuv, loggedUser, accessToken);
 
       assertSame(expected, result);
     }

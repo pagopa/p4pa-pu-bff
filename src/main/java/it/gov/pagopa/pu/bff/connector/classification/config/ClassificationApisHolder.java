@@ -17,6 +17,7 @@ public class ClassificationApisHolder {
   private final TreasuryViewSearchControllerApi treasuryViewSearchControllerApi;
   private final TreasurySearchControllerApi treasurySearchControllerApi;
   private final ClassificationsApi classificationsApi;
+  private final ClassificationSearchControllerApi classificationSearchControllerApi;
   private final AssessmentsRegistrySearchControllerApi assessmentsRegistrySearchControllerApi;
   private final AssessmentsRegistryEntityControllerApi assessmentsRegistryEntityControllerApi;
   private final AssessmentsRegistryApi assessmentsRegistryApi;
@@ -45,6 +46,7 @@ public class ClassificationApisHolder {
     this.treasuryViewSearchControllerApi = new TreasuryViewSearchControllerApi(apiClient);
     this.treasurySearchControllerApi = new TreasurySearchControllerApi(apiClient);
     this.classificationsApi = new ClassificationsApi(apiClient);
+    this.classificationSearchControllerApi = new ClassificationSearchControllerApi((apiClient));
     this.assessmentsRegistrySearchControllerApi = new AssessmentsRegistrySearchControllerApi(apiClient);
     this.assessmentsControllerApi = new AssessmentsControllerApi(apiClient);
     this.assessmentsRegistryEntityControllerApi = new AssessmentsRegistryEntityControllerApi(apiClient);
@@ -79,6 +81,10 @@ public class ClassificationApisHolder {
 
   public ClassificationsApi getClassificationsApi(String accessToken) {
     return getApi(accessToken, classificationsApi);
+  }
+
+  public ClassificationSearchControllerApi getClassificationSearchControllerApi(String accessToken) {
+    return getApi(accessToken, classificationSearchControllerApi);
   }
 
   public AssessmentsRegistrySearchControllerApi getAssessmentsRegistrySearchControllerApi(String accessToken) {

@@ -2,6 +2,7 @@ package it.gov.pagopa.pu.bff.controller;
 
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.dto.generated.DashboardByFc;
+import it.gov.pagopa.pu.bff.dto.generated.DashboardByIuv;
 import it.gov.pagopa.pu.bff.security.SecurityUtilsTest;
 import it.gov.pagopa.pu.bff.service.dashboard.DashboardService;
 import it.gov.pagopa.pu.bff.util.TestUtils;
@@ -65,6 +66,27 @@ class DashboardControllerTest {
 
     ResponseEntity<DashboardByFc> response = dashboardController.getDashboardByFiscalCode(
       organizationId, fiscalCode);
+
+    Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
+    Assertions.assertNotNull(response.getBody());
+    Assertions.assertSame(expected, response.getBody());
+  }
+
+  @Test
+  void givenCorrectRequestWhenGetDashboardByIuvThenOk() {
+    Long organizationId = 1L;
+    String iuv = "iuv";
+
+    DashboardByIuv expected = podamFactory.manufacturePojo(
+      DashboardByIuv.class);
+
+    Mockito.when(
+        dashboardServiceMock.getDashboardByIuv(organizationId,
+          iuv, loggedUser, accessToken))
+      .thenReturn(expected);
+
+    ResponseEntity<DashboardByIuv> response = dashboardController.getDashboardByIuv(
+      organizationId, iuv);
 
     Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
     Assertions.assertNotNull(response.getBody());

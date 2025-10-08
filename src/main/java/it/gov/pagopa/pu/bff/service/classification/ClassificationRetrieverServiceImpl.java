@@ -224,12 +224,12 @@ public class ClassificationRetrieverServiceImpl implements ClassificationRetriev
   private static Set<ClassificationsEnum> getExcludedClassificationsEnums(Organization organization) {
     Set<ClassificationsEnum> excludedEnums = new HashSet<>();
 
-    if (Boolean.FALSE.equals(organization.getFlagPaymentNotification())) {
+    if (!organization.getFlagPaymentNotification()) {
       excludedEnums.add(ClassificationsEnum.RT_NO_IUD);
       excludedEnums.add(ClassificationsEnum.IUD_NO_RT);
     }
 
-    if (Boolean.FALSE.equals(organization.getFlagTreasury())) {
+    if (!organization.getFlagTreasury()) {
       excludedEnums.add(ClassificationsEnum.RT_TES);
       excludedEnums.add(ClassificationsEnum.RT_IUF_TES);
       excludedEnums.add(ClassificationsEnum.IUF_NO_TES);

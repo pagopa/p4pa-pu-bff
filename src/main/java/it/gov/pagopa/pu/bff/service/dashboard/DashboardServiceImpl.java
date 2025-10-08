@@ -10,16 +10,10 @@ import it.gov.pagopa.pu.bff.mapper.DashboardMapper;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
 import it.gov.pagopa.pu.bff.service.classification.ClassificationRetrieverService;
 import it.gov.pagopa.pu.bff.service.installment.InstallmentRetrieverService;
-import it.gov.pagopa.pu.classification.dto.generated.ClassificationsEnum;
 import it.gov.pagopa.pu.classification.dto.generated.PagedModelClassification;
-import it.gov.pagopa.pu.organization.dto.generated.Organization;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor

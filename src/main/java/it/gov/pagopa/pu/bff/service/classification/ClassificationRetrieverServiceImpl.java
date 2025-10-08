@@ -212,7 +212,7 @@ public class ClassificationRetrieverServiceImpl implements ClassificationRetriev
 
     return Arrays.stream(ClassificationsEnum.values())
       .filter(label -> !excludedLabels.contains(label))
-      .collect(Collectors.toList());
+      .toList();
   }
 
   public static Set<String> getExcludedLabels(Organization organization) {

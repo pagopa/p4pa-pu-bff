@@ -12377,7 +12377,7 @@
             "format" : "int64"
           }
         },
-        "required" : [ "amountCents", "debtPositionDescription", "debtPositionId", "debtPositionTypeOrgDescription", "debtor", "installmentId", "iuv", "status" ]
+        "required" : [ "amountCents", "debtPositionId", "debtPositionTypeOrgDescription", "debtor", "installmentId", "iuv", "status" ]
       },
       "InstallmentRegistry" : {
         "type" : "object",

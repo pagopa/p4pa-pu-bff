@@ -64,14 +64,14 @@ public class ReceiptRetrieverServiceImpl implements ReceiptRetrieverService {
                                            String accessToken) {
     AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser);
     return receiptDetailDTOMapper.mapToReceiptDetailDTO(receiptService.getReceiptDetail(receiptId,
-      loggedUser.getMappedExternalUserId(), accessToken));
+      loggedUser.getMappedExternalUserId(), organizationId, accessToken));
   }
 
   @Override
   public FileResourceDTO getReceiptPdf(Long organizationId, Long receiptId, UserInfo loggedUser, String accessToken) {
     AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser);
     it.gov.pagopa.pu.debtpositions.dto.generated.ReceiptDetailDTO receiptDetail = receiptService.getReceiptDetail(receiptId,
-            loggedUser.getMappedExternalUserId(), accessToken);
+            loggedUser.getMappedExternalUserId(), organizationId, accessToken);
     if(receiptDetail==null){
       throw new ResourceNotFoundException("Receipt with ID "+receiptId+" not found");
     }

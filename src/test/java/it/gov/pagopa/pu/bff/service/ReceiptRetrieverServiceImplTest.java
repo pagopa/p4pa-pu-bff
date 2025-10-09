@@ -294,7 +294,7 @@ class ReceiptRetrieverServiceImplTest {
     try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
       authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)).thenAnswer(a -> null);
 
-      Mockito.when(receiptServiceMock.getReceiptDetail(receiptId, loggedUser.getMappedExternalUserId(), accessToken))
+      Mockito.when(receiptServiceMock.getReceiptDetail(receiptId, loggedUser.getMappedExternalUserId(), organizationId, accessToken))
         .thenReturn(receiptDetailDTO);
       Mockito.when(receiptDetailDTOMapperMock.mapToReceiptDetailDTO(receiptDetailDTO))
         .thenReturn(expectedResult);
@@ -306,7 +306,7 @@ class ReceiptRetrieverServiceImplTest {
 
       authorizationServiceMockedStatic.verify(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser));
       Mockito.verify(receiptServiceMock).getReceiptDetail(receiptId,
-        loggedUser.getMappedExternalUserId(), accessToken);
+        loggedUser.getMappedExternalUserId(), organizationId, accessToken);
       Mockito.verify(receiptDetailDTOMapperMock).mapToReceiptDetailDTO(receiptDetailDTO);
     }
   }
@@ -349,7 +349,7 @@ class ReceiptRetrieverServiceImplTest {
     try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
       authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)).thenAnswer(a -> null);
 
-      Mockito.when(receiptServiceMock.getReceiptDetail(receiptId, loggedUser.getMappedExternalUserId(), accessToken))
+      Mockito.when(receiptServiceMock.getReceiptDetail(receiptId, loggedUser.getMappedExternalUserId(), organizationId, accessToken))
               .thenReturn(receiptDetailDTO);
       Mockito.when(organizationServiceMock.getOrganizationByOrganizationId(organizationId,accessToken)).thenReturn(organization);
       Mockito.when(receiptFileServiceMock.generateReceiptPdf(receiptDetailDTO,organization)).thenReturn(pdfBytes);
@@ -375,7 +375,7 @@ class ReceiptRetrieverServiceImplTest {
     try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
       authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)).thenAnswer(a -> null);
 
-      Mockito.when(receiptServiceMock.getReceiptDetail(receiptId, loggedUser.getMappedExternalUserId(), accessToken))
+      Mockito.when(receiptServiceMock.getReceiptDetail(receiptId, loggedUser.getMappedExternalUserId(), organizationId, accessToken))
               .thenReturn(receiptDetailDTO);
       Mockito.when(organizationServiceMock.getOrganizationByOrganizationId(organizationId,accessToken)).thenReturn(null);
 
@@ -397,7 +397,7 @@ class ReceiptRetrieverServiceImplTest {
     try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
       authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)).thenAnswer(a -> null);
 
-      Mockito.when(receiptServiceMock.getReceiptDetail(receiptId, loggedUser.getMappedExternalUserId(), accessToken))
+      Mockito.when(receiptServiceMock.getReceiptDetail(receiptId, loggedUser.getMappedExternalUserId(), organizationId, accessToken))
               .thenReturn(null);
 
       Assertions.assertThrows(ResourceNotFoundException.class,()-> receiptViewService.getReceiptPdf(organizationId, receiptId, loggedUser, accessToken));

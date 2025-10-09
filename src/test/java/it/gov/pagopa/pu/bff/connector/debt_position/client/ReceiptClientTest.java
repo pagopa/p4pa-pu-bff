@@ -102,14 +102,15 @@ class ReceiptClientTest {
     Long receiptId = 123L;
     String operatorExternalUserId = "operatorExternalUserId";
     String accessToken = "ACCESSTOKEN";
+    Long organizationId = 1L;
     ReceiptDetailDTO expectedResult = new ReceiptDetailDTO();
 
     when(debtPositionApisHolderMock.getReceiptApi(accessToken))
       .thenReturn(receiptApiMock);
-    when(receiptApiMock.getReceiptDetail(receiptId,operatorExternalUserId))
+    when(receiptApiMock.getReceiptDetail(receiptId, operatorExternalUserId, organizationId))
       .thenReturn(expectedResult);
 
-    ReceiptDetailDTO result = receiptClient.getReceiptDetail(receiptId, operatorExternalUserId, accessToken);
+    ReceiptDetailDTO result = receiptClient.getReceiptDetail(receiptId, operatorExternalUserId, organizationId, accessToken);
 
     assertSame(expectedResult, result);
   }
@@ -118,14 +119,15 @@ class ReceiptClientTest {
   void givenExceptionWhenGetReceiptDetailThenReturnNull() {
     Long receiptId = 123L;
     String operatorExternalUserId = "operatorExternalUserId";
+    Long organizationId = 1L;
     String accessToken = "ACCESSTOKEN";
 
     when(debtPositionApisHolderMock.getReceiptApi(accessToken))
       .thenReturn(receiptApiMock);
-    when(receiptApiMock.getReceiptDetail(receiptId,operatorExternalUserId))
+    when(receiptApiMock.getReceiptDetail(receiptId, operatorExternalUserId, organizationId))
       .thenThrow(HttpClientErrorException.create(HttpStatus.NOT_FOUND, "NotFound", null, null, null));
 
-    ReceiptDetailDTO result = receiptClient.getReceiptDetail(receiptId, operatorExternalUserId, accessToken);
+    ReceiptDetailDTO result = receiptClient.getReceiptDetail(receiptId, operatorExternalUserId, organizationId, accessToken);
 
     Assertions.assertNull(result);
   }

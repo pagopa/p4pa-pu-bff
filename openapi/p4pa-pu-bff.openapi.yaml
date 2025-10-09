@@ -5019,6 +5019,10 @@ components:
           type: string
         flagManualGeneration:
           type: boolean
+        name:
+          type: string
+        familyName:
+          type: string
     PagedAssessmentsExtendedDTO:
       type: object
       required:

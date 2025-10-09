@@ -13877,6 +13877,12 @@
           },
           "descriptionDebtPositionTypeOrgCode" : {
             "type" : "string"
+          },
+          "name" : {
+            "type" : "string"
+          },
+          "familyName" : {
+            "type" : "string"
           }
         },
         "required" : [ "assessmentName", "debtPositionTypeOrgCode", "flagManualGeneration", "operatorExternalUserId", "organizationId", "printed", "status" ]
@@ -13936,6 +13942,12 @@
           },
           "flagManualGeneration" : {
             "type" : "boolean"
+          },
+          "name" : {
+            "type" : "string"
+          },
+          "familyName" : {
+            "type" : "string"
           }
         },
         "required" : [ "assessmentId", "assessmentsName", "debtPositionTypeOrgCode", "debtPositionTypeOrgDescription", "flagManualGeneration", "pagedAssessmentsRowsDetail", "status" ]

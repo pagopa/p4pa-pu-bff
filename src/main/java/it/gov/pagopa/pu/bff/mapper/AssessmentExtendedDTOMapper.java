@@ -32,6 +32,8 @@ public interface AssessmentExtendedDTOMapper {
      }).toList();
    }
 
+  @Mapping(target = "name")
+  @Mapping(target = "familyName")
   AssessmentsExtendedDTO map(Assessments assessments);
 }
 

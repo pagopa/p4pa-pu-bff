@@ -15,4 +15,6 @@ import lombok.experimental.SuperBuilder;
 public class AssessmentsExtendedDTO extends Assessments {
 
   private String descriptionDebtPositionTypeOrgCode;
+  private String name;
+  private String familyName;
 }

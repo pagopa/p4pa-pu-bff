@@ -32,9 +32,11 @@ import org.springframework.security.authorization.AuthorizationDeniedException;
 import uk.co.jemos.podam.api.PodamFactory;
 import uk.co.jemos.podam.api.PodamFactoryImpl;
 
+import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 @ExtendWith(MockitoExtension.class)
@@ -365,6 +367,188 @@ class AssessmentsRetrieverServiceImplTest {
       Assertions.assertEquals("Mario", resultDto.getName());
       Assertions.assertEquals("Rossi", resultDto.getFamilyName());
     }
+  }
+
+  @Test
+  void givenAuthzServiceThrowsExceptionWhenGetPagedAssessmentsExtendedDTOThenLogsWarningAndSkipsUserInfo() {
+    UserInfo loggedUser = new UserInfo();
+    loggedUser.setUserId("user-123");
+    loggedUser.setMappedExternalUserId("mappedExternalUserId");
+
+    String accessToken = "accessToken";
+
+    AssessmentsFiltersDTO filters = AssessmentsFiltersDTO.builder()
+      .organizationId(1L)
+      .build();
+
+    Assessments assessment = new Assessments();
+    assessment.setAssessmentId(123L);
+    assessment.setDebtPositionTypeOrgCode("CODE1");
+    assessment.setOperatorExternalUserId("operator-123");
+
+    AssessmentsExtendedDTO dto = new AssessmentsExtendedDTO();
+    dto.setOperatorExternalUserId("operator-123");
+    dto.setAssessmentId(123L);
+
+    PagedAssessmentsView pagedView = PagedAssessmentsView.builder()
+      .content(List.of(assessment))
+      .totalElements(1L)
+      .totalPages(1L)
+      .size(1L)
+      .number(0)
+      .build();
+
+    PagedAssessmentsExtendedDTO pagedDto = PagedAssessmentsExtendedDTO.builder()
+      .content(List.of(dto))
+      .totalElements(1L)
+      .totalPages(1L)
+      .size(1L)
+      .number(0)
+      .build();
+
+    DebtPositionTypeOrg debtPositionTypeOrg = new DebtPositionTypeOrg();
+    debtPositionTypeOrg.setCode("CODE1");
+    debtPositionTypeOrg.setDescription("Test Description");
+
+    try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
+      authorizationServiceMockedStatic.when(() ->
+        AuthorizationService.validateUserForOrganizationId(filters.getOrganizationId(), loggedUser)
+      ).thenAnswer(a -> null);
+
+      Mockito.when(debtPositionTypeOrgServiceMock.findDebtPositionTypeOrg(
+          filters.getOrganizationId(),
+          "CODE1",
+          loggedUser.getMappedExternalUserId(),
+          accessToken))
+        .thenReturn(debtPositionTypeOrg);
+
+      Mockito.when(assessmentsServiceMock.findPagedAssessmentsView(filters, Pageable.ofSize(1), accessToken))
+        .thenReturn(pagedView);
+
+      Mockito.when(assessmentExtendedDTOMapperMock.mapToPagedAssessmentsExtendedDTO(
+          pagedView, Map.of("CODE1", "Test Description")))
+        .thenReturn(pagedDto);
+
+      Mockito.when(authzServiceMock.getUserInfoFromMappedExternaUserId("operator-123", accessToken))
+        .thenThrow(new RuntimeException("Simulated failure"));
+
+      PagedAssessmentsExtendedDTO result = assessmentsRetrieverService.getPagedAssessmentsExtendedDTO(
+        filters, "CODE1", Pageable.ofSize(1), loggedUser, accessToken);
+
+      Assertions.assertNotNull(result);
+      Assertions.assertEquals(1, result.getContent().size());
+      AssessmentsExtendedDTO resultDto = result.getContent().getFirst();
+
+      Assertions.assertNull(resultDto.getName());
+      Assertions.assertNull(resultDto.getFamilyName());
+
+      Mockito.verify(authzServiceMock, Mockito.times(1))
+        .getUserInfoFromMappedExternaUserId("operator-123", accessToken);
+    }
+  }
+
+  @Test
+  void givenAuthzServiceReturnsNullWhenGetPagedAssessmentsExtendedDTOThenUserInfoNotSet() {
+    UserInfo loggedUser = new UserInfo();
+    loggedUser.setUserId("user-123");
+    loggedUser.setMappedExternalUserId("mappedExternalUserId");
+
+    String accessToken = "accessToken";
+
+    AssessmentsFiltersDTO filters = AssessmentsFiltersDTO.builder()
+      .organizationId(1L)
+      .build();
+
+    Assessments assessment = new Assessments();
+    assessment.setAssessmentId(123L);
+    assessment.setDebtPositionTypeOrgCode("CODE1");
+    assessment.setOperatorExternalUserId("operator-123");
+
+    AssessmentsExtendedDTO dto = new AssessmentsExtendedDTO();
+    dto.setOperatorExternalUserId("operator-123");
+    dto.setAssessmentId(123L);
+
+    PagedAssessmentsView pagedView = PagedAssessmentsView.builder()
+      .content(List.of(assessment))
+      .totalElements(1L)
+      .totalPages(1L)
+      .size(1L)
+      .number(0)
+      .build();
+
+    PagedAssessmentsExtendedDTO pagedDto = PagedAssessmentsExtendedDTO.builder()
+      .content(List.of(dto))
+      .totalElements(1L)
+      .totalPages(1L)
+      .size(1L)
+      .number(0)
+      .build();
+
+    DebtPositionTypeOrg debtPositionTypeOrg = new DebtPositionTypeOrg();
+    debtPositionTypeOrg.setCode("CODE1");
+    debtPositionTypeOrg.setDescription("Test Description");
+
+    try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
+      authorizationServiceMockedStatic.when(() ->
+        AuthorizationService.validateUserForOrganizationId(filters.getOrganizationId(), loggedUser)
+      ).thenAnswer(a -> null);
+
+      Mockito.when(debtPositionTypeOrgServiceMock.findDebtPositionTypeOrg(
+          filters.getOrganizationId(),
+          "CODE1",
+          loggedUser.getMappedExternalUserId(),
+          accessToken))
+        .thenReturn(debtPositionTypeOrg);
+
+      Mockito.when(assessmentsServiceMock.findPagedAssessmentsView(filters, Pageable.ofSize(1), accessToken))
+        .thenReturn(pagedView);
+
+      Mockito.when(assessmentExtendedDTOMapperMock.mapToPagedAssessmentsExtendedDTO(
+          pagedView, Map.of("CODE1", "Test Description")))
+        .thenReturn(pagedDto);
+
+      Mockito.when(authzServiceMock.getUserInfoFromMappedExternaUserId("operator-123", accessToken))
+        .thenReturn(null);
+
+      PagedAssessmentsExtendedDTO result = assessmentsRetrieverService.getPagedAssessmentsExtendedDTO(
+        filters, "CODE1", Pageable.ofSize(1), loggedUser, accessToken);
+
+      Assertions.assertNotNull(result);
+      Assertions.assertEquals(1, result.getContent().size());
+      AssessmentsExtendedDTO resultDto = result.getContent().getFirst();
+
+      Assertions.assertNull(resultDto.getName());
+      Assertions.assertNull(resultDto.getFamilyName());
+
+      Mockito.verify(authzServiceMock, Mockito.times(1))
+        .getUserInfoFromMappedExternaUserId("operator-123", accessToken);
+    }
+  }
+
+  @Test
+  void givenAuthzServiceThrowsExceptionWhenEnrichUserInfoByMappedExternalUserIdThenLogsWarningAndSkipsConsumer() throws Exception {
+    String mappedExternalUserId = "operator-001";
+    String accessToken = "accessToken";
+
+    Mockito.when(authzServiceMock.getUserInfoFromMappedExternaUserId(mappedExternalUserId, accessToken))
+      .thenThrow(new RuntimeException("Simulated failure"));
+
+    @SuppressWarnings("unchecked")
+    Consumer<UserInfo> consumerMock = Mockito.mock(Consumer.class);
+
+    Method method = AssessmentsRetrieverServiceImpl.class.getDeclaredMethod(
+      "enrichUserInfoByMappedExternalUserId",
+      String.class,
+      String.class,
+      Consumer.class
+    );
+    method.setAccessible(true);
+
+    method.invoke(assessmentsRetrieverService, mappedExternalUserId, accessToken, consumerMock);
+
+    Mockito.verify(authzServiceMock, Mockito.times(1))
+      .getUserInfoFromMappedExternaUserId(mappedExternalUserId, accessToken);
+    Mockito.verifyNoInteractions(consumerMock);
   }
 
   @Test

@@ -48,12 +48,13 @@ class ReceiptServiceTest {
     String accessToken = "ACCESSTOKEN";
     Long receiptId = 1L;
     String operatorExternalUserId = "operatorExternalUserId";
+    Long organizationId = 1L;
     ReceiptDetailDTO expectedResult = new ReceiptDetailDTO();
 
-    when(client.getReceiptDetail(receiptId,operatorExternalUserId,accessToken))
+    when(client.getReceiptDetail(receiptId, operatorExternalUserId, organizationId, accessToken))
       .thenReturn(expectedResult);
 
-    ReceiptDetailDTO result = service.getReceiptDetail(receiptId, operatorExternalUserId, accessToken);
+    ReceiptDetailDTO result = service.getReceiptDetail(receiptId, operatorExternalUserId, organizationId, accessToken);
 
     assertSame(expectedResult, result);
   }

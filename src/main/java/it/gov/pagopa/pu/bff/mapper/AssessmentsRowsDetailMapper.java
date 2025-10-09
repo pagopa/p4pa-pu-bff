@@ -19,8 +19,6 @@ public interface AssessmentsRowsDetailMapper {
   @Mapping(target = "debtPositionTypeOrgDescription", source = "debtPositionTypeOrgDescription")
   @Mapping(target = "updateOperatorExternalId", source = "assessments.updateOperatorExternalId")
   @Mapping(target = "flagManualGeneration", source = "assessments.flagManualGeneration")
-  @Mapping(target = "name")
-  @Mapping(target = "familyName")
   AssessmentsRowsDetail map(PagedModelAssessmentsDetail pagedModelAssessmentsDetail, Assessments assessments, String debtPositionTypeOrgDescription);
 
   default PagedAssessmentsRowsDetail mapToPagedAssessmentsRowsDetail(PagedModelAssessmentsDetail pagedModelAssessmentsDetail) {

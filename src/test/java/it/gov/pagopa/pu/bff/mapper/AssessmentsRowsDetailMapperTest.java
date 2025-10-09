@@ -34,8 +34,6 @@ class AssessmentsRowsDetailMapperTest {
     assertEquals(assessments.getFlagManualGeneration(), result.getFlagManualGeneration());
     assertEquals(assessments.getAssessmentId(), result.getAssessmentId());
     assertEquals(assessments.getDebtPositionTypeOrgCode(), result.getDebtPositionTypeOrgCode());
-    assertEquals("", result.getName());
-    assertEquals("", result.getFamilyName());
-    TestUtils.checkNotNullFields(result);
+    TestUtils.checkNotNullFields(result, "name", "familyName");
   }
 }

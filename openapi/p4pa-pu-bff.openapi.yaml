@@ -3250,8 +3250,8 @@ paths:
           description: Conflict
         '500':
           description: Internal Server Error
-  /organization/{organizationId}/clients/{clientId}/client-secret:
-    put:
+  /organization/{organizationId}/clients/{clientId}/generate:
+    post:
       tags:
         - Clients
       operationId: generateClientSecret

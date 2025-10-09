@@ -30,7 +30,8 @@ public interface PagedDebtPositionTypeOrgDTOMapper {
             dpto,
             debtPositionTypes!=null?debtPositionTypes.get(dpto.getDebtPositionTypeId()):null,
             null,
-            null
+            null,
+      null
     );
   }
 }

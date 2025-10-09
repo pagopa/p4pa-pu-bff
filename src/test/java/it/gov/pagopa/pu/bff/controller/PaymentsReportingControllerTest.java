@@ -62,6 +62,7 @@ class PaymentsReportingControllerTest {
   void givenCorrectRequestWhenGetPaymentsReportingThenOk() {
     long organizationId = 1L;
     String iuf = "IUF123";
+    String iuv = "IUV123";
     String regulationUniqueIdentifier = "RUI123";
     LocalDate regulationDateFrom = LocalDate.now().minusDays(10);
     LocalDate regulationDateTo = LocalDate.now();
@@ -81,7 +82,9 @@ class PaymentsReportingControllerTest {
       .flowDateTime(OffsetDateTime.now())
       .totalPayments(100L)
       .iuf(iuf)
+      .iuv(iuv)
       .totalAmountCents(1000L)
+      .iuv("iuv")
       .build()));
     expectedResult.setSize(10L);
     expectedResult.setTotalElements(1L);
@@ -89,10 +92,10 @@ class PaymentsReportingControllerTest {
     expectedResult.setNumber(0L);
 
     Mockito.when(paymentsReportingRetrieverServiceMock.getPaymentsReporting(organizationId, iuf, regulationUniqueIdentifier, regulationDateFilter,
-        pageable, loggedUser, accessToken))
+      iuv, pageable, loggedUser, accessToken))
       .thenReturn(expectedResult);
 
-    ResponseEntity<PagedPaymentsReportingView> response = paymentsReportingController.getPaymentsReporting(organizationId, iuf, regulationUniqueIdentifier, regulationDateTimeFrom, regulationDateTimeTo, pageable);
+    ResponseEntity<PagedPaymentsReportingView> response = paymentsReportingController.getPaymentsReporting(organizationId, iuf, iuv, regulationUniqueIdentifier, regulationDateTimeFrom, regulationDateTimeTo, pageable);
 
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertNotNull(response.getBody());

@@ -12,12 +12,12 @@ import it.gov.pagopa.pu.bff.dto.generated.PagedInstallmentView;
 import it.gov.pagopa.pu.bff.security.SecurityUtilsTest;
 import it.gov.pagopa.pu.bff.service.installment.InstallmentRetrieverService;
 import it.gov.pagopa.pu.bff.util.TestUtils;
+import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionOrigin;
 import it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentDetailDTO;
 import it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentStatus;
 import it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentView;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
-import java.util.Collections;
 import java.util.List;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -73,9 +73,13 @@ class InstallmentControllerTest {
     OffsetDateTime dueDateTimeFrom = OffsetDateTime.now().minusDays(10);
     OffsetDateTime dueDateTimeTo = OffsetDateTime.now();
 
-    LocalDateIntervalFilter paymentDateFilter = new LocalDateIntervalFilter(dueDateTimeFrom.toLocalDate(), dueDateTimeTo.toLocalDate());
+    LocalDateIntervalFilter paymentDateFilter = new LocalDateIntervalFilter(
+      dueDateTimeFrom.toLocalDate(), dueDateTimeTo.toLocalDate());
 
-    InstallmentViewFiltersDTO filtersDTO = new InstallmentViewFiltersDTO(organizationId, loggedUser.getMappedExternalUserId(), paymentDateFilter, iuv, fiscalCode, Collections.emptyList(), debtPositionTypeOrgId);
+    InstallmentViewFiltersDTO filtersDTO = new InstallmentViewFiltersDTO(
+      organizationId, loggedUser.getMappedExternalUserId(), paymentDateFilter,
+      iuv, fiscalCode, List.of(
+      DebtPositionOrigin.ORDINARY), debtPositionTypeOrgId);
 
     PagedInstallmentView expectedResult = new PagedInstallmentView();
     expectedResult.setContent(List.of(InstallmentView.builder()
@@ -96,10 +100,13 @@ class InstallmentControllerTest {
     expectedResult.setTotalPages(1L);
     expectedResult.setNumber(0L);
 
-    when(installmentRetrieverServiceMock.getInstallments(filtersDTO, pageable, loggedUser, accessToken))
+    when(installmentRetrieverServiceMock.getInstallments(filtersDTO, pageable,
+      loggedUser, accessToken))
       .thenReturn(expectedResult);
 
-    ResponseEntity<PagedInstallmentView> response = installmentController.getInstallments(organizationId, dueDateTimeFrom, dueDateTimeTo, iuv, fiscalCode, debtPositionTypeOrgId, pageable);
+    ResponseEntity<PagedInstallmentView> response = installmentController.getInstallments(
+      organizationId, dueDateTimeFrom, dueDateTimeTo, iuv, fiscalCode, List.of(
+        DebtPositionOrigin.ORDINARY), debtPositionTypeOrgId, pageable);
 
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertNotNull(response.getBody());

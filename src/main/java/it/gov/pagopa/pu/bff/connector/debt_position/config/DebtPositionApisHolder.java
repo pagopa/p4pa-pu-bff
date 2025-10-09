@@ -32,6 +32,8 @@ public class DebtPositionApisHolder {
   private final DebtPositionTypeSearchControllerApi debtPositionTypeSearchControllerApi;
   private final DebtPositionTypeOrgOperatorsDptoCountViewSearchControllerApi debtPositionTypeOrgOperatorsDptoCountViewSearchControllerApi;
   private final DebtPositionTypeOrgOperatorsApi debtPositionTypeOrgOperatorsApi;
+  private final SpontaneousFormSearchControllerApi spontaneousFormSearchControllerApi;
+  private final SpontaneousFormEntityControllerApi spontaneousFormEntityControllerApi;
   private final ThreadLocal<String> bearerTokenHolder = new ThreadLocal<>();
 
   public DebtPositionApisHolder(
@@ -68,6 +70,8 @@ public class DebtPositionApisHolder {
     this.debtPositionTypeSearchControllerApi = new DebtPositionTypeSearchControllerApi(apiClient);
     this.debtPositionTypeOrgOperatorsDptoCountViewSearchControllerApi = new DebtPositionTypeOrgOperatorsDptoCountViewSearchControllerApi(apiClient);
     this.debtPositionTypeOrgOperatorsApi = new DebtPositionTypeOrgOperatorsApi(apiClient);
+    this.spontaneousFormSearchControllerApi = new SpontaneousFormSearchControllerApi(apiClient);
+    this.spontaneousFormEntityControllerApi = new SpontaneousFormEntityControllerApi(apiClient);
   }
 
   @PreDestroy
@@ -189,6 +193,20 @@ public class DebtPositionApisHolder {
 
   public DebtPositionTypeOrgOperatorsApi getDebtPositionTypeOrgOperatorsApi(String accessToken) {
     return getApi(accessToken, debtPositionTypeOrgOperatorsApi);
+  }
+
+  /**
+   * It will return a {@link SpontaneousFormSearchControllerApi} instrumented with the provided accessToken. Use null if auth is not required
+   */
+  public SpontaneousFormSearchControllerApi getSpontaneousFormSearchControllerApi(String accessToken) {
+    return getApi(accessToken, spontaneousFormSearchControllerApi);
+  }
+
+  /**
+   * It will return a {@link SpontaneousFormEntityControllerApi} instrumented with the provided accessToken. Use null if auth is not required
+   */
+  public SpontaneousFormEntityControllerApi getSpontaneousFormEntityControllerApi(String accessToken) {
+    return getApi(accessToken, spontaneousFormEntityControllerApi);
   }
 
   private <T extends BaseApi> T getApi(String accessToken, T api) {

@@ -1,21 +1,23 @@
 package it.gov.pagopa.pu.bff.mapper;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+
 import it.gov.pagopa.pu.bff.dto.TreasuredClassificationExtendedDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedTreasuredClassificationExtendedDTO;
+import it.gov.pagopa.pu.bff.enums.ClassificationStatus;
 import it.gov.pagopa.pu.classification.dto.generated.ClassificationsEnum;
 import it.gov.pagopa.pu.classification.dto.generated.PagedTreasuredClassification;
 import it.gov.pagopa.pu.classification.dto.generated.TreasuredClassificationView;
 import it.gov.pagopa.pu.organization.dto.generated.Organization;
+import java.util.List;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.mapstruct.factory.Mappers;
-
-import java.util.List;
-import java.util.stream.Stream;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class TreasuredClassificationExtendedDTOMapperTest {
 
@@ -24,7 +26,7 @@ class TreasuredClassificationExtendedDTOMapperTest {
 
   @ParameterizedTest
   @MethodSource("mapCases")
-  void givenViewWithLabelWhenMapThenStatusAndFlagsMappedCorrectly(ClassificationsEnum label, String expectedStatus) {
+  void givenViewWithLabelWhenMapThenStatusAndFlagsMappedCorrectly(ClassificationsEnum label, ClassificationStatus expectedStatus) {
     TreasuredClassificationView view = new TreasuredClassificationView();
     view.setClassificationId(1L);
     view.setOrganizationId(99L);
@@ -47,22 +49,22 @@ class TreasuredClassificationExtendedDTOMapperTest {
 
   static Stream<Arguments> mapCases() {
     return Stream.of(
-      Arguments.of(ClassificationsEnum.IUD_RT_IUF, "INFO"),
-      Arguments.of(ClassificationsEnum.RT_IUF, "INFO"),
-      Arguments.of(ClassificationsEnum.RT_TES, "INFO"),
-      Arguments.of(ClassificationsEnum.IUD_RT_IUF_TES, "INFO"),
-      Arguments.of(ClassificationsEnum.RT_IUF_TES, "INFO"),
-      Arguments.of(ClassificationsEnum.RT_NO_IUF, "WARNING"),
-      Arguments.of(ClassificationsEnum.RT_NO_IUD, "WARNING"),
-      Arguments.of(ClassificationsEnum.IUF_NO_TES, "WARNING"),
-      Arguments.of(ClassificationsEnum.DOPPI, "ERROR"),
-      Arguments.of(ClassificationsEnum.IUV_NO_RT, "ERROR"),
-      Arguments.of(ClassificationsEnum.TES_NO_IUF_OR_IUV, "ERROR"),
-      Arguments.of(ClassificationsEnum.IUF_TES_DIV_IMP, "ERROR"),
-      Arguments.of(ClassificationsEnum.IUD_NO_RT, "ERROR"),
-      Arguments.of(ClassificationsEnum.TES_NO_MATCH, "ERROR"),
-      Arguments.of(ClassificationsEnum.UNKNOWN, "ERROR"),
-      Arguments.of(null, "ERROR")
+      Arguments.of(ClassificationsEnum.IUD_RT_IUF, ClassificationStatus.INFO),
+      Arguments.of(ClassificationsEnum.RT_IUF, ClassificationStatus.INFO),
+      Arguments.of(ClassificationsEnum.RT_TES, ClassificationStatus.INFO),
+      Arguments.of(ClassificationsEnum.IUD_RT_IUF_TES, ClassificationStatus.INFO),
+      Arguments.of(ClassificationsEnum.RT_IUF_TES, ClassificationStatus.INFO),
+      Arguments.of(ClassificationsEnum.RT_NO_IUF, ClassificationStatus.WARNING),
+      Arguments.of(ClassificationsEnum.RT_NO_IUD, ClassificationStatus.WARNING),
+      Arguments.of(ClassificationsEnum.IUF_NO_TES, ClassificationStatus.WARNING),
+      Arguments.of(ClassificationsEnum.DOPPI, ClassificationStatus.ERROR),
+      Arguments.of(ClassificationsEnum.IUV_NO_RT, ClassificationStatus.ERROR),
+      Arguments.of(ClassificationsEnum.TES_NO_IUF_OR_IUV, ClassificationStatus.ERROR),
+      Arguments.of(ClassificationsEnum.IUF_TES_DIV_IMP, ClassificationStatus.ERROR),
+      Arguments.of(ClassificationsEnum.IUD_NO_RT, ClassificationStatus.ERROR),
+      Arguments.of(ClassificationsEnum.TES_NO_MATCH, ClassificationStatus.ERROR),
+      Arguments.of(ClassificationsEnum.UNKNOWN, ClassificationStatus.ERROR),
+      Arguments.of(null, ClassificationStatus.ERROR)
     );
   }
 
@@ -87,7 +89,7 @@ class TreasuredClassificationExtendedDTOMapperTest {
 
     assertNotNull(extended);
     assertEquals(1, extended.getContent().size());
-    assertEquals("INFO", extended.getContent().get(0).getStatus());
+    assertEquals(ClassificationStatus.INFO, extended.getContent().get(0).getStatus());
     assertEquals(organization.getFlagPaymentNotification(), extended.getContent().get(0).getFlagPaymentNotification());
     assertEquals(organization.getFlagTreasury(), extended.getContent().get(0).getFlagTreasury());
     assertEquals(1L, extended.getSize());
@@ -123,7 +125,7 @@ class TreasuredClassificationExtendedDTOMapperTest {
     assertNotNull(dto);
     assertEquals(view.getClassificationId(), dto.getClassificationId());
     assertEquals(view.getOrganizationId(), dto.getOrganizationId());
-    assertEquals("INFO", dto.getStatus());
+    assertEquals(ClassificationStatus.INFO, dto.getStatus());
     assertNull(dto.getFlagPaymentNotification());
     assertNull(dto.getFlagTreasury());
   }
@@ -147,7 +149,7 @@ class TreasuredClassificationExtendedDTOMapperTest {
     assertEquals(1, extended.getContent().size());
     TreasuredClassificationExtendedDTO dto = extended.getContent().get(0);
 
-    assertEquals("ERROR", dto.getStatus());
+    assertEquals(ClassificationStatus.ERROR, dto.getStatus());
     assertNull(dto.getFlagPaymentNotification());
     assertNull(dto.getFlagTreasury());
   }

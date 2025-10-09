@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.Mockito.when;
 
 import it.gov.pagopa.pu.bff.connector.classification.client.ClassificationClient;
+import it.gov.pagopa.pu.bff.connector.classification.client.ClassificationSearchClient;
 import it.gov.pagopa.pu.bff.dto.ClassificationPaidInstallmentsFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.TreasuredClassificationFiltersDTO;
 import it.gov.pagopa.pu.classification.dto.generated.ClassificationDetailViewDTO;
@@ -23,10 +24,12 @@ class ClassificationServiceImplTest {
   @Mock
   private ClassificationClient classificationClientMock;
   private ClassificationServiceImpl classificationService;
+  @Mock
+  private ClassificationSearchClient classificationSearchClientMock;
 
   @BeforeEach
   void setUp() {
-    classificationService = new ClassificationServiceImpl(classificationClientMock);
+    classificationService = new ClassificationServiceImpl(classificationClientMock, classificationSearchClientMock);
   }
 
   @Test

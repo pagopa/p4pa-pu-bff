@@ -49,6 +49,7 @@ class PaymentsReportingViewSearchClientTest {
 
     Long organizationId = 1L;
     String iuf = "IUF123";
+    String iuv = "IUV123";
     String regulationUniqueIdentifier = "RUI123";
     LocalDate regulationDateFrom = LocalDate.now().minusDays(10);
     LocalDate regulationDateTo = LocalDate.now();
@@ -58,18 +59,19 @@ class PaymentsReportingViewSearchClientTest {
     when(classificationApisHolderMock.getPaymentsReportingViewSearchControllerApi(accessToken))
       .thenReturn(paymentsReportingViewSearchControllerApiMock);
 
-    when(paymentsReportingViewSearchControllerApiMock.crudPaymentsReportingViewFindDistinctByIufAndRegulationUniqueIdentifier(
+    when(paymentsReportingViewSearchControllerApiMock.crudPaymentsReportingViewFindDistinctByIufAndRegulationUniqueIdentifierAndIuv(
       String.valueOf(organizationId),
       iuf,
       regulationUniqueIdentifier,
       regulationDateFilter.getFrom(),
       regulationDateFilter.getTo(),
+      iuv,
       PageUtils.getPageNumber(pageable),
       PageUtils.getPageSize(pageable),
       PageUtils.getSortList(pageable)))
       .thenReturn(expectedResult);
 
-    PagedModelPaymentsReportingView result = paymentsReportingViewSearchClient.getPaymentsReporting(organizationId, iuf, regulationUniqueIdentifier, regulationDateFilter, pageable, accessToken);
+    PagedModelPaymentsReportingView result = paymentsReportingViewSearchClient.getPaymentsReporting(organizationId, iuf, regulationUniqueIdentifier, regulationDateFilter, iuv, pageable, accessToken);
 
     assertSame(expectedResult, result);
   }

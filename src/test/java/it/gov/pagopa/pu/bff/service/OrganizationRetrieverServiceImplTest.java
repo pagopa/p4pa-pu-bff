@@ -570,12 +570,14 @@ class OrganizationRetrieverServiceImplTest {
   @Test
   void givenExistingOrganizationIdWhenGetOrganizationDetailThenReturnMappedOrganizationDetailDTO() {
     Long organizationId = 123L;
+    String ipaCode = "IPA123";
+
+    Organization organization = new Organization();
+    organization.setOrganizationId(organizationId);
+    organization.setIpaCode(ipaCode);
 
     OrganizationDetailDTO orgDetail = podamFactory.manufacturePojo(OrganizationDetailDTO.class);
-
     OrganizationDetail expectedDetail = podamFactory.manufacturePojo(OrganizationDetail.class);
-
-    Organization organization = podamFactory.manufacturePojo(Organization.class);
 
     when(organizationServiceMock.getOrganizationByOrganizationId(organizationId, accessToken))
       .thenReturn(organization);
@@ -589,10 +591,31 @@ class OrganizationRetrieverServiceImplTest {
     when(organizationDetailMapperMock.mapToBffDTO(orgDetail))
       .thenReturn(expectedDetail);
 
+    DebtPositionTypeOrgCountByOrganizationId mockDptoCount = new DebtPositionTypeOrgCountByOrganizationId();
+    mockDptoCount.setOrganizationId(organizationId);
+    mockDptoCount.setActiveOrganizations(7);
+
+    CollectionModelDebtPositionTypeOrgCountByOrganizationId collectionModel = new CollectionModelDebtPositionTypeOrgCountByOrganizationId();
+    collectionModel.setEmbedded(new CollectionModelDebtPositionTypeOrgCountByOrganizationIdEmbedded());
+    collectionModel.getEmbedded().setDebtPositionTypeOrgCountByOrganizationIds(Collections.singletonList(mockDptoCount));
+
+    when(debtPositionTypeOrgServiceMock.getDebtPositionTypeOrgCountByOrganizationId(
+      List.of(organizationId), accessToken))
+      .thenReturn(collectionModel);
+
+    OperatorsPage mockOperatorsPage = new OperatorsPage();
+    mockOperatorsPage.setContent(Collections.singletonList(new OperatorDTO()));
+    mockOperatorsPage.setTotalElements(5);
+
+    when(authzServiceMock.getOrganizationOperators(ipaCode, null, null, null, 0, 1, accessToken))
+      .thenReturn(mockOperatorsPage);
+
     OrganizationDetail result = organizationService.getOrganizationDetail(organizationId, userInfo, accessToken);
 
     assertNotNull(result);
     assertEquals(expectedDetail, result);
+    assertEquals(7, result.getDebtPositionTypeOrgCount());
+    assertEquals(5, result.getOperatorsCount());
   }
 
   @Test

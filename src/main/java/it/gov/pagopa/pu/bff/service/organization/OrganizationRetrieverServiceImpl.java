@@ -134,7 +134,7 @@ public class OrganizationRetrieverServiceImpl implements OrganizationRetrieverSe
       .toList();
 
     Map<Long, Integer> dptoCountsByOrgId = getDptoCountsByOrgIdMap(accessToken, organizationIds);
-    Map<Long, OperatorsPage> allOperatorsPages = getOperatorsPageMap(pageable, accessToken, organizationList);
+    Map<Long, OperatorsPage> allOperatorsPages = getOperatorsPageMap(accessToken, organizationList);
 
     return pagedOrganizationWithDebtPositionTypeOrgAndOperatorsCountMapper.map(pagedModelOrganization, dptoCountsByOrgId, allOperatorsPages);
   }
@@ -151,7 +151,7 @@ public class OrganizationRetrieverServiceImpl implements OrganizationRetrieverSe
         DebtPositionTypeOrgCountByOrganizationId::getActiveOrganizations));
   }
 
-  private Map<Long, OperatorsPage> getOperatorsPageMap(Pageable pageable, String accessToken, List<Organization> orgList) {
+  private Map<Long, OperatorsPage> getOperatorsPageMap(String accessToken, List<Organization> orgList) {
     Map<Long, OperatorsPage> allOperatorsPages = new HashMap<>();
 
     orgList
@@ -161,8 +161,8 @@ public class OrganizationRetrieverServiceImpl implements OrganizationRetrieverSe
           null,
           null,
           null,
-          pageable.getPageNumber(),
-          pageable.getPageSize(),
+          0,
+          1,
           accessToken
         );
         allOperatorsPages.put(org.getOrganizationId(),organizationOperators);
@@ -199,7 +199,17 @@ public class OrganizationRetrieverServiceImpl implements OrganizationRetrieverSe
 
     OrganizationDetailDTO orgDetail = organizationService.getOrganizationDetail(organizationId, accessToken);
 
-    return organizationDetailMapper.mapToBffDTO(orgDetail);
+    Map<Long, Integer> dptoCountsByOrgId = getDptoCountsByOrgIdMap(accessToken, List.of(organizationId));
+    Integer debtPositionTypeOrgCount = dptoCountsByOrgId.getOrDefault(organizationId, 0);
+
+    Map<Long, OperatorsPage> operatorsPageMap = getOperatorsPageMap(accessToken, List.of(organization));
+    OperatorsPage operatorsPage = operatorsPageMap.get(organizationId);
+
+    OrganizationDetail organizationDetail = organizationDetailMapper.mapToBffDTO(orgDetail);
+    organizationDetail.setDebtPositionTypeOrgCount(debtPositionTypeOrgCount);
+    organizationDetail.setOperatorsCount(operatorsPage != null ? operatorsPage.getTotalElements() : 0);
+
+    return organizationDetail;
   }
 
   @Override

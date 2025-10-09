@@ -2,6 +2,7 @@ package it.gov.pagopa.pu.bff.connector.debt_position.client;
 
 import it.gov.pagopa.pu.bff.connector.debt_position.config.DebtPositionApisHolder;
 import it.gov.pagopa.pu.bff.dto.InstallmentViewFiltersDTO;
+import it.gov.pagopa.pu.bff.dto.LocalDateIntervalFilter;
 import it.gov.pagopa.pu.bff.util.PageUtils;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionOrigin;
 import it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentDetailDTO;
@@ -25,12 +26,14 @@ public class InstallmentClient {
   }
 
   public PagedModelInstallmentView getInstallments(InstallmentViewFiltersDTO installmentViewFiltersDTO, Pageable pageable, String accessToken) {
+    LocalDateIntervalFilter dueDate =  installmentViewFiltersDTO.getDueDate();
+
     return debtPositionApisHolder.getInstallmentViewSearchControllerApi(accessToken)
       .crudInstallmentViewsFindInstallmentsByFilters(
         installmentViewFiltersDTO.getOrganizationId(),
         installmentViewFiltersDTO.getOperatorExternalUserId(),
-        installmentViewFiltersDTO.getDueDate().getFrom(),
-        installmentViewFiltersDTO.getDueDate().getTo(),
+        dueDate != null ? dueDate.getFrom() : null,
+        dueDate != null ? dueDate.getTo() : null,
         installmentViewFiltersDTO.getIuv(),
         installmentViewFiltersDTO.getFiscalCode(),
         installmentViewFiltersDTO.getDebtPositionOrigins(),

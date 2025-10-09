@@ -99,6 +99,8 @@ class TreasuryControllerTest {
       .billDate(billDateTo)
       .iuv(iuv)
       .pspLastName(pspLastName)
+      .orgBtCode("orgBtCode")
+      .orgIstatCode("orgIstatCode")
       .build()));
     expectedResult.setSize(10L);
     expectedResult.setTotalElements(1L);

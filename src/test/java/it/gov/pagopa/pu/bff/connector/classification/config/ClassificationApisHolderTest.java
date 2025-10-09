@@ -51,7 +51,7 @@ class ClassificationApisHolderTest extends BaseApiHolderTest {
   void whenGetPaymentsReportingViewSearchControllerApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
     assertAuthenticationShouldBeSetInThreadSafeMode(
       accessToken -> classificationApisHolder.getPaymentsReportingViewSearchControllerApi(accessToken)
-        .crudPaymentsReportingViewFindDistinctByIufAndRegulationUniqueIdentifier("1", "IUF123", "RUI123", null, null, 0, 10, Collections.emptyList()),
+        .crudPaymentsReportingViewFindDistinctByIufAndRegulationUniqueIdentifierAndIuv("1", "IUF123", "RUI123", null, null, null, 0, 10, Collections.emptyList()),
       new ParameterizedTypeReference<>() {
       },
       classificationApisHolder::unload);
@@ -196,6 +196,16 @@ class ClassificationApisHolderTest extends BaseApiHolderTest {
         return voidMock;
       },
             new ParameterizedTypeReference<>() {
+      },
+      classificationApisHolder::unload);
+  }
+
+  @Test
+  void whenGetClassificationSearchControllerApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
+    assertAuthenticationShouldBeSetInThreadSafeMode(
+      accessToken -> classificationApisHolder.getClassificationSearchControllerApi(accessToken)
+        .crudClassificationsFindByFilters(1L, "iuv", List.of("code"), Collections.emptyList(), 1,1, Collections.emptyList()),
+      new ParameterizedTypeReference<>() {
       },
       classificationApisHolder::unload);
   }

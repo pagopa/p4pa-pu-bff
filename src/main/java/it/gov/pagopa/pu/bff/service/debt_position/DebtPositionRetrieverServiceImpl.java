@@ -39,7 +39,8 @@ public class DebtPositionRetrieverServiceImpl implements DebtPositionRetrieverSe
   private static final List<String> debtPositionOriginFilterList = List.of(
     DebtPositionOrigin.ORDINARY.toString(),
     DebtPositionOrigin.ORDINARY_SIL.toString(),
-    DebtPositionOrigin.SPONTANEOUS.toString()
+    DebtPositionOrigin.SPONTANEOUS.toString(),
+    DebtPositionOrigin.SPONTANEOUS_SIL.toString()
   );
 
   public DebtPositionRetrieverServiceImpl(DebtPositionService debtPositionService,

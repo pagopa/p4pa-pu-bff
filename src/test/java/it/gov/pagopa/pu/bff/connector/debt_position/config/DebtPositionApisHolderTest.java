@@ -3,6 +3,7 @@ package it.gov.pagopa.pu.bff.connector.debt_position.config;
 import it.gov.pagopa.pu.bff.connector.BaseApiHolderTest;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionStatus;
 import it.gov.pagopa.pu.debtpositions.dto.generated.ReceiptOriginType;
+import it.gov.pagopa.pu.debtpositions.dto.generated.SpontaneousForm;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -273,6 +274,16 @@ class DebtPositionApisHolderTest extends BaseApiHolderTest {
     assertAuthenticationShouldBeSetInThreadSafeMode(
       accessToken -> debtPositionApisHolder.getSpontaneousFormEntityControllerApi(accessToken)
         .crudGetSpontaneousform("1"),
+      new ParameterizedTypeReference<>() {
+      },
+      debtPositionApisHolder::unload);
+  }
+
+  @Test
+  void whenGetSpontaneousFormApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
+    assertAuthenticationShouldBeSetInThreadSafeMode(
+      accessToken -> debtPositionApisHolder.getSpontaneousFormApi(accessToken)
+        .createSpontaneousForm(new SpontaneousForm()),
       new ParameterizedTypeReference<>() {
       },
       debtPositionApisHolder::unload);

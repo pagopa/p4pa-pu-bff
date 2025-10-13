@@ -2,6 +2,7 @@ package it.gov.pagopa.pu.bff.service;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.connector.debt_position.SpontaneousFormService;
@@ -15,6 +16,7 @@ import it.gov.pagopa.pu.bff.util.TestUtils;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrg;
 import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelSpontaneousForm;
 import it.gov.pagopa.pu.debtpositions.dto.generated.SpontaneousForm;
+import jakarta.validation.ValidationException;
 import java.util.List;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -277,6 +279,91 @@ class SpontaneousFormRetrieverServiceImplTest {
           .thenReturn(null);
 
       Assertions.assertThrows(ResourceNotFoundException.class,()-> spontaneousFormRetrieverService.getSpontaneousFormDetail(organizationId, spontaneousFormId, loggedUser, accessToken));
+
+      authorizationServiceMockedStatic.verify(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser));
+    }
+  }
+
+  @Test
+  void whenCreateSpontaneousFormThenOk() {
+    UserInfo loggedUser = new UserInfo();
+    loggedUser.setUserId("user-123");
+    long organizationId = 1L;
+    PagedModelSpontaneousForm pagedModelSpontaneousForm = podamFactory.manufacturePojo(PagedModelSpontaneousForm.class);
+    pagedModelSpontaneousForm.getPage().setTotalElements(0L);
+    SpontaneousForm expectedResult = podamFactory.manufacturePojo(SpontaneousForm.class);
+    expectedResult.setSpontaneousFormId(null);
+    expectedResult.setOrganizationId(organizationId);
+
+    try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
+      authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)).thenAnswer(a -> null);
+
+      Mockito.when(spontaneousFormServiceMock.findAllByOrganizationIdAndCode(expectedResult.getOrganizationId(),expectedResult.getCode(),PageRequest.ofSize(1),accessToken))
+          .thenReturn(pagedModelSpontaneousForm);
+      Mockito.when(spontaneousFormServiceMock.createSpontaneousForm(expectedResult, accessToken))
+          .thenReturn(expectedResult);
+
+      SpontaneousForm result = spontaneousFormRetrieverService.createSpontaneousForm(organizationId, expectedResult, loggedUser, accessToken);
+
+      assertNotNull(result);
+      assertSame(expectedResult, result);
+
+      authorizationServiceMockedStatic.verify(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser));
+    }
+  }
+
+  @Test
+  void givenExistingSpontaneousFormWhenCreateSpontaneousFormThenConflictException() {
+    UserInfo loggedUser = new UserInfo();
+    loggedUser.setUserId("user-123");
+    long organizationId = 1L;
+    PagedModelSpontaneousForm pagedModelSpontaneousForm = podamFactory.manufacturePojo(PagedModelSpontaneousForm.class);
+    pagedModelSpontaneousForm.getPage().setTotalElements(1L);
+    SpontaneousForm expectedResult = podamFactory.manufacturePojo(SpontaneousForm.class);
+    expectedResult.setSpontaneousFormId(null);
+    expectedResult.setOrganizationId(organizationId);
+
+    try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
+      authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)).thenAnswer(a -> null);
+
+      Mockito.when(spontaneousFormServiceMock.findAllByOrganizationIdAndCode(expectedResult.getOrganizationId(),expectedResult.getCode(),PageRequest.ofSize(1),accessToken))
+          .thenReturn(pagedModelSpontaneousForm);
+
+      assertThrows(ConflictException.class, ()-> spontaneousFormRetrieverService.createSpontaneousForm(organizationId, expectedResult, loggedUser, accessToken));
+
+      authorizationServiceMockedStatic.verify(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser));
+    }
+  }
+
+  @Test
+  void givenWrongOrganizationIdWhenCreateSpontaneousFormThenValidationException() {
+    UserInfo loggedUser = new UserInfo();
+    loggedUser.setUserId("user-123");
+    long organizationId = 1L;
+    SpontaneousForm expectedResult = podamFactory.manufacturePojo(SpontaneousForm.class);
+    expectedResult.setSpontaneousFormId(null);
+    expectedResult.setOrganizationId(organizationId+1);
+
+    try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
+      authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)).thenAnswer(a -> null);
+
+      assertThrows(ValidationException.class, ()-> spontaneousFormRetrieverService.createSpontaneousForm(organizationId, expectedResult, loggedUser, accessToken));
+
+      authorizationServiceMockedStatic.verify(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser));
+    }
+  }
+
+  @Test
+  void givenPopulatedSpontaneousFormIdWhenCreateSpontaneousFormThenValidationException() {
+    UserInfo loggedUser = new UserInfo();
+    loggedUser.setUserId("user-123");
+    long organizationId = 1L;
+    SpontaneousForm expectedResult = podamFactory.manufacturePojo(SpontaneousForm.class);
+
+    try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
+      authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)).thenAnswer(a -> null);
+
+      assertThrows(ValidationException.class, ()-> spontaneousFormRetrieverService.createSpontaneousForm(organizationId, expectedResult, loggedUser, accessToken));
 
       authorizationServiceMockedStatic.verify(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser));
     }

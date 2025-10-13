@@ -3,6 +3,7 @@ package it.gov.pagopa.pu.bff.connector.debt_position;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.Mockito.when;
 
+import it.gov.pagopa.pu.bff.connector.debt_position.client.SpontaneousFormClient;
 import it.gov.pagopa.pu.bff.connector.debt_position.client.SpontaneousFormEntityClient;
 import it.gov.pagopa.pu.bff.connector.debt_position.client.SpontaneousFormSearchClient;
 import it.gov.pagopa.pu.bff.util.TestUtils;
@@ -28,17 +29,19 @@ class SpontaneousFormServiceImplTest {
   private SpontaneousFormSearchClient spontaneousFormSearchClientMock;
   @Mock
   private SpontaneousFormEntityClient spontaneousFormEntityClientMock;
+  @Mock
+  private SpontaneousFormClient spontaneousFormClientMock;
 
   private SpontaneousFormService service;
 
   @BeforeEach
   void setUp() {
-    service = new SpontaneousFormServiceImpl(spontaneousFormSearchClientMock, spontaneousFormEntityClientMock);
+    service = new SpontaneousFormServiceImpl(spontaneousFormSearchClientMock, spontaneousFormEntityClientMock, spontaneousFormClientMock);
   }
 
   @AfterEach
   void verifyNoMoreInteractions() {
-    Mockito.verifyNoMoreInteractions(spontaneousFormSearchClientMock, spontaneousFormEntityClientMock);
+    Mockito.verifyNoMoreInteractions(spontaneousFormSearchClientMock, spontaneousFormEntityClientMock, spontaneousFormClientMock);
   }
 
   @Test
@@ -82,6 +85,19 @@ class SpontaneousFormServiceImplTest {
         .thenReturn(expectedResult);
 
     PagedModelSpontaneousForm result = service.findAllByOrganizationIdAndCode(organizationId, code, pageable, accessToken);
+
+    assertSame(expectedResult, result);
+  }
+
+  @Test
+  void whenCreateSpontaneousFormThenInvokeClient() {
+    String accessToken = "ACCESSTOKEN";
+    SpontaneousForm expectedResult = podamFactory.manufacturePojo(SpontaneousForm.class);
+
+    when(spontaneousFormClientMock.createSpontaneousForm(expectedResult, accessToken))
+        .thenReturn(expectedResult);
+
+    SpontaneousForm result = service.createSpontaneousForm(expectedResult, accessToken);
 
     assertSame(expectedResult, result);
   }

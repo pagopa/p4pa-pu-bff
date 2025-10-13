@@ -1,18 +1,50 @@
 package it.gov.pagopa.pu.bff.service;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.argThat;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.when;
+
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.connector.classification.AssessmentsService;
 import it.gov.pagopa.pu.bff.connector.classification.ClassificationService;
 import it.gov.pagopa.pu.bff.connector.organization.OrganizationService;
-import it.gov.pagopa.pu.bff.dto.*;
+import it.gov.pagopa.pu.bff.dto.ClassificationDetailDTO;
+import it.gov.pagopa.pu.bff.dto.ClassificationFiltersDTO;
+import it.gov.pagopa.pu.bff.dto.ClassificationPaidInstallmentsFiltersDTO;
+import it.gov.pagopa.pu.bff.dto.LocalDateIntervalFilter;
+import it.gov.pagopa.pu.bff.dto.OffsetDateTimeIntervalFilter;
+import it.gov.pagopa.pu.bff.dto.TreasuredClassificationFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedTreasuredClassificationExtendedDTO;
 import it.gov.pagopa.pu.bff.exception.ResourceNotFoundException;
 import it.gov.pagopa.pu.bff.mapper.ClassificationDetailDTOMapper;
 import it.gov.pagopa.pu.bff.mapper.TreasuredClassificationExtendedDTOMapper;
 import it.gov.pagopa.pu.bff.service.classification.ClassificationRetrieverServiceImpl;
 import it.gov.pagopa.pu.bff.service.debt_position_type_org.DebtPositionTypeOrgRetrieverService;
-import it.gov.pagopa.pu.classification.dto.generated.*;
+import it.gov.pagopa.pu.classification.dto.generated.Assessments;
+import it.gov.pagopa.pu.classification.dto.generated.AssessmentsDetail;
+import it.gov.pagopa.pu.classification.dto.generated.ClassificationDetailViewDTO;
+import it.gov.pagopa.pu.classification.dto.generated.ClassificationsEnum;
+import it.gov.pagopa.pu.classification.dto.generated.PagedClassificationPaidInstallmentsView;
+import it.gov.pagopa.pu.classification.dto.generated.PagedModelAssessmentsDetail;
+import it.gov.pagopa.pu.classification.dto.generated.PagedModelAssessmentsDetailEmbedded;
+import it.gov.pagopa.pu.classification.dto.generated.PagedModelClassification;
+import it.gov.pagopa.pu.classification.dto.generated.PagedTreasuredClassification;
 import it.gov.pagopa.pu.organization.dto.generated.Organization;
+import java.time.LocalDate;
+import java.time.OffsetDateTime;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,15 +58,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.authorization.AuthorizationDeniedException;
-
-import java.time.LocalDate;
-import java.time.OffsetDateTime;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
 
 
 @ExtendWith(MockitoExtension.class)
@@ -238,7 +261,8 @@ class ClassificationRetrieverServiceImplTest {
       Set<String> excluded = captor.getValue().getExcludedLabels();
       assertTrue(excluded.contains(ClassificationsEnum.RT_NO_IUD.getValue()));
       assertTrue(excluded.contains(ClassificationsEnum.IUD_NO_RT.getValue()));
-      assertEquals(2, excluded.size());
+      assertTrue(excluded.contains(ClassificationsEnum.RT_IUF.getValue()));
+      assertEquals(3, excluded.size());
     }
   }
 

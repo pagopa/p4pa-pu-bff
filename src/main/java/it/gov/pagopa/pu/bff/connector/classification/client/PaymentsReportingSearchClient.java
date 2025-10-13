@@ -20,20 +20,6 @@ public class PaymentsReportingSearchClient {
     this.classificationApisHolder = classificationApisHolder;
   }
 
-  public PagedModelPaymentsReporting getPaymentsReportingRows(Long organizationId, String iuf, String iuv, LocalDateIntervalFilter payDateFilter,
-    Pageable pageable, String accessToken) {
-    return classificationApisHolder.getPaymentsReportingSearchControllerApi(accessToken)
-      .crudPaymentsReportingFindPaymentsReportingByFilters(
-        organizationId,
-        iuf,
-        iuv,
-        payDateFilter.getFrom(),
-        payDateFilter.getTo(),
-        PageUtils.getPageNumber(pageable),
-        PageUtils.getPageSize(pageable),
-        PageUtils.getSortList(pageable));
-  }
-
   public PaymentsReporting getPaymentsReportingDetail(Long organizationId, String paymentsReportingId, String accessToken) {
     try {
       return classificationApisHolder.getPaymentsReportingSearchControllerApi(

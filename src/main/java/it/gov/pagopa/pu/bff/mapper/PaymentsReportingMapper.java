@@ -1,9 +1,9 @@
 package it.gov.pagopa.pu.bff.mapper;
 
-import it.gov.pagopa.pu.bff.dto.generated.PagedPaymentsReportingRow;
+import it.gov.pagopa.pu.bff.dto.generated.PagedPaymentsReportingWithReceiptViewRow;
 import it.gov.pagopa.pu.bff.dto.generated.PaymentsReportingDetailDTO;
 import it.gov.pagopa.pu.bff.dto.generated.ReceiptDetailDTO;
-import it.gov.pagopa.pu.classification.dto.generated.PagedModelPaymentsReporting;
+import it.gov.pagopa.pu.classification.dto.generated.PagedModelPaymentsReportingWithReceiptView;
 import it.gov.pagopa.pu.classification.dto.generated.PaymentsReporting;
 import it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentStatus;
 import org.springframework.stereotype.Component;
@@ -14,27 +14,27 @@ import java.util.Collections;
 @Component
 public class PaymentsReportingMapper {
 
-  public PagedPaymentsReportingRow mapToPagedPaymentsReporting(
-    PagedModelPaymentsReporting pagedModel) {
-    PagedPaymentsReportingRow pagedPaymentsReporting = new PagedPaymentsReportingRow();
+  public PagedPaymentsReportingWithReceiptViewRow mapToPagedPaymentsReportingWithReceiptView(
+    PagedModelPaymentsReportingWithReceiptView pagedModel) {
+    PagedPaymentsReportingWithReceiptViewRow pagedPaymentsReportingWithReceiptView = new PagedPaymentsReportingWithReceiptViewRow();
     if (pagedModel != null) {
       if (pagedModel.getEmbedded() != null && !CollectionUtils.isEmpty(
-        pagedModel.getEmbedded().getPaymentsReportings())) {
-        pagedPaymentsReporting.setContent(
-          pagedModel.getEmbedded().getPaymentsReportings());
+        pagedModel.getEmbedded().getPaymentsReportingWithReceiptViews())) {
+        pagedPaymentsReportingWithReceiptView.setContent(
+          pagedModel.getEmbedded().getPaymentsReportingWithReceiptViews());
       } else {
-        pagedPaymentsReporting.setContent(Collections.emptyList());
+        pagedPaymentsReportingWithReceiptView.setContent(Collections.emptyList());
       }
       if (pagedModel.getPage() != null) {
-        pagedPaymentsReporting.setTotalPages(
+        pagedPaymentsReportingWithReceiptView.setTotalPages(
           pagedModel.getPage().getTotalPages());
-        pagedPaymentsReporting.setSize(pagedModel.getPage().getSize());
-        pagedPaymentsReporting.setNumber(pagedModel.getPage().getNumber());
-        pagedPaymentsReporting.setTotalElements(
+        pagedPaymentsReportingWithReceiptView.setSize(pagedModel.getPage().getSize());
+        pagedPaymentsReportingWithReceiptView.setNumber(pagedModel.getPage().getNumber());
+        pagedPaymentsReportingWithReceiptView.setTotalElements(
           pagedModel.getPage().getTotalElements());
       }
     }
-    return pagedPaymentsReporting;
+    return pagedPaymentsReportingWithReceiptView;
   }
 
   public PaymentsReportingDetailDTO mapToPaymentsReportingDetailDTO(

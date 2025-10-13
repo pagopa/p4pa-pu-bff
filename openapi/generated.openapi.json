@@ -4858,7 +4858,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/PagedPaymentsReportingRow"
+                  "$ref" : "#/components/schemas/PagedPaymentsReportingWithReceiptViewRow"
                 }
               }
             }
@@ -4868,7 +4868,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/PagedPaymentsReportingRow"
+                  "$ref" : "#/components/schemas/PagedPaymentsReportingWithReceiptViewRow"
                 }
               }
             }
@@ -4878,7 +4878,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/PagedPaymentsReportingRow"
+                  "$ref" : "#/components/schemas/PagedPaymentsReportingWithReceiptViewRow"
                 }
               }
             }
@@ -4888,7 +4888,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/PagedPaymentsReportingRow"
+                  "$ref" : "#/components/schemas/PagedPaymentsReportingWithReceiptViewRow"
                 }
               }
             }
@@ -11561,13 +11561,13 @@
         },
         "required" : [ "flowDateTime", "ingestionFlowFileId", "iuf", "iuv", "organizationId", "regulationDate", "regulationUniqueIdentifier", "totalAmountCents", "totalPayments" ]
       },
-      "PagedPaymentsReportingRow" : {
+      "PagedPaymentsReportingWithReceiptViewRow" : {
         "type" : "object",
         "properties" : {
           "content" : {
             "type" : "array",
             "items" : {
-              "$ref" : "#/components/schemas/PaymentsReporting"
+              "$ref" : "#/components/schemas/PaymentsReportingWithReceiptView"
             }
           },
           "size" : {
@@ -11589,23 +11589,9 @@
         },
         "required" : [ "content", "number", "size", "totalElements", "totalPages" ]
       },
-      "PaymentsReporting" : {
+      "PaymentsReportingWithReceiptView" : {
         "type" : "object",
         "properties" : {
-          "creationDate" : {
-            "type" : "string",
-            "format" : "date-time"
-          },
-          "updateDate" : {
-            "type" : "string",
-            "format" : "date-time"
-          },
-          "updateOperatorExternalId" : {
-            "type" : "string"
-          },
-          "updateTraceId" : {
-            "type" : "string"
-          },
           "paymentsReportingId" : {
             "type" : "string"
           },
@@ -11686,6 +11672,9 @@
             "format" : "date"
           },
           "bicCodePouringBank" : {
+            "type" : "string"
+          },
+          "receiptPaymentRequestId" : {
             "type" : "string"
           },
           "_links" : {

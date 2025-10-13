@@ -1288,7 +1288,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PagedPaymentsReportingRow'
+                $ref: '#/components/schemas/PagedPaymentsReportingWithReceiptViewRow'
         '401':
           description: Unauthorized - Missing or invalid token
         '403':
@@ -4391,7 +4391,7 @@ components:
           type: array
           items:
             type: 'PaymentOptionDTO'
-    PagedPaymentsReportingRow:
+    PagedPaymentsReportingWithReceiptViewRow:
       type: object
       required:
         - content
@@ -4403,7 +4403,7 @@ components:
         content:
           type: array
           items:
-            type: 'PaymentsReporting'
+            type: 'PaymentsReportingWithReceiptView'
         size:
           type: integer
           format: int64

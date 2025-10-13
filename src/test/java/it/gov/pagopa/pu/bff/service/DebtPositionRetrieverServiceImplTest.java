@@ -155,7 +155,7 @@ class DebtPositionRetrieverServiceImplTest {
     UserInfo loggedUser = new UserInfo();
     loggedUser.setMappedExternalUserId("mappedExternalUserId");
     PageRequest pageRequest = PageRequest.of(0, 10);
-    List<String> debtPositionOrigins = List.of(DebtPositionOrigin.ORDINARY.toString(), DebtPositionOrigin.ORDINARY_SIL.toString(), DebtPositionOrigin.SPONTANEOUS.toString());
+    List<String> debtPositionOrigins = List.of(DebtPositionOrigin.ORDINARY.toString(), DebtPositionOrigin.ORDINARY_SIL.toString(), DebtPositionOrigin.SPONTANEOUS.toString(), DebtPositionOrigin.SPONTANEOUS_SIL.toString());
 
     DebtPositionViewFiltersDTO debtPositionViewFiltersDTO = podamFactory.manufacturePojo(
       DebtPositionViewFiltersDTO.class);
@@ -295,7 +295,8 @@ class DebtPositionRetrieverServiceImplTest {
     List<String> debtPositionOriginFilterList = List.of(
       DebtPositionOrigin.ORDINARY.toString(),
       DebtPositionOrigin.ORDINARY_SIL.toString(),
-      DebtPositionOrigin.SPONTANEOUS.toString()
+      DebtPositionOrigin.SPONTANEOUS.toString(),
+      DebtPositionOrigin.SPONTANEOUS_SIL.toString()
     );
 
     PagedModelDebtPositionView pagedModel = new PagedModelDebtPositionView();

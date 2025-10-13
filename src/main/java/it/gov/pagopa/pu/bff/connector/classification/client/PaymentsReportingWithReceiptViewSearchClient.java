@@ -2,7 +2,6 @@ package it.gov.pagopa.pu.bff.connector.classification.client;
 
 import it.gov.pagopa.pu.bff.connector.classification.config.ClassificationApisHolder;
 import it.gov.pagopa.pu.bff.dto.LocalDateIntervalFilter;
-import it.gov.pagopa.pu.bff.dto.generated.PagedPaymentsReportingWithReceiptView;
 import it.gov.pagopa.pu.bff.util.PageUtils;
 import it.gov.pagopa.pu.classification.dto.generated.PagedModelPaymentsReportingWithReceiptView;
 import org.springframework.data.domain.Pageable;

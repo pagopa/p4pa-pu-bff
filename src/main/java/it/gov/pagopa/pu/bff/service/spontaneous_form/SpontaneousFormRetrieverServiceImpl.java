@@ -22,10 +22,13 @@ import org.springframework.stereotype.Service;
 public class SpontaneousFormRetrieverServiceImpl implements SpontaneousFormRetrieverService {
   private final SpontaneousFormService spontaneousFormService;
   private final PagedSpontaneousFormMapper pagedSpontaneousFormMapper;
+  private final AuthorizationService authorizationService;
 
-  public SpontaneousFormRetrieverServiceImpl(SpontaneousFormService spontaneousFormService, PagedSpontaneousFormMapper pagedSpontaneousFormMapper) {
+  public SpontaneousFormRetrieverServiceImpl(SpontaneousFormService spontaneousFormService, PagedSpontaneousFormMapper pagedSpontaneousFormMapper,
+      AuthorizationService authorizationService) {
     this.spontaneousFormService = spontaneousFormService;
     this.pagedSpontaneousFormMapper = pagedSpontaneousFormMapper;
+    this.authorizationService = authorizationService;
   }
 
   @Override
@@ -73,7 +76,7 @@ public class SpontaneousFormRetrieverServiceImpl implements SpontaneousFormRetri
 
   @Override
   public SpontaneousForm createSpontaneousForm(Long organizationId, SpontaneousForm spontaneousForm, UserInfo loggedUser, String accessToken) {
-    AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser);
+    authorizationService.validateOrganizationOrBrokerAdmin(organizationId, loggedUser, accessToken);
     validateSpontaneousForm(organizationId, spontaneousForm, accessToken);
     return spontaneousFormService.createSpontaneousForm(spontaneousForm,accessToken);
   }

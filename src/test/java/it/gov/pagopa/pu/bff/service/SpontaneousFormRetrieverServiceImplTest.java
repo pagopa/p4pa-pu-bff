@@ -39,6 +39,8 @@ class SpontaneousFormRetrieverServiceImplTest {
   private SpontaneousFormService spontaneousFormServiceMock;
   @Mock
   private PagedSpontaneousFormMapper pagedSpontaneousFormMapperMock;
+  @Mock
+  private AuthorizationService authorizationServiceMock;
 
   private SpontaneousFormRetrieverService spontaneousFormRetrieverService;
 
@@ -46,12 +48,12 @@ class SpontaneousFormRetrieverServiceImplTest {
 
   @BeforeEach
   void setUp() {
-    spontaneousFormRetrieverService = new SpontaneousFormRetrieverServiceImpl(spontaneousFormServiceMock, pagedSpontaneousFormMapperMock);
+    spontaneousFormRetrieverService = new SpontaneousFormRetrieverServiceImpl(spontaneousFormServiceMock, pagedSpontaneousFormMapperMock, authorizationServiceMock);
   }
 
   @AfterEach
   void verifyNoMoreInteractions() {
-    Mockito.verifyNoMoreInteractions(spontaneousFormServiceMock, pagedSpontaneousFormMapperMock);
+    Mockito.verifyNoMoreInteractions(spontaneousFormServiceMock, pagedSpontaneousFormMapperMock, authorizationServiceMock);
   }
 
   @Test
@@ -295,21 +297,16 @@ class SpontaneousFormRetrieverServiceImplTest {
     expectedResult.setSpontaneousFormId(null);
     expectedResult.setOrganizationId(organizationId);
 
-    try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
-      authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)).thenAnswer(a -> null);
+    Mockito.doNothing().when(authorizationServiceMock).validateOrganizationOrBrokerAdmin(organizationId,loggedUser,accessToken);
+    Mockito.when(spontaneousFormServiceMock.findAllByOrganizationIdAndCode(expectedResult.getOrganizationId(),expectedResult.getCode(),PageRequest.ofSize(1),accessToken))
+        .thenReturn(pagedModelSpontaneousForm);
+    Mockito.when(spontaneousFormServiceMock.createSpontaneousForm(expectedResult, accessToken))
+        .thenReturn(expectedResult);
 
-      Mockito.when(spontaneousFormServiceMock.findAllByOrganizationIdAndCode(expectedResult.getOrganizationId(),expectedResult.getCode(),PageRequest.ofSize(1),accessToken))
-          .thenReturn(pagedModelSpontaneousForm);
-      Mockito.when(spontaneousFormServiceMock.createSpontaneousForm(expectedResult, accessToken))
-          .thenReturn(expectedResult);
+    SpontaneousForm result = spontaneousFormRetrieverService.createSpontaneousForm(organizationId, expectedResult, loggedUser, accessToken);
 
-      SpontaneousForm result = spontaneousFormRetrieverService.createSpontaneousForm(organizationId, expectedResult, loggedUser, accessToken);
-
-      assertNotNull(result);
-      assertSame(expectedResult, result);
-
-      authorizationServiceMockedStatic.verify(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser));
-    }
+    assertNotNull(result);
+    assertSame(expectedResult, result);
   }
 
   @Test
@@ -323,16 +320,11 @@ class SpontaneousFormRetrieverServiceImplTest {
     expectedResult.setSpontaneousFormId(null);
     expectedResult.setOrganizationId(organizationId);
 
-    try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
-      authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)).thenAnswer(a -> null);
+    Mockito.doNothing().when(authorizationServiceMock).validateOrganizationOrBrokerAdmin(organizationId,loggedUser,accessToken);
+    Mockito.when(spontaneousFormServiceMock.findAllByOrganizationIdAndCode(expectedResult.getOrganizationId(),expectedResult.getCode(),PageRequest.ofSize(1),accessToken))
+        .thenReturn(pagedModelSpontaneousForm);
 
-      Mockito.when(spontaneousFormServiceMock.findAllByOrganizationIdAndCode(expectedResult.getOrganizationId(),expectedResult.getCode(),PageRequest.ofSize(1),accessToken))
-          .thenReturn(pagedModelSpontaneousForm);
-
-      assertThrows(ConflictException.class, ()-> spontaneousFormRetrieverService.createSpontaneousForm(organizationId, expectedResult, loggedUser, accessToken));
-
-      authorizationServiceMockedStatic.verify(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser));
-    }
+    assertThrows(ConflictException.class, ()-> spontaneousFormRetrieverService.createSpontaneousForm(organizationId, expectedResult, loggedUser, accessToken));
   }
 
   @Test
@@ -344,13 +336,9 @@ class SpontaneousFormRetrieverServiceImplTest {
     expectedResult.setSpontaneousFormId(null);
     expectedResult.setOrganizationId(organizationId+1);
 
-    try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
-      authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)).thenAnswer(a -> null);
+    Mockito.doNothing().when(authorizationServiceMock).validateOrganizationOrBrokerAdmin(organizationId,loggedUser,accessToken);
 
-      assertThrows(ValidationException.class, ()-> spontaneousFormRetrieverService.createSpontaneousForm(organizationId, expectedResult, loggedUser, accessToken));
-
-      authorizationServiceMockedStatic.verify(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser));
-    }
+    assertThrows(ValidationException.class, ()-> spontaneousFormRetrieverService.createSpontaneousForm(organizationId, expectedResult, loggedUser, accessToken));
   }
 
   @Test
@@ -360,12 +348,8 @@ class SpontaneousFormRetrieverServiceImplTest {
     long organizationId = 1L;
     SpontaneousForm expectedResult = podamFactory.manufacturePojo(SpontaneousForm.class);
 
-    try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
-      authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)).thenAnswer(a -> null);
+    Mockito.doNothing().when(authorizationServiceMock).validateOrganizationOrBrokerAdmin(organizationId,loggedUser,accessToken);
 
-      assertThrows(ValidationException.class, ()-> spontaneousFormRetrieverService.createSpontaneousForm(organizationId, expectedResult, loggedUser, accessToken));
-
-      authorizationServiceMockedStatic.verify(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser));
-    }
+    assertThrows(ValidationException.class, ()-> spontaneousFormRetrieverService.createSpontaneousForm(organizationId, expectedResult, loggedUser, accessToken));
   }
 }

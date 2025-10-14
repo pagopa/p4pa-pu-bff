@@ -2,6 +2,7 @@ package it.gov.pagopa.pu.bff.service;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.connector.debt_position.SpontaneousFormService;
@@ -15,6 +16,7 @@ import it.gov.pagopa.pu.bff.util.TestUtils;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrg;
 import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelSpontaneousForm;
 import it.gov.pagopa.pu.debtpositions.dto.generated.SpontaneousForm;
+import jakarta.validation.ValidationException;
 import java.util.List;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -37,6 +39,8 @@ class SpontaneousFormRetrieverServiceImplTest {
   private SpontaneousFormService spontaneousFormServiceMock;
   @Mock
   private PagedSpontaneousFormMapper pagedSpontaneousFormMapperMock;
+  @Mock
+  private AuthorizationService authorizationServiceMock;
 
   private SpontaneousFormRetrieverService spontaneousFormRetrieverService;
 
@@ -44,12 +48,12 @@ class SpontaneousFormRetrieverServiceImplTest {
 
   @BeforeEach
   void setUp() {
-    spontaneousFormRetrieverService = new SpontaneousFormRetrieverServiceImpl(spontaneousFormServiceMock, pagedSpontaneousFormMapperMock);
+    spontaneousFormRetrieverService = new SpontaneousFormRetrieverServiceImpl(spontaneousFormServiceMock, pagedSpontaneousFormMapperMock, authorizationServiceMock);
   }
 
   @AfterEach
   void verifyNoMoreInteractions() {
-    Mockito.verifyNoMoreInteractions(spontaneousFormServiceMock, pagedSpontaneousFormMapperMock);
+    Mockito.verifyNoMoreInteractions(spontaneousFormServiceMock, pagedSpontaneousFormMapperMock, authorizationServiceMock);
   }
 
   @Test
@@ -280,5 +284,72 @@ class SpontaneousFormRetrieverServiceImplTest {
 
       authorizationServiceMockedStatic.verify(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser));
     }
+  }
+
+  @Test
+  void whenCreateSpontaneousFormThenOk() {
+    UserInfo loggedUser = new UserInfo();
+    loggedUser.setUserId("user-123");
+    long organizationId = 1L;
+    PagedModelSpontaneousForm pagedModelSpontaneousForm = podamFactory.manufacturePojo(PagedModelSpontaneousForm.class);
+    pagedModelSpontaneousForm.getPage().setTotalElements(0L);
+    SpontaneousForm expectedResult = podamFactory.manufacturePojo(SpontaneousForm.class);
+    expectedResult.setSpontaneousFormId(null);
+    expectedResult.setOrganizationId(organizationId);
+
+    Mockito.doNothing().when(authorizationServiceMock).validateAdminRole(organizationId,loggedUser);
+    Mockito.when(spontaneousFormServiceMock.findAllByOrganizationIdAndCode(expectedResult.getOrganizationId(),expectedResult.getCode(),PageRequest.ofSize(1),accessToken))
+        .thenReturn(pagedModelSpontaneousForm);
+    Mockito.when(spontaneousFormServiceMock.createSpontaneousForm(expectedResult, accessToken))
+        .thenReturn(expectedResult);
+
+    SpontaneousForm result = spontaneousFormRetrieverService.createSpontaneousForm(organizationId, expectedResult, loggedUser, accessToken);
+
+    assertNotNull(result);
+    assertSame(expectedResult, result);
+  }
+
+  @Test
+  void givenExistingSpontaneousFormWhenCreateSpontaneousFormThenConflictException() {
+    UserInfo loggedUser = new UserInfo();
+    loggedUser.setUserId("user-123");
+    long organizationId = 1L;
+    PagedModelSpontaneousForm pagedModelSpontaneousForm = podamFactory.manufacturePojo(PagedModelSpontaneousForm.class);
+    pagedModelSpontaneousForm.getPage().setTotalElements(1L);
+    SpontaneousForm expectedResult = podamFactory.manufacturePojo(SpontaneousForm.class);
+    expectedResult.setSpontaneousFormId(null);
+    expectedResult.setOrganizationId(organizationId);
+
+    Mockito.doNothing().when(authorizationServiceMock).validateAdminRole(organizationId,loggedUser);
+    Mockito.when(spontaneousFormServiceMock.findAllByOrganizationIdAndCode(expectedResult.getOrganizationId(),expectedResult.getCode(),PageRequest.ofSize(1),accessToken))
+        .thenReturn(pagedModelSpontaneousForm);
+
+    assertThrows(ConflictException.class, ()-> spontaneousFormRetrieverService.createSpontaneousForm(organizationId, expectedResult, loggedUser, accessToken));
+  }
+
+  @Test
+  void givenWrongOrganizationIdWhenCreateSpontaneousFormThenValidationException() {
+    UserInfo loggedUser = new UserInfo();
+    loggedUser.setUserId("user-123");
+    long organizationId = 1L;
+    SpontaneousForm expectedResult = podamFactory.manufacturePojo(SpontaneousForm.class);
+    expectedResult.setSpontaneousFormId(null);
+    expectedResult.setOrganizationId(organizationId+1);
+
+    Mockito.doNothing().when(authorizationServiceMock).validateAdminRole(organizationId,loggedUser);
+
+    assertThrows(ValidationException.class, ()-> spontaneousFormRetrieverService.createSpontaneousForm(organizationId, expectedResult, loggedUser, accessToken));
+  }
+
+  @Test
+  void givenPopulatedSpontaneousFormIdWhenCreateSpontaneousFormThenValidationException() {
+    UserInfo loggedUser = new UserInfo();
+    loggedUser.setUserId("user-123");
+    long organizationId = 1L;
+    SpontaneousForm expectedResult = podamFactory.manufacturePojo(SpontaneousForm.class);
+
+    Mockito.doNothing().when(authorizationServiceMock).validateAdminRole(organizationId,loggedUser);
+
+    assertThrows(ValidationException.class, ()-> spontaneousFormRetrieverService.createSpontaneousForm(organizationId, expectedResult, loggedUser, accessToken));
   }
 }

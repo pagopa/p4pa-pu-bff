@@ -8,6 +8,7 @@ import it.gov.pagopa.pu.debtpositions.dto.generated.SpontaneousForm;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -37,5 +38,12 @@ public class SpontaneousFormController implements SpontaneousFormsApi {
   public ResponseEntity<SpontaneousForm> getSpontaneousFormDetail(Long organizationId, Long spontaneousFormId) {
     log.info("User requested getSpontaneousFormDetail having organizationId {} and spontaneousFormId {}", organizationId, spontaneousFormId);
     return ResponseEntity.ok(spontaneousFormRetrieverService.getSpontaneousFormDetail(organizationId, spontaneousFormId, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken()));
+  }
+
+  @Override
+  public ResponseEntity<SpontaneousForm> createSpontaneousForm(Long organizationId, SpontaneousForm spontaneousForm) {
+    log.info("User requested createSpontaneousForm having organizationId {}", organizationId);
+    return ResponseEntity.status(HttpStatus.CREATED)
+        .body(spontaneousFormRetrieverService.createSpontaneousForm(organizationId, spontaneousForm, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken()));
   }
 }

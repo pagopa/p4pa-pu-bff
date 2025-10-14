@@ -76,7 +76,7 @@ public class SpontaneousFormRetrieverServiceImpl implements SpontaneousFormRetri
 
   @Override
   public SpontaneousForm createSpontaneousForm(Long organizationId, SpontaneousForm spontaneousForm, UserInfo loggedUser, String accessToken) {
-    authorizationService.validateOrganizationOrBrokerAdmin(organizationId, loggedUser, accessToken);
+    authorizationService.validateAdminRole(organizationId, loggedUser);
     validateSpontaneousForm(organizationId, spontaneousForm, accessToken);
     return spontaneousFormService.createSpontaneousForm(spontaneousForm,accessToken);
   }

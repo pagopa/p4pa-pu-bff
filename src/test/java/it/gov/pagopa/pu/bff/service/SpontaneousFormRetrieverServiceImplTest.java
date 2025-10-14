@@ -297,7 +297,7 @@ class SpontaneousFormRetrieverServiceImplTest {
     expectedResult.setSpontaneousFormId(null);
     expectedResult.setOrganizationId(organizationId);
 
-    Mockito.doNothing().when(authorizationServiceMock).validateOrganizationOrBrokerAdmin(organizationId,loggedUser,accessToken);
+    Mockito.doNothing().when(authorizationServiceMock).validateAdminRole(organizationId,loggedUser);
     Mockito.when(spontaneousFormServiceMock.findAllByOrganizationIdAndCode(expectedResult.getOrganizationId(),expectedResult.getCode(),PageRequest.ofSize(1),accessToken))
         .thenReturn(pagedModelSpontaneousForm);
     Mockito.when(spontaneousFormServiceMock.createSpontaneousForm(expectedResult, accessToken))
@@ -320,7 +320,7 @@ class SpontaneousFormRetrieverServiceImplTest {
     expectedResult.setSpontaneousFormId(null);
     expectedResult.setOrganizationId(organizationId);
 
-    Mockito.doNothing().when(authorizationServiceMock).validateOrganizationOrBrokerAdmin(organizationId,loggedUser,accessToken);
+    Mockito.doNothing().when(authorizationServiceMock).validateAdminRole(organizationId,loggedUser);
     Mockito.when(spontaneousFormServiceMock.findAllByOrganizationIdAndCode(expectedResult.getOrganizationId(),expectedResult.getCode(),PageRequest.ofSize(1),accessToken))
         .thenReturn(pagedModelSpontaneousForm);
 
@@ -336,7 +336,7 @@ class SpontaneousFormRetrieverServiceImplTest {
     expectedResult.setSpontaneousFormId(null);
     expectedResult.setOrganizationId(organizationId+1);
 
-    Mockito.doNothing().when(authorizationServiceMock).validateOrganizationOrBrokerAdmin(organizationId,loggedUser,accessToken);
+    Mockito.doNothing().when(authorizationServiceMock).validateAdminRole(organizationId,loggedUser);
 
     assertThrows(ValidationException.class, ()-> spontaneousFormRetrieverService.createSpontaneousForm(organizationId, expectedResult, loggedUser, accessToken));
   }
@@ -348,7 +348,7 @@ class SpontaneousFormRetrieverServiceImplTest {
     long organizationId = 1L;
     SpontaneousForm expectedResult = podamFactory.manufacturePojo(SpontaneousForm.class);
 
-    Mockito.doNothing().when(authorizationServiceMock).validateOrganizationOrBrokerAdmin(organizationId,loggedUser,accessToken);
+    Mockito.doNothing().when(authorizationServiceMock).validateAdminRole(organizationId,loggedUser);
 
     assertThrows(ValidationException.class, ()-> spontaneousFormRetrieverService.createSpontaneousForm(organizationId, expectedResult, loggedUser, accessToken));
   }

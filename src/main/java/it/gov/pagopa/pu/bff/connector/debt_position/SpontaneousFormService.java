@@ -10,4 +10,5 @@ public interface SpontaneousFormService {
   SpontaneousForm getSpontaneousForm(Long spontaneousFormId, String accessToken);
   PagedModelSpontaneousForm findAllByOrganizationIdAndCode(Long organizationId, String code, Pageable pageable, String accessToken);
   SpontaneousForm createSpontaneousForm(SpontaneousForm spontaneousForm, String accessToken);
+  void deleteSpontaneousForm(Long spontaneousFormId, String accessToken);
 }

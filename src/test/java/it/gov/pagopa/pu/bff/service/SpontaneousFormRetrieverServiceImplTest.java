@@ -1,10 +1,12 @@
 package it.gov.pagopa.pu.bff.service;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
+import it.gov.pagopa.pu.bff.connector.debt_position.DebtPositionTypeOrgService;
 import it.gov.pagopa.pu.bff.connector.debt_position.SpontaneousFormService;
 import it.gov.pagopa.pu.bff.dto.generated.PagedSpontaneousForm;
 import it.gov.pagopa.pu.bff.exception.ConflictException;
@@ -41,6 +43,8 @@ class SpontaneousFormRetrieverServiceImplTest {
   private PagedSpontaneousFormMapper pagedSpontaneousFormMapperMock;
   @Mock
   private AuthorizationService authorizationServiceMock;
+  @Mock
+  private DebtPositionTypeOrgService debtPositionTypeOrgServiceMock;
 
   private SpontaneousFormRetrieverService spontaneousFormRetrieverService;
 
@@ -48,12 +52,12 @@ class SpontaneousFormRetrieverServiceImplTest {
 
   @BeforeEach
   void setUp() {
-    spontaneousFormRetrieverService = new SpontaneousFormRetrieverServiceImpl(spontaneousFormServiceMock, pagedSpontaneousFormMapperMock, authorizationServiceMock);
+    spontaneousFormRetrieverService = new SpontaneousFormRetrieverServiceImpl(spontaneousFormServiceMock, pagedSpontaneousFormMapperMock, authorizationServiceMock, debtPositionTypeOrgServiceMock);
   }
 
   @AfterEach
   void verifyNoMoreInteractions() {
-    Mockito.verifyNoMoreInteractions(spontaneousFormServiceMock, pagedSpontaneousFormMapperMock, authorizationServiceMock);
+    Mockito.verifyNoMoreInteractions(spontaneousFormServiceMock, pagedSpontaneousFormMapperMock, authorizationServiceMock, debtPositionTypeOrgServiceMock);
   }
 
   @Test
@@ -351,5 +355,82 @@ class SpontaneousFormRetrieverServiceImplTest {
     Mockito.doNothing().when(authorizationServiceMock).validateAdminRole(organizationId,loggedUser);
 
     assertThrows(ValidationException.class, ()-> spontaneousFormRetrieverService.createSpontaneousForm(organizationId, expectedResult, loggedUser, accessToken));
+  }
+
+  @Test
+  void whenDeleteSpontaneousFormThenOk() {
+    UserInfo loggedUser = new UserInfo();
+    loggedUser.setUserId("user-123");
+    long organizationId = 1L;
+    long spontaneousFormId = 2L;
+
+    SpontaneousForm spontaneousForm = new SpontaneousForm();
+    spontaneousForm.setOrganizationId(organizationId);
+    spontaneousForm.setSpontaneousFormId(spontaneousFormId);
+
+    Mockito.doNothing().when(authorizationServiceMock).validateAdminRole(organizationId,loggedUser);
+    Mockito.when(spontaneousFormServiceMock.getSpontaneousForm(spontaneousFormId, accessToken))
+        .thenReturn(spontaneousForm);
+    Mockito.when(debtPositionTypeOrgServiceMock.isSpontaneousFormReferencedByDpto(spontaneousFormId, accessToken))
+        .thenReturn(false);
+    Mockito.doNothing().when(spontaneousFormServiceMock).deleteSpontaneousForm(spontaneousFormId,accessToken);
+
+    assertDoesNotThrow(()->spontaneousFormRetrieverService.deleteSpontaneousForm(organizationId, spontaneousFormId, loggedUser, accessToken));
+  }
+
+  @Test
+  void givenReferencedSpontaneousFormWhenDeleteSpontaneousFormThenConflictException() {
+    UserInfo loggedUser = new UserInfo();
+    loggedUser.setUserId("user-123");
+    long organizationId = 1L;
+    long spontaneousFormId = 2L;
+
+    SpontaneousForm spontaneousForm = new SpontaneousForm();
+    spontaneousForm.setOrganizationId(organizationId);
+    spontaneousForm.setSpontaneousFormId(spontaneousFormId);
+
+    Mockito.doNothing().when(authorizationServiceMock).validateAdminRole(organizationId,loggedUser);
+    Mockito.when(spontaneousFormServiceMock.getSpontaneousForm(spontaneousFormId, accessToken))
+        .thenReturn(spontaneousForm);
+    Mockito.when(debtPositionTypeOrgServiceMock.isSpontaneousFormReferencedByDpto(spontaneousFormId, accessToken))
+        .thenReturn(true);
+
+    assertThrows(ConflictException.class,()->spontaneousFormRetrieverService.deleteSpontaneousForm(organizationId, spontaneousFormId, loggedUser, accessToken));
+  }
+
+  @Test
+  void givenWrongOrganizationIdWhenDeleteSpontaneousFormThenConflictException() {
+    UserInfo loggedUser = new UserInfo();
+    loggedUser.setUserId("user-123");
+    long organizationId = 1L;
+    long spontaneousFormId = 2L;
+
+    SpontaneousForm spontaneousForm = new SpontaneousForm();
+    spontaneousForm.setOrganizationId(organizationId+1);
+    spontaneousForm.setSpontaneousFormId(spontaneousFormId);
+
+    Mockito.doNothing().when(authorizationServiceMock).validateAdminRole(organizationId,loggedUser);
+    Mockito.when(spontaneousFormServiceMock.getSpontaneousForm(spontaneousFormId, accessToken))
+        .thenReturn(spontaneousForm);
+
+    assertThrows(ConflictException.class,()->spontaneousFormRetrieverService.deleteSpontaneousForm(organizationId, spontaneousFormId, loggedUser, accessToken));
+
+    Mockito.verifyNoInteractions(debtPositionTypeOrgServiceMock);
+  }
+
+  @Test
+  void givenNoSpontaneousFormWhenDeleteSpontaneousFormThenResourceNotFoundException() {
+    UserInfo loggedUser = new UserInfo();
+    loggedUser.setUserId("user-123");
+    long organizationId = 1L;
+    long spontaneousFormId = 2L;
+
+    Mockito.doNothing().when(authorizationServiceMock).validateAdminRole(organizationId,loggedUser);
+    Mockito.when(spontaneousFormServiceMock.getSpontaneousForm(spontaneousFormId, accessToken))
+        .thenReturn(null);
+
+    assertThrows(ResourceNotFoundException.class,()->spontaneousFormRetrieverService.deleteSpontaneousForm(organizationId, spontaneousFormId, loggedUser, accessToken));
+
+    Mockito.verifyNoInteractions(debtPositionTypeOrgServiceMock);
   }
 }

@@ -110,4 +110,17 @@ class SpontaneousFormControllerTest {
     Assertions.assertNotNull(response.getBody());
     Assertions.assertSame(expectedResult, response.getBody());
   }
+
+  @Test
+  void givenCorrectRequestWhenDeleteSpontaneousFormThenOk() {
+    long organizationId = 1L;
+    long spontaneousFormId = 2L;
+
+    Mockito.doNothing().when(spontaneousFormRetrieverServiceMock).deleteSpontaneousForm(organizationId, spontaneousFormId, loggedUser, accessToken);
+
+    ResponseEntity<Void> response = spontaneousFormController.deleteSpontaneousForm(
+        organizationId, spontaneousFormId);
+
+    Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
+  }
 }

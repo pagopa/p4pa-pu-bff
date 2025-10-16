@@ -3,10 +3,7 @@ package it.gov.pagopa.pu.bff.service.payments_reporting;
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.connector.classification.PaymentsReportingService;
 import it.gov.pagopa.pu.bff.dto.LocalDateIntervalFilter;
-import it.gov.pagopa.pu.bff.dto.generated.PagedPaymentsReportingRow;
-import it.gov.pagopa.pu.bff.dto.generated.PagedPaymentsReportingView;
-import it.gov.pagopa.pu.bff.dto.generated.PaymentsReportingDetailDTO;
-import it.gov.pagopa.pu.bff.dto.generated.ReceiptDetailDTO;
+import it.gov.pagopa.pu.bff.dto.generated.*;
 import it.gov.pagopa.pu.bff.mapper.PaymentsReportingMapper;
 import it.gov.pagopa.pu.bff.mapper.PaymentsReportingViewMapper;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
@@ -56,8 +53,8 @@ public class PaymentsReportingRetrieverServiceImpl implements
 
   @Override
   public PagedPaymentsReportingRow getPaymentsReportingRows(Long organizationId,
-    String iuf, String iuv, LocalDateIntervalFilter payDateFilter,
-    Pageable pageable, UserInfo loggedUser, String accessToken) {
+                                                                           String iuf, String iuv, LocalDateIntervalFilter payDateFilter,
+                                                                           Pageable pageable, UserInfo loggedUser, String accessToken) {
     AuthorizationService.validateUserForOrganizationId(organizationId,
       loggedUser);
 

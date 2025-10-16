@@ -4465,7 +4465,7 @@ components:
         content:
           type: array
           items:
-            type: 'PaymentsReporting'
+            type: 'PaymentsReportingWithReceiptView'
         size:
           type: integer
           format: int64

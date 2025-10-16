@@ -3,17 +3,14 @@ package it.gov.pagopa.pu.bff.service;
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.connector.classification.PaymentsReportingService;
 import it.gov.pagopa.pu.bff.dto.LocalDateIntervalFilter;
-import it.gov.pagopa.pu.bff.dto.generated.PagedPaymentsReportingRow;
-import it.gov.pagopa.pu.bff.dto.generated.PagedPaymentsReportingView;
-import it.gov.pagopa.pu.bff.dto.generated.PaymentsReportingDetailDTO;
-import it.gov.pagopa.pu.bff.dto.generated.ReceiptDetailDTO;
+import it.gov.pagopa.pu.bff.dto.generated.*;
 import it.gov.pagopa.pu.bff.mapper.PaymentsReportingMapper;
 import it.gov.pagopa.pu.bff.mapper.PaymentsReportingViewMapper;
 import it.gov.pagopa.pu.bff.service.installment.InstallmentRetrieverService;
 import it.gov.pagopa.pu.bff.service.payments_reporting.PaymentsReportingRetrieverServiceImpl;
 import it.gov.pagopa.pu.bff.service.receipt.ReceiptRetrieverService;
-import it.gov.pagopa.pu.classification.dto.generated.PagedModelPaymentsReporting;
 import it.gov.pagopa.pu.classification.dto.generated.PagedModelPaymentsReportingView;
+import it.gov.pagopa.pu.classification.dto.generated.PagedModelPaymentsReportingWithReceiptView;
 import it.gov.pagopa.pu.classification.dto.generated.PaymentsReporting;
 import it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentNoPII;
 import it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentStatus;
@@ -165,7 +162,7 @@ class PaymentsReportingRetrieverServiceImplTest {
       payDateFrom, payDateTo);
     Pageable pageable = PageRequest.of(0, 10);
 
-    PagedModelPaymentsReporting pagedModelPaymentsReporting = new PagedModelPaymentsReporting();
+    PagedModelPaymentsReportingWithReceiptView pagedModelPaymentsReporting = new PagedModelPaymentsReportingWithReceiptView();
     PagedPaymentsReportingRow expectedResult = new PagedPaymentsReportingRow();
 
     try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(

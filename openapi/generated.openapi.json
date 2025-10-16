@@ -11386,7 +11386,7 @@
       },
       "RegistrySilEventType" : {
         "type" : "string",
-        "enum" : [ "PTDP_paaSILAutorizzaImportFlusso", "PTDP_paaSILImportaDovuto", "PTDP_paaSILInviaDovuti", "PTDP_paaSILInviaCarrelloDovuti", "PTDP_paaSILVerificaAvviso", "PTDP_paaSILChiediPosizioniAperte", "PTDP_paaSILChiediStoricoPagamenti", "PTPR_pivotSILAutorizzaImportFlussoTesoreria", "PTPR_pivotSILAutorizzaImportFlusso", "SIL_attualizzazioneImporti", "SIL_notificaPagamento" ]
+        "enum" : [ "PTDP_paaSILAutorizzaImportFlusso", "PTDP_paaSILImportaDovuto", "PTDP_paaSILInviaDovuti", "PTDP_paaSILInviaCarrelloDovuti", "PTDP_paaSILVerificaAvviso", "PTPR_pivotSILAutorizzaImportFlussoTesoreria", "PTPR_pivotSILAutorizzaImportFlusso", "SIL_attualizzazioneImporti", "SIL_notificaPagamento" ]
       },
       "SilRegistry" : {
         "type" : "object",

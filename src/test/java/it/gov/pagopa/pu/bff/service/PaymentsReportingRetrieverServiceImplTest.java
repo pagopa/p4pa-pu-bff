@@ -163,7 +163,7 @@ class PaymentsReportingRetrieverServiceImplTest {
     Pageable pageable = PageRequest.of(0, 10);
 
     PagedModelPaymentsReportingWithReceiptView pagedModelPaymentsReporting = new PagedModelPaymentsReportingWithReceiptView();
-    PagedPaymentsReportingWithReceiptViewRow expectedResult = new PagedPaymentsReportingWithReceiptViewRow();
+    PagedPaymentsReportingRow expectedResult = new PagedPaymentsReportingRow();
 
     try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(
       AuthorizationService.class)) {
@@ -175,11 +175,11 @@ class PaymentsReportingRetrieverServiceImplTest {
         iuf, iuv, payDateFilter, pageable, accessToken))
         .thenReturn(pagedModelPaymentsReporting);
 
-      when(paymentsReportingMapperMock.mapToPagedPaymentsReportingWithReceiptView(
+      when(paymentsReportingMapperMock.mapToPagedPaymentsReporting(
         pagedModelPaymentsReporting))
         .thenReturn(expectedResult);
 
-      PagedPaymentsReportingWithReceiptViewRow result = paymentsReportingRetrieverService.getPaymentsReportingRows(
+      PagedPaymentsReportingRow result = paymentsReportingRetrieverService.getPaymentsReportingRows(
         organizationId, iuf, iuv, payDateFilter, pageable, loggedUser,
         accessToken);
 

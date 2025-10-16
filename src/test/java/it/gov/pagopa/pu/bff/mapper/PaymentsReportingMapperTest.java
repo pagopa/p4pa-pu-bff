@@ -1,6 +1,6 @@
 package it.gov.pagopa.pu.bff.mapper;
 
-import it.gov.pagopa.pu.bff.dto.generated.PagedPaymentsReportingWithReceiptViewRow;
+import it.gov.pagopa.pu.bff.dto.generated.PagedPaymentsReportingRow;
 import it.gov.pagopa.pu.bff.dto.generated.PaymentsReportingDetailDTO;
 import it.gov.pagopa.pu.bff.dto.generated.ReceiptDetailDTO;
 import it.gov.pagopa.pu.bff.util.TestUtils;
@@ -28,11 +28,11 @@ class PaymentsReportingMapperTest {
   private final PodamFactory podamFactory = TestUtils.getPodamFactory();
 
   @Test
-  void givenPopulatedPagedModelWhenMapToPagedPaymentsReportingWithReceiptViewThenCorrectMapping() {
+  void givenPopulatedPagedModelWhenMapToPagedPaymentsReportingThenCorrectMapping() {
     PagedModelPaymentsReportingWithReceiptView pagedModelPaymentsReporting = podamFactory.manufacturePojo(
       PagedModelPaymentsReportingWithReceiptView.class);
 
-    PagedPaymentsReportingWithReceiptViewRow result = mapper.mapToPagedPaymentsReportingWithReceiptView(
+    PagedPaymentsReportingRow result = mapper.mapToPagedPaymentsReporting(
       pagedModelPaymentsReporting);
 
     assertNotNull(result);
@@ -57,7 +57,7 @@ class PaymentsReportingMapperTest {
     pagedModelPaymentsReporting.getEmbedded()
       .setPaymentsReportingWithReceiptViews(Collections.emptyList());
 
-    PagedPaymentsReportingWithReceiptViewRow result = mapper.mapToPagedPaymentsReportingWithReceiptView(
+    PagedPaymentsReportingRow result = mapper.mapToPagedPaymentsReporting(
       pagedModelPaymentsReporting);
 
     assertNotNull(result);
@@ -78,7 +78,7 @@ class PaymentsReportingMapperTest {
       PagedModelPaymentsReportingWithReceiptView.class);
     pagedModelPaymentsReporting.setPage(null);
 
-    PagedPaymentsReportingWithReceiptViewRow result = mapper.mapToPagedPaymentsReportingWithReceiptView(
+    PagedPaymentsReportingRow result = mapper.mapToPagedPaymentsReporting(
       pagedModelPaymentsReporting);
 
     assertNotNull(result);

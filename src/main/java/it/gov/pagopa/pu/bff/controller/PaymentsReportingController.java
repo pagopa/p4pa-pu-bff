@@ -2,8 +2,8 @@ package it.gov.pagopa.pu.bff.controller;
 
 import it.gov.pagopa.pu.bff.controller.generated.PaymentsReportingApi;
 import it.gov.pagopa.pu.bff.dto.LocalDateIntervalFilter;
+import it.gov.pagopa.pu.bff.dto.generated.PagedPaymentsReportingRow;
 import it.gov.pagopa.pu.bff.dto.generated.PagedPaymentsReportingView;
-import it.gov.pagopa.pu.bff.dto.generated.PagedPaymentsReportingWithReceiptViewRow;
 import it.gov.pagopa.pu.bff.dto.generated.PaymentsReportingDetailDTO;
 import it.gov.pagopa.pu.bff.security.SecurityUtils;
 import it.gov.pagopa.pu.bff.service.payments_reporting.PaymentsReportingRetrieverService;
@@ -35,7 +35,7 @@ public class PaymentsReportingController implements PaymentsReportingApi {
   }
 
   @Override
-  public ResponseEntity<PagedPaymentsReportingWithReceiptViewRow> getPaymentsReportingRows(
+  public ResponseEntity<PagedPaymentsReportingRow> getPaymentsReportingRows(
     Long organizationId, String iuf, String iuv, OffsetDateTime payDateTimeFrom,
     OffsetDateTime payDateTimeTo,
     Pageable pageable) {

@@ -52,13 +52,13 @@ public class PaymentsReportingRetrieverServiceImpl implements
   }
 
   @Override
-  public PagedPaymentsReportingWithReceiptViewRow getPaymentsReportingRows(Long organizationId,
+  public PagedPaymentsReportingRow getPaymentsReportingRows(Long organizationId,
                                                                            String iuf, String iuv, LocalDateIntervalFilter payDateFilter,
                                                                            Pageable pageable, UserInfo loggedUser, String accessToken) {
     AuthorizationService.validateUserForOrganizationId(organizationId,
       loggedUser);
 
-    return paymentsReportingMapper.mapToPagedPaymentsReportingWithReceiptView(
+    return paymentsReportingMapper.mapToPagedPaymentsReporting(
       paymentsReportingService.getPaymentsReportingRows(organizationId, iuf,
         iuv, payDateFilter, pageable, accessToken));
   }

@@ -1,6 +1,6 @@
 package it.gov.pagopa.pu.bff.mapper;
 
-import it.gov.pagopa.pu.bff.dto.generated.PagedPaymentsReportingWithReceiptViewRow;
+import it.gov.pagopa.pu.bff.dto.generated.PagedPaymentsReportingRow;
 import it.gov.pagopa.pu.bff.dto.generated.PaymentsReportingDetailDTO;
 import it.gov.pagopa.pu.bff.dto.generated.ReceiptDetailDTO;
 import it.gov.pagopa.pu.classification.dto.generated.PagedModelPaymentsReportingWithReceiptView;
@@ -14,27 +14,27 @@ import java.util.Collections;
 @Component
 public class PaymentsReportingMapper {
 
-  public PagedPaymentsReportingWithReceiptViewRow mapToPagedPaymentsReportingWithReceiptView(
+  public PagedPaymentsReportingRow mapToPagedPaymentsReporting(
     PagedModelPaymentsReportingWithReceiptView pagedModel) {
-    PagedPaymentsReportingWithReceiptViewRow pagedPaymentsReportingWithReceiptView = new PagedPaymentsReportingWithReceiptViewRow();
+    PagedPaymentsReportingRow pagedPaymentsReporting = new PagedPaymentsReportingRow();
     if (pagedModel != null) {
       if (pagedModel.getEmbedded() != null && !CollectionUtils.isEmpty(
         pagedModel.getEmbedded().getPaymentsReportingWithReceiptViews())) {
-        pagedPaymentsReportingWithReceiptView.setContent(
+        pagedPaymentsReporting.setContent(
           pagedModel.getEmbedded().getPaymentsReportingWithReceiptViews());
       } else {
-        pagedPaymentsReportingWithReceiptView.setContent(Collections.emptyList());
+        pagedPaymentsReporting.setContent(Collections.emptyList());
       }
       if (pagedModel.getPage() != null) {
-        pagedPaymentsReportingWithReceiptView.setTotalPages(
+        pagedPaymentsReporting.setTotalPages(
           pagedModel.getPage().getTotalPages());
-        pagedPaymentsReportingWithReceiptView.setSize(pagedModel.getPage().getSize());
-        pagedPaymentsReportingWithReceiptView.setNumber(pagedModel.getPage().getNumber());
-        pagedPaymentsReportingWithReceiptView.setTotalElements(
+        pagedPaymentsReporting.setSize(pagedModel.getPage().getSize());
+        pagedPaymentsReporting.setNumber(pagedModel.getPage().getNumber());
+        pagedPaymentsReporting.setTotalElements(
           pagedModel.getPage().getTotalElements());
       }
     }
-    return pagedPaymentsReportingWithReceiptView;
+    return pagedPaymentsReporting;
   }
 
   public PaymentsReportingDetailDTO mapToPaymentsReportingDetailDTO(

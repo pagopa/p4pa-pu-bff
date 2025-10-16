@@ -20,9 +20,13 @@ import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelDebtPositionTypeOr
 import it.gov.pagopa.pu.debtpositions.dto.generated.SaveDebtPositionTypeOrgDTO;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -259,6 +263,28 @@ class DebtPositionTypeOrgServiceTest {
     CollectionModelDebtPositionTypeOrg result = service.getByDebtPositionTypeOrgIdIn(debtPositionTypeOrgIds, accessToken);
 
     assertSame(expectedResult, result);
+  }
+
+  @ParameterizedTest
+  @MethodSource("isSpontaneousFormReferencedByDptoSource")
+  void whenIsSpontaneousFormReferencedByDptoThenInvokeClient(long count, boolean expectedResult) {
+    Long spontaneousFormId = 1L;
+    String accessToken = "ACCESSTOKEN";
+
+    when(debtPositionTypeOrgSearchClientMock.countBySpontaneousFormId(spontaneousFormId, accessToken))
+      .thenReturn(count);
+
+    boolean result = service.isSpontaneousFormReferencedByDpto(spontaneousFormId, accessToken);
+
+    assertSame(expectedResult, result);
+  }
+
+  static Stream<Arguments> isSpontaneousFormReferencedByDptoSource() {
+    return Stream.of(
+        Arguments.of(0L, false),
+        Arguments.of(1L, true),
+        Arguments.of(2L, true)
+    );
   }
 }
 

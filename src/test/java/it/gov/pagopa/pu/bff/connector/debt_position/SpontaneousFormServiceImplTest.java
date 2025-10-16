@@ -1,6 +1,7 @@
 package it.gov.pagopa.pu.bff.connector.debt_position;
 
 import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
 import it.gov.pagopa.pu.bff.connector.debt_position.client.SpontaneousFormClient;
@@ -100,5 +101,17 @@ class SpontaneousFormServiceImplTest {
     SpontaneousForm result = service.createSpontaneousForm(expectedResult, accessToken);
 
     assertSame(expectedResult, result);
+  }
+
+  @Test
+  void whenDeleteSpontaneousFormThenInvokeClient() {
+    String accessToken = "ACCESSTOKEN";
+    Long spontaneousFormId = 1L;
+
+    doNothing().when(spontaneousFormClientMock).deleteSpontaneousForm(spontaneousFormId, accessToken);
+
+    service.deleteSpontaneousForm(spontaneousFormId, accessToken);
+
+    Mockito.verifyNoMoreInteractions(spontaneousFormSearchClientMock);
   }
 }

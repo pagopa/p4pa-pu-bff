@@ -46,4 +46,11 @@ public class SpontaneousFormController implements SpontaneousFormsApi {
     return ResponseEntity.status(HttpStatus.CREATED)
         .body(spontaneousFormRetrieverService.createSpontaneousForm(organizationId, spontaneousForm, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken()));
   }
+
+  @Override
+  public ResponseEntity<Void> deleteSpontaneousForm(Long organizationId, Long spontaneousFormId) {
+    log.info("User requested deleteSpontaneousForm having organizationId {} and spontaneousFormId {}", organizationId, spontaneousFormId);
+    spontaneousFormRetrieverService.deleteSpontaneousForm(organizationId, spontaneousFormId, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken());
+    return ResponseEntity.ok().build();
+  }
 }

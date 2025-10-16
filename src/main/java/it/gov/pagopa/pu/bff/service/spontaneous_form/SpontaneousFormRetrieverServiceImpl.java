@@ -1,6 +1,7 @@
 package it.gov.pagopa.pu.bff.service.spontaneous_form;
 
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
+import it.gov.pagopa.pu.bff.connector.debt_position.DebtPositionTypeOrgService;
 import it.gov.pagopa.pu.bff.connector.debt_position.SpontaneousFormService;
 import it.gov.pagopa.pu.bff.dto.generated.PagedSpontaneousForm;
 import it.gov.pagopa.pu.bff.exception.ConflictException;
@@ -23,12 +24,14 @@ public class SpontaneousFormRetrieverServiceImpl implements SpontaneousFormRetri
   private final SpontaneousFormService spontaneousFormService;
   private final PagedSpontaneousFormMapper pagedSpontaneousFormMapper;
   private final AuthorizationService authorizationService;
+  private final DebtPositionTypeOrgService debtPositionTypeOrgService;
 
   public SpontaneousFormRetrieverServiceImpl(SpontaneousFormService spontaneousFormService, PagedSpontaneousFormMapper pagedSpontaneousFormMapper,
-      AuthorizationService authorizationService) {
+      AuthorizationService authorizationService, DebtPositionTypeOrgService debtPositionTypeOrgService) {
     this.spontaneousFormService = spontaneousFormService;
     this.pagedSpontaneousFormMapper = pagedSpontaneousFormMapper;
     this.authorizationService = authorizationService;
+    this.debtPositionTypeOrgService = debtPositionTypeOrgService;
   }
 
   @Override
@@ -39,8 +42,12 @@ public class SpontaneousFormRetrieverServiceImpl implements SpontaneousFormRetri
 
   @Override
   public SpontaneousForm getSpontaneousFormAndValidate(Long spontaneousFormId, DebtPositionTypeOrg debtPositionTypeOrg, String accessToken) {
+    return getSpontaneousFormAndValidate(spontaneousFormId, debtPositionTypeOrg.getOrganizationId(), accessToken);
+  }
+
+  private SpontaneousForm getSpontaneousFormAndValidate(Long spontaneousFormId, Long organizationId, String accessToken) {
     SpontaneousForm spontaneousForm = spontaneousFormService.getSpontaneousForm(spontaneousFormId, accessToken);
-    validateRetrievedSpontaneousForm(spontaneousForm, debtPositionTypeOrg.getOrganizationId(), debtPositionTypeOrg.getSpontaneousFormId());
+    validateRetrievedSpontaneousForm(spontaneousForm, organizationId, spontaneousFormId);
     return spontaneousForm;
   }
 
@@ -100,5 +107,15 @@ public class SpontaneousFormRetrieverServiceImpl implements SpontaneousFormRetri
         .isPresent()){
       throw new ConflictException("There is another SpontaneousForm with organizationId "+ spontaneousForm.getOrganizationId()+" and code "+ spontaneousForm.getCode());
     }
+  }
+
+  @Override
+  public void deleteSpontaneousForm(Long organizationId, Long spontaneousFormId, UserInfo loggedUser, String accessToken) {
+    authorizationService.validateAdminRole(organizationId, loggedUser);
+    getSpontaneousFormAndValidate(spontaneousFormId, organizationId, accessToken);
+    if(debtPositionTypeOrgService.isSpontaneousFormReferencedByDpto(spontaneousFormId, accessToken)){
+      throw new ConflictException("The SpontaneousForm having id "+ spontaneousFormId +" is referenced by some DebtPositionTypeOrgs");
+    }
+    spontaneousFormService.deleteSpontaneousForm(spontaneousFormId,accessToken);
   }
 }

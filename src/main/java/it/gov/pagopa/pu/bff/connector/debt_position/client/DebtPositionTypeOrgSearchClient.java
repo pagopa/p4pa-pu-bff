@@ -85,4 +85,10 @@ public class DebtPositionTypeOrgSearchClient {
         PageUtils.getPageSize(pageable),
         PageUtils.getSortList(pageable));
   }
+
+  public long countBySpontaneousFormId(Long spontaneousFormId, String accessToken) {
+    return debtPositionApisHolder.getDebtPositionTypeOrgSearchControllerApi(accessToken)
+        .crudDebtPositionTypeOrgsCountBySpontaneousFormId(
+        spontaneousFormId);
+  }
 }

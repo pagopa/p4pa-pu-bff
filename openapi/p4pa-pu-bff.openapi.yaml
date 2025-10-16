@@ -3724,6 +3724,36 @@ paths:
           description: Not found
         '500':
           description: Internal Server Error
+    delete:
+      tags:
+        - SpontaneousForms
+      operationId: deleteSpontaneousForm
+      parameters:
+        - name: organizationId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: spontaneousFormId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+        '401':
+          description: Unauthorized - Missing or invalid token
+        '403':
+          description: Forbidden - Access denied
+        '404':
+          description: Not found
+        '409':
+          description: Conflict
+        '500':
+          description: Internal Server Error
   /organization/{organizationId}/spontaneous-forms/paged:
     get:
       tags:

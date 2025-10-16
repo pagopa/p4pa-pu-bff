@@ -42,4 +42,9 @@ public class SpontaneousFormServiceImpl implements SpontaneousFormService {
   public SpontaneousForm createSpontaneousForm(SpontaneousForm spontaneousForm, String accessToken) {
     return spontaneousFormClient.createSpontaneousForm(spontaneousForm,accessToken);
   }
+
+  @Override
+  public void deleteSpontaneousForm(Long spontaneousFormId, String accessToken) {
+    spontaneousFormClient.deleteSpontaneousForm(spontaneousFormId, accessToken);
+  }
 }

@@ -108,4 +108,9 @@ public class DebtPositionTypeOrgServiceImpl implements DebtPositionTypeOrgServic
   public CollectionModelDebtPositionTypeOrg getByDebtPositionTypeOrgIdIn(Set<Long> debtPositionTypeOrgIds, String accessToken) {
     return debtPositionTypeOrgClient.getByDebtPositionTypeOrgIdIn(debtPositionTypeOrgIds, accessToken);
   }
+
+  @Override
+  public boolean isSpontaneousFormReferencedByDpto(Long spontaneousFormId, String accessToken) {
+    return debtPositionTypeOrgSearchClient.countBySpontaneousFormId(spontaneousFormId,accessToken) > 0L;
+  }
 }

@@ -34,6 +34,7 @@ class OrganizationDTOMapperTest {
     organization.setFlagNotifyOutcomePush(false);
     organization.setFlagPaymentNotification(false);
     organization.setStatus(OrganizationStatus.ACTIVE);
+    organization.setBrokerId(1L);
 
     OrganizationDTO result = mapper.mapToOrganizationDTO(organization, roles);
 
@@ -76,6 +77,7 @@ class OrganizationDTOMapperTest {
     organization.setFlagNotifyOutcomePush(false);
     organization.setFlagPaymentNotification(false);
     organization.setStatus(OrganizationStatus.ACTIVE);
+    organization.setBrokerId(1L);
 
     OrganizationDTO result = mapper.mapToOrganizationDTO(organization, Collections.emptyList());
 

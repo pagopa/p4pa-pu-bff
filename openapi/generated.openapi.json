@@ -8957,9 +8957,6 @@
             "type" : "integer",
             "format" : "int64"
           },
-          "flagTreasury" : {
-            "type" : "boolean"
-          },
           "externalOrganizationId" : {
             "type" : "string"
           },
@@ -9026,6 +9023,9 @@
             "type" : "boolean"
           },
           "flagPaymentNotification" : {
+            "type" : "boolean"
+          },
+          "flagTreasury" : {
             "type" : "boolean"
           },
           "pdndEnabled" : {
@@ -10820,9 +10820,13 @@
           },
           "status" : {
             "$ref" : "#/components/schemas/OrganizationStatus"
+          },
+          "brokerId" : {
+            "type" : "integer",
+            "format" : "int64"
           }
         },
-        "required" : [ "flagNotifyIo", "flagNotifyOutcomePush", "flagPaymentNotification", "ipaCode", "operatorRole", "orgFiscalCode", "orgName", "organizationId", "status" ]
+        "required" : [ "brokerId", "flagNotifyIo", "flagNotifyOutcomePush", "flagPaymentNotification", "ipaCode", "operatorRole", "orgFiscalCode", "orgName", "organizationId", "status" ]
       },
       "OrganizationDetail" : {
         "type" : "object",

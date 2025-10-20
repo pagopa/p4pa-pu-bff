@@ -3931,6 +3931,7 @@ components:
         - flagNotifyOutcomePush
         - flagPaymentNotification
         - status
+        - brokerId
       properties:
         organizationId:
           type: integer
@@ -3958,6 +3959,9 @@ components:
           type: boolean
         status:
           type: 'OrganizationStatus'
+        brokerId:
+          type: integer
+          format: int64
     ConfigFE:
       type: object
       required:

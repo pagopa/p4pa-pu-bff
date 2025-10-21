@@ -39,9 +39,9 @@ public class IngestionFlowFileMapper {
     return mappedIngestionFlowFile;
   }
 
-  private IngestionFlowFile mapToIngestionFlowFile(
-    it.gov.pagopa.pu.processexecutions.dto.generated.IngestionFlowFile ingestionFlowFile,
+  private IngestionFlowFile mapToIngestionFlowFile(it.gov.pagopa.pu.processexecutions.dto.generated.IngestionFlowFile ingestionFlowFile,
     UserInfo userInfo, String accessToken) {
+
     return IngestionFlowFile.builder()
       .ingestionFlowFileId(ingestionFlowFile.getIngestionFlowFileId())
       .fileName(ingestionFlowFile.getFileName())
@@ -53,6 +53,8 @@ public class IngestionFlowFileMapper {
       .correctlyImportedRows(ingestionFlowFile.getNumCorrectlyImportedRows())
       .discardedRows(getDiscardedRows(ingestionFlowFile))
       .status(ingestionFlowFile.getStatus())
+      .errorDescription(ingestionFlowFile.getErrorDescription())
+      .discardFileName(ingestionFlowFile.getDiscardFileName())
       .build();
   }
 

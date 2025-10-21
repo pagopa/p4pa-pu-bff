@@ -4354,6 +4354,10 @@ components:
           format: int64
         status:
           type: 'IngestionFlowFileStatus'
+        discardFileName:
+          type: string
+        errorDescription:
+          type: string
     PagedExportFile:
       type: object
       required:

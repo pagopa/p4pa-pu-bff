@@ -149,6 +149,147 @@ class PaymentsReportingRetrieverServiceImplTest {
   }
 
   @Test
+  void givenNoFiltersWhenGetPaymentsReportingThenThrowException() {
+    UserInfo loggedUser = new UserInfo();
+    loggedUser.setUserId("user-123");
+    long organizationId = 1L;
+    Pageable pageable = PageRequest.of(0, 10);
+
+    try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(
+      AuthorizationService.class)) {
+      authorizationServiceMockedStatic.when(
+          () -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser))
+        .thenAnswer(a -> null);
+
+      assertThrows(IllegalArgumentException.class, () ->
+        paymentsReportingRetrieverService.getPaymentsReporting(
+          organizationId, null, null, null, null, pageable, loggedUser, accessToken));
+    }
+  }
+
+  @Test
+  void givenPartialDateRangeWhenGetPaymentsReportingThenThrowException() {
+    UserInfo loggedUser = new UserInfo();
+    loggedUser.setUserId("user-123");
+    long organizationId = 1L;
+    Pageable pageable = PageRequest.of(0, 10);
+
+    LocalDateIntervalFilter regulationDateFilter = new LocalDateIntervalFilter(LocalDate.now(), null);
+
+    try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(
+      AuthorizationService.class)) {
+      authorizationServiceMockedStatic.when(
+          () -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser))
+        .thenAnswer(a -> null);
+
+      assertThrows(IllegalArgumentException.class, () ->
+        paymentsReportingRetrieverService.getPaymentsReporting(
+          organizationId, null, null, regulationDateFilter, null, pageable, loggedUser, accessToken));
+    }
+  }
+
+  @Test
+  void givenCompleteDateRangeWhenGetPaymentsReportingThenOk() {
+    UserInfo loggedUser = new UserInfo();
+    loggedUser.setUserId("user-123");
+    long organizationId = 1L;
+    Pageable pageable = PageRequest.of(0, 10);
+
+    LocalDateIntervalFilter regulationDateFilter = new LocalDateIntervalFilter(
+      LocalDate.now().minusDays(5), LocalDate.now());
+
+    PagedModelPaymentsReportingView pagedModelPaymentsReportingView = new PagedModelPaymentsReportingView();
+    PagedPaymentsReportingView expected = new PagedPaymentsReportingView();
+
+    try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(
+      AuthorizationService.class)) {
+      authorizationServiceMockedStatic.when(
+          () -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser))
+        .thenAnswer(a -> null);
+
+      when(paymentsReportingServiceMock.getPaymentsReporting(
+        organizationId, null, null, regulationDateFilter, null, pageable, accessToken))
+        .thenReturn(pagedModelPaymentsReportingView);
+
+      when(paymentsReportingViewMapperMock.mapToPagedPaymentsReporting(pagedModelPaymentsReportingView))
+        .thenReturn(expected);
+
+      PagedPaymentsReportingView result = paymentsReportingRetrieverService.getPaymentsReporting(
+        organizationId, null, null, regulationDateFilter, null, pageable, loggedUser, accessToken);
+
+      assertNotNull(result);
+      assertSame(expected, result);
+    }
+  }
+
+  @Test
+  void givenOnlyIufWhenGetPaymentsReportingThenOk() {
+    UserInfo loggedUser = new UserInfo();
+    loggedUser.setUserId("user-123");
+    long organizationId = 1L;
+    Pageable pageable = PageRequest.of(0, 10);
+    String iuf = "IUF-001";
+
+    PagedModelPaymentsReportingView pagedModelPaymentsReportingView = new PagedModelPaymentsReportingView();
+    PagedPaymentsReportingView expected = new PagedPaymentsReportingView();
+
+    try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(
+      AuthorizationService.class)) {
+      authorizationServiceMockedStatic.when(
+          () -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser))
+        .thenAnswer(a -> null);
+
+      when(paymentsReportingServiceMock.getPaymentsReporting(
+        organizationId, iuf, null, null, null, pageable, accessToken))
+        .thenReturn(pagedModelPaymentsReportingView);
+
+      when(paymentsReportingViewMapperMock.mapToPagedPaymentsReporting(pagedModelPaymentsReportingView))
+        .thenReturn(expected);
+
+      PagedPaymentsReportingView result = paymentsReportingRetrieverService.getPaymentsReporting(
+        organizationId, iuf, null, null, null, pageable, loggedUser, accessToken);
+
+      assertNotNull(result);
+      assertSame(expected, result);
+    }
+  }
+
+  @Test
+  void givenMultipleFiltersWhenGetPaymentsReportingThenOk() {
+    UserInfo loggedUser = new UserInfo();
+    loggedUser.setUserId("user-123");
+    long organizationId = 1L;
+    Pageable pageable = PageRequest.of(0, 10);
+    String iuf = "IUF-001";
+    String regulationUniqueIdentifier = "REG-123";
+    String iuv = "IUV-123";
+    LocalDateIntervalFilter regulationDateFilter = new LocalDateIntervalFilter(LocalDate.now().minusDays(10), LocalDate.now());
+
+    PagedModelPaymentsReportingView pagedModelPaymentsReportingView = new PagedModelPaymentsReportingView();
+    PagedPaymentsReportingView expected = new PagedPaymentsReportingView();
+
+    try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(
+      AuthorizationService.class)) {
+      authorizationServiceMockedStatic.when(
+          () -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser))
+        .thenAnswer(a -> null);
+
+      when(paymentsReportingServiceMock.getPaymentsReporting(
+        organizationId, iuf, regulationUniqueIdentifier, regulationDateFilter, iuv, pageable, accessToken))
+        .thenReturn(pagedModelPaymentsReportingView);
+
+      when(paymentsReportingViewMapperMock.mapToPagedPaymentsReporting(pagedModelPaymentsReportingView))
+        .thenReturn(expected);
+
+      PagedPaymentsReportingView result = paymentsReportingRetrieverService.getPaymentsReporting(
+        organizationId, iuf, regulationUniqueIdentifier, regulationDateFilter, iuv, pageable, loggedUser, accessToken);
+
+      assertNotNull(result);
+      assertSame(expected, result);
+    }
+  }
+
+  @Test
   void givenValidUserWhenGetPaymentsReportingRowsThenOk() {
     UserInfo loggedUser = new UserInfo();
     loggedUser.setUserId("user-123");

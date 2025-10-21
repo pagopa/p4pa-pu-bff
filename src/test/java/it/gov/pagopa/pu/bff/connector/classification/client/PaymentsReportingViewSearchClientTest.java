@@ -59,7 +59,7 @@ class PaymentsReportingViewSearchClientTest {
     when(classificationApisHolderMock.getPaymentsReportingViewSearchControllerApi(accessToken))
       .thenReturn(paymentsReportingViewSearchControllerApiMock);
 
-    when(paymentsReportingViewSearchControllerApiMock.crudPaymentsReportingViewFindDistinctByIufAndRegulationUniqueIdentifierAndIuv(
+    when(paymentsReportingViewSearchControllerApiMock.crudPaymentsReportingViewFindDistinctByIufAndRegulationUniqueIdentifier(
       String.valueOf(organizationId),
       iuf,
       regulationUniqueIdentifier,

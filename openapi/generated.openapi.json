@@ -12662,6 +12662,12 @@
           },
           "status" : {
             "$ref" : "#/components/schemas/IngestionFlowFileStatus"
+          },
+          "discardFileName" : {
+            "type" : "string"
+          },
+          "errorDescription" : {
+            "type" : "string"
           }
         },
         "required" : [ "creationDate", "fileName", "ingestionFlowFileId", "operator", "status" ]

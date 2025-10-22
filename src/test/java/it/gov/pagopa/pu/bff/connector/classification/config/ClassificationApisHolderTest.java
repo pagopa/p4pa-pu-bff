@@ -204,7 +204,7 @@ class ClassificationApisHolderTest extends BaseApiHolderTest {
   void whenGetClassificationSearchControllerApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
     assertAuthenticationShouldBeSetInThreadSafeMode(
       accessToken -> classificationApisHolder.getClassificationSearchControllerApi(accessToken)
-        .crudClassificationsFindByFilters(1L, "iuv", List.of("code"), Collections.emptyList(), 1,1, Collections.emptyList()),
+        .crudClassificationsFindByFilters(1L, "iuv", "iuf", List.of("code"), Collections.emptyList(), 1,1, Collections.emptyList()),
       new ParameterizedTypeReference<>() {
       },
       classificationApisHolder::unload);

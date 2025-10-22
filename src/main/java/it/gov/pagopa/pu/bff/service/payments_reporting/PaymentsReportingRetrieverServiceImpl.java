@@ -46,7 +46,7 @@ public class PaymentsReportingRetrieverServiceImpl implements
     AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser);
 
     return paymentsReportingService.getPaymentsReporting(organizationId, iuf, accessToken);
-  };
+  }
 
   @Override
   public PagedPaymentsReportingView getPaymentsReportingView(Long organizationId, String iuf, String regulationUniqueIdentifier, LocalDateIntervalFilter regulationDateFilter, String iuv, Pageable pageable, UserInfo loggedUser, String accessToken) {

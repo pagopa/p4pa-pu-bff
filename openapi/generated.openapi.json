@@ -10065,6 +10065,10 @@
             "type" : "integer",
             "format" : "int64"
           },
+          "debtPositionTypeOrgId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
           "debtPositionTypeOrgCode" : {
             "type" : "string"
           },
@@ -10090,7 +10094,7 @@
             }
           }
         },
-        "required" : [ "assessmentName", "debtPositionTypeOrgCode", "flagManualGeneration", "operatorExternalUserId", "organizationId", "printed", "status" ]
+        "required" : [ "assessmentName", "debtPositionTypeOrgCode", "debtPositionTypeOrgId", "flagManualGeneration", "operatorExternalUserId", "organizationId", "printed", "status" ]
       },
       "AssessmentsDetail" : {
         "type" : "object",
@@ -10121,6 +10125,10 @@
             "type" : "integer",
             "format" : "int64"
           },
+          "debtPositionTypeOrgId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
           "debtPositionTypeOrgCode" : {
             "type" : "string"
           },
@@ -10144,10 +10152,19 @@
           "officeCode" : {
             "type" : "string"
           },
+          "officeDescription" : {
+            "type" : "string"
+          },
           "sectionCode" : {
             "type" : "string"
           },
+          "sectionDescription" : {
+            "type" : "string"
+          },
           "assessmentCode" : {
+            "type" : "string"
+          },
+          "assessmentDescription" : {
             "type" : "string"
           },
           "amountCents" : {
@@ -10161,6 +10178,21 @@
             "type" : "integer",
             "format" : "int64"
           },
+          "classificationLabel" : {
+            "$ref" : "#/components/schemas/ClassificationLabel"
+          },
+          "dateReceipt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "dateReporting" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "dateTreasury" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
           "_links" : {
             "type" : "object",
             "additionalProperties" : {
@@ -10168,7 +10200,11 @@
             }
           }
         },
-        "required" : [ "amountCents", "amountSubmitted", "assessmentId", "debtPositionTypeOrgCode", "debtorFiscalCodeHash", "iud", "iur", "iuv", "organizationId", "sectionCode" ]
+        "required" : [ "amountCents", "amountSubmitted", "assessmentId", "debtPositionTypeOrgCode", "debtPositionTypeOrgId", "debtorFiscalCodeHash", "iud", "iur", "iuv", "organizationId", "sectionCode" ]
+      },
+      "ClassificationLabel" : {
+        "type" : "string",
+        "enum" : [ "PAID", "REPORTED", "CASHED" ]
       },
       "CreateAssessmentsDetail" : {
         "type" : "object",
@@ -13764,6 +13800,10 @@
           "installmentBalance" : {
             "type" : "string"
           },
+          "calculatedAmount" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
           "treasuryBillYear" : {
             "type" : "string"
           },
@@ -13986,6 +14026,10 @@
             "type" : "integer",
             "format" : "int64"
           },
+          "debtPositionTypeOrgId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
           "debtPositionTypeOrgCode" : {
             "type" : "string"
           },
@@ -14020,7 +14064,7 @@
             "type" : "string"
           }
         },
-        "required" : [ "assessmentName", "debtPositionTypeOrgCode", "flagManualGeneration", "operatorExternalUserId", "organizationId", "printed", "status" ]
+        "required" : [ "assessmentName", "debtPositionTypeOrgCode", "debtPositionTypeOrgId", "flagManualGeneration", "operatorExternalUserId", "organizationId", "printed", "status" ]
       },
       "PagedAssessmentsExtendedDTO" : {
         "type" : "object",

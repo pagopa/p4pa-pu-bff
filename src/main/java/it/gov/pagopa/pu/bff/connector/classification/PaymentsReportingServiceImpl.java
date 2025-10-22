@@ -10,6 +10,8 @@ import it.gov.pagopa.pu.classification.dto.generated.PaymentsReporting;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class PaymentsReportingServiceImpl implements PaymentsReportingService {
 
@@ -27,7 +29,12 @@ public class PaymentsReportingServiceImpl implements PaymentsReportingService {
   }
 
   @Override
-  public PagedModelPaymentsReportingView getPaymentsReporting(
+  public List<PaymentsReporting> getPaymentsReporting(Long organizationId, String iuf, String accessToken) {
+    return paymentsReportingSearchClient.getPaymentsReporting(organizationId, iuf, accessToken);
+  }
+
+  @Override
+  public PagedModelPaymentsReportingView getPaymentsReportingView(
     Long organizationId, String iuf, String regulationUniqueIdentifier,
     LocalDateIntervalFilter regulationDateFilter, String iuv,
     Pageable pageable, String accessToken) {

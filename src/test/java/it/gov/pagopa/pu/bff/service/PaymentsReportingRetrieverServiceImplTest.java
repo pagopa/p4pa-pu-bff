@@ -93,7 +93,7 @@ class PaymentsReportingRetrieverServiceImplTest {
         .thenAnswer(a->null);
 
       when(
-        paymentsReportingServiceMock.getPaymentsReporting(organizationId, iuf,
+        paymentsReportingServiceMock.getPaymentsReportingView(organizationId, iuf,
           regulationUniqueIdentifier, regulationDateFilter, iuv, pageable,
           accessToken))
         .thenReturn(pagedModelPaymentsReportingView);
@@ -102,7 +102,7 @@ class PaymentsReportingRetrieverServiceImplTest {
         pagedModelPaymentsReportingView))
         .thenReturn(expectedPagedPaymentsReportingView);
 
-      PagedPaymentsReportingView result = paymentsReportingRetrieverService.getPaymentsReporting(
+      PagedPaymentsReportingView result = paymentsReportingRetrieverService.getPaymentsReportingView(
         organizationId, iuf, regulationUniqueIdentifier, regulationDateFilter,
         iuv, pageable, loggedUser, accessToken);
 
@@ -138,7 +138,7 @@ class PaymentsReportingRetrieverServiceImplTest {
         .thenThrow(new AuthorizationDeniedException("Access denied"));
 
       assertThrows(AuthorizationDeniedException.class, () ->
-        paymentsReportingRetrieverService.getPaymentsReporting(organizationId,
+        paymentsReportingRetrieverService.getPaymentsReportingView(organizationId,
           iuf, regulationUniqueIdentifier, regulationDateFilter, iuv, pageable,
           loggedUser, accessToken));
 
@@ -162,7 +162,7 @@ class PaymentsReportingRetrieverServiceImplTest {
         .thenAnswer(a -> null);
 
       assertThrows(IllegalArgumentException.class, () ->
-        paymentsReportingRetrieverService.getPaymentsReporting(
+        paymentsReportingRetrieverService.getPaymentsReportingView(
           organizationId, null, null, null, null, pageable, loggedUser, accessToken));
     }
   }
@@ -183,7 +183,7 @@ class PaymentsReportingRetrieverServiceImplTest {
         .thenAnswer(a -> null);
 
       assertThrows(IllegalArgumentException.class, () ->
-        paymentsReportingRetrieverService.getPaymentsReporting(
+        paymentsReportingRetrieverService.getPaymentsReportingView(
           organizationId, null, null, regulationDateFilter, null, pageable, loggedUser, accessToken));
     }
   }
@@ -207,14 +207,14 @@ class PaymentsReportingRetrieverServiceImplTest {
           () -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser))
         .thenAnswer(a -> null);
 
-      when(paymentsReportingServiceMock.getPaymentsReporting(
+      when(paymentsReportingServiceMock.getPaymentsReportingView(
         organizationId, null, null, regulationDateFilter, null, pageable, accessToken))
         .thenReturn(pagedModelPaymentsReportingView);
 
       when(paymentsReportingViewMapperMock.mapToPagedPaymentsReporting(pagedModelPaymentsReportingView))
         .thenReturn(expected);
 
-      PagedPaymentsReportingView result = paymentsReportingRetrieverService.getPaymentsReporting(
+      PagedPaymentsReportingView result = paymentsReportingRetrieverService.getPaymentsReportingView(
         organizationId, null, null, regulationDateFilter, null, pageable, loggedUser, accessToken);
 
       assertNotNull(result);
@@ -239,14 +239,14 @@ class PaymentsReportingRetrieverServiceImplTest {
           () -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser))
         .thenAnswer(a -> null);
 
-      when(paymentsReportingServiceMock.getPaymentsReporting(
+      when(paymentsReportingServiceMock.getPaymentsReportingView(
         organizationId, iuf, null, null, null, pageable, accessToken))
         .thenReturn(pagedModelPaymentsReportingView);
 
       when(paymentsReportingViewMapperMock.mapToPagedPaymentsReporting(pagedModelPaymentsReportingView))
         .thenReturn(expected);
 
-      PagedPaymentsReportingView result = paymentsReportingRetrieverService.getPaymentsReporting(
+      PagedPaymentsReportingView result = paymentsReportingRetrieverService.getPaymentsReportingView(
         organizationId, iuf, null, null, null, pageable, loggedUser, accessToken);
 
       assertNotNull(result);
@@ -274,14 +274,14 @@ class PaymentsReportingRetrieverServiceImplTest {
           () -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser))
         .thenAnswer(a -> null);
 
-      when(paymentsReportingServiceMock.getPaymentsReporting(
+      when(paymentsReportingServiceMock.getPaymentsReportingView(
         organizationId, iuf, regulationUniqueIdentifier, regulationDateFilter, iuv, pageable, accessToken))
         .thenReturn(pagedModelPaymentsReportingView);
 
       when(paymentsReportingViewMapperMock.mapToPagedPaymentsReporting(pagedModelPaymentsReportingView))
         .thenReturn(expected);
 
-      PagedPaymentsReportingView result = paymentsReportingRetrieverService.getPaymentsReporting(
+      PagedPaymentsReportingView result = paymentsReportingRetrieverService.getPaymentsReportingView(
         organizationId, iuf, regulationUniqueIdentifier, regulationDateFilter, iuv, pageable, loggedUser, accessToken);
 
       assertNotNull(result);

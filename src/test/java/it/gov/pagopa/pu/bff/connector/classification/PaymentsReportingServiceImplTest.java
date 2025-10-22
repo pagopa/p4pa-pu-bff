@@ -53,7 +53,7 @@ class PaymentsReportingServiceImplTest {
       paymentsReportingViewSearchClientMock.getPaymentsReporting(organizationId, iuf, regulationUniqueIdentifier, regulationDateFilter, iuv, pageable, accessToken))
       .thenReturn(expectedResult);
 
-    PagedModelPaymentsReportingView result = service.getPaymentsReporting(organizationId, iuf, regulationUniqueIdentifier, regulationDateFilter, iuv, pageable, accessToken);
+    PagedModelPaymentsReportingView result = service.getPaymentsReportingView(organizationId, iuf, regulationUniqueIdentifier, regulationDateFilter, iuv, pageable, accessToken);
 
     assertSame(expectedResult, result);
   }

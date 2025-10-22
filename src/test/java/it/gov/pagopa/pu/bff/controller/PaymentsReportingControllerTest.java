@@ -91,7 +91,7 @@ class PaymentsReportingControllerTest {
     expectedResult.setTotalPages(1L);
     expectedResult.setNumber(0L);
 
-    Mockito.when(paymentsReportingRetrieverServiceMock.getPaymentsReporting(organizationId, iuf, regulationUniqueIdentifier, regulationDateFilter,
+    Mockito.when(paymentsReportingRetrieverServiceMock.getPaymentsReportingView(organizationId, iuf, regulationUniqueIdentifier, regulationDateFilter,
       iuv, pageable, loggedUser, accessToken))
       .thenReturn(expectedResult);
 

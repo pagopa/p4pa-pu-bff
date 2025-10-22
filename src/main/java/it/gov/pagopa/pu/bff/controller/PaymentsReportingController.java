@@ -30,7 +30,7 @@ public class PaymentsReportingController implements PaymentsReportingApi {
     log.info("User requested getPaymentsReporting having organizationId {}", organizationId);
     LocalDateIntervalFilter regulationDateFilter = new LocalDateIntervalFilter(DateUtils.fromOffsetDateTimeToLocalDate(regulationDateTimeFrom), DateUtils.fromOffsetDateTimeToLocalDate(regulationDateTimeTo));
 
-    return ResponseEntity.ok(paymentsReportingRetrieverService.getPaymentsReporting(
+    return ResponseEntity.ok(paymentsReportingRetrieverService.getPaymentsReportingView(
       organizationId, iuf, regulationUniqueIdentifier, regulationDateFilter, iuv, pageable, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken()));
   }
 

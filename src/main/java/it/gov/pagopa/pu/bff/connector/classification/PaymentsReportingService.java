@@ -6,9 +6,13 @@ import it.gov.pagopa.pu.classification.dto.generated.PagedModelPaymentsReporting
 import it.gov.pagopa.pu.classification.dto.generated.PaymentsReporting;
 import org.springframework.data.domain.Pageable;
 
+import java.util.List;
+
 public interface PaymentsReportingService {
 
-  PagedModelPaymentsReportingView getPaymentsReporting(Long organizationId,
+  List<PaymentsReporting> getPaymentsReporting(Long organizationId, String iuf, String accessToken);
+
+  PagedModelPaymentsReportingView getPaymentsReportingView(Long organizationId,
     String iuf, String regulationUniqueIdentifier,
     LocalDateIntervalFilter regulationDateFilter, String iuv,
     Pageable pageable, String accessToken);

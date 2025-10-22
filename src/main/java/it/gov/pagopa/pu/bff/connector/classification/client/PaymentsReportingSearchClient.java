@@ -1,10 +1,15 @@
 package it.gov.pagopa.pu.bff.connector.classification.client;
 
 import it.gov.pagopa.pu.bff.connector.classification.config.ClassificationApisHolder;
+import it.gov.pagopa.pu.classification.dto.generated.PagedModelPaymentsReportingEmbedded;
 import it.gov.pagopa.pu.classification.dto.generated.PaymentsReporting;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -26,5 +31,15 @@ public class PaymentsReportingSearchClient {
       log.warn("PaymentsReporting with paymentsReportingId {} not found", paymentsReportingId);
       return null;
     }
+  }
+
+  public List<PaymentsReporting> getPaymentsReporting(Long organizationId, String iuf, String accessToken) {
+    PagedModelPaymentsReportingEmbedded modelPaymentsReportingEmbedded = classificationApisHolder
+      .getPaymentsReportingSearchControllerApi(accessToken)
+      .crudPaymentsReportingFindByOrganizationIdAndIuf(organizationId, iuf).getEmbedded();
+
+    return Optional.ofNullable(modelPaymentsReportingEmbedded)
+      .map(PagedModelPaymentsReportingEmbedded::getPaymentsReportings)
+      .orElse(Collections.emptyList());
   }
 }

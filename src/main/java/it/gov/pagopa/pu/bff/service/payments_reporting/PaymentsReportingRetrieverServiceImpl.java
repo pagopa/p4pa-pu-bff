@@ -16,6 +16,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class PaymentsReportingRetrieverServiceImpl implements
   PaymentsReportingRetrieverService {
@@ -40,13 +42,20 @@ public class PaymentsReportingRetrieverServiceImpl implements
   }
 
   @Override
-  public PagedPaymentsReportingView getPaymentsReporting(Long organizationId, String iuf, String regulationUniqueIdentifier, LocalDateIntervalFilter regulationDateFilter, String iuv, Pageable pageable, UserInfo loggedUser, String accessToken) {
+  public List<PaymentsReporting> getPaymentsReporting(Long organizationId, String iuf, UserInfo loggedUser, String accessToken) {
+    AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser);
+
+    return paymentsReportingService.getPaymentsReporting(organizationId, iuf, accessToken);
+  };
+
+  @Override
+  public PagedPaymentsReportingView getPaymentsReportingView(Long organizationId, String iuf, String regulationUniqueIdentifier, LocalDateIntervalFilter regulationDateFilter, String iuv, Pageable pageable, UserInfo loggedUser, String accessToken) {
     AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser);
 
     validatePaymentsReportingFilters(iuf, regulationUniqueIdentifier, regulationDateFilter, iuv);
 
     return paymentsReportingViewMapper.mapToPagedPaymentsReporting(
-      paymentsReportingService.getPaymentsReporting(organizationId, iuf,
+      paymentsReportingService.getPaymentsReportingView(organizationId, iuf,
         regulationUniqueIdentifier, regulationDateFilter, iuv ,pageable,
         accessToken));
   }

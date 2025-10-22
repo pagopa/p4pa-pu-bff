@@ -5,6 +5,8 @@ import static org.mockito.Mockito.when;
 
 import it.gov.pagopa.pu.bff.connector.classification.config.ClassificationApisHolder;
 import it.gov.pagopa.pu.classification.controller.generated.PaymentsReportingSearchControllerApi;
+import it.gov.pagopa.pu.classification.dto.generated.CollectionModelPaymentsReporting;
+import it.gov.pagopa.pu.classification.dto.generated.PagedModelPaymentsReportingEmbedded;
 import it.gov.pagopa.pu.classification.dto.generated.PaymentsReporting;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -16,6 +18,9 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.client.HttpClientErrorException;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @ExtendWith(MockitoExtension.class)
 class PaymentsReportingSearchClientTest {
@@ -77,5 +82,34 @@ class PaymentsReportingSearchClientTest {
 
     Assertions.assertNull(result);
     Mockito.verifyNoMoreInteractions(classificationApisHolderMock,paymentsReportingSearchControllerApiMock);
+  }
+
+  @Test
+  void whenGetPaymentsReportingThenReturnList() {
+    Long organizationId = 1L;
+    String iuf = "iuf123";
+    String accessToken = "ACCESSTOKEN";
+
+    List<PaymentsReporting> expectedResult = new ArrayList<>();
+    expectedResult.add(new PaymentsReporting());
+
+    PagedModelPaymentsReportingEmbedded pagedModelPaymentsReportingEmbeddedMock = Mockito.mock(PagedModelPaymentsReportingEmbedded.class);
+
+    CollectionModelPaymentsReporting collectionModelPaymentsReportingMock = Mockito.mock(CollectionModelPaymentsReporting.class);
+
+    when(classificationApisHolderMock.getPaymentsReportingSearchControllerApi(accessToken))
+      .thenReturn(paymentsReportingSearchControllerApiMock);
+
+    when(paymentsReportingSearchControllerApiMock.crudPaymentsReportingFindByOrganizationIdAndIuf(
+      organizationId, iuf))
+      .thenReturn(collectionModelPaymentsReportingMock);
+
+    when(collectionModelPaymentsReportingMock.getEmbedded()).thenReturn(pagedModelPaymentsReportingEmbeddedMock);
+
+    when(pagedModelPaymentsReportingEmbeddedMock.getPaymentsReportings()).thenReturn(expectedResult);
+
+    List<PaymentsReporting> result = paymentsReportingSearchClient.getPaymentsReporting(organizationId, iuf, accessToken);
+
+    assertSame(expectedResult, result);
   }
 }

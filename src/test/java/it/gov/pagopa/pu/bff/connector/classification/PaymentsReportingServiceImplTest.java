@@ -16,6 +16,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.Mockito.when;
@@ -40,6 +42,22 @@ class PaymentsReportingServiceImplTest {
 
   @Test
   void whenGetPaymentsReportingThenInvokeClient() {
+    Long organizationId = 1L;
+    String iuf = "IUF123";
+    String accessToken = "ACCESSTOKEN";
+
+    List<PaymentsReporting> expectedResult = new ArrayList<>();
+
+    when(paymentsReportingSearchClientMock.getPaymentsReporting(organizationId, iuf, accessToken))
+      .thenReturn(expectedResult);
+
+    List<PaymentsReporting> result = service.getPaymentsReporting(organizationId, iuf, accessToken);
+
+    assertSame(expectedResult, result);
+  }
+
+  @Test
+  void whenGetPaymentsReportingViewThenInvokeClient() {
     Long organizationId = 1L;
     String iuf = "IUF123";
     String iuv = "IUV123";

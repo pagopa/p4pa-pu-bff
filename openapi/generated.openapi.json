@@ -13764,6 +13764,10 @@
           "installmentBalance" : {
             "type" : "string"
           },
+          "calculatedAmount" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
           "treasuryBillYear" : {
             "type" : "string"
           },

@@ -102,4 +102,54 @@ class TreasuryViewSearchClientTest {
     assertSame(expectedResult, result);
   }
 
+  @Test
+  void givenNullDateFiltersWhenGetTreasuriesThenOk() {
+    String accessToken = "ACCESSTOKEN";
+    PagedModelTreasuryView expectedResult = new PagedModelTreasuryView();
+
+    long organizationId = 1L;
+    String iuv = "iuv123";
+    String iuf = "iuf123";
+    long billAmountCents = 1000L;
+    String provisionalCode = "PROV123";
+    String provisionalAe = "PROVAE123";
+    String billCode = "BILL123";
+    String billYear = "2025";
+    String pspLastName = "PSPLastName";
+    String documentCode = "DOC123";
+    String documentYear = "2025";
+    Pageable pageable = PageRequest.of(0, 10, Sort.unsorted());
+
+    TreasuryViewFiltersDTO filtersDTO = new TreasuryViewFiltersDTO(
+      organizationId, iuv, iuf, billAmountCents, null, provisionalCode, provisionalAe, billCode, billYear, pspLastName, null, documentCode, documentYear
+    );
+
+    when(classificationApisHolderMock.getTreasuryViewSearchControllerApi(accessToken))
+      .thenReturn(treasuryViewSearchControllerApiMock);
+
+    when(treasuryViewSearchControllerApiMock.crudTreasuriesViewFindTreasuriesByFilters(
+      filtersDTO.getOrganizationId(),
+      filtersDTO.getIuv(),
+      filtersDTO.getIuf(),
+      filtersDTO.getBillAmountCents(),
+      null,
+     null,
+      filtersDTO.getProvisionalCode(),
+      filtersDTO.getProvisionalAe(),
+      filtersDTO.getBillCode(),
+      filtersDTO.getBillYear(),
+      filtersDTO.getPspLastName(),
+      null,
+      null,
+      filtersDTO.getDocumentCode(),
+      filtersDTO.getDocumentYear(),
+      PageUtils.getPageNumber(pageable),
+      PageUtils.getPageSize(pageable),
+      PageUtils.getSortList(pageable)))
+      .thenReturn(expectedResult);
+
+    PagedModelTreasuryView result = treasuryViewSearchClient.getTreasuries(filtersDTO, pageable, accessToken);
+
+    assertSame(expectedResult, result);
+  }
 }

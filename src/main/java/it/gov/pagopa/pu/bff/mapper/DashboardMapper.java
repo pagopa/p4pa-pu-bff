@@ -1,8 +1,6 @@
 package it.gov.pagopa.pu.bff.mapper;
 
-import it.gov.pagopa.pu.bff.dto.generated.DashboardByFc;
-import it.gov.pagopa.pu.bff.dto.generated.DashboardByIuv;
-import it.gov.pagopa.pu.bff.dto.generated.PagedInstallmentView;
+import it.gov.pagopa.pu.bff.dto.generated.*;
 import it.gov.pagopa.pu.classification.dto.generated.Classification;
 import it.gov.pagopa.pu.classification.dto.generated.PagedModelClassification;
 import it.gov.pagopa.pu.classification.dto.generated.PagedModelClassificationEmbedded;
@@ -84,19 +82,52 @@ public class DashboardMapper {
         dashboardByIuv.setClassificationId(classifications.getFirst().getClassificationId());
       }
 
-      List<String> distinctIufIds = classifications.stream()
+      List<String> distinctIufs = classifications.stream()
         .map(Classification::getIuf)
         .filter(Objects::nonNull)
         .distinct()
         .toList();
 
-      dashboardByIuv.setHasIuf(!distinctIufIds.isEmpty());
+      dashboardByIuv.setHasIuf(!distinctIufs.isEmpty());
 
-      if (distinctIufIds.size() == 1) {
-        dashboardByIuv.setIuf(distinctIufIds.getFirst());
+      if (distinctIufs.size() == 1) {
+        dashboardByIuv.setIuf(distinctIufs.getFirst());
       }
     }
 
     return dashboardByIuv;
+  }
+
+  public DashboardByIuf mapToDashboardByIuf(PagedModelClassification pagedClassifications) {
+    DashboardByIuf dashboardByIuf = new DashboardByIuf();
+    DashboardByIuv dashboardByIuv = mapToDashboardByIuv(null, pagedClassifications);
+
+    dashboardByIuf.setHasIuf(dashboardByIuv.getHasIuf());
+    dashboardByIuf.setIuf(dashboardByIuv.getIuf());
+    dashboardByIuf.setHasClassification(dashboardByIuv.getHasClassification());
+    dashboardByIuf.setClassificationId(dashboardByIuv.getClassificationId());
+
+    List<Classification> classifications = Optional.ofNullable(pagedClassifications)
+      .map(PagedModelClassification::getEmbedded)
+      .map(PagedModelClassificationEmbedded::getClassifications)
+      .orElseGet(Collections::emptyList);
+
+    if (classifications.isEmpty()) {
+      dashboardByIuf.setHasTreasury(false);
+    } else {
+      List<String> distinctTreasuryIds = classifications.stream()
+        .map(Classification::getTreasuryId)
+        .filter(Objects::nonNull)
+        .distinct()
+        .toList();
+
+      dashboardByIuf.setHasTreasury(!distinctTreasuryIds.isEmpty());
+
+      if (distinctTreasuryIds.size() == 1) {
+        dashboardByIuf.setTreasuryId(distinctTreasuryIds.getFirst());
+      }
+    }
+
+    return dashboardByIuf;
   }
 }

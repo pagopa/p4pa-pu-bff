@@ -6,9 +6,7 @@ import static org.mockito.Mockito.when;
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.dto.ClassificationFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.InstallmentViewFiltersDTO;
-import it.gov.pagopa.pu.bff.dto.generated.DashboardByFc;
-import it.gov.pagopa.pu.bff.dto.generated.DashboardByIuv;
-import it.gov.pagopa.pu.bff.dto.generated.PagedInstallmentView;
+import it.gov.pagopa.pu.bff.dto.generated.*;
 import it.gov.pagopa.pu.bff.mapper.DashboardMapper;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
 import it.gov.pagopa.pu.bff.service.classification.ClassificationRetrieverService;
@@ -42,7 +40,8 @@ class DashboardServiceTest {
 
   @BeforeEach
   void setup() {
-    dashboardService = new DashboardServiceImpl(installmentRetrieverServiceMock, classificationRetrieverServiceMock, dashboardMapperMock);
+    dashboardService = new DashboardServiceImpl(
+      installmentRetrieverServiceMock, classificationRetrieverServiceMock, dashboardMapperMock);
   }
 
   @AfterEach
@@ -125,6 +124,37 @@ class DashboardServiceTest {
         .thenReturn(expected);
 
       DashboardByIuv result = dashboardService.getDashboardByIuv(organizationId, iuv, loggedUser, accessToken);
+
+      assertSame(expected, result);
+    }
+  }
+
+  @Test
+  void whenGetDashboardByIufThenOk() {
+    Long organizationId = 1L;
+    String iuf = "iuf";
+    UserInfo loggedUser = new UserInfo();
+    loggedUser.setMappedExternalUserId("mappedExternalUserId");
+    String accessToken = "TOKEN";
+
+    ClassificationFiltersDTO expectedClassificationFilters = ClassificationFiltersDTO.builder()
+      .iuf(iuf)
+      .build();
+
+    PagedModelClassification classifications = podamFactory.manufacturePojo(PagedModelClassification.class);
+
+    DashboardByIuf expected = new DashboardByIuf();
+
+    try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
+      authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)).thenAnswer(a -> null);
+
+      when(classificationRetrieverServiceMock.getClassifications(organizationId, expectedClassificationFilters, Pageable.ofSize(10), loggedUser, accessToken))
+        .thenReturn(classifications);
+
+      when(dashboardMapperMock.mapToDashboardByIuf(classifications))
+        .thenReturn(expected);
+
+      DashboardByIuf result = dashboardService.getDashboardByIuf(organizationId, iuf, loggedUser, accessToken);
 
       assertSame(expected, result);
     }

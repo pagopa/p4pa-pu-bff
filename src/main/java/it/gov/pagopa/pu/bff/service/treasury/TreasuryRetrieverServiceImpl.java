@@ -24,8 +24,13 @@ public class TreasuryRetrieverServiceImpl implements TreasuryRetrieverService {
 
   @Override
   public PagedTreasuryView getTreasuries(TreasuryViewFiltersDTO treasuryViewFiltersDTO, Pageable pageable, UserInfo loggedUser, String accessToken) {
-    DateUtils.validateDateFilters(treasuryViewFiltersDTO.getBillDateFilter(), "billDate");
-    DateUtils.validateDateFilters(treasuryViewFiltersDTO.getRegionValueDateFilter(), "regionValueDate");
+    if (treasuryViewFiltersDTO.getBillDateFilter() != null) {
+      DateUtils.validateDateFilters(treasuryViewFiltersDTO.getBillDateFilter(), "billDate");
+    }
+
+    if (treasuryViewFiltersDTO.getRegionValueDateFilter() != null) {
+      DateUtils.validateDateFilters(treasuryViewFiltersDTO.getRegionValueDateFilter(), "regionValueDate");
+    }
 
     AuthorizationService.validateUserForOrganizationId(treasuryViewFiltersDTO.getOrganizationId(), loggedUser);
 

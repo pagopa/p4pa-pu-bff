@@ -2,9 +2,7 @@ package it.gov.pagopa.pu.bff.mapper;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import it.gov.pagopa.pu.bff.dto.generated.DashboardByFc;
-import it.gov.pagopa.pu.bff.dto.generated.DashboardByIuv;
-import it.gov.pagopa.pu.bff.dto.generated.PagedInstallmentView;
+import it.gov.pagopa.pu.bff.dto.generated.*;
 import it.gov.pagopa.pu.bff.util.TestUtils;
 import it.gov.pagopa.pu.classification.dto.generated.PagedModelClassification;
 import it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentView;
@@ -99,7 +97,7 @@ class DashboardMapperTest {
   }
 
   @Test
-  void givenNullPagedInstallmentsAndNullPagedClassificationsWhenMapToDashboardByIuvThenEmptyDTO() {
+  void givenNullPagedInstallmentsAndNullPagedClassificationsWhenMapToDashboardByIuvThenCorrectMapping() {
     DashboardByIuv expected = DashboardByIuv.builder()
       .hasInstallment(false)
       .hasDebtPosition(false)
@@ -112,7 +110,7 @@ class DashboardMapperTest {
   }
 
   @Test
-  void givenNullPagedClassificationsWhenMapToDashboardByIuvThenEmptyDTO() {
+  void givenNullPagedClassificationsWhenMapToDashboardByIuvThenCorrectMapping() {
     PagedInstallmentView installments = podamFactory.manufacturePojo(
       PagedInstallmentView.class);
 
@@ -125,5 +123,64 @@ class DashboardMapperTest {
       .build();
 
     assertEquals(expected, mapper.mapToDashboardByIuv(installments,null));
+  }
+
+  @Test
+  void givenValidInputWhenMapToDashboardByIufThenCorrectMapping() {
+    PagedModelClassification classifications = podamFactory.manufacturePojo(
+      PagedModelClassification.class);
+
+    PagedTreasuryView treasuries = podamFactory.manufacturePojo(
+      PagedTreasuryView.class);
+
+    DashboardByIuf expected = DashboardByIuf.builder()
+      .hasIuf(true)
+      .hasClassification(true)
+      .hasTreasury(true)
+      .build();
+
+    DashboardByIuf result = mapper.mapToDashboardByIuf(
+      classifications, treasuries);
+
+    assertEquals(expected, result);
+  }
+
+  @Test
+  void givenNullPagedClassificationsAndNullPagedTreasuriesWhenMapToDashboardByIufThenCorrectMapping() {
+    DashboardByIuf expected = DashboardByIuf.builder()
+      .hasIuf(false)
+      .hasClassification(false)
+      .hasTreasury(false)
+      .build();
+
+    assertEquals(expected, mapper.mapToDashboardByIuf(null,null));
+  }
+
+  @Test
+  void givenNullPagedClassificationsWhenMapToDashboardByIufThenCorrectMapping() {
+    PagedTreasuryView treasuries = podamFactory.manufacturePojo(
+      PagedTreasuryView.class);
+
+    DashboardByIuf expected = DashboardByIuf.builder()
+      .hasIuf(false)
+      .hasClassification(false)
+      .hasTreasury(true)
+      .build();
+
+    assertEquals(expected, mapper.mapToDashboardByIuf(null,treasuries));
+  }
+
+  @Test
+  void givenNullPagedTreasuriesWhenMapToDashboardByIufThenCorrectMapping() {
+    PagedModelClassification classifications = podamFactory.manufacturePojo(
+      PagedModelClassification.class);
+
+    DashboardByIuf expected = DashboardByIuf.builder()
+      .hasIuf(true)
+      .hasClassification(true)
+      .hasTreasury(false)
+      .build();
+
+    assertEquals(expected, mapper.mapToDashboardByIuf(classifications, null));
   }
 }

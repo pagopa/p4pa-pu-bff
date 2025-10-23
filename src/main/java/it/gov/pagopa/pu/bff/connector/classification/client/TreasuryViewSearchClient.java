@@ -1,6 +1,7 @@
 package it.gov.pagopa.pu.bff.connector.classification.client;
 
 import it.gov.pagopa.pu.bff.connector.classification.config.ClassificationApisHolder;
+import it.gov.pagopa.pu.bff.dto.LocalDateIntervalFilter;
 import it.gov.pagopa.pu.bff.dto.TreasuryViewFiltersDTO;
 import it.gov.pagopa.pu.bff.util.PageUtils;
 import it.gov.pagopa.pu.classification.dto.generated.PagedModelTreasuryView;
@@ -17,21 +18,24 @@ public class TreasuryViewSearchClient {
   }
 
   public PagedModelTreasuryView getTreasuries(TreasuryViewFiltersDTO treasuryViewFiltersDTO, Pageable pageable, String accessToken) {
+    LocalDateIntervalFilter billDateFilter = treasuryViewFiltersDTO.getBillDateFilter();
+    LocalDateIntervalFilter regionalValueDateFilter = treasuryViewFiltersDTO.getRegionValueDateFilter();
+
     return classificationApisHolder.getTreasuryViewSearchControllerApi(accessToken)
       .crudTreasuriesViewFindTreasuriesByFilters(
         treasuryViewFiltersDTO.getOrganizationId(),
         treasuryViewFiltersDTO.getIuv(),
         treasuryViewFiltersDTO.getIuf(),
         treasuryViewFiltersDTO.getBillAmountCents(),
-        treasuryViewFiltersDTO.getBillDateFilter().getFrom(),
-        treasuryViewFiltersDTO.getBillDateFilter().getTo(),
+        billDateFilter != null ? billDateFilter.getFrom() : null,
+        billDateFilter != null ? billDateFilter.getTo() : null,
         treasuryViewFiltersDTO.getProvisionalCode(),
         treasuryViewFiltersDTO.getProvisionalAe(),
         treasuryViewFiltersDTO.getBillCode(),
         treasuryViewFiltersDTO.getBillYear(),
         treasuryViewFiltersDTO.getPspLastName(),
-        treasuryViewFiltersDTO.getRegionValueDateFilter().getFrom(),
-        treasuryViewFiltersDTO.getRegionValueDateFilter().getTo(),
+        regionalValueDateFilter != null ? regionalValueDateFilter.getFrom() : null,
+        regionalValueDateFilter != null ? regionalValueDateFilter.getTo() : null,
         treasuryViewFiltersDTO.getDocumentCode(),
         treasuryViewFiltersDTO.getDocumentYear(),
         PageUtils.getPageNumber(pageable),

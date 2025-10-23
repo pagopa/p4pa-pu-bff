@@ -1,11 +1,10 @@
 package it.gov.pagopa.pu.bff.mapper;
 
-import it.gov.pagopa.pu.bff.dto.generated.DashboardByFc;
-import it.gov.pagopa.pu.bff.dto.generated.DashboardByIuv;
-import it.gov.pagopa.pu.bff.dto.generated.PagedInstallmentView;
+import it.gov.pagopa.pu.bff.dto.generated.*;
 import it.gov.pagopa.pu.classification.dto.generated.Classification;
 import it.gov.pagopa.pu.classification.dto.generated.PagedModelClassification;
 import it.gov.pagopa.pu.classification.dto.generated.PagedModelClassificationEmbedded;
+import it.gov.pagopa.pu.classification.dto.generated.TreasuryView;
 import it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentView;
 import java.util.Collections;
 import java.util.List;
@@ -84,19 +83,50 @@ public class DashboardMapper {
         dashboardByIuv.setClassificationId(classifications.getFirst().getClassificationId());
       }
 
-      List<String> distinctIufIds = classifications.stream()
+      List<String> distinctIufs = classifications.stream()
         .map(Classification::getIuf)
         .filter(Objects::nonNull)
         .distinct()
         .toList();
 
-      dashboardByIuv.setHasIuf(!distinctIufIds.isEmpty());
+      dashboardByIuv.setHasIuf(!distinctIufs.isEmpty());
 
-      if (distinctIufIds.size() == 1) {
-        dashboardByIuv.setIuf(distinctIufIds.getFirst());
+      if (distinctIufs.size() == 1) {
+        dashboardByIuv.setIuf(distinctIufs.getFirst());
       }
     }
 
     return dashboardByIuv;
+  }
+
+  public DashboardByIuf mapToDashboardByIuf(PagedModelClassification pagedClassifications, PagedTreasuryView pagedTreasuryView) {
+    DashboardByIuf dashboardByIuf = new DashboardByIuf();
+    DashboardByIuv dashboardByIuv = mapToDashboardByIuv(null, pagedClassifications);
+
+    dashboardByIuf.setHasIuf(dashboardByIuv.getHasIuf());
+    dashboardByIuf.setIuf(dashboardByIuv.getIuf());
+    dashboardByIuf.setHasClassification(dashboardByIuv.getHasClassification());
+    dashboardByIuf.setClassificationId(dashboardByIuv.getClassificationId());
+
+    List<TreasuryView> treasuryViews = Optional.ofNullable(pagedTreasuryView)
+      .map(PagedTreasuryView::getContent)
+      .orElseGet(Collections::emptyList);
+
+    if (treasuryViews.isEmpty()) {
+      dashboardByIuf.setHasTreasury(false);
+    } else {
+      dashboardByIuf.setHasTreasury(true);
+
+      List<String> distinctTreasuryIds = treasuryViews.stream()
+        .map(TreasuryView::getTreasuryId)
+        .distinct()
+        .toList();
+
+      if (distinctTreasuryIds.size() == 1) {
+        dashboardByIuf.setTreasuryId(distinctTreasuryIds.getFirst());
+      }
+    }
+
+    return dashboardByIuf;
   }
 }

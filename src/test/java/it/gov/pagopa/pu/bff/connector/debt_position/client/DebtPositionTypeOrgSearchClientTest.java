@@ -248,4 +248,24 @@ class DebtPositionTypeOrgSearchClientTest {
     Assertions.assertSame(expectedResult, result);
   }
 
+  @Test
+  void givenParametersWhenCountBySpontaneousFormIdThenInvokeWithAccessToken() {
+    //given
+    Long spontaneousFormId = 1L;
+    String accessToken = "ACCESS_TOKEN";
+
+    Long expectedResult = 2L;
+    when(debtPositionApisHolderMock.getDebtPositionTypeOrgSearchControllerApi(accessToken))
+      .thenReturn(debtPositionTypeOrgSearchControllerApiMock);
+    when(debtPositionTypeOrgSearchControllerApiMock
+      .crudDebtPositionTypeOrgsCountBySpontaneousFormId(spontaneousFormId))
+      .thenReturn(expectedResult);
+
+    //when
+    Long result = debtPositionTypeOrgSearchClient.countBySpontaneousFormId(spontaneousFormId, accessToken);
+    //then
+    Assertions.assertNotNull(result);
+    Assertions.assertSame(expectedResult, result);
+  }
+
 }

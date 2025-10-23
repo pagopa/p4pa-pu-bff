@@ -21,6 +21,7 @@ public class ClassificationSearchClient {
     return classificationApisHolder.getClassificationSearchControllerApi(accessToken)
       .crudClassificationsFindByFilters(organizationId,
         filters.getIuv(),
+        filters.getIuf(),
         filters.getDebtPositionTypeOrgCodes(),
         filters.getLabels(),
         PageUtils.getPageNumber(pageable),

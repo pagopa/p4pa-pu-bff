@@ -26,7 +26,7 @@ public class PaymentsReportingViewSearchClient {
     String accessToken
   ) {
     return classificationApisHolder.getPaymentsReportingViewSearchControllerApi(accessToken)
-      .crudPaymentsReportingViewFindDistinctByIufAndRegulationUniqueIdentifierAndIuv(
+      .crudPaymentsReportingViewFindDistinctByIufAndRegulationUniqueIdentifier(
         String.valueOf(organizationId),
         iuf,
         regulationUniqueIdentifier,

@@ -2,9 +2,10 @@ package it.gov.pagopa.pu.bff.connector.classification;
 
 import it.gov.pagopa.pu.bff.connector.classification.client.PaymentsReportingSearchClient;
 import it.gov.pagopa.pu.bff.connector.classification.client.PaymentsReportingViewSearchClient;
+import it.gov.pagopa.pu.bff.connector.classification.client.PaymentsReportingWithReceiptViewSearchClient;
 import it.gov.pagopa.pu.bff.dto.LocalDateIntervalFilter;
-import it.gov.pagopa.pu.classification.dto.generated.PagedModelPaymentsReporting;
 import it.gov.pagopa.pu.classification.dto.generated.PagedModelPaymentsReportingView;
+import it.gov.pagopa.pu.classification.dto.generated.PagedModelPaymentsReportingWithReceiptView;
 import it.gov.pagopa.pu.classification.dto.generated.PaymentsReporting;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -14,12 +15,15 @@ public class PaymentsReportingServiceImpl implements PaymentsReportingService {
 
   private final PaymentsReportingViewSearchClient paymentsReportingViewSearchClient;
   private final PaymentsReportingSearchClient paymentsReportingSearchClient;
+  private final PaymentsReportingWithReceiptViewSearchClient paymentsReportingWithReceiptViewSearchClient;
 
   public PaymentsReportingServiceImpl(
     PaymentsReportingViewSearchClient paymentsReportingViewSearchClient,
-    PaymentsReportingSearchClient paymentsReportingSearchClient) {
+    PaymentsReportingSearchClient paymentsReportingSearchClient,
+    PaymentsReportingWithReceiptViewSearchClient paymentsReportingWithReceiptViewSearchClient) {
     this.paymentsReportingViewSearchClient = paymentsReportingViewSearchClient;
     this.paymentsReportingSearchClient = paymentsReportingSearchClient;
+    this.paymentsReportingWithReceiptViewSearchClient = paymentsReportingWithReceiptViewSearchClient;
   }
 
   @Override
@@ -33,11 +37,11 @@ public class PaymentsReportingServiceImpl implements PaymentsReportingService {
   }
 
   @Override
-  public PagedModelPaymentsReporting getPaymentsReportingRows(
+  public PagedModelPaymentsReportingWithReceiptView getPaymentsReportingRows(
     Long organizationId, String iuf, String iuv,
     LocalDateIntervalFilter payDateFilter,
     Pageable pageable, String accessToken) {
-    return paymentsReportingSearchClient.getPaymentsReportingRows(
+    return paymentsReportingWithReceiptViewSearchClient.getPaymentsReportingRows(
       organizationId, iuf, iuv, payDateFilter, pageable, accessToken);
   }
 

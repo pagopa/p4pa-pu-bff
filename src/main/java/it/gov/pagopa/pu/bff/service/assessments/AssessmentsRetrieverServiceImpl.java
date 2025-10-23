@@ -2,8 +2,10 @@ package it.gov.pagopa.pu.bff.service.assessments;
 
 import io.micrometer.common.util.StringUtils;
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
+import it.gov.pagopa.pu.bff.connector.auth.AuthzService;
 import it.gov.pagopa.pu.bff.connector.classification.AssessmentsService;
 import it.gov.pagopa.pu.bff.connector.debt_position.DebtPositionTypeOrgService;
+import it.gov.pagopa.pu.bff.dto.AssessmentsExtendedDTO;
 import it.gov.pagopa.pu.bff.dto.AssessmentsFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.AssessmentsRowsDetailFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.generated.AssessmentsRowsDetail;
@@ -21,16 +23,20 @@ import it.gov.pagopa.pu.classification.dto.generated.AssessmentsDetail;
 import it.gov.pagopa.pu.classification.dto.generated.PagedAssessmentsView;
 import it.gov.pagopa.pu.debtpositions.dto.generated.CollectionModelDebtPositionTypeOrg;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrg;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class AssessmentsRetrieverServiceImpl implements AssessmentsRetrieverService {
 
   private final AssessmentsService assessmentsService;
@@ -38,13 +44,20 @@ public class AssessmentsRetrieverServiceImpl implements AssessmentsRetrieverServ
   private final DebtPositionTypeOrgService debtPositionTypeOrgService;
   private final AssessmentExtendedDTOMapper assessmentExtendedDTOMapper;
   private final AssessmentsRowsDetailMapper assessmentsRowsDetailMapper;
+  private final AuthzService authzService;
 
-  public AssessmentsRetrieverServiceImpl(AssessmentsService assessmentsService, DebtPositionTypeOrgRetrieverService debtPositionTypeOrgRetrieverService, DebtPositionTypeOrgService debtPositionTypeOrgService, AssessmentExtendedDTOMapper assessmentExtendedDTOMapper, AssessmentsRowsDetailMapper assessmentsRowsDetailMapper) {
+  public AssessmentsRetrieverServiceImpl(AssessmentsService assessmentsService,
+                                         DebtPositionTypeOrgRetrieverService debtPositionTypeOrgRetrieverService,
+                                         DebtPositionTypeOrgService debtPositionTypeOrgService,
+                                         AssessmentExtendedDTOMapper assessmentExtendedDTOMapper,
+                                         AssessmentsRowsDetailMapper assessmentsRowsDetailMapper,
+                                         AuthzService authzService) {
     this.assessmentsService = assessmentsService;
     this.debtPositionTypeOrgRetrieverService = debtPositionTypeOrgRetrieverService;
     this.debtPositionTypeOrgService = debtPositionTypeOrgService;
     this.assessmentExtendedDTOMapper = assessmentExtendedDTOMapper;
-      this.assessmentsRowsDetailMapper = assessmentsRowsDetailMapper;
+    this.assessmentsRowsDetailMapper = assessmentsRowsDetailMapper;
+    this.authzService = authzService;
   }
 
   @Override
@@ -85,7 +98,33 @@ public class AssessmentsRetrieverServiceImpl implements AssessmentsRetrieverServ
       accessToken
     );
 
-    return assessmentExtendedDTOMapper.mapToPagedAssessmentsExtendedDTO(pagedAssessmentsView, debtPositionTypeOrgCode2DescriptionMap);
+    PagedAssessmentsExtendedDTO result = assessmentExtendedDTOMapper.mapToPagedAssessmentsExtendedDTO(
+      pagedAssessmentsView,
+      debtPositionTypeOrgCode2DescriptionMap
+    );
+
+    Map<String, UserInfo> cache = new HashMap<>();
+
+    for (AssessmentsExtendedDTO dto : result.getContent()) {
+      String getOperatorExternalUserId = dto.getOperatorExternalUserId();
+
+      UserInfo userInfo = cache.computeIfAbsent(getOperatorExternalUserId,
+        operatorExternalUserId -> {
+          try {
+            return authzService.getUserInfoFromMappedExternaUserId(operatorExternalUserId, accessToken);
+          } catch (Exception e) {
+            log.warn("Error while retrieving UserInfo for {}", operatorExternalUserId, e);
+            return null;
+          }
+        });
+
+      if (userInfo != null) {
+        dto.setName(userInfo.getName());
+        dto.setFamilyName(userInfo.getFamilyName());
+      }
+    }
+
+    return result;
   }
 
   private Map<String, String> getDebtPositionTypeOrgMap(Long organizationId, String mappedExternalUserId, String accessToken) {
@@ -126,11 +165,33 @@ public class AssessmentsRetrieverServiceImpl implements AssessmentsRetrieverServ
 
     String debtPositionTypeOrgDescription = getDebtPositionTypeOrgDescription(assessmentsRowsDetailFiltersDTO.getOrganizationId(),
             assessments.getDebtPositionTypeOrgCode(), loggedUser.getMappedExternalUserId(), accessToken);
-    return assessmentsRowsDetailMapper.map(
-            assessmentsService.findPagedModelAssessmentsDetail(assessmentsRowsDetailFiltersDTO, pageable, accessToken),
-            assessments,
-            debtPositionTypeOrgDescription
+
+    AssessmentsRowsDetail result = assessmentsRowsDetailMapper.map(
+      assessmentsService.findPagedModelAssessmentsDetail(assessmentsRowsDetailFiltersDTO, pageable, accessToken),
+      assessments,
+      debtPositionTypeOrgDescription
     );
+
+    enrichUserInfoByMappedExternalUserId(result.getUpdateOperatorExternalId(), accessToken,
+      userInfo -> {
+      result.setName(userInfo.getName());
+      result.setFamilyName(userInfo.getFamilyName());
+    });
+
+    return result;
+  }
+
+  private void enrichUserInfoByMappedExternalUserId(String mappedExternalUserId, String accessToken, Consumer<UserInfo> userInfoConsumer) {
+    if (StringUtils.isNotBlank(mappedExternalUserId)) {
+      try {
+        UserInfo info = authzService.getUserInfoFromMappedExternaUserId(mappedExternalUserId, accessToken);
+        if (info != null) {
+          userInfoConsumer.accept(info);
+        }
+      } catch (Exception e) {
+        log.warn("Impossible retrieving UserInfo for mappedExternalUserId {}", mappedExternalUserId, e);
+      }
+    }
   }
 
   @Override

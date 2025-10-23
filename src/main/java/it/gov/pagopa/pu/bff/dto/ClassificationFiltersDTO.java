@@ -14,6 +14,7 @@ import java.util.List;
 @Builder
 public class ClassificationFiltersDTO {
   private String iuv;
+  private String iuf;
   private List<String> debtPositionTypeOrgCodes;
   private List<ClassificationsEnum> labels;
 }

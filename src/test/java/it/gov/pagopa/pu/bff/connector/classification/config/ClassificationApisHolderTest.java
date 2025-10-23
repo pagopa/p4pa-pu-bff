@@ -51,7 +51,7 @@ class ClassificationApisHolderTest extends BaseApiHolderTest {
   void whenGetPaymentsReportingViewSearchControllerApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
     assertAuthenticationShouldBeSetInThreadSafeMode(
       accessToken -> classificationApisHolder.getPaymentsReportingViewSearchControllerApi(accessToken)
-        .crudPaymentsReportingViewFindDistinctByIufAndRegulationUniqueIdentifierAndIuv("1", "IUF123", "RUI123", null, null, null, 0, 10, Collections.emptyList()),
+        .crudPaymentsReportingViewFindDistinctByIufAndRegulationUniqueIdentifier("1", "IUF123", "RUI123", null, null, null, 0, 10, Collections.emptyList()),
       new ParameterizedTypeReference<>() {
       },
       classificationApisHolder::unload);
@@ -60,8 +60,8 @@ class ClassificationApisHolderTest extends BaseApiHolderTest {
   @Test
   void whenGetPaymentsReportingSearchControllerApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
     assertAuthenticationShouldBeSetInThreadSafeMode(
-      accessToken -> classificationApisHolder.getPaymentsReportingSearchControllerApi(accessToken)
-        .crudPaymentsReportingFindPaymentsReportingByFilters(1L, "IUF123", "iuv", null, null, 0, 10, Collections.emptyList()),
+      accessToken -> classificationApisHolder.getPaymentsReportingWithReceiptViewSearchControllerApi(accessToken)
+        .crudPaymentsReportingWithReceiptViewFindPaymentsReportingByFilters(1L, "IUF123", "iuv", null, null, 0, 10, Collections.emptyList()),
       new ParameterizedTypeReference<>() {
       },
       classificationApisHolder::unload);
@@ -204,7 +204,7 @@ class ClassificationApisHolderTest extends BaseApiHolderTest {
   void whenGetClassificationSearchControllerApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
     assertAuthenticationShouldBeSetInThreadSafeMode(
       accessToken -> classificationApisHolder.getClassificationSearchControllerApi(accessToken)
-        .crudClassificationsFindByFilters(1L, "iuv", List.of("code"), Collections.emptyList(), 1,1, Collections.emptyList()),
+        .crudClassificationsFindByFilters(1L, "iuv", "iuf", List.of("code"), Collections.emptyList(), 1,1, Collections.emptyList()),
       new ParameterizedTypeReference<>() {
       },
       classificationApisHolder::unload);

@@ -54,6 +54,7 @@ class ClassificationSearchClientTest {
 
     when(classificationSearchControllerApiMock.crudClassificationsFindByFilters(organizationId,
       classificationFiltersDTO.getIuv(),
+      classificationFiltersDTO.getIuf(),
       classificationFiltersDTO.getDebtPositionTypeOrgCodes(),
       classificationFiltersDTO.getLabels(),
       PageUtils.getPageNumber(pageable),

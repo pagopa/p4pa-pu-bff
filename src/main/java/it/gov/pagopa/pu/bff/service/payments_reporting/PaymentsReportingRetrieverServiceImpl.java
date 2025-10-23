@@ -3,17 +3,16 @@ package it.gov.pagopa.pu.bff.service.payments_reporting;
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.connector.classification.PaymentsReportingService;
 import it.gov.pagopa.pu.bff.dto.LocalDateIntervalFilter;
-import it.gov.pagopa.pu.bff.dto.generated.PagedPaymentsReportingRow;
-import it.gov.pagopa.pu.bff.dto.generated.PagedPaymentsReportingView;
-import it.gov.pagopa.pu.bff.dto.generated.PaymentsReportingDetailDTO;
-import it.gov.pagopa.pu.bff.dto.generated.ReceiptDetailDTO;
+import it.gov.pagopa.pu.bff.dto.generated.*;
 import it.gov.pagopa.pu.bff.mapper.PaymentsReportingMapper;
 import it.gov.pagopa.pu.bff.mapper.PaymentsReportingViewMapper;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
 import it.gov.pagopa.pu.bff.service.installment.InstallmentRetrieverService;
 import it.gov.pagopa.pu.bff.service.receipt.ReceiptRetrieverService;
+import it.gov.pagopa.pu.bff.util.DateUtils;
 import it.gov.pagopa.pu.classification.dto.generated.PaymentsReporting;
 import it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentNoPII;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -41,12 +40,10 @@ public class PaymentsReportingRetrieverServiceImpl implements
   }
 
   @Override
-  public PagedPaymentsReportingView getPaymentsReporting(Long organizationId,
-    String iuf, String regulationUniqueIdentifier,
-    LocalDateIntervalFilter regulationDateFilter, String iuv, Pageable pageable,
-    UserInfo loggedUser, String accessToken) {
-    AuthorizationService.validateUserForOrganizationId(organizationId,
-      loggedUser);
+  public PagedPaymentsReportingView getPaymentsReporting(Long organizationId, String iuf, String regulationUniqueIdentifier, LocalDateIntervalFilter regulationDateFilter, String iuv, Pageable pageable, UserInfo loggedUser, String accessToken) {
+    AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser);
+
+    validatePaymentsReportingFilters(iuf, regulationUniqueIdentifier, regulationDateFilter, iuv);
 
     return paymentsReportingViewMapper.mapToPagedPaymentsReporting(
       paymentsReportingService.getPaymentsReporting(organizationId, iuf,
@@ -54,10 +51,26 @@ public class PaymentsReportingRetrieverServiceImpl implements
         accessToken));
   }
 
+  private void validatePaymentsReportingFilters(String iuf, String regulationUniqueIdentifier, LocalDateIntervalFilter regulationDateFilter, String iuv) {
+    boolean hasPartialDateRange = regulationDateFilter != null &&
+      (regulationDateFilter.getFrom() == null ^ regulationDateFilter.getTo() == null);
+    if (hasPartialDateRange) {
+      throw new IllegalArgumentException("Date interval is invalid: both 'from' and 'to' must be provided or both null");
+    }
+    if ((regulationDateFilter == null ||
+      DateUtils.isNullOrInvalidLocalDateRange(regulationDateFilter.getFrom(), regulationDateFilter.getTo())) &&
+      StringUtils.isBlank(iuf) &&
+      StringUtils.isBlank(regulationUniqueIdentifier) &&
+      StringUtils.isBlank(iuv)) {
+
+      throw new IllegalArgumentException("At least one filter must be provided, and all date intervals must have both 'from' and 'to' set or be null");
+    }
+  }
+
   @Override
   public PagedPaymentsReportingRow getPaymentsReportingRows(Long organizationId,
-    String iuf, String iuv, LocalDateIntervalFilter payDateFilter,
-    Pageable pageable, UserInfo loggedUser, String accessToken) {
+                                                                           String iuf, String iuv, LocalDateIntervalFilter payDateFilter,
+                                                                           Pageable pageable, UserInfo loggedUser, String accessToken) {
     AuthorizationService.validateUserForOrganizationId(organizationId,
       loggedUser);
 

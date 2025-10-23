@@ -229,6 +229,10 @@ public class ClassificationRetrieverServiceImpl implements ClassificationRetriev
       excludedEnums.add(ClassificationsEnum.IUD_NO_RT);
     }
 
+    if (organization.getFlagTreasury()) {
+      excludedEnums.add(ClassificationsEnum.RT_IUF);
+    }
+
     if (!organization.getFlagTreasury()) {
       excludedEnums.add(ClassificationsEnum.RT_TES);
       excludedEnums.add(ClassificationsEnum.RT_IUF_TES);

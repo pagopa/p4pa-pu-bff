@@ -43,8 +43,10 @@ class IngestionFlowFileMapperTest {
     otherUserInfo.setMappedExternalUserId(operatorExternalId);
     otherUserInfo.setFamilyName("otherFamilyName");
     otherUserInfo.setName("otherName");
+
     PagedModelIngestionFlowFile pagedModelIngestionFlowFile = new PagedModelIngestionFlowFile();
     PagedModelIngestionFlowFileEmbedded embedded = new PagedModelIngestionFlowFileEmbedded();
+
     IngestionFlowFile ingestionFlowFileMatchingOperator = new IngestionFlowFile();
     ingestionFlowFileMatchingOperator.setCreationDate(OffsetDateTime.now());
     ingestionFlowFileMatchingOperator.setIngestionFlowFileId(1L);
@@ -53,6 +55,9 @@ class IngestionFlowFileMapperTest {
     ingestionFlowFileMatchingOperator.setStatus(IngestionFlowFileStatus.COMPLETED);
     ingestionFlowFileMatchingOperator.setNumTotalRows(10L);
     ingestionFlowFileMatchingOperator.setNumCorrectlyImportedRows(8L);
+    ingestionFlowFileMatchingOperator.setErrorDescription("no error");
+    ingestionFlowFileMatchingOperator.setDiscardFileName("discard_1.csv");
+
     IngestionFlowFile flowFileWithNoCorrectlyImportedRows = new IngestionFlowFile();
     flowFileWithNoCorrectlyImportedRows.setCreationDate(OffsetDateTime.now());
     flowFileWithNoCorrectlyImportedRows.setIngestionFlowFileId(2L);
@@ -61,6 +66,9 @@ class IngestionFlowFileMapperTest {
     flowFileWithNoCorrectlyImportedRows.setStatus(IngestionFlowFileStatus.UPLOADED);
     flowFileWithNoCorrectlyImportedRows.setNumTotalRows(10L);
     flowFileWithNoCorrectlyImportedRows.setNumCorrectlyImportedRows(null);
+    flowFileWithNoCorrectlyImportedRows.setErrorDescription("upload ok");
+    flowFileWithNoCorrectlyImportedRows.setDiscardFileName("discard_2.csv");
+
     IngestionFlowFile flowFileWithNoTotalAndCorrectlyImportedRows = new IngestionFlowFile();
     flowFileWithNoTotalAndCorrectlyImportedRows.setCreationDate(OffsetDateTime.now());
     flowFileWithNoTotalAndCorrectlyImportedRows.setIngestionFlowFileId(3L);
@@ -69,6 +77,9 @@ class IngestionFlowFileMapperTest {
     flowFileWithNoTotalAndCorrectlyImportedRows.setStatus(IngestionFlowFileStatus.PROCESSING);
     flowFileWithNoTotalAndCorrectlyImportedRows.setNumTotalRows(null);
     flowFileWithNoTotalAndCorrectlyImportedRows.setNumCorrectlyImportedRows(null);
+    flowFileWithNoTotalAndCorrectlyImportedRows.setErrorDescription("processing...");
+    flowFileWithNoTotalAndCorrectlyImportedRows.setDiscardFileName("discard_3.csv");
+
     IngestionFlowFile flowFileWithNoTotalRows = new IngestionFlowFile();
     flowFileWithNoTotalRows.setCreationDate(OffsetDateTime.now());
     flowFileWithNoTotalRows.setIngestionFlowFileId(3L);
@@ -77,6 +88,8 @@ class IngestionFlowFileMapperTest {
     flowFileWithNoTotalRows.setStatus(IngestionFlowFileStatus.ERROR);
     flowFileWithNoTotalRows.setNumTotalRows(null);
     flowFileWithNoTotalRows.setNumCorrectlyImportedRows(8L);
+    flowFileWithNoTotalRows.setErrorDescription("file error");
+    flowFileWithNoTotalRows.setDiscardFileName("discard_4.csv");
 
     embedded.setIngestionFlowFiles(List.of(ingestionFlowFileMatchingOperator,flowFileWithNoCorrectlyImportedRows,flowFileWithNoTotalAndCorrectlyImportedRows,flowFileWithNoTotalRows));
     pagedModelIngestionFlowFile.setEmbedded(embedded);
@@ -170,8 +183,10 @@ class IngestionFlowFileMapperTest {
     userInfo.setMappedExternalUserId(operatorExternalId);
     userInfo.setFamilyName("familyName");
     userInfo.setName("name");
+
     PagedModelIngestionFlowFile pagedModelIngestionFlowFile = new PagedModelIngestionFlowFile();
     PagedModelIngestionFlowFileEmbedded embedded = new PagedModelIngestionFlowFileEmbedded();
+
     IngestionFlowFile ingestionFlowFileMatchingOperator = new IngestionFlowFile();
     ingestionFlowFileMatchingOperator.setCreationDate(OffsetDateTime.now());
     ingestionFlowFileMatchingOperator.setIngestionFlowFileId(1L);
@@ -180,6 +195,8 @@ class IngestionFlowFileMapperTest {
     ingestionFlowFileMatchingOperator.setStatus(IngestionFlowFileStatus.COMPLETED);
     ingestionFlowFileMatchingOperator.setNumTotalRows(10L);
     ingestionFlowFileMatchingOperator.setNumCorrectlyImportedRows(8L);
+    ingestionFlowFileMatchingOperator.setErrorDescription("no error");
+    ingestionFlowFileMatchingOperator.setDiscardFileName("discard_1.csv");
     embedded.setIngestionFlowFiles(List.of(ingestionFlowFileMatchingOperator));
     pagedModelIngestionFlowFile.setEmbedded(embedded);
 

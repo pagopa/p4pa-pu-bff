@@ -895,93 +895,6 @@
         } ]
       }
     },
-    "/bff/organization/{organizationId}/clients/{clientId}/client-secret" : {
-      "put" : {
-        "tags" : [ "Clients" ],
-        "operationId" : "generateClientSecret",
-        "parameters" : [ {
-          "name" : "organizationId",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "type" : "integer",
-            "format" : "int64"
-          }
-        }, {
-          "name" : "clientId",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "type" : "string"
-          }
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : "OK",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/ClientDTO"
-                }
-              }
-            }
-          },
-          "400" : {
-            "description" : "Bad request",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/ClientDTO"
-                }
-              }
-            }
-          },
-          "401" : {
-            "description" : "Unauthorized - Missing or invalid token",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/ClientDTO"
-                }
-              }
-            }
-          },
-          "403" : {
-            "description" : "Forbidden",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/ClientDTO"
-                }
-              }
-            }
-          },
-          "404" : {
-            "description" : "Not Found",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/ClientDTO"
-                }
-              }
-            }
-          },
-          "500" : {
-            "description" : "Internal Server Error",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/ClientDTO"
-                }
-              }
-            }
-          }
-        },
-        "security" : [ {
-          "BearerAuth" : [ ]
-        } ]
-      }
-    },
     "/bff/organization/{organizationId}/assessments/{assessmentId}" : {
       "put" : {
         "tags" : [ "Assessments" ],
@@ -1283,6 +1196,156 @@
           }
         },
         "security" : [ ]
+      }
+    },
+    "/bff/organization/{organizationId}/spontaneous-forms" : {
+      "get" : {
+        "tags" : [ "SpontaneousForms" ],
+        "operationId" : "getSpontaneousForms",
+        "parameters" : [ {
+          "name" : "organizationId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/SpontaneousForm"
+                  }
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Unauthorized - Missing or invalid token",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/SpontaneousForm"
+                  }
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Forbidden - Access denied",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/SpontaneousForm"
+                  }
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal Server Error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/SpontaneousForm"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "BearerAuth" : [ ]
+        } ]
+      },
+      "post" : {
+        "tags" : [ "SpontaneousForms" ],
+        "operationId" : "createSpontaneousForm",
+        "parameters" : [ {
+          "name" : "organizationId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/SpontaneousForm"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "201" : {
+            "description" : "Created",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/SpontaneousForm"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Invalid request",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/SpontaneousForm"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Forbidden",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/SpontaneousForm"
+                }
+              }
+            }
+          },
+          "409" : {
+            "description" : "Conflict",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/SpontaneousForm"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal server error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/SpontaneousForm"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "BearerAuth" : [ ]
+        } ]
       }
     },
     "/bff/organization/{organizationId}/operators/{mappedExternalUserId}/debt-position-type-orgs" : {
@@ -1786,6 +1849,93 @@
           },
           "409" : {
             "description" : "Conflict",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ClientDTO"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal Server Error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ClientDTO"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "BearerAuth" : [ ]
+        } ]
+      }
+    },
+    "/bff/organization/{organizationId}/clients/{clientId}/generate" : {
+      "post" : {
+        "tags" : [ "Clients" ],
+        "operationId" : "generateClientSecret",
+        "parameters" : [ {
+          "name" : "organizationId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }, {
+          "name" : "clientId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ClientDTO"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad request",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ClientDTO"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Unauthorized - Missing or invalid token",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ClientDTO"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Forbidden",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ClientDTO"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Not Found",
             "content" : {
               "application/json" : {
                 "schema" : {
@@ -3869,78 +4019,6 @@
         } ]
       }
     },
-    "/bff/organization/{organizationId}/spontaneous-forms" : {
-      "get" : {
-        "tags" : [ "SpontaneousForms" ],
-        "operationId" : "getSpontaneousForms",
-        "parameters" : [ {
-          "name" : "organizationId",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "type" : "integer",
-            "format" : "int64"
-          }
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : "OK",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "type" : "array",
-                  "items" : {
-                    "$ref" : "#/components/schemas/SpontaneousForm"
-                  }
-                }
-              }
-            }
-          },
-          "401" : {
-            "description" : "Unauthorized - Missing or invalid token",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "type" : "array",
-                  "items" : {
-                    "$ref" : "#/components/schemas/SpontaneousForm"
-                  }
-                }
-              }
-            }
-          },
-          "403" : {
-            "description" : "Forbidden - Access denied",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "type" : "array",
-                  "items" : {
-                    "$ref" : "#/components/schemas/SpontaneousForm"
-                  }
-                }
-              }
-            }
-          },
-          "500" : {
-            "description" : "Internal Server Error",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "type" : "array",
-                  "items" : {
-                    "$ref" : "#/components/schemas/SpontaneousForm"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "security" : [ {
-          "BearerAuth" : [ ]
-        } ]
-      }
-    },
     "/bff/organization/{organizationId}/spontaneous-forms/{spontaneousFormId}" : {
       "get" : {
         "tags" : [ "SpontaneousForms" ],
@@ -4012,6 +4090,50 @@
                 }
               }
             }
+          }
+        },
+        "security" : [ {
+          "BearerAuth" : [ ]
+        } ]
+      },
+      "delete" : {
+        "tags" : [ "SpontaneousForms" ],
+        "operationId" : "deleteSpontaneousForm",
+        "parameters" : [ {
+          "name" : "organizationId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }, {
+          "name" : "spontaneousFormId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          },
+          "401" : {
+            "description" : "Unauthorized - Missing or invalid token"
+          },
+          "403" : {
+            "description" : "Forbidden - Access denied"
+          },
+          "404" : {
+            "description" : "Not found"
+          },
+          "409" : {
+            "description" : "Conflict"
+          },
+          "500" : {
+            "description" : "Internal Server Error"
           }
         },
         "security" : [ {
@@ -8835,9 +8957,6 @@
             "type" : "integer",
             "format" : "int64"
           },
-          "flagTreasury" : {
-            "type" : "boolean"
-          },
           "externalOrganizationId" : {
             "type" : "string"
           },
@@ -8904,6 +9023,9 @@
             "type" : "boolean"
           },
           "flagPaymentNotification" : {
+            "type" : "boolean"
+          },
+          "flagTreasury" : {
             "type" : "boolean"
           },
           "pdndEnabled" : {
@@ -9594,24 +9716,6 @@
         },
         "required" : [ "debtPositionTypeOrg", "operatorsSelection" ]
       },
-      "ClientDTO" : {
-        "type" : "object",
-        "properties" : {
-          "clientId" : {
-            "type" : "string"
-          },
-          "clientName" : {
-            "type" : "string"
-          },
-          "organizationIpaCode" : {
-            "type" : "string"
-          },
-          "clientSecret" : {
-            "type" : "string"
-          }
-        },
-        "required" : [ "clientId", "clientName", "clientSecret", "organizationIpaCode" ]
-      },
       "AssessmentStatus" : {
         "type" : "string",
         "enum" : [ "CLOSED", "CANCELLED", "ACTIVE" ]
@@ -9697,6 +9801,235 @@
         },
         "required" : [ "access_token", "expires_in", "token_type" ]
       },
+      "RenderType" : {
+        "type" : "string",
+        "enum" : [ "TEXT", "INTEGER", "DOUBLE", "BOOLEAN", "DATE", "DATETIME", "TEXTAREA", "HTMLAREA", "IMAGE", "SELECT", "MULTILINK", "FILE", "NONE", "SINGLESELECT", "MULTISELECT", "MULTIFIELD", "ASSOCIATION", "LINKGENERATOR", "TAGS", "TAB", "LABEL", "CURRENCY", "CURRENCY_LABEL" ]
+      },
+      "SpontaneousForm" : {
+        "type" : "object",
+        "properties" : {
+          "creationDate" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "updateDate" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "updateOperatorExternalId" : {
+            "type" : "string"
+          },
+          "updateTraceId" : {
+            "type" : "string"
+          },
+          "spontaneousFormId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "organizationId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "code" : {
+            "type" : "string"
+          },
+          "structure" : {
+            "$ref" : "#/components/schemas/SpontaneousFormStructure"
+          },
+          "dictionary" : {
+            "type" : "object",
+            "additionalProperties" : {
+              "type" : "object",
+              "additionalProperties" : {
+                "type" : "object",
+                "additionalProperties" : {
+                  "type" : "string"
+                }
+              }
+            }
+          },
+          "_links" : {
+            "type" : "object",
+            "additionalProperties" : {
+              "$ref" : "#/components/schemas/Link"
+            }
+          }
+        },
+        "required" : [ "code", "organizationId", "structure" ]
+      },
+      "SpontaneousFormField" : {
+        "type" : "object",
+        "properties" : {
+          "name" : {
+            "type" : "string"
+          },
+          "required" : {
+            "type" : "boolean"
+          },
+          "regex" : {
+            "type" : "string"
+          },
+          "htmlRender" : {
+            "$ref" : "#/components/schemas/RenderType"
+          },
+          "htmlClass" : {
+            "type" : "string"
+          },
+          "htmlLabel" : {
+            "type" : "string"
+          },
+          "htmlPlaceholder" : {
+            "type" : "string"
+          },
+          "bindCms" : {
+            "type" : "string"
+          },
+          "defaultValue" : {
+            "type" : "string"
+          },
+          "insertableOrder" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "indexable" : {
+            "type" : "boolean"
+          },
+          "renderableOrder" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "searchableOrder" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "listableOrder" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "insertable" : {
+            "type" : "boolean"
+          },
+          "renderable" : {
+            "type" : "boolean"
+          },
+          "searchable" : {
+            "type" : "boolean"
+          },
+          "listable" : {
+            "type" : "boolean"
+          },
+          "association" : {
+            "type" : "boolean"
+          },
+          "detailLink" : {
+            "type" : "boolean"
+          },
+          "associationField" : {
+            "type" : "string"
+          },
+          "minOccurences" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "maxOccurences" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "groupBy" : {
+            "type" : "string"
+          },
+          "extraAttr" : {
+            "type" : "object",
+            "additionalProperties" : {
+              "type" : "string"
+            }
+          },
+          "enumerationList" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "subfields" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/SpontaneousFormField"
+            }
+          },
+          "validDependsOn" : {
+            "type" : "string"
+          },
+          "validDependsOnUids" : {
+            "type" : "string"
+          },
+          "valueDependsOn" : {
+            "type" : "string"
+          },
+          "valueDependsOnUids" : {
+            "type" : "string"
+          },
+          "hiddenDependsOn" : {
+            "type" : "string"
+          },
+          "hiddenDependsOnUids" : {
+            "type" : "string"
+          },
+          "mandatoryDependsOn" : {
+            "type" : "string"
+          },
+          "mandatoryDependsOnUids" : {
+            "type" : "string"
+          },
+          "enabledDependsOn" : {
+            "type" : "string"
+          },
+          "enabledDependsOnUids" : {
+            "type" : "string"
+          },
+          "errorMessage" : {
+            "type" : "string"
+          },
+          "helpMessage" : {
+            "type" : "string"
+          }
+        },
+        "required" : [ "association", "detailLink", "htmlRender", "indexable", "insertable", "insertableOrder", "listable", "listableOrder", "maxOccurences", "minOccurences", "name", "renderable", "renderableOrder", "searchable", "searchableOrder" ]
+      },
+      "SpontaneousFormStructure" : {
+        "type" : "object",
+        "properties" : {
+          "fields" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/SpontaneousFormField"
+            }
+          },
+          "amountFieldName" : {
+            "type" : "string"
+          },
+          "hasAmountInForm" : {
+            "type" : "boolean"
+          }
+        }
+      },
+      "ClientDTO" : {
+        "type" : "object",
+        "properties" : {
+          "clientId" : {
+            "type" : "string"
+          },
+          "clientName" : {
+            "type" : "string"
+          },
+          "organizationIpaCode" : {
+            "type" : "string"
+          },
+          "clientSecret" : {
+            "type" : "string"
+          }
+        },
+        "required" : [ "clientId", "clientName", "clientSecret", "organizationIpaCode" ]
+      },
       "CreateClientRequest" : {
         "type" : "object",
         "properties" : {
@@ -9732,6 +10065,10 @@
             "type" : "integer",
             "format" : "int64"
           },
+          "debtPositionTypeOrgId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
           "debtPositionTypeOrgCode" : {
             "type" : "string"
           },
@@ -9757,7 +10094,7 @@
             }
           }
         },
-        "required" : [ "assessmentName", "debtPositionTypeOrgCode", "flagManualGeneration", "operatorExternalUserId", "organizationId", "printed", "status" ]
+        "required" : [ "assessmentName", "debtPositionTypeOrgCode", "debtPositionTypeOrgId", "flagManualGeneration", "operatorExternalUserId", "organizationId", "printed", "status" ]
       },
       "AssessmentsDetail" : {
         "type" : "object",
@@ -9788,6 +10125,10 @@
             "type" : "integer",
             "format" : "int64"
           },
+          "debtPositionTypeOrgId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
           "debtPositionTypeOrgCode" : {
             "type" : "string"
           },
@@ -9811,10 +10152,19 @@
           "officeCode" : {
             "type" : "string"
           },
+          "officeDescription" : {
+            "type" : "string"
+          },
           "sectionCode" : {
             "type" : "string"
           },
+          "sectionDescription" : {
+            "type" : "string"
+          },
           "assessmentCode" : {
+            "type" : "string"
+          },
+          "assessmentDescription" : {
             "type" : "string"
           },
           "amountCents" : {
@@ -9828,6 +10178,21 @@
             "type" : "integer",
             "format" : "int64"
           },
+          "classificationLabel" : {
+            "$ref" : "#/components/schemas/ClassificationLabel"
+          },
+          "dateReceipt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "dateReporting" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "dateTreasury" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
           "_links" : {
             "type" : "object",
             "additionalProperties" : {
@@ -9835,7 +10200,11 @@
             }
           }
         },
-        "required" : [ "amountCents", "amountSubmitted", "assessmentId", "debtPositionTypeOrgCode", "debtorFiscalCodeHash", "iud", "iur", "iuv", "organizationId", "sectionCode" ]
+        "required" : [ "amountCents", "amountSubmitted", "assessmentId", "debtPositionTypeOrgCode", "debtPositionTypeOrgId", "debtorFiscalCodeHash", "iud", "iur", "iuv", "organizationId", "sectionCode" ]
+      },
+      "ClassificationLabel" : {
+        "type" : "string",
+        "enum" : [ "PAID", "REPORTED", "CASHED" ]
       },
       "CreateAssessmentsDetail" : {
         "type" : "object",
@@ -10487,9 +10856,13 @@
           },
           "status" : {
             "$ref" : "#/components/schemas/OrganizationStatus"
+          },
+          "brokerId" : {
+            "type" : "integer",
+            "format" : "int64"
           }
         },
-        "required" : [ "flagNotifyIo", "flagNotifyOutcomePush", "flagPaymentNotification", "ipaCode", "operatorRole", "orgFiscalCode", "orgName", "organizationId", "status" ]
+        "required" : [ "brokerId", "flagNotifyIo", "flagNotifyOutcomePush", "flagPaymentNotification", "ipaCode", "operatorRole", "orgFiscalCode", "orgName", "organizationId", "status" ]
       },
       "OrganizationDetail" : {
         "type" : "object",
@@ -10987,217 +11360,6 @@
         },
         "required" : [ "amountCents", "category", "installmentId", "orgFiscalCode", "remittanceInformation", "transferIndex" ]
       },
-      "RenderType" : {
-        "type" : "string",
-        "enum" : [ "TEXT", "INTEGER", "DOUBLE", "BOOLEAN", "DATE", "DATETIME", "TEXTAREA", "HTMLAREA", "IMAGE", "SELECT", "MULTILINK", "FILE", "NONE", "SINGLESELECT", "MULTISELECT", "MULTIFIELD", "ASSOCIATION", "LINKGENERATOR", "TAGS", "TAB", "LABEL", "CURRENCY", "CURRENCY_LABEL" ]
-      },
-      "SpontaneousForm" : {
-        "type" : "object",
-        "properties" : {
-          "creationDate" : {
-            "type" : "string",
-            "format" : "date-time"
-          },
-          "updateDate" : {
-            "type" : "string",
-            "format" : "date-time"
-          },
-          "updateOperatorExternalId" : {
-            "type" : "string"
-          },
-          "updateTraceId" : {
-            "type" : "string"
-          },
-          "spontaneousFormId" : {
-            "type" : "integer",
-            "format" : "int64"
-          },
-          "organizationId" : {
-            "type" : "integer",
-            "format" : "int64"
-          },
-          "code" : {
-            "type" : "string"
-          },
-          "structure" : {
-            "$ref" : "#/components/schemas/SpontaneousFormStructure"
-          },
-          "dictionary" : {
-            "type" : "object",
-            "additionalProperties" : {
-              "type" : "object",
-              "additionalProperties" : {
-                "type" : "object",
-                "additionalProperties" : {
-                  "type" : "string"
-                }
-              }
-            }
-          },
-          "_links" : {
-            "type" : "object",
-            "additionalProperties" : {
-              "$ref" : "#/components/schemas/Link"
-            }
-          }
-        },
-        "required" : [ "code", "organizationId", "structure" ]
-      },
-      "SpontaneousFormField" : {
-        "type" : "object",
-        "properties" : {
-          "name" : {
-            "type" : "string"
-          },
-          "required" : {
-            "type" : "boolean"
-          },
-          "regex" : {
-            "type" : "string"
-          },
-          "htmlRender" : {
-            "$ref" : "#/components/schemas/RenderType"
-          },
-          "htmlClass" : {
-            "type" : "string"
-          },
-          "htmlLabel" : {
-            "type" : "string"
-          },
-          "htmlPlaceholder" : {
-            "type" : "string"
-          },
-          "bindCms" : {
-            "type" : "string"
-          },
-          "defaultValue" : {
-            "type" : "string"
-          },
-          "insertableOrder" : {
-            "type" : "integer",
-            "format" : "int32"
-          },
-          "indexable" : {
-            "type" : "boolean"
-          },
-          "renderableOrder" : {
-            "type" : "integer",
-            "format" : "int32"
-          },
-          "searchableOrder" : {
-            "type" : "integer",
-            "format" : "int32"
-          },
-          "listableOrder" : {
-            "type" : "integer",
-            "format" : "int32"
-          },
-          "insertable" : {
-            "type" : "boolean"
-          },
-          "renderable" : {
-            "type" : "boolean"
-          },
-          "searchable" : {
-            "type" : "boolean"
-          },
-          "listable" : {
-            "type" : "boolean"
-          },
-          "association" : {
-            "type" : "boolean"
-          },
-          "detailLink" : {
-            "type" : "boolean"
-          },
-          "associationField" : {
-            "type" : "string"
-          },
-          "minOccurences" : {
-            "type" : "integer",
-            "format" : "int32"
-          },
-          "maxOccurences" : {
-            "type" : "integer",
-            "format" : "int32"
-          },
-          "groupBy" : {
-            "type" : "string"
-          },
-          "extraAttr" : {
-            "type" : "object",
-            "additionalProperties" : {
-              "type" : "string"
-            }
-          },
-          "enumerationList" : {
-            "type" : "array",
-            "items" : {
-              "type" : "string"
-            }
-          },
-          "subfields" : {
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/components/schemas/SpontaneousFormField"
-            }
-          },
-          "validDependsOn" : {
-            "type" : "string"
-          },
-          "validDependsOnUids" : {
-            "type" : "string"
-          },
-          "valueDependsOn" : {
-            "type" : "string"
-          },
-          "valueDependsOnUids" : {
-            "type" : "string"
-          },
-          "hiddenDependsOn" : {
-            "type" : "string"
-          },
-          "hiddenDependsOnUids" : {
-            "type" : "string"
-          },
-          "mandatoryDependsOn" : {
-            "type" : "string"
-          },
-          "mandatoryDependsOnUids" : {
-            "type" : "string"
-          },
-          "enabledDependsOn" : {
-            "type" : "string"
-          },
-          "enabledDependsOnUids" : {
-            "type" : "string"
-          },
-          "errorMessage" : {
-            "type" : "string"
-          },
-          "helpMessage" : {
-            "type" : "string"
-          }
-        },
-        "required" : [ "association", "detailLink", "htmlRender", "indexable", "insertable", "insertableOrder", "listable", "listableOrder", "maxOccurences", "minOccurences", "name", "renderable", "renderableOrder", "searchable", "searchableOrder" ]
-      },
-      "SpontaneousFormStructure" : {
-        "type" : "object",
-        "properties" : {
-          "fields" : {
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/components/schemas/SpontaneousFormField"
-            }
-          },
-          "amountFieldName" : {
-            "type" : "string"
-          },
-          "hasAmountInForm" : {
-            "type" : "boolean"
-          }
-        }
-      },
       "PagedSpontaneousForm" : {
         "type" : "object",
         "properties" : {
@@ -11567,7 +11729,7 @@
           "content" : {
             "type" : "array",
             "items" : {
-              "$ref" : "#/components/schemas/PaymentsReporting"
+              "$ref" : "#/components/schemas/PaymentsReportingWithReceiptView"
             }
           },
           "size" : {
@@ -11589,23 +11751,9 @@
         },
         "required" : [ "content", "number", "size", "totalElements", "totalPages" ]
       },
-      "PaymentsReporting" : {
+      "PaymentsReportingWithReceiptView" : {
         "type" : "object",
         "properties" : {
-          "creationDate" : {
-            "type" : "string",
-            "format" : "date-time"
-          },
-          "updateDate" : {
-            "type" : "string",
-            "format" : "date-time"
-          },
-          "updateOperatorExternalId" : {
-            "type" : "string"
-          },
-          "updateTraceId" : {
-            "type" : "string"
-          },
           "paymentsReportingId" : {
             "type" : "string"
           },
@@ -11686,6 +11834,23 @@
             "format" : "date"
           },
           "bicCodePouringBank" : {
+            "type" : "string"
+          },
+          "creationDate" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "updateDate" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "updateOperatorExternalId" : {
+            "type" : "string"
+          },
+          "updateTraceId" : {
+            "type" : "string"
+          },
+          "receiptPaymentRequestId" : {
             "type" : "string"
           },
           "_links" : {
@@ -12533,6 +12698,12 @@
           },
           "status" : {
             "$ref" : "#/components/schemas/IngestionFlowFileStatus"
+          },
+          "discardFileName" : {
+            "type" : "string"
+          },
+          "errorDescription" : {
+            "type" : "string"
           }
         },
         "required" : [ "creationDate", "fileName", "ingestionFlowFileId", "operator", "status" ]
@@ -13629,6 +13800,10 @@
           "installmentBalance" : {
             "type" : "string"
           },
+          "calculatedAmount" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
           "treasuryBillYear" : {
             "type" : "string"
           },
@@ -13851,6 +14026,10 @@
             "type" : "integer",
             "format" : "int64"
           },
+          "debtPositionTypeOrgId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
           "debtPositionTypeOrgCode" : {
             "type" : "string"
           },
@@ -13877,9 +14056,15 @@
           },
           "descriptionDebtPositionTypeOrgCode" : {
             "type" : "string"
+          },
+          "name" : {
+            "type" : "string"
+          },
+          "familyName" : {
+            "type" : "string"
           }
         },
-        "required" : [ "assessmentName", "debtPositionTypeOrgCode", "flagManualGeneration", "operatorExternalUserId", "organizationId", "printed", "status" ]
+        "required" : [ "assessmentName", "debtPositionTypeOrgCode", "debtPositionTypeOrgId", "flagManualGeneration", "operatorExternalUserId", "organizationId", "printed", "status" ]
       },
       "PagedAssessmentsExtendedDTO" : {
         "type" : "object",
@@ -13936,6 +14121,12 @@
           },
           "flagManualGeneration" : {
             "type" : "boolean"
+          },
+          "name" : {
+            "type" : "string"
+          },
+          "familyName" : {
+            "type" : "string"
           }
         },
         "required" : [ "assessmentId", "assessmentsName", "debtPositionTypeOrgCode", "debtPositionTypeOrgDescription", "flagManualGeneration", "pagedAssessmentsRowsDetail", "status" ]

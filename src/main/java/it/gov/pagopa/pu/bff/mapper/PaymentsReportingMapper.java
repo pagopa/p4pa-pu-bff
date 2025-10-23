@@ -3,7 +3,7 @@ package it.gov.pagopa.pu.bff.mapper;
 import it.gov.pagopa.pu.bff.dto.generated.PagedPaymentsReportingRow;
 import it.gov.pagopa.pu.bff.dto.generated.PaymentsReportingDetailDTO;
 import it.gov.pagopa.pu.bff.dto.generated.ReceiptDetailDTO;
-import it.gov.pagopa.pu.classification.dto.generated.PagedModelPaymentsReporting;
+import it.gov.pagopa.pu.classification.dto.generated.PagedModelPaymentsReportingWithReceiptView;
 import it.gov.pagopa.pu.classification.dto.generated.PaymentsReporting;
 import it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentStatus;
 import org.springframework.stereotype.Component;
@@ -15,13 +15,13 @@ import java.util.Collections;
 public class PaymentsReportingMapper {
 
   public PagedPaymentsReportingRow mapToPagedPaymentsReporting(
-    PagedModelPaymentsReporting pagedModel) {
+    PagedModelPaymentsReportingWithReceiptView pagedModel) {
     PagedPaymentsReportingRow pagedPaymentsReporting = new PagedPaymentsReportingRow();
     if (pagedModel != null) {
       if (pagedModel.getEmbedded() != null && !CollectionUtils.isEmpty(
-        pagedModel.getEmbedded().getPaymentsReportings())) {
+        pagedModel.getEmbedded().getPaymentsReportingWithReceiptViews())) {
         pagedPaymentsReporting.setContent(
-          pagedModel.getEmbedded().getPaymentsReportings());
+          pagedModel.getEmbedded().getPaymentsReportingWithReceiptViews());
       } else {
         pagedPaymentsReporting.setContent(Collections.emptyList());
       }

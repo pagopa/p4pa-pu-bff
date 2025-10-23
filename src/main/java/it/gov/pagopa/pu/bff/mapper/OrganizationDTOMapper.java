@@ -24,6 +24,7 @@ public class OrganizationDTOMapper {
       .flagNotifyOutcomePush(organization.getFlagNotifyOutcomePush())
       .flagPaymentNotification(organization.getFlagPaymentNotification())
       .status(organization.getStatus())
+      .brokerId(organization.getBrokerId())
       .build();
   }
 

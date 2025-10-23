@@ -2,9 +2,10 @@ package it.gov.pagopa.pu.bff.connector.classification;
 
 import it.gov.pagopa.pu.bff.connector.classification.client.PaymentsReportingSearchClient;
 import it.gov.pagopa.pu.bff.connector.classification.client.PaymentsReportingViewSearchClient;
+import it.gov.pagopa.pu.bff.connector.classification.client.PaymentsReportingWithReceiptViewSearchClient;
 import it.gov.pagopa.pu.bff.dto.LocalDateIntervalFilter;
-import it.gov.pagopa.pu.classification.dto.generated.PagedModelPaymentsReporting;
 import it.gov.pagopa.pu.classification.dto.generated.PagedModelPaymentsReportingView;
+import it.gov.pagopa.pu.classification.dto.generated.PagedModelPaymentsReportingWithReceiptView;
 import it.gov.pagopa.pu.classification.dto.generated.PaymentsReporting;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -26,13 +27,15 @@ class PaymentsReportingServiceImplTest {
   private PaymentsReportingViewSearchClient paymentsReportingViewSearchClientMock;
   @Mock
   private PaymentsReportingSearchClient paymentsReportingSearchClientMock;
+  @Mock
+  private PaymentsReportingWithReceiptViewSearchClient paymentsReportingWithReceiptViewSearchClientMock;
 
   private PaymentsReportingService service;
 
   @BeforeEach
   void setUp() {
     service = new PaymentsReportingServiceImpl(
-      paymentsReportingViewSearchClientMock,paymentsReportingSearchClientMock);
+      paymentsReportingViewSearchClientMock, paymentsReportingSearchClientMock, paymentsReportingWithReceiptViewSearchClientMock);
   }
 
   @Test
@@ -63,12 +66,12 @@ class PaymentsReportingServiceImplTest {
     LocalDateIntervalFilter payDateFilter = new LocalDateIntervalFilter(LocalDate.now().minusDays(10), LocalDate.now());
     Pageable pageable = Mockito.mock(Pageable.class);
     String accessToken = "ACCESSTOKEN";
-    PagedModelPaymentsReporting expectedResult = new PagedModelPaymentsReporting();
+    PagedModelPaymentsReportingWithReceiptView expectedResult = new PagedModelPaymentsReportingWithReceiptView();
 
-    when(paymentsReportingSearchClientMock.getPaymentsReportingRows(organizationId, iuf, iuv, payDateFilter, pageable, accessToken))
+    when(paymentsReportingWithReceiptViewSearchClientMock.getPaymentsReportingRows(organizationId, iuf, iuv, payDateFilter, pageable, accessToken))
       .thenReturn(expectedResult);
 
-    PagedModelPaymentsReporting result = service.getPaymentsReportingRows(organizationId, iuf, iuv, payDateFilter, pageable, accessToken);
+    PagedModelPaymentsReportingWithReceiptView result = service.getPaymentsReportingRows(organizationId, iuf, iuv, payDateFilter, pageable, accessToken);
 
     assertSame(expectedResult, result);
   }

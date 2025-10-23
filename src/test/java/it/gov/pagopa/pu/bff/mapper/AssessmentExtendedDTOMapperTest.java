@@ -40,7 +40,7 @@ class AssessmentExtendedDTOMapperTest {
         AssessmentsExtendedDTO dto = result.getFirst();
         Assertions.assertEquals("Test Description", dto.getDescriptionDebtPositionTypeOrgCode());
         Assertions.assertEquals(assessments.getAssessmentId(), dto.getAssessmentId());
-        TestUtils.checkNotNullFields(dto);
+        TestUtils.checkNotNullFields(dto, "name", "familyName");
     }
 
     @Test

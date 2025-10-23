@@ -6,7 +6,6 @@ import static org.mockito.Mockito.when;
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.dto.ClassificationFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.InstallmentViewFiltersDTO;
-import it.gov.pagopa.pu.bff.dto.TreasuryViewFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.generated.*;
 import it.gov.pagopa.pu.bff.mapper.DashboardMapper;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
@@ -45,7 +44,7 @@ class DashboardServiceTest {
   @BeforeEach
   void setup() {
     dashboardService = new DashboardServiceImpl(
-      installmentRetrieverServiceMock, classificationRetrieverServiceMock, treasuryRetrieverServiceMock, dashboardMapperMock);
+      installmentRetrieverServiceMock, classificationRetrieverServiceMock, dashboardMapperMock);
   }
 
   @AfterEach
@@ -145,13 +144,7 @@ class DashboardServiceTest {
       .iuf(iuf)
       .build();
 
-    TreasuryViewFiltersDTO treasuryViewFiltersDTO = TreasuryViewFiltersDTO.builder()
-      .organizationId(organizationId)
-      .iuf(iuf)
-      .build();
-
     PagedModelClassification classifications = podamFactory.manufacturePojo(PagedModelClassification.class);
-    PagedTreasuryView treasuries = podamFactory.manufacturePojo(PagedTreasuryView.class);
 
     DashboardByIuf expected = new DashboardByIuf();
 
@@ -161,10 +154,7 @@ class DashboardServiceTest {
       when(classificationRetrieverServiceMock.getClassifications(organizationId, expectedClassificationFilters, Pageable.ofSize(10), loggedUser, accessToken))
         .thenReturn(classifications);
 
-      when(treasuryRetrieverServiceMock.getTreasuries(treasuryViewFiltersDTO, Pageable.ofSize(10), loggedUser, accessToken))
-        .thenReturn(treasuries);
-
-      when(dashboardMapperMock.mapToDashboardByIuf(classifications, treasuries))
+      when(dashboardMapperMock.mapToDashboardByIuf(classifications))
         .thenReturn(expected);
 
       DashboardByIuf result = dashboardService.getDashboardByIuf(organizationId, iuf, loggedUser, accessToken);

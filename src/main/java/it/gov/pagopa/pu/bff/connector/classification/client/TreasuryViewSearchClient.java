@@ -18,24 +18,21 @@ public class TreasuryViewSearchClient {
   }
 
   public PagedModelTreasuryView getTreasuries(TreasuryViewFiltersDTO treasuryViewFiltersDTO, Pageable pageable, String accessToken) {
-    LocalDateIntervalFilter billDateFilter = treasuryViewFiltersDTO.getBillDateFilter();
-    LocalDateIntervalFilter regionalValueDateFilter = treasuryViewFiltersDTO.getRegionValueDateFilter();
-
     return classificationApisHolder.getTreasuryViewSearchControllerApi(accessToken)
       .crudTreasuriesViewFindTreasuriesByFilters(
         treasuryViewFiltersDTO.getOrganizationId(),
         treasuryViewFiltersDTO.getIuv(),
         treasuryViewFiltersDTO.getIuf(),
         treasuryViewFiltersDTO.getBillAmountCents(),
-        billDateFilter != null ? billDateFilter.getFrom() : null,
-        billDateFilter != null ? billDateFilter.getTo() : null,
+        treasuryViewFiltersDTO.getBillDateFilter().getFrom(),
+        treasuryViewFiltersDTO.getBillDateFilter().getTo(),
         treasuryViewFiltersDTO.getProvisionalCode(),
         treasuryViewFiltersDTO.getProvisionalAe(),
         treasuryViewFiltersDTO.getBillCode(),
         treasuryViewFiltersDTO.getBillYear(),
         treasuryViewFiltersDTO.getPspLastName(),
-        regionalValueDateFilter != null ? regionalValueDateFilter.getFrom() : null,
-        regionalValueDateFilter != null ? regionalValueDateFilter.getTo() : null,
+        treasuryViewFiltersDTO.getRegionValueDateFilter().getFrom(),
+        treasuryViewFiltersDTO.getRegionValueDateFilter().getTo(),
         treasuryViewFiltersDTO.getDocumentCode(),
         treasuryViewFiltersDTO.getDocumentYear(),
         PageUtils.getPageNumber(pageable),

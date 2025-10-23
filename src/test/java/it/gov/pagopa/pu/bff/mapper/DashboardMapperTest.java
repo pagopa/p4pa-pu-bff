@@ -130,17 +130,13 @@ class DashboardMapperTest {
     PagedModelClassification classifications = podamFactory.manufacturePojo(
       PagedModelClassification.class);
 
-    PagedTreasuryView treasuries = podamFactory.manufacturePojo(
-      PagedTreasuryView.class);
-
     DashboardByIuf expected = DashboardByIuf.builder()
       .hasIuf(true)
       .hasClassification(true)
       .hasTreasury(true)
       .build();
 
-    DashboardByIuf result = mapper.mapToDashboardByIuf(
-      classifications, treasuries);
+    DashboardByIuf result = mapper.mapToDashboardByIuf(classifications);
 
     assertEquals(expected, result);
   }
@@ -153,34 +149,7 @@ class DashboardMapperTest {
       .hasTreasury(false)
       .build();
 
-    assertEquals(expected, mapper.mapToDashboardByIuf(null,null));
+    assertEquals(expected, mapper.mapToDashboardByIuf(null));
   }
 
-  @Test
-  void givenNullPagedClassificationsWhenMapToDashboardByIufThenCorrectMapping() {
-    PagedTreasuryView treasuries = podamFactory.manufacturePojo(
-      PagedTreasuryView.class);
-
-    DashboardByIuf expected = DashboardByIuf.builder()
-      .hasIuf(false)
-      .hasClassification(false)
-      .hasTreasury(true)
-      .build();
-
-    assertEquals(expected, mapper.mapToDashboardByIuf(null,treasuries));
-  }
-
-  @Test
-  void givenNullPagedTreasuriesWhenMapToDashboardByIufThenCorrectMapping() {
-    PagedModelClassification classifications = podamFactory.manufacturePojo(
-      PagedModelClassification.class);
-
-    DashboardByIuf expected = DashboardByIuf.builder()
-      .hasIuf(true)
-      .hasClassification(true)
-      .hasTreasury(false)
-      .build();
-
-    assertEquals(expected, mapper.mapToDashboardByIuf(classifications, null));
-  }
 }

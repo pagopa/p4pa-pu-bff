@@ -93,47 +93,6 @@ class TreasuryRetrieverServiceImplTest {
   }
 
   @Test
-  void givenValidUserAndNullDateFiltersWhenGetTreasuriesThenOk() {
-    UserInfo loggedUser = new UserInfo();
-    loggedUser.setUserId("user-123");
-
-    long organizationId = 1L;
-    String iuv = "IUV123";
-    String iuf = "IUF123";
-    long billAmountCents = 1000L;
-    String provisionalCode = "PROV123";
-    String billCode = "BILL123";
-    String pspLastName = "PSPLastName";
-    String documentCode = "DOC123";
-    Pageable pageable = PageRequest.of(0, 10);
-
-    TreasuryViewFiltersDTO filtersDTO = new TreasuryViewFiltersDTO(organizationId, iuv, iuf, billAmountCents, null, provisionalCode, null, billCode, null, pspLastName, null, documentCode, null);
-
-    PagedModelTreasuryView pagedModelTreasuryView = new PagedModelTreasuryView();
-    PagedTreasuryView expectedPagedTreasuryView = new PagedTreasuryView();
-
-    try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
-      authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(filtersDTO.getOrganizationId(), loggedUser)).thenAnswer(a -> null);
-
-      Mockito.when(treasuryServiceMock.getTreasuries(filtersDTO, pageable, accessToken))
-        .thenReturn(pagedModelTreasuryView);
-
-      Mockito.when(treasuryViewMapperMock.mapToPagedTreasury(pagedModelTreasuryView))
-        .thenReturn(expectedPagedTreasuryView);
-
-      PagedTreasuryView result = treasuryRetrieverService.getTreasuries(filtersDTO, pageable, loggedUser, accessToken);
-
-      assertNotNull(result);
-      assertSame(expectedPagedTreasuryView, result);
-
-      authorizationServiceMockedStatic.verify(() -> AuthorizationService.validateUserForOrganizationId(filtersDTO.getOrganizationId(), loggedUser));
-      Mockito.verify(treasuryServiceMock).getTreasuries(filtersDTO, pageable, accessToken);
-      Mockito.verify(treasuryViewMapperMock).mapToPagedTreasury(pagedModelTreasuryView);
-      Mockito.verifyNoMoreInteractions(treasuryServiceMock, treasuryViewMapperMock);
-    }
-  }
-
-  @Test
   void whenBillDateFilterIsInvalidThenThrowException() {
     UserInfo loggedUser = new UserInfo();
     loggedUser.setUserId("user-123");

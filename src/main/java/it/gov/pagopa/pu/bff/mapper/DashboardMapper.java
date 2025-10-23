@@ -4,7 +4,6 @@ import it.gov.pagopa.pu.bff.dto.generated.*;
 import it.gov.pagopa.pu.classification.dto.generated.Classification;
 import it.gov.pagopa.pu.classification.dto.generated.PagedModelClassification;
 import it.gov.pagopa.pu.classification.dto.generated.PagedModelClassificationEmbedded;
-import it.gov.pagopa.pu.classification.dto.generated.TreasuryView;
 import it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentView;
 import java.util.Collections;
 import java.util.List;
@@ -99,7 +98,7 @@ public class DashboardMapper {
     return dashboardByIuv;
   }
 
-  public DashboardByIuf mapToDashboardByIuf(PagedModelClassification pagedClassifications, PagedTreasuryView pagedTreasuryView) {
+  public DashboardByIuf mapToDashboardByIuf(PagedModelClassification pagedClassifications) {
     DashboardByIuf dashboardByIuf = new DashboardByIuf();
     DashboardByIuv dashboardByIuv = mapToDashboardByIuv(null, pagedClassifications);
 
@@ -108,19 +107,21 @@ public class DashboardMapper {
     dashboardByIuf.setHasClassification(dashboardByIuv.getHasClassification());
     dashboardByIuf.setClassificationId(dashboardByIuv.getClassificationId());
 
-    List<TreasuryView> treasuryViews = Optional.ofNullable(pagedTreasuryView)
-      .map(PagedTreasuryView::getContent)
+    List<Classification> classifications = Optional.ofNullable(pagedClassifications)
+      .map(PagedModelClassification::getEmbedded)
+      .map(PagedModelClassificationEmbedded::getClassifications)
       .orElseGet(Collections::emptyList);
 
-    if (treasuryViews.isEmpty()) {
+    if (classifications.isEmpty()) {
       dashboardByIuf.setHasTreasury(false);
     } else {
-      dashboardByIuf.setHasTreasury(true);
-
-      List<String> distinctTreasuryIds = treasuryViews.stream()
-        .map(TreasuryView::getTreasuryId)
+      List<String> distinctTreasuryIds = classifications.stream()
+        .map(Classification::getTreasuryId)
+        .filter(Objects::nonNull)
         .distinct()
         .toList();
+
+      dashboardByIuf.setHasTreasury(!distinctTreasuryIds.isEmpty());
 
       if (distinctTreasuryIds.size() == 1) {
         dashboardByIuf.setTreasuryId(distinctTreasuryIds.getFirst());

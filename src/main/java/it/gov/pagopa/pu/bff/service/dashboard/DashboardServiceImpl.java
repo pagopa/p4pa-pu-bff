@@ -25,7 +25,6 @@ public class DashboardServiceImpl implements DashboardService {
 
   private final InstallmentRetrieverService installmentRetrieverService;
   private final ClassificationRetrieverService classificationRetrieverService;
-  private final TreasuryRetrieverService treasuryRetrieverService;
 
   private final DashboardMapper dashboardMapper;
 
@@ -60,14 +59,8 @@ public class DashboardServiceImpl implements DashboardService {
     PagedModelClassification classifications = classificationRetrieverService.getClassifications(
       organizationId, classificationFilters, PAGE_CONFIG, loggedUser, accessToken);
 
-    TreasuryViewFiltersDTO treasuryViewFiltersDTO = TreasuryViewFiltersDTO.builder()
-      .organizationId(organizationId)
-      .iuf(iuf)
-      .build();
 
-    PagedTreasuryView treasuries = treasuryRetrieverService.getTreasuries(treasuryViewFiltersDTO, PAGE_CONFIG, loggedUser, accessToken);
-
-    return dashboardMapper.mapToDashboardByIuf(classifications, treasuries);
+    return dashboardMapper.mapToDashboardByIuf(classifications);
   }
 
   @Override

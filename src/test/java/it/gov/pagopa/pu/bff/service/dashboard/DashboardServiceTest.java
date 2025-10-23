@@ -11,7 +11,6 @@ import it.gov.pagopa.pu.bff.mapper.DashboardMapper;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
 import it.gov.pagopa.pu.bff.service.classification.ClassificationRetrieverService;
 import it.gov.pagopa.pu.bff.service.installment.InstallmentRetrieverService;
-import it.gov.pagopa.pu.bff.service.treasury.TreasuryRetrieverService;
 import it.gov.pagopa.pu.bff.util.TestUtils;
 import it.gov.pagopa.pu.classification.dto.generated.PagedModelClassification;
 import org.junit.jupiter.api.AfterEach;

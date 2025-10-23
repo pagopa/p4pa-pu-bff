@@ -35,8 +35,6 @@ class DashboardServiceTest {
   @Mock
   private ClassificationRetrieverService classificationRetrieverServiceMock;
   @Mock
-  private TreasuryRetrieverService treasuryRetrieverServiceMock;
-  @Mock
   private DashboardMapper dashboardMapperMock;
 
   private final PodamFactory podamFactory = TestUtils.getPodamFactory();

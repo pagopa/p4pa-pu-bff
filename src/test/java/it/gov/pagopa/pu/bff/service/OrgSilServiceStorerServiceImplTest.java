@@ -290,7 +290,6 @@ public class OrgSilServiceStorerServiceImplTest {
     doNothing().when(authorizationServiceMock).validateAdminRole(organizationId, loggedUser);
     when(orgSilServiceServiceMock.getOrgSilServiceById(orgSilServiceId, accessToken)).thenReturn(existing);
     when(orgSilServiceDTOMapperMock.toOrgSilServiceDTO(body)).thenReturn(mappedDto);
-    when(orgSilServiceServiceMock.getOrgSilServiceByOrganizationIdAndApplicationName(organizationId, mappedDto.getApplicationName() , accessToken)).thenReturn(null);
     when(orgSilServiceServiceMock.createOrUpdateOrgSilService(mappedDto, accessToken)).thenReturn(updatedDto);
     when(orgSilServiceDTOMapperMock.map(updatedDto)).thenReturn(expectedResponse);
 
@@ -317,39 +316,6 @@ public class OrgSilServiceStorerServiceImplTest {
 
     InvalidOrgSilServiceException ex = assertThrows(InvalidOrgSilServiceException.class, () ->
       orgSilServiceStorerService.createOrgSilService(organizationId, body, loggedUser, accessToken));
-
-    Assertions.assertEquals("OrgSilService with same applicationName applicationName already exist for the organization 1", ex.getMessage());
-  }
-
-  @Test
-  void givenExistingOrgSilServiceDTOWhenUpdateOrgSilServiceThenThrowException(){
-    Long organizationId = 1L;
-    Long orgSilServiceId = 123L;
-
-    OrgSilServiceDecryptedDTO body = new OrgSilServiceDecryptedDTO();
-    body.setOrgSilServiceId(orgSilServiceId);
-    body.setOrganizationId(organizationId);
-    body.setServiceType(OrgSilServiceType.ACTUALIZATION);
-    body.setFlagLegacy(true);
-    body.setLegacyBasicAuthConfig(new SilServiceLegacyBasicAuthConfigDTO());
-
-    UserInfo loggedUser = new UserInfo();
-
-    OrgSilService existing = new OrgSilService();
-    existing.setOrgSilServiceId(orgSilServiceId);
-    existing.setOrganizationId(organizationId);
-    existing.setServiceType(OrgSilServiceType.ACTUALIZATION);
-
-    OrgSilServiceDTO mappedDto = new OrgSilServiceDTO();
-    mappedDto.setApplicationName("applicationName");
-
-    doNothing().when(authorizationServiceMock).validateAdminRole(organizationId, loggedUser);
-    when(orgSilServiceServiceMock.getOrgSilServiceById(orgSilServiceId, accessToken)).thenReturn(existing);
-    when(orgSilServiceDTOMapperMock.toOrgSilServiceDTO(body)).thenReturn(mappedDto);
-    when(orgSilServiceServiceMock.getOrgSilServiceByOrganizationIdAndApplicationName(organizationId, mappedDto.getApplicationName() , accessToken)).thenReturn(existing);
-
-    InvalidOrgSilServiceException ex = assertThrows(InvalidOrgSilServiceException.class, () ->
-      orgSilServiceStorerService.updateOrgSilService(organizationId, body, loggedUser, accessToken));
 
     Assertions.assertEquals("OrgSilService with same applicationName applicationName already exist for the organization 1", ex.getMessage());
   }

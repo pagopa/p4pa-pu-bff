@@ -11937,7 +11937,7 @@
           "updateTraceId" : {
             "type" : "string"
           },
-          "receiptPaymentRequestId" : {
+          "receiptId" : {
             "type" : "string"
           },
           "_links" : {

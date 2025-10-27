@@ -2,6 +2,7 @@ package it.gov.pagopa.pu.bff.controller;
 
 import it.gov.pagopa.pu.bff.controller.generated.DashboardApi;
 import it.gov.pagopa.pu.bff.dto.generated.DashboardByFc;
+import it.gov.pagopa.pu.bff.dto.generated.DashboardByIuf;
 import it.gov.pagopa.pu.bff.dto.generated.DashboardByIuv;
 import it.gov.pagopa.pu.bff.security.SecurityUtils;
 import it.gov.pagopa.pu.bff.service.dashboard.DashboardService;
@@ -41,6 +42,19 @@ public class DashboardController implements DashboardApi {
 
     return ResponseEntity.ok(
       dashboardService.getDashboardByIuv(organizationId, iuv,
+        SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken()));
+  }
+
+  @Override
+  public ResponseEntity<DashboardByIuf> getDashboardByIuf(
+    Long organizationId, String iuf
+  ) {
+    log.info(
+      "User requested getDashboardByIuf with organizationId {}",
+      organizationId);
+
+    return ResponseEntity.ok(
+      dashboardService.getDashboardByIuf(organizationId, iuf,
         SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken()));
   }
 }

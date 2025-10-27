@@ -7415,6 +7415,93 @@
         } ]
       }
     },
+    "/bff/organization/{organizationId}/dashboard-by-iuf" : {
+      "get" : {
+        "tags" : [ "Dashboard" ],
+        "operationId" : "getDashboardByIuf",
+        "parameters" : [ {
+          "name" : "organizationId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }, {
+          "name" : "iuf",
+          "in" : "query",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/DashboardByIuf"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Invalid request",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/DashboardByIuf"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Unauthorized - Missing or invalid token",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/DashboardByIuf"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Forbidden",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/DashboardByIuf"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Not found",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/DashboardByIuf"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal server error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/DashboardByIuf"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "BearerAuth" : [ ]
+        } ]
+      }
+    },
     "/bff/organization/{organizationId}/dashboard-by-fc" : {
       "get" : {
         "tags" : [ "Dashboard" ],
@@ -11850,7 +11937,7 @@
           "updateTraceId" : {
             "type" : "string"
           },
-          "receiptPaymentRequestId" : {
+          "receiptId" : {
             "type" : "string"
           },
           "_links" : {
@@ -12710,7 +12797,7 @@
       },
       "IngestionFlowFileStatus" : {
         "type" : "string",
-        "enum" : [ "UPLOADED", "PROCESSING", "COMPLETED", "ERROR", "WAITING_FILE" ]
+        "enum" : [ "UPLOADED", "PROCESSING", "COMPLETED", "ERROR", "WAITING_FILE", "WARNING" ]
       },
       "PagedIngestionFlowFile" : {
         "type" : "object",
@@ -13202,6 +13289,30 @@
           "classificationId" : {
             "type" : "integer",
             "format" : "int64"
+          }
+        }
+      },
+      "DashboardByIuf" : {
+        "type" : "object",
+        "properties" : {
+          "hasIuf" : {
+            "type" : "boolean"
+          },
+          "iuf" : {
+            "type" : "string"
+          },
+          "hasClassification" : {
+            "type" : "boolean"
+          },
+          "classificationId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "hasTreasury" : {
+            "type" : "boolean"
+          },
+          "treasuryId" : {
+            "type" : "string"
           }
         }
       },

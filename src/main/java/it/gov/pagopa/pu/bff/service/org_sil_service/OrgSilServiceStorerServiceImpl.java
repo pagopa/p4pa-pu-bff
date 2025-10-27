@@ -67,8 +67,6 @@ public class OrgSilServiceStorerServiceImpl implements OrgSilServiceStorerServic
 
     OrgSilServiceDTO orgSilServiceDTO = orgSilServiceDTOMapper.toOrgSilServiceDTO(body);
 
-    verifyIfOrgSilServiceWithSameApplicationNameAlreadyExist(organizationId, orgSilServiceDTO.getApplicationName(), accessToken);
-
     return orgSilServiceDTOMapper.map(
       orgSilServiceService.createOrUpdateOrgSilService(orgSilServiceDTO, accessToken));
   }

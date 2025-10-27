@@ -4,6 +4,7 @@ import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.dto.ClassificationFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.InstallmentViewFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.generated.DashboardByFc;
+import it.gov.pagopa.pu.bff.dto.generated.DashboardByIuf;
 import it.gov.pagopa.pu.bff.dto.generated.DashboardByIuv;
 import it.gov.pagopa.pu.bff.dto.generated.PagedInstallmentView;
 import it.gov.pagopa.pu.bff.mapper.DashboardMapper;
@@ -42,6 +43,21 @@ public class DashboardServiceImpl implements DashboardService {
       filters, PAGE_CONFIG, loggedUser, accessToken);
 
     return dashboardMapper.mapToDashboardByFc(installments);
+  }
+
+  @Override
+  public DashboardByIuf getDashboardByIuf(Long organizationId, String iuf, UserInfo loggedUser, String accessToken) {
+    AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser);
+
+    ClassificationFiltersDTO classificationFilters = ClassificationFiltersDTO.builder()
+      .iuf(iuf)
+      .build();
+
+    PagedModelClassification classifications = classificationRetrieverService.getClassifications(
+      organizationId, classificationFilters, PAGE_CONFIG, loggedUser, accessToken);
+
+
+    return dashboardMapper.mapToDashboardByIuf(classifications);
   }
 
   @Override

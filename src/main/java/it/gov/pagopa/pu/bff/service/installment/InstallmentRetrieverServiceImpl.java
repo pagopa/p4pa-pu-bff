@@ -72,7 +72,6 @@ public class InstallmentRetrieverServiceImpl implements InstallmentRetrieverServ
     if (!statusList.contains(installmentDetailDTO.getStatus())) {
       installmentDetailDTO.setPayer(null);
       installmentDetailDTO.setPaymentDateTime(null);
-      installmentDetailDTO.setIud(null);
       installmentDetailDTO.setIur(null);
       installmentDetailDTO.setPspCompanyName(null);
     }

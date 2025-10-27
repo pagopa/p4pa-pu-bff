@@ -295,6 +295,7 @@ class InstallmentRetrieverServiceImplTest {
     Long installmentId = 2L;
     InstallmentDetailDTO installmentDetailDTO = new InstallmentDetailDTO();
     installmentDetailDTO.setStatus(InstallmentStatus.UNPAID);
+    installmentDetailDTO.setIud("iud");
 
     try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
       authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)).thenAnswer(a -> null);
@@ -305,9 +306,9 @@ class InstallmentRetrieverServiceImplTest {
       InstallmentDetailDTO result = installmentRetrieverService.getInstallmentDetail(organizationId, installmentId, loggedUser, accessToken);
 
       assertNotNull(result);
+      assertNotNull(result.getIud());
       assertNull(result.getPayer());
       assertNull(result.getPaymentDateTime());
-      assertNull(result.getIud());
       assertNull(result.getIur());
       assertNull(result.getPspCompanyName());
 

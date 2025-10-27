@@ -10,7 +10,6 @@ import it.gov.pagopa.pu.bff.util.DateUtils;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionOrigin;
 import it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentDetailDTO;
 import it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentNoPII;
-import it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentStatus;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;

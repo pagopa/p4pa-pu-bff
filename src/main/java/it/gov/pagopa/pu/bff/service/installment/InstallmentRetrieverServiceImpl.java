@@ -22,7 +22,6 @@ public class InstallmentRetrieverServiceImpl implements InstallmentRetrieverServ
 
   private final InstallmentViewMapper installmentViewMapper;
   private final InstallmentService installmentService;
-  private static final List<InstallmentStatus> INSTALLMENT_PAID_STATUSES = List.of(InstallmentStatus.PAID, InstallmentStatus.REPORTED);
 
   public InstallmentRetrieverServiceImpl(
     InstallmentViewMapper installmentViewMapper,
@@ -54,9 +53,7 @@ public class InstallmentRetrieverServiceImpl implements InstallmentRetrieverServ
   @Override
   public InstallmentDetailDTO getInstallmentDetail(Long organizationId, Long installmentId, UserInfo loggedUser, String accessToken) {
     AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser);
-    InstallmentDetailDTO installmentDetailDTO = installmentService.getInstallmentDetail(installmentId, loggedUser.getMappedExternalUserId(), accessToken);
-    setPaymentInfo(installmentDetailDTO);
-    return installmentDetailDTO;
+    return installmentService.getInstallmentDetail(installmentId, loggedUser.getMappedExternalUserId(), accessToken);
   }
 
   @Override
@@ -65,16 +62,6 @@ public class InstallmentRetrieverServiceImpl implements InstallmentRetrieverServ
     AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser);
     return installmentService.getInstallmentFromTransferSemanticKey(organizationId, iuv, iur, transferIndex,
       loggedUser.getMappedExternalUserId(), debtPositionOrigins, accessToken);
-  }
-
-
-  private void setPaymentInfo(InstallmentDetailDTO installmentDetailDTO) {
-    if (!INSTALLMENT_PAID_STATUSES.contains(installmentDetailDTO.getStatus())) {
-      installmentDetailDTO.setPayer(null);
-      installmentDetailDTO.setPaymentDateTime(null);
-      installmentDetailDTO.setIur(null);
-      installmentDetailDTO.setPspCompanyName(null);
-    }
   }
 
 }

@@ -22,7 +22,7 @@ public class InstallmentRetrieverServiceImpl implements InstallmentRetrieverServ
 
   private final InstallmentViewMapper installmentViewMapper;
   private final InstallmentService installmentService;
-  private final List<InstallmentStatus> statusList = List.of(InstallmentStatus.PAID, InstallmentStatus.REPORTED);
+  private final List<InstallmentStatus> INSTALLMENT_PAID_STATUSES = List.of(InstallmentStatus.PAID, InstallmentStatus.REPORTED);
 
   public InstallmentRetrieverServiceImpl(
     InstallmentViewMapper installmentViewMapper,
@@ -69,7 +69,7 @@ public class InstallmentRetrieverServiceImpl implements InstallmentRetrieverServ
 
 
   private void setPaymentInfo(InstallmentDetailDTO installmentDetailDTO) {
-    if (!statusList.contains(installmentDetailDTO.getStatus())) {
+    if (!INSTALLMENT_PAID_STATUSES.contains(installmentDetailDTO.getStatus())) {
       installmentDetailDTO.setPayer(null);
       installmentDetailDTO.setPaymentDateTime(null);
       installmentDetailDTO.setIur(null);

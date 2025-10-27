@@ -22,7 +22,7 @@ public class InstallmentRetrieverServiceImpl implements InstallmentRetrieverServ
 
   private final InstallmentViewMapper installmentViewMapper;
   private final InstallmentService installmentService;
-  private final List<InstallmentStatus> INSTALLMENT_PAID_STATUSES = List.of(InstallmentStatus.PAID, InstallmentStatus.REPORTED);
+  private static final List<InstallmentStatus> INSTALLMENT_PAID_STATUSES = List.of(InstallmentStatus.PAID, InstallmentStatus.REPORTED);
 
   public InstallmentRetrieverServiceImpl(
     InstallmentViewMapper installmentViewMapper,

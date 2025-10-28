@@ -5,9 +5,10 @@ import it.gov.pagopa.pu.bff.connector.debt_position.client.SpontaneousFormEntity
 import it.gov.pagopa.pu.bff.connector.debt_position.client.SpontaneousFormSearchClient;
 import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelSpontaneousForm;
 import it.gov.pagopa.pu.debtpositions.dto.generated.SpontaneousForm;
-import java.util.List;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class SpontaneousFormServiceImpl implements SpontaneousFormService {
@@ -46,5 +47,10 @@ public class SpontaneousFormServiceImpl implements SpontaneousFormService {
   @Override
   public void deleteSpontaneousForm(Long spontaneousFormId, String accessToken) {
     spontaneousFormClient.deleteSpontaneousForm(spontaneousFormId, accessToken);
+  }
+
+  @Override
+  public void updateSpontaneousForm(SpontaneousForm spontaneousForm, String accessToken) {
+    spontaneousFormClient.updateSpontaneousForm(spontaneousForm,accessToken);
   }
 }

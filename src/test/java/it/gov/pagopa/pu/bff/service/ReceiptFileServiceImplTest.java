@@ -56,13 +56,17 @@ class ReceiptFileServiceImplTest {
         && o.get(ReceiptFileServiceImpl.RECEIPT_IUV).equals(receiptDetailDTO.getIuv())
         && o.get(ReceiptFileServiceImpl.RECEIPT_DEBTOR_NAME).equals(receiptDetailDTO.getDebtor().getFullName())
         && o.get(ReceiptFileServiceImpl.RECEIPT_DEBTOR_FISCAL_CODE).equals(receiptDetailDTO.getDebtor().getFiscalCode())
-        && o.get(ReceiptFileServiceImpl.RECEIPT_TOTAL_AMOUNT).equals(Utilities.formatPrice(receiptDetailDTO.getPaymentAmountCents()+receiptDetailDTO.getFeeCents()))
         && o.get(ReceiptFileServiceImpl.RECEIPT_PAYMENT_DATE).equals(receiptDetailDTO.getPaymentDateTime().format(DATE_TIME_FORMATTER))
         && o.get(ReceiptFileServiceImpl.RECEIPT_PSP_NAME).equals(receiptDetailDTO.getPspCompanyName())
-        && o.get(ReceiptFileServiceImpl.RECEIPT_FEE_AMOUNT).equals(Utilities.formatPrice(receiptDetailDTO.getFeeCents()))
         && o.get(ReceiptFileServiceImpl.RECEIPT_AMOUNT).equals(Utilities.formatPrice(receiptDetailDTO.getPaymentAmountCents()))
         && o.get(ReceiptFileServiceImpl.RECEIPT_ORG_FISCAL_CODE).equals(organization.getOrgFiscalCode())
         && o.get(ReceiptFileServiceImpl.REMITTANCE_INFORMATION).equals(receiptDetailDTO.getRemittanceInformation())
+        && o.get(ReceiptFileServiceImpl.IUR).equals(receiptDetailDTO.getIur())
+        && o.get(ReceiptFileServiceImpl.IUD).equals(receiptDetailDTO.getIud())
+        && o.get(ReceiptFileServiceImpl.EMISSION_DATE) != null
+        && !o.get(ReceiptFileServiceImpl.EMISSION_DATE).toString().isEmpty()
+        && o.get(ReceiptFileServiceImpl.EMISSION_TIME) != null
+        && !o.get(ReceiptFileServiceImpl.EMISSION_TIME).toString().isEmpty()
     ))).thenReturn(expectedResult);
 
     byte[] result = receiptFileService.generateReceiptPdf(receiptDetailDTO, organization);
@@ -82,13 +86,17 @@ class ReceiptFileServiceImplTest {
         && o.get(ReceiptFileServiceImpl.RECEIPT_IUV).equals(receiptDetailDTO.getIuv())
         && o.get(ReceiptFileServiceImpl.RECEIPT_DEBTOR_NAME).equals(receiptDetailDTO.getDebtor().getFullName())
         && o.get(ReceiptFileServiceImpl.RECEIPT_DEBTOR_FISCAL_CODE).equals(receiptDetailDTO.getDebtor().getFiscalCode())
-        && o.get(ReceiptFileServiceImpl.RECEIPT_TOTAL_AMOUNT).equals(Utilities.formatPrice(receiptDetailDTO.getPaymentAmountCents()+receiptDetailDTO.getFeeCents()))
         && o.get(ReceiptFileServiceImpl.RECEIPT_PAYMENT_DATE).equals(receiptDetailDTO.getPaymentDateTime().format(DATE_TIME_FORMATTER))
         && o.get(ReceiptFileServiceImpl.RECEIPT_PSP_NAME).equals(receiptDetailDTO.getPspCompanyName())
-        && o.get(ReceiptFileServiceImpl.RECEIPT_FEE_AMOUNT).equals(Utilities.formatPrice(receiptDetailDTO.getFeeCents()))
         && o.get(ReceiptFileServiceImpl.RECEIPT_AMOUNT).equals(Utilities.formatPrice(receiptDetailDTO.getPaymentAmountCents()))
         && o.get(ReceiptFileServiceImpl.RECEIPT_ORG_FISCAL_CODE).equals(organization.getOrgFiscalCode())
         && o.get(ReceiptFileServiceImpl.REMITTANCE_INFORMATION).equals(receiptDetailDTO.getRemittanceInformation())
+        && o.get(ReceiptFileServiceImpl.IUR).equals(receiptDetailDTO.getIur())
+        && o.get(ReceiptFileServiceImpl.IUD).equals(receiptDetailDTO.getIud())
+        && o.get(ReceiptFileServiceImpl.EMISSION_DATE) != null
+        && !o.get(ReceiptFileServiceImpl.EMISSION_DATE).toString().isEmpty()
+        && o.get(ReceiptFileServiceImpl.EMISSION_TIME) != null
+        && !o.get(ReceiptFileServiceImpl.EMISSION_TIME).toString().isEmpty()
     ))).thenThrow(new IOException());
 
     Assertions.assertThrows(IllegalStateException.class,()-> receiptFileService.generateReceiptPdf(receiptDetailDTO,organization));
@@ -105,13 +113,17 @@ class ReceiptFileServiceImplTest {
         && o.get(ReceiptFileServiceImpl.RECEIPT_IUV).equals(receiptDetailDTO.getIuv())
         && o.get(ReceiptFileServiceImpl.RECEIPT_DEBTOR_NAME).equals(receiptDetailDTO.getDebtor().getFullName())
         && o.get(ReceiptFileServiceImpl.RECEIPT_DEBTOR_FISCAL_CODE).equals(receiptDetailDTO.getDebtor().getFiscalCode())
-        && o.get(ReceiptFileServiceImpl.RECEIPT_TOTAL_AMOUNT).equals(Utilities.formatPrice(receiptDetailDTO.getPaymentAmountCents()+receiptDetailDTO.getFeeCents()))
         && o.get(ReceiptFileServiceImpl.RECEIPT_PAYMENT_DATE).equals(receiptDetailDTO.getPaymentDateTime().format(DATE_TIME_FORMATTER))
         && o.get(ReceiptFileServiceImpl.RECEIPT_PSP_NAME).equals(receiptDetailDTO.getPspCompanyName())
-        && o.get(ReceiptFileServiceImpl.RECEIPT_FEE_AMOUNT).equals(Utilities.formatPrice(receiptDetailDTO.getFeeCents()))
         && o.get(ReceiptFileServiceImpl.RECEIPT_AMOUNT).equals(Utilities.formatPrice(receiptDetailDTO.getPaymentAmountCents()))
         && o.get(ReceiptFileServiceImpl.RECEIPT_ORG_FISCAL_CODE).equals(organization.getOrgFiscalCode())
         && o.get(ReceiptFileServiceImpl.REMITTANCE_INFORMATION).equals(receiptDetailDTO.getRemittanceInformation())
+        && o.get(ReceiptFileServiceImpl.IUR).equals(receiptDetailDTO.getIur())
+        && o.get(ReceiptFileServiceImpl.IUD).equals(receiptDetailDTO.getIud())
+        && o.get(ReceiptFileServiceImpl.EMISSION_DATE) != null
+        && !o.get(ReceiptFileServiceImpl.EMISSION_DATE).toString().isEmpty()
+        && o.get(ReceiptFileServiceImpl.EMISSION_TIME) != null
+        && !o.get(ReceiptFileServiceImpl.EMISSION_TIME).toString().isEmpty()
     ))).thenThrow(new TemplateException(null));
 
     Assertions.assertThrows(IllegalStateException.class,()-> receiptFileService.generateReceiptPdf(receiptDetailDTO,organization));

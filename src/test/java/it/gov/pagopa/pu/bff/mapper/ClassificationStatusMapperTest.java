@@ -26,7 +26,7 @@ class ClassificationStatusMapperTest {
       Arguments.of(ClassificationsEnum.RT_IUF_TES, ClassificationStatus.INFO),
       Arguments.of(ClassificationsEnum.RT_NO_IUF, ClassificationStatus.WARNING),
       Arguments.of(ClassificationsEnum.RT_NO_IUD, ClassificationStatus.WARNING),
-      Arguments.of(ClassificationsEnum.IUF_NO_TES, ClassificationStatus.WARNING),
+      Arguments.of(ClassificationsEnum.IUF_NO_TES, ClassificationStatus.ERROR),
       Arguments.of(ClassificationsEnum.DOPPI, ClassificationStatus.ERROR),
       Arguments.of(ClassificationsEnum.IUV_NO_RT, ClassificationStatus.ERROR),
       Arguments.of(ClassificationsEnum.TES_NO_IUF_OR_IUV, ClassificationStatus.ERROR),

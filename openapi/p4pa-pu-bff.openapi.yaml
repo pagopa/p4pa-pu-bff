@@ -3725,6 +3725,39 @@ paths:
           description: Conflict
         '500':
           description: Internal server error
+    put:
+      tags:
+        - SpontaneousForms
+      summary: "update a SpontaneousForm"
+      operationId: updateSpontaneousForm
+      parameters:
+        - name: organizationId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: 'SpontaneousForm'
+      responses:
+        '200':
+          description: OK
+        '401':
+          description: Unauthorized - Missing or invalid token
+        '403':
+          description: Forbidden - Access denied
+        '404':
+          description: Not found
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDTO'
   /organization/{organizationId}/spontaneous-forms/{spontaneousFormId}:
     get:
       tags:
@@ -3749,7 +3782,7 @@ paths:
           content:
             application/json:
               schema:
-                type: 'SpontaneousForm'
+                $ref: "#/components/schemas/SpontaneousFormDetailDTO"
         '401':
           description: Unauthorized - Missing or invalid token
         '403':
@@ -5425,3 +5458,57 @@ components:
           type: boolean
         treasuryId:
           type: string
+    SpontaneousFormDetailDTO:
+      type: object
+      properties:
+        creationDate:
+          type: string
+          format: date-time
+        updateDate:
+          type: string
+          format: date-time
+        updateOperatorExternalId:
+          type: string
+        updateTraceId:
+          type: string
+        spontaneousFormId:
+          type: integer
+          format: int64
+        organizationId:
+          type: integer
+          format: int64
+          readOnly: true
+        code:
+          type: string
+          readOnly: true
+        structure:
+          type: 'SpontaneousFormStructure'
+        dictionary:
+          type: object
+          additionalProperties:
+            type: object
+            additionalProperties:
+              type: object
+              additionalProperties:
+                type: string
+          description: |
+            Dictionary of localized messages for spontaneous form fields.
+            The map has three levels of nesting:
+            1. First level: language code (e.g. "EN")
+            2. Second level: field name (e.g. "payment_field")
+            3. Third level: attribute name and message for that field (e.g. "label", "error", "help")
+
+            Example:
+            {
+              "EN": {
+                "payment_field": {
+                  "label": "Payment description",
+                  "error": "Specify the payment description",
+                  "help": "Specify the payment description"
+                }
+              }
+            }
+      required:
+        - code
+        - organizationId
+        - structure

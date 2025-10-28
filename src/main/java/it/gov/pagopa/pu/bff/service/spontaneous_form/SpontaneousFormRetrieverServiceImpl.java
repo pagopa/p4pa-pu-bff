@@ -4,20 +4,27 @@ import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.connector.debt_position.DebtPositionTypeOrgService;
 import it.gov.pagopa.pu.bff.connector.debt_position.SpontaneousFormService;
 import it.gov.pagopa.pu.bff.dto.generated.PagedSpontaneousForm;
+import it.gov.pagopa.pu.bff.dto.generated.SpontaneousFormDetailDTO;
 import it.gov.pagopa.pu.bff.exception.ConflictException;
 import it.gov.pagopa.pu.bff.exception.ResourceNotFoundException;
 import it.gov.pagopa.pu.bff.mapper.PagedSpontaneousFormMapper;
+import it.gov.pagopa.pu.bff.mapper.SpontaneousFormDetailDTOMapper;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrg;
 import it.gov.pagopa.pu.debtpositions.dto.generated.PageMetadata;
 import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelSpontaneousForm;
 import it.gov.pagopa.pu.debtpositions.dto.generated.SpontaneousForm;
 import jakarta.validation.ValidationException;
-import java.util.List;
-import java.util.Optional;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+import static it.gov.pagopa.pu.bff.util.Utilities.checkImmutableField;
 
 @Service
 public class SpontaneousFormRetrieverServiceImpl implements SpontaneousFormRetrieverService {
@@ -25,13 +32,15 @@ public class SpontaneousFormRetrieverServiceImpl implements SpontaneousFormRetri
   private final PagedSpontaneousFormMapper pagedSpontaneousFormMapper;
   private final AuthorizationService authorizationService;
   private final DebtPositionTypeOrgService debtPositionTypeOrgService;
+  private final SpontaneousFormDetailDTOMapper spontaneousFormDetailDTOMapper;
 
   public SpontaneousFormRetrieverServiceImpl(SpontaneousFormService spontaneousFormService, PagedSpontaneousFormMapper pagedSpontaneousFormMapper,
-      AuthorizationService authorizationService, DebtPositionTypeOrgService debtPositionTypeOrgService) {
+                                             AuthorizationService authorizationService, DebtPositionTypeOrgService debtPositionTypeOrgService, SpontaneousFormDetailDTOMapper spontaneousFormDetailDTOMapper) {
     this.spontaneousFormService = spontaneousFormService;
     this.pagedSpontaneousFormMapper = pagedSpontaneousFormMapper;
     this.authorizationService = authorizationService;
     this.debtPositionTypeOrgService = debtPositionTypeOrgService;
+    this.spontaneousFormDetailDTOMapper = spontaneousFormDetailDTOMapper;
   }
 
   @Override
@@ -46,6 +55,9 @@ public class SpontaneousFormRetrieverServiceImpl implements SpontaneousFormRetri
   }
 
   private SpontaneousForm getSpontaneousFormAndValidate(Long spontaneousFormId, Long organizationId, String accessToken) {
+    if(spontaneousFormId==null){
+      throw new ValidationException("SpontaneousFormId must not be null");
+    }
     SpontaneousForm spontaneousForm = spontaneousFormService.getSpontaneousForm(spontaneousFormId, accessToken);
     validateRetrievedSpontaneousForm(spontaneousForm, organizationId, spontaneousFormId);
     return spontaneousForm;
@@ -74,11 +86,11 @@ public class SpontaneousFormRetrieverServiceImpl implements SpontaneousFormRetri
   }
 
   @Override
-  public SpontaneousForm getSpontaneousFormDetail(Long organizationId, Long spontaneousFormId, UserInfo loggedUser, String accessToken) {
+  public SpontaneousFormDetailDTO getSpontaneousFormDetail(Long organizationId, Long spontaneousFormId, UserInfo loggedUser, String accessToken) {
     AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser);
     SpontaneousForm spontaneousForm = spontaneousFormService.getSpontaneousForm(spontaneousFormId, accessToken);
     validateRetrievedSpontaneousForm(spontaneousForm,organizationId,spontaneousFormId);
-    return spontaneousForm;
+    return spontaneousFormDetailDTOMapper.map(spontaneousForm);
   }
 
   @Override
@@ -117,5 +129,22 @@ public class SpontaneousFormRetrieverServiceImpl implements SpontaneousFormRetri
       throw new ConflictException("The SpontaneousForm having id "+ spontaneousFormId +" is referenced by some DebtPositionTypeOrgs");
     }
     spontaneousFormService.deleteSpontaneousForm(spontaneousFormId,accessToken);
+  }
+
+  @Override
+  public void updateSpontaneousForm(Long organizationId, SpontaneousForm spontaneousForm, UserInfo loggedUser, String accessToken) {
+    authorizationService.validateAdminRole(organizationId, loggedUser);
+    SpontaneousForm existingSpontaneousForm = getSpontaneousFormAndValidate(spontaneousForm.getSpontaneousFormId(), organizationId, accessToken);
+    checkReadOnlyFields(existingSpontaneousForm, spontaneousForm);
+    spontaneousFormService.updateSpontaneousForm(spontaneousForm,accessToken);
+  }
+
+  private void checkReadOnlyFields(SpontaneousForm existingSpontaneousForm, SpontaneousForm updatedSpontaneousForm) {
+    List<String> modifiedFields = new ArrayList<>();
+    checkImmutableField("organizationId", existingSpontaneousForm.getOrganizationId(), updatedSpontaneousForm.getOrganizationId(), modifiedFields);
+    checkImmutableField("code", existingSpontaneousForm.getCode(), updatedSpontaneousForm.getCode(), modifiedFields);
+    if(!CollectionUtils.isEmpty(modifiedFields)){
+      throw new ValidationException("The following SpontaneousForm fields are readOnly. "+modifiedFields);
+    }
   }
 }

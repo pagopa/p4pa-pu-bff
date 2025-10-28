@@ -28,4 +28,13 @@ public class SpontaneousFormClient {
       throw new ResourceNotFoundException("SpontaneousForm having id "+spontaneousFormId+" not found");
     }
   }
+
+  public void updateSpontaneousForm(SpontaneousForm spontaneousForm, String accessToken) {
+    try{
+      debtPositionApisHolder.getSpontaneousFormApi(accessToken)
+        .updateSpontaneousForm(spontaneousForm);
+    }catch (HttpClientErrorException.NotFound e) {
+      throw new ResourceNotFoundException("SpontaneousForm having id "+spontaneousForm.getSpontaneousFormId()+" not found");
+    }
+  }
 }

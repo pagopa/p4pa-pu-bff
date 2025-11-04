@@ -149,9 +149,6 @@ class ReceiptControllerTest {
     fileResourceDTO.setResource(new ByteArrayResource("PDF-DATA".getBytes()));
     fileResourceDTO.setFileName("filename");
 
-    Mockito.when(receiptRetrieverServiceMock.getReceiptPdf(organizationId, receiptId, loggedUser, accessToken))
-            .thenReturn(fileResourceDTO);
-
     ResponseEntity<Resource> response = receiptController.getReceiptPdf(organizationId,receiptId);
 
     assertEquals(HttpStatus.OK, response.getStatusCode());

@@ -1,12 +1,15 @@
 package it.gov.pagopa.pu.bff.connector.debt_position.client;
 
 import it.gov.pagopa.pu.bff.connector.debt_position.config.DebtPositionApisHolder;
+import it.gov.pagopa.pu.bff.dto.FileResourceDTO;
 import it.gov.pagopa.pu.bff.dto.ReceiptViewFiltersDTO;
 import it.gov.pagopa.pu.bff.util.PageUtils;
 import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelReceiptView;
 import it.gov.pagopa.pu.debtpositions.dto.generated.ReceiptDetailDTO;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 
@@ -48,6 +51,19 @@ public class ReceiptClient {
     }
   }
 
+  public FileResourceDTO getReceiptPdf(Long receiptId, Long organizationId, String accessToken) {
+    try {
+      ResponseEntity<Resource> resourceResponseEntity= debtPositionApisHolder.getReceiptApi(accessToken)
+        .getReceiptPdfWithHttpInfo(receiptId, organizationId);
+      return FileResourceDTO.builder()
+        .resource(resourceResponseEntity.getBody())
+        .fileName(resourceResponseEntity.getHeaders().getContentDisposition().getFilename())
+        .build();
+    } catch (HttpClientErrorException.NotFound e) {
+      log.warn("Receipt PDF with receiptId {} and organizationId {} not found", receiptId, organizationId);
+      return null;
+    }
+  }
 }
 
 

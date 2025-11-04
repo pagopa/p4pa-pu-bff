@@ -2,21 +2,16 @@ package it.gov.pagopa.pu.bff.service;
 
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.connector.debt_position.ReceiptService;
-import it.gov.pagopa.pu.bff.connector.organization.OrganizationService;
-import it.gov.pagopa.pu.bff.dto.FileResourceDTO;
 import it.gov.pagopa.pu.bff.dto.OffsetDateTimeIntervalFilter;
 import it.gov.pagopa.pu.bff.dto.ReceiptViewFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedReceiptView;
 import it.gov.pagopa.pu.bff.dto.generated.ReceiptDetailDTO;
-import it.gov.pagopa.pu.bff.exception.ResourceNotFoundException;
 import it.gov.pagopa.pu.bff.mapper.ReceiptDetailDTOMapper;
 import it.gov.pagopa.pu.bff.mapper.ReceiptViewMapper;
-import it.gov.pagopa.pu.bff.service.receipt.ReceiptFileService;
 import it.gov.pagopa.pu.bff.service.receipt.ReceiptRetrieverServiceImpl;
 import it.gov.pagopa.pu.bff.util.TestUtils;
 import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelReceiptView;
 import it.gov.pagopa.pu.debtpositions.dto.generated.ReceiptOriginType;
-import it.gov.pagopa.pu.organization.dto.generated.Organization;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,7 +21,6 @@ import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.core.io.ByteArrayResource;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.authorization.AuthorizationDeniedException;
@@ -44,11 +38,6 @@ class ReceiptRetrieverServiceImplTest {
   @Mock
   private ReceiptService receiptServiceMock;
   @Mock
-  private OrganizationService organizationServiceMock;
-  @Mock
-  private ReceiptFileService receiptFileServiceMock;
-
-  @Mock
   private ReceiptViewMapper receiptViewMapperMock;
   @Mock
   private ReceiptDetailDTOMapper receiptDetailDTOMapperMock;
@@ -59,13 +48,13 @@ class ReceiptRetrieverServiceImplTest {
 
   @BeforeEach
   void setUp() {
-    receiptViewService = new ReceiptRetrieverServiceImpl(receiptServiceMock, organizationServiceMock, receiptFileServiceMock, receiptViewMapperMock, receiptDetailDTOMapperMock);
+    receiptViewService = new ReceiptRetrieverServiceImpl(receiptServiceMock, receiptViewMapperMock, receiptDetailDTOMapperMock);
   }
 
   @AfterEach
   void verifyNoMoreInteractions(){
     Mockito.verifyNoMoreInteractions(
-            receiptServiceMock,organizationServiceMock, receiptFileServiceMock,receiptViewMapperMock,receiptDetailDTOMapperMock
+            receiptServiceMock,receiptViewMapperMock,receiptDetailDTOMapperMock
     );
   }
 
@@ -328,102 +317,6 @@ class ReceiptRetrieverServiceImplTest {
 
       authorizationServiceMockedStatic.verify(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser));
       Mockito.verifyNoInteractions(receiptServiceMock, receiptDetailDTOMapperMock);
-    }
-  }
-
-  @Test
-  void givenValidUserWhenGetReceiptPdfThenOk(){
-    UserInfo loggedUser = new UserInfo();
-    loggedUser.setMappedExternalUserId("mappedExternalUserId");
-
-    Long organizationId = 1L;
-    Long receiptId = 2L;
-    it.gov.pagopa.pu.debtpositions.dto.generated.ReceiptDetailDTO receiptDetailDTO = podamFactory.manufacturePojo(it.gov.pagopa.pu.debtpositions.dto.generated.ReceiptDetailDTO.class);
-    Organization organization = podamFactory.manufacturePojo(Organization.class);
-    byte[] pdfBytes = "PDF-DATA".getBytes();
-    FileResourceDTO expectedResult = new FileResourceDTO(
-            new ByteArrayResource(pdfBytes),
-            "RECEIPT_"+organization.getOrgFiscalCode()+"_"+receiptId+".pdf"
-    );
-
-    try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
-      authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)).thenAnswer(a -> null);
-
-      Mockito.when(receiptServiceMock.getReceiptDetail(receiptId, loggedUser.getMappedExternalUserId(), organizationId, accessToken))
-              .thenReturn(receiptDetailDTO);
-      Mockito.when(organizationServiceMock.getOrganizationByOrganizationId(organizationId,accessToken)).thenReturn(organization);
-      Mockito.when(receiptFileServiceMock.generateReceiptPdf(receiptDetailDTO,organization)).thenReturn(pdfBytes);
-
-      FileResourceDTO result = receiptViewService.getReceiptPdf(organizationId, receiptId, loggedUser, accessToken);
-
-      assertNotNull(result);
-      assertEquals(expectedResult, result);
-
-      authorizationServiceMockedStatic.verify(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser));
-    }
-  }
-
-  @Test
-  void givenNoOrganizationWhenGetReceiptPdfThenResourceNotFoundException(){
-    UserInfo loggedUser = new UserInfo();
-    loggedUser.setMappedExternalUserId("mappedExternalUserId");
-
-    Long organizationId = 1L;
-    Long receiptId = 2L;
-    it.gov.pagopa.pu.debtpositions.dto.generated.ReceiptDetailDTO receiptDetailDTO = podamFactory.manufacturePojo(it.gov.pagopa.pu.debtpositions.dto.generated.ReceiptDetailDTO.class);
-
-    try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
-      authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)).thenAnswer(a -> null);
-
-      Mockito.when(receiptServiceMock.getReceiptDetail(receiptId, loggedUser.getMappedExternalUserId(), organizationId, accessToken))
-              .thenReturn(receiptDetailDTO);
-      Mockito.when(organizationServiceMock.getOrganizationByOrganizationId(organizationId,accessToken)).thenReturn(null);
-
-      Assertions.assertThrows(ResourceNotFoundException.class,()-> receiptViewService.getReceiptPdf(organizationId, receiptId, loggedUser, accessToken));
-
-      authorizationServiceMockedStatic.verify(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser));
-      Mockito.verifyNoInteractions(receiptFileServiceMock);
-    }
-  }
-
-  @Test
-  void givenNoReceiptWhenGetReceiptPdfThenResourceNotFoundException(){
-    UserInfo loggedUser = new UserInfo();
-    loggedUser.setMappedExternalUserId("mappedExternalUserId");
-
-    Long organizationId = 1L;
-    Long receiptId = 2L;
-
-    try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
-      authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)).thenAnswer(a -> null);
-
-      Mockito.when(receiptServiceMock.getReceiptDetail(receiptId, loggedUser.getMappedExternalUserId(), organizationId, accessToken))
-              .thenReturn(null);
-
-      Assertions.assertThrows(ResourceNotFoundException.class,()-> receiptViewService.getReceiptPdf(organizationId, receiptId, loggedUser, accessToken));
-
-      authorizationServiceMockedStatic.verify(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser));
-      Mockito.verifyNoInteractions(organizationServiceMock, receiptFileServiceMock);
-    }
-  }
-
-  @Test
-  void givenInvalidUserWhenGetReceiptPdfThenOk() {
-    UserInfo loggedUser = new UserInfo();
-    loggedUser.setMappedExternalUserId("mappedExternalUserId");
-
-    Long organizationId = 1L;
-    Long receiptId = 2L;
-
-    try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
-      authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser))
-              .thenThrow(new AuthorizationDeniedException("Access denied"));
-
-      Assertions.assertThrows(AuthorizationDeniedException.class, () ->
-              receiptViewService.getReceiptPdf(organizationId, receiptId, loggedUser, accessToken));
-
-      authorizationServiceMockedStatic.verify(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser));
-      Mockito.verifyNoInteractions(receiptServiceMock,organizationServiceMock, receiptFileServiceMock);
     }
   }
 }

@@ -1,6 +1,7 @@
 package it.gov.pagopa.pu.bff.controller;
 
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
+import it.gov.pagopa.pu.bff.connector.debt_position.ReceiptService;
 import it.gov.pagopa.pu.bff.controller.generated.ReceiptsApi;
 import it.gov.pagopa.pu.bff.dto.FileResourceDTO;
 import it.gov.pagopa.pu.bff.dto.OffsetDateTimeIntervalFilter;
@@ -27,9 +28,11 @@ import java.util.List;
 public class ReceiptController implements ReceiptsApi {
 
   private final ReceiptRetrieverService receiptRetrieverService;
+  private final ReceiptService receiptService;
 
-  public ReceiptController(ReceiptRetrieverService receiptRetrieverService) {
+  public ReceiptController(ReceiptRetrieverService receiptRetrieverService, ReceiptService receiptService) {
     this.receiptRetrieverService = receiptRetrieverService;
+    this.receiptService = receiptService;
   }
 
   @Override
@@ -52,16 +55,14 @@ public class ReceiptController implements ReceiptsApi {
   @Override
   public ResponseEntity<Resource> getReceiptPdf(Long organizationId, Long receiptId) {
     log.info("User requested getReceiptPdf having organizationId {} and receiptId {}", organizationId, receiptId);
-    FileResourceDTO fileResourceDTO = receiptRetrieverService.getReceiptPdf(
-            organizationId,receiptId,SecurityUtils.getLoggedUser(),SecurityUtils.getAccessToken());
+    FileResourceDTO resource= receiptService.getReceiptPdf(receiptId, organizationId, SecurityUtils.getAccessToken());
     HttpHeaders headers = new HttpHeaders();
     headers.setContentDisposition(ContentDisposition.attachment()
-            .filename(fileResourceDTO.getFileName())
+            .filename(resource.getFileName())
             .build());
-
     return ResponseEntity.ok()
             .contentType(MediaType.APPLICATION_PDF)
             .headers(headers)
-            .body(fileResourceDTO.getResource());
+            .body(resource.getResource());
   }
 }

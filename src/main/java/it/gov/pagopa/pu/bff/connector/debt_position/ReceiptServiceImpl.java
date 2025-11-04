@@ -5,7 +5,6 @@ import it.gov.pagopa.pu.bff.dto.FileResourceDTO;
 import it.gov.pagopa.pu.bff.dto.ReceiptViewFiltersDTO;
 import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelReceiptView;
 import it.gov.pagopa.pu.debtpositions.dto.generated.ReceiptDetailDTO;
-import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 

@@ -1,6 +1,7 @@
 package it.gov.pagopa.pu.bff.controller;
 
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
+import it.gov.pagopa.pu.bff.connector.debt_position.ReceiptService;
 import it.gov.pagopa.pu.bff.dto.FileResourceDTO;
 import it.gov.pagopa.pu.bff.dto.OffsetDateTimeIntervalFilter;
 import it.gov.pagopa.pu.bff.dto.ReceiptViewFiltersDTO;
@@ -39,7 +40,8 @@ class ReceiptControllerTest {
 
   @Mock
   private ReceiptRetrieverService receiptRetrieverServiceMock;
-
+  @Mock
+  private  ReceiptService receiptServiceMock;
   @InjectMocks
   private ReceiptController receiptController;
 
@@ -54,7 +56,8 @@ class ReceiptControllerTest {
   @AfterEach
   void verifyNoMoreInteractions(){
     Mockito.verifyNoMoreInteractions(
-      receiptRetrieverServiceMock
+      receiptRetrieverServiceMock,
+      receiptServiceMock
     );
   }
 
@@ -148,6 +151,8 @@ class ReceiptControllerTest {
     FileResourceDTO fileResourceDTO = new FileResourceDTO();
     fileResourceDTO.setResource(new ByteArrayResource("PDF-DATA".getBytes()));
     fileResourceDTO.setFileName("filename");
+
+    Mockito.when(receiptServiceMock.getReceiptPdf(receiptId, organizationId, accessToken)).thenReturn(fileResourceDTO);
 
     ResponseEntity<Resource> response = receiptController.getReceiptPdf(organizationId,receiptId);
 

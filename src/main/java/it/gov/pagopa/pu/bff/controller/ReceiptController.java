@@ -1,7 +1,6 @@
 package it.gov.pagopa.pu.bff.controller;
 
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
-import it.gov.pagopa.pu.bff.connector.debt_position.ReceiptService;
 import it.gov.pagopa.pu.bff.controller.generated.ReceiptsApi;
 import it.gov.pagopa.pu.bff.dto.FileResourceDTO;
 import it.gov.pagopa.pu.bff.dto.OffsetDateTimeIntervalFilter;
@@ -14,10 +13,7 @@ import it.gov.pagopa.pu.debtpositions.dto.generated.ReceiptOriginType;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.ContentDisposition;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.OffsetDateTime;
@@ -28,11 +24,9 @@ import java.util.List;
 public class ReceiptController implements ReceiptsApi {
 
   private final ReceiptRetrieverService receiptRetrieverService;
-  private final ReceiptService receiptService;
 
-  public ReceiptController(ReceiptRetrieverService receiptRetrieverService, ReceiptService receiptService) {
+  public ReceiptController(ReceiptRetrieverService receiptRetrieverService) {
     this.receiptRetrieverService = receiptRetrieverService;
-    this.receiptService = receiptService;
   }
 
   @Override
@@ -55,7 +49,11 @@ public class ReceiptController implements ReceiptsApi {
   @Override
   public ResponseEntity<Resource> getReceiptPdf(Long organizationId, Long receiptId) {
     log.info("User requested getReceiptPdf having organizationId {} and receiptId {}", organizationId, receiptId);
-    FileResourceDTO resource= receiptService.getReceiptPdf(receiptId, organizationId, SecurityUtils.getAccessToken());
+    FileResourceDTO resource = receiptRetrieverService.getReceiptPdf(receiptId, organizationId, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken());
+    if(resource==null) {
+      return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
     HttpHeaders headers = new HttpHeaders();
     headers.setContentDisposition(ContentDisposition.attachment()
             .filename(resource.getFileName())

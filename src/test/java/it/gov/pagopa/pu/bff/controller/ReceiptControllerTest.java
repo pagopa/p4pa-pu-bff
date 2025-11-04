@@ -1,7 +1,6 @@
 package it.gov.pagopa.pu.bff.controller;
 
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
-import it.gov.pagopa.pu.bff.connector.debt_position.ReceiptService;
 import it.gov.pagopa.pu.bff.dto.FileResourceDTO;
 import it.gov.pagopa.pu.bff.dto.OffsetDateTimeIntervalFilter;
 import it.gov.pagopa.pu.bff.dto.ReceiptViewFiltersDTO;
@@ -40,8 +39,6 @@ class ReceiptControllerTest {
 
   @Mock
   private ReceiptRetrieverService receiptRetrieverServiceMock;
-  @Mock
-  private  ReceiptService receiptServiceMock;
   @InjectMocks
   private ReceiptController receiptController;
 
@@ -56,8 +53,7 @@ class ReceiptControllerTest {
   @AfterEach
   void verifyNoMoreInteractions(){
     Mockito.verifyNoMoreInteractions(
-      receiptRetrieverServiceMock,
-      receiptServiceMock
+      receiptRetrieverServiceMock
     );
   }
 
@@ -152,7 +148,7 @@ class ReceiptControllerTest {
     fileResourceDTO.setResource(new ByteArrayResource("PDF-DATA".getBytes()));
     fileResourceDTO.setFileName("filename");
 
-    Mockito.when(receiptServiceMock.getReceiptPdf(receiptId, organizationId, accessToken)).thenReturn(fileResourceDTO);
+    Mockito.when(receiptRetrieverServiceMock.getReceiptPdf(receiptId, organizationId, loggedUser, accessToken)).thenReturn(fileResourceDTO);
 
     ResponseEntity<Resource> response = receiptController.getReceiptPdf(organizationId,receiptId);
 
@@ -161,6 +157,19 @@ class ReceiptControllerTest {
     assertNotNull(response.getBody());
     assertEquals(fileResourceDTO.getResource(), response.getBody());
     assertEquals(fileResourceDTO.getFileName(), response.getHeaders().getContentDisposition().getFilename());
+  }
+
+  @Test
+  void givenNotFoundReceiptRequestWhenGetReceiptPdfThenNoContent() {
+    Long organizationId = 1L;
+    Long receiptId = 2L;
+
+    Mockito.when(receiptRetrieverServiceMock.getReceiptPdf(receiptId, organizationId, loggedUser, accessToken))
+      .thenReturn(null);
+
+    ResponseEntity<Resource> response = receiptController.getReceiptPdf(organizationId,receiptId);
+
+    assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
   }
 }
 

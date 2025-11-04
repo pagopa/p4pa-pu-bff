@@ -44,7 +44,7 @@ public class ReceiptClient {
   public ReceiptDetailDTO getReceiptDetail(Long receiptId, String operatorExternalUserId, Long organizationId, String accessToken) {
     try {
       return debtPositionApisHolder.getReceiptApi(accessToken)
-        .getReceiptDetail(receiptId, operatorExternalUserId, organizationId);
+        .getReceiptDetail(receiptId, organizationId, operatorExternalUserId);
     } catch (HttpClientErrorException.NotFound e) {
       log.warn("ReceiptDetail with receiptId {} and operatorExternalUserId {} not found", receiptId, operatorExternalUserId);
       return null;

@@ -2,6 +2,7 @@ package it.gov.pagopa.pu.bff.service.receipt;
 
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.connector.debt_position.ReceiptService;
+import it.gov.pagopa.pu.bff.dto.FileResourceDTO;
 import it.gov.pagopa.pu.bff.dto.ReceiptViewFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedReceiptView;
 import it.gov.pagopa.pu.bff.dto.generated.ReceiptDetailDTO;
@@ -57,5 +58,11 @@ public class ReceiptRetrieverServiceImpl implements ReceiptRetrieverService {
     AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser);
     return receiptDetailDTOMapper.mapToReceiptDetailDTO(receiptService.getReceiptDetail(receiptId,
       loggedUser.getMappedExternalUserId(), organizationId, accessToken));
+  }
+
+  @Override
+  public FileResourceDTO getReceiptPdf(Long receiptId, Long organizationId, UserInfo loggedUser, String accessToken) {
+    AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser);
+    return receiptService.getReceiptPdf(receiptId, organizationId, accessToken);
   }
 }

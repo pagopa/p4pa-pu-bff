@@ -2,6 +2,7 @@ package it.gov.pagopa.pu.bff.service;
 
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.connector.debt_position.ReceiptService;
+import it.gov.pagopa.pu.bff.dto.FileResourceDTO;
 import it.gov.pagopa.pu.bff.dto.OffsetDateTimeIntervalFilter;
 import it.gov.pagopa.pu.bff.dto.ReceiptViewFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedReceiptView;
@@ -20,6 +21,7 @@ import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.authorization.AuthorizationDeniedException;
@@ -314,6 +316,31 @@ class ReceiptRetrieverServiceImplTest {
 
       authorizationServiceMockedStatic.verify(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser));
       Mockito.verifyNoInteractions(receiptServiceMock, receiptDetailDTOMapperMock);
+    }
+  }
+
+  @Test
+  void givenValidUserWhenGetReceiptPdfThenOk() {
+    UserInfo loggedUser = new UserInfo();
+    loggedUser.setMappedExternalUserId("mappedExternalUserId");
+    Long organizationId = 1L;
+    Long receiptId = 2L;
+    FileResourceDTO expectedResult = new FileResourceDTO();
+    expectedResult.setResource(new ByteArrayResource("PDF-DATA".getBytes()));
+    expectedResult.setFileName("filename");
+
+    try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
+      authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)).thenAnswer(a -> null);
+
+      Mockito.when(receiptServiceMock.getReceiptPdf(receiptId, organizationId, accessToken))
+        .thenReturn(expectedResult);
+
+      FileResourceDTO result = receiptViewService.getReceiptPdf(receiptId, organizationId, loggedUser, accessToken);
+
+      assertNotNull(result);
+      assertSame(expectedResult, result);
+
+      authorizationServiceMockedStatic.verify(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser));
     }
   }
 }

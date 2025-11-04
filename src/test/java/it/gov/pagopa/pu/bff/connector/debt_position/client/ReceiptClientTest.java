@@ -113,7 +113,7 @@ class ReceiptClientTest {
 
     when(debtPositionApisHolderMock.getReceiptApi(accessToken))
       .thenReturn(receiptApiMock);
-    when(receiptApiMock.getReceiptDetail(receiptId, operatorExternalUserId, organizationId))
+    when(receiptApiMock.getReceiptDetail(receiptId, organizationId, operatorExternalUserId))
       .thenReturn(expectedResult);
 
     ReceiptDetailDTO result = receiptClient.getReceiptDetail(receiptId, operatorExternalUserId, organizationId, accessToken);
@@ -130,7 +130,7 @@ class ReceiptClientTest {
 
     when(debtPositionApisHolderMock.getReceiptApi(accessToken))
       .thenReturn(receiptApiMock);
-    when(receiptApiMock.getReceiptDetail(receiptId, operatorExternalUserId, organizationId))
+    when(receiptApiMock.getReceiptDetail(receiptId, organizationId, operatorExternalUserId))
       .thenThrow(HttpClientErrorException.create(HttpStatus.NOT_FOUND, "NotFound", null, null, null));
 
     ReceiptDetailDTO result = receiptClient.getReceiptDetail(receiptId, operatorExternalUserId, organizationId, accessToken);

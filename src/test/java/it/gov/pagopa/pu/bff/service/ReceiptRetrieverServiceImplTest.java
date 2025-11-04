@@ -9,7 +9,6 @@ import it.gov.pagopa.pu.bff.dto.generated.ReceiptDetailDTO;
 import it.gov.pagopa.pu.bff.mapper.ReceiptDetailDTOMapper;
 import it.gov.pagopa.pu.bff.mapper.ReceiptViewMapper;
 import it.gov.pagopa.pu.bff.service.receipt.ReceiptRetrieverServiceImpl;
-import it.gov.pagopa.pu.bff.util.TestUtils;
 import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelReceiptView;
 import it.gov.pagopa.pu.debtpositions.dto.generated.ReceiptOriginType;
 import org.junit.jupiter.api.AfterEach;
@@ -24,7 +23,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.authorization.AuthorizationDeniedException;
-import uk.co.jemos.podam.api.PodamFactory;
 
 import java.time.OffsetDateTime;
 import java.util.Collections;
@@ -43,7 +41,6 @@ class ReceiptRetrieverServiceImplTest {
   private ReceiptDetailDTOMapper receiptDetailDTOMapperMock;
 
   private ReceiptRetrieverServiceImpl receiptViewService;
-  private final PodamFactory podamFactory = TestUtils.getPodamFactory();
   private final String accessToken = "TOKEN";
 
   @BeforeEach

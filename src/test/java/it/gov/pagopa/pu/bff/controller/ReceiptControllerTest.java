@@ -39,7 +39,6 @@ class ReceiptControllerTest {
 
   @Mock
   private ReceiptRetrieverService receiptRetrieverServiceMock;
-
   @InjectMocks
   private ReceiptController receiptController;
 
@@ -149,8 +148,7 @@ class ReceiptControllerTest {
     fileResourceDTO.setResource(new ByteArrayResource("PDF-DATA".getBytes()));
     fileResourceDTO.setFileName("filename");
 
-    Mockito.when(receiptRetrieverServiceMock.getReceiptPdf(organizationId, receiptId, loggedUser, accessToken))
-            .thenReturn(fileResourceDTO);
+    Mockito.when(receiptRetrieverServiceMock.getReceiptPdf(receiptId, organizationId, loggedUser, accessToken)).thenReturn(fileResourceDTO);
 
     ResponseEntity<Resource> response = receiptController.getReceiptPdf(organizationId,receiptId);
 
@@ -159,6 +157,19 @@ class ReceiptControllerTest {
     assertNotNull(response.getBody());
     assertEquals(fileResourceDTO.getResource(), response.getBody());
     assertEquals(fileResourceDTO.getFileName(), response.getHeaders().getContentDisposition().getFilename());
+  }
+
+  @Test
+  void givenNotFoundReceiptRequestWhenGetReceiptPdfThenNoContent() {
+    Long organizationId = 1L;
+    Long receiptId = 2L;
+
+    Mockito.when(receiptRetrieverServiceMock.getReceiptPdf(receiptId, organizationId, loggedUser, accessToken))
+      .thenReturn(null);
+
+    ResponseEntity<Resource> response = receiptController.getReceiptPdf(organizationId,receiptId);
+
+    assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
   }
 }
 

@@ -13,10 +13,7 @@ import it.gov.pagopa.pu.debtpositions.dto.generated.ReceiptOriginType;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.ContentDisposition;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.OffsetDateTime;
@@ -52,16 +49,18 @@ public class ReceiptController implements ReceiptsApi {
   @Override
   public ResponseEntity<Resource> getReceiptPdf(Long organizationId, Long receiptId) {
     log.info("User requested getReceiptPdf having organizationId {} and receiptId {}", organizationId, receiptId);
-    FileResourceDTO fileResourceDTO = receiptRetrieverService.getReceiptPdf(
-            organizationId,receiptId,SecurityUtils.getLoggedUser(),SecurityUtils.getAccessToken());
+    FileResourceDTO resource = receiptRetrieverService.getReceiptPdf(receiptId, organizationId, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken());
+    if(resource==null) {
+      return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
     HttpHeaders headers = new HttpHeaders();
     headers.setContentDisposition(ContentDisposition.attachment()
-            .filename(fileResourceDTO.getFileName())
+            .filename(resource.getFileName())
             .build());
-
     return ResponseEntity.ok()
             .contentType(MediaType.APPLICATION_PDF)
             .headers(headers)
-            .body(fileResourceDTO.getResource());
+            .body(resource.getResource());
   }
 }

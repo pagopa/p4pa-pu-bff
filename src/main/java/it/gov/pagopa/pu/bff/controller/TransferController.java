@@ -27,4 +27,11 @@ public class TransferController implements TransfersApi {
       organizationId, installmentId, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken()));
   }
 
+  @Override
+  public ResponseEntity<Void> validateTaxonomyCategory(String taxonomyCategory) {
+    log.info("User requested validateTaxonomyCategory on category {}", taxonomyCategory);
+    transferRetrieverService.validateTaxonomyCategory(taxonomyCategory, SecurityUtils.getAccessToken());
+    return ResponseEntity.ok().build();
+  }
+
 }

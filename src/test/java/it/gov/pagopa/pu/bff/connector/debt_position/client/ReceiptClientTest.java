@@ -1,6 +1,7 @@
 package it.gov.pagopa.pu.bff.connector.debt_position.client;
 
 import it.gov.pagopa.pu.bff.connector.debt_position.config.DebtPositionApisHolder;
+import it.gov.pagopa.pu.bff.dto.FileResourceDTO;
 import it.gov.pagopa.pu.bff.dto.OffsetDateTimeIntervalFilter;
 import it.gov.pagopa.pu.bff.dto.ReceiptViewFiltersDTO;
 import it.gov.pagopa.pu.bff.util.PageUtils;
@@ -17,10 +18,15 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.ContentDisposition;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpClientErrorException;
 
 import java.time.OffsetDateTime;
@@ -107,7 +113,7 @@ class ReceiptClientTest {
 
     when(debtPositionApisHolderMock.getReceiptApi(accessToken))
       .thenReturn(receiptApiMock);
-    when(receiptApiMock.getReceiptDetail(receiptId, operatorExternalUserId, organizationId))
+    when(receiptApiMock.getReceiptDetail(receiptId, organizationId, operatorExternalUserId))
       .thenReturn(expectedResult);
 
     ReceiptDetailDTO result = receiptClient.getReceiptDetail(receiptId, operatorExternalUserId, organizationId, accessToken);
@@ -124,12 +130,52 @@ class ReceiptClientTest {
 
     when(debtPositionApisHolderMock.getReceiptApi(accessToken))
       .thenReturn(receiptApiMock);
-    when(receiptApiMock.getReceiptDetail(receiptId, operatorExternalUserId, organizationId))
+    when(receiptApiMock.getReceiptDetail(receiptId, organizationId, operatorExternalUserId))
       .thenThrow(HttpClientErrorException.create(HttpStatus.NOT_FOUND, "NotFound", null, null, null));
 
     ReceiptDetailDTO result = receiptClient.getReceiptDetail(receiptId, operatorExternalUserId, organizationId, accessToken);
 
     Assertions.assertNull(result);
+  }
+
+  @Test
+  void whenReceiptPdfThenOk() {
+    Long receiptId = 123L;
+    Long organizationId = 1L;
+    String accessToken = "ACCESSTOKEN";
+
+    ByteArrayResource expectedResource = new ByteArrayResource("PDF-DATA".getBytes());
+    String expectedFileName = "filename";
+    HttpHeaders headers = new HttpHeaders();
+    headers.setContentDisposition(
+      ContentDisposition.attachment().filename(expectedFileName).build());
+    ResponseEntity<Resource> responseEntity = new ResponseEntity<>(expectedResource, headers, HttpStatus.OK);
+
+    when(debtPositionApisHolderMock.getReceiptApi(accessToken))
+      .thenReturn(receiptApiMock);
+    when(receiptApiMock.getReceiptPdfWithHttpInfo(receiptId,organizationId)).thenReturn(responseEntity);
+
+    FileResourceDTO response = receiptClient.getReceiptPdf(receiptId, organizationId, accessToken);
+
+    Assertions.assertNotNull(response);
+    Assertions.assertEquals(expectedResource,response.getResource());
+    Assertions.assertEquals(expectedFileName,response.getFileName());
+  }
+
+  @Test
+  void whenReceiptPdfThenNull() {
+    Long receiptId = 123L;
+    Long organizationId = 1L;
+    String accessToken = "ACCESSTOKEN";
+
+    when(debtPositionApisHolderMock.getReceiptApi(accessToken))
+      .thenReturn(receiptApiMock);
+    when(receiptApiMock.getReceiptPdfWithHttpInfo(receiptId, organizationId))
+      .thenThrow(HttpClientErrorException.create(HttpStatus.NOT_FOUND, "NotFound", null, null, null));
+
+    FileResourceDTO response = receiptClient.getReceiptPdf(receiptId, organizationId, accessToken);
+
+    Assertions.assertNull(response);
   }
 }
 

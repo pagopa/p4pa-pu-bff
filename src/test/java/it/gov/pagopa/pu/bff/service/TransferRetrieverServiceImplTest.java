@@ -1,11 +1,17 @@
 package it.gov.pagopa.pu.bff.service;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.connector.debt_position.TransferService;
 import it.gov.pagopa.pu.bff.service.transfer.TransferRetrieverServiceImpl;
 import it.gov.pagopa.pu.debtpositions.dto.generated.CollectionModelTransfer;
 import it.gov.pagopa.pu.debtpositions.dto.generated.CollectionModelTransferEmbedded;
 import it.gov.pagopa.pu.debtpositions.dto.generated.Transfer;
+import java.util.List;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,10 +22,6 @@ import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.authorization.AuthorizationDeniedException;
-
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
 class TransferRetrieverServiceImplTest {
@@ -135,5 +137,13 @@ class TransferRetrieverServiceImplTest {
 
       authorizationServiceMockedStatic.verify(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser));
     }
+  }
+
+  @Test
+  void whenValidateTaxonomyCategoryThenOk() {
+    String category = "001122233";
+    Mockito.doNothing().when(transferServiceMock).validateTaxonomyCategory(category, accessToken);
+
+    Assertions.assertDoesNotThrow(() -> transferRetrieverService.validateTaxonomyCategory(category, accessToken));
   }
 }

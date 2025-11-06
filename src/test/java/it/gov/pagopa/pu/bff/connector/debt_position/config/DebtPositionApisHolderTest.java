@@ -113,6 +113,18 @@ class DebtPositionApisHolderTest extends BaseApiHolderTest {
   }
 
   @Test
+  void whenGetTransferApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
+    assertAuthenticationShouldBeSetInThreadSafeMode(
+      accessToken -> {
+        debtPositionApisHolder.getTransferApi(accessToken)
+          .validateTaxonomyCategory("001122233");
+        return voidMock;
+      },
+      new ParameterizedTypeReference<>() {
+      }, debtPositionApisHolder::unload);
+  }
+
+  @Test
   void whenGetTransferSearchControllerApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
     assertAuthenticationShouldBeSetInThreadSafeMode(
       accessToken -> debtPositionApisHolder.getTransferSearchControllerApi(accessToken)
@@ -125,7 +137,7 @@ class DebtPositionApisHolderTest extends BaseApiHolderTest {
   void whenGetReceiptApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
     assertAuthenticationShouldBeSetInThreadSafeMode(
       accessToken -> debtPositionApisHolder.getReceiptApi(accessToken)
-        .getReceiptDetail(1L, "operatorExternalUserId", 1L),
+        .getReceiptDetail(1L, 1L, "operatorExternalUserId"),
       new ParameterizedTypeReference<>() {
       },
       debtPositionApisHolder::unload);

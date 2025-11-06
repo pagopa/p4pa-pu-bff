@@ -1,13 +1,5 @@
 package it.gov.pagopa.pu.bff.connector.debt_position.client;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.when;
-
 import it.gov.pagopa.pu.bff.connector.debt_position.config.DebtPositionApisHolder;
 import it.gov.pagopa.pu.bff.exception.ResourceNotFoundException;
 import it.gov.pagopa.pu.bff.util.TestUtils;
@@ -23,6 +15,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.client.HttpClientErrorException;
 import uk.co.jemos.podam.api.PodamFactory;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class SpontaneousFormClientTest {
@@ -93,5 +88,34 @@ class SpontaneousFormClientTest {
         .when(spontaneousFormApiMock).deleteSpontaneousForm(spontaneousFormId);
 
     assertThrows(ResourceNotFoundException.class, ()->spontaneousFormClient.deleteSpontaneousForm(spontaneousFormId, accessToken));
+  }
+
+  @Test
+  void whenUpdateSpontaneousFormThenInvokeWithAccessToken() {
+
+    String accessToken = "ACCESSTOKEN";
+
+    SpontaneousForm spontaneousForm = podamFactory.manufacturePojo(SpontaneousForm.class);
+
+    when(debtPositionApisHolderMock.getSpontaneousFormApi(accessToken))
+        .thenReturn(spontaneousFormApiMock);
+    doNothing().when(spontaneousFormApiMock).updateSpontaneousForm(spontaneousForm);
+
+    assertDoesNotThrow(()->spontaneousFormClient.updateSpontaneousForm(spontaneousForm, accessToken));
+  }
+
+  @Test
+  void givenNotFoundWhenUpdateSpontaneousFormThenResourceNotFoundException() {
+
+    String accessToken = "ACCESSTOKEN";
+
+    SpontaneousForm spontaneousForm = podamFactory.manufacturePojo(SpontaneousForm.class);
+
+    when(debtPositionApisHolderMock.getSpontaneousFormApi(accessToken))
+        .thenReturn(spontaneousFormApiMock);
+    doThrow(HttpClientErrorException.create(HttpStatus.NOT_FOUND, "NotFound", null, null, null))
+        .when(spontaneousFormApiMock).updateSpontaneousForm(spontaneousForm);
+
+    assertThrows(ResourceNotFoundException.class, ()->spontaneousFormClient.updateSpontaneousForm(spontaneousForm, accessToken));
   }
 }

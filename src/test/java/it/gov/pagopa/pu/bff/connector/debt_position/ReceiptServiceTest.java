@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.Mockito.when;
 
 import it.gov.pagopa.pu.bff.connector.debt_position.client.ReceiptClient;
+import it.gov.pagopa.pu.bff.dto.FileResourceDTO;
 import it.gov.pagopa.pu.bff.dto.ReceiptViewFiltersDTO;
 import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelReceiptView;
 import it.gov.pagopa.pu.debtpositions.dto.generated.ReceiptDetailDTO;
@@ -55,6 +56,21 @@ class ReceiptServiceTest {
       .thenReturn(expectedResult);
 
     ReceiptDetailDTO result = service.getReceiptDetail(receiptId, operatorExternalUserId, organizationId, accessToken);
+
+    assertSame(expectedResult, result);
+  }
+
+  @Test
+  void whenGetReceiptPdfThenInvokeClient() {
+    String accessToken = "ACCESSTOKEN";
+    Long receiptId = 1L;
+    Long organizationId = 1L;
+    FileResourceDTO expectedResult = new FileResourceDTO();
+
+    when(client.getReceiptPdf(receiptId, organizationId, accessToken))
+      .thenReturn(expectedResult);
+
+    FileResourceDTO result = service.getReceiptPdf(receiptId, organizationId, accessToken);
 
     assertSame(expectedResult, result);
   }

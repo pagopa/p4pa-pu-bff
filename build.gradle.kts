@@ -39,7 +39,6 @@ val micrometerVersion = "1.5.4"
 val caffeineVersion = "3.2.2"
 val httpClientVersion = "5.5"
 val mapStructVersion = "1.6.3"
-val openHtmlToPdfVersion = "1.0.10"
 
 val wiremockVersion = "3.13.1"
 val wiremockSpringBootVersion = "3.10.6"
@@ -62,8 +61,6 @@ dependencies {
   implementation("com.github.ben-manes.caffeine:caffeine:$caffeineVersion")
   implementation("org.apache.httpcomponents.client5:httpclient5:$httpClientVersion")
   implementation ("org.mapstruct:mapstruct:${mapStructVersion}")
-  implementation("org.springframework.boot:spring-boot-starter-freemarker")
-  implementation("com.openhtmltopdf:openhtmltopdf-pdfbox:${openHtmlToPdfVersion}")
 
 
   compileOnly("org.projectlombok:lombok")
@@ -234,7 +231,8 @@ tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>("ope
     "TreasuredClassificationExtendedDTO" to "it.gov.pagopa.pu.bff.dto.TreasuredClassificationExtendedDTO",
     "Organization" to "it.gov.pagopa.pu.organization.dto.generated.OrganizationDetailDTO",
     "OrganizationStatus" to "it.gov.pagopa.pu.organization.dto.generated.OrganizationStatus",
-    "SpontaneousForm" to "it.gov.pagopa.pu.debtpositions.dto.generated.SpontaneousForm"
+    "SpontaneousForm" to "it.gov.pagopa.pu.debtpositions.dto.generated.SpontaneousForm",
+    "SpontaneousFormStructure" to "it.gov.pagopa.pu.debtpositions.dto.generated.SpontaneousFormStructure"
   ))
   configOptions.set(mapOf(
     "dateLibrary" to "java8",
@@ -322,7 +320,11 @@ tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>("ope
   apiPackage.set("it.gov.pagopa.pu.debtpositions.controller.generated")
   modelPackage.set("it.gov.pagopa.pu.debtpositions.dto.generated")
   typeMappings.set(mapOf(
-    "LocalDateTime" to "java.time.LocalDateTime"
+    "LocalDateTime" to "java.time.LocalDateTime",
+    "string+binary" to "Resource"
+  ))
+  importMappings.set(mapOf(
+    "Resource" to "org.springframework.core.io.Resource"
   ))
   configOptions.set(mapOf(
     "swaggerAnnotations" to "false",

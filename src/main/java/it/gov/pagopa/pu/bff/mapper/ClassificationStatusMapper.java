@@ -17,9 +17,9 @@ public final class ClassificationStatusMapper {
     return switch (label) {
       case IUD_RT_IUF, RT_IUF, RT_TES, IUD_RT_IUF_TES, RT_IUF_TES -> ClassificationStatus.INFO;
 
-      case RT_NO_IUF, RT_NO_IUD, IUF_NO_TES -> ClassificationStatus.WARNING;
+      case RT_NO_IUF, RT_NO_IUD -> ClassificationStatus.WARNING;
 
-      case DOPPI, IUV_NO_RT, TES_NO_IUF_OR_IUV,
+      case DOPPI, IUV_NO_RT, TES_NO_IUF_OR_IUV, IUF_NO_TES,
         IUF_TES_DIV_IMP, IUD_NO_RT, TES_NO_MATCH, UNKNOWN -> ClassificationStatus.ERROR;
     };
   }

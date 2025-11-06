@@ -2,14 +2,12 @@ package it.gov.pagopa.pu.bff.util;
 
 import org.slf4j.MDC;
 
-import java.text.NumberFormat;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
-import java.util.Locale;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.regex.Matcher;
@@ -22,7 +20,6 @@ public class Utilities {
 
   public static final Pattern EMAIL_PATTERN = Pattern.compile("^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$");
   public static final int IBAN_LENGTH = 27;
-  private static final NumberFormat numberFormat = NumberFormat.getCurrencyInstance(Locale.ITALY);
 
   public static boolean isValidEmail(final String email) {
     Matcher matcher = EMAIL_PATTERN.matcher(email);
@@ -99,13 +96,5 @@ public class Utilities {
 
   public static String getTraceId(){
     return MDC.get("traceId");
-  }
-
-  public static String formatPrice(Long priceInCents) {
-    if (priceInCents == null){
-      return "";
-    }
-    double price = priceInCents / 100.0;
-    return numberFormat.format(price);
   }
 }

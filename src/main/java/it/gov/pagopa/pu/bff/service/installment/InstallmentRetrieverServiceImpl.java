@@ -10,7 +10,6 @@ import it.gov.pagopa.pu.bff.util.DateUtils;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionOrigin;
 import it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentDetailDTO;
 import it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentNoPII;
-import it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentStatus;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -22,7 +21,6 @@ public class InstallmentRetrieverServiceImpl implements InstallmentRetrieverServ
 
   private final InstallmentViewMapper installmentViewMapper;
   private final InstallmentService installmentService;
-  private final List<InstallmentStatus> statusList = List.of(InstallmentStatus.PAID, InstallmentStatus.REPORTED);
 
   public InstallmentRetrieverServiceImpl(
     InstallmentViewMapper installmentViewMapper,
@@ -54,9 +52,7 @@ public class InstallmentRetrieverServiceImpl implements InstallmentRetrieverServ
   @Override
   public InstallmentDetailDTO getInstallmentDetail(Long organizationId, Long installmentId, UserInfo loggedUser, String accessToken) {
     AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser);
-    InstallmentDetailDTO installmentDetailDTO = installmentService.getInstallmentDetail(installmentId, loggedUser.getMappedExternalUserId(), accessToken);
-    setPaymentInfo(installmentDetailDTO);
-    return installmentDetailDTO;
+    return installmentService.getInstallmentDetail(installmentId, loggedUser.getMappedExternalUserId(), accessToken);
   }
 
   @Override
@@ -65,17 +61,6 @@ public class InstallmentRetrieverServiceImpl implements InstallmentRetrieverServ
     AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser);
     return installmentService.getInstallmentFromTransferSemanticKey(organizationId, iuv, iur, transferIndex,
       loggedUser.getMappedExternalUserId(), debtPositionOrigins, accessToken);
-  }
-
-
-  private void setPaymentInfo(InstallmentDetailDTO installmentDetailDTO) {
-    if (!statusList.contains(installmentDetailDTO.getStatus())) {
-      installmentDetailDTO.setPayer(null);
-      installmentDetailDTO.setPaymentDateTime(null);
-      installmentDetailDTO.setIud(null);
-      installmentDetailDTO.setIur(null);
-      installmentDetailDTO.setPspCompanyName(null);
-    }
   }
 
 }

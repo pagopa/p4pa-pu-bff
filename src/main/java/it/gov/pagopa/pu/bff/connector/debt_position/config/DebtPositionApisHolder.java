@@ -25,6 +25,7 @@ import it.gov.pagopa.pu.debtpositions.controller.generated.ReceiptViewSearchCont
 import it.gov.pagopa.pu.debtpositions.controller.generated.SpontaneousFormApi;
 import it.gov.pagopa.pu.debtpositions.controller.generated.SpontaneousFormEntityControllerApi;
 import it.gov.pagopa.pu.debtpositions.controller.generated.SpontaneousFormSearchControllerApi;
+import it.gov.pagopa.pu.debtpositions.controller.generated.TransferApi;
 import it.gov.pagopa.pu.debtpositions.controller.generated.TransferSearchControllerApi;
 import jakarta.annotation.PreDestroy;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -43,6 +44,7 @@ public class DebtPositionApisHolder {
   private final InstallmentViewSearchControllerApi installmentViewSearchControllerApi;
   private final InstallmentNoPiiSearchControllerApi installmentNoPiiSearchControllerApi;
   private final ReceiptViewSearchControllerApi receiptViewSearchControllerApi;
+  private final TransferApi transferApi;
   private final TransferSearchControllerApi transferSearchControllerApi;
   private final ReceiptApi receiptApi;
   private final DebtPositionViewSearchControllerApi debtPositionViewSearchControllerApi;
@@ -82,6 +84,7 @@ public class DebtPositionApisHolder {
     this.installmentApi = new InstallmentApi(apiClient);
     this.installmentNoPiiSearchControllerApi = new InstallmentNoPiiSearchControllerApi(apiClient);
     this.receiptViewSearchControllerApi = new ReceiptViewSearchControllerApi(apiClient);
+    this.transferApi = new TransferApi(apiClient);
     this.transferSearchControllerApi = new TransferSearchControllerApi(apiClient);
     this.receiptApi = new ReceiptApi(apiClient);
     this.debtPositionViewSearchControllerApi = new DebtPositionViewSearchControllerApi(apiClient);
@@ -127,6 +130,10 @@ public class DebtPositionApisHolder {
 
   public DebtPositionTypeOrgCountByOrganizationIdSearchControllerApi getDebtPositionTypeOrgCountByOrganizationIdSearchControllerApi(String accessToken) {
     return getApi(accessToken, debtPositionTypeOrgCountByOrganizationIdSearchControllerApi);
+  }
+
+  public TransferApi getTransferApi(String accessToken) {
+    return getApi(accessToken, transferApi);
   }
 
   public TransferSearchControllerApi getTransferSearchControllerApi(String accessToken) {

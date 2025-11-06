@@ -3855,6 +3855,29 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorDTO'
       x-spring-paginated: true
+  /transfers/taxonomy-category/validate:
+    get:
+      tags:
+        - Transfers
+      operationId: validateTaxonomyCategory
+      parameters:
+        - name: taxonomyCategory
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized - Missing or invalid token
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDTO'
 security:
   - BearerAuth: [ ]
 components:

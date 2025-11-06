@@ -32,4 +32,9 @@ public class TransferRetrieverServiceImpl implements TransferRetrieverService {
       .stream()
       .toList();
   }
+
+  @Override
+  public void validateTaxonomyCategory(String taxonomyCategory, String accessToken) {
+    transferService.validateTaxonomyCategory(taxonomyCategory, accessToken);
+  }
 }

@@ -9118,6 +9118,9 @@
           "description" : {
             "type" : "string",
             "description" : "Description of the error"
+          },
+          "traceId" : {
+            "type" : "string"
           }
         },
         "required" : [ "description", "title" ]

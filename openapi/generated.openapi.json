@@ -10511,7 +10511,10 @@
         "type" : "object",
         "properties" : {
           "iuf" : {
-            "type" : "string"
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
           },
           "iud" : {
             "type" : "string"

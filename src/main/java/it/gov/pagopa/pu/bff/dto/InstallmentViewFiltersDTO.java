@@ -17,6 +17,7 @@ public class InstallmentViewFiltersDTO {
   private String operatorExternalUserId;
   private LocalDateIntervalFilter dueDate;
   private String iuv;
+  private String iud;
   private String fiscalCode;
   private List<DebtPositionOrigin> debtPositionOrigins;
   private Long debtPositionTypeOrgId;

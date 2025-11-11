@@ -43,6 +43,7 @@ public class InstallmentRetrieverServiceImpl implements InstallmentRetrieverServ
     if ((filtersDTO.getDueDate() == null ||
       DateUtils.isNullOrInvalidLocalDateRange(filtersDTO.getDueDate().getFrom(), filtersDTO.getDueDate().getTo())) &&
       StringUtils.isBlank(filtersDTO.getIuv()) &&
+      StringUtils.isBlank(filtersDTO.getIud()) &&
       StringUtils.isBlank(filtersDTO.getFiscalCode()) &&
       filtersDTO.getDebtPositionTypeOrgId() == null) {
       throw new IllegalArgumentException("At least one of the research fields must be provided, and both 'from' and 'to' due dates must be set together");

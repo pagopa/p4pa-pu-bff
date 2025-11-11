@@ -66,6 +66,7 @@ class InstallmentControllerTest {
   void givenCorrectRequestWhenGetInstallmentsThenOk() {
     long organizationId = 1L;
     String iuv = "IUV123";
+    String iud = "IUD123";
     String fiscalCode = "FiscalCode123";
     long debtPositionTypeOrgId = 2L;
     Pageable pageable = PageRequest.of(0, 10);
@@ -78,7 +79,7 @@ class InstallmentControllerTest {
 
     InstallmentViewFiltersDTO filtersDTO = new InstallmentViewFiltersDTO(
       organizationId, loggedUser.getMappedExternalUserId(), paymentDateFilter,
-      iuv, fiscalCode, List.of(
+      iuv, iud, fiscalCode, List.of(
       DebtPositionOrigin.ORDINARY), debtPositionTypeOrgId);
 
     PagedInstallmentView expectedResult = new PagedInstallmentView();
@@ -105,7 +106,7 @@ class InstallmentControllerTest {
       .thenReturn(expectedResult);
 
     ResponseEntity<PagedInstallmentView> response = installmentController.getInstallments(
-      organizationId, dueDateTimeFrom, dueDateTimeTo, iuv, fiscalCode, List.of(
+      organizationId, dueDateTimeFrom, dueDateTimeTo, iuv, iud, fiscalCode, List.of(
         DebtPositionOrigin.ORDINARY), debtPositionTypeOrgId, pageable);
 
     assertEquals(HttpStatus.OK, response.getStatusCode());

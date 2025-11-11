@@ -50,6 +50,7 @@ public class DebtPositionController implements DebtPositionsApi {
     Long debtPositionTypeOrgId,
     DebtPositionStatus status,
     String iuv,
+    String iud,
     Pageable pageable) {
     log.info("User requested getDebtPositionViews having organizationId {} , creationDateTimeFrom {} , creationDateTimeTo {} ", organizationId, creationDateTimeFrom, creationDateTimeTo);
     return ResponseEntity.ok(debtPositionRetrieverService.getDebtPositionViews(
@@ -59,7 +60,8 @@ public class DebtPositionController implements DebtPositionsApi {
           fiscalCode,
           debtPositionTypeOrgId,
           status,
-          iuv),
+          iuv,
+          iud),
       pageable, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken())
     );
   }

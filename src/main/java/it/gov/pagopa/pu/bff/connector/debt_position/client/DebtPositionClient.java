@@ -46,6 +46,7 @@ public class DebtPositionClient {
         filtersDTO.getDebtPositionTypeOrgId(),
         filtersDTO.getStatus(),
         filtersDTO.getIuv(),
+        filtersDTO.getIud(),
         PageUtils.getPageNumber(pageable),
         PageUtils.getPageSize(pageable),
         PageUtils.getSortList(pageable)

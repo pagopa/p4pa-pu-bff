@@ -894,6 +894,10 @@ paths:
           in: query
           schema:
             type: string
+        - name: iud
+          in: query
+          schema:
+            type: string
         - name: fiscalCode
           in: query
           schema:
@@ -1670,6 +1674,10 @@ paths:
           schema:
             type: 'DebtPositionStatus'
         - name: iuv
+          in: query
+          schema:
+            type: string
+        - name: iud
           in: query
           schema:
             type: string

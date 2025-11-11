@@ -35,6 +35,7 @@ public class InstallmentClient {
         dueDate != null ? dueDate.getFrom() : null,
         dueDate != null ? dueDate.getTo() : null,
         installmentViewFiltersDTO.getIuv(),
+        installmentViewFiltersDTO.getIud(),
         installmentViewFiltersDTO.getFiscalCode(),
         installmentViewFiltersDTO.getDebtPositionOrigins(),
         installmentViewFiltersDTO.getDebtPositionTypeOrgId(),

@@ -5918,6 +5918,13 @@
             "type" : "string"
           }
         }, {
+          "name" : "iud",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
           "name" : "fiscalCode",
           "in" : "query",
           "required" : false,
@@ -6475,6 +6482,13 @@
           }
         }, {
           "name" : "iuv",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "iud",
           "in" : "query",
           "required" : false,
           "schema" : {
@@ -12715,6 +12729,9 @@
             "format" : "int64"
           },
           "iuv" : {
+            "type" : "string"
+          },
+          "iud" : {
             "type" : "string"
           },
           "status" : {

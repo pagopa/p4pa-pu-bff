@@ -8890,7 +8890,11 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/UserInfo"
+                  "oneOf" : [ {
+                    "$ref" : "#/components/schemas/UserInfo"
+                  }, {
+                    "$ref" : "#/components/schemas/UserInfoLimitedScope"
+                  } ]
                 }
               }
             }
@@ -8900,7 +8904,11 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/UserInfo"
+                  "oneOf" : [ {
+                    "$ref" : "#/components/schemas/UserInfo"
+                  }, {
+                    "$ref" : "#/components/schemas/UserInfoLimitedScope"
+                  } ]
                 }
               }
             }
@@ -8910,7 +8918,11 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/UserInfo"
+                  "oneOf" : [ {
+                    "$ref" : "#/components/schemas/UserInfo"
+                  }, {
+                    "$ref" : "#/components/schemas/UserInfoLimitedScope"
+                  } ]
                 }
               }
             }
@@ -14690,8 +14702,32 @@
         },
         "required" : [ "brokerFiscalCode", "brokerId", "canManageUsers", "footerAccessibilityUrl", "footerDescText", "footerGDPRUrl", "footerPrivacyInfoUrl", "footerTermsCondUrl", "headerAssistanceUrl", "logoFooterImg" ]
       },
+      "LimitedScopeResource" : {
+        "type" : "object",
+        "properties" : {
+          "app" : {
+            "type" : "string"
+          },
+          "organization" : {
+            "$ref" : "#/components/schemas/UserOrganizationRoles"
+          },
+          "resource" : {
+            "type" : "string"
+          },
+          "resourceId" : {
+            "type" : "string"
+          },
+          "singleUsage" : {
+            "type" : "boolean"
+          }
+        },
+        "required" : [ "app", "organization", "resource", "resourceId", "singleUsage" ]
+      },
       "UserInfo" : {
         "type" : "object",
+        "discriminator" : {
+          "propertyName" : "_type"
+        },
         "properties" : {
           "userId" : {
             "type" : "string"
@@ -14732,9 +14768,34 @@
           },
           "systemUser" : {
             "type" : "boolean"
+          },
+          "traceId" : {
+            "type" : "string"
+          },
+          "_type" : {
+            "type" : "string"
           }
         },
-        "required" : [ "canManageUsers", "familyName", "fiscalCode", "issuer", "mappedExternalUserId", "name", "organizations", "userId" ]
+        "required" : [ "_type", "canManageUsers", "familyName", "fiscalCode", "issuer", "mappedExternalUserId", "name", "organizations", "traceId", "userId" ]
+      },
+      "UserInfoLimitedScope" : {
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/UserInfo"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "resource" : {
+              "$ref" : "#/components/schemas/LimitedScopeResource"
+            },
+            "_type" : {
+              "type" : "string"
+            }
+          }
+        } ],
+        "discriminator" : {
+          "propertyName" : "_type"
+        },
+        "required" : [ "_type", "canManageUsers", "familyName", "fiscalCode", "issuer", "mappedExternalUserId", "name", "organizations", "resource", "traceId", "userId" ]
       },
       "UserOrganizationRoles" : {
         "type" : "object",

@@ -10510,7 +10510,7 @@
       "ClassificationsExportFileFilter" : {
         "type" : "object",
         "properties" : {
-          "iuf" : {
+          "iufs" : {
             "type" : "array",
             "items" : {
               "type" : "string"
@@ -10519,13 +10519,13 @@
           "iud" : {
             "type" : "string"
           },
-          "iuv" : {
+          "iuvs" : {
             "type" : "array",
             "items" : {
               "type" : "string"
             }
           },
-          "iur" : {
+          "iurs" : {
             "type" : "array",
             "items" : {
               "type" : "string"

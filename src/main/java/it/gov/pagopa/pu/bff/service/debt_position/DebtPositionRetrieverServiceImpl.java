@@ -92,7 +92,8 @@ public class DebtPositionRetrieverServiceImpl implements DebtPositionRetrieverSe
       StringUtils.isBlank(filtersDTO.getFiscalCode()) &&
       filtersDTO.getDebtPositionTypeOrgId() == null &&
       filtersDTO.getStatus() == null &&
-      filtersDTO.getIuv() == null) {
+      filtersDTO.getIuv() == null &&
+      filtersDTO.getIud() == null) {
       throw new IllegalArgumentException("At least one of the research fields must be provided, and both 'from' and 'to' creation dates must be set together");
     }
   }

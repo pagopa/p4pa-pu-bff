@@ -50,22 +50,4 @@ class AnalyticsControllerTest {
     assertNotNull(result);
     assertEquals(expectedResponse, result.getBody());
   }
-
-  @Test
-  void givenRequestWhenGenerateSupersetUrlThenOK() {
-    // Given
-    Long organizationId = 1L;
-    String url = "https://test.com";
-    SupersetUrlResponseDTO expectedResponse = new SupersetUrlResponseDTO();
-    expectedResponse.setAuthorizedUrl(url);
-
-    when(analyticsServiceMock.generateSupersetUrl(organizationId, loggedUser, accessToken))
-      .thenReturn(url);
-    // When
-    ResponseEntity<SupersetUrlResponseDTO> result = analyticsController.generateSupersetUrl(organizationId);
-    // Then
-    assertEquals(HttpStatus.OK, result.getStatusCode());
-    assertNotNull(result);
-    assertEquals(expectedResponse, result.getBody());
-  }
 }

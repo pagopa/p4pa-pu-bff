@@ -141,7 +141,7 @@ rest:
 
 analytics:
   superset:
-    base-url: "https://analytics.internal.dev.p4pa.pagopa.it"
+    sso-url: "\${SUPERSET_BASE_URL:}/sso-login"
 
 cache:
   organization:

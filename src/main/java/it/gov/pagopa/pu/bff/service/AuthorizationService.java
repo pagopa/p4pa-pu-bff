@@ -22,7 +22,7 @@ public class AuthorizationService {
   public static final String SCOPE = "openid";
   public static final String SUBJECT_TOKEN_TYPE = "urn:ietf:params:oauth:token-type:jwt";
   public static final String ROLE_ADMIN = "ROLE_ADMIN";
-  public static final String APP_NAME = "p4pa-pu-bff";
+  public static final String BFF_APP_NAME = "p4pa-pu-bff";
 
   private final AuthnClient authClientImpl;
   private final OrganizationService organizationService;
@@ -54,11 +54,11 @@ public class AuthorizationService {
       null);
   }
 
-  public AccessToken postLimitedToken(Long organizationId, String resource, String accessToken) {
+  public AccessToken postLimitedToken(Long organizationId, String app, String accessToken) {
     return authClientImpl.postLimitedToken(LimitedTokenRequest.builder()
       .organizationId(organizationId)
-      .resource(resource)
-      .app(APP_NAME)
+      .resource(BFF_APP_NAME)
+      .app(app)
       .build(),
       accessToken);
   }

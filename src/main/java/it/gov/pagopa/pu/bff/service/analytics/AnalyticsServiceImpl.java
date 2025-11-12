@@ -10,11 +10,11 @@ import org.springframework.stereotype.Service;
 @Service
 @Slf4j
 public class AnalyticsServiceImpl implements AnalyticsService {
-  private final String supersetBaseUrl;
+  private final String supersetSSOUrl;
   private final AuthorizationService authorizationService;
 
-  public AnalyticsServiceImpl(@Value("${analytics.superset.base-url}") String supersetBaseUrl, AuthorizationService authorizationService) {
-    this.supersetBaseUrl = supersetBaseUrl;
+  public AnalyticsServiceImpl(@Value("${analytics.superset.sso-url}") String supersetSSOUrl, AuthorizationService authorizationService) {
+    this.supersetSSOUrl = supersetSSOUrl;
     this.authorizationService = authorizationService;
   }
 
@@ -23,7 +23,7 @@ public class AnalyticsServiceImpl implements AnalyticsService {
     AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser);
     AccessToken token = authorizationService.postLimitedToken(organizationId, "superset", accessToken);
     if(token!=null) {
-      return supersetBaseUrl+"/sso-login/?token="+token.getAccessToken();
+      return supersetSSOUrl+"/?token="+token.getAccessToken();
     }
     return null;
   }

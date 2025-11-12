@@ -1462,6 +1462,11 @@ paths:
             type: integer
             format: int64
           description: The unique identifier of the receipt
+        - name: iud
+          in: query
+          required: false
+          schema:
+            type: string
       responses:
         '200':
           description: OK

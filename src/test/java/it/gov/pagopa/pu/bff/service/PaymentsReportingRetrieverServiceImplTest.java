@@ -450,7 +450,7 @@ class PaymentsReportingRetrieverServiceImplTest {
         .thenReturn(installmentNoPII);
 
       when(
-        receiptRetrieverServiceMock.getReceiptDetail(organizationId, receiptId,
+        receiptRetrieverServiceMock.getReceiptDetail(organizationId, receiptId, null,
           loggedUser, accessToken))
         .thenReturn(receiptDetailDTO);
 

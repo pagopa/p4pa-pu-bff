@@ -90,6 +90,7 @@ class ReceiptControllerTest {
       .installmentId(200L)
       .debtPositionTypeOrgDescription("Description")
       .debtorFiscalCodeHash(new byte[]{1, 2, 3})
+      .iud(iud)
       .build()));
     expectedResult.setSize(10L);
     expectedResult.setTotalElements(1L);
@@ -109,33 +110,35 @@ class ReceiptControllerTest {
 
   @Test
   void givenCorrectRequestWhenGetReceiptDetailThenOk() {
-    long organizationId = 1L;
-    long receiptId = 2L;
+    Long organizationId = 1L;
+    Long receiptId = 2L;
+    String iud = "iud";
     ReceiptDetailDTO expectedResult = new ReceiptDetailDTO();
 
-    Mockito.when(receiptRetrieverServiceMock.getReceiptDetail(Mockito.eq(organizationId),Mockito.eq(receiptId),
+    Mockito.when(receiptRetrieverServiceMock.getReceiptDetail(Mockito.eq(organizationId),Mockito.eq(receiptId),Mockito.eq(iud),
         Mockito.same(loggedUser), Mockito.same(accessToken)))
       .thenReturn(expectedResult);
 
-    ResponseEntity<ReceiptDetailDTO> response = receiptController.getReceiptDetail(organizationId,receiptId);
+    ResponseEntity<ReceiptDetailDTO> response = receiptController.getReceiptDetail(organizationId,receiptId,iud);
 
     Assertions.assertEquals(HttpStatus.OK,response.getStatusCode());
     Assertions.assertNotNull(response.getBody());
     Assertions.assertSame(expectedResult,response.getBody());
-    Mockito.verify(receiptRetrieverServiceMock).getReceiptDetail(Mockito.eq(organizationId),Mockito.eq(receiptId),
+    Mockito.verify(receiptRetrieverServiceMock).getReceiptDetail(Mockito.eq(organizationId),Mockito.eq(receiptId),Mockito.eq(iud),
       Mockito.any(), Mockito.anyString());
   }
 
   @Test
   void givenNoReceiptWhenGetReceiptDetailThenNotFound() {
-    long organizationId = 1L;
-    long receiptId = 2L;
+    Long organizationId = 1L;
+    Long receiptId = 2L;
+    String iud = "iud";
 
-    ResponseEntity<ReceiptDetailDTO> response = receiptController.getReceiptDetail(organizationId,receiptId);
+    ResponseEntity<ReceiptDetailDTO> response = receiptController.getReceiptDetail(organizationId,receiptId,iud);
 
     Assertions.assertEquals(HttpStatus.NOT_FOUND,response.getStatusCode());
     Assertions.assertNull(response.getBody());
-    Mockito.verify(receiptRetrieverServiceMock).getReceiptDetail(Mockito.eq(organizationId),Mockito.eq(receiptId),
+    Mockito.verify(receiptRetrieverServiceMock).getReceiptDetail(Mockito.eq(organizationId),Mockito.eq(receiptId),Mockito.eq(iud),
       Mockito.any(), Mockito.anyString());
   }
 

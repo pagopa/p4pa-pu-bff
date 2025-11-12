@@ -1,6 +1,7 @@
 package it.gov.pagopa.pu.bff.service;
 
 import it.gov.pagopa.pu.auth.dto.generated.AccessToken;
+import it.gov.pagopa.pu.auth.dto.generated.LimitedTokenRequest;
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.auth.dto.generated.UserOrganizationRoles;
 import it.gov.pagopa.pu.bff.connector.auth.client.AuthnClient;
@@ -21,6 +22,7 @@ public class AuthorizationService {
   public static final String SCOPE = "openid";
   public static final String SUBJECT_TOKEN_TYPE = "urn:ietf:params:oauth:token-type:jwt";
   public static final String ROLE_ADMIN = "ROLE_ADMIN";
+  public static final String APP_NAME = "p4pa-pu-bff";
 
   private final AuthnClient authClientImpl;
   private final OrganizationService organizationService;
@@ -50,6 +52,15 @@ public class AuthorizationService {
       subjectIssuer,
       SUBJECT_TOKEN_TYPE,
       null);
+  }
+
+  public AccessToken postLimitedToken(Long organizationId, String resource, String accessToken) {
+    return authClientImpl.postLimitedToken(LimitedTokenRequest.builder()
+      .organizationId(organizationId)
+      .resource(resource)
+      .app(APP_NAME)
+      .build(),
+      accessToken);
   }
 
   public void validateBrokerAdminRole(UserInfo loggedUser) {

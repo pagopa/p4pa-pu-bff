@@ -11870,6 +11870,9 @@
           "iuv" : {
             "type" : "string"
           },
+          "nav" : {
+            "type" : "string"
+          },
           "paymentAmountCents" : {
             "type" : "integer",
             "format" : "int64"

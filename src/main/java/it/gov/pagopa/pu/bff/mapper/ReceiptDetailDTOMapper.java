@@ -14,6 +14,7 @@ public class ReceiptDetailDTOMapper {
     return ReceiptDetailDTO.builder()
       .receiptId(receiptDetailDTO.getReceiptId())
       .iuv(receiptDetailDTO.getIuv())
+      .nav(receiptDetailDTO.getNav())
       .paymentAmountCents(receiptDetailDTO.getPaymentAmountCents())
       .remittanceInformation(receiptDetailDTO.getRemittanceInformation())
       .debtPositionTypeOrgDescription(receiptDetailDTO.getDebtPositionTypeOrgDescription())

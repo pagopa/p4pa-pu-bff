@@ -22,9 +22,6 @@ public class AnalyticsServiceImpl implements AnalyticsService {
   public String generateSupersetUrl(Long organizationId, UserInfo loggedUser, String accessToken) {
     AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser);
     AccessToken token = authorizationService.postLimitedToken(organizationId, "superset", accessToken);
-    if(token!=null) {
-      return supersetSSOUrl+"/?token="+token.getAccessToken();
-    }
-    return null;
+    return supersetSSOUrl+"/?token="+token.getAccessToken();
   }
 }

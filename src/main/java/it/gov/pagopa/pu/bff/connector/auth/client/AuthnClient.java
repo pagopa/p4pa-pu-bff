@@ -5,7 +5,6 @@ import it.gov.pagopa.pu.auth.dto.generated.LimitedTokenRequest;
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.connector.auth.config.AuthApisHolder;
 import it.gov.pagopa.pu.bff.exception.InvalidAccessTokenException;
-import it.gov.pagopa.pu.bff.security.SecurityUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;

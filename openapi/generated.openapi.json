@@ -52,6 +52,9 @@
     "name" : "Authentication",
     "description" : "the Authentication API"
   }, {
+    "name" : "Analytics",
+    "description" : "the Analytics API"
+  }, {
     "name" : "Assessments",
     "description" : "the Assessments API"
   }, {
@@ -8614,6 +8617,77 @@
         } ]
       }
     },
+    "/bff/generatesuperseturl" : {
+      "get" : {
+        "tags" : [ "Analytics" ],
+        "summary" : "Generate superset url",
+        "operationId" : "generateSupersetUrl",
+        "parameters" : [ {
+          "name" : "organizationId",
+          "in" : "query",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Url generated successfully",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/SupersetUrlResponseDTO"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Invalid request",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/SupersetUrlResponseDTO"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Authentication failed",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/SupersetUrlResponseDTO"
+                }
+              }
+            }
+          },
+          "429" : {
+            "description" : "Too many requests",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/SupersetUrlResponseDTO"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal Server Error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/SupersetUrlResponseDTO"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "BearerAuth" : [ ]
+        } ]
+      }
+    },
     "/bff/debt-position-types/{id}" : {
       "get" : {
         "tags" : [ "DebtPositionTypes" ],
@@ -14581,6 +14655,15 @@
           }
         },
         "required" : [ "assessmentRegistryId", "debtPositionTypeOrgCode", "debtPositionTypeOrgDescription", "operatingYear", "organizationId", "sectionCode", "status" ]
+      },
+      "SupersetUrlResponseDTO" : {
+        "type" : "object",
+        "description" : "pre-authorized URL to Superset",
+        "properties" : {
+          "authorizedUrl" : {
+            "type" : "string"
+          }
+        }
       },
       "ServiceStatus" : {
         "type" : "object",

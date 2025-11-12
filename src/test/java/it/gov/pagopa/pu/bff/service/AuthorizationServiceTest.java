@@ -4,6 +4,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import it.gov.pagopa.pu.auth.dto.generated.AccessToken;
+import it.gov.pagopa.pu.auth.dto.generated.LimitedTokenRequest;
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.auth.dto.generated.UserOrganizationRoles;
 import it.gov.pagopa.pu.bff.connector.auth.client.AuthnClient;
@@ -428,6 +429,23 @@ class AuthorizationServiceTest {
 
     Assertions.assertThrows(AuthorizationDeniedException.class, () ->
       authorizationService.validateOrganizationOrBrokerAdmin(organizationId,userInfo,accessToken));
+  }
+
+  @Test
+  void whenPostLimitedTokenThenOk() {
+    // Given
+    Long organizationId = 1L;
+    AccessToken expectedAccessToken = new AccessToken();
+    expectedAccessToken.setAccessToken("access-token");
+
+    when(authClientImplMock.postLimitedToken(LimitedTokenRequest.builder()
+      .app("APP").resource("p4pa-pu-bff").organizationId(organizationId).build(), "ACCESSTOKEN"))
+      .thenReturn(expectedAccessToken);
+    // When
+    AccessToken result = authorizationService.postLimitedToken(organizationId, "APP", "ACCESSTOKEN");
+    // Then
+    Assertions.assertNotNull(result);
+    Assertions.assertEquals(expectedAccessToken, result);
   }
 }
 

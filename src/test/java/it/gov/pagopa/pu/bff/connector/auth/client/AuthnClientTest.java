@@ -2,6 +2,7 @@ package it.gov.pagopa.pu.bff.connector.auth.client;
 
 import it.gov.pagopa.pu.auth.controller.generated.AuthnApi;
 import it.gov.pagopa.pu.auth.dto.generated.AccessToken;
+import it.gov.pagopa.pu.auth.dto.generated.LimitedTokenRequest;
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.connector.auth.config.AuthApisHolder;
 import it.gov.pagopa.pu.bff.exception.InvalidAccessTokenException;
@@ -109,5 +110,26 @@ class AuthnClientTest {
     authnClient.logout(clientId, accessToken);
 
     Mockito.verifyNoMoreInteractions(authnApiMock);
+  }
+
+  @Test
+  void whenPostLimitedTokenThenInvokeAuthnApi() {
+    String accessToken = "accessToken";
+    LimitedTokenRequest limitedTokenRequest = new LimitedTokenRequest();
+    limitedTokenRequest.app("APP");
+    limitedTokenRequest.resource("RESOURCES");
+    limitedTokenRequest.organizationId(1L);
+
+    AccessToken expectedToken = new AccessToken();
+    expectedToken.setAccessToken("mockAccessToken");
+    expectedToken.setTokenType("Bearer");
+    expectedToken.setExpiresIn(3600);
+
+    when(authApisHolderMock.getAuthnApi(accessToken)).thenReturn(authnApiMock);
+    when(authnApiMock.postLimitedToken(limitedTokenRequest)).thenReturn(expectedToken);
+
+    AccessToken result = authnClient.postLimitedToken(limitedTokenRequest, accessToken);
+
+    assertSame(expectedToken, result);
   }
 }

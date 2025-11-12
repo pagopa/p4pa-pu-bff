@@ -139,6 +139,10 @@ rest:
     wait-time-millis: "\${WORKFLOW_HUB_WAIT_TIME_MILLIS:500}"
     print-body-when-error: "\${WORKFLOW_HUB_PRINT_BODY_WHEN_ERROR:true}"
 
+analytics:
+  superset:
+    sso-url: "\${SUPERSET_BASE_URL:}/sso-login"
+
 cache:
   organization:
     size: "\${CACHE_ORGANIZATION_SIZE:100}"

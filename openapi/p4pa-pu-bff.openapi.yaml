@@ -200,6 +200,34 @@ paths:
       responses:
         '200':
           description: OK
+  /generatesuperseturl:
+    get:
+      tags:
+        - Analytics
+      summary: "Generate superset url"
+      operationId: generateSupersetUrl
+      parameters:
+        - name: organizationId
+          in: query
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Url generated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SupersetUrlResponseDTO'
+        '400':
+          description: Invalid request
+        '401':
+          description: Authentication failed
+        '429':
+          description: Too many requests
+        '500':
+          description: Internal Server Error
   /core-health:
     get:
       tags:
@@ -5545,3 +5573,10 @@ components:
         - code
         - organizationId
         - structure
+    SupersetUrlResponseDTO:
+      type: object
+      description:  pre-authorized URL to Superset
+      properties:
+        authorizedUrl:
+          type: string
+          format: url

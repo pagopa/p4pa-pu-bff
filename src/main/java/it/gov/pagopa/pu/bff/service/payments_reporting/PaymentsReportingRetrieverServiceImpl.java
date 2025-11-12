@@ -97,10 +97,9 @@ public class PaymentsReportingRetrieverServiceImpl implements
       organizationId, paymentsReporting.getIuv(), paymentsReporting.getIur(),
       String.valueOf(paymentsReporting.getTransferIndex()), loggedUser, null,
       accessToken);
-    ReceiptDetailDTO receiptDetailDTO = installment != null ?
-      receiptRetrieverService.getReceiptDetail(organizationId,
-        installment.getReceiptId(), loggedUser, accessToken)
-      : null;
+    //TODO a causa del task P4ADEV-4208 si è messo iud = null, bisogna trovare una soluzione
+    ReceiptDetailDTO receiptDetailDTO =
+      installment != null ? receiptRetrieverService.getReceiptDetail(organizationId, installment.getReceiptId(), null, loggedUser, accessToken) : null;
 
     return paymentsReportingMapper.mapToPaymentsReportingDetailDTO(
       paymentsReporting, receiptDetailDTO);

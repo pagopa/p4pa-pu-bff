@@ -4732,6 +4732,13 @@
             "type" : "integer",
             "format" : "int64"
           }
+        }, {
+          "name" : "iud",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
         } ],
         "responses" : {
           "200" : {
@@ -11925,6 +11932,9 @@
             "type" : "string",
             "format" : "byte"
           },
+          "iud" : {
+            "type" : "string"
+          },
           "_links" : {
             "type" : "object",
             "additionalProperties" : {
@@ -11932,7 +11942,7 @@
             }
           }
         },
-        "required" : [ "debtPositionTypeOrgDescription", "debtorFiscalCodeHash", "installmentId", "paymentAmountCents", "receiptOrigin" ]
+        "required" : [ "debtPositionTypeOrgDescription", "debtorFiscalCodeHash", "installmentId", "iud", "paymentAmountCents", "receiptOrigin" ]
       },
       "ReceiptDetailDTO" : {
         "type" : "object",

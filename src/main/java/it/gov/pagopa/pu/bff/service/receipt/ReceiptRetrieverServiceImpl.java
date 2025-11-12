@@ -52,12 +52,10 @@ public class ReceiptRetrieverServiceImpl implements ReceiptRetrieverService {
   }
 
   @Override
-  public ReceiptDetailDTO getReceiptDetail(Long organizationId, Long receiptId,
-                                           UserInfo loggedUser,
-                                           String accessToken) {
+  public ReceiptDetailDTO getReceiptDetail(Long organizationId, Long receiptId, String iud, UserInfo loggedUser, String accessToken) {
     AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser);
-    return receiptDetailDTOMapper.mapToReceiptDetailDTO(receiptService.getReceiptDetail(receiptId,
-      loggedUser.getMappedExternalUserId(), organizationId, accessToken));
+    return receiptDetailDTOMapper.mapToReceiptDetailDTO(
+      receiptService.getReceiptDetail(receiptId, loggedUser.getMappedExternalUserId(), organizationId, iud, accessToken));
   }
 
   @Override

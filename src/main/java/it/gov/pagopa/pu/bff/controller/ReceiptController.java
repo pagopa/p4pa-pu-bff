@@ -41,9 +41,9 @@ public class ReceiptController implements ReceiptsApi {
   }
 
   @Override
-  public ResponseEntity<ReceiptDetailDTO> getReceiptDetail(Long organizationId, Long receiptId) {
+  public ResponseEntity<ReceiptDetailDTO> getReceiptDetail(Long organizationId, Long receiptId, String iud) {
     log.info("User requested getReceiptDetail having organizationId {} and receiptId {}", organizationId, receiptId);
-    return ResponseEntity.ofNullable(receiptRetrieverService.getReceiptDetail(organizationId, receiptId, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken()));
+    return ResponseEntity.ofNullable(receiptRetrieverService.getReceiptDetail(organizationId, receiptId, iud, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken()));
   }
 
   @Override

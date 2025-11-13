@@ -144,9 +144,6 @@ analytics:
     sso-url: "\${SUPERSET_BASE_URL:}/sso-login"
 
 cache:
-  organization:
-    size: "\${CACHE_ORGANIZATION_SIZE:100}"
-    expire-in: "\${CACHE_ORGANIZATION_MINUTES:60}"
   taxonomy:
     size: "\${CACHE_TAXONOMY_SIZE:100}"
     expire-in: "\${CACHE_TAXONOMY_MINUTES:60}"

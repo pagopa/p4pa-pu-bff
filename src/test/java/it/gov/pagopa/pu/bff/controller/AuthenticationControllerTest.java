@@ -2,6 +2,7 @@ package it.gov.pagopa.pu.bff.controller;
 
 import it.gov.pagopa.pu.auth.dto.generated.AccessToken;
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
+import it.gov.pagopa.pu.auth.dto.generated.UserInfoLimitedScope;
 import it.gov.pagopa.pu.bff.dto.generated.UserInfoDTO;
 import it.gov.pagopa.pu.bff.mapper.UserInfoDTOMapper;
 import it.gov.pagopa.pu.bff.security.SecurityUtilsTest;
@@ -17,6 +18,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authorization.AuthorizationDeniedException;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.doNothing;
@@ -81,6 +83,13 @@ class AuthenticationControllerTest {
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertNotNull(response.getBody());
     assertEquals("test", response.getBody().getUserId());
+  }
+
+  @Test
+  void testGetUserInfoLimited() {
+    SecurityUtilsTest.configureSecurityContext(accessToken, TestUtils.getPodamFactory().manufacturePojo(UserInfoLimitedScope.class));
+
+    assertThrows(AuthorizationDeniedException.class, () -> authenticationController.getUserInfo());
   }
 
   @Test

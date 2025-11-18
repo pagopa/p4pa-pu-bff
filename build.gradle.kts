@@ -207,6 +207,7 @@ tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>("ope
     "PaymentsReporting" to "it.gov.pagopa.pu.classification.dto.generated.PaymentsReporting",
     "Transfer" to "it.gov.pagopa.pu.debtpositions.dto.generated.Transfer",
     "UserInfo" to "it.gov.pagopa.pu.auth.dto.generated.UserInfo",
+    "UserOrganizationRoles" to "it.gov.pagopa.pu.auth.dto.generated.UserOrganizationRoles",
     "DebtPositionTypeResponseBody" to "it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionType",
     "ClassificationsEnum" to "it.gov.pagopa.pu.classification.dto.generated.ClassificationsEnum",
     "DebtPositionOrigin" to "it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionOrigin",

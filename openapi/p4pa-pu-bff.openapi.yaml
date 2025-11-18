@@ -185,7 +185,7 @@ paths:
           content:
             application/json:
               schema:
-                type: 'UserInfo'
+                $ref: '#/components/schemas/UserInfoDTO'
         '403':
           description: Forbidden
         '429':
@@ -5587,3 +5587,49 @@ components:
         authorizedUrl:
           type: string
           format: url
+    UserInfoDTO:
+      type: object
+      required:
+        - userId
+        - mappedExternalUserId
+        - fiscalCode
+        - familyName
+        - name
+        - email
+        - issuer
+        - organizations
+        - canManageUsers
+        - traceId
+        - _type
+      properties:
+        userId:
+          type: string
+        mappedExternalUserId:
+          type: string
+        fiscalCode:
+          type: string
+        familyName:
+          type: string
+        name:
+          type: string
+        issuer:
+          type: string
+        organizationAccess:
+          type: string
+        organizations:
+          type: array
+          items:
+            type: 'UserOrganizationRoles'
+        brokerId:
+          type: integer
+          format: int64
+        brokerFiscalCode:
+          type: string
+        canManageUsers:
+          type: boolean
+        systemUser:
+          type: boolean
+        traceId:
+          type: string
+        _type:
+          type: string

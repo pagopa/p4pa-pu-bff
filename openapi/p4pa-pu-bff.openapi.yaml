@@ -5599,8 +5599,6 @@ components:
         - issuer
         - organizations
         - canManageUsers
-        - traceId
-        - _type
       properties:
         userId:
           type: string

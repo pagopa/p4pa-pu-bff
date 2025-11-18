@@ -14833,7 +14833,7 @@
             "type" : "string"
           }
         },
-        "required" : [ "_type", "canManageUsers", "familyName", "fiscalCode", "issuer", "mappedExternalUserId", "name", "organizations", "traceId", "userId" ]
+        "required" : [ "canManageUsers", "familyName", "fiscalCode", "issuer", "mappedExternalUserId", "name", "organizations", "userId" ]
       },
       "UserOrganizationRoles" : {
         "type" : "object",

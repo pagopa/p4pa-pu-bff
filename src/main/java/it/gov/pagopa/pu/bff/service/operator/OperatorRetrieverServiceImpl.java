@@ -7,6 +7,7 @@ import it.gov.pagopa.pu.bff.connector.auth.AuthzService;
 import it.gov.pagopa.pu.bff.connector.debt_position.DebtPositionTypeOrgOperatorsService;
 import it.gov.pagopa.pu.bff.connector.debt_position.DebtPositionTypeOrgService;
 import it.gov.pagopa.pu.bff.connector.debt_position.DebtPositionTypeService;
+import it.gov.pagopa.pu.bff.connector.organization.OrganizationService;
 import it.gov.pagopa.pu.bff.dto.OperatorDetailsFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.generated.OperatorsDetail;
 import it.gov.pagopa.pu.bff.dto.generated.PagedDebtPositionTypeOrgDTO;
@@ -20,6 +21,8 @@ import it.gov.pagopa.pu.debtpositions.dto.generated.*;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+
+import it.gov.pagopa.pu.organization.dto.generated.Organization;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -37,9 +40,10 @@ public class OperatorRetrieverServiceImpl implements OperatorRetrieverService {
   private final OperatorDetailMapper operatorDetailMapper;
   private final DebtPositionTypeService debtPositionTypeService;
   private final PagedDebtPositionTypeOrgDTOMapper pagedDebtPositionTypeOrgDTOMapper;
+  private final OrganizationService organizationService;
 
     public OperatorRetrieverServiceImpl(AuthorizationService authorizationService, AuthzService authzService, DebtPositionTypeOrgOperatorsService debtPositionTypeOrgOperatorsService, PagedOrganizationOperatorMapper pagedOrganizationOperatorMapper, DebtPositionTypeOrgService debtPositionTypeOrgService, OperatorDetailMapper operatorDetailMapper, DebtPositionTypeService debtPositionTypeService,
-        PagedDebtPositionTypeOrgDTOMapper pagedDebtPositionTypeOrgDTOMapper) {
+        PagedDebtPositionTypeOrgDTOMapper pagedDebtPositionTypeOrgDTOMapper, OrganizationService organizationService) {
         this.authorizationService = authorizationService;
         this.authzService = authzService;
         this.debtPositionTypeOrgOperatorsService = debtPositionTypeOrgOperatorsService;
@@ -47,22 +51,30 @@ public class OperatorRetrieverServiceImpl implements OperatorRetrieverService {
         this.debtPositionTypeOrgService = debtPositionTypeOrgService;
         this.operatorDetailMapper = operatorDetailMapper;
         this.debtPositionTypeService = debtPositionTypeService;
-      this.pagedDebtPositionTypeOrgDTOMapper = pagedDebtPositionTypeOrgDTOMapper;
+        this.pagedDebtPositionTypeOrgDTOMapper = pagedDebtPositionTypeOrgDTOMapper;
+        this.organizationService = organizationService;
     }
 
     @Override
   public PagedOrganizationOperator getOrganizationOperators(Long organizationId, String firstName, String lastName, String fiscalCode, Pageable pageable, UserInfo loggedUser, String accessToken) {
     authorizationService.validateOrganizationOrBrokerAdmin(organizationId,loggedUser,accessToken);
 
+    String orgIpaCode = getUserOrganizationIpaCode(organizationId, loggedUser);
+
     OperatorsPage operatorsPage = authzService.getOrganizationOperators(
-            getUserOrganizationIpaCode(organizationId, loggedUser), fiscalCode, firstName, lastName,
+            orgIpaCode, fiscalCode, firstName, lastName,
             pageable.getPageNumber(), pageable.getPageSize(), accessToken);
+
     if(operatorsPage == null || operatorsPage.getContent().isEmpty()){
-      return pagedOrganizationOperatorMapper.mapToPagedOrganizationOperator(operatorsPage,Collections.emptyMap());
+      return pagedOrganizationOperatorMapper.mapToPagedOrganizationOperator(operatorsPage,Collections.emptyMap(), null);
     }
+
+    Organization organization = organizationService.getOrganizationByOrganizationId(organizationId, accessToken);
+
     return pagedOrganizationOperatorMapper.mapToPagedOrganizationOperator(
             operatorsPage,
-            getOperatorDptoCount(organizationId, operatorsPage, accessToken)
+            getOperatorDptoCount(organizationId, operatorsPage, accessToken),
+            organization
     );
   }
 

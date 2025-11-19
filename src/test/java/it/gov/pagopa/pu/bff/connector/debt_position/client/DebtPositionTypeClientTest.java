@@ -99,6 +99,7 @@ class DebtPositionTypeClientTest {
   @Test
   void whenGetDebtPositionTypeWithCountThenInvokeWithAccessToken() {
     long brokerId = 1L;
+    String code = "code";
     String description = "description";
     List<String> sortList = List.of("sort1,ASC", "sort2,DESC");
     String accessToken = "ACCESSTOKEN";
@@ -107,11 +108,11 @@ class DebtPositionTypeClientTest {
     when(debtPositionApisHolderMock.getDebtPositionTypeWithCountSearchControllerApi(accessToken))
       .thenReturn(debtPositionTypeWithCountSearchControllerApiMock);
     when(debtPositionTypeWithCountSearchControllerApiMock.crudDebtPositionTypesWithCountFindByBrokerId(
-      brokerId, description, 0, 10, sortList))
+      brokerId, code, description, 0, 10, sortList))
       .thenReturn(expectedResult);
 
     PagedModelDebtPositionTypeWithCount result = debtPositionTypeClient.getDebtPositionTypeWithCount(
-      brokerId, description, PageRequest.of(0, 10,
+      brokerId, code, description, PageRequest.of(0, 10,
         Sort.by(List.of(Order.asc("sort1"), Order.desc("sort2")))), accessToken);
 
     assertSame(expectedResult, result);
@@ -120,6 +121,7 @@ class DebtPositionTypeClientTest {
   @Test
   void givenUnpagedWhenGetDebtPositionTypeWithCountThenInvokeWithAccessToken() {
     long brokerId = 1L;
+    String code = "code";
     String description = "description";
     String accessToken = "ACCESSTOKEN";
     PagedModelDebtPositionTypeWithCount expectedResult = new PagedModelDebtPositionTypeWithCount();
@@ -127,11 +129,11 @@ class DebtPositionTypeClientTest {
     when(debtPositionApisHolderMock.getDebtPositionTypeWithCountSearchControllerApi(accessToken))
       .thenReturn(debtPositionTypeWithCountSearchControllerApiMock);
     when(debtPositionTypeWithCountSearchControllerApiMock.crudDebtPositionTypesWithCountFindByBrokerId(
-      brokerId, description, 0, null, Collections.emptyList()))
+      brokerId, code, description, 0, null, Collections.emptyList()))
       .thenReturn(expectedResult);
 
     PagedModelDebtPositionTypeWithCount result = debtPositionTypeClient.getDebtPositionTypeWithCount(
-      brokerId, description, Pageable.unpaged(), accessToken);
+      brokerId, code, description, Pageable.unpaged(), accessToken);
 
     assertSame(expectedResult, result);
   }
@@ -140,6 +142,7 @@ class DebtPositionTypeClientTest {
   @Test
   void givenNoExistentBrokerIdWhenGetDebtPositionTypeWithCountThenNull() {
     long brokerId = 1L;
+    String code = "code";
     String description = "description";
     List<String> sortList = List.of("sort1,ASC", "sort2,DESC");
     String accessToken = "ACCESSTOKEN";
@@ -147,11 +150,11 @@ class DebtPositionTypeClientTest {
     when(debtPositionApisHolderMock.getDebtPositionTypeWithCountSearchControllerApi(accessToken))
       .thenReturn(debtPositionTypeWithCountSearchControllerApiMock);
     when(debtPositionTypeWithCountSearchControllerApiMock.crudDebtPositionTypesWithCountFindByBrokerId(
-      brokerId, description, 0, 10, sortList))
+      brokerId, code, description, 0, 10, sortList))
       .thenThrow(HttpClientErrorException.create(HttpStatus.NOT_FOUND, "NotFound", null, null, null));
 
     PagedModelDebtPositionTypeWithCount result = debtPositionTypeClient.getDebtPositionTypeWithCount(
-      brokerId, description, PageRequest.of(0, 10,
+      brokerId, code, description, PageRequest.of(0, 10,
         Sort.by(List.of(Order.asc("sort1"), Order.desc("sort2")))), accessToken);
 
     assertNull(result);

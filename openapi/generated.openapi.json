@@ -6884,6 +6884,13 @@
             "format" : "int64"
           }
         }, {
+          "name" : "code",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
           "name" : "description",
           "in" : "query",
           "required" : false,

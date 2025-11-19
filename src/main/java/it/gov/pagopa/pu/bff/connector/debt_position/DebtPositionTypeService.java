@@ -12,7 +12,7 @@ import java.util.Set;
 public interface DebtPositionTypeService {
   DebtPositionType getDebtPositionTypeById(Long id, String accessToken);
 
-  PagedModelDebtPositionTypeWithCount getDebtPositionTypeWithCount(Long brokerId, String description, Pageable pageable, String accessToken);
+  PagedModelDebtPositionTypeWithCount getDebtPositionTypeWithCount(Long brokerId, String code, String description, Pageable pageable, String accessToken);
 
   DebtPositionType createDebtPositionType(DebtPositionTypeRequestBody debtPositionType, String accessToken);
 

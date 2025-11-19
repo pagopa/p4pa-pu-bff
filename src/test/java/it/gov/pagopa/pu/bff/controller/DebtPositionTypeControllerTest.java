@@ -111,6 +111,7 @@ class DebtPositionTypeControllerTest {
   @Test
   void givenCorrectRequestWhenGetDebtPositionTypeWithCountThenOk() {
     long organizationId = 1L;
+    String code = "code";
     String description = "description";
     PagedDebtPositionTypeWithCount expectedResult = new PagedDebtPositionTypeWithCount();
     expectedResult.setContent(List.of(DebtPositionTypeWithCount.builder()
@@ -127,7 +128,7 @@ class DebtPositionTypeControllerTest {
 
     Mockito.when(
         debtPositionTypeRetrieverServiceMock.getDebtPositionTypeWithCount(
-          Mockito.eq(organizationId), Mockito.eq(description),
+          Mockito.eq(organizationId), Mockito.eq(code), Mockito.eq(description),
           Mockito.argThat(
             p -> p.getPageNumber() == 0 && p.getPageSize() == 10 && p.getSort()
               .isUnsorted()),
@@ -135,7 +136,7 @@ class DebtPositionTypeControllerTest {
       .thenReturn(expectedResult);
 
     ResponseEntity<PagedDebtPositionTypeWithCount> response = debtPositionTypeController.getDebtPositionTypeWithCount(
-      organizationId, description,
+      organizationId, code, description,
       PageRequest.of(0, 10));
 
     Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());

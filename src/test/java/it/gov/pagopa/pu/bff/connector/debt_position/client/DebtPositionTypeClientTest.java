@@ -107,7 +107,7 @@ class DebtPositionTypeClientTest {
     when(debtPositionApisHolderMock.getDebtPositionTypeWithCountSearchControllerApi(accessToken))
       .thenReturn(debtPositionTypeWithCountSearchControllerApiMock);
     when(debtPositionTypeWithCountSearchControllerApiMock.crudDebtPositionTypesWithCountFindByBrokerId(
-      brokerId, description, 0, 10, sortList))
+      brokerId, null, description, 0, 10, sortList))
       .thenReturn(expectedResult);
 
     PagedModelDebtPositionTypeWithCount result = debtPositionTypeClient.getDebtPositionTypeWithCount(
@@ -127,7 +127,7 @@ class DebtPositionTypeClientTest {
     when(debtPositionApisHolderMock.getDebtPositionTypeWithCountSearchControllerApi(accessToken))
       .thenReturn(debtPositionTypeWithCountSearchControllerApiMock);
     when(debtPositionTypeWithCountSearchControllerApiMock.crudDebtPositionTypesWithCountFindByBrokerId(
-      brokerId, description, 0, null, Collections.emptyList()))
+      brokerId, null, description, 0, null, Collections.emptyList()))
       .thenReturn(expectedResult);
 
     PagedModelDebtPositionTypeWithCount result = debtPositionTypeClient.getDebtPositionTypeWithCount(
@@ -147,7 +147,7 @@ class DebtPositionTypeClientTest {
     when(debtPositionApisHolderMock.getDebtPositionTypeWithCountSearchControllerApi(accessToken))
       .thenReturn(debtPositionTypeWithCountSearchControllerApiMock);
     when(debtPositionTypeWithCountSearchControllerApiMock.crudDebtPositionTypesWithCountFindByBrokerId(
-      brokerId, description, 0, 10, sortList))
+      brokerId, null, description, 0, 10, sortList))
       .thenThrow(HttpClientErrorException.create(HttpStatus.NOT_FOUND, "NotFound", null, null, null));
 
     PagedModelDebtPositionTypeWithCount result = debtPositionTypeClient.getDebtPositionTypeWithCount(

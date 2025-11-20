@@ -15,7 +15,7 @@ import java.util.Map;
 @Mapper(componentModel = "spring")
 public interface PagedOrganizationOperatorMapper {
 
-    @Mapping(target = "content", expression = "java(mapContentWithDebtPositionTypeOrgCount(source.getContent(), operatorDptoCount))")
+    @Mapping(target = "content", expression = "java(mapContentWithDebtPositionTypeOrgCount(source.getContent(), operatorDptoCount, organization))")
     @Mapping(target = "totalPages", source = "source.totalPages")
     @Mapping(target = "size", source = "source.pageSize")
     @Mapping(target = "number", source = "source.pageNo")
@@ -25,7 +25,7 @@ public interface PagedOrganizationOperatorMapper {
     List<OrganizationOperator> mapContentWithDebtPositionTypeOrgCount(List<OperatorDTO> content, @Context Map<String, Long> operatorDptoCount, @Context Organization organization);
 
     @Mapping(target = "debtPositionTypeOrgCount",expression = "java(operatorDptoCount!=null && operatorDptoCount.containsKey(operator.getMappedExternalUserId())?operatorDptoCount.get(operator.getMappedExternalUserId()):0L)")
-    @Mapping(target = "orgName", expression = "java(organization != null ? organization.getName() : null)")
+    @Mapping(target = "orgName", expression = "java(organization != null ? organization.getOrgName() : null)")
     OrganizationOperator mapWithDebtPositionTypeOrgCount(OperatorDTO operator, @Context Map<String, Long> operatorDptoCount, @Context Organization organization);
 }
 

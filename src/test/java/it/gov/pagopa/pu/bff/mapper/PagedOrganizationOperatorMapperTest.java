@@ -33,7 +33,7 @@ class PagedOrganizationOperatorMapperTest {
     Map<String, Long> operatorDptoCount = operatorsPage.getContent().stream().collect(Collectors.toMap(OperatorDTO::getMappedExternalUserId, o -> new Random().nextLong(101)));
 
     PagedOrganizationOperator result = mapper.mapToPagedOrganizationOperator(
-            operatorsPage, operatorDptoCount);
+            operatorsPage, operatorDptoCount, null);
 
     assertNotNull(result);
     assertEquals(operatorsPage.getPageNo(),
@@ -67,7 +67,7 @@ class PagedOrganizationOperatorMapperTest {
     operatorsPage.setContent(List.of(operator));
 
     PagedOrganizationOperator result = mapper.mapToPagedOrganizationOperator(
-            operatorsPage, Collections.emptyMap());
+            operatorsPage, Collections.emptyMap(), null);
 
     assertNotNull(result);
     assertEquals(operatorsPage.getPageNo(),
@@ -97,7 +97,7 @@ class PagedOrganizationOperatorMapperTest {
     operatorsPage.setContent(List.of(operator));
 
     PagedOrganizationOperator result = mapper.mapToPagedOrganizationOperator(
-            operatorsPage, null);
+            operatorsPage, null, null);
 
     assertNotNull(result);
     assertEquals(operatorsPage.getPageNo(),

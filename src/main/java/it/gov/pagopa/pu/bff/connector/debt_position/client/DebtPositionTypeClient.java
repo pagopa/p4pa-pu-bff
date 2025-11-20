@@ -40,6 +40,7 @@ public class DebtPositionTypeClient {
     try {
       return debtPositionApisHolder.getDebtPositionTypeWithCountSearchControllerApi(accessToken)
         .crudDebtPositionTypesWithCountFindByBrokerId(brokerId,
+          null,
           description,
           PageUtils.getPageNumber(pageable),
           PageUtils.getPageSize(pageable),

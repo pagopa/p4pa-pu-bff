@@ -53,5 +53,4 @@ public class PaymentsReportingController implements PaymentsReportingApi {
     return ResponseEntity.ofNullable(paymentsReportingRetrieverService.getPaymentsReportingDetail(
       organizationId, iuf, paymentsReportingId, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken()));
   }
-
 }

@@ -12189,6 +12189,9 @@
           "receiptId" : {
             "type" : "string"
           },
+          "iud" : {
+            "type" : "string"
+          },
           "_links" : {
             "type" : "object",
             "additionalProperties" : {

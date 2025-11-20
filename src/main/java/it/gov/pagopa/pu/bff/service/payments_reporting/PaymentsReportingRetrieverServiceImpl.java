@@ -3,7 +3,10 @@ package it.gov.pagopa.pu.bff.service.payments_reporting;
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.connector.classification.PaymentsReportingService;
 import it.gov.pagopa.pu.bff.dto.LocalDateIntervalFilter;
-import it.gov.pagopa.pu.bff.dto.generated.*;
+import it.gov.pagopa.pu.bff.dto.generated.PagedPaymentsReportingRow;
+import it.gov.pagopa.pu.bff.dto.generated.PagedPaymentsReportingView;
+import it.gov.pagopa.pu.bff.dto.generated.PaymentsReportingDetailDTO;
+import it.gov.pagopa.pu.bff.dto.generated.ReceiptDetailDTO;
 import it.gov.pagopa.pu.bff.mapper.PaymentsReportingMapper;
 import it.gov.pagopa.pu.bff.mapper.PaymentsReportingViewMapper;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
@@ -46,9 +49,8 @@ public class PaymentsReportingRetrieverServiceImpl implements
     validatePaymentsReportingFilters(iuf, regulationUniqueIdentifier, regulationDateFilter, iuv);
 
     return paymentsReportingViewMapper.mapToPagedPaymentsReporting(
-      paymentsReportingService.getPaymentsReporting(organizationId, iuf,
-        regulationUniqueIdentifier, regulationDateFilter, iuv ,pageable,
-        accessToken));
+      paymentsReportingService.getPaymentsReporting(
+        organizationId, iuf, regulationUniqueIdentifier, regulationDateFilter, iuv, pageable, accessToken));
   }
 
   private void validatePaymentsReportingFilters(String iuf, String regulationUniqueIdentifier, LocalDateIntervalFilter regulationDateFilter, String iuv) {
@@ -68,40 +70,45 @@ public class PaymentsReportingRetrieverServiceImpl implements
   }
 
   @Override
-  public PagedPaymentsReportingRow getPaymentsReportingRows(Long organizationId,
-                                                                           String iuf, String iuv, LocalDateIntervalFilter payDateFilter,
-                                                                           Pageable pageable, UserInfo loggedUser, String accessToken) {
-    AuthorizationService.validateUserForOrganizationId(organizationId,
-      loggedUser);
+  public PagedPaymentsReportingRow getPaymentsReportingRows(Long organizationId, String iuf, String iuv, LocalDateIntervalFilter payDateFilter, Pageable pageable, UserInfo loggedUser, String accessToken) {
+    AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser);
 
     return paymentsReportingMapper.mapToPagedPaymentsReporting(
-      paymentsReportingService.getPaymentsReportingRows(organizationId, iuf,
-        iuv, payDateFilter, pageable, accessToken));
+      paymentsReportingService.getPaymentsReportingRows(organizationId, iuf, iuv, payDateFilter, pageable, accessToken));
   }
 
   @Override
-  public PaymentsReportingDetailDTO getPaymentsReportingDetail(
-    Long organizationId, String iuf, String paymentsReportingId, UserInfo loggedUser,
-    String accessToken) {
-    AuthorizationService.validateUserForOrganizationId(organizationId,
-      loggedUser);
+  public PaymentsReportingDetailDTO getPaymentsReportingDetail(Long organizationId, String iuf, String paymentsReportingId, UserInfo loggedUser, String accessToken) {
+    AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser);
 
-    PaymentsReporting paymentsReporting = paymentsReportingService.getPaymentsReportingDetail(
-      organizationId, paymentsReportingId, accessToken);
+    PaymentsReporting paymentsReporting =
+      paymentsReportingService.getPaymentsReportingDetail(organizationId, paymentsReportingId, accessToken);
 
     if (paymentsReporting == null || !iuf.equals(paymentsReporting.getIuf())) {
       return null;
     }
 
-    InstallmentNoPII installment = installmentRetrieverService.getInstallmentFromTransferSemanticKey(
-      organizationId, paymentsReporting.getIuv(), paymentsReporting.getIur(),
-      String.valueOf(paymentsReporting.getTransferIndex()), loggedUser, null,
-      accessToken);
+    InstallmentNoPII installment =
+      installmentRetrieverService.getInstallmentFromTransferSemanticKey(
+        organizationId,
+        paymentsReporting.getIuv(),
+        paymentsReporting.getIur(),
+        String.valueOf(paymentsReporting.getTransferIndex()),
+        loggedUser,
+        null,
+        accessToken);
+
     ReceiptDetailDTO receiptDetailDTO =
-      installment != null ? receiptRetrieverService.getReceiptDetail(organizationId, installment.getReceiptId(), null, loggedUser, accessToken) : null;
+      installment != null
+        ? receiptRetrieverService.getReceiptDetail(
+        organizationId,
+        installment.getReceiptId(),
+        installment.getIud(),
+        loggedUser,
+        accessToken)
+        : null;
 
     return paymentsReportingMapper.mapToPaymentsReportingDetailDTO(
       paymentsReporting, receiptDetailDTO);
   }
-
 }

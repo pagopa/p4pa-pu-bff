@@ -5,6 +5,8 @@ import it.gov.pagopa.pu.auth.dto.generated.OperatorsPage;
 import it.gov.pagopa.pu.bff.dto.generated.OrganizationOperator;
 import it.gov.pagopa.pu.bff.dto.generated.PagedOrganizationOperator;
 import it.gov.pagopa.pu.bff.util.TestUtils;
+import it.gov.pagopa.pu.organization.dto.generated.Organization;
+import it.gov.pagopa.pu.organization.dto.generated.OrganizationStatus;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
@@ -32,8 +34,10 @@ class PagedOrganizationOperatorMapperTest {
     Map<String,OperatorDTO> operatorMap = operatorsPage.getContent().stream().collect(Collectors.toMap(OperatorDTO::getMappedExternalUserId, Function.identity()));
     Map<String, Long> operatorDptoCount = operatorsPage.getContent().stream().collect(Collectors.toMap(OperatorDTO::getMappedExternalUserId, o -> new Random().nextLong(101)));
 
+    Organization org = Organization.builder().organizationId(1L).ipaCode("IPA").orgFiscalCode("FISCAL").orgName("TEST").status(OrganizationStatus.ACTIVE).orgTypeCode("orgType").flagNotifyIo(false).flagTreasury(false).flagNotifyOutcomePush(false).pdndEnabled(false).flagPaymentNotification(false).build();
+
     PagedOrganizationOperator result = mapper.mapToPagedOrganizationOperator(
-            operatorsPage, operatorDptoCount, null);
+            operatorsPage, operatorDptoCount, org);
 
     assertNotNull(result);
     assertEquals(operatorsPage.getPageNo(),
@@ -66,8 +70,10 @@ class PagedOrganizationOperatorMapperTest {
             OperatorDTO.class);
     operatorsPage.setContent(List.of(operator));
 
+    Organization org = Organization.builder().organizationId(1L).ipaCode("IPA").orgFiscalCode("FISCAL").orgName("TEST").status(OrganizationStatus.ACTIVE).orgTypeCode("orgType").flagNotifyIo(false).flagTreasury(false).flagNotifyOutcomePush(false).pdndEnabled(false).flagPaymentNotification(false).build();
+
     PagedOrganizationOperator result = mapper.mapToPagedOrganizationOperator(
-            operatorsPage, Collections.emptyMap(), null);
+            operatorsPage, Collections.emptyMap(), org);
 
     assertNotNull(result);
     assertEquals(operatorsPage.getPageNo(),
@@ -96,8 +102,10 @@ class PagedOrganizationOperatorMapperTest {
             OperatorDTO.class);
     operatorsPage.setContent(List.of(operator));
 
+    Organization org = Organization.builder().organizationId(1L).ipaCode("IPA").orgFiscalCode("FISCAL").orgName("TEST").status(OrganizationStatus.ACTIVE).orgTypeCode("orgType").flagNotifyIo(false).flagTreasury(false).flagNotifyOutcomePush(false).pdndEnabled(false).flagPaymentNotification(false).build();
+
     PagedOrganizationOperator result = mapper.mapToPagedOrganizationOperator(
-            operatorsPage, null, null);
+            operatorsPage, null, org);
 
     assertNotNull(result);
     assertEquals(operatorsPage.getPageNo(),

@@ -374,6 +374,7 @@ class PaymentsReportingRetrieverServiceImplTest {
     String iuf = "iuf";
     String paymentsReportingId = "PAYREP1";
 
+    String iud = "IUD123";
     String iuv = "IUV123";
     String iur = "IUR123";
     int transferIndex = 1;
@@ -450,7 +451,7 @@ class PaymentsReportingRetrieverServiceImplTest {
         .thenReturn(installmentNoPII);
 
       when(
-        receiptRetrieverServiceMock.getReceiptDetail(organizationId, receiptId, null,
+        receiptRetrieverServiceMock.getReceiptDetail(organizationId, receiptId, iud,
           loggedUser, accessToken))
         .thenReturn(receiptDetailDTO);
 

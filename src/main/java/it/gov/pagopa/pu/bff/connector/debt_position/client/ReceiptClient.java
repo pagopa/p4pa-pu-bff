@@ -41,10 +41,10 @@ public class ReceiptClient {
         PageUtils.getSortList(pageable));
   }
 
-  public ReceiptDetailDTO getReceiptDetail(Long receiptId, String operatorExternalUserId, Long organizationId, String accessToken) {
+  public ReceiptDetailDTO getReceiptDetail(Long receiptId, String operatorExternalUserId, Long organizationId, String iud, String accessToken) {
     try {
       return debtPositionApisHolder.getReceiptApi(accessToken)
-        .getReceiptDetail(receiptId, organizationId, operatorExternalUserId);
+        .getReceiptDetail(receiptId, organizationId, operatorExternalUserId, iud);
     } catch (HttpClientErrorException.NotFound e) {
       log.warn("ReceiptDetail with receiptId {} and operatorExternalUserId {} not found", receiptId, operatorExternalUserId);
       return null;

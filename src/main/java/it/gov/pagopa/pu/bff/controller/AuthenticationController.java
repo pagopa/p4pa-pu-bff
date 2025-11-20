@@ -3,12 +3,16 @@ package it.gov.pagopa.pu.bff.controller;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import it.gov.pagopa.pu.auth.dto.generated.AccessToken;
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
+import it.gov.pagopa.pu.auth.dto.generated.UserInfoLimitedScope;
 import it.gov.pagopa.pu.bff.controller.generated.AuthenticationApi;
+import it.gov.pagopa.pu.bff.dto.generated.UserInfoDTO;
+import it.gov.pagopa.pu.bff.mapper.UserInfoDTOMapper;
 import it.gov.pagopa.pu.bff.security.SecurityUtils;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -16,9 +20,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthenticationController implements AuthenticationApi {
 
   private final AuthorizationService authorizationService;
+  private final UserInfoDTOMapper userInfoDTOMapper;
 
-  public AuthenticationController(AuthorizationService authorizationService) {
+  public AuthenticationController(AuthorizationService authorizationService, UserInfoDTOMapper userInfoDTOMapper) {
     this.authorizationService = authorizationService;
+    this.userInfoDTOMapper = userInfoDTOMapper;
   }
 
   @Override
@@ -30,9 +36,15 @@ public class AuthenticationController implements AuthenticationApi {
   }
 
   @Override
-  public ResponseEntity<UserInfo> getUserInfo() {
+  public ResponseEntity<UserInfoDTO> getUserInfo() {
     log.info("User requested getUserInfo");
-    return ResponseEntity.ok(SecurityUtils.getLoggedUser());
+    UserInfo userInfo = SecurityUtils.getLoggedUser();
+
+    if (userInfo instanceof UserInfoLimitedScope) {
+      throw new AuthorizationDeniedException("Limited scope UserInfo is not allowed");
+    }
+
+    return ResponseEntity.ok(userInfoDTOMapper.mapToDTO(userInfo));
   }
 
   @Override

@@ -23,8 +23,8 @@ public class ReceiptServiceImpl implements ReceiptService {
   }
 
   @Override
-  public ReceiptDetailDTO getReceiptDetail(Long receiptId, String operatorExternalUserId, Long organizationId, String accessToken) {
-    return client.getReceiptDetail(receiptId, operatorExternalUserId, organizationId, accessToken);
+  public ReceiptDetailDTO getReceiptDetail(Long receiptId, String operatorExternalUserId, Long organizationId, String iud, String accessToken) {
+    return client.getReceiptDetail(receiptId, operatorExternalUserId, organizationId, iud, accessToken);
   }
 
   @Override

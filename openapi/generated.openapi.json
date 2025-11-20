@@ -52,6 +52,9 @@
     "name" : "Authentication",
     "description" : "the Authentication API"
   }, {
+    "name" : "Analytics",
+    "description" : "the Analytics API"
+  }, {
     "name" : "Assessments",
     "description" : "the Assessments API"
   }, {
@@ -4729,6 +4732,13 @@
             "type" : "integer",
             "format" : "int64"
           }
+        }, {
+          "name" : "iud",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
         } ],
         "responses" : {
           "200" : {
@@ -5918,6 +5928,13 @@
             "type" : "string"
           }
         }, {
+          "name" : "iud",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
           "name" : "fiscalCode",
           "in" : "query",
           "required" : false,
@@ -6481,6 +6498,13 @@
             "type" : "string"
           }
         }, {
+          "name" : "iud",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
           "name" : "page",
           "in" : "query",
           "description" : "Zero-based page index (0..N)",
@@ -6858,6 +6882,13 @@
           "schema" : {
             "type" : "integer",
             "format" : "int64"
+          }
+        }, {
+          "name" : "code",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
           }
         }, {
           "name" : "description",
@@ -8600,6 +8631,77 @@
         } ]
       }
     },
+    "/bff/generatesuperseturl" : {
+      "get" : {
+        "tags" : [ "Analytics" ],
+        "summary" : "Generate superset url",
+        "operationId" : "generateSupersetUrl",
+        "parameters" : [ {
+          "name" : "organizationId",
+          "in" : "query",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Url generated successfully",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/SupersetUrlResponseDTO"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Invalid request",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/SupersetUrlResponseDTO"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Authentication failed",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/SupersetUrlResponseDTO"
+                }
+              }
+            }
+          },
+          "429" : {
+            "description" : "Too many requests",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/SupersetUrlResponseDTO"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal Server Error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/SupersetUrlResponseDTO"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "BearerAuth" : [ ]
+        } ]
+      }
+    },
     "/bff/debt-position-types/{id}" : {
       "get" : {
         "tags" : [ "DebtPositionTypes" ],
@@ -8866,7 +8968,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/UserInfo"
+                  "$ref" : "#/components/schemas/UserInfoDTO"
                 }
               }
             }
@@ -8876,7 +8978,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/UserInfo"
+                  "$ref" : "#/components/schemas/UserInfoDTO"
                 }
               }
             }
@@ -8886,7 +8988,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/UserInfo"
+                  "$ref" : "#/components/schemas/UserInfoDTO"
                 }
               }
             }
@@ -8896,7 +8998,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/UserInfo"
+                  "$ref" : "#/components/schemas/UserInfoDTO"
                 }
               }
             }
@@ -9118,6 +9220,9 @@
           "description" : {
             "type" : "string",
             "description" : "Description of the error"
+          },
+          "traceId" : {
+            "type" : "string"
           }
         },
         "required" : [ "description", "title" ]
@@ -9448,9 +9553,6 @@
           },
           "amountFieldName" : {
             "type" : "string"
-          },
-          "hasAmountInForm" : {
-            "type" : "boolean"
           }
         }
       },
@@ -10507,19 +10609,22 @@
       "ClassificationsExportFileFilter" : {
         "type" : "object",
         "properties" : {
-          "iuf" : {
-            "type" : "string"
-          },
-          "iud" : {
-            "type" : "string"
-          },
-          "iuv" : {
+          "iufs" : {
             "type" : "array",
             "items" : {
               "type" : "string"
             }
           },
-          "iur" : {
+          "iud" : {
+            "type" : "string"
+          },
+          "iuvs" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "iurs" : {
             "type" : "array",
             "items" : {
               "type" : "string"
@@ -11819,6 +11924,9 @@
             "type" : "string",
             "format" : "byte"
           },
+          "iud" : {
+            "type" : "string"
+          },
           "_links" : {
             "type" : "object",
             "additionalProperties" : {
@@ -11826,7 +11934,7 @@
             }
           }
         },
-        "required" : [ "debtPositionTypeOrgDescription", "debtorFiscalCodeHash", "installmentId", "paymentAmountCents", "receiptOrigin" ]
+        "required" : [ "debtPositionTypeOrgDescription", "debtorFiscalCodeHash", "installmentId", "iud", "paymentAmountCents", "receiptOrigin" ]
       },
       "ReceiptDetailDTO" : {
         "type" : "object",
@@ -11836,6 +11944,9 @@
             "format" : "int64"
           },
           "iuv" : {
+            "type" : "string"
+          },
+          "nav" : {
             "type" : "string"
           },
           "paymentAmountCents" : {
@@ -12076,6 +12187,9 @@
             "type" : "string"
           },
           "receiptId" : {
+            "type" : "string"
+          },
+          "iud" : {
             "type" : "string"
           },
           "_links" : {
@@ -12709,6 +12823,9 @@
             "format" : "int64"
           },
           "iuv" : {
+            "type" : "string"
+          },
+          "iud" : {
             "type" : "string"
           },
           "status" : {
@@ -14547,6 +14664,15 @@
         },
         "required" : [ "assessmentRegistryId", "debtPositionTypeOrgCode", "debtPositionTypeOrgDescription", "operatingYear", "organizationId", "sectionCode", "status" ]
       },
+      "SupersetUrlResponseDTO" : {
+        "type" : "object",
+        "description" : "pre-authorized URL to Superset",
+        "properties" : {
+          "authorizedUrl" : {
+            "type" : "string"
+          }
+        }
+      },
       "ServiceStatus" : {
         "type" : "object",
         "properties" : {
@@ -14667,7 +14793,7 @@
         },
         "required" : [ "brokerFiscalCode", "brokerId", "canManageUsers", "footerAccessibilityUrl", "footerDescText", "footerGDPRUrl", "footerPrivacyInfoUrl", "footerTermsCondUrl", "headerAssistanceUrl", "logoFooterImg" ]
       },
-      "UserInfo" : {
+      "UserInfoDTO" : {
         "type" : "object",
         "properties" : {
           "userId" : {
@@ -14709,6 +14835,12 @@
           },
           "systemUser" : {
             "type" : "boolean"
+          },
+          "traceId" : {
+            "type" : "string"
+          },
+          "_type" : {
+            "type" : "string"
           }
         },
         "required" : [ "canManageUsers", "familyName", "fiscalCode", "issuer", "mappedExternalUserId", "name", "organizations", "userId" ]

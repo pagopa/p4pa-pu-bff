@@ -28,14 +28,14 @@ public class InstallmentController implements InstallmentsApi {
   }
 
   @Override
-  public ResponseEntity<PagedInstallmentView> getInstallments(Long organizationId, OffsetDateTime dueDateTimeFrom, OffsetDateTime dueDateTimeTo, String iuv, String fiscalCode, List<DebtPositionOrigin> debtPositionOrigins, Long debtPositionTypeOrgId, Pageable pageable) {
+  public ResponseEntity<PagedInstallmentView> getInstallments(Long organizationId, OffsetDateTime dueDateTimeFrom, OffsetDateTime dueDateTimeTo, String iuv, String iud, String fiscalCode, List<DebtPositionOrigin> debtPositionOrigins, Long debtPositionTypeOrgId, Pageable pageable) {
     log.info("User requested getInstallments having organizationId {}, dueDateTimeFrom {} and dueDateTimeTo {}", organizationId, dueDateTimeFrom, dueDateTimeTo);
     UserInfo userInfo = SecurityUtils.getLoggedUser();
     LocalDateIntervalFilter dueDateFilter = new LocalDateIntervalFilter(DateUtils.fromOffsetDateTimeToLocalDate(dueDateTimeFrom), DateUtils.fromOffsetDateTimeToLocalDate(dueDateTimeTo));
 
     return ResponseEntity.ok(installmentRetrieverService.getInstallments(
       new InstallmentViewFiltersDTO(
-        organizationId, userInfo.getMappedExternalUserId(), dueDateFilter, iuv, fiscalCode, debtPositionOrigins, debtPositionTypeOrgId), pageable, userInfo, SecurityUtils.getAccessToken()));
+        organizationId, userInfo.getMappedExternalUserId(), dueDateFilter, iuv, iud, fiscalCode, debtPositionOrigins, debtPositionTypeOrgId), pageable, userInfo, SecurityUtils.getAccessToken()));
   }
 
   @Override

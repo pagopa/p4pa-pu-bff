@@ -97,10 +97,8 @@ public class PaymentsReportingRetrieverServiceImpl implements
       organizationId, paymentsReporting.getIuv(), paymentsReporting.getIur(),
       String.valueOf(paymentsReporting.getTransferIndex()), loggedUser, null,
       accessToken);
-    ReceiptDetailDTO receiptDetailDTO = installment != null ?
-      receiptRetrieverService.getReceiptDetail(organizationId,
-        installment.getReceiptId(), loggedUser, accessToken)
-      : null;
+    ReceiptDetailDTO receiptDetailDTO =
+      installment != null ? receiptRetrieverService.getReceiptDetail(organizationId, installment.getReceiptId(), installment.getIud(), loggedUser, accessToken) : null;
 
     return paymentsReportingMapper.mapToPaymentsReportingDetailDTO(
       paymentsReporting, receiptDetailDTO);

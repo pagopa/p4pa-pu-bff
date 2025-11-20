@@ -1,5 +1,11 @@
 package it.gov.pagopa.pu.bff.service;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.connector.debt_position.InstallmentService;
 import it.gov.pagopa.pu.bff.dto.InstallmentViewFiltersDTO;
@@ -7,7 +13,13 @@ import it.gov.pagopa.pu.bff.dto.LocalDateIntervalFilter;
 import it.gov.pagopa.pu.bff.dto.generated.PagedInstallmentView;
 import it.gov.pagopa.pu.bff.mapper.InstallmentViewMapper;
 import it.gov.pagopa.pu.bff.service.installment.InstallmentRetrieverServiceImpl;
-import it.gov.pagopa.pu.debtpositions.dto.generated.*;
+import it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentDetailDTO;
+import it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentNoPII;
+import it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentStatus;
+import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelInstallmentView;
+import it.gov.pagopa.pu.debtpositions.dto.generated.PersonDTO;
+import java.time.LocalDate;
+import java.time.OffsetDateTime;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,12 +32,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.authorization.AuthorizationDeniedException;
-
-import java.time.LocalDate;
-import java.time.OffsetDateTime;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 @ExtendWith(MockitoExtension.class)
 class InstallmentRetrieverServiceImplTest {
@@ -165,6 +171,14 @@ class InstallmentRetrieverServiceImplTest {
     InstallmentViewFiltersDTO filtersDTO = new InstallmentViewFiltersDTO();
     filtersDTO.setOrganizationId(1L);
     filtersDTO.setIuv("IUV123");
+    testSingleInstallmentFilterSuccess(filtersDTO);
+  }
+
+  @Test
+  void givenIudOnlyWhenGetInstallmentsThenOk() {
+    InstallmentViewFiltersDTO filtersDTO = new InstallmentViewFiltersDTO();
+    filtersDTO.setOrganizationId(1L);
+    filtersDTO.setIud("IUD123");
     testSingleInstallmentFilterSuccess(filtersDTO);
   }
 

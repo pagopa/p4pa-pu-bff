@@ -276,25 +276,26 @@ class ReceiptRetrieverServiceImplTest {
 
     Long organizationId = 1L;
     Long receiptId = 2L;
+    String iud = "iud";
     it.gov.pagopa.pu.debtpositions.dto.generated.ReceiptDetailDTO receiptDetailDTO = new it.gov.pagopa.pu.debtpositions.dto.generated.ReceiptDetailDTO();
     ReceiptDetailDTO expectedResult = new ReceiptDetailDTO();
 
     try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
       authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)).thenAnswer(a -> null);
 
-      Mockito.when(receiptServiceMock.getReceiptDetail(receiptId, loggedUser.getMappedExternalUserId(), organizationId, accessToken))
+      Mockito.when(receiptServiceMock.getReceiptDetail(receiptId, loggedUser.getMappedExternalUserId(), organizationId, iud, accessToken))
         .thenReturn(receiptDetailDTO);
       Mockito.when(receiptDetailDTOMapperMock.mapToReceiptDetailDTO(receiptDetailDTO))
         .thenReturn(expectedResult);
 
-      ReceiptDetailDTO result = receiptViewService.getReceiptDetail(organizationId, receiptId, loggedUser, accessToken);
+      ReceiptDetailDTO result = receiptViewService.getReceiptDetail(organizationId, receiptId, iud, loggedUser, accessToken);
 
       assertNotNull(result);
       assertSame(expectedResult, result);
 
       authorizationServiceMockedStatic.verify(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser));
       Mockito.verify(receiptServiceMock).getReceiptDetail(receiptId,
-        loggedUser.getMappedExternalUserId(), organizationId, accessToken);
+        loggedUser.getMappedExternalUserId(), organizationId, iud, accessToken);
       Mockito.verify(receiptDetailDTOMapperMock).mapToReceiptDetailDTO(receiptDetailDTO);
     }
   }
@@ -306,13 +307,14 @@ class ReceiptRetrieverServiceImplTest {
 
     Long organizationId = 1L;
     Long receiptId = 2L;
+    String iud = "iud";
 
     try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
       authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser))
         .thenThrow(new AuthorizationDeniedException("Access denied"));
 
       Assertions.assertThrows(AuthorizationDeniedException.class, () ->
-        receiptViewService.getReceiptDetail(organizationId, receiptId, loggedUser, accessToken));
+        receiptViewService.getReceiptDetail(organizationId, receiptId, iud, loggedUser, accessToken));
 
       authorizationServiceMockedStatic.verify(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser));
       Mockito.verifyNoInteractions(receiptServiceMock, receiptDetailDTOMapperMock);

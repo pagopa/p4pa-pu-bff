@@ -10,6 +10,6 @@ import org.springframework.data.domain.Pageable;
 public interface ReceiptRetrieverService {
 
   PagedReceiptView getReceipts(ReceiptViewFiltersDTO receiptViewFiltersDTO, Pageable pageable, UserInfo loggedUser, String accessToken);
-  ReceiptDetailDTO getReceiptDetail(Long organizationId, Long receiptId, UserInfo loggedUser, String accessToken);
+  ReceiptDetailDTO getReceiptDetail(Long organizationId, Long receiptId, String iud, UserInfo loggedUser, String accessToken);
   FileResourceDTO getReceiptPdf(Long receiptId, Long organizationId, UserInfo loggedUser, String accessToken);
 }

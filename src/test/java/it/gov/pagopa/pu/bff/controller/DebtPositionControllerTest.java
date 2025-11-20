@@ -1,5 +1,9 @@
 package it.gov.pagopa.pu.bff.controller;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.dto.FileResourceDTO;
 import it.gov.pagopa.pu.bff.dto.generated.DebtPositionDetailDTO;
@@ -11,6 +15,7 @@ import it.gov.pagopa.pu.bff.util.TestUtils;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionDTO;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionStatus;
 import it.gov.pagopa.pu.debtpositions.dto.generated.ManageDebtPositionDTO;
+import java.time.OffsetDateTime;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,10 +31,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import uk.co.jemos.podam.api.PodamFactory;
-
-import java.time.OffsetDateTime;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
 class DebtPositionControllerTest {
@@ -90,6 +91,7 @@ class DebtPositionControllerTest {
     Long debtPositionTypeOrgId = 2L;
     DebtPositionStatus status = DebtPositionStatus.REPORTED;
     String iuv = "IUV123";
+    String iud = "IUD123";
 
     PagedDebtPositionView expectedResult = podamFactory.manufacturePojo(PagedDebtPositionView.class);
 
@@ -102,6 +104,7 @@ class DebtPositionControllerTest {
             && f.getDebtPositionTypeOrgId().equals(debtPositionTypeOrgId)
             && f.getStatus().equals(status)
             && f.getIuv().equals(iuv)
+            && f.getIud().equals(iud)
         ),
         Mockito.argThat(p -> p.getPageNumber() == 0 && p.getPageSize() == 10 && p.getSort().isUnsorted()),
         Mockito.same(loggedUser), Mockito.same(accessToken)))
@@ -115,6 +118,7 @@ class DebtPositionControllerTest {
       debtPositionTypeOrgId,
       status,
       iuv,
+      iud,
       PageRequest.of(0, 10));
 
     Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());

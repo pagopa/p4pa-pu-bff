@@ -66,7 +66,7 @@ class InstallmentClientTest {
     LocalDateIntervalFilter dueDateFilter = new LocalDateIntervalFilter(dueDateFrom, dueDateTo);
 
     InstallmentViewFiltersDTO filtersDTO = new InstallmentViewFiltersDTO(
-      1L, "operatorExternalUserId", dueDateFilter, "iuv", "fiscalCode", Collections.emptyList(), 2L);
+      1L, "operatorExternalUserId", dueDateFilter, "iuv", "iud", "fiscalCode", Collections.emptyList(), 2L);
     Pageable pageable = PageRequest.of(0, 10, Sort.unsorted());
 
     when(debtPositionApisHolderMock.getInstallmentViewSearchControllerApi(accessToken))
@@ -78,6 +78,7 @@ class InstallmentClientTest {
       filtersDTO.getDueDate().getFrom(),
       filtersDTO.getDueDate().getTo(),
       filtersDTO.getIuv(),
+      filtersDTO.getIud(),
       filtersDTO.getFiscalCode(),
       filtersDTO.getDebtPositionOrigins(),
       filtersDTO.getDebtPositionTypeOrgId(),

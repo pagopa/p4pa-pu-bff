@@ -2,6 +2,9 @@ package it.gov.pagopa.pu.bff.controller;
 
 import it.gov.pagopa.pu.auth.dto.generated.AccessToken;
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
+import it.gov.pagopa.pu.auth.dto.generated.UserInfoLimitedScope;
+import it.gov.pagopa.pu.bff.dto.generated.UserInfoDTO;
+import it.gov.pagopa.pu.bff.mapper.UserInfoDTOMapper;
 import it.gov.pagopa.pu.bff.security.SecurityUtilsTest;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
 import it.gov.pagopa.pu.bff.util.TestUtils;
@@ -15,9 +18,9 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authorization.AuthorizationDeniedException;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
@@ -26,6 +29,8 @@ class AuthenticationControllerTest {
 
   @Mock
   private AuthorizationService authorizationServiceMock;
+  @Mock
+  private UserInfoDTOMapper userInfoDTOMapperMock;
 
   @InjectMocks
   private AuthenticationController authenticationController;
@@ -47,7 +52,8 @@ class AuthenticationControllerTest {
   @AfterEach
   void verifyNoMoreInteractions(){
     Mockito.verifyNoMoreInteractions(
-      authorizationServiceMock
+      authorizationServiceMock,
+      userInfoDTOMapperMock
     );
   }
 
@@ -70,10 +76,20 @@ class AuthenticationControllerTest {
 
   @Test
   void testGetUserInfo() {
-    ResponseEntity<UserInfo> response = authenticationController.getUserInfo();
+    Mockito.when(userInfoDTOMapperMock.mapToDTO(loggedUser)).thenReturn(UserInfoDTO.builder().userId("test").build());
+
+    ResponseEntity<UserInfoDTO> response = authenticationController.getUserInfo();
 
     assertEquals(HttpStatus.OK, response.getStatusCode());
-    assertSame(loggedUser,response.getBody());
+    assertNotNull(response.getBody());
+    assertEquals("test", response.getBody().getUserId());
+  }
+
+  @Test
+  void testGetUserInfoLimited() {
+    SecurityUtilsTest.configureSecurityContext(accessToken, TestUtils.getPodamFactory().manufacturePojo(UserInfoLimitedScope.class));
+
+    assertThrows(AuthorizationDeniedException.class, () -> authenticationController.getUserInfo());
   }
 
   @Test

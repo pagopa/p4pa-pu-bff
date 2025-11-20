@@ -1,5 +1,7 @@
 package it.gov.pagopa.pu.bff.connector.debt_position.client;
 
+import static org.mockito.Mockito.when;
+
 import it.gov.pagopa.pu.bff.connector.debt_position.config.DebtPositionApisHolder;
 import it.gov.pagopa.pu.bff.dto.DebtPositionViewFiltersDTO;
 import it.gov.pagopa.pu.bff.exception.ConflictException;
@@ -11,6 +13,8 @@ import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionDTO;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionOrigin;
 import it.gov.pagopa.pu.debtpositions.dto.generated.ManageDebtPositionDTO;
 import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelDebtPositionView;
+import java.util.Collections;
+import java.util.List;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -24,11 +28,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpClientErrorException;
 import uk.co.jemos.podam.api.PodamFactory;
-
-import java.util.Collections;
-import java.util.List;
-
-import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class DebtPositionClientTest {
@@ -96,6 +95,7 @@ class DebtPositionClientTest {
       filtersDTO.getDebtPositionTypeOrgId(),
       filtersDTO.getStatus(),
       filtersDTO.getIuv(),
+      filtersDTO.getIud(),
       1,
       10,
       Collections.emptyList()

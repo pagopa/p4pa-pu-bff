@@ -23,8 +23,6 @@ import org.springframework.context.annotation.Configuration;
 public class CacheConfig {
 
     @NestedConfigurationProperty
-    private CacheConfigurationProperties organization;
-    @NestedConfigurationProperty
     private CacheConfigurationProperties taxonomy;
     @NestedConfigurationProperty
     private CacheConfigurationProperties broker;
@@ -44,10 +42,10 @@ public class CacheConfig {
     @Bean
     public CacheManager localCacheManager() {
         CaffeineCacheManager cacheManager = new CaffeineCacheManager();
-        cacheManager.registerCustomCache(Fields.organization, buildCache(organization));
         cacheManager.registerCustomCache(Fields.taxonomy, buildCache(taxonomy));
         cacheManager.registerCustomCache(Fields.broker, buildCache(broker));
         cacheManager.registerCustomCache(Fields.debtPositionTypeOrg, buildCache(debtPositionTypeOrg));
+        cacheManager.registerCustomCache(Fields.debtPositionType, buildCache(debtPositionType));
         return cacheManager;
     }
 

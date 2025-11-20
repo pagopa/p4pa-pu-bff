@@ -1,4 +1,6 @@
 import java.util.*
+import com.github.jk1.license.render.*
+import com.github.jk1.license.filter.*
 
 plugins {
   java
@@ -10,6 +12,7 @@ plugins {
   id("org.openapi.generator") version "7.15.0"
   id("org.ajoberstar.grgit") version "5.3.2"
   id("com.gorylenko.gradle-git-properties") version "2.5.3"
+  id("com.github.jk1.dependency-license-report") version "3.0.1"
 }
 
 group = "it.gov.pagopa.payhub"
@@ -26,6 +29,18 @@ configurations {
   compileOnly {
     extendsFrom(configurations.annotationProcessor.get())
   }
+  compileClasspath {
+    resolutionStrategy.activateDependencyLocking()
+  }
+}
+
+licenseReport {
+  renderers = arrayOf(XmlReportRenderer("third-party-libs.xml", "Back-End Libraries"))
+  outputDir = "$projectDir/dependency-licenses"
+  filters = arrayOf(SpdxLicenseBundleNormalizer())
+}
+tasks.classes {
+  finalizedBy(tasks.generateLicenseReport)
 }
 
 repositories {
@@ -39,6 +54,7 @@ val micrometerVersion = "1.5.4"
 val caffeineVersion = "3.2.2"
 val httpClientVersion = "5.5"
 val mapStructVersion = "1.6.3"
+val commonsLang3Version = "3.19.0"
 
 val wiremockVersion = "3.13.1"
 val wiremockSpringBootVersion = "3.10.6"
@@ -52,7 +68,10 @@ dependencies {
   implementation("org.springframework.boot:spring-boot-starter-security")
   implementation("io.micrometer:micrometer-tracing-bridge-otel:$micrometerVersion")
   implementation("io.micrometer:micrometer-registry-prometheus")
-  implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:$springDocOpenApiVersion")
+  implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:$springDocOpenApiVersion") {
+    exclude(group = "org.apache.commons", module = "commons-lang3")
+  }
+  implementation("org.apache.commons:commons-lang3:${commonsLang3Version}")
   implementation("org.codehaus.janino:janino:$janinoVersion")
   implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
   implementation("org.openapitools:jackson-databind-nullable:$openApiToolsVersion")
@@ -111,12 +130,6 @@ tasks {
     filesMatching("**/application.yml") {
       expand(projectInfo)
     }
-  }
-}
-
-configurations {
-  compileClasspath {
-    resolutionStrategy.activateDependencyLocking()
   }
 }
 
@@ -194,6 +207,7 @@ tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>("ope
     "PaymentsReporting" to "it.gov.pagopa.pu.classification.dto.generated.PaymentsReporting",
     "Transfer" to "it.gov.pagopa.pu.debtpositions.dto.generated.Transfer",
     "UserInfo" to "it.gov.pagopa.pu.auth.dto.generated.UserInfo",
+    "UserOrganizationRoles" to "it.gov.pagopa.pu.auth.dto.generated.UserOrganizationRoles",
     "DebtPositionTypeResponseBody" to "it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionType",
     "ClassificationsEnum" to "it.gov.pagopa.pu.classification.dto.generated.ClassificationsEnum",
     "DebtPositionOrigin" to "it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionOrigin",

@@ -185,7 +185,7 @@ paths:
           content:
             application/json:
               schema:
-                type: 'UserInfo'
+                $ref: '#/components/schemas/UserInfoDTO'
         '403':
           description: Forbidden
         '429':
@@ -200,6 +200,34 @@ paths:
       responses:
         '200':
           description: OK
+  /generatesuperseturl:
+    get:
+      tags:
+        - Analytics
+      summary: "Generate superset url"
+      operationId: generateSupersetUrl
+      parameters:
+        - name: organizationId
+          in: query
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Url generated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SupersetUrlResponseDTO'
+        '400':
+          description: Invalid request
+        '401':
+          description: Authentication failed
+        '429':
+          description: Too many requests
+        '500':
+          description: Internal Server Error
   /core-health:
     get:
       tags:
@@ -585,6 +613,11 @@ paths:
           schema:
             type: integer
             format: int64
+        - name: code
+          in: query
+          required: false
+          schema:
+            type: string
         - name: description
           in: query
           required: false
@@ -891,6 +924,10 @@ paths:
             type: string
             format: date-time
         - name: iuv
+          in: query
+          schema:
+            type: string
+        - name: iud
           in: query
           schema:
             type: string
@@ -1430,6 +1467,11 @@ paths:
             type: integer
             format: int64
           description: The unique identifier of the receipt
+        - name: iud
+          in: query
+          required: false
+          schema:
+            type: string
       responses:
         '200':
           description: OK
@@ -1670,6 +1712,10 @@ paths:
           schema:
             type: 'DebtPositionStatus'
         - name: iuv
+          in: query
+          schema:
+            type: string
+        - name: iud
           in: query
           schema:
             type: string
@@ -4122,6 +4168,8 @@ components:
         description:
           type: string
           description: Description of the error
+        traceId:
+          type: string
     PagedDebtPositionTypeOrgWithCount:
       type: object
       required:
@@ -4364,6 +4412,8 @@ components:
           type: integer
           format: int64
         iuv:
+          type: string
+        nav:
           type: string
         paymentAmountCents:
           type: integer
@@ -5535,3 +5585,54 @@ components:
         - code
         - organizationId
         - structure
+    SupersetUrlResponseDTO:
+      type: object
+      description:  pre-authorized URL to Superset
+      properties:
+        authorizedUrl:
+          type: string
+          format: url
+    UserInfoDTO:
+      type: object
+      required:
+        - userId
+        - mappedExternalUserId
+        - fiscalCode
+        - familyName
+        - name
+        - email
+        - issuer
+        - organizations
+        - canManageUsers
+      properties:
+        userId:
+          type: string
+        mappedExternalUserId:
+          type: string
+        fiscalCode:
+          type: string
+        familyName:
+          type: string
+        name:
+          type: string
+        issuer:
+          type: string
+        organizationAccess:
+          type: string
+        organizations:
+          type: array
+          items:
+            type: 'UserOrganizationRoles'
+        brokerId:
+          type: integer
+          format: int64
+        brokerFiscalCode:
+          type: string
+        canManageUsers:
+          type: boolean
+        systemUser:
+          type: boolean
+        traceId:
+          type: string
+        _type:
+          type: string

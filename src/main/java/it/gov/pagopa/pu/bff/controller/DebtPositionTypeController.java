@@ -39,10 +39,10 @@ public class DebtPositionTypeController implements DebtPositionTypesApi {
 
   @Override
   public ResponseEntity<PagedDebtPositionTypeWithCount> getDebtPositionTypeWithCount(
-    Long organizationId, String description, Pageable pageable) {
+    Long organizationId, String code, String description, Pageable pageable) {
     log.info("User requested getDebtPositionTypeWithCount having organizationId {}", organizationId);
     return ResponseEntity.ok(debtPositionTypeRetrieverService.getDebtPositionTypeWithCount(
-      organizationId, description, pageable, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken()));
+      organizationId, code, description, pageable, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken()));
   }
 
   @Override

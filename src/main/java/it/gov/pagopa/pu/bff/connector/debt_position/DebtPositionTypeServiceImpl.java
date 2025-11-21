@@ -31,8 +31,8 @@ public class DebtPositionTypeServiceImpl implements DebtPositionTypeService {
   }
 
   @Override
-  public PagedModelDebtPositionTypeWithCount getDebtPositionTypeWithCount(Long brokerId, String description, Pageable pageable, String accessToken) {
-    return client.getDebtPositionTypeWithCount(brokerId, description, pageable, accessToken);
+  public PagedModelDebtPositionTypeWithCount getDebtPositionTypeWithCount(Long brokerId, String code, String description, Pageable pageable, String accessToken) {
+    return client.getDebtPositionTypeWithCount(brokerId, code, description, pageable, accessToken);
   }
 
   @Override

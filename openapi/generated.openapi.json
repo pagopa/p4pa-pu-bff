@@ -12595,6 +12595,9 @@
           "debtPositionTypeOrgCount" : {
             "type" : "integer",
             "format" : "int64"
+          },
+          "orgName" : {
+            "type" : "string"
           }
         },
         "required" : [ "debtPositionTypeOrgCount", "mappedExternalUserId" ]

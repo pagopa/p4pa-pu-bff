@@ -4693,6 +4693,8 @@ components:
         debtPositionTypeOrgCount:
           type: integer
           format: int64
+        orgName:
+          type: string
     PagedOrganizationWithDebtPositionTypeOrgCount:
       type: object
       required:

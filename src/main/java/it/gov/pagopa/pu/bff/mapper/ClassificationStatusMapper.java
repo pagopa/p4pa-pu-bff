@@ -19,12 +19,7 @@ public final class ClassificationStatusMapper {
 
       case RT_NO_IUF, RT_NO_IUD -> ClassificationStatus.WARNING;
 
-      case IUF_NO_TES -> {
-        if (receiptPaymentRequestId == null) {
-          yield ClassificationStatus.ERROR;
-        }
-        yield ClassificationStatus.WARNING;
-      }
+      case IUF_NO_TES -> receiptPaymentRequestId == null ? ClassificationStatus.ERROR : ClassificationStatus.WARNING;
 
       case DOPPI, IUV_NO_RT, TES_NO_IUF_OR_IUV, IUF_TES_DIV_IMP, IUD_NO_RT, TES_NO_MATCH, UNKNOWN -> ClassificationStatus.ERROR;
     };

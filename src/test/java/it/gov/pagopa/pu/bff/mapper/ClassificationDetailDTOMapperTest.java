@@ -15,9 +15,7 @@ import static it.gov.pagopa.pu.classification.dto.generated.ClassificationsEnum.
 import static it.gov.pagopa.pu.classification.dto.generated.ClassificationsEnum.TES_NO_IUF_OR_IUV;
 import static it.gov.pagopa.pu.classification.dto.generated.ClassificationsEnum.TES_NO_MATCH;
 import static it.gov.pagopa.pu.classification.dto.generated.ClassificationsEnum.UNKNOWN;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 import it.gov.pagopa.pu.bff.dto.ClassificationDetailDTO;
 import it.gov.pagopa.pu.bff.enums.ClassificationStatus;
@@ -40,9 +38,10 @@ class ClassificationDetailDTOMapperTest {
 
   @ParameterizedTest()
   @MethodSource("mapValueSource")
-  void givenPopulatedClassificationDetailViewDTOWhenMapThenCorrectMapping(ClassificationsEnum label, boolean payed, boolean reported, boolean collected, ClassificationStatus status) {
+  void givenPopulatedClassificationDetailViewDTOWhenMapThenCorrectMapping(ClassificationsEnum label, String receiptPaymentRequestId, boolean payed, boolean reported, boolean collected, ClassificationStatus status) {
     ClassificationDetailViewDTO classificationDetailViewDTO = podamFactory.manufacturePojo(ClassificationDetailViewDTO.class);
     classificationDetailViewDTO.setLabel(label);
+    classificationDetailViewDTO.setReceiptPaymentRequestId(receiptPaymentRequestId);
 
     Organization organization = new Organization();
     organization.setFlagPaymentNotification(true);
@@ -75,21 +74,22 @@ class ClassificationDetailDTOMapperTest {
 
   static Stream<Arguments> mapValueSource() {
     return Stream.of(
-      Arguments.of(DOPPI, true, true, true, ClassificationStatus.ERROR),
-      Arguments.of(RT_NO_IUF, true, false, false, ClassificationStatus.WARNING),
-      Arguments.of(RT_NO_IUD, true, false, false, ClassificationStatus.WARNING),
-      Arguments.of(IUV_NO_RT, false, true, false, ClassificationStatus.ERROR),
-      Arguments.of(TES_NO_IUF_OR_IUV, false, false, true, ClassificationStatus.ERROR),
-      Arguments.of(IUF_NO_TES, true, true, false, ClassificationStatus.WARNING),
-      Arguments.of(IUD_RT_IUF, true, true, true, ClassificationStatus.INFO),
-      Arguments.of(RT_IUF, true, true, false, ClassificationStatus.INFO),
-      Arguments.of(RT_TES, true, true, true, ClassificationStatus.INFO),
-      Arguments.of(IUD_RT_IUF_TES, true, true, true, ClassificationStatus.INFO),
-      Arguments.of(RT_IUF_TES, true, true, true, ClassificationStatus.INFO),
-      Arguments.of(IUF_TES_DIV_IMP, true, true, true, ClassificationStatus.ERROR),
-      Arguments.of(IUD_NO_RT, true, false, false, ClassificationStatus.ERROR),
-      Arguments.of(TES_NO_MATCH, false, false, true, ClassificationStatus.ERROR),
-      Arguments.of(UNKNOWN, false, false, false, ClassificationStatus.ERROR)
+      Arguments.of(DOPPI, null, true, true, true, ClassificationStatus.ERROR),
+      Arguments.of(RT_NO_IUF, null, true, false, false, ClassificationStatus.WARNING),
+      Arguments.of(RT_NO_IUD, null, true, false, false, ClassificationStatus.WARNING),
+      Arguments.of(IUV_NO_RT, null, false, true, false, ClassificationStatus.ERROR),
+      Arguments.of(TES_NO_IUF_OR_IUV, null, false, false, true, ClassificationStatus.ERROR),
+      Arguments.of(IUF_NO_TES, null, false, true, false, ClassificationStatus.ERROR),
+      Arguments.of(IUF_NO_TES, "receiptId", true, true, false, ClassificationStatus.WARNING),
+      Arguments.of(IUD_RT_IUF, null, true, true, true, ClassificationStatus.INFO),
+      Arguments.of(RT_IUF, null, true, true, false, ClassificationStatus.INFO),
+      Arguments.of(RT_TES, null, true, true, true, ClassificationStatus.INFO),
+      Arguments.of(IUD_RT_IUF_TES, null, true, true, true, ClassificationStatus.INFO),
+      Arguments.of(RT_IUF_TES, null, true, true, true, ClassificationStatus.INFO),
+      Arguments.of(IUF_TES_DIV_IMP, null, true, true, true, ClassificationStatus.ERROR),
+      Arguments.of(IUD_NO_RT, null, true, false, false, ClassificationStatus.ERROR),
+      Arguments.of(TES_NO_MATCH, null, false, false, true, ClassificationStatus.ERROR),
+      Arguments.of(UNKNOWN, null, false, false, false, ClassificationStatus.ERROR)
     );
   }
 }

@@ -1,10 +1,5 @@
 package it.gov.pagopa.pu.bff.connector.debt_position;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.when;
-
 import it.gov.pagopa.pu.bff.connector.debt_position.client.TransferClient;
 import it.gov.pagopa.pu.bff.connector.debt_position.client.TransferSearchClient;
 import it.gov.pagopa.pu.debtpositions.dto.generated.CollectionModelTransfer;
@@ -14,6 +9,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class TransferServiceImplTest {
@@ -49,9 +48,11 @@ class TransferServiceImplTest {
   void whenValidateTaxonomyCategoryThenInvokeClient() {
     String accessToken = "ACCESSTOKEN";
     String category = "001122233";
+    String orgFiscalCode = "orgFiscalCode";
 
-    doNothing().when(clientMock).validateTaxonomyCategory(Mockito.same(category), Mockito.same(accessToken));
+    when(clientMock.validateTaxonomyCategory(Mockito.same(category), Mockito.same(orgFiscalCode), Mockito.same(accessToken)))
+      .thenReturn(true);
 
-    assertDoesNotThrow(() -> service.validateTaxonomyCategory(category, accessToken));
+    assertTrue(() -> service.validateTaxonomyCategory(category, orgFiscalCode, accessToken));
   }
 }

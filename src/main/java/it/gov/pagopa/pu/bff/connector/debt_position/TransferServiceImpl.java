@@ -22,8 +22,8 @@ public class TransferServiceImpl implements TransferService {
   }
 
   @Override
-  public void validateTaxonomyCategory(String taxonomyCategory, String accessToken) {
-    client.validateTaxonomyCategory(taxonomyCategory, accessToken);
+  public boolean validateTaxonomyCategory(String taxonomyCategory, String orgFiscalCode, String accessToken) {
+    return client.validateTaxonomyCategory(taxonomyCategory, orgFiscalCode, accessToken);
   }
 
 }

@@ -34,7 +34,7 @@ public class TransferRetrieverServiceImpl implements TransferRetrieverService {
   }
 
   @Override
-  public void validateTaxonomyCategory(String taxonomyCategory, String accessToken) {
-    transferService.validateTaxonomyCategory(taxonomyCategory, accessToken);
+  public boolean validateTaxonomyCategory(String taxonomyCategory, String orgFiscalCode, String accessToken) {
+    return transferService.validateTaxonomyCategory(taxonomyCategory, orgFiscalCode, accessToken);
   }
 }

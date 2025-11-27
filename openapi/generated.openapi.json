@@ -3061,6 +3061,13 @@
         "tags" : [ "Transfers" ],
         "operationId" : "validateTaxonomyCategory",
         "parameters" : [ {
+          "name" : "orgFiscalCode",
+          "in" : "query",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
           "name" : "taxonomyCategory",
           "in" : "query",
           "required" : false,
@@ -3070,13 +3077,34 @@
         } ],
         "responses" : {
           "200" : {
-            "description" : "OK"
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "boolean"
+                }
+              }
+            }
           },
           "400" : {
-            "description" : "Bad Request"
+            "description" : "Bad Request",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "boolean"
+                }
+              }
+            }
           },
           "401" : {
-            "description" : "Unauthorized - Missing or invalid token"
+            "description" : "Unauthorized - Missing or invalid token",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "boolean"
+                }
+              }
+            }
           },
           "500" : {
             "description" : "Internal Server Error",

@@ -3911,9 +3911,18 @@ paths:
           in: query
           schema:
             type: string
+        - name: orgFiscalCode
+          in: query
+          required: true
+          schema:
+            type: string
       responses:
         '200':
           description: OK
+          content:
+            application/json:
+              schema:
+                type: boolean
         '400':
           description: Bad Request
         '401':

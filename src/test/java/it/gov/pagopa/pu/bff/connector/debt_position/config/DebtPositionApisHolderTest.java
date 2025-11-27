@@ -117,9 +117,9 @@ class DebtPositionApisHolderTest extends BaseApiHolderTest {
   void whenGetTransferApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
     assertAuthenticationShouldBeSetInThreadSafeMode(
       accessToken -> debtPositionApisHolder.getTransferApi(accessToken)
-          .validateTaxonomyCategory("001122233", "orgFiscalCode"),
-      new ParameterizedTypeReference<>() {
-      }, debtPositionApisHolder::unload);
+        .validateTaxonomyCategory("001122233", "orgFiscalCode"),
+      new ParameterizedTypeReference<>() {},
+      debtPositionApisHolder::unload);
   }
 
   @Test

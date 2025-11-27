@@ -12,8 +12,8 @@ public class TransferClient {
     this.debtPositionApisHolder = debtPositionApisHolder;
   }
 
-  public void validateTaxonomyCategory(String taxonomyCategory, String accessToken) {
-    debtPositionApisHolder.getTransferApi(accessToken).validateTaxonomyCategory(taxonomyCategory);
+  public boolean validateTaxonomyCategory(String taxonomyCategory, String orgFiscalCode, String accessToken) {
+    return debtPositionApisHolder.getTransferApi(accessToken).validateTaxonomyCategory(taxonomyCategory, orgFiscalCode);
   }
 
 }

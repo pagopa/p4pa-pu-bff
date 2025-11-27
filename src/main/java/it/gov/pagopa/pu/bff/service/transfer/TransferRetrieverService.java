@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface TransferRetrieverService {
   List<Transfer> getTransfers(Long organizationId, Long installmentId, UserInfo loggedUser, String accessToken);
-  void validateTaxonomyCategory(String taxonomyCategory, String accessToken);
+  boolean validateTaxonomyCategory(String taxonomyCategory, String orgFiscalCode, String accessToken);
 }

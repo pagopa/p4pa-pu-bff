@@ -105,6 +105,7 @@ public class DebtPositionRetrieverServiceImpl implements DebtPositionRetrieverSe
     AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser);
     DebtPositionDTO debtPosition = debtPositionService.getDebtPosition(debtPositionId, accessToken);
     if (debtPosition != null) {
+      // TODO chiamare it.gov.pagopa.pu.bff.connector.debt_position.DebtPositionTypeOrgOperatorsService.findByDebtPositionTypeOrgIdAndOperatorExternalUserId se è null torno null, se diverso da null prosegui con il map
       return debtPositionMapper.mapToDebtPositionDetailDTO(
         debtPosition,
         debtPositionTypeOrgService.getDebtPositionTypeOrg(debtPosition.getDebtPositionTypeOrgId(), accessToken)

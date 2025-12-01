@@ -2,6 +2,7 @@ package it.gov.pagopa.pu.bff.service.debt_position;
 
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.connector.debt_position.DebtPositionService;
+import it.gov.pagopa.pu.bff.connector.debt_position.DebtPositionTypeOrgOperatorsService;
 import it.gov.pagopa.pu.bff.connector.debt_position.DebtPositionTypeOrgService;
 import it.gov.pagopa.pu.bff.connector.pagopapayments.PrintPaymentNoticeService;
 import it.gov.pagopa.pu.bff.dto.DebtPositionViewFiltersDTO;
@@ -31,6 +32,7 @@ public class DebtPositionRetrieverServiceImpl implements DebtPositionRetrieverSe
 
   private final DebtPositionService debtPositionService;
   private final DebtPositionTypeOrgService debtPositionTypeOrgService;
+  private final DebtPositionTypeOrgOperatorsService debtPositionTypeOrgOperatorsService;
   private final DebtPositionViewMapper debtPositionViewMapper;
   private final DebtPositionMapper debtPositionMapper;
   private final PrintPaymentNoticeService printPaymentNoticeService;
@@ -45,12 +47,14 @@ public class DebtPositionRetrieverServiceImpl implements DebtPositionRetrieverSe
 
   public DebtPositionRetrieverServiceImpl(DebtPositionService debtPositionService,
                                           DebtPositionTypeOrgService debtPositionTypeOrgService,
+                                          DebtPositionTypeOrgOperatorsService debtPositionTypeOrgOperatorsService,
                                           DebtPositionViewMapper debtPositionViewMapper,
                                           DebtPositionMapper debtPositionMapper,
                                           PrintPaymentNoticeService printPaymentNoticeService,
                                           ZipFileService zipFileService) {
     this.debtPositionService = debtPositionService;
     this.debtPositionTypeOrgService = debtPositionTypeOrgService;
+    this.debtPositionTypeOrgOperatorsService = debtPositionTypeOrgOperatorsService;
     this.debtPositionViewMapper = debtPositionViewMapper;
     this.debtPositionMapper = debtPositionMapper;
     this.printPaymentNoticeService = printPaymentNoticeService;
@@ -99,19 +103,25 @@ public class DebtPositionRetrieverServiceImpl implements DebtPositionRetrieverSe
   }
 
   @Override
-  public DebtPositionDetailDTO getDebtPositionDetail(Long debtPositionId,
-                                                     Long organizationId,
-                                                     UserInfo loggedUser, String accessToken) {
+  public DebtPositionDetailDTO getDebtPositionDetail(Long debtPositionId, Long organizationId, UserInfo loggedUser, String accessToken) {
     AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser);
+
     DebtPositionDTO debtPosition = debtPositionService.getDebtPosition(debtPositionId, accessToken);
-    if (debtPosition != null) {
-      return debtPositionMapper.mapToDebtPositionDetailDTO(
-        debtPosition,
-        debtPositionTypeOrgService.getDebtPositionTypeOrg(debtPosition.getDebtPositionTypeOrgId(), accessToken)
-      );
-    } else {
+    if (debtPosition == null) {
       return null;
     }
+    Long debtPositionTypeOrgId = debtPosition.getDebtPositionTypeOrgId();
+    String operatorExternalUserId = loggedUser.getMappedExternalUserId();
+
+    DebtPositionTypeOrgOperators operatorAuthorization =
+      debtPositionTypeOrgOperatorsService.findByDebtPositionTypeOrgIdAndOperatorExternalUserId(debtPositionTypeOrgId, operatorExternalUserId, accessToken);
+
+    if (operatorAuthorization == null) {
+      return null;
+    }
+
+    return debtPositionMapper.mapToDebtPositionDetailDTO(
+      debtPosition, debtPositionTypeOrgService.getDebtPositionTypeOrg(debtPosition.getDebtPositionTypeOrgId(), accessToken));
   }
 
   @Override

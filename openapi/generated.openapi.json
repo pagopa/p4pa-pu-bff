@@ -11229,7 +11229,7 @@
             "$ref" : "#/components/schemas/OrganizationStatus"
           },
           "additionalLanguage" : {
-            "type" : "string"
+            "$ref" : "#/components/schemas/OrganizationAdditionalLanguage"
           },
           "startDate" : {
             "type" : "string",

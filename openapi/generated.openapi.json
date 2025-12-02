@@ -9711,9 +9711,6 @@
             "type" : "string",
             "format" : "date"
           },
-          "flagIuvVolatile" : {
-            "type" : "boolean"
-          },
           "multiDebtor" : {
             "type" : "boolean"
           },

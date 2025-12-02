@@ -246,7 +246,8 @@ tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>("ope
     "Organization" to "it.gov.pagopa.pu.organization.dto.generated.OrganizationDetailDTO",
     "OrganizationStatus" to "it.gov.pagopa.pu.organization.dto.generated.OrganizationStatus",
     "SpontaneousForm" to "it.gov.pagopa.pu.debtpositions.dto.generated.SpontaneousForm",
-    "SpontaneousFormStructure" to "it.gov.pagopa.pu.debtpositions.dto.generated.SpontaneousFormStructure"
+    "SpontaneousFormStructure" to "it.gov.pagopa.pu.debtpositions.dto.generated.SpontaneousFormStructure",
+    "OrganizationAdditionalLanguage" to "it.gov.pagopa.pu.organization.dto.generated.OrganizationAdditionalLanguage"
   ))
   configOptions.set(mapOf(
     "dateLibrary" to "java8",

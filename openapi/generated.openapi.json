@@ -9259,6 +9259,10 @@
         "type" : "string",
         "enum" : [ "NOT_FOUND", "BAD_REQUEST", "GENERIC_ERROR", "FORBIDDEN", "CONFLICT" ]
       },
+      "OrganizationAdditionalLanguage" : {
+        "type" : "string",
+        "enum" : [ "EN", "FR", "DE" ]
+      },
       "OrganizationDetailDTO" : {
         "type" : "object",
         "properties" : {
@@ -9306,7 +9310,7 @@
             "$ref" : "#/components/schemas/OrganizationStatus"
           },
           "additionalLanguage" : {
-            "type" : "string"
+            "$ref" : "#/components/schemas/OrganizationAdditionalLanguage"
           },
           "startDate" : {
             "type" : "string",
@@ -11225,7 +11229,7 @@
             "$ref" : "#/components/schemas/OrganizationStatus"
           },
           "additionalLanguage" : {
-            "type" : "string"
+            "$ref" : "#/components/schemas/OrganizationAdditionalLanguage"
           },
           "startDate" : {
             "type" : "string",

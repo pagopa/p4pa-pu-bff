@@ -478,6 +478,10 @@ class ClassificationRetrieverServiceImplTest {
       assertEquals(0L, result.getNumber());
 
       authorizationServiceMockedStatic.verify(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser));
+
+      verifyNoInteractions(organizationServiceMock);
+      verifyNoInteractions(classificationServiceMock);
+      verifyNoInteractions(treasuredClassificationExtendedDTOMapperMock);
     }
   }
 

@@ -457,8 +457,6 @@ class ClassificationRetrieverServiceImplTest {
     treasuredClassificationFiltersDTO.setIuv("IUV123");
     treasuredClassificationFiltersDTO.setDebtPositionTypeOrgCodes(Collections.emptySet());
     PageRequest pageable = PageRequest.of(0, 10);
-    PagedTreasuredClassification backendPage = new PagedTreasuredClassification();
-    PagedTreasuredClassificationExtendedDTO expectedResult = new PagedTreasuredClassificationExtendedDTO();
 
     Organization organization = new Organization();
     organization.setFlagPaymentNotification(true);
@@ -470,23 +468,14 @@ class ClassificationRetrieverServiceImplTest {
       when(debtPositionTypeOrgRetrieverServiceMock.getDebtPositionTypeOrgCodes(organizationId, null, loggedUser.getMappedExternalUserId(), accessToken))
         .thenReturn(treasuredClassificationFiltersDTO.getDebtPositionTypeOrgCodes());
 
-      when(organizationServiceMock.getOrganizationByOrganizationId(organizationId, accessToken))
-        .thenReturn(organization);
-
-      when(classificationServiceMock.getTreasuredClassifications(
-        eq(organizationId),
-        any(TreasuredClassificationFiltersDTO.class),
-        eq(pageable),
-        eq(accessToken)
-      )).thenReturn(backendPage);
-
-      when(treasuredClassificationExtendedDTOMapperMock.map(backendPage, organization))
-        .thenReturn(expectedResult);
-
       PagedTreasuredClassificationExtendedDTO result = classificationRetrieverService.getTreasuredClassification(organizationId, treasuredClassificationFiltersDTO, null, pageable, loggedUser, accessToken);
 
       assertNotNull(result);
-      assertSame(expectedResult, result);
+      assertTrue(result.getContent().isEmpty());
+      assertEquals(pageable.getPageSize(), result.getSize().intValue());
+      assertEquals(0L, result.getTotalElements());
+      assertEquals(0L, result.getTotalPages());
+      assertEquals(0L, result.getNumber());
 
       authorizationServiceMockedStatic.verify(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser));
     }

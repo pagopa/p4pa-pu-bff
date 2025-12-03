@@ -59,6 +59,7 @@ class ClassificationClientTest {
       .thenReturn(classificationsApiMock);
 
     when(classificationsApiMock.getTreasuredClassifications(organizationId,
+      treasuredClassificationFiltersDTO.getDebtPositionTypeOrgCodes(),
       treasuredClassificationFiltersDTO.getLabel(),
       treasuredClassificationFiltersDTO.getIud(),
       treasuredClassificationFiltersDTO.getIuv(),
@@ -83,7 +84,6 @@ class ClassificationClientTest {
       treasuredClassificationFiltersDTO.getBillAmountCents(),
       treasuredClassificationFiltersDTO.getRemittanceInformation(),
       treasuredClassificationFiltersDTO.getDebtorFiscalCode(),
-      treasuredClassificationFiltersDTO.getDebtPositionTypeOrgCodes(),
       treasuredClassificationFiltersDTO.getBillYear(),
       treasuredClassificationFiltersDTO.getBillCode(),
       treasuredClassificationFiltersDTO.getDocumentYear(),

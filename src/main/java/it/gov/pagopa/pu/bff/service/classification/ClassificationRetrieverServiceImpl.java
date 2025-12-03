@@ -19,7 +19,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -62,7 +61,12 @@ public class ClassificationRetrieverServiceImpl implements ClassificationRetriev
       debtPositionTypeOrgRetrieverService.validateOperator(organizationId, debtPositionTypeOrgCode, loggedUser.getMappedExternalUserId(), accessToken);
       treasuredClassificationFiltersDTO.setDebtPositionTypeOrgCodes(Collections.singleton(debtPositionTypeOrgCode));
     } else {
-      treasuredClassificationFiltersDTO.setDebtPositionTypeOrgCodes(getDebtPositionTypeOrgCodes(organizationId, loggedUser.getMappedExternalUserId(), accessToken));
+      Set<String> debtPositionTypeOrgCodes = getDebtPositionTypeOrgCodes(organizationId, loggedUser.getMappedExternalUserId(), accessToken);
+      if (debtPositionTypeOrgCodes.isEmpty()) {
+        return buildEmptyPagedTreasuredClassificationExtendedDTO(pageable);
+      }
+
+      treasuredClassificationFiltersDTO.setDebtPositionTypeOrgCodes(debtPositionTypeOrgCodes);
     }
 
     Organization organization = organizationService.getOrganizationByOrganizationId(organizationId, accessToken);
@@ -76,11 +80,18 @@ public class ClassificationRetrieverServiceImpl implements ClassificationRetriev
   }
 
   private Set<String> getDebtPositionTypeOrgCodes(Long organizationId, String mappedExternalUserId, String accessToken) {
-    Set<String> debtPositionTypeOrgCodes = debtPositionTypeOrgRetrieverService.getDebtPositionTypeOrgCodes(organizationId, null, mappedExternalUserId, accessToken);
-    if (CollectionUtils.isEmpty(debtPositionTypeOrgCodes)) {
-      throw new ResourceNotFoundException("Classification not found for organizationId " + organizationId);
-    }
-    return debtPositionTypeOrgCodes;
+    return debtPositionTypeOrgRetrieverService.getDebtPositionTypeOrgCodes(organizationId, null, mappedExternalUserId, accessToken);
+  }
+
+  private PagedTreasuredClassificationExtendedDTO buildEmptyPagedTreasuredClassificationExtendedDTO(Pageable pageable) {
+    PagedTreasuredClassificationExtendedDTO emptyPagedTreasuredClassificationExtendedDTO = new PagedTreasuredClassificationExtendedDTO();
+    emptyPagedTreasuredClassificationExtendedDTO.setContent(Collections.emptyList());
+    emptyPagedTreasuredClassificationExtendedDTO.setSize((long) pageable.getPageSize());
+    emptyPagedTreasuredClassificationExtendedDTO.setTotalElements(0L);
+    emptyPagedTreasuredClassificationExtendedDTO.setTotalPages(0L);
+    emptyPagedTreasuredClassificationExtendedDTO.setNumber(0L);
+
+    return emptyPagedTreasuredClassificationExtendedDTO;
   }
 
   private void validateTreasuredClassificationFilters(TreasuredClassificationFiltersDTO filters, String debtPositionTypeOrgCode) {

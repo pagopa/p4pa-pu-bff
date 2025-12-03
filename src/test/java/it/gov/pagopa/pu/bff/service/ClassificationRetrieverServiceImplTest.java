@@ -447,7 +447,7 @@ class ClassificationRetrieverServiceImplTest {
   }
 
   @Test
-  void givenNoDebtPositionTypeOrgCodesWhenGetTreasuredClassificationThenResourceNotFoundException() {
+  void givenNoDebtPositionTypeOrgCodesWhenGetTreasuredClassificationThenOk() {
     UserInfo loggedUser = new UserInfo();
     loggedUser.setUserId("user-123");
     loggedUser.setMappedExternalUserId("mappedExternalUserId");
@@ -455,17 +455,33 @@ class ClassificationRetrieverServiceImplTest {
     long organizationId = 1L;
     TreasuredClassificationFiltersDTO treasuredClassificationFiltersDTO = new TreasuredClassificationFiltersDTO();
     treasuredClassificationFiltersDTO.setIuv("IUV123");
+    treasuredClassificationFiltersDTO.setDebtPositionTypeOrgCodes(Collections.emptySet());
     PageRequest pageable = PageRequest.of(0, 10);
+
+    Organization organization = new Organization();
+    organization.setFlagPaymentNotification(true);
+    organization.setFlagTreasury(true);
 
     try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
       authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)).thenAnswer(a -> null);
-      when(debtPositionTypeOrgRetrieverServiceMock.getDebtPositionTypeOrgCodes(organizationId, null, loggedUser.getMappedExternalUserId(),accessToken))
-              .thenReturn(null);
 
-      assertThrows(ResourceNotFoundException.class,()->classificationRetrieverService.getTreasuredClassification(organizationId, treasuredClassificationFiltersDTO, null, pageable, loggedUser, accessToken));
+      when(debtPositionTypeOrgRetrieverServiceMock.getDebtPositionTypeOrgCodes(organizationId, null, loggedUser.getMappedExternalUserId(), accessToken))
+        .thenReturn(treasuredClassificationFiltersDTO.getDebtPositionTypeOrgCodes());
 
-      verifyNoInteractions(classificationServiceMock);
+      PagedTreasuredClassificationExtendedDTO result = classificationRetrieverService.getTreasuredClassification(organizationId, treasuredClassificationFiltersDTO, null, pageable, loggedUser, accessToken);
+
+      assertNotNull(result);
+      assertTrue(result.getContent().isEmpty());
+      assertEquals(pageable.getPageSize(), result.getSize().intValue());
+      assertEquals(0L, result.getTotalElements());
+      assertEquals(0L, result.getTotalPages());
+      assertEquals(0L, result.getNumber());
+
       authorizationServiceMockedStatic.verify(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser));
+
+      verifyNoInteractions(organizationServiceMock);
+      verifyNoInteractions(classificationServiceMock);
+      verifyNoInteractions(treasuredClassificationExtendedDTOMapperMock);
     }
   }
 

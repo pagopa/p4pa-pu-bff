@@ -447,7 +447,7 @@ class ClassificationRetrieverServiceImplTest {
   }
 
   @Test
-  void givenNoDebtPositionTypeOrgCodesWhenGetTreasuredClassificationThenResourceNotFoundException() {
+  void givenNoDebtPositionTypeOrgCodesWhenGetTreasuredClassificationThenOk() {
     UserInfo loggedUser = new UserInfo();
     loggedUser.setUserId("user-123");
     loggedUser.setMappedExternalUserId("mappedExternalUserId");
@@ -455,16 +455,39 @@ class ClassificationRetrieverServiceImplTest {
     long organizationId = 1L;
     TreasuredClassificationFiltersDTO treasuredClassificationFiltersDTO = new TreasuredClassificationFiltersDTO();
     treasuredClassificationFiltersDTO.setIuv("IUV123");
+    treasuredClassificationFiltersDTO.setDebtPositionTypeOrgCodes(Collections.emptySet());
     PageRequest pageable = PageRequest.of(0, 10);
+    PagedTreasuredClassification backendPage = new PagedTreasuredClassification();
+    PagedTreasuredClassificationExtendedDTO expectedResult = new PagedTreasuredClassificationExtendedDTO();
+
+    Organization organization = new Organization();
+    organization.setFlagPaymentNotification(true);
+    organization.setFlagTreasury(true);
 
     try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
       authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)).thenAnswer(a -> null);
-      when(debtPositionTypeOrgRetrieverServiceMock.getDebtPositionTypeOrgCodes(organizationId, null, loggedUser.getMappedExternalUserId(),accessToken))
-              .thenReturn(null);
 
-      assertThrows(ResourceNotFoundException.class,()->classificationRetrieverService.getTreasuredClassification(organizationId, treasuredClassificationFiltersDTO, null, pageable, loggedUser, accessToken));
+      when(debtPositionTypeOrgRetrieverServiceMock.getDebtPositionTypeOrgCodes(organizationId, null, loggedUser.getMappedExternalUserId(), accessToken))
+        .thenReturn(treasuredClassificationFiltersDTO.getDebtPositionTypeOrgCodes());
 
-      verifyNoInteractions(classificationServiceMock);
+      when(organizationServiceMock.getOrganizationByOrganizationId(organizationId, accessToken))
+        .thenReturn(organization);
+
+      when(classificationServiceMock.getTreasuredClassifications(
+        eq(organizationId),
+        any(TreasuredClassificationFiltersDTO.class),
+        eq(pageable),
+        eq(accessToken)
+      )).thenReturn(backendPage);
+
+      when(treasuredClassificationExtendedDTOMapperMock.map(backendPage, organization))
+        .thenReturn(expectedResult);
+
+      PagedTreasuredClassificationExtendedDTO result = classificationRetrieverService.getTreasuredClassification(organizationId, treasuredClassificationFiltersDTO, null, pageable, loggedUser, accessToken);
+
+      assertNotNull(result);
+      assertSame(expectedResult, result);
+
       authorizationServiceMockedStatic.verify(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser));
     }
   }

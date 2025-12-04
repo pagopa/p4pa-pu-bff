@@ -13,6 +13,7 @@ import static org.mockito.Mockito.verifyNoInteractions;
 
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.connector.debt_position.DebtPositionService;
+import it.gov.pagopa.pu.bff.connector.debt_position.DebtPositionTypeOrgOperatorsService;
 import it.gov.pagopa.pu.bff.connector.debt_position.DebtPositionTypeOrgService;
 import it.gov.pagopa.pu.bff.connector.pagopapayments.PrintPaymentNoticeService;
 import it.gov.pagopa.pu.bff.dto.DebtPositionViewFiltersDTO;
@@ -27,15 +28,8 @@ import it.gov.pagopa.pu.bff.mapper.DebtPositionViewMapper;
 import it.gov.pagopa.pu.bff.service.debt_position.DebtPositionRetrieverService;
 import it.gov.pagopa.pu.bff.service.debt_position.DebtPositionRetrieverServiceImpl;
 import it.gov.pagopa.pu.bff.util.TestUtils;
-import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionDTO;
-import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionOrigin;
-import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionStatus;
-import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrg;
-import it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentDTO;
-import it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentStatus;
-import it.gov.pagopa.pu.debtpositions.dto.generated.ManageDebtPositionDTO;
-import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelDebtPositionView;
-import it.gov.pagopa.pu.debtpositions.dto.generated.PaymentOptionDTO;
+import it.gov.pagopa.pu.debtpositions.dto.generated.*;
+
 import java.time.OffsetDateTime;
 import java.util.List;
 import org.junit.jupiter.api.AfterEach;
@@ -62,6 +56,8 @@ class DebtPositionRetrieverServiceImplTest {
   @Mock
   private DebtPositionTypeOrgService debtPositionTypeOrgServiceMock;
   @Mock
+  private DebtPositionTypeOrgOperatorsService debtPositionTypeOrgOperatorsServiceMock;
+  @Mock
   private DebtPositionViewMapper debtPositionViewMapperMock;
   @Mock
   private PrintPaymentNoticeService printPaymentNoticeServiceMock;
@@ -78,7 +74,14 @@ class DebtPositionRetrieverServiceImplTest {
 
   @BeforeEach
   void setUp() {
-    debtPositionRetrieverService = new DebtPositionRetrieverServiceImpl(debtPositionServiceMock, debtPositionTypeOrgServiceMock, debtPositionViewMapperMock, debtPositionMapperMock, printPaymentNoticeServiceMock, zipFileServiceMock);
+    debtPositionRetrieverService = new DebtPositionRetrieverServiceImpl(
+      debtPositionServiceMock,
+      debtPositionTypeOrgServiceMock,
+      debtPositionTypeOrgOperatorsServiceMock,
+      debtPositionViewMapperMock,
+      debtPositionMapperMock,
+      printPaymentNoticeServiceMock,
+      zipFileServiceMock);
   }
 
   @AfterEach
@@ -86,6 +89,7 @@ class DebtPositionRetrieverServiceImplTest {
     Mockito.verifyNoMoreInteractions(
       debtPositionServiceMock,
       debtPositionTypeOrgServiceMock,
+      debtPositionTypeOrgOperatorsServiceMock,
       debtPositionViewMapperMock,
       debtPositionMapperMock,
       printPaymentNoticeServiceMock
@@ -367,18 +371,18 @@ class DebtPositionRetrieverServiceImplTest {
     Long organizationId = 1L;
     Long debtPositionId = 2L;
 
-    DebtPositionDTO debtPositionDTO = podamFactory.manufacturePojo(
-      DebtPositionDTO.class);
-    DebtPositionTypeOrg debtPositionTypeOrg = podamFactory.manufacturePojo(
-      DebtPositionTypeOrg.class);
-    DebtPositionDetailDTO expectedResult = podamFactory.manufacturePojo(
-      DebtPositionDetailDTO.class);
+    DebtPositionDTO debtPositionDTO = podamFactory.manufacturePojo(DebtPositionDTO.class);
+    DebtPositionTypeOrg debtPositionTypeOrg = podamFactory.manufacturePojo(DebtPositionTypeOrg.class);
+    DebtPositionDetailDTO expectedResult = podamFactory.manufacturePojo(DebtPositionDetailDTO.class);
+    DebtPositionTypeOrgOperators auth = podamFactory.manufacturePojo(DebtPositionTypeOrgOperators.class);
 
     try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
       authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)).thenAnswer(a -> null);
 
       Mockito.when(debtPositionServiceMock.getDebtPosition(debtPositionId, accessToken))
         .thenReturn(debtPositionDTO);
+      Mockito.when(debtPositionTypeOrgOperatorsServiceMock.findByDebtPositionTypeOrgIdAndOperatorExternalUserId(debtPositionDTO.getDebtPositionTypeOrgId(), loggedUser.getMappedExternalUserId(), accessToken))
+        .thenReturn(auth);
       Mockito.when(debtPositionTypeOrgServiceMock.getDebtPositionTypeOrg(debtPositionDTO.getDebtPositionTypeOrgId(), accessToken))
         .thenReturn(debtPositionTypeOrg);
       Mockito.when(debtPositionMapperMock.mapToDebtPositionDetailDTO(debtPositionDTO, debtPositionTypeOrg))
@@ -416,6 +420,36 @@ class DebtPositionRetrieverServiceImplTest {
     }
   }
 
+  @Test
+  void givenOperatorNotAuthorizedWhenGetDebtPositionDetailThenReturnNull() {
+    UserInfo loggedUser = new UserInfo();
+    loggedUser.setMappedExternalUserId("mappedExternalUserId");
+    Long organizationId = 1L;
+    Long debtPositionId = 2L;
+
+    DebtPositionDTO debtPositionDTO = podamFactory.manufacturePojo(DebtPositionDTO.class);
+
+    try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
+
+      authorizationServiceMockedStatic
+        .when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser))
+        .thenAnswer(a -> null);
+
+      Mockito.when(debtPositionServiceMock.getDebtPosition(debtPositionId, accessToken))
+        .thenReturn(debtPositionDTO);
+
+      Mockito.when(debtPositionTypeOrgOperatorsServiceMock.findByDebtPositionTypeOrgIdAndOperatorExternalUserId(debtPositionDTO.getDebtPositionTypeOrgId(), loggedUser.getMappedExternalUserId(), accessToken))
+        .thenReturn(null);
+
+      DebtPositionDetailDTO result = debtPositionRetrieverService
+        .getDebtPositionDetail(debtPositionId, organizationId, loggedUser, accessToken);
+
+      assertNull(result);
+
+      authorizationServiceMockedStatic.verify(() ->
+        AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser));
+    }
+  }
 
   @Test
   void givenInvalidUserWhenGetDebtPositionDetailThenAuthorizationDeniedException() {

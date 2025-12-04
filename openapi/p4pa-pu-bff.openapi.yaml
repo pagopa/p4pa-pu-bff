@@ -3911,9 +3911,18 @@ paths:
           in: query
           schema:
             type: string
+        - name: orgFiscalCode
+          in: query
+          required: true
+          schema:
+            type: string
       responses:
         '200':
           description: OK
+          content:
+            application/json:
+              schema:
+                type: boolean
         '400':
           description: Bad Request
         '401':
@@ -4693,6 +4702,8 @@ components:
         debtPositionTypeOrgCount:
           type: integer
           format: int64
+        orgName:
+          type: string
     PagedOrganizationWithDebtPositionTypeOrgCount:
       type: object
       required:
@@ -5392,7 +5403,7 @@ components:
         status:
           type: 'OrganizationStatus'
         additionalLanguage:
-          type: string
+          type: 'OrganizationAdditionalLanguage'
         startDate:
           type: string
           format: date

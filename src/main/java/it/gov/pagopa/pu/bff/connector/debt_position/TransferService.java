@@ -4,5 +4,5 @@ import it.gov.pagopa.pu.debtpositions.dto.generated.CollectionModelTransfer;
 
 public interface TransferService {
   CollectionModelTransfer getTransfers(Long installmentId, String operatorExternalUserId, String accessToken);
-  void validateTaxonomyCategory(String taxonomyCategory, String accessToken);
+  boolean validateTaxonomyCategory(String taxonomyCategory, String orgFiscalCode, String accessToken);
 }

@@ -4,11 +4,6 @@ import it.gov.pagopa.pu.bff.connector.BaseApiHolderTest;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionStatus;
 import it.gov.pagopa.pu.debtpositions.dto.generated.ReceiptOriginType;
 import it.gov.pagopa.pu.debtpositions.dto.generated.SpontaneousForm;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,6 +14,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.web.util.DefaultUriBuilderFactory;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
 
 @ExtendWith(MockitoExtension.class)
 class DebtPositionApisHolderTest extends BaseApiHolderTest {
@@ -115,13 +116,10 @@ class DebtPositionApisHolderTest extends BaseApiHolderTest {
   @Test
   void whenGetTransferApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
     assertAuthenticationShouldBeSetInThreadSafeMode(
-      accessToken -> {
-        debtPositionApisHolder.getTransferApi(accessToken)
-          .validateTaxonomyCategory("001122233");
-        return voidMock;
-      },
-      new ParameterizedTypeReference<>() {
-      }, debtPositionApisHolder::unload);
+      accessToken -> debtPositionApisHolder.getTransferApi(accessToken)
+        .validateTaxonomyCategory("001122233", "orgFiscalCode"),
+      new ParameterizedTypeReference<>() {},
+      debtPositionApisHolder::unload);
   }
 
   @Test

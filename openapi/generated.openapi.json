@@ -3061,6 +3061,13 @@
         "tags" : [ "Transfers" ],
         "operationId" : "validateTaxonomyCategory",
         "parameters" : [ {
+          "name" : "orgFiscalCode",
+          "in" : "query",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
           "name" : "taxonomyCategory",
           "in" : "query",
           "required" : false,
@@ -3070,13 +3077,34 @@
         } ],
         "responses" : {
           "200" : {
-            "description" : "OK"
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "boolean"
+                }
+              }
+            }
           },
           "400" : {
-            "description" : "Bad Request"
+            "description" : "Bad Request",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "boolean"
+                }
+              }
+            }
           },
           "401" : {
-            "description" : "Unauthorized - Missing or invalid token"
+            "description" : "Unauthorized - Missing or invalid token",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "boolean"
+                }
+              }
+            }
           },
           "500" : {
             "description" : "Internal Server Error",
@@ -9231,6 +9259,10 @@
         "type" : "string",
         "enum" : [ "NOT_FOUND", "BAD_REQUEST", "GENERIC_ERROR", "FORBIDDEN", "CONFLICT" ]
       },
+      "OrganizationAdditionalLanguage" : {
+        "type" : "string",
+        "enum" : [ "EN", "FR", "DE" ]
+      },
       "OrganizationDetailDTO" : {
         "type" : "object",
         "properties" : {
@@ -9278,7 +9310,7 @@
             "$ref" : "#/components/schemas/OrganizationStatus"
           },
           "additionalLanguage" : {
-            "type" : "string"
+            "$ref" : "#/components/schemas/OrganizationAdditionalLanguage"
           },
           "startDate" : {
             "type" : "string",
@@ -9683,9 +9715,6 @@
             "type" : "string",
             "format" : "date"
           },
-          "flagIuvVolatile" : {
-            "type" : "boolean"
-          },
           "multiDebtor" : {
             "type" : "boolean"
           },
@@ -9877,7 +9906,7 @@
             "type" : "string"
           },
           "paymentOptionType" : {
-            "$ref" : "#/components/schemas/PaymentOptionTypeEnum"
+            "$ref" : "#/components/schemas/PaymentOptionType"
           },
           "paymentOptionIndex" : {
             "type" : "integer",
@@ -9910,9 +9939,9 @@
         "type" : "string",
         "enum" : [ "TO_SYNC", "REPORTED", "PAID", "PARTIALLY_PAID", "CANCELLED", "INVALID", "EXPIRED", "UNPAID", "UNPAYABLE", "DRAFT" ]
       },
-      "PaymentOptionTypeEnum" : {
+      "PaymentOptionType" : {
         "type" : "string",
-        "enum" : [ "SINGLE_INSTALLMENT", "REDUCED_SINGLE_INSTALLMENT", "INSTALLMENTS", "DOWN_PAYMENT" ]
+        "enum" : [ "SINGLE_INSTALLMENT", "INSTALLMENTS", "DOWN_PAYMENT", "REDUCED_SINGLE_INSTALLMENT" ]
       },
       "PersonDTO" : {
         "type" : "object",
@@ -11200,7 +11229,7 @@
             "$ref" : "#/components/schemas/OrganizationStatus"
           },
           "additionalLanguage" : {
-            "type" : "string"
+            "$ref" : "#/components/schemas/OrganizationAdditionalLanguage"
           },
           "startDate" : {
             "type" : "string",
@@ -12595,6 +12624,9 @@
           "debtPositionTypeOrgCount" : {
             "type" : "integer",
             "format" : "int64"
+          },
+          "orgName" : {
+            "type" : "string"
           }
         },
         "required" : [ "debtPositionTypeOrgCount", "mappedExternalUserId" ]

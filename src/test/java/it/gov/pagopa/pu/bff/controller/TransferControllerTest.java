@@ -1,7 +1,5 @@
 package it.gov.pagopa.pu.bff.controller;
 
-import static org.mockito.ArgumentMatchers.anyString;
-
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.security.SecurityUtilsTest;
 import it.gov.pagopa.pu.bff.service.transfer.TransferRetrieverService;
@@ -71,11 +69,18 @@ class TransferControllerTest {
 
   @Test
   void givenCategoryWhenValidateTaxonomyCategoryThenOk() {
-    Mockito.doNothing().when(transferRetrieverServiceMock).validateTaxonomyCategory(anyString(), anyString());
+    String category = "001122233";
+    String orgFiscalCode = "orgFiscalCode";
+    Boolean expectedResult = true;
 
-    ResponseEntity<Void> response = transferController.validateTaxonomyCategory("CATEGORY");
+    Mockito.when(transferRetrieverServiceMock.validateTaxonomyCategory(category, orgFiscalCode, accessToken))
+      .thenReturn(true);
+
+    ResponseEntity<Boolean> response = transferController.validateTaxonomyCategory(category, orgFiscalCode);
 
     Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
+    Assertions.assertNotNull(response.getBody());
+    Assertions.assertSame(expectedResult, response.getBody());
   }
 
 }

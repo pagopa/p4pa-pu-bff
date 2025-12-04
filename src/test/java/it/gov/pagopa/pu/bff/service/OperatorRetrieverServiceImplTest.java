@@ -12,6 +12,7 @@ import it.gov.pagopa.pu.bff.connector.auth.AuthzService;
 import it.gov.pagopa.pu.bff.connector.debt_position.DebtPositionTypeOrgOperatorsService;
 import it.gov.pagopa.pu.bff.connector.debt_position.DebtPositionTypeOrgService;
 import it.gov.pagopa.pu.bff.connector.debt_position.DebtPositionTypeService;
+import it.gov.pagopa.pu.bff.connector.organization.OrganizationService;
 import it.gov.pagopa.pu.bff.dto.OperatorDetailsFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.generated.OperatorsDetail;
 import it.gov.pagopa.pu.bff.dto.generated.PagedDebtPositionTypeOrgDTO;
@@ -31,6 +32,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import it.gov.pagopa.pu.organization.dto.generated.Organization;
+import it.gov.pagopa.pu.organization.dto.generated.OrganizationStatus;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -63,6 +67,8 @@ public class OperatorRetrieverServiceImplTest {
   private DebtPositionTypeService debtPositionTypeServiceMock;
   @Mock
   private PagedDebtPositionTypeOrgDTOMapper pagedDebtPositionTypeOrgDTOMapperMock;
+  @Mock
+  private OrganizationService organizationServiceMock;
 
   private OperatorRetrieverService operatorRetrieverService;
 
@@ -71,13 +77,14 @@ public class OperatorRetrieverServiceImplTest {
   @BeforeEach
   void setUp() {
     operatorRetrieverService = new OperatorRetrieverServiceImpl(
-      authorizationServiceMock,authzServiceMock,debtPositionTypeOrgOperatorsServiceMock,pagedOrganizationOperatorMapperMock, debtPositionTypeOrgServiceMock, operatorDetailMapperMock, debtPositionTypeServiceMock, pagedDebtPositionTypeOrgDTOMapperMock);
+      authorizationServiceMock,authzServiceMock,debtPositionTypeOrgOperatorsServiceMock,pagedOrganizationOperatorMapperMock, debtPositionTypeOrgServiceMock, operatorDetailMapperMock, debtPositionTypeServiceMock, pagedDebtPositionTypeOrgDTOMapperMock,
+      organizationServiceMock);
   }
 
   @AfterEach
   void verifyNoMoreInteractions() {
     Mockito.verifyNoMoreInteractions(
-            authorizationServiceMock,authzServiceMock,debtPositionTypeOrgOperatorsServiceMock,pagedOrganizationOperatorMapperMock, debtPositionTypeOrgServiceMock, operatorDetailMapperMock, debtPositionTypeServiceMock, pagedDebtPositionTypeOrgDTOMapperMock
+            authorizationServiceMock,authzServiceMock,debtPositionTypeOrgOperatorsServiceMock,pagedOrganizationOperatorMapperMock, debtPositionTypeOrgServiceMock, operatorDetailMapperMock, debtPositionTypeServiceMock, pagedDebtPositionTypeOrgDTOMapperMock, organizationServiceMock
     );
   }
 
@@ -91,6 +98,7 @@ public class OperatorRetrieverServiceImplTest {
     String lastName = "lastName";
     String fiscalCode = "fiscalCode";
     Pageable pageable = PageRequest.of(0,20);
+    Organization organization = Organization.builder().organizationId(1L).ipaCode("IPA").orgFiscalCode("FISCAL").orgName("TEST").status(OrganizationStatus.ACTIVE).orgTypeCode("orgType").flagNotifyIo(false).flagTreasury(false).flagNotifyOutcomePush(false).pdndEnabled(false).flagPaymentNotification(false).build();
     OperatorsPage operatorsPage = podamFactory.manufacturePojo(OperatorsPage.class);
     Map<String, DebtPositionTypeOrgOperatorsDptoCountView> dptoViewMap = new HashMap<>();
     for (OperatorDTO operator : operatorsPage.getContent()) {
@@ -106,8 +114,9 @@ public class OperatorRetrieverServiceImplTest {
             .thenReturn(operatorsPage);
     when(debtPositionTypeOrgOperatorsServiceMock.findByOrganizationIdAndOperatorExternalUserIds(organizationId,dptoViewMap.keySet(),accessToken))
             .thenReturn(new ArrayList<>(dptoViewMap.values()));
-    when(pagedOrganizationOperatorMapperMock.mapToPagedOrganizationOperator(operatorsPage,dptoViewMap.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e->e.getValue().getDebtPositionTypeOrgCount()))))
+    when(pagedOrganizationOperatorMapperMock.mapToPagedOrganizationOperator(operatorsPage,dptoViewMap.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e->e.getValue().getDebtPositionTypeOrgCount())), organization))
             .thenReturn(expectedResult);
+    when(organizationServiceMock.getOrganizationByOrganizationId(organizationId, accessToken)).thenReturn(organization);
 
     PagedOrganizationOperator result = operatorRetrieverService.getOrganizationOperators(organizationId, firstName, lastName, fiscalCode, pageable, loggedUser, accessToken);
 
@@ -126,14 +135,16 @@ public class OperatorRetrieverServiceImplTest {
     Pageable pageable = PageRequest.of(0,20);
     OperatorsPage operatorsPage = podamFactory.manufacturePojo(OperatorsPage.class);
     PagedOrganizationOperator expectedResult = new PagedOrganizationOperator();
+    Organization organization = Organization.builder().organizationId(1L).ipaCode("IPA").orgFiscalCode("FISCAL").orgName("TEST").status(OrganizationStatus.ACTIVE).orgTypeCode("orgType").flagNotifyIo(false).flagTreasury(false).flagNotifyOutcomePush(false).pdndEnabled(false).flagPaymentNotification(false).build();
 
     doNothing().when(authorizationServiceMock).validateOrganizationOrBrokerAdmin(organizationId,loggedUser,accessToken);
     when(authzServiceMock.getOrganizationOperators(userOrgRole.getOrganizationIpaCode(),fiscalCode,firstName,lastName,pageable.getPageNumber(),pageable.getPageSize(),accessToken))
             .thenReturn(operatorsPage);
     when(debtPositionTypeOrgOperatorsServiceMock.findByOrganizationIdAndOperatorExternalUserIds(organizationId,operatorsPage.getContent().stream().map(OperatorDTO::getMappedExternalUserId).collect(Collectors.toSet()),accessToken))
             .thenReturn(Collections.emptyList());
-    when(pagedOrganizationOperatorMapperMock.mapToPagedOrganizationOperator(operatorsPage,Collections.emptyMap()))
+    when(pagedOrganizationOperatorMapperMock.mapToPagedOrganizationOperator(operatorsPage,Collections.emptyMap(), organization))
             .thenReturn(expectedResult);
+    when(organizationServiceMock.getOrganizationByOrganizationId(organizationId, accessToken)).thenReturn(organization);
 
     PagedOrganizationOperator result = operatorRetrieverService.getOrganizationOperators(organizationId, firstName, lastName, fiscalCode, pageable, loggedUser, accessToken);
 
@@ -157,7 +168,7 @@ public class OperatorRetrieverServiceImplTest {
     doNothing().when(authorizationServiceMock).validateOrganizationOrBrokerAdmin(organizationId,loggedUser,accessToken);
     when(authzServiceMock.getOrganizationOperators(userOrgRole.getOrganizationIpaCode(),fiscalCode,firstName,lastName,pageable.getPageNumber(),pageable.getPageSize(),accessToken))
             .thenReturn(operatorsPage);
-    when(pagedOrganizationOperatorMapperMock.mapToPagedOrganizationOperator(operatorsPage,Collections.emptyMap()))
+    when(pagedOrganizationOperatorMapperMock.mapToPagedOrganizationOperator(operatorsPage,Collections.emptyMap(), null))
             .thenReturn(expectedResult);
 
     PagedOrganizationOperator result = operatorRetrieverService.getOrganizationOperators(organizationId, firstName, lastName, fiscalCode, pageable, loggedUser, accessToken);

@@ -70,6 +70,7 @@ public class OrganizationRetrieverServiceImpl implements OrganizationRetrieverSe
     return userInfo.getOrganizations().stream()
       .map(orgRoles -> Optional.ofNullable(
           organizationService.getOrganizationByIpaCode(orgRoles.getOrganizationIpaCode(), accessToken))
+        .filter(organization -> Objects.equals(organization.getBrokerId(), userInfo.getBrokerId()))
         .map(organization -> organizationDTOMapper.mapToOrganizationDTO(organization, orgRoles.getRoles()))
         .orElse(null)
       ).filter(Objects::nonNull).toList();

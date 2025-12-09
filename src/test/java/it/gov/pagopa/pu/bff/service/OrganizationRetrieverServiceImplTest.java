@@ -122,6 +122,9 @@ class OrganizationRetrieverServiceImplTest {
 
   @Test
   void testGetOrganizations() {
+    userInfo.setBrokerId(1L);
+    entityModelOrganization.setBrokerId(1L);
+
     Mockito.when(organizationServiceMock.getOrganizationByIpaCode(anyString(), anyString()))
       .thenReturn(entityModelOrganization);
     Mockito.when(organizationDTOMapperMock.mapToOrganizationDTO(any(Organization.class), anyList()))
@@ -134,6 +137,20 @@ class OrganizationRetrieverServiceImplTest {
     assertEquals("testIpaCode", result.getFirst().getIpaCode());
     assertEquals("Test Organization", result.getFirst().getOrgName());
     assertEquals(OperatorRole.ROLE_ADMIN, result.getFirst().getOperatorRole());
+  }
+
+  @Test
+  void testGetOrganizationsWhenBrokerMismatch() {
+    userInfo.setBrokerId(10L);
+    entityModelOrganization.setBrokerId(20L);
+
+    Mockito.when(organizationServiceMock.getOrganizationByIpaCode(anyString(), anyString()))
+      .thenReturn(entityModelOrganization);
+
+    List<OrganizationDTO> result = organizationService.getOrganizations(userInfo, accessToken);
+
+    assertTrue(result.isEmpty());
+    Mockito.verify(organizationDTOMapperMock, Mockito.never()).mapToOrganizationDTO(any(), anyList());
   }
 
   @Test

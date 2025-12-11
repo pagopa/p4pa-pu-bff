@@ -99,6 +99,7 @@ class InstallmentRetrieverServiceImplTest {
     filtersDTO.setIuv(null);
     filtersDTO.setFiscalCode(null);
     filtersDTO.setDebtPositionTypeOrgId(null);
+    filtersDTO.setStatus(null);
 
     Pageable pageable = PageRequest.of(0, 10);
 

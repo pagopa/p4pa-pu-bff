@@ -69,6 +69,7 @@ class InstallmentControllerTest {
     String iud = "IUD123";
     String fiscalCode = "FiscalCode123";
     long debtPositionTypeOrgId = 2L;
+    InstallmentStatus status = InstallmentStatus.PAID;
     Pageable pageable = PageRequest.of(0, 10);
 
     OffsetDateTime dueDateTimeFrom = OffsetDateTime.now().minusDays(10);
@@ -80,7 +81,7 @@ class InstallmentControllerTest {
     InstallmentViewFiltersDTO filtersDTO = new InstallmentViewFiltersDTO(
       organizationId, loggedUser.getMappedExternalUserId(), paymentDateFilter,
       iuv, iud, fiscalCode, List.of(
-      DebtPositionOrigin.ORDINARY), debtPositionTypeOrgId);
+      DebtPositionOrigin.ORDINARY), debtPositionTypeOrgId, status);
 
     PagedInstallmentView expectedResult = new PagedInstallmentView();
     expectedResult.setContent(List.of(InstallmentView.builder()
@@ -89,7 +90,7 @@ class InstallmentControllerTest {
       .paymentOptionId(200L)
       .receiptId(201L)
       .iuv(iuv)
-      .status(InstallmentStatus.PAID)
+      .status(status)
       .dueDate(LocalDate.now())
       .amountCents(1000L)
       .remittanceInformation("Remittance Info")
@@ -107,7 +108,7 @@ class InstallmentControllerTest {
 
     ResponseEntity<PagedInstallmentView> response = installmentController.getInstallments(
       organizationId, dueDateTimeFrom, dueDateTimeTo, iuv, iud, fiscalCode, List.of(
-        DebtPositionOrigin.ORDINARY), debtPositionTypeOrgId, pageable);
+        DebtPositionOrigin.ORDINARY), debtPositionTypeOrgId, status, pageable);
 
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertNotNull(response.getBody());

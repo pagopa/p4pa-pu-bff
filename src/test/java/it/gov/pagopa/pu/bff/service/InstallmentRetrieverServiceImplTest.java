@@ -20,11 +20,15 @@ import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelInstallmentView;
 import it.gov.pagopa.pu.debtpositions.dto.generated.PersonDTO;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
+import java.util.stream.Stream;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
@@ -88,55 +92,33 @@ class InstallmentRetrieverServiceImplTest {
     }
   }
 
-  @Test
-  void givenNoFiltersWhenGetInstallmentsThenThrowIllegalArgumentException() {
-    UserInfo loggedUser = new UserInfo();
-    loggedUser.setUserId("user-123");
+  @ParameterizedTest
+  @MethodSource("invalidFiltersProvider")
+  void testInvalidInstallmentViewFilters(InstallmentViewFiltersDTO filtersDTO) {
+    assertThrowsIllegalArgument(filtersDTO);
+  }
 
+  static Stream<InstallmentViewFiltersDTO> invalidFiltersProvider() {
     InstallmentViewFiltersDTO filtersDTO = new InstallmentViewFiltersDTO();
     filtersDTO.setOrganizationId(1L);
     filtersDTO.setDueDate(new LocalDateIntervalFilter(null, null));
     filtersDTO.setIuv(null);
     filtersDTO.setFiscalCode(null);
     filtersDTO.setDebtPositionTypeOrgId(null);
+    filtersDTO.setStatus(null);
 
-    Pageable pageable = PageRequest.of(0, 10);
+    LocalDateIntervalFilter onlyDateFrom = new LocalDateIntervalFilter(LocalDate.now().minusDays(5), null);
+    LocalDateIntervalFilter onlyDateTo = new LocalDateIntervalFilter(null, LocalDate.now());
 
-    try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
-      authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(filtersDTO.getOrganizationId(), loggedUser)).thenAnswer(a -> null);
 
-      IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () ->
-        installmentRetrieverService.getInstallments(filtersDTO, pageable, loggedUser, accessToken));
-
-      assertEquals("At least one of the research fields must be provided, and both 'from' and 'to' due dates must be set together", exception.getMessage());
-
-      authorizationServiceMockedStatic.verify(() -> AuthorizationService.validateUserForOrganizationId(filtersDTO.getOrganizationId(), loggedUser));
-    }
-    Mockito.verifyNoInteractions(installmentServiceMock, installmentViewMapperMock);
-  }
-
-  @Test
-  void givenOnlyDueDateFromWhenGetInstallmentsThenThrowIllegalArgumentException() {
-    InstallmentViewFiltersDTO filtersDTO = new InstallmentViewFiltersDTO();
-    filtersDTO.setOrganizationId(1L);
-    filtersDTO.setDueDate(new LocalDateIntervalFilter(LocalDate.now().minusDays(5), null));
-    assertThrowsIllegalArgument(filtersDTO);
-  }
-
-  @Test
-  void givenOnlyDueDateToWhenGetInstallmentsThenThrowIllegalArgumentException() {
-    InstallmentViewFiltersDTO filtersDTO = new InstallmentViewFiltersDTO();
-    filtersDTO.setOrganizationId(1L);
-    filtersDTO.setDueDate(new LocalDateIntervalFilter(null, LocalDate.now()));
-    assertThrowsIllegalArgument(filtersDTO);
-  }
-
-  @Test
-  void givenEmptyDueDateIntervalWhenGetInstallmentsThenThrowIllegalArgumentException() {
-    InstallmentViewFiltersDTO filtersDTO = new InstallmentViewFiltersDTO();
-    filtersDTO.setOrganizationId(1L);
-    filtersDTO.setDueDate(new LocalDateIntervalFilter(null, null));
-    assertThrowsIllegalArgument(filtersDTO);
+    return Stream.of(
+      filtersDTO,
+      filtersDTO.toBuilder().dueDate(onlyDateFrom).build(),
+      filtersDTO.toBuilder().dueDate(onlyDateTo).build(),
+      filtersDTO.toBuilder().iuv("   ").build(),
+      filtersDTO.toBuilder().iud("   ").build(),
+      filtersDTO.toBuilder().fiscalCode("   ").build()
+    );
   }
 
   private void assertThrowsIllegalArgument(InstallmentViewFiltersDTO filtersDTO) {
@@ -158,44 +140,29 @@ class InstallmentRetrieverServiceImplTest {
     Mockito.verifyNoInteractions(installmentServiceMock, installmentViewMapperMock);
   }
 
-  @Test
-  void givenValidDueDateRangeWhenGetInstallmentsThenOk() {
-    InstallmentViewFiltersDTO filtersDTO = new InstallmentViewFiltersDTO();
-    filtersDTO.setOrganizationId(1L);
-    filtersDTO.setDueDate(new LocalDateIntervalFilter(LocalDate.now().minusDays(3), LocalDate.now().plusDays(3)));
+  @ParameterizedTest
+  @MethodSource("validFiltersProvider")
+  void testValidInstallmentViewFilters(InstallmentViewFiltersDTO filtersDTO) {
     testSingleInstallmentFilterSuccess(filtersDTO);
   }
 
-  @Test
-  void givenIuvOnlyWhenGetInstallmentsThenOk() {
+  static Stream<InstallmentViewFiltersDTO> validFiltersProvider() {
     InstallmentViewFiltersDTO filtersDTO = new InstallmentViewFiltersDTO();
     filtersDTO.setOrganizationId(1L);
-    filtersDTO.setIuv("IUV123");
-    testSingleInstallmentFilterSuccess(filtersDTO);
-  }
+    filtersDTO.setDueDate(new LocalDateIntervalFilter(null, null));
+    filtersDTO.setIuv(null);
+    filtersDTO.setFiscalCode(null);
+    filtersDTO.setDebtPositionTypeOrgId(null);
+    filtersDTO.setStatus(null);
 
-  @Test
-  void givenIudOnlyWhenGetInstallmentsThenOk() {
-    InstallmentViewFiltersDTO filtersDTO = new InstallmentViewFiltersDTO();
-    filtersDTO.setOrganizationId(1L);
-    filtersDTO.setIud("IUD123");
-    testSingleInstallmentFilterSuccess(filtersDTO);
-  }
-
-  @Test
-  void givenFiscalCodeOnlyWhenGetInstallmentsThenOk() {
-    InstallmentViewFiltersDTO filtersDTO = new InstallmentViewFiltersDTO();
-    filtersDTO.setOrganizationId(1L);
-    filtersDTO.setFiscalCode("RSSMRA80A01H501U");
-    testSingleInstallmentFilterSuccess(filtersDTO);
-  }
-
-  @Test
-  void givenDebtPositionTypeOrgIdOnlyWhenGetInstallmentsThenOk() {
-    InstallmentViewFiltersDTO filtersDTO = new InstallmentViewFiltersDTO();
-    filtersDTO.setOrganizationId(1L);
-    filtersDTO.setDebtPositionTypeOrgId(99L);
-    testSingleInstallmentFilterSuccess(filtersDTO);
+    return Stream.of(
+      filtersDTO.toBuilder().dueDate(new LocalDateIntervalFilter(LocalDate.now().minusDays(3), LocalDate.now().plusDays(3))).build(),
+      filtersDTO.toBuilder().iuv("IUV123").build(),
+      filtersDTO.toBuilder().iud("IUD123").build(),
+      filtersDTO.toBuilder().fiscalCode("RSSMRA80A01H501U").build(),
+      filtersDTO.toBuilder().debtPositionTypeOrgId(99L).build(),
+      filtersDTO.toBuilder().status(InstallmentStatus.PAID).build()
+    );
   }
 
   private void testSingleInstallmentFilterSuccess(InstallmentViewFiltersDTO filtersDTO) {

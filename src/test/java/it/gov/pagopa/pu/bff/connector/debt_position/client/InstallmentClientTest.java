@@ -12,6 +12,7 @@ import it.gov.pagopa.pu.debtpositions.controller.generated.InstallmentNoPiiSearc
 import it.gov.pagopa.pu.debtpositions.controller.generated.InstallmentViewSearchControllerApi;
 import it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentDetailDTO;
 import it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentNoPII;
+import it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentStatus;
 import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelInstallmentView;
 import java.time.LocalDate;
 import java.util.Collections;
@@ -66,7 +67,7 @@ class InstallmentClientTest {
     LocalDateIntervalFilter dueDateFilter = new LocalDateIntervalFilter(dueDateFrom, dueDateTo);
 
     InstallmentViewFiltersDTO filtersDTO = new InstallmentViewFiltersDTO(
-      1L, "operatorExternalUserId", dueDateFilter, "iuv", "iud", "fiscalCode", Collections.emptyList(), 2L);
+      1L, "operatorExternalUserId", dueDateFilter, "iuv", "iud", "fiscalCode", Collections.emptyList(), 2L, InstallmentStatus.PAID);
     Pageable pageable = PageRequest.of(0, 10, Sort.unsorted());
 
     when(debtPositionApisHolderMock.getInstallmentViewSearchControllerApi(accessToken))
@@ -82,6 +83,7 @@ class InstallmentClientTest {
       filtersDTO.getFiscalCode(),
       filtersDTO.getDebtPositionOrigins(),
       filtersDTO.getDebtPositionTypeOrgId(),
+      filtersDTO.getStatus(),
       PageUtils.getPageNumber(pageable),
       PageUtils.getPageSize(pageable),
       PageUtils.getSortList(pageable)))

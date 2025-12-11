@@ -946,6 +946,10 @@ paths:
           schema:
             type: integer
             format: int64
+        - name: status
+          in: query
+          schema:
+            type: 'InstallmentStatus'
       responses:
         '200':
           description: OK

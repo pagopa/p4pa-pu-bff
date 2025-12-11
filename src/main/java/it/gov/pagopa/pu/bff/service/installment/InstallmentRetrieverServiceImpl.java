@@ -45,7 +45,8 @@ public class InstallmentRetrieverServiceImpl implements InstallmentRetrieverServ
       StringUtils.isBlank(filtersDTO.getIuv()) &&
       StringUtils.isBlank(filtersDTO.getIud()) &&
       StringUtils.isBlank(filtersDTO.getFiscalCode()) &&
-      filtersDTO.getDebtPositionTypeOrgId() == null) {
+      filtersDTO.getDebtPositionTypeOrgId() == null &&
+      filtersDTO.getStatus() == null) {
       throw new IllegalArgumentException("At least one of the research fields must be provided, and both 'from' and 'to' due dates must be set together");
     }
   }

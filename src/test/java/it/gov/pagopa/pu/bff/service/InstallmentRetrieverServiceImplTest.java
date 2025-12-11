@@ -140,44 +140,30 @@ class InstallmentRetrieverServiceImplTest {
     Mockito.verifyNoInteractions(installmentServiceMock, installmentViewMapperMock);
   }
 
-  @Test
-  void givenValidDueDateRangeWhenGetInstallmentsThenOk() {
-    InstallmentViewFiltersDTO filtersDTO = new InstallmentViewFiltersDTO();
-    filtersDTO.setOrganizationId(1L);
-    filtersDTO.setDueDate(new LocalDateIntervalFilter(LocalDate.now().minusDays(3), LocalDate.now().plusDays(3)));
+  @ParameterizedTest
+  @MethodSource("validFiltersProvider")
+  void testValidInstallmentViewFilters(InstallmentViewFiltersDTO filtersDTO) {
     testSingleInstallmentFilterSuccess(filtersDTO);
   }
 
-  @Test
-  void givenIuvOnlyWhenGetInstallmentsThenOk() {
+  static Stream<InstallmentViewFiltersDTO> validFiltersProvider() {
     InstallmentViewFiltersDTO filtersDTO = new InstallmentViewFiltersDTO();
     filtersDTO.setOrganizationId(1L);
-    filtersDTO.setIuv("IUV123");
-    testSingleInstallmentFilterSuccess(filtersDTO);
-  }
+    filtersDTO.setDueDate(new LocalDateIntervalFilter(null, null));
+    filtersDTO.setIuv(null);
+    filtersDTO.setFiscalCode(null);
+    filtersDTO.setDebtPositionTypeOrgId(null);
+    filtersDTO.setStatus(null);
 
-  @Test
-  void givenIudOnlyWhenGetInstallmentsThenOk() {
-    InstallmentViewFiltersDTO filtersDTO = new InstallmentViewFiltersDTO();
-    filtersDTO.setOrganizationId(1L);
-    filtersDTO.setIud("IUD123");
-    testSingleInstallmentFilterSuccess(filtersDTO);
-  }
-
-  @Test
-  void givenFiscalCodeOnlyWhenGetInstallmentsThenOk() {
-    InstallmentViewFiltersDTO filtersDTO = new InstallmentViewFiltersDTO();
-    filtersDTO.setOrganizationId(1L);
-    filtersDTO.setFiscalCode("RSSMRA80A01H501U");
-    testSingleInstallmentFilterSuccess(filtersDTO);
-  }
-
-  @Test
-  void givenDebtPositionTypeOrgIdOnlyWhenGetInstallmentsThenOk() {
-    InstallmentViewFiltersDTO filtersDTO = new InstallmentViewFiltersDTO();
-    filtersDTO.setOrganizationId(1L);
-    filtersDTO.setDebtPositionTypeOrgId(99L);
-    testSingleInstallmentFilterSuccess(filtersDTO);
+    return Stream.of(
+      filtersDTO,
+      filtersDTO.toBuilder().dueDate(new LocalDateIntervalFilter(LocalDate.now().minusDays(3), LocalDate.now().plusDays(3))).build(),
+      filtersDTO.toBuilder().iuv("IUV123").build(),
+      filtersDTO.toBuilder().iud("IUD123").build(),
+      filtersDTO.toBuilder().fiscalCode("RSSMRA80A01H501U").build(),
+      filtersDTO.toBuilder().debtPositionTypeOrgId(99L).build(),
+      filtersDTO.toBuilder().status(InstallmentStatus.PAID).build()
+    );
   }
 
   private void testSingleInstallmentFilterSuccess(InstallmentViewFiltersDTO filtersDTO) {

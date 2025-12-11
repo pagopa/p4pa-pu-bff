@@ -5056,6 +5056,8 @@ components:
           format: int64
         spontaneousFormCode:
           type: string
+        debtPositionTypeTaxonomyCode:
+          type: string
     PaidExportFileRequest:
       type: object
       required:

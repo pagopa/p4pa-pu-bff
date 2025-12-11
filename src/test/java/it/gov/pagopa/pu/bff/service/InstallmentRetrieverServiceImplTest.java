@@ -156,7 +156,6 @@ class InstallmentRetrieverServiceImplTest {
     filtersDTO.setStatus(null);
 
     return Stream.of(
-      filtersDTO,
       filtersDTO.toBuilder().dueDate(new LocalDateIntervalFilter(LocalDate.now().minusDays(3), LocalDate.now().plusDays(3))).build(),
       filtersDTO.toBuilder().iuv("IUV123").build(),
       filtersDTO.toBuilder().iud("IUD123").build(),

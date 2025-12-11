@@ -2,6 +2,7 @@ package it.gov.pagopa.pu.bff.connector.debt_position.config;
 
 import it.gov.pagopa.pu.bff.connector.BaseApiHolderTest;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionStatus;
+import it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentStatus;
 import it.gov.pagopa.pu.debtpositions.dto.generated.ReceiptOriginType;
 import it.gov.pagopa.pu.debtpositions.dto.generated.SpontaneousForm;
 import org.junit.jupiter.api.AfterEach;
@@ -166,7 +167,7 @@ class DebtPositionApisHolderTest extends BaseApiHolderTest {
   void whenGetInstallmentViewSearchControllerApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
     assertAuthenticationShouldBeSetInThreadSafeMode(
       accessToken -> debtPositionApisHolder.getInstallmentViewSearchControllerApi(accessToken)
-        .crudInstallmentViewsFindInstallmentsByFilters(1L, "operatorExternalUserId", LocalDate.now().minusDays(30), LocalDate.now(), "iuv", "iud", "fiscalCode", Collections.emptyList(), 2L, 0, 10, Collections.emptyList()),
+        .crudInstallmentViewsFindInstallmentsByFilters(1L, "operatorExternalUserId", LocalDate.now().minusDays(30), LocalDate.now(), "iuv", "iud", "fiscalCode", Collections.emptyList(), 2L, InstallmentStatus.PAID, 0, 10, Collections.emptyList()),
       new ParameterizedTypeReference<>() {
       }, debtPositionApisHolder::unload);
   }

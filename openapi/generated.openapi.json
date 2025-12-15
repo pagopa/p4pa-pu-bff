@@ -12976,6 +12976,9 @@
             "type" : "integer",
             "format" : "int64"
           },
+          "debtPositionOrigin" : {
+            "$ref" : "#/components/schemas/DebtPositionOrigin"
+          },
           "paymentDateTime" : {
             "type" : "string",
             "format" : "date-time"
@@ -13004,7 +13007,7 @@
             "format" : "int64"
           }
         },
-        "required" : [ "amountCents", "debtPositionId", "debtPositionTypeOrgDescription", "debtor", "installmentId", "iuv", "status" ]
+        "required" : [ "amountCents", "debtPositionId", "debtPositionOrigin", "debtPositionTypeOrgDescription", "debtor", "installmentId", "iuv", "status" ]
       },
       "InstallmentRegistry" : {
         "type" : "object",
@@ -14150,6 +14153,9 @@
             "type" : "string"
           },
           "debtPositionTypeOrgCode" : {
+            "type" : "string"
+          },
+          "debtPositionTypeOrgDescription" : {
             "type" : "string"
           },
           "installmentIngestionFlowFileName" : {

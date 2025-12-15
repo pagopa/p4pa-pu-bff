@@ -12783,6 +12783,9 @@
           },
           "spontaneousFormCode" : {
             "type" : "string"
+          },
+          "debtPositionTypeTaxonomyCode" : {
+            "type" : "string"
           }
         },
         "required" : [ "code", "debtPositionTypeId", "description", "organizationId" ]

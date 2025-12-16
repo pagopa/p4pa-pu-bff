@@ -25,6 +25,8 @@ public class ReceiptDetailDTOMapper {
       .iur(receiptDetailDTO.getIur())
       .feeCents(receiptDetailDTO.getFeeCents())
       .notificationFeeCents(receiptDetailDTO.getNotificationFeeCents())
+      .receiptOrigin(receiptDetailDTO.getReceiptOrigin())
+      .debtPositionOrigin(receiptDetailDTO.getDebtPositionOrigin())
       .build();
   }
 

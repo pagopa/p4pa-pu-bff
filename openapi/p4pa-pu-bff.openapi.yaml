@@ -4420,6 +4420,8 @@ components:
         - debtor
         - pspCompanyName
         - iud
+        - receiptOrigin
+        - debtPositionOrigin
       properties:
         receiptId:
           type: integer
@@ -4452,6 +4454,10 @@ components:
         notificationFeeCents:
           type: integer
           format: int64
+        receiptOrigin:
+          type: 'ReceiptOriginType'
+        debtPositionOrigin:
+          type: 'DebtPositionOrigin'
     PagedIngestionFlowFile:
       type: object
       required:

@@ -5574,6 +5574,9 @@ components:
           type: integer
           format: int64
           readOnly: true
+        debtPositionTypeOrgCount:
+          type: integer
+          format: int32
         code:
           type: string
           readOnly: true

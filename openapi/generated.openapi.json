@@ -9419,6 +9419,10 @@
           "code" : {
             "type" : "string"
           },
+          "debtPositionTypeOrgCount" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
           "structure" : {
             "$ref" : "#/components/schemas/SpontaneousFormStructure"
           },
@@ -11702,6 +11706,10 @@
             "type" : "integer",
             "format" : "int64",
             "readOnly" : true
+          },
+          "debtPositionTypeOrgCount" : {
+            "type" : "integer",
+            "format" : "int32"
           },
           "code" : {
             "type" : "string",

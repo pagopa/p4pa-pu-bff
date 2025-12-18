@@ -1,6 +1,6 @@
 package it.gov.pagopa.pu.bff.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import it.gov.pagopa.pu.bff.config.json.JsonConfig;
 import it.gov.pagopa.pu.bff.controller.generated.TaxonomyApi;
 import it.gov.pagopa.pu.bff.dto.generated.*;
 import it.gov.pagopa.pu.bff.security.JwtAuthenticationFilter;
@@ -13,13 +13,15 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,13 +32,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(value = TaxonomyApi.class, excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE,
   classes = JwtAuthenticationFilter.class))
 @AutoConfigureMockMvc(addFilters = false)
+@Import(JsonConfig.class)
 class TaxonomyControllerTest {
 
   @Autowired
   private MockMvc mockMvc;
 
   @Autowired
-  private ObjectMapper objectMapper;
+  private JsonMapper jsonMapper;
 
   @MockitoBean
   private TaxonomyRetrieverService serviceMock;
@@ -56,7 +59,7 @@ class TaxonomyControllerTest {
       .andExpect(status().isOk())
       .andReturn();
 
-    Assertions.assertEquals(objectMapper.writeValueAsString(taxonomy), result.getResponse().getContentAsString());
+    Assertions.assertEquals(jsonMapper.writeValueAsString(taxonomy), result.getResponse().getContentAsString());
   }
 
   @Test
@@ -81,7 +84,7 @@ class TaxonomyControllerTest {
         .queryParam("serviceTypeCode", "serviceTypeCode"))
       .andExpect(status().isOk())
       .andReturn();
-    Assertions.assertEquals(result.getResponse().getContentAsString(), objectMapper.writeValueAsString(res));
+    Assertions.assertEquals(result.getResponse().getContentAsString(), jsonMapper.writeValueAsString(res));
   }
 
   @Test
@@ -93,7 +96,7 @@ class TaxonomyControllerTest {
         .queryParam("organizationType", "organizationType"))
       .andExpect(status().isOk())
       .andReturn();
-    Assertions.assertEquals(result.getResponse().getContentAsString(), objectMapper.writeValueAsString(res));
+    Assertions.assertEquals(result.getResponse().getContentAsString(), jsonMapper.writeValueAsString(res));
   }
 
   @Test
@@ -104,7 +107,7 @@ class TaxonomyControllerTest {
     MvcResult result = mockMvc.perform(get("/bff/taxonomy/getOrganizationTypes"))
       .andExpect(status().isOk())
       .andReturn();
-    Assertions.assertEquals(result.getResponse().getContentAsString(), objectMapper.writeValueAsString(res));
+    Assertions.assertEquals(result.getResponse().getContentAsString(), jsonMapper.writeValueAsString(res));
   }
 
   @Test
@@ -117,7 +120,7 @@ class TaxonomyControllerTest {
         .queryParam("macroAreaCode", "macroAreaCode"))
       .andExpect(status().isOk())
       .andReturn();
-    Assertions.assertEquals(result.getResponse().getContentAsString(), objectMapper.writeValueAsString(res));
+    Assertions.assertEquals(result.getResponse().getContentAsString(), jsonMapper.writeValueAsString(res));
   }
 
   @Test
@@ -132,7 +135,7 @@ class TaxonomyControllerTest {
         .queryParam("collectionReason", "collectionReason"))
       .andExpect(status().isOk())
       .andReturn();
-    Assertions.assertEquals(result.getResponse().getContentAsString(), objectMapper.writeValueAsString(res));
+    Assertions.assertEquals(result.getResponse().getContentAsString(), jsonMapper.writeValueAsString(res));
   }
 
   @Test
@@ -148,7 +151,7 @@ class TaxonomyControllerTest {
         .queryParam("collectionReason", "collectionReason"))
       .andExpect(status().isOk())
       .andReturn();
-    Assertions.assertEquals(objectMapper.writeValueAsString(res), result.getResponse().getContentAsString());
+    Assertions.assertEquals(jsonMapper.writeValueAsString(res), result.getResponse().getContentAsString());
   }
 
   @Test
@@ -163,7 +166,7 @@ class TaxonomyControllerTest {
       .andExpect(status().isOk())
       .andReturn();
 
-    Assertions.assertEquals(objectMapper.writeValueAsString(mockResponse), result.getResponse().getContentAsString());
+    Assertions.assertEquals(jsonMapper.writeValueAsString(mockResponse), result.getResponse().getContentAsString());
   }
 
 }

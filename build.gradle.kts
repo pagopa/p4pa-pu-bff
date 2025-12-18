@@ -4,14 +4,14 @@ import com.github.jk1.license.filter.*
 
 plugins {
   java
-  id("org.springframework.boot") version "3.5.6"
+  id("org.springframework.boot") version "4.0.0"
   id("io.spring.dependency-management") version "1.1.7"
   jacoco
-  id("org.sonarqube") version "6.3.1.5724"
-  id("com.github.ben-manes.versions") version "0.52.0"
-  id("org.openapi.generator") version "7.15.0"
+  id("org.sonarqube") version "7.2.1.6560"
+  id("com.github.ben-manes.versions") version "0.53.0"
+  id("org.openapi.generator") version "7.17.0"
   id("org.ajoberstar.grgit") version "5.3.2"
-  id("com.gorylenko.gradle-git-properties") version "2.5.3"
+  id("com.gorylenko.gradle-git-properties") version "2.5.4"
   id("com.github.jk1.dependency-license-report") version "3.0.1"
 }
 
@@ -35,7 +35,8 @@ configurations {
 }
 
 licenseReport {
-  renderers = arrayOf(XmlReportRenderer("third-party-libs.xml", "Back-End Libraries"))
+  renderers =
+    arrayOf(XmlReportRenderer("third-party-libs.xml", "Back-End Libraries"))
   outputDir = "$projectDir/dependency-licenses"
   filters = arrayOf(SpdxLicenseBundleNormalizer())
 }
@@ -47,39 +48,40 @@ repositories {
   mavenCentral()
 }
 
-val springDocOpenApiVersion = "2.8.13"
+val springDocOpenApiVersion = "3.0.0"
 val janinoVersion = "3.1.12"
-val openApiToolsVersion = "0.2.7"
-val micrometerVersion = "1.5.4"
-val caffeineVersion = "3.2.2"
-val httpClientVersion = "5.5"
+val openApiToolsVersion = "0.2.8"
+val micrometerVersion = "1.6.1"
+val caffeineVersion = "3.2.3"
+val httpClientVersion = "5.5.1"
 val mapStructVersion = "1.6.3"
-val commonsLang3Version = "3.19.0"
+val commonsLang3Version = "3.20.0"
 
-val wiremockVersion = "3.13.1"
-val wiremockSpringBootVersion = "3.10.6"
+val wiremockVersion = "3.13.2"
+val wiremockSpringBootVersion = "4.0.8"
 val podamVersion = "8.0.2.RELEASE"
 
 dependencies {
-  implementation("org.springframework.boot:spring-boot-starter")
-  implementation("org.springframework.boot:spring-boot-starter-web")
+  implementation("org.springframework.boot:spring-boot-starter-webmvc")
+  implementation("org.springframework.boot:spring-boot-starter-opentelemetry")
+  implementation("org.springframework.boot:spring-boot-starter-restclient")
   implementation("org.springframework.boot:spring-boot-starter-validation")
   implementation("org.springframework.boot:spring-boot-starter-actuator")
   implementation("org.springframework.boot:spring-boot-starter-security")
+  implementation("org.springframework.data:spring-data-commons")
   implementation("io.micrometer:micrometer-tracing-bridge-otel:$micrometerVersion")
   implementation("io.micrometer:micrometer-registry-prometheus")
   implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:$springDocOpenApiVersion") {
     exclude(group = "org.apache.commons", module = "commons-lang3")
   }
-  implementation("org.apache.commons:commons-lang3:${commonsLang3Version}")
+  implementation("org.apache.commons:commons-lang3:$commonsLang3Version")
   implementation("org.codehaus.janino:janino:$janinoVersion")
-  implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
   implementation("org.openapitools:jackson-databind-nullable:$openApiToolsVersion")
   implementation("org.springframework.data:spring-data-commons")
   implementation("org.springframework.boot:spring-boot-starter-cache")
   implementation("com.github.ben-manes.caffeine:caffeine:$caffeineVersion")
   implementation("org.apache.httpcomponents.client5:httpclient5:$httpClientVersion")
-  implementation ("org.mapstruct:mapstruct:${mapStructVersion}")
+  implementation("org.mapstruct:mapstruct:${mapStructVersion}")
 
 
   compileOnly("org.projectlombok:lombok")
@@ -89,7 +91,8 @@ dependencies {
   testAnnotationProcessor("org.mapstruct:mapstruct-processor:$mapStructVersion")
 
   //	Testing
-  testImplementation("org.springframework.boot:spring-boot-starter-test")
+  testImplementation("org.springframework.boot:spring-boot-starter-webmvc-test")
+  testImplementation("org.springframework.boot:spring-boot-starter-security-test")
   testImplementation("org.springframework.security:spring-security-test")
   testImplementation("org.mockito:mockito-core")
   testImplementation("org.projectlombok:lombok")
@@ -174,96 +177,103 @@ tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>("ope
   outputDir.set("$projectDir/build/generated")
   apiPackage.set("it.gov.pagopa.pu.bff.controller.generated")
   modelPackage.set("it.gov.pagopa.pu.bff.dto.generated")
-  typeMappings.set(mapOf(
-    "AccessToken" to "it.gov.pagopa.pu.auth.dto.generated.AccessToken",
-    "DebtPositionType" to "it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionType",
-    "IngestionFlowFileType" to "it.gov.pagopa.pu.processexecutions.dto.generated.IngestionFlowFile.IngestionFlowFileTypeEnum",
-    "IngestionFlowFileStatus" to "it.gov.pagopa.pu.processexecutions.dto.generated.IngestionFlowFileStatus",
-    "ExportFileType" to "it.gov.pagopa.pu.processexecutions.dto.generated.ExportFile.ExportFileTypeEnum",
-    "ExportFileStatus" to "it.gov.pagopa.pu.processexecutions.dto.generated.ExportFileStatus",
-    "PaidExportFileRequestDTO" to "it.gov.pagopa.pu.processexecutions.dto.generated.PaidExportFileRequestDTO",
-    "ClassificationsExportFileRequestDTO" to "it.gov.pagopa.pu.processexecutions.dto.generated.ClassificationsExportFileRequestDTO",
-    "PaymentsReportingExportFileRequestDTO" to "it.gov.pagopa.pu.processexecutions.dto.generated.PaymentsReportingExportFileRequestDTO",
-    "ReceiptsArchivingExportFileRequestDTO" to "it.gov.pagopa.pu.processexecutions.dto.generated.ReceiptsArchivingExportFileRequestDTO",
-    "PaidExportFileType" to "it.gov.pagopa.pu.processexecutions.dto.generated.PaidExportFileRequestDTO.ExportFileTypeEnum",
-    "ReceiptsArchivingExportFileType" to "it.gov.pagopa.pu.processexecutions.dto.generated.ReceiptsArchivingExportFileRequestDTO.ExportFileTypeEnum",
-    "ReceiptView" to "it.gov.pagopa.pu.debtpositions.dto.generated.ReceiptView",
-    "ReceiptOriginType" to "it.gov.pagopa.pu.debtpositions.dto.generated.ReceiptOriginType",
-    "DebtPositionTypeOrg" to "it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrg",
-    "DebtPositionTypeOrgWithCount" to "it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrgWithCount",
-    "InstallmentView" to "it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentView",
-    "PaymentsReportingView" to "it.gov.pagopa.pu.classification.dto.generated.PaymentsReportingView",
-    "PaymentsReportingWithReceiptView" to "it.gov.pagopa.pu.classification.dto.generated.PaymentsReportingWithReceiptView",
-    "TreasuryView" to "it.gov.pagopa.pu.classification.dto.generated.TreasuryView",
-    "Treasury" to "it.gov.pagopa.pu.classification.dto.generated.Treasury",
-    "ClassificationDetailDTO" to "it.gov.pagopa.pu.bff.dto.ClassificationDetailDTO",
-    "DebtPositionDTO" to "it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionDTO",
-    "DebtPositionView" to "it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionView",
-    "DebtPositionStatus" to "it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionStatus",
-    "PaymentOptionDTO" to "it.gov.pagopa.pu.debtpositions.dto.generated.PaymentOptionDTO",
-    "PersonDTO" to "it.gov.pagopa.pu.debtpositions.dto.generated.PersonDTO",
-    "InstallmentDetailDTO" to "it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentDetailDTO",
-    "InstallmentStatus" to "it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentStatus",
-    "PaymentsReporting" to "it.gov.pagopa.pu.classification.dto.generated.PaymentsReporting",
-    "Transfer" to "it.gov.pagopa.pu.debtpositions.dto.generated.Transfer",
-    "UserInfo" to "it.gov.pagopa.pu.auth.dto.generated.UserInfo",
-    "UserOrganizationRoles" to "it.gov.pagopa.pu.auth.dto.generated.UserOrganizationRoles",
-    "DebtPositionTypeResponseBody" to "it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionType",
-    "ClassificationsEnum" to "it.gov.pagopa.pu.classification.dto.generated.ClassificationsEnum",
-    "DebtPositionOrigin" to "it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionOrigin",
-    "LocalDateInterval" to "it.gov.pagopa.pu.bff.dto.LocalDateIntervalFilter",
-    "Taxonomy" to "it.gov.pagopa.pu.organization.dto.generated.Taxonomy",
-    "DebtPositionRegistry" to "it.gov.pagopa.pu.registries.dto.generated.DebtPositionRegistry",
-    "InstallmentRegistry" to "it.gov.pagopa.pu.registries.dto.generated.InstallmentRegistry",
-    "WorkflowCreatedDTO" to "it.gov.pagopa.pu.workflowhub.dto.generated.WorkflowCreatedDTO",
-    "ManageDebtPositionDTO" to "it.gov.pagopa.pu.debtpositions.dto.generated.ManageDebtPositionDTO",
-    "OrgSilServiceType" to "it.gov.pagopa.pu.organization.dto.generated.OrgSilServiceType",
-    "OrgSilServiceDTO" to "it.gov.pagopa.pu.bff.dto.OrgSilServiceExtendedDTO",
-    "AssessmentsRegistryStatus" to "it.gov.pagopa.pu.classification.dto.generated.AssessmentsRegistryStatus",
-    "AssessmentsRegistry" to "it.gov.pagopa.pu.classification.dto.generated.AssessmentsRegistry",
-    "AssessmentsExtendedDTO" to "it.gov.pagopa.pu.bff.dto.AssessmentsExtendedDTO",
-    "AssessmentsStatusEnum" to "it.gov.pagopa.pu.classification.dto.generated.AssessmentStatus",
-    "AssessmentsDetail" to "it.gov.pagopa.pu.classification.dto.generated.AssessmentsDetail",
-    "RegistryPagoPaEventType" to "it.gov.pagopa.pu.registries.dto.generated.RegistryPagoPaEventType",
-    "PagoPaRegistry" to "it.gov.pagopa.pu.registries.dto.generated.PagoPaRegistry",
-    "SilRegistryDTO" to "it.gov.pagopa.pu.registries.dto.generated.SilRegistryDTO",
-    "PagoPaRegistryDTO" to "it.gov.pagopa.pu.registries.dto.generated.PagoPaRegistryDTO",
-    "SilRegistry" to "it.gov.pagopa.pu.registries.dto.generated.SilRegistry",
-    "RegistrySilEventType" to "it.gov.pagopa.pu.registries.dto.generated.RegistrySilEventType",
-    "ScheduleEnum" to "it.gov.pagopa.pu.workflowhub.dto.generated.ScheduleEnum",
-    "RegistrySilEventType" to "it.gov.pagopa.pu.registries.dto.generated.RegistrySilEventType",
-    "Assessments" to "it.gov.pagopa.pu.classification.dto.generated.Assessments",
-    "PagedClassificationPaidInstallmentsView" to "it.gov.pagopa.pu.classification.dto.generated.PagedClassificationPaidInstallmentsView",
-    "CreateAssessmentsDetail" to "it.gov.pagopa.pu.classification.dto.generated.CreateAssessmentsDetail",
-    "OrgSilServiceView" to "it.gov.pagopa.pu.organization.dto.generated.OrgSilServiceView",
-    "OrgSilServiceDecryptedDTO" to "it.gov.pagopa.pu.bff.dto.OrgSilServiceDecryptedDTO",
-    "RegistryOutcome" to "it.gov.pagopa.pu.registries.dto.generated.RegistryOutcome",
-    "ClientDTOPage" to "it.gov.pagopa.pu.auth.dto.generated.ClientDTOPage",
-    "ClientDTO" to "it.gov.pagopa.pu.auth.dto.generated.ClientDTO",
-    "CreateClientRequest" to "it.gov.pagopa.pu.auth.dto.generated.CreateClientRequest",
-    "AssessmentsRegistryExtendedDTO" to "it.gov.pagopa.pu.bff.dto.AssessmentsRegistryExtendedDTO",
-    "TreasuredClassificationExtendedDTO" to "it.gov.pagopa.pu.bff.dto.TreasuredClassificationExtendedDTO",
-    "Organization" to "it.gov.pagopa.pu.organization.dto.generated.OrganizationDetailDTO",
-    "OrganizationStatus" to "it.gov.pagopa.pu.organization.dto.generated.OrganizationStatus",
-    "SpontaneousForm" to "it.gov.pagopa.pu.debtpositions.dto.generated.SpontaneousForm",
-    "SpontaneousFormStructure" to "it.gov.pagopa.pu.debtpositions.dto.generated.SpontaneousFormStructure",
-    "OrganizationAdditionalLanguage" to "it.gov.pagopa.pu.organization.dto.generated.OrganizationAdditionalLanguage"
-  ))
-  configOptions.set(mapOf(
-    "dateLibrary" to "java8",
-    "requestMappingMode" to "api_interface",
-    "useSpringBoot3" to "true",
-    "interfaceOnly" to "true",
-    "useTags" to "true",
-    "useBeanValidation" to "true",
-    "generateConstructorWithAllArgs" to "true",
-    "generatedConstructorWithRequiredArgs" to "true",
-    "enumPropertyNaming" to "original",
-    "additionalModelTypeAnnotations" to "@lombok.experimental.SuperBuilder(toBuilder = true)"
-  ))
+  typeMappings.set(
+    mapOf(
+      "AccessToken" to "it.gov.pagopa.pu.auth.dto.generated.AccessToken",
+      "DebtPositionType" to "it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionType",
+      "IngestionFlowFileType" to "it.gov.pagopa.pu.processexecutions.dto.generated.IngestionFlowFile.IngestionFlowFileTypeEnum",
+      "IngestionFlowFileStatus" to "it.gov.pagopa.pu.processexecutions.dto.generated.IngestionFlowFileStatus",
+      "ExportFileType" to "it.gov.pagopa.pu.processexecutions.dto.generated.ExportFile.ExportFileTypeEnum",
+      "ExportFileStatus" to "it.gov.pagopa.pu.processexecutions.dto.generated.ExportFileStatus",
+      "PaidExportFileRequestDTO" to "it.gov.pagopa.pu.processexecutions.dto.generated.PaidExportFileRequestDTO",
+      "ClassificationsExportFileRequestDTO" to "it.gov.pagopa.pu.processexecutions.dto.generated.ClassificationsExportFileRequestDTO",
+      "PaymentsReportingExportFileRequestDTO" to "it.gov.pagopa.pu.processexecutions.dto.generated.PaymentsReportingExportFileRequestDTO",
+      "ReceiptsArchivingExportFileRequestDTO" to "it.gov.pagopa.pu.processexecutions.dto.generated.ReceiptsArchivingExportFileRequestDTO",
+      "PaidExportFileType" to "it.gov.pagopa.pu.processexecutions.dto.generated.PaidExportFileRequestDTO.ExportFileTypeEnum",
+      "ReceiptsArchivingExportFileType" to "it.gov.pagopa.pu.processexecutions.dto.generated.ReceiptsArchivingExportFileRequestDTO.ExportFileTypeEnum",
+      "ReceiptView" to "it.gov.pagopa.pu.debtpositions.dto.generated.ReceiptView",
+      "ReceiptOriginType" to "it.gov.pagopa.pu.debtpositions.dto.generated.ReceiptOriginType",
+      "DebtPositionTypeOrg" to "it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrg",
+      "DebtPositionTypeOrgWithCount" to "it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrgWithCount",
+      "InstallmentView" to "it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentView",
+      "PaymentsReportingView" to "it.gov.pagopa.pu.classification.dto.generated.PaymentsReportingView",
+      "PaymentsReportingWithReceiptView" to "it.gov.pagopa.pu.classification.dto.generated.PaymentsReportingWithReceiptView",
+      "TreasuryView" to "it.gov.pagopa.pu.classification.dto.generated.TreasuryView",
+      "Treasury" to "it.gov.pagopa.pu.classification.dto.generated.Treasury",
+      "ClassificationDetailDTO" to "it.gov.pagopa.pu.bff.dto.ClassificationDetailDTO",
+      "DebtPositionDTO" to "it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionDTO",
+      "DebtPositionView" to "it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionView",
+      "DebtPositionStatus" to "it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionStatus",
+      "PaymentOptionDTO" to "it.gov.pagopa.pu.debtpositions.dto.generated.PaymentOptionDTO",
+      "PersonDTO" to "it.gov.pagopa.pu.debtpositions.dto.generated.PersonDTO",
+      "InstallmentDetailDTO" to "it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentDetailDTO",
+      "InstallmentStatus" to "it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentStatus",
+      "PaymentsReporting" to "it.gov.pagopa.pu.classification.dto.generated.PaymentsReporting",
+      "Transfer" to "it.gov.pagopa.pu.debtpositions.dto.generated.Transfer",
+      "UserInfo" to "it.gov.pagopa.pu.auth.dto.generated.UserInfo",
+      "UserOrganizationRoles" to "it.gov.pagopa.pu.auth.dto.generated.UserOrganizationRoles",
+      "DebtPositionTypeResponseBody" to "it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionType",
+      "ClassificationsEnum" to "it.gov.pagopa.pu.classification.dto.generated.ClassificationsEnum",
+      "DebtPositionOrigin" to "it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionOrigin",
+      "LocalDateInterval" to "it.gov.pagopa.pu.bff.dto.LocalDateIntervalFilter",
+      "Taxonomy" to "it.gov.pagopa.pu.organization.dto.generated.Taxonomy",
+      "DebtPositionRegistry" to "it.gov.pagopa.pu.registries.dto.generated.DebtPositionRegistry",
+      "InstallmentRegistry" to "it.gov.pagopa.pu.registries.dto.generated.InstallmentRegistry",
+      "WorkflowCreatedDTO" to "it.gov.pagopa.pu.workflowhub.dto.generated.WorkflowCreatedDTO",
+      "ManageDebtPositionDTO" to "it.gov.pagopa.pu.debtpositions.dto.generated.ManageDebtPositionDTO",
+      "OrgSilServiceType" to "it.gov.pagopa.pu.organization.dto.generated.OrgSilServiceType",
+      "OrgSilServiceDTO" to "it.gov.pagopa.pu.bff.dto.OrgSilServiceExtendedDTO",
+      "AssessmentsRegistryStatus" to "it.gov.pagopa.pu.classification.dto.generated.AssessmentsRegistryStatus",
+      "AssessmentsRegistry" to "it.gov.pagopa.pu.classification.dto.generated.AssessmentsRegistry",
+      "AssessmentsExtendedDTO" to "it.gov.pagopa.pu.bff.dto.AssessmentsExtendedDTO",
+      "AssessmentsStatusEnum" to "it.gov.pagopa.pu.classification.dto.generated.AssessmentStatus",
+      "AssessmentsDetail" to "it.gov.pagopa.pu.classification.dto.generated.AssessmentsDetail",
+      "RegistryPagoPaEventType" to "it.gov.pagopa.pu.registries.dto.generated.RegistryPagoPaEventType",
+      "PagoPaRegistry" to "it.gov.pagopa.pu.registries.dto.generated.PagoPaRegistry",
+      "SilRegistryDTO" to "it.gov.pagopa.pu.registries.dto.generated.SilRegistryDTO",
+      "PagoPaRegistryDTO" to "it.gov.pagopa.pu.registries.dto.generated.PagoPaRegistryDTO",
+      "SilRegistry" to "it.gov.pagopa.pu.registries.dto.generated.SilRegistry",
+      "RegistrySilEventType" to "it.gov.pagopa.pu.registries.dto.generated.RegistrySilEventType",
+      "ScheduleEnum" to "it.gov.pagopa.pu.workflowhub.dto.generated.ScheduleEnum",
+      "RegistrySilEventType" to "it.gov.pagopa.pu.registries.dto.generated.RegistrySilEventType",
+      "Assessments" to "it.gov.pagopa.pu.classification.dto.generated.Assessments",
+      "PagedClassificationPaidInstallmentsView" to "it.gov.pagopa.pu.classification.dto.generated.PagedClassificationPaidInstallmentsView",
+      "CreateAssessmentsDetail" to "it.gov.pagopa.pu.classification.dto.generated.CreateAssessmentsDetail",
+      "OrgSilServiceView" to "it.gov.pagopa.pu.organization.dto.generated.OrgSilServiceView",
+      "OrgSilServiceDecryptedDTO" to "it.gov.pagopa.pu.bff.dto.OrgSilServiceDecryptedDTO",
+      "RegistryOutcome" to "it.gov.pagopa.pu.registries.dto.generated.RegistryOutcome",
+      "ClientDTOPage" to "it.gov.pagopa.pu.auth.dto.generated.ClientDTOPage",
+      "ClientDTO" to "it.gov.pagopa.pu.auth.dto.generated.ClientDTO",
+      "CreateClientRequest" to "it.gov.pagopa.pu.auth.dto.generated.CreateClientRequest",
+      "AssessmentsRegistryExtendedDTO" to "it.gov.pagopa.pu.bff.dto.AssessmentsRegistryExtendedDTO",
+      "TreasuredClassificationExtendedDTO" to "it.gov.pagopa.pu.bff.dto.TreasuredClassificationExtendedDTO",
+      "Organization" to "it.gov.pagopa.pu.organization.dto.generated.OrganizationDetailDTO",
+      "OrganizationStatus" to "it.gov.pagopa.pu.organization.dto.generated.OrganizationStatus",
+      "SpontaneousForm" to "it.gov.pagopa.pu.debtpositions.dto.generated.SpontaneousForm",
+      "SpontaneousFormStructure" to "it.gov.pagopa.pu.debtpositions.dto.generated.SpontaneousFormStructure",
+      "OrganizationAdditionalLanguage" to "it.gov.pagopa.pu.organization.dto.generated.OrganizationAdditionalLanguage"
+    )
+  )
+  configOptions.set(
+    mapOf(
+      "dateLibrary" to "java8",
+      "requestMappingMode" to "api_interface",
+      "useSpringBoot3" to "true",
+      "interfaceOnly" to "true",
+      "useTags" to "true",
+      "useBeanValidation" to "true",
+      "generateConstructorWithAllArgs" to "true",
+      "generatedConstructorWithRequiredArgs" to "true",
+      "enumPropertyNaming" to "original",
+      "additionalModelTypeAnnotations" to "@lombok.experimental.SuperBuilder(toBuilder = true)"
+    )
+  )
 }
 
-var targetEnv = when (Objects.requireNonNullElse(System.getProperty("targetBranch"), grgit.branch.current().name)) {
+var targetEnv = when (Objects.requireNonNullElse(
+  System.getProperty("targetBranch"),
+  grgit.branch.current().name
+)) {
   "uat" -> "uat"
   "main" -> "main"
   else -> "develop"
@@ -278,22 +288,24 @@ tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>("ope
   outputDir.set("$projectDir/build/generated")
   apiPackage.set("it.gov.pagopa.pu.auth.controller.generated")
   modelPackage.set("it.gov.pagopa.pu.auth.dto.generated")
-  configOptions.set(mapOf(
-    "swaggerAnnotations" to "false",
-    "openApiNullable" to "false",
-    "dateLibrary" to "java8",
-    "serializableModel" to "true",
-    "useSpringBoot3" to "true",
-    "useJakartaEe" to "true",
-    "useOneOfInterfaces" to "true",
-    "useBeanValidation" to "true",
-    "serializationLibrary" to "jackson",
-    "generateSupportingFiles" to "true",
-    "generateConstructorWithAllArgs" to "true",
-    "generatedConstructorWithRequiredArgs" to "true",
-    "enumPropertyNaming" to "original",
-    "additionalModelTypeAnnotations" to "@lombok.experimental.SuperBuilder(toBuilder = true)"
-  ))
+  configOptions.set(
+    mapOf(
+      "swaggerAnnotations" to "false",
+      "openApiNullable" to "false",
+      "dateLibrary" to "java8",
+      "serializableModel" to "true",
+      "useSpringBoot3" to "true",
+      "useJakartaEe" to "true",
+      "useOneOfInterfaces" to "true",
+      "useBeanValidation" to "true",
+      "serializationLibrary" to "jackson",
+      "generateSupportingFiles" to "true",
+      "generateConstructorWithAllArgs" to "true",
+      "generatedConstructorWithRequiredArgs" to "true",
+      "enumPropertyNaming" to "original",
+      "additionalModelTypeAnnotations" to "@lombok.experimental.SuperBuilder(toBuilder = true)"
+    )
+  )
   library.set("resttemplate")
 }
 
@@ -306,22 +318,24 @@ tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>("ope
   outputDir.set("$projectDir/build/generated")
   apiPackage.set("it.gov.pagopa.pu.organization.controller.generated")
   modelPackage.set("it.gov.pagopa.pu.organization.dto.generated")
-  configOptions.set(mapOf(
-    "swaggerAnnotations" to "false",
-    "openApiNullable" to "false",
-    "dateLibrary" to "java8",
-    "serializableModel" to "true",
-    "useSpringBoot3" to "true",
-    "useJakartaEe" to "true",
-    "useOneOfInterfaces" to "true",
-    "useBeanValidation" to "true",
-    "serializationLibrary" to "jackson",
-    "generateSupportingFiles" to "true",
-    "generateConstructorWithAllArgs" to "true",
-    "generatedConstructorWithRequiredArgs" to "true",
-    "enumPropertyNaming" to "original",
-    "additionalModelTypeAnnotations" to "@lombok.experimental.SuperBuilder(toBuilder = true)"
-  ))
+  configOptions.set(
+    mapOf(
+      "swaggerAnnotations" to "false",
+      "openApiNullable" to "false",
+      "dateLibrary" to "java8",
+      "serializableModel" to "true",
+      "useSpringBoot3" to "true",
+      "useJakartaEe" to "true",
+      "useOneOfInterfaces" to "true",
+      "useBeanValidation" to "true",
+      "serializationLibrary" to "jackson",
+      "generateSupportingFiles" to "true",
+      "generateConstructorWithAllArgs" to "true",
+      "generatedConstructorWithRequiredArgs" to "true",
+      "enumPropertyNaming" to "original",
+      "additionalModelTypeAnnotations" to "@lombok.experimental.SuperBuilder(toBuilder = true)"
+    )
+  )
   library.set("resttemplate")
 }
 
@@ -334,32 +348,40 @@ tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>("ope
   outputDir.set("$projectDir/build/generated")
   apiPackage.set("it.gov.pagopa.pu.debtpositions.controller.generated")
   modelPackage.set("it.gov.pagopa.pu.debtpositions.dto.generated")
-  typeMappings.set(mapOf(
-    "LocalDateTime" to "java.time.LocalDateTime",
-    "string+binary" to "Resource"
-  ))
-  importMappings.set(mapOf(
-    "Resource" to "org.springframework.core.io.Resource"
-  ))
-  configOptions.set(mapOf(
-    "swaggerAnnotations" to "false",
-    "openApiNullable" to "false",
-    "dateLibrary" to "java8",
-    "serializableModel" to "true",
-    "useSpringBoot3" to "true",
-    "useJakartaEe" to "true",
-    "useOneOfInterfaces" to "true",
-    "useBeanValidation" to "true",
-    "serializationLibrary" to "jackson",
-    "generateSupportingFiles" to "true",
-    "generateConstructorWithAllArgs" to "true",
-    "generatedConstructorWithRequiredArgs" to "true",
-    "enumPropertyNaming" to "original",
-    "additionalModelTypeAnnotations" to "@lombok.experimental.SuperBuilder(toBuilder = true)"
-  ))
-  additionalProperties.set(mapOf(
-    "removeEnumValuePrefix" to "false"
-  ))
+  typeMappings.set(
+    mapOf(
+      "LocalDateTime" to "java.time.LocalDateTime",
+      "string+binary" to "Resource"
+    )
+  )
+  importMappings.set(
+    mapOf(
+      "Resource" to "org.springframework.core.io.Resource"
+    )
+  )
+  configOptions.set(
+    mapOf(
+      "swaggerAnnotations" to "false",
+      "openApiNullable" to "false",
+      "dateLibrary" to "java8",
+      "serializableModel" to "true",
+      "useSpringBoot3" to "true",
+      "useJakartaEe" to "true",
+      "useOneOfInterfaces" to "true",
+      "useBeanValidation" to "true",
+      "serializationLibrary" to "jackson",
+      "generateSupportingFiles" to "true",
+      "generateConstructorWithAllArgs" to "true",
+      "generatedConstructorWithRequiredArgs" to "true",
+      "enumPropertyNaming" to "original",
+      "additionalModelTypeAnnotations" to "@lombok.experimental.SuperBuilder(toBuilder = true)"
+    )
+  )
+  additionalProperties.set(
+    mapOf(
+      "removeEnumValuePrefix" to "false"
+    )
+  )
   library.set("resttemplate")
 }
 
@@ -372,24 +394,28 @@ tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>("ope
   outputDir.set("$projectDir/build/generated")
   apiPackage.set("it.gov.pagopa.pu.processexecutions.controller.generated")
   modelPackage.set("it.gov.pagopa.pu.processexecutions.dto.generated")
-  typeMappings.set(mapOf(
-    "LocalDateTime" to "java.time.LocalDateTime"
-  ))
-  configOptions.set(mapOf(
-    "swaggerAnnotations" to "false",
-    "openApiNullable" to "false",
-    "dateLibrary" to "java8",
-    "serializableModel" to "true",
-    "useSpringBoot3" to "true",
-    "useJakartaEe" to "true",
-    "useBeanValidation" to "true",
-    "serializationLibrary" to "jackson",
-    "generateSupportingFiles" to "true",
-    "generateConstructorWithAllArgs" to "true",
-    "generatedConstructorWithRequiredArgs" to "true",
-    "enumPropertyNaming" to "original",
-    "additionalModelTypeAnnotations" to "@lombok.experimental.SuperBuilder(toBuilder = true)"
-  ))
+  typeMappings.set(
+    mapOf(
+      "LocalDateTime" to "java.time.LocalDateTime"
+    )
+  )
+  configOptions.set(
+    mapOf(
+      "swaggerAnnotations" to "false",
+      "openApiNullable" to "false",
+      "dateLibrary" to "java8",
+      "serializableModel" to "true",
+      "useSpringBoot3" to "true",
+      "useJakartaEe" to "true",
+      "useBeanValidation" to "true",
+      "serializationLibrary" to "jackson",
+      "generateSupportingFiles" to "true",
+      "generateConstructorWithAllArgs" to "true",
+      "generatedConstructorWithRequiredArgs" to "true",
+      "enumPropertyNaming" to "original",
+      "additionalModelTypeAnnotations" to "@lombok.experimental.SuperBuilder(toBuilder = true)"
+    )
+  )
   library.set("resttemplate")
 }
 
@@ -402,28 +428,34 @@ tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>("ope
   outputDir.set("$projectDir/build/generated")
   apiPackage.set("it.gov.pagopa.pu.classification.controller.generated")
   modelPackage.set("it.gov.pagopa.pu.classification.dto.generated")
-  typeMappings.set(mapOf(
-    "LocalDateTime" to "java.time.LocalDateTime"
-  ))
-  schemaMappings.set(mapOf(
-    "AssessmentsRegistryRequestBody" to "it.gov.pagopa.pu.classification.dto.generated.AssessmentsRegistry"
-  ))
-  configOptions.set(mapOf(
-    "swaggerAnnotations" to "false",
-    "openApiNullable" to "false",
-    "dateLibrary" to "java8",
-    "serializableModel" to "true",
-    "useSpringBoot3" to "true",
-    "useJakartaEe" to "true",
-    "useOneOfInterfaces" to "true",
-    "useBeanValidation" to "true",
-    "serializationLibrary" to "jackson",
-    "generateSupportingFiles" to "true",
-    "generateConstructorWithAllArgs" to "true",
-    "generatedConstructorWithRequiredArgs" to "true",
-    "enumPropertyNaming" to "original",
-    "additionalModelTypeAnnotations" to "@lombok.experimental.SuperBuilder(toBuilder = true)"
-  ))
+  typeMappings.set(
+    mapOf(
+      "LocalDateTime" to "java.time.LocalDateTime"
+    )
+  )
+  schemaMappings.set(
+    mapOf(
+      "AssessmentsRegistryRequestBody" to "it.gov.pagopa.pu.classification.dto.generated.AssessmentsRegistry"
+    )
+  )
+  configOptions.set(
+    mapOf(
+      "swaggerAnnotations" to "false",
+      "openApiNullable" to "false",
+      "dateLibrary" to "java8",
+      "serializableModel" to "true",
+      "useSpringBoot3" to "true",
+      "useJakartaEe" to "true",
+      "useOneOfInterfaces" to "true",
+      "useBeanValidation" to "true",
+      "serializationLibrary" to "jackson",
+      "generateSupportingFiles" to "true",
+      "generateConstructorWithAllArgs" to "true",
+      "generatedConstructorWithRequiredArgs" to "true",
+      "enumPropertyNaming" to "original",
+      "additionalModelTypeAnnotations" to "@lombok.experimental.SuperBuilder(toBuilder = true)"
+    )
+  )
   library.set("resttemplate")
 }
 
@@ -436,29 +468,35 @@ tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>("ope
   outputDir.set("$projectDir/build/generated")
   apiPackage.set("it.gov.pagopa.pu.pagopapayments.controller.generated")
   modelPackage.set("it.gov.pagopa.pu.pagopapayments.dto.generated")
-  configOptions.set(mapOf(
-    "swaggerAnnotations" to "false",
-    "openApiNullable" to "false",
-    "dateLibrary" to "java8",
-    "serializableModel" to "true",
-    "useSpringBoot3" to "true",
-    "useJakartaEe" to "true",
-    "useOneOfInterfaces" to "true",
-    "useBeanValidation" to "true",
-    "serializationLibrary" to "jackson",
-    "generateSupportingFiles" to "true",
-    "generateConstructorWithAllArgs" to "true",
-    "generatedConstructorWithRequiredArgs" to "true",
-    "enumPropertyNaming" to "original",
-    "additionalModelTypeAnnotations" to "@lombok.experimental.SuperBuilder(toBuilder = true)"
-  ))
-  typeMappings.set(mapOf(
-    "string+binary" to "Resource",
-    "DebtPositionDTO" to "it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionDTO"
-  ))
-  importMappings.set(mapOf(
-    "Resource" to "org.springframework.core.io.Resource"
-  ))
+  configOptions.set(
+    mapOf(
+      "swaggerAnnotations" to "false",
+      "openApiNullable" to "false",
+      "dateLibrary" to "java8",
+      "serializableModel" to "true",
+      "useSpringBoot3" to "true",
+      "useJakartaEe" to "true",
+      "useOneOfInterfaces" to "true",
+      "useBeanValidation" to "true",
+      "serializationLibrary" to "jackson",
+      "generateSupportingFiles" to "true",
+      "generateConstructorWithAllArgs" to "true",
+      "generatedConstructorWithRequiredArgs" to "true",
+      "enumPropertyNaming" to "original",
+      "additionalModelTypeAnnotations" to "@lombok.experimental.SuperBuilder(toBuilder = true)"
+    )
+  )
+  typeMappings.set(
+    mapOf(
+      "string+binary" to "Resource",
+      "DebtPositionDTO" to "it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionDTO"
+    )
+  )
+  importMappings.set(
+    mapOf(
+      "Resource" to "org.springframework.core.io.Resource"
+    )
+  )
   library.set("resttemplate")
 }
 
@@ -471,22 +509,24 @@ tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>("ope
   outputDir.set("$projectDir/build/generated")
   apiPackage.set("it.gov.pagopa.pu.registries.controller.generated")
   modelPackage.set("it.gov.pagopa.pu.registries.dto.generated")
-  configOptions.set(mapOf(
-    "swaggerAnnotations" to "false",
-    "openApiNullable" to "false",
-    "dateLibrary" to "java8",
-    "serializableModel" to "true",
-    "useSpringBoot3" to "true",
-    "useJakartaEe" to "true",
-    "useOneOfInterfaces" to "true",
-    "useBeanValidation" to "true",
-    "serializationLibrary" to "jackson",
-    "generateSupportingFiles" to "true",
-    "generateConstructorWithAllArgs" to "true",
-    "generatedConstructorWithRequiredArgs" to "true",
-    "enumPropertyNaming" to "original",
-    "additionalModelTypeAnnotations" to "@lombok.experimental.SuperBuilder(toBuilder = true)"
-  ))
+  configOptions.set(
+    mapOf(
+      "swaggerAnnotations" to "false",
+      "openApiNullable" to "false",
+      "dateLibrary" to "java8",
+      "serializableModel" to "true",
+      "useSpringBoot3" to "true",
+      "useJakartaEe" to "true",
+      "useOneOfInterfaces" to "true",
+      "useBeanValidation" to "true",
+      "serializationLibrary" to "jackson",
+      "generateSupportingFiles" to "true",
+      "generateConstructorWithAllArgs" to "true",
+      "generatedConstructorWithRequiredArgs" to "true",
+      "enumPropertyNaming" to "original",
+      "additionalModelTypeAnnotations" to "@lombok.experimental.SuperBuilder(toBuilder = true)"
+    )
+  )
   library.set("resttemplate")
 }
 
@@ -499,21 +539,23 @@ tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>("ope
   outputDir.set("$projectDir/build/generated")
   apiPackage.set("it.gov.pagopa.pu.workflowhub.controller.generated")
   modelPackage.set("it.gov.pagopa.pu.workflowhub.dto.generated")
-  configOptions.set(mapOf(
-    "swaggerAnnotations" to "false",
-    "openApiNullable" to "false",
-    "dateLibrary" to "java8",
-    "serializableModel" to "true",
-    "useSpringBoot3" to "true",
-    "useJakartaEe" to "true",
-    "useOneOfInterfaces" to "true",
-    "useBeanValidation" to "true",
-    "serializationLibrary" to "jackson",
-    "generateSupportingFiles" to "true",
-    "generateConstructorWithAllArgs" to "true",
-    "generatedConstructorWithRequiredArgs" to "true",
-    "enumPropertyNaming" to "original",
-    "additionalModelTypeAnnotations" to "@lombok.experimental.SuperBuilder"
-  ))
+  configOptions.set(
+    mapOf(
+      "swaggerAnnotations" to "false",
+      "openApiNullable" to "false",
+      "dateLibrary" to "java8",
+      "serializableModel" to "true",
+      "useSpringBoot3" to "true",
+      "useJakartaEe" to "true",
+      "useOneOfInterfaces" to "true",
+      "useBeanValidation" to "true",
+      "serializationLibrary" to "jackson",
+      "generateSupportingFiles" to "true",
+      "generateConstructorWithAllArgs" to "true",
+      "generatedConstructorWithRequiredArgs" to "true",
+      "enumPropertyNaming" to "original",
+      "additionalModelTypeAnnotations" to "@lombok.experimental.SuperBuilder"
+    )
+  )
   library.set("resttemplate")
 }

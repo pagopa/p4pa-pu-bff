@@ -14024,6 +14024,12 @@
           "paymentNotificationDebtPositionTypeOrgCode" : {
             "type" : "string"
           },
+          "debtPositionOrigin" : {
+            "$ref" : "#/components/schemas/DebtPositionOrigin"
+          },
+          "receiptOrigin" : {
+            "$ref" : "#/components/schemas/ReceiptOriginType"
+          },
           "payed" : {
             "type" : "boolean"
           },

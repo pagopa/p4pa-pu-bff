@@ -17,9 +17,13 @@ public class OffsetDateTimeToLocalDateTimeSerializer extends JsonSerializer<Offs
   @Override
   public void serialize(OffsetDateTime value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
     if (value != null) {
-      LocalDateTime localDateTime = value.atZoneSameInstant(ZoneId.systemDefault()).toLocalDateTime();
-      gen.writeString(localDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSSSS")));
+      gen.writeString(formatLocalDateTime(value));
     }
+  }
+
+  public static String formatLocalDateTime(OffsetDateTime value) {
+    LocalDateTime localDateTime = value.atZoneSameInstant(ZoneId.systemDefault()).toLocalDateTime();
+    return localDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSSSS"));
   }
 }
 

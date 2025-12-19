@@ -946,6 +946,10 @@ paths:
           schema:
             type: integer
             format: int64
+        - name: status
+          in: query
+          schema:
+            type: 'InstallmentStatus'
       responses:
         '200':
           description: OK
@@ -4416,6 +4420,8 @@ components:
         - debtor
         - pspCompanyName
         - iud
+        - receiptOrigin
+        - debtPositionOrigin
       properties:
         receiptId:
           type: integer
@@ -4448,6 +4454,10 @@ components:
         notificationFeeCents:
           type: integer
           format: int64
+        receiptOrigin:
+          type: 'ReceiptOriginType'
+        debtPositionOrigin:
+          type: 'DebtPositionOrigin'
     PagedIngestionFlowFile:
       type: object
       required:
@@ -5052,6 +5062,8 @@ components:
           format: int64
         spontaneousFormCode:
           type: string
+        debtPositionTypeTaxonomyCode:
+          type: string
     PaidExportFileRequest:
       type: object
       required:
@@ -5562,6 +5574,9 @@ components:
           type: integer
           format: int64
           readOnly: true
+        debtPositionTypeOrgCount:
+          type: integer
+          format: int32
         code:
           type: string
           readOnly: true

@@ -5988,6 +5988,13 @@
             "format" : "int64"
           }
         }, {
+          "name" : "status",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/components/schemas/InstallmentStatus"
+          }
+        }, {
           "name" : "page",
           "in" : "query",
           "description" : "Zero-based page index (0..N)",
@@ -9412,6 +9419,10 @@
           "code" : {
             "type" : "string"
           },
+          "debtPositionTypeOrgCount" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
           "structure" : {
             "$ref" : "#/components/schemas/SpontaneousFormStructure"
           },
@@ -11696,6 +11707,10 @@
             "format" : "int64",
             "readOnly" : true
           },
+          "debtPositionTypeOrgCount" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
           "code" : {
             "type" : "string",
             "readOnly" : true
@@ -12011,9 +12026,15 @@
           "notificationFeeCents" : {
             "type" : "integer",
             "format" : "int64"
+          },
+          "receiptOrigin" : {
+            "$ref" : "#/components/schemas/ReceiptOriginType"
+          },
+          "debtPositionOrigin" : {
+            "$ref" : "#/components/schemas/DebtPositionOrigin"
           }
         },
-        "required" : [ "debtPositionTypeOrgDescription", "debtor", "iud", "paymentAmountCents", "pspCompanyName", "receiptId", "remittanceInformation" ]
+        "required" : [ "debtPositionOrigin", "debtPositionTypeOrgDescription", "debtor", "iud", "paymentAmountCents", "pspCompanyName", "receiptId", "receiptOrigin", "remittanceInformation" ]
       },
       "PagedPaymentsReportingView" : {
         "type" : "object",
@@ -12776,6 +12797,9 @@
           },
           "spontaneousFormCode" : {
             "type" : "string"
+          },
+          "debtPositionTypeTaxonomyCode" : {
+            "type" : "string"
           }
         },
         "required" : [ "code", "debtPositionTypeId", "description", "organizationId" ]
@@ -12966,6 +12990,9 @@
             "type" : "integer",
             "format" : "int64"
           },
+          "debtPositionOrigin" : {
+            "$ref" : "#/components/schemas/DebtPositionOrigin"
+          },
           "paymentDateTime" : {
             "type" : "string",
             "format" : "date-time"
@@ -12994,7 +13021,7 @@
             "format" : "int64"
           }
         },
-        "required" : [ "amountCents", "debtPositionId", "debtPositionTypeOrgDescription", "debtor", "installmentId", "iuv", "status" ]
+        "required" : [ "amountCents", "debtPositionId", "debtPositionOrigin", "debtPositionTypeOrgDescription", "debtor", "installmentId", "iuv", "status" ]
       },
       "InstallmentRegistry" : {
         "type" : "object",
@@ -13997,6 +14024,12 @@
           "paymentNotificationDebtPositionTypeOrgCode" : {
             "type" : "string"
           },
+          "debtPositionOrigin" : {
+            "$ref" : "#/components/schemas/DebtPositionOrigin"
+          },
+          "receiptOrigin" : {
+            "$ref" : "#/components/schemas/ReceiptOriginType"
+          },
           "payed" : {
             "type" : "boolean"
           },
@@ -14140,6 +14173,9 @@
             "type" : "string"
           },
           "debtPositionTypeOrgCode" : {
+            "type" : "string"
+          },
+          "debtPositionTypeOrgDescription" : {
             "type" : "string"
           },
           "installmentIngestionFlowFileName" : {

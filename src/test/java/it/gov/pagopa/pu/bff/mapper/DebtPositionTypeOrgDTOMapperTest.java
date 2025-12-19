@@ -18,13 +18,14 @@ class DebtPositionTypeOrgDTOMapperTest {
   void givenDtoWhenMapThenMapIt() {
     DebtPositionTypeOrg dto = TestUtils.getPodamFactory().manufacturePojo(DebtPositionTypeOrg.class);
 
-    DebtPositionTypeOrgDTO result = mapper.map(dto, "DebtPositionTypeDescription", "DebtPositionTypeCode", "NotifyOutcomePushOrgSilServiceApplicationName", "AmountActualizationOrgSilServiceApplicationName", "spontaneousFormCode");
+    DebtPositionTypeOrgDTO result = mapper.map(dto, "DebtPositionTypeDescription", "DebtPositionTypeCode", "debtPositionTypeTaxonomyCode", "NotifyOutcomePushOrgSilServiceApplicationName", "AmountActualizationOrgSilServiceApplicationName", "spontaneousFormCode");
 
     TestUtils.reflectionEqualsByName(dto, result);
     TestUtils.checkNotNullFields(result);
 
     assertEquals("DebtPositionTypeDescription", result.getDebtPositionTypeDescription());
     assertEquals("DebtPositionTypeCode", result.getDebtPositionTypeCode());
+    assertEquals("debtPositionTypeTaxonomyCode", result.getDebtPositionTypeTaxonomyCode());
     assertEquals("NotifyOutcomePushOrgSilServiceApplicationName", result.getNotifyOutcomePushOrgSilServiceApplicationName());
     assertEquals("AmountActualizationOrgSilServiceApplicationName", result.getAmountActualizationOrgSilServiceApplicationName());
   }
@@ -35,6 +36,7 @@ class DebtPositionTypeOrgDTOMapperTest {
     DebtPositionType debtPositionType = new DebtPositionType();
     debtPositionType.setDescription("Test Description");
     debtPositionType.setCode("Test Code");
+    debtPositionType.setTaxonomyCode("Test Taxonomy Code");
 
     DebtPositionTypeOrgDTO result = mapper.map(debtPositionTypeOrg, debtPositionType, "NotifyOutcomePushOrgSilServiceApplicationName", "AmountActualizationOrgSilServiceApplicationName", "spontaneousFormCode");
 
@@ -43,6 +45,7 @@ class DebtPositionTypeOrgDTOMapperTest {
 
     assertEquals("Test Description", result.getDebtPositionTypeDescription());
     assertEquals("Test Code", result.getDebtPositionTypeCode());
+    assertEquals("Test Taxonomy Code", result.getDebtPositionTypeTaxonomyCode());
     assertEquals("NotifyOutcomePushOrgSilServiceApplicationName", result.getNotifyOutcomePushOrgSilServiceApplicationName());
     assertEquals("AmountActualizationOrgSilServiceApplicationName", result.getAmountActualizationOrgSilServiceApplicationName());
   }
@@ -57,6 +60,7 @@ class DebtPositionTypeOrgDTOMapperTest {
 
     assertNull(result.getDebtPositionTypeDescription());
     assertNull(result.getDebtPositionTypeCode());
+    assertNull(result.getDebtPositionTypeTaxonomyCode());
     assertNull(result.getNotifyOutcomePushOrgSilServiceApplicationName());
     assertNull(result.getAmountActualizationOrgSilServiceApplicationName());
   }

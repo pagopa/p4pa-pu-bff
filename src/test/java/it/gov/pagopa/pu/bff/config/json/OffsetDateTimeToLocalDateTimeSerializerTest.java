@@ -2,6 +2,7 @@ package it.gov.pagopa.pu.bff.config.json;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -28,11 +29,19 @@ class OffsetDateTimeToLocalDateTimeSerializerTest {
 
   private OffsetDateTimeToLocalDateTimeSerializer dateTimeSerializer;
 
+  private TimeZone defaultTimezone;
+
   @BeforeEach
-  public void setUp() {
+  void setUp() {
     dateTimeSerializer = new OffsetDateTimeToLocalDateTimeSerializer();
 
+    defaultTimezone = TimeZone.getDefault();
     TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
+  }
+
+  @AfterEach
+  void clear(){
+      TimeZone.setDefault(defaultTimezone);
   }
 
   @Test

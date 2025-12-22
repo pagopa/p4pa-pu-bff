@@ -2,7 +2,6 @@ package it.gov.pagopa.pu.bff.config.json;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -11,15 +10,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
 import java.util.TimeZone;
 
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 
 @ExtendWith(MockitoExtension.class)
-class OffsetDateTimeToLocalDateTimeSerializerTest {
+class LocalDateTimeToOffsetDateTimeSerializerTest {
 
   @Mock
   private JsonGenerator jsonGenerator;
@@ -27,30 +24,22 @@ class OffsetDateTimeToLocalDateTimeSerializerTest {
   @Mock
   private SerializerProvider serializerProvider;
 
-  private OffsetDateTimeToLocalDateTimeSerializer dateTimeSerializer;
-
-  private TimeZone defaultTimezone;
+  private LocalDateTimeToOffsetDateTimeSerializer dateTimeSerializer;
 
   @BeforeEach
   void setUp() {
-    dateTimeSerializer = new OffsetDateTimeToLocalDateTimeSerializer();
-
-    defaultTimezone = TimeZone.getDefault();
-    TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
-  }
-
-  @AfterEach
-  void clear(){
-      TimeZone.setDefault(defaultTimezone);
+    dateTimeSerializer = new LocalDateTimeToOffsetDateTimeSerializer();
   }
 
   @Test
   void testDateSerializer() throws IOException {
-    OffsetDateTime offsetDateTime = OffsetDateTime.of(LocalDateTime.of(2025, 1, 16, 9, 15, 20), ZoneOffset.ofHours(1));
+    LocalDateTime localDateTime = LocalDateTime.of(2025, 1, 16, 9, 15, 20);
 
-    dateTimeSerializer.serialize(offsetDateTime, jsonGenerator, serializerProvider);
+    TimeZone.setDefault(TimeZone.getTimeZone("Europe/Rome"));
 
-    verify(jsonGenerator).writeString("2025-01-16T08:15:20.000000");
+    dateTimeSerializer.serialize(localDateTime, jsonGenerator, serializerProvider);
+
+    verify(jsonGenerator).writeString("2025-01-16T09:15:20+01:00");
   }
 
   @Test

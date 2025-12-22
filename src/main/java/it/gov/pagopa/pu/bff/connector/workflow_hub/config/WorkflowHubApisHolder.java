@@ -6,7 +6,7 @@ import it.gov.pagopa.pu.workflowhub.controller.BaseApi;
 import it.gov.pagopa.pu.workflowhub.controller.generated.ScheduleApi;
 import it.gov.pagopa.pu.workflowhub.controller.generated.TaxonomyApi;
 import jakarta.annotation.PreDestroy;
-import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.boot.restclient.RestTemplateBuilder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 

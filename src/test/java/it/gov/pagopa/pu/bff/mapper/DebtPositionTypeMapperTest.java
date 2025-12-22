@@ -6,12 +6,17 @@ import it.gov.pagopa.pu.bff.util.TestUtils;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionType;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeRequestBody;
 import it.gov.pagopa.pu.organization.dto.generated.Taxonomy;
+import jakarta.annotation.Nonnull;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.util.ReflectionUtils;
 import uk.co.jemos.podam.api.PodamFactory;
+
+import java.lang.reflect.Field;
+import java.util.Objects;
 
 @ExtendWith(MockitoExtension.class)
 class DebtPositionTypeMapperTest {
@@ -63,15 +68,28 @@ class DebtPositionTypeMapperTest {
     Assertions.assertNull(debtPositionTypeMapper.mapToDebtPositionTypeDetailDTO(debtPositionType, null));
   }
 
-
   @Test
   void testMapToDebtPositionTypeRequestBody() {
     DebtPositionTypePatchRequestBody debtPositionTypePatchRequestBody = podamFactory.manufacturePojo(DebtPositionTypePatchRequestBody.class);
+    DebtPositionType oldDpType =podamFactory.manufacturePojo(DebtPositionType.class);
 
-    DebtPositionTypeRequestBody result = debtPositionTypeMapper.mapToDebtPositionTypeRequestBody(debtPositionTypePatchRequestBody);
+    DebtPositionTypeRequestBody result = debtPositionTypeMapper.mapToDebtPositionTypeRequestBody(debtPositionTypePatchRequestBody, oldDpType);
 
     Assertions.assertNotNull(result);
     TestUtils.checkNotNullFields(result,"creationDate","updateDate","updateOperatorExternalId","updateTraceId","debtPositionTypeId","description","taxonomyCode","code","brokerId", "orgType", "macroArea", "serviceType", "collectingReason");
     TestUtils.reflectionEqualsByName(debtPositionTypePatchRequestBody,result);
+
+    ReflectionUtils.doWithFields(DebtPositionType.class, oldEntityField -> {
+      if(oldEntityField.getAnnotation(Nonnull.class) != null){
+        oldEntityField.setAccessible(true);
+
+        Field resultField = Objects.requireNonNull(ReflectionUtils.findField(DebtPositionTypeRequestBody.class, oldEntityField.getName()));
+        resultField.setAccessible(true);
+        Assertions.assertSame(
+          oldEntityField.get(oldDpType),
+          resultField.get(result)
+        );
+      }
+    });
   }
 }

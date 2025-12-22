@@ -1,9 +1,10 @@
 {
 	"info": {
-		"_postman_id": "f5b635cf-fccf-4076-b138-49a32b7f7f16",
+		"_postman_id": "272d7234-9acf-4d4e-b935-ddc16b34b0c5",
 		"name": "PU-BFF",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "17966353"
+		"_exporter_id": "15747968",
+		"_collection_link": "https://warped-astronaut-141685.postman.co/workspace/P4PA~9a8b7dd5-97b6-4dd0-b3f5-95f25fd0b455/collection/15747968-272d7234-9acf-4d4e-b935-ddc16b34b0c5?action=share&source=collection_link&creator=15747968"
 	},
 	"item": [
 		{
@@ -218,14 +219,18 @@
 									"        pm.expect(item).to.have.property(\"orgName\").and.to.not.be.null;\r",
 									"        pm.expect(item).to.have.property(\"operatorRole\").and.to.not.be.null;\r",
 									"        pm.expect(item).to.have.property(\"orgFiscalCode\").and.to.not.be.null;\r",
+									"\r",
+									"        if(item.ipaCode == pm.variables.get(\"codIpaEnte\")) {\r",
+									"            pm.collectionVariables.set(\"organizationId\",  item.organizationId);\r",
+									"            pm.collectionVariables.set(\"organizationIpaCode\",  item.ipaCode);\r",
+									"        }\r",
 									"    });\r",
 									"})\r",
-									"\r",
-									"pm.collectionVariables.set(\"organizationId\",  jsonResponse[0]?.organizationId);\r",
-									"pm.collectionVariables.set(\"organizationIpaCode\",  jsonResponse[0]?.ipaCode);"
+									""
 								],
 								"type": "text/javascript",
-								"packages": {}
+								"packages": {},
+								"requests": {}
 							}
 						},
 						{
@@ -235,7 +240,8 @@
 									""
 								],
 								"type": "text/javascript",
-								"packages": {}
+								"packages": {},
+								"requests": {}
 							}
 						}
 					],
@@ -814,7 +820,7 @@
 									"});\r",
 									"\r",
 									"let response = pm.response.json();\r",
-									"const debtPositionType = response._embedded.debtPositionTypes.find(item => item.brokerId >0);\r",
+									"const debtPositionType = response.content[0];\r",
 									"let debtPositionTypeId = debtPositionType?.debtPositionTypeId;\r",
 									"\r",
 									" pm.collectionVariables.set(\"debtPositionTypeId\", debtPositionTypeId);\r",
@@ -822,7 +828,8 @@
 									""
 								],
 								"type": "text/javascript",
-								"packages": {}
+								"packages": {},
+								"requests": {}
 							}
 						}
 					],
@@ -840,12 +847,14 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{debtPositionBaseUrl}}/crud/debt-position-types",
+							"raw": "{{puBffBaseUrl}}/bff/organization/{{organizationId}}/debt-position-types",
 							"host": [
-								"{{debtPositionBaseUrl}}"
+								"{{puBffBaseUrl}}"
 							],
 							"path": [
-								"crud",
+								"bff",
+								"organization",
+								"{{organizationId}}",
 								"debt-position-types"
 							]
 						}
@@ -946,7 +955,8 @@
 									""
 								],
 								"type": "text/javascript",
-								"packages": {}
+								"packages": {},
+								"requests": {}
 							}
 						},
 						{
@@ -956,7 +966,8 @@
 									""
 								],
 								"type": "text/javascript",
-								"packages": {}
+								"packages": {},
+								"requests": {}
 							}
 						}
 					],
@@ -976,14 +987,10 @@
 							{
 								"key": "Accept",
 								"value": "application/json"
-							},
-							{
-								"key": "Authorization",
-								"value": "Bearer {{bearerToken}}"
 							}
 						],
 						"url": {
-							"raw": "{{puBffBaseUrl}}/bff/organization/:organizationId/receipts?receiptOrigin=RECEIPT_FILE",
+							"raw": "{{puBffBaseUrl}}/bff/organization/:organizationId/receipts?receiptOrigin=RECEIPT_FILE&paymentDateTimeFrom=2025-12-01T00:00Z&paymentDateTimeTo={{currentDate}}",
 							"host": [
 								"{{puBffBaseUrl}}"
 							],
@@ -997,6 +1004,14 @@
 								{
 									"key": "receiptOrigin",
 									"value": "RECEIPT_FILE"
+								},
+								{
+									"key": "paymentDateTimeFrom",
+									"value": "2025-12-01T00:00Z"
+								},
+								{
+									"key": "paymentDateTimeTo",
+									"value": "{{currentDate}}"
 								}
 							],
 							"variable": [
@@ -1116,7 +1131,8 @@
 									"pm.collectionVariables.set(\"debtPositionTypeOrgId\", jsonResponse.content[0]?.debtPositionTypeOrgId);"
 								],
 								"type": "text/javascript",
-								"packages": {}
+								"packages": {},
+								"requests": {}
 							}
 						}
 					],
@@ -1139,7 +1155,7 @@
 							}
 						],
 						"url": {
-							"raw": "{{puBffBaseUrl}}/bff/organization/:organizationId/debt-positions?creationDateFrom=2025-01-25T12%3A04%3A59.000Z&creationDateTo=2025-10-28T12%3A04%3A59.000Z",
+							"raw": "{{puBffBaseUrl}}/bff/organization/:organizationId/debt-positions?creationDateTimeFrom=2025-01-25T12%3A04%3A59.000Z&creationDateTimeTo=2025-10-28T12%3A04%3A59.000Z",
 							"host": [
 								"{{puBffBaseUrl}}"
 							],
@@ -1151,11 +1167,11 @@
 							],
 							"query": [
 								{
-									"key": "creationDateFrom",
+									"key": "creationDateTimeFrom",
 									"value": "2025-01-25T12%3A04%3A59.000Z"
 								},
 								{
-									"key": "creationDateTo",
+									"key": "creationDateTimeTo",
 									"value": "2025-10-28T12%3A04%3A59.000Z"
 								}
 							],
@@ -1436,7 +1452,8 @@
 									"pm.collectionVariables.set(\"createdDebtPositionTypeId\", jsonResponse.debtPositionTypeId);"
 								],
 								"type": "text/javascript",
-								"packages": {}
+								"packages": {},
+								"requests": {}
 							}
 						},
 						{
@@ -1447,7 +1464,8 @@
 									""
 								],
 								"type": "text/javascript",
-								"packages": {}
+								"packages": {},
+								"requests": {}
 							}
 						}
 					],
@@ -1466,7 +1484,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"code\": \"TEST\",\n    \"brokerId\": {{brokerId}},\n    \"description\": \"Test C Debt Position Type\",\n    \"orgType\": \"A\",\n    \"macroArea\": \"F\",\n    \"serviceType\": \"T\",\n    \"collectingReason\": \"R\",\n    \"taxonomyCode\": \"9/0201139AP/\",\n    \"flagAnonymousFiscalCode\": true,\n    \"flagMandatoryDueDate\": true,\n    \"flagNotifyIo\": true,\n    \"ioTemplateMessage\": \"Template145\"\n}",
+							"raw": "{\n    \"code\": \"TEST\",\n    \"brokerId\": {{brokerId}},\n    \"description\": \"Test C Debt Position Type\",\n    \"orgType\": \"03\",\n    \"macroArea\": \"01\",\n    \"serviceType\": \"108\",\n    \"collectingReason\": \"SP\",\n    \"taxonomyCode\": \"9/0301108SP/\",\n    \"flagAnonymousFiscalCode\": true,\n    \"flagMandatoryDueDate\": true,\n    \"flagNotifyIo\": true,\n    \"ioTemplateMessage\": \"Template145\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -3830,8 +3848,10 @@
 			"script": {
 				"type": "text/javascript",
 				"packages": {},
+				"requests": {},
 				"exec": [
-					""
+					"currentDate = new Date()",
+					"pm.collectionVariables.set(\"currentDate\", currentDate);"
 				]
 			}
 		},
@@ -3840,6 +3860,7 @@
 			"script": {
 				"type": "text/javascript",
 				"packages": {},
+				"requests": {},
 				"exec": [
 					"// START COMMON UTILITIES\r",
 					"\r",
@@ -3927,8 +3948,7 @@
 		},
 		{
 			"key": "debtPositionTypeOrgId",
-			"value": "",
-			"type": "string"
+			"value": ""
 		},
 		{
 			"key": "createdDebtPositionTypeId",
@@ -3988,6 +4008,10 @@
 		},
 		{
 			"key": "assessmentRegistryOperatingYear",
+			"value": ""
+		},
+		{
+			"key": "currentDate",
 			"value": ""
 		}
 	]

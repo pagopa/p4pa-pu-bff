@@ -98,9 +98,9 @@ class DebtPositionTypeRetrieverServiceImplTest {
     assertEquals("ServiceType001", result.getServiceType());
     assertEquals("Collecting Reason 001", result.getCollectingReason());
     assertEquals("TaxonomyCode001", result.getTaxonomyCode());
-    assertTrue(result.getFlagAnonymousFiscalCode());
-    assertFalse(result.getFlagMandatoryDueDate());
-    assertTrue(result.getFlagNotifyIo());
+    assertEquals(Boolean.TRUE, result.getFlagAnonymousFiscalCode());
+    assertEquals(Boolean.FALSE, result.getFlagMandatoryDueDate());
+    assertEquals(Boolean.TRUE, result.getFlagNotifyIo());
     assertEquals("Test IO Template Message", result.getIoTemplateMessage());
   }
 
@@ -291,9 +291,11 @@ class DebtPositionTypeRetrieverServiceImplTest {
       DebtPositionTypePatchRequestBody.class);
     DebtPositionTypeRequestBody debtPositionTypeRequestBody = podamFactory.manufacturePojo(
       DebtPositionTypeRequestBody.class);
+    DebtPositionType oldDpType = podamFactory.manufacturePojo(DebtPositionType.class);
 
     Mockito.doNothing().when(authorizationServiceMock).validateBrokerAdminRole(userInfo);
-    Mockito.when(debtPositionTypeMapperMock.mapToDebtPositionTypeRequestBody(debtPositionTypePatchRequestBody)).thenReturn(debtPositionTypeRequestBody);
+    Mockito.when(debtPositionTypeServiceMock.getDebtPositionTypeById(debtPositionTypeId, accessToken)).thenReturn(oldDpType);
+    Mockito.when(debtPositionTypeMapperMock.mapToDebtPositionTypeRequestBody(debtPositionTypePatchRequestBody, oldDpType)).thenReturn(debtPositionTypeRequestBody);
     Mockito.when(debtPositionTypeServiceMock.patchDebtPositionType(eq(debtPositionTypeId), eq(debtPositionTypeRequestBody), anyString()))
       .thenReturn(debtPositionType);
 
@@ -327,13 +329,9 @@ class DebtPositionTypeRetrieverServiceImplTest {
     Long debtPositionTypeId = 1L;
     DebtPositionTypePatchRequestBody debtPositionTypePatchRequestBody = podamFactory.manufacturePojo(
       DebtPositionTypePatchRequestBody.class);
-    DebtPositionTypeRequestBody debtPositionTypeRequestBody = podamFactory.manufacturePojo(
-      DebtPositionTypeRequestBody.class);
 
     Mockito.doNothing().when(authorizationServiceMock).validateBrokerAdminRole(userInfo);
-    Mockito.when(debtPositionTypeMapperMock.mapToDebtPositionTypeRequestBody(debtPositionTypePatchRequestBody)).thenReturn(debtPositionTypeRequestBody);
-    Mockito.when(debtPositionTypeServiceMock.patchDebtPositionType(eq(debtPositionTypeId), eq(debtPositionTypeRequestBody), anyString()))
-      .thenReturn(null);
+    Mockito.when(debtPositionTypeServiceMock.getDebtPositionTypeById(debtPositionTypeId, accessToken)).thenReturn(null);
 
     DebtPositionType result = debtPositionTypeRetrieverService.patchDebtPositionType(debtPositionTypeId, debtPositionTypePatchRequestBody, userInfo, accessToken);
 
@@ -421,7 +419,7 @@ class DebtPositionTypeRetrieverServiceImplTest {
 
       assertNotNull(result);
       assertEquals(1, result.size());
-      assertEquals("VALID", result.get(0).getCode());
+      assertEquals("VALID", result.getFirst().getCode());
 
       authorizationServiceMockedStatic.verify(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser));
       Mockito.verify(organizationServiceMock).getOrganizationByOrganizationId(organizationId, accessToken);

@@ -50,7 +50,7 @@ class OffsetDateTimeToLocalDateTimeSerializerTest {
 
     dateTimeSerializer.serialize(offsetDateTime, jsonGenerator, serializerProvider);
 
-    verify(jsonGenerator).writeString("2025-01-16T09:15:20.000000");
+    verify(jsonGenerator).writeString("2025-01-16T09:15:20.000000000");
   }
 
   @Test

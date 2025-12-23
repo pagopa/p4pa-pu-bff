@@ -113,7 +113,9 @@ dependencies {
 tasks {
   test {
     jvmArgs("-javaagent:${mockitoAgent.asPath}")
-    testLogging.showStandardStreams = true
+    testLogging.setShowStandardStreams(true)
+    testLogging.setShowExceptions(true)
+    testLogging.setShowCauses(true)
   }
 }
 

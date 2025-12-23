@@ -14,7 +14,7 @@ import java.time.format.DateTimeFormatter;
 @Configuration
 public class OffsetDateTimeToLocalDateTimeSerializer extends JsonSerializer<OffsetDateTime> {
 
-  public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSSSS");
+  public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSSSSSSS");
 
   @Override
   public void serialize(OffsetDateTime value, JsonGenerator gen, SerializerProvider serializers) throws IOException {

@@ -116,9 +116,13 @@ public class DebtPositionTypeRetrieverServiceImpl implements DebtPositionTypeRet
     UserInfo loggedUser,
     String accessToken) {
     authorizationService.validateBrokerAdminRole(loggedUser);
+    DebtPositionType oldDpType = debtPositionTypeService.getDebtPositionTypeById(debtPositionTypeId, accessToken);
+    if (oldDpType == null) {
+      return null;
+    }
     return debtPositionTypeService.patchDebtPositionType(
       debtPositionTypeId,
-      debtPositionTypeMapper.mapToDebtPositionTypeRequestBody(debtPositionTypePatchRequestBody),
+      debtPositionTypeMapper.mapToDebtPositionTypeRequestBody(debtPositionTypePatchRequestBody, oldDpType),
       accessToken);
   }
 

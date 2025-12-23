@@ -1,6 +1,7 @@
 package it.gov.pagopa.pu.bff.config.json;
 
 import com.fasterxml.jackson.core.JsonParser;
+import it.gov.pagopa.pu.bff.util.Constants;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -15,7 +16,7 @@ class OffsetDateTimeToLocalDateTimeDeserializerTest {
   private final OffsetDateTimeToLocalDateTimeDeserializer deserializer = new OffsetDateTimeToLocalDateTimeDeserializer();
 
   @Test
-  void givenOffsetDateTimeWhenDeserializeThenOk() throws IOException {
+  void givenOffsetDateTimeWhenThenOk() throws IOException {
     // Given
     OffsetDateTime offsetDateTime = OffsetDateTime.now();
     JsonParser parser = Mockito.mock(JsonParser.class);
@@ -26,11 +27,11 @@ class OffsetDateTimeToLocalDateTimeDeserializerTest {
     LocalDateTime result = deserializer.deserialize(parser, null);
 
     // Then
-    Assertions.assertEquals(offsetDateTime.toLocalDateTime(), result);
+    Assertions.assertEquals(offsetDateTime.atZoneSameInstant(Constants.ZONEID).toLocalDateTime(), result);
   }
 
   @Test
-  void givenUTCOffsetDateTimeWhenDeserializeThenOk() throws IOException {
+  void givenUTCOffsetDateTimeWhenThenOk() throws IOException {
     // Given
     OffsetDateTime offsetDateTime = OffsetDateTime.now().withOffsetSameInstant(ZoneOffset.UTC);
     JsonParser parser = Mockito.mock(JsonParser.class);
@@ -41,11 +42,11 @@ class OffsetDateTimeToLocalDateTimeDeserializerTest {
     LocalDateTime result = deserializer.deserialize(parser, null);
 
     // Then
-    Assertions.assertEquals(offsetDateTime.toLocalDateTime(), result);
+    Assertions.assertEquals(offsetDateTime.atZoneSameInstant(Constants.ZONEID).toLocalDateTime(), result);
   }
 
   @Test
-  void givenLocalDateTimeWhenThenDeserializeOk() throws IOException {
+  void givenLocalDateTimeWhenThenOk() throws IOException {
     // Given
     LocalDateTime localDateTime = LocalDateTime.now();
     JsonParser parser = Mockito.mock(JsonParser.class);

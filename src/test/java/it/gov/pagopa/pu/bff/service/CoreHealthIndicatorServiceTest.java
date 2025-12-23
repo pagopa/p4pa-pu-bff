@@ -16,7 +16,7 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestConfiguration;
-import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.boot.restclient.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
@@ -24,7 +24,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
   classes = {CoreHealthIndicatorService.class, CoreHealthIndicatorServiceTest.CoreHealthIndicatorServiceTestConfiguration.class},
   webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @EnableWireMock({
-  @ConfigureWireMock(name = "monitoring-server", filesUnderClasspath = "wiremock", port = 8888)
+  @ConfigureWireMock(name = "monitoring-server", filesUnderClasspath = "wiremock/monitoring-server", port = 8888)
 })
 class CoreHealthIndicatorServiceTest {
 

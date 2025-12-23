@@ -2,6 +2,7 @@ package it.gov.pagopa.pu.bff.exception;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import it.gov.pagopa.pu.bff.config.json.JsonConfig;
+import it.gov.pagopa.pu.bff.util.TestUtils;
 import it.gov.pagopa.pu.bff.util.UtilitiesTest;
 import jakarta.servlet.ServletException;
 import jakarta.validation.ConstraintViolationException;
@@ -19,8 +20,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.authorization.AuthorizationDeniedException;
@@ -48,7 +49,8 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
 
 @ExtendWith({SpringExtension.class})
-@WebMvcTest(value = {GlobalExceptionHandlerTest.TestController.class}, excludeAutoConfiguration = SecurityAutoConfiguration.class)
+@WebMvcTest(value = {GlobalExceptionHandlerTest.TestController.class})
+@AutoConfigureMockMvc(addFilters = false)
 @ContextConfiguration(classes = {
   GlobalExceptionHandlerTest.TestController.class,
   GlobalExceptionHandler.class,
@@ -75,6 +77,11 @@ class GlobalExceptionHandlerTest {
     String testEndpoint(@RequestParam(DATA) String data, @Valid @RequestBody TestRequestBody body) {
       return "OK";
     }
+  }
+
+  @BeforeEach
+  void init() {
+    TestUtils.clearDefaultTimezone();
   }
 
   @Data
@@ -177,7 +184,7 @@ class GlobalExceptionHandlerTest {
     mockMvc.perform(MockMvcRequestBuilders.post("/NOTEXISTENTURL"))
       .andExpect(MockMvcResultMatchers.status().isNotFound())
       .andExpect(MockMvcResultMatchers.jsonPath("$.title").value("NOT_FOUND"))
-      .andExpect(MockMvcResultMatchers.jsonPath("$.description").value("No static resource NOTEXISTENTURL."))
+      .andExpect(MockMvcResultMatchers.jsonPath("$.description").value("No static resource NOTEXISTENTURL for request '/NOTEXISTENTURL'."))
       .andExpect(MockMvcResultMatchers.jsonPath("$.traceId").value(traceId));
   }
 

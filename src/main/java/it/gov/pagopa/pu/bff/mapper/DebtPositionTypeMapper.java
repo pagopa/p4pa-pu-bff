@@ -34,8 +34,19 @@ public class DebtPositionTypeMapper {
   }
 
   public DebtPositionTypeRequestBody mapToDebtPositionTypeRequestBody(
-    DebtPositionTypePatchRequestBody debtPositionTypePatchRequestBody){
+    DebtPositionTypePatchRequestBody debtPositionTypePatchRequestBody, DebtPositionType oldDpType) {
     DebtPositionTypeRequestBody debtPositionTypeRequestBody = new DebtPositionTypeRequestBody();
+
+    //setting required fields
+    debtPositionTypeRequestBody.setBrokerId(oldDpType.getBrokerId());
+    debtPositionTypeRequestBody.setCode(oldDpType.getCode());
+    debtPositionTypeRequestBody.setCollectingReason(oldDpType.getCollectingReason());
+    debtPositionTypeRequestBody.setDescription(oldDpType.getDescription());
+    debtPositionTypeRequestBody.setMacroArea(oldDpType.getMacroArea());
+    debtPositionTypeRequestBody.setOrgType(oldDpType.getOrgType());
+    debtPositionTypeRequestBody.setServiceType(oldDpType.getServiceType());
+    debtPositionTypeRequestBody.setTaxonomyCode(oldDpType.getTaxonomyCode());
+
     debtPositionTypeRequestBody.setFlagAnonymousFiscalCode(debtPositionTypePatchRequestBody.getFlagAnonymousFiscalCode());
     debtPositionTypeRequestBody.setFlagMandatoryDueDate(debtPositionTypePatchRequestBody.getFlagMandatoryDueDate());
     debtPositionTypeRequestBody.setFlagNotifyIo(debtPositionTypePatchRequestBody.getFlagNotifyIo());

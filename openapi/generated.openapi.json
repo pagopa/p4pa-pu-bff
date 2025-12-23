@@ -9662,7 +9662,7 @@
             "type" : "string"
           }
         },
-        "required" : [ "authConfig" ]
+        "required" : [ "authConfig", "authUrl", "psw", "user" ]
       },
       "SilServiceLegacyJwtAuthConfigDTO" : {
         "type" : "object",
@@ -9689,7 +9689,7 @@
             "type" : "string"
           }
         },
-        "required" : [ "authConfig" ]
+        "required" : [ "algorithm", "authConfig", "issuer", "kid", "signingKey", "subject" ]
       },
       "Action" : {
         "type" : "string",

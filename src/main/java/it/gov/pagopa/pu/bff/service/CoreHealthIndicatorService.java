@@ -5,7 +5,7 @@ import it.gov.pagopa.pu.bff.config.MonitoringServiceConf;
 import it.gov.pagopa.pu.bff.dto.generated.ServiceStatus;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.boot.restclient.RestTemplateBuilder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 

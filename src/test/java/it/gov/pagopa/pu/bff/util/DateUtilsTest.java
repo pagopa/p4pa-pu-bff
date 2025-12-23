@@ -4,24 +4,18 @@ import it.gov.pagopa.pu.bff.dto.LocalDateIntervalFilter;
 import it.gov.pagopa.pu.bff.dto.LocalDateTimeIntervalFilter;
 import it.gov.pagopa.pu.bff.dto.OffsetDateTimeIntervalFilter;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.time.*;
-import java.util.TimeZone;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class DateUtilsTest {
-  @BeforeEach
-  void init() {
-    TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
-  }
 
   @Test
   void givenValidDateWhenToLocalDateTimeThenOk() {
-    LocalDateTime date = LocalDateTime.now();
-    LocalDateTime expectedDate = date.minusHours(5);
+    LocalDateTime date = LocalDateTime.of(2025, Month.JANUARY, 16, 9, 15, 20);
+    LocalDateTime expectedDate = date.minusHours(4);
 
     LocalDateTime result = DateUtils.toLocalDateTime(OffsetDateTime.of(date, ZoneOffset.ofHours(5)));
 

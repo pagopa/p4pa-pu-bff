@@ -13,7 +13,7 @@ public class DateUtils {
   }
 
   public static LocalDateTime toLocalDateTime(OffsetDateTime date) {
-    return date != null ? date.atZoneSameInstant(ZoneId.systemDefault()).toLocalDateTime() : null;
+    return date != null ? date.atZoneSameInstant(ZONEID).toLocalDateTime() : null;
   }
 
   public static OffsetDateTime toOffsetDateTimeStartOfTheDay(LocalDate localDate) {

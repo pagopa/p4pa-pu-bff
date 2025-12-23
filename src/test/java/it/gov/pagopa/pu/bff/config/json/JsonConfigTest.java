@@ -19,8 +19,13 @@ import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 
 class JsonConfigTest {
+  {
+    // called in order to clear Timezone before to create JsonConfig instance
+    init();
+  }
 
   private final JsonConfig jsonConfig = new JsonConfig();
+
 
   private final ObjectMapper j2ObjectMapper = jsonConfig.objectMapper();
   private final JsonMapper j3JsonMapper = jsonConfig.objectMapperJackson3();
@@ -47,8 +52,8 @@ class JsonConfigTest {
   }
 
   @BeforeEach
-  void init(){
-      TestUtils.clearDefaultTimezone();
+  void init() {
+    TestUtils.clearDefaultTimezone();
   }
 
   @Test

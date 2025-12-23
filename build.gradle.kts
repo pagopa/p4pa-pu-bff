@@ -115,7 +115,6 @@ dependencies {
 tasks {
   test {
     jvmArgs("-javaagent:${mockitoAgent.asPath}")
-    // uncomment to show logs during code-review
     testLogging.events = setOf(TestLogEvent.FAILED)
     testLogging.exceptionFormat = TestExceptionFormat.FULL
   }

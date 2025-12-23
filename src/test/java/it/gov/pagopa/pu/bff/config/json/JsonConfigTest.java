@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import it.gov.pagopa.pu.bff.util.Constants;
 import it.gov.pagopa.pu.bff.util.TestUtils;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -58,7 +59,7 @@ class JsonConfigTest {
     dto.setName("NAME");
     dto.setValue(42);
     dto.setDateTime(LocalDateTime.now());
-    dto.setOffsetDateTime(OffsetDateTime.now());
+    dto.setOffsetDateTime(OffsetDateTime.now(Constants.ZONEID));
 
     // When
     String j2Serialized = j2ObjectMapper.writeValueAsString(dto);

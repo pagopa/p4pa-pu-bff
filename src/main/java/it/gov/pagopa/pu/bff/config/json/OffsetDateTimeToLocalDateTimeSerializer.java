@@ -14,6 +14,8 @@ import java.time.format.DateTimeFormatter;
 @Configuration
 public class OffsetDateTimeToLocalDateTimeSerializer extends JsonSerializer<OffsetDateTime> {
 
+  public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSSSS");
+
   @Override
   public void serialize(OffsetDateTime value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
     if (value != null) {
@@ -23,7 +25,7 @@ public class OffsetDateTimeToLocalDateTimeSerializer extends JsonSerializer<Offs
 
   public static String formatLocalDateTime(OffsetDateTime value) {
     LocalDateTime localDateTime = DateUtils.toLocalDateTime(value);
-    return localDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSSSS"));
+    return localDateTime.format(DATE_TIME_FORMATTER);
   }
 }
 

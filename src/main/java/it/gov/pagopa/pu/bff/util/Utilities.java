@@ -4,7 +4,6 @@ import org.slf4j.MDC;
 
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
-import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -24,12 +23,6 @@ public class Utilities {
   public static boolean isValidEmail(final String email) {
     Matcher matcher = EMAIL_PATTERN.matcher(email);
     return matcher.matches();
-  }
-
-  public static OffsetDateTime localDatetimeToOffsetDateTime(LocalDateTime localDateTime) {
-    return localDateTime != null
-      ? localDateTime.atOffset(ZoneId.systemDefault().getRules().getOffset(localDateTime))
-      : null;
   }
 
   public static boolean isValidIban(String iban) {

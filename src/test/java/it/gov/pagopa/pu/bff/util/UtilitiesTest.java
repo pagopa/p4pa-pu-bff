@@ -27,25 +27,11 @@ public class UtilitiesTest {
     assertFalse(result);
   }
 
-  @Test
-  void testLocalDatetimeToOffsetDateTime() {
-    OffsetDateTime expectedOffsetDateTime = OffsetDateTime.now();
-
-    OffsetDateTime result = Utilities.localDatetimeToOffsetDateTime(expectedOffsetDateTime.toLocalDateTime());
-
-    assertEquals(expectedOffsetDateTime, result);
-    }
-
   @ParameterizedTest
   @ValueSource(strings = {"", "12345", "12345abc123", "1234/abc123", "12345678910"})
   void testValidateEmptyPIVA(String piva){
     boolean result = Utilities.isValidPIVA(piva);
     assertFalse(result);
-  }
-
-  @Test
-  void testLocalDatetimeToOffsetDateTimeWithNull() {
-    assertNull(Utilities.localDatetimeToOffsetDateTime(null), "The result should be null for a null input.");
   }
 
   @Test

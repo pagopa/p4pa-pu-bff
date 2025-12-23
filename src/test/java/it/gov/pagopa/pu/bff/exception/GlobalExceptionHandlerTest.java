@@ -2,6 +2,7 @@ package it.gov.pagopa.pu.bff.exception;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import it.gov.pagopa.pu.bff.config.json.JsonConfig;
+import it.gov.pagopa.pu.bff.util.TestUtils;
 import it.gov.pagopa.pu.bff.util.UtilitiesTest;
 import jakarta.servlet.ServletException;
 import jakarta.validation.ConstraintViolationException;
@@ -76,6 +77,11 @@ class GlobalExceptionHandlerTest {
     String testEndpoint(@RequestParam(DATA) String data, @Valid @RequestBody TestRequestBody body) {
       return "OK";
     }
+  }
+
+  @BeforeEach
+  void init() {
+    TestUtils.clearDefaultTimezone();
   }
 
   @Data

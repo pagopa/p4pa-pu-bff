@@ -1662,14 +1662,19 @@
 									""
 								],
 								"type": "text/javascript",
-								"packages": {}
+								"packages": {},
+								"requests": {}
 							}
 						},
 						{
 							"listen": "prerequest",
 							"script": {
-								"exec": [],
-								"type": "text/javascript"
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
 							}
 						}
 					],
@@ -1692,7 +1697,7 @@
 							}
 						],
 						"url": {
-							"raw": "{{puBffBaseUrl}}/bff/organization/:organizationId/payments-reporting",
+							"raw": "{{puBffBaseUrl}}/bff/organization/:organizationId/payments-reporting?regulationDateTimeFrom=2025-12-01T00:00Z&regulationDateTimeTo={{currentDate}}",
 							"host": [
 								"{{puBffBaseUrl}}"
 							],
@@ -1701,6 +1706,16 @@
 								"organization",
 								":organizationId",
 								"payments-reporting"
+							],
+							"query": [
+								{
+									"key": "regulationDateTimeFrom",
+									"value": "2025-12-01T00:00Z"
+								},
+								{
+									"key": "regulationDateTimeTo",
+									"value": "{{currentDate}}"
+								}
 							],
 							"variable": [
 								{
@@ -2724,17 +2739,19 @@
 									""
 								],
 								"type": "text/javascript",
-								"packages": {}
+								"packages": {},
+								"requests": {}
 							}
 						},
 						{
 							"listen": "prerequest",
 							"script": {
 								"exec": [
-									"pm.variables.set(\"debtPositionTypeOrgIban\",\"TEST-UPDATE\")"
+									"pm.variables.set(\"debtPositionTypeOrgIban\",\"IT00TESTUPDATE0000000000000\")"
 								],
 								"type": "text/javascript",
-								"packages": {}
+								"packages": {},
+								"requests": {}
 							}
 						}
 					],
@@ -3148,17 +3165,19 @@
 									""
 								],
 								"type": "text/javascript",
-								"packages": {}
+								"packages": {},
+								"requests": {}
 							}
 						},
 						{
 							"listen": "prerequest",
 							"script": {
 								"exec": [
-									"pm.variables.set(\"debtPositionTypeOrgIban\",\"TEST-UPDATE\")"
+									"pm.variables.set(\"debtPositionTypeOrgIban\",\"IT00TESTUPDATE0000000000001\")"
 								],
 								"type": "text/javascript",
-								"packages": {}
+								"packages": {},
+								"requests": {}
 							}
 						}
 					],
@@ -3554,17 +3573,19 @@
 									""
 								],
 								"type": "text/javascript",
-								"packages": {}
+								"packages": {},
+								"requests": {}
 							}
 						},
 						{
 							"listen": "prerequest",
 							"script": {
 								"exec": [
-									"pm.variables.set(\"debtPositionTypeOrgIban\",\"TEST-UPDATE\")"
+									"pm.variables.set(\"debtPositionTypeOrgIban\",\"IT00TESTUPDATE0000000000003\")"
 								],
 								"type": "text/javascript",
-								"packages": {}
+								"packages": {},
+								"requests": {}
 							}
 						}
 					],
@@ -3781,7 +3802,8 @@
 									""
 								],
 								"type": "text/javascript",
-								"packages": {}
+								"packages": {},
+								"requests": {}
 							}
 						},
 						{
@@ -3791,7 +3813,8 @@
 									""
 								],
 								"type": "text/javascript",
-								"packages": {}
+								"packages": {},
+								"requests": {}
 							}
 						}
 					],
@@ -3809,7 +3832,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{puBffBaseUrl}}/bff/organization/:organizationId/pagopa-registries?eventDateFrom=2025-01-01T00:00:00Z&eventDateTo=2026-01-01T00:00:00Z",
+							"raw": "{{puBffBaseUrl}}/bff/organization/:organizationId/pagopa-registries?eventDateTimeFrom=2025-11-01T00:00:00Z&eventDateTimeTo=2025-12-01T00:00:00Z",
 							"host": [
 								"{{puBffBaseUrl}}"
 							],
@@ -3821,12 +3844,12 @@
 							],
 							"query": [
 								{
-									"key": "eventDateFrom",
-									"value": "2025-01-01T00:00:00Z"
+									"key": "eventDateTimeFrom",
+									"value": "2025-11-01T00:00:00Z"
 								},
 								{
-									"key": "eventDateTo",
-									"value": "2026-01-01T00:00:00Z"
+									"key": "eventDateTimeTo",
+									"value": "2025-12-01T00:00:00Z"
 								}
 							],
 							"variable": [

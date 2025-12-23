@@ -22,7 +22,6 @@ class JsonConfigTest {
 
   private final JsonConfig jsonConfig = new JsonConfig();
 
-
   private final ObjectMapper j2ObjectMapper = jsonConfig.objectMapper();
   private final JsonMapper j3JsonMapper = jsonConfig.objectMapperJackson3();
 
@@ -48,7 +47,7 @@ class JsonConfigTest {
   }
 
   @BeforeEach
-  void init() {
+  void init(){
     TestUtils.clearDefaultTimezone();
   }
 

@@ -197,4 +197,54 @@ class JwtAuthenticationFilterTest {
     Mockito.verify(filterChainMock, Mockito.times(0)).doFilter(request, response);
   }
 
+  @Test
+  void givenTokenInQueryParamWhenDoFilterInternalThenOk() throws ServletException, IOException {
+    // Given
+    String accessToken = "ACCESSTOKEN";
+    MockHttpServletRequest request = new MockHttpServletRequest(HttpMethod.GET.name(), "/path");
+    request.setParameter("token", accessToken);
+
+    MockHttpServletResponse response = new MockHttpServletResponse();
+
+    List<UserOrganizationRoles> organizations = List.of(
+      new UserOrganizationRoles()
+        .operatorId("operator1")
+        .organizationIpaCode("ORG")
+        .email("email1@example.com")
+        .roles(List.of("ROLE")));
+
+    UserInfo userInfo = new UserInfo().mappedExternalUserId("MAPPEDEXTERNALUSERID")
+      .fiscalCode("FISCALCODE")
+      .familyName("FAMILYNAME")
+      .name("NAME")
+      .issuer("ISSUER")
+      .organizationAccess("ORG")
+      .organizations(organizations);
+
+    Collection<? extends GrantedAuthority> authorities = null;
+    if (userInfo.getOrganizationAccess() != null) {
+      authorities = userInfo.getOrganizations().stream()
+        .filter(o -> userInfo.getOrganizationAccess().equals(o.getOrganizationIpaCode()))
+        .flatMap(r -> r.getRoles().stream())
+        .map(SimpleGrantedAuthority::new)
+        .toList();
+    }
+
+    Mockito.when(authorizationServiceMock.validateToken(accessToken)).thenReturn(userInfo);
+
+    UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userInfo, accessToken,
+      authorities);
+    authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+
+    // When
+    jwtAuthenticationFilterMock.doFilterInternal(request, response, filterChainMock);
+
+    // Then
+    Assertions.assertEquals(userInfo.getMappedExternalUserId(), MDC.get("externalUserId"));
+    Mockito.verify(filterChainMock).doFilter(request, response);
+    Assertions.assertEquals(
+      authToken,
+      SecurityContextHolder.getContext().getAuthentication());
+  }
+
 }

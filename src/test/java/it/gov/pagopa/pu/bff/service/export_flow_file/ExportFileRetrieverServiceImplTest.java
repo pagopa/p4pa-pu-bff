@@ -395,7 +395,7 @@ class ExportFileRetrieverServiceImplTest {
     userOrgRole.setOrganizationId(1L);
     user.setOrganizations(List.of(userOrgRole));
 
-    Mockito.doThrow(new ResourceNotFoundException("Code not authorized"))
+    Mockito.doThrow(new ResourceNotFoundException("DEBT_POSITION_TYPE_ORG_NOT_FOUND", "DebtPositionTypeOrgCode not found"))
       .when(debtPositionTypeOrgRetrieverServiceMock)
       .validateOperator(Mockito.eq(1L), Mockito.eq("UNAUTHORIZED_CODE"), Mockito.anyString(), Mockito.eq(accessToken));
 

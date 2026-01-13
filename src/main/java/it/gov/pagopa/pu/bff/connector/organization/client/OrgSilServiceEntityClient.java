@@ -18,7 +18,7 @@ public class OrgSilServiceEntityClient {
       organizationApisHolder.getOrgSilServiceEntityControllerApi(accessToken)
         .crudDeleteOrgsilservice(String.valueOf(orgSilServiceId));
     } catch (HttpClientErrorException.NotFound e) {
-      throw new ResourceNotFoundException("OrgSilService with ID %d not found".formatted(orgSilServiceId));
+      throw new ResourceNotFoundException("ORG_SIL_SERVICE_NOT_FOUND", "OrgSilService with ID %d not found".formatted(orgSilServiceId));
     }
   }
 }

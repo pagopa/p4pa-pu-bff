@@ -9258,6 +9258,9 @@
           },
           "traceId" : {
             "type" : "string"
+          },
+          "code" : {
+            "type" : "string"
           }
         },
         "required" : [ "description", "title" ]

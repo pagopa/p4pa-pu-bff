@@ -1,7 +1,10 @@
 package it.gov.pagopa.pu.bff.exception;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import it.gov.pagopa.pu.bff.dto.UpstreamErrorDTO;
 import it.gov.pagopa.pu.bff.dto.generated.ErrorDTO;
 import it.gov.pagopa.pu.bff.dto.generated.ErrorDTO.TitleEnum;
+import it.gov.pagopa.pu.bff.util.ErrorMessageParser;
 import it.gov.pagopa.pu.bff.util.Utilities;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -31,6 +34,12 @@ import java.util.stream.Collectors;
 @RestControllerAdvice
 @Slf4j
 public class GlobalExceptionHandler {
+
+  private final ObjectMapper objectMapper;
+
+  public GlobalExceptionHandler(ObjectMapper objectMapper) {
+    this.objectMapper = objectMapper;
+  }
 
   @ExceptionHandler(InvalidAssessmentsRegistryException.class)
   public ResponseEntity<ErrorDTO> handleInvalidAssessmentRegistryException(InvalidAssessmentsRegistryException ex, HttpServletRequest request) {
@@ -85,7 +94,46 @@ public class GlobalExceptionHandler {
 
   @ExceptionHandler({HttpClientErrorException.class})
   public ResponseEntity<ErrorDTO> handleHttpClientErrorException(HttpClientErrorException ex, HttpServletRequest request) {
-    return handleException(ex, request, ex.getStatusCode(), TitleEnum.GENERIC_ERROR);
+    logException(ex, request, ex.getStatusCode());
+
+    // 1) Try to read the upstream error from body
+    UpstreamErrorDTO upstream = tryParseUpstreamError(ex);
+
+    String upstreamMessage = upstream != null ? upstream.getMessage() : null;
+    String upstreamTraceId = upstream != null ? upstream.getTraceId() : null;
+
+    // 2) Extract code and description from message
+    ErrorMessageParser.ParsedError parsed = ErrorMessageParser.parse(upstreamMessage);
+
+    // 3) Map title from status
+    ErrorDTO.TitleEnum title = TitleEnum.GENERIC_ERROR;
+    if (ex.getStatusCode().isSameCodeAs(HttpStatus.NOT_FOUND)) title = TitleEnum.NOT_FOUND;
+    else if (ex.getStatusCode().isSameCodeAs(HttpStatus.CONFLICT)) title = TitleEnum.CONFLICT;
+    else if (ex.getStatusCode().is4xxClientError()) title = TitleEnum.BAD_REQUEST;
+    else if (ex.getStatusCode().isSameCodeAs(HttpStatus.FORBIDDEN)) title = TitleEnum.FORBIDDEN;
+
+    ErrorDTO dto = new ErrorDTO();
+    dto.setTitle(title);
+    dto.setCode(parsed.code());
+    dto.setDescription(parsed.description() != null ? parsed.description() : (upstreamMessage != null ? upstreamMessage : ex.getMessage()));
+    dto.setTraceId(upstreamTraceId != null ? upstreamTraceId : Utilities.getTraceId());
+
+    return ResponseEntity
+      .status(ex.getStatusCode())
+      .contentType(MediaType.APPLICATION_JSON)
+      .body(dto);
+  }
+
+  private UpstreamErrorDTO tryParseUpstreamError(HttpClientErrorException ex) {
+    try {
+      String body = ex.getResponseBodyAsString();
+      if (body == null || body.isBlank()) {
+        return null;
+      }
+      return objectMapper.readValue(body, UpstreamErrorDTO.class);
+    } catch (Exception e) {
+      return null;
+    }
   }
 
   @ExceptionHandler(InvalidOrgSilServiceException.class)
@@ -121,10 +169,30 @@ public class GlobalExceptionHandler {
   static ResponseEntity<ErrorDTO> handleException(Exception ex, HttpServletRequest request, HttpStatusCode httpStatus, ErrorDTO.TitleEnum errorEnum) {
     logException(ex, request, httpStatus);
 
+    String message = buildReturnedMessage(ex);
+    String code = "GENERIC_ERROR";
+    String description = message;
+
+    if (ex instanceof HasErrorCode codedEx && codedEx.getCode() != null && !codedEx.getCode().isBlank()) {
+      code = codedEx.getCode();
+    } else {
+      ErrorMessageParser.ParsedError parsed = ErrorMessageParser.parse(message);
+      code = parsed.code();
+      if (parsed.description() != null) {
+        description = parsed.description();
+      }
+    }
+
+    ErrorDTO dto = new ErrorDTO();
+    dto.setTitle(errorEnum);
+    dto.setDescription(description);
+    dto.setTraceId(Utilities.getTraceId());
+    dto.setCode(code);
+
     return ResponseEntity
       .status(httpStatus)
       .contentType(MediaType.APPLICATION_JSON)
-      .body(new ErrorDTO(errorEnum, buildReturnedMessage(ex), Utilities.getTraceId()));
+      .body(dto);
   }
 
   private static void logException(Exception ex, HttpServletRequest request, HttpStatusCode httpStatus) {

@@ -326,7 +326,7 @@ class AssessmentsRegistryRetrieverServiceImplTest {
       authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser))
         .thenAnswer(a -> null);
 
-      Mockito.doThrow(new ResourceNotFoundException("Operator not found"))
+      Mockito.doThrow(new ResourceNotFoundException("OPERATOR_NOT_FOUND", "Operator not found"))
         .when(debtPositionTypeOrgRetrieverServiceMock)
         .getDebtPositionTypeOrgByCode(organizationId, "INVALID_CODE", loggedUser.getMappedExternalUserId(), accessToken);
 

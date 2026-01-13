@@ -81,7 +81,7 @@ public class DebtPositionTypeOrgRetrieverServiceImpl implements DebtPositionType
 
     DebtPositionTypeOrg debtPositionTypeOrg = debtPositionTypeOrgService.getDebtPositionTypeOrg(debtPositionTypeOrgId, accessToken);
     if (debtPositionTypeOrg == null) {
-      throw new ResourceNotFoundException("DebtPositionTypeOrg not found for ID: " + debtPositionTypeOrgId);
+      throw new ResourceNotFoundException("DEBT_POSITION_TYPE_ORG_NOT_FOUND", "DebtPositionTypeOrg not found for ID: " + debtPositionTypeOrgId);
     }
 
     DebtPositionType debtPositionType = debtPositionTypeService.getDebtPositionTypeById(debtPositionTypeOrg.getDebtPositionTypeId(), accessToken);
@@ -131,7 +131,7 @@ public class DebtPositionTypeOrgRetrieverServiceImpl implements DebtPositionType
     PagedModelDebtPosition debtPositions = debtPositionService.getDebtPositionByDebtPositionTypeOrgId(
       debtPositionTypeOrgId, PageRequest.of(0,1),accessToken);
     if(debtPositions!=null && debtPositions.getEmbedded()!=null && !CollectionUtils.isEmpty(debtPositions.getEmbedded().getDebtPositions())){
-      throw new ConflictException("Cannot delete DebtPositionTypeOrg: There are still DebtPositions that reference it.");
+      throw new ConflictException("DEBT_POSITION_TYPE_ORG_IN_USE", "Cannot delete DebtPositionTypeOrg: There are still DebtPositions that reference it.");
     }
     debtPositionTypeOrgService.deleteDebtPositionTypeOrg(debtPositionTypeOrgId,accessToken);
   }
@@ -182,20 +182,20 @@ public class DebtPositionTypeOrgRetrieverServiceImpl implements DebtPositionType
     Long brokerId, String accessToken) {
     if(!organizationId.equals(
       debtPositionTypeOrgDTO.getOrganizationId())){
-      throw new InvalidDebtPositionTypeOrgException("The DebtPositionTypeOrg's organizationId "+ debtPositionTypeOrgDTO.getOrganizationId()+
+      throw new InvalidDebtPositionTypeOrgException("INVALID_ORGANIZATION", "The DebtPositionTypeOrg's organizationId "+ debtPositionTypeOrgDTO.getOrganizationId()+
         " does not match the given organizationId "+ organizationId);
     }
     if(debtPositionTypeOrgDTO.getDebtPositionTypeOrgId()!=null){
-      throw new InvalidDebtPositionTypeOrgException("DebtPositionTypeOrgId should not be provided");
+      throw new InvalidDebtPositionTypeOrgException("DEBT_POSITION_TYPE_ORG_ID_NOT_ALLOWED", "DebtPositionTypeOrgId should not be provided");
     }
     DebtPositionType debtPositionType = debtPositionTypeService.getDebtPositionTypeById(
       debtPositionTypeOrgDTO.getDebtPositionTypeId(),
       accessToken);
     if(debtPositionType==null){
-      throw new InvalidDebtPositionTypeOrgException("DebtPositionType having id "+debtPositionTypeOrgDTO.getDebtPositionTypeId()+" not found");
+      throw new InvalidDebtPositionTypeOrgException("DEBT_POSITION_TYPE_NOT_FOUND", "DebtPositionType having id "+debtPositionTypeOrgDTO.getDebtPositionTypeId()+" not found");
     }
     if(!debtPositionType.getBrokerId().equals(brokerId)){
-      throw new InvalidDebtPositionTypeOrgException("The brokerId "+brokerId+" does not match the given DebtPositionType's brokerId");
+      throw new InvalidDebtPositionTypeOrgException("INVALID_BROKER", "The brokerId "+brokerId+" does not match the given DebtPositionType's brokerId");
     }
   }
 
@@ -204,7 +204,7 @@ public class DebtPositionTypeOrgRetrieverServiceImpl implements DebtPositionType
     authorizationService.validateAdminRole(organizationId, loggedUser);
     DebtPositionTypeOrg existingDebtPositionTypeOrg = debtPositionTypeOrgService.getDebtPositionTypeOrg(debtPositionTypeOrgId, accessToken);
     if (existingDebtPositionTypeOrg == null) {
-      throw new ResourceNotFoundException("DebtPositionTypeOrg having ID %d not found".formatted(debtPositionTypeOrgId));
+      throw new ResourceNotFoundException("DEBT_POSITION_TYPE_ORG_NOT_FOUND", "DebtPositionTypeOrg having ID %d not found".formatted(debtPositionTypeOrgId));
     }
     verifyDebtPositionTypeOrg(saveDebtPositionTypeOrgDTO.getDebtPositionTypeOrg(),existingDebtPositionTypeOrg);
     return debtPositionTypeOrgService.saveDebtPositionTypeOrg(
@@ -263,7 +263,7 @@ public class DebtPositionTypeOrgRetrieverServiceImpl implements DebtPositionType
   public DebtPositionTypeOrg getDebtPositionTypeOrgByCode(Long organizationId, String debtPositionTypeOrgCode, String mappedExternalUserId, String accessToken) {
     DebtPositionTypeOrg debtPositionTypeOrg = debtPositionTypeOrgService.findDebtPositionTypeOrg(organizationId, debtPositionTypeOrgCode, mappedExternalUserId, accessToken);
     if(debtPositionTypeOrg==null){
-      throw new ResourceNotFoundException("DebtPositionTypeOrg with organizationId "+organizationId+" and code "+debtPositionTypeOrgCode+" not found");
+      throw new ResourceNotFoundException("DEBT_POSITION_TYPE_ORG_NOT_FOUND", "DebtPositionTypeOrg with organizationId "+organizationId+" and code "+debtPositionTypeOrgCode+" not found");
     }
     return debtPositionTypeOrg;
   }

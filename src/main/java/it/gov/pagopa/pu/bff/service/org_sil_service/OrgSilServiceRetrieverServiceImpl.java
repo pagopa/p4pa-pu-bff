@@ -81,7 +81,7 @@ public class OrgSilServiceRetrieverServiceImpl implements OrgSilServiceRetriever
 
     Long usageCount = debtPositionTypeOrgService.countByOrgSilServiceId(orgSilServiceId, accessToken);
     if (usageCount > 0) {
-      throw new ConflictException("Cannot delete OrgSilService with ID " + orgSilServiceId + ": it is referenced by " + usageCount + " DebtPositionTypeOrg record(s).");
+      throw new ConflictException("ORG_SIL_SERVICE_IN_USE", "Cannot delete OrgSilService with ID " + orgSilServiceId + ": it is referenced by " + usageCount + " DebtPositionTypeOrg record(s).");
     }
 
     orgSilServiceService.deleteOrgSilService(orgSilServiceId, accessToken);

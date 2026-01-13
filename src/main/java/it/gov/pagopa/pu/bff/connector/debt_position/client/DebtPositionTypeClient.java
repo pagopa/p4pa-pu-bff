@@ -74,7 +74,7 @@ public class DebtPositionTypeClient {
       debtPositionApisHolder.getDebtPositionTypeControllerApi(accessToken)
         .crudDeleteDebtpositiontype(String.valueOf(debtPositionTypeId));
     } catch (HttpClientErrorException.NotFound e) {
-      throw new ResourceNotFoundException("DebtPositionType with ID %d not found".formatted(debtPositionTypeId));
+      throw new ResourceNotFoundException("DEBT_POSITION_TYPE_NOT_FOUND", "DebtPositionType with ID %d not found".formatted(debtPositionTypeId));
     }
   }
 

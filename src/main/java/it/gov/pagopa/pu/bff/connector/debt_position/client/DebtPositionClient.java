@@ -2,8 +2,10 @@ package it.gov.pagopa.pu.bff.connector.debt_position.client;
 
 import it.gov.pagopa.pu.bff.connector.debt_position.config.DebtPositionApisHolder;
 import it.gov.pagopa.pu.bff.dto.DebtPositionViewFiltersDTO;
+import it.gov.pagopa.pu.bff.dto.UpstreamErrorDTO;
 import it.gov.pagopa.pu.bff.exception.ConflictException;
 import it.gov.pagopa.pu.bff.exception.ResourceNotFoundException;
+import it.gov.pagopa.pu.bff.mapper.UpstreamErrorMapper;
 import it.gov.pagopa.pu.bff.util.DateUtils;
 import it.gov.pagopa.pu.bff.util.PageUtils;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionDTO;
@@ -87,7 +89,7 @@ public class DebtPositionClient {
       ResponseEntity<Void> voidResponseEntity = debtPositionApisHolder.getDebtPositionApi(accessToken).deleteDebtPositionWithHttpInfo(debtPositionId);
       return voidResponseEntity.getStatusCode().equals(HttpStatus.NO_CONTENT);
     }catch (HttpClientErrorException.NotFound e) {
-      throw new ResourceNotFoundException(DEBT_POSITION_NOT_FOUND.formatted(debtPositionId));
+      throw new ResourceNotFoundException("DEBT_POSITION_NOT_FOUND", DEBT_POSITION_NOT_FOUND.formatted(debtPositionId));
     }
   }
 
@@ -95,7 +97,7 @@ public class DebtPositionClient {
     try {
       return debtPositionApisHolder.getDebtPositionApi(accessToken).manageDebtPositionInstallments(debtPositionId, manageDebtPositionDTO);
     }catch (HttpClientErrorException.NotFound e) {
-      throw new ResourceNotFoundException(DEBT_POSITION_NOT_FOUND.formatted(debtPositionId));
+      throw new ResourceNotFoundException("DEBT_POSITION_NOT_FOUND", DEBT_POSITION_NOT_FOUND.formatted(debtPositionId));
     }
   }
 
@@ -103,9 +105,17 @@ public class DebtPositionClient {
     try {
       return debtPositionApisHolder.getDebtPositionApi(accessToken).publishDebtPosition(debtPositionId);
     } catch (HttpClientErrorException.NotFound e) {
-      throw new ResourceNotFoundException(DEBT_POSITION_NOT_FOUND.formatted(debtPositionId));
+      throw new ResourceNotFoundException("DEBT_POSITION_NOT_FOUND", DEBT_POSITION_NOT_FOUND.formatted(debtPositionId));
     } catch (HttpClientErrorException.Conflict e) {
-      throw new ConflictException("Conflict detected publishing DebtPosition with ID %d".formatted(debtPositionId));
+      UpstreamErrorDTO upstream = e.getResponseBodyAs(UpstreamErrorDTO.class);
+
+      UpstreamErrorMapper.MappedUpstreamError mapped =
+        UpstreamErrorMapper.map(
+          upstream != null ? upstream.getMessage() : null,
+          e.getMessage()
+        );
+
+      throw new ConflictException(mapped.code(), mapped.description());
     }
   }
 }

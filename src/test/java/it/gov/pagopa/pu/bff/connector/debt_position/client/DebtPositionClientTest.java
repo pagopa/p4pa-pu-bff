@@ -2,6 +2,7 @@ package it.gov.pagopa.pu.bff.connector.debt_position.client;
 
 import static org.mockito.Mockito.when;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import it.gov.pagopa.pu.bff.connector.debt_position.config.DebtPositionApisHolder;
 import it.gov.pagopa.pu.bff.dto.DebtPositionViewFiltersDTO;
 import it.gov.pagopa.pu.bff.exception.ConflictException;
@@ -41,6 +42,8 @@ class DebtPositionClientTest {
   private DebtPositionViewSearchControllerApi debtPositionViewSearchControllerApiMock;
   @Mock
   private DebtPositionApi debtPositionApiMock;
+  @Mock
+  private ObjectMapper objectMapperMock;
 
   private DebtPositionClient debtPositionClient;
 
@@ -48,7 +51,7 @@ class DebtPositionClientTest {
 
   @BeforeEach
   void setUp() {
-    debtPositionClient = new DebtPositionClient(debtPositionApisHolderMock);
+    debtPositionClient = new DebtPositionClient(debtPositionApisHolderMock, objectMapperMock);
   }
 
   @AfterEach

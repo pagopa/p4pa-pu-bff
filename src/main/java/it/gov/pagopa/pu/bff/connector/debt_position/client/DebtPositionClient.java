@@ -1,5 +1,6 @@
 package it.gov.pagopa.pu.bff.connector.debt_position.client;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import it.gov.pagopa.pu.bff.connector.debt_position.config.DebtPositionApisHolder;
 import it.gov.pagopa.pu.bff.dto.DebtPositionViewFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.UpstreamErrorDTO;
@@ -26,9 +27,11 @@ public class DebtPositionClient {
 
   public static final String DEBT_POSITION_NOT_FOUND = "DebtPosition with ID %d not found";
   private final DebtPositionApisHolder debtPositionApisHolder;
+  private final ObjectMapper objectMapper;
 
-  public DebtPositionClient(DebtPositionApisHolder debtPositionApisHolder) {
+  public DebtPositionClient(DebtPositionApisHolder debtPositionApisHolder, ObjectMapper objectMapper) {
     this.debtPositionApisHolder = debtPositionApisHolder;
+    this.objectMapper = objectMapper;
   }
 
   public DebtPositionDTO createDebtPosition(DebtPositionDTO debtPositionDTO, Boolean massive, String accessToken) {
@@ -107,15 +110,24 @@ public class DebtPositionClient {
     } catch (HttpClientErrorException.NotFound e) {
       throw new ResourceNotFoundException("DEBT_POSITION_NOT_FOUND", DEBT_POSITION_NOT_FOUND.formatted(debtPositionId));
     } catch (HttpClientErrorException.Conflict e) {
-      UpstreamErrorDTO upstream = e.getResponseBodyAs(UpstreamErrorDTO.class);
+
+      UpstreamErrorDTO upstream = tryParseUpstreamError(e);
+      String upstreamMessage = upstream != null ? upstream.getMessage() : null;
 
       UpstreamErrorMapper.MappedUpstreamError mapped =
-        UpstreamErrorMapper.map(
-          upstream != null ? upstream.getMessage() : null,
-          e.getMessage()
-        );
+        UpstreamErrorMapper.map(upstreamMessage, e.getMessage());
 
       throw new ConflictException(mapped.code(), mapped.description());
+    }
+  }
+
+  private UpstreamErrorDTO tryParseUpstreamError(HttpClientErrorException e) {
+    try {
+      String body = e.getResponseBodyAsString();
+      if (body == null || body.isBlank()) return null;
+      return objectMapper.readValue(body, UpstreamErrorDTO.class);
+    } catch (Exception ignore) {
+      return null;
     }
   }
 }

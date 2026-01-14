@@ -1,5 +1,6 @@
 package it.gov.pagopa.pu.bff.connector.organization.client;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import it.gov.pagopa.pu.bff.connector.organization.config.OrganizationApisHolder;
 import it.gov.pagopa.pu.bff.exception.InvalidOrganizationException;
 import it.gov.pagopa.pu.bff.exception.ResourceNotFoundException;
@@ -29,13 +30,14 @@ class OrganizationClientTest {
   private OrganizationApi organizationApiMock;
   @Mock
   private HttpClientErrorException.BadRequest badRequestMock;
-
+  @Mock
+  private ObjectMapper objectMapperMock;
 
   private OrganizationClient organizationClient;
 
   @BeforeEach
   void setUp() {
-    organizationClient = new OrganizationClient(organizationApisHolderMock);
+    organizationClient = new OrganizationClient(organizationApisHolderMock, objectMapperMock);
   }
 
   @AfterEach

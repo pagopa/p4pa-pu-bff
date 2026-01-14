@@ -39,9 +39,9 @@ public class OrganizationController implements OrganizationsApi {
   }
 
   @Override
-  public ResponseEntity<PagedOrganizationWithDebtPositionTypeOrgAndOperatorsCount> getOrganizationsByBrokerIdAndFilters(String orgName, String ipaCode, Pageable pageable) {
+  public ResponseEntity<PagedOrganizationWithDebtPositionTypeOrgAndOperatorsCount> getOrganizationsByBrokerIdAndFilters(String orgName, String ipaCode, String orgFiscalCode, Pageable pageable) {
     log.info("User requested getOrganizationsByBrokerIdAndFilters()");
-    return new ResponseEntity<>(organizationRetrieverService.getOrganizationsByBrokerIdAndFilters(SecurityUtils.getLoggedUser(), orgName, ipaCode, pageable, SecurityUtils.getAccessToken()), HttpStatus.OK);
+    return new ResponseEntity<>(organizationRetrieverService.getOrganizationsByBrokerIdAndFilters(SecurityUtils.getLoggedUser(), orgName, ipaCode, orgFiscalCode, pageable, SecurityUtils.getAccessToken()), HttpStatus.OK);
   }
 
   @Override

@@ -130,7 +130,7 @@ class GlobalExceptionHandlerTest {
 
   @Test
   void handleInvalidDebtPositionException() throws Exception {
-    doThrow(new InvalidDebtPositionException("DEBT_POSITION_ID_NOT_ALLOWED", "Bad Request: Debt Position ID should not be provided"))
+    doThrow(new InvalidDebtPositionException("DEBT_POSITION_TYPE_IN_USE", "Bad Request: Debt Position ID should not be provided"))
       .when(testControllerSpy).testEndpoint(DATA, BODY);
 
     performRequest(DATA, MediaType.APPLICATION_JSON)

@@ -15,8 +15,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.client.HttpClientErrorException;
+
+import java.nio.charset.StandardCharsets;
 
 @ExtendWith(MockitoExtension.class)
 class OrganizationClientTest {
@@ -77,15 +80,38 @@ class OrganizationClientTest {
     String accessToken = "ACCESSTOKEN";
     OrganizationErrorDTO errorDTO = TestUtils.getPodamFactory().manufacturePojo(OrganizationErrorDTO.class);
 
-    Mockito.when(badRequestMock.getResponseBodyAs(OrganizationErrorDTO.class)).thenReturn(errorDTO);
+    String body = """
+    {
+      "code": "INVALID_ORGANIZATION",
+      "message": "%s",
+      "traceId": "t1"
+    }
+    """.formatted(errorDTO.getMessage());
+
+    HttpClientErrorException badRequest =
+      HttpClientErrorException.create(
+        HttpStatus.BAD_REQUEST,
+        "Bad Request",
+        HttpHeaders.EMPTY,
+        body.getBytes(StandardCharsets.UTF_8),
+        StandardCharsets.UTF_8
+      );
 
     Mockito.when(organizationApisHolderMock.getOrganizationApi(accessToken))
-            .thenReturn(organizationApiMock);
-    Mockito.doThrow(badRequestMock).when(organizationApiMock).updateOrganization(organizationDetailDTO);
+      .thenReturn(organizationApiMock);
 
-    InvalidOrganizationException e = Assertions.assertThrows(InvalidOrganizationException.class,() -> organizationClient.updateOrganization(organizationDetailDTO, accessToken));
+    Mockito.doThrow(badRequest)
+      .when(organizationApiMock)
+      .updateOrganization(organizationDetailDTO);
+
+    InvalidOrganizationException e =
+      Assertions.assertThrows(
+        InvalidOrganizationException.class,
+        () -> organizationClient.updateOrganization(organizationDetailDTO, accessToken)
+      );
 
     Assertions.assertNotNull(e);
-    Assertions.assertEquals(errorDTO.getMessage(),e.getMessage());
+    Assertions.assertEquals("INVALID_ORGANIZATION", e.getCode());
+    Assertions.assertEquals(errorDTO.getMessage(), e.getMessage());
   }
 }

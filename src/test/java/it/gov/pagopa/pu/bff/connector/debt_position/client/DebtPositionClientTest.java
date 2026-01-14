@@ -13,6 +13,8 @@ import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionDTO;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionOrigin;
 import it.gov.pagopa.pu.debtpositions.dto.generated.ManageDebtPositionDTO;
 import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelDebtPositionView;
+
+import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.List;
 import org.junit.jupiter.api.AfterEach;
@@ -24,6 +26,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpClientErrorException;
@@ -257,9 +260,21 @@ class DebtPositionClientTest {
 
     when(debtPositionApisHolderMock.getDebtPositionApi(accessToken))
             .thenReturn(debtPositionApiMock);
+
+    String body = """
+    {"code":"UPSTREAM_CONFLICT","message":"[ALREADY_PUBLISHED] conflict","traceId":"t1"}
+    """;
+
+    HttpClientErrorException ex = HttpClientErrorException.create(
+      HttpStatus.CONFLICT,
+      "Conflict",
+      HttpHeaders.EMPTY,
+      body.getBytes(StandardCharsets.UTF_8),
+      StandardCharsets.UTF_8
+    );
+
     when(debtPositionApiMock.publishDebtPosition(debtPositionId))
-            .thenThrow(
-                    HttpClientErrorException.create(HttpStatus.CONFLICT, "Conflict", null, null, null));
+            .thenThrow(ex);
 
     Assertions.assertThrows(ConflictException.class, () -> debtPositionClient.publishDebtPosition(debtPositionId, accessToken));
   }

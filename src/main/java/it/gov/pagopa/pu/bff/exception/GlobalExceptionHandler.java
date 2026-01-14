@@ -112,10 +112,16 @@ public class GlobalExceptionHandler {
     else if (ex.getStatusCode().is4xxClientError()) title = TitleEnum.BAD_REQUEST;
     else if (ex.getStatusCode().isSameCodeAs(HttpStatus.FORBIDDEN)) title = TitleEnum.FORBIDDEN;
 
+    // 4) Resolve description independently
+    String description = parsed.description();
+    if (description == null) {
+      description = upstreamMessage != null ? upstreamMessage : ex.getMessage();
+    }
+
     ErrorDTO dto = new ErrorDTO();
     dto.setTitle(title);
     dto.setCode(parsed.code());
-    dto.setDescription(parsed.description() != null ? parsed.description() : (upstreamMessage != null ? upstreamMessage : ex.getMessage()));
+    dto.setDescription(description);
     dto.setTraceId(upstreamTraceId != null ? upstreamTraceId : Utilities.getTraceId());
 
     return ResponseEntity
@@ -126,11 +132,10 @@ public class GlobalExceptionHandler {
 
   private UpstreamErrorDTO tryParseUpstreamError(HttpClientErrorException ex) {
     try {
-      String body = ex.getResponseBodyAsString();
-      if (body == null || body.isBlank()) {
+      if (ex.getResponseBodyAsString().isBlank()) {
         return null;
       }
-      return objectMapper.readValue(body, UpstreamErrorDTO.class);
+      return objectMapper.readValue(ex.getResponseBodyAsString(), UpstreamErrorDTO.class);
     } catch (Exception e) {
       return null;
     }
@@ -170,8 +175,8 @@ public class GlobalExceptionHandler {
     logException(ex, request, httpStatus);
 
     String message = buildReturnedMessage(ex);
-    String code = "GENERIC_ERROR";
     String description = message;
+    String code;
 
     if (ex instanceof HasErrorCode codedEx && codedEx.getCode() != null && !codedEx.getCode().isBlank()) {
       code = codedEx.getCode();

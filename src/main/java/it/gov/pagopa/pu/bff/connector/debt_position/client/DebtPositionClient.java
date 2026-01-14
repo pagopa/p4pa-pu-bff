@@ -123,9 +123,10 @@ public class DebtPositionClient {
 
   private UpstreamErrorDTO tryParseUpstreamError(HttpClientErrorException e) {
     try {
-      String body = e.getResponseBodyAsString();
-      if (body == null || body.isBlank()) return null;
-      return objectMapper.readValue(body, UpstreamErrorDTO.class);
+      if (e.getResponseBodyAsString().isBlank()) {
+        return null;
+      }
+      return objectMapper.readValue(e.getResponseBodyAsString(), UpstreamErrorDTO.class);
     } catch (Exception ignore) {
       return null;
     }

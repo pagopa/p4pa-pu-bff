@@ -44,9 +44,10 @@ public class OrganizationClient {
 
   private OrganizationErrorDTO tryParseOrganizationError(HttpClientErrorException e) {
     try {
-      String body = e.getResponseBodyAsString();
-      if (body == null || body.isBlank()) return null;
-      return objectMapper.readValue(body, OrganizationErrorDTO.class);
+      if (e.getResponseBodyAsString().isBlank()) {
+        return null;
+      }
+      return objectMapper.readValue(e.getResponseBodyAsString(), OrganizationErrorDTO.class);
     } catch (Exception ignore) {
       return null;
     }

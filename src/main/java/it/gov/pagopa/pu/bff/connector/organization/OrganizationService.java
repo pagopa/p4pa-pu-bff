@@ -15,7 +15,7 @@ public interface OrganizationService {
 
   Organization getOrganizationByOrganizationId(Long organizationId, String accessToken);
 
-  PagedModelOrganization getOrganizationsByBrokerIdAndFilters(Long brokerId, String orgName, String ipaCode, Set<Long> allowedOrganizationIds, Pageable pageable, String accessToken);
+  PagedModelOrganization getOrganizationsByBrokerIdAndFilters(Long brokerId, String orgName, String ipaCode, String orgFiscalCode, Set<Long> allowedOrganizationIds, Pageable pageable, String accessToken);
 
   void updateOrganization(OrganizationDetailDTO organizationDetailDTO, String accessToken);
 

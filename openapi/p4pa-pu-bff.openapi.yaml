@@ -1328,6 +1328,16 @@ paths:
           schema:
             type: string
             format: date-time
+        - name: debtPositionTypeOrgCode
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: debtorFiscalCode
+          in: query
+          required: false
+          schema:
+            type: string
       responses:
         '200':
           description: OK

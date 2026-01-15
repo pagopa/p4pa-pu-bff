@@ -36,14 +36,17 @@ public class PaymentsReportingController implements PaymentsReportingApi {
 
   @Override
   public ResponseEntity<PagedPaymentsReportingRow> getPaymentsReportingRows(
-    Long organizationId, String iuf, String iuv, OffsetDateTime payDateTimeFrom,
+    Long organizationId, String iuf, String iuv,
+    OffsetDateTime payDateTimeFrom,
     OffsetDateTime payDateTimeTo,
+    String debtPositionTypeOrgCode,
+    String debtorFiscalCode,
     Pageable pageable) {
     log.info("User requested getPaymentsReportingRows having organizationId {} and iuf {}", organizationId, iuf);
     LocalDateIntervalFilter payDateIntervalFilter = new LocalDateIntervalFilter(DateUtils.fromOffsetDateTimeToLocalDate(payDateTimeFrom), DateUtils.fromOffsetDateTimeToLocalDate(payDateTimeTo));
     return ResponseEntity.ok(
       paymentsReportingRetrieverService.getPaymentsReportingRows(
-        organizationId, iuf, iuv, payDateIntervalFilter,
+        organizationId, iuf, iuv, payDateIntervalFilter, debtPositionTypeOrgCode, debtorFiscalCode,
         pageable, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken()));
   }
 

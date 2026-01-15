@@ -5070,6 +5070,20 @@
             "format" : "date-time"
           }
         }, {
+          "name" : "debtPositionTypeOrgCode",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "debtorFiscalCode",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
           "name" : "page",
           "in" : "query",
           "description" : "Zero-based page index (0..N)",
@@ -12247,6 +12261,9 @@
             "type" : "string"
           },
           "iud" : {
+            "type" : "string"
+          },
+          "debtPositionTypeOrgDescription" : {
             "type" : "string"
           },
           "_links" : {

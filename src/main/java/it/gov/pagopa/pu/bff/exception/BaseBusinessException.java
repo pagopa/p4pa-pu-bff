@@ -3,7 +3,7 @@ package it.gov.pagopa.pu.bff.exception;
 import lombok.Getter;
 
 @Getter
-public abstract class BaseBusinessException extends RuntimeException implements ErrorCodeProvider {
+public abstract class BaseBusinessException extends RuntimeException {
 
   protected final String code;
 

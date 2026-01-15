@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.ValidationException;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.event.Level;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -94,8 +95,8 @@ public class GlobalExceptionHandler {
   public ResponseEntity<ErrorDTO> handleHttpClientErrorException(HttpClientErrorException ex, HttpServletRequest request) {
     logException(ex, request, ex.getStatusCode());
 
-    ErrorDTO.TitleEnum title = transcodeStatus(ex.getStatusCode()); // move on a separate method this
-    String traceId = Utilities.getTraceId(); // the traceId is the same by definition, it's not required to read it from the exception returned
+    ErrorDTO.TitleEnum title = transcodeStatus(ex.getStatusCode());
+    String traceId = Utilities.getTraceId();
     String description = ex.getMessage();
     String code = "GENERIC_ERROR";
 
@@ -172,7 +173,7 @@ public class GlobalExceptionHandler {
     String description = message;
     String code;
 
-    if (ex instanceof ErrorCodeProvider codedEx && codedEx.getCode() != null && !codedEx.getCode().isBlank()) {
+    if (ex instanceof BaseBusinessException codedEx && StringUtils.isNotBlank(codedEx.getCode())) {
       code = codedEx.getCode();
     } else {
       ErrorMessageParser.ParsedError parsed = ErrorMessageParser.parse(message);

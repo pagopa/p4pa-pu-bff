@@ -4,8 +4,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import it.gov.pagopa.pu.bff.dto.generated.ServiceStatus;
+import it.gov.pagopa.pu.bff.mapper.UpstreamErrorMapper;
 import it.gov.pagopa.pu.bff.security.JwtAuthenticationFilter;
 import it.gov.pagopa.pu.bff.service.CoreHealthIndicatorService;
 import java.util.Arrays;
@@ -35,7 +35,7 @@ class CoreHealthIndicatorControllerTest {
   private CoreHealthIndicatorService coreHealthIndicatorService;
 
   @MockitoBean
-  private ObjectMapper objectMapperMock;
+  private UpstreamErrorMapper upstreamErrorMapper;
 
   @InjectMocks
   private CoreHealthIndicatorController coreHealthIndicatorController;

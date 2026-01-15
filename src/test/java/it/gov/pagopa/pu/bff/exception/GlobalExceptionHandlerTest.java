@@ -2,6 +2,7 @@ package it.gov.pagopa.pu.bff.exception;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import it.gov.pagopa.pu.bff.config.json.JsonConfig;
+import it.gov.pagopa.pu.bff.mapper.UpstreamErrorMapper;
 import it.gov.pagopa.pu.bff.util.TestUtils;
 import it.gov.pagopa.pu.bff.util.UtilitiesTest;
 import jakarta.servlet.ServletException;
@@ -27,6 +28,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
@@ -68,7 +70,8 @@ class GlobalExceptionHandlerTest {
   private MockMvc mockMvc;
   @Autowired
   private ObjectMapper objectMapper;
-
+  @MockitoBean
+  private UpstreamErrorMapper upstreamErrorMapper;
   @MockitoSpyBean
   private TestController testControllerSpy;
   @MockitoSpyBean
@@ -298,7 +301,7 @@ class GlobalExceptionHandlerTest {
     """;
 
     HttpClientErrorException ex = HttpClientErrorException.create(
-      HttpStatus.FORBIDDEN,
+      HttpStatus.BAD_REQUEST,
       "Error",
       HttpHeaders.EMPTY,
       upstreamBody.getBytes(StandardCharsets.UTF_8),
@@ -308,11 +311,11 @@ class GlobalExceptionHandlerTest {
     doThrow(ex).when(testControllerSpy).testEndpoint(DATA, BODY);
 
     performRequest(DATA, MediaType.APPLICATION_JSON)
-      .andExpect(MockMvcResultMatchers.status().isForbidden())
+      .andExpect(MockMvcResultMatchers.status().isBadRequest())
       .andExpect(MockMvcResultMatchers.jsonPath("$.title").value("BAD_REQUEST"))
       .andExpect(MockMvcResultMatchers.jsonPath("$.code").value("INVALID_IBAN"))
       .andExpect(MockMvcResultMatchers.jsonPath("$.description").value("eltjhreigjpo"))
-      .andExpect(MockMvcResultMatchers.jsonPath("$.traceId").value("slfjhdio"));
+      .andExpect(MockMvcResultMatchers.jsonPath("$.traceId").value(traceId));
   }
 
   @Test

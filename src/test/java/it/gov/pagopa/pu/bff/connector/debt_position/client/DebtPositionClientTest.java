@@ -31,6 +31,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.List;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -264,21 +265,25 @@ class DebtPositionClientTest {
     when(debtPositionApisHolderMock.getDebtPositionApi(accessToken))
       .thenReturn(debtPositionApiMock);
 
-    String body = """
-      {"code":"UPSTREAM_CONFLICT","message":"[ALREADY_PUBLISHED] conflict","traceId":"t1"}
-      """;
-
     HttpClientErrorException ex = HttpClientErrorException.create(
       HttpStatus.CONFLICT,
       "Conflict",
       HttpHeaders.EMPTY,
-      body.getBytes(StandardCharsets.UTF_8),
+      """
+        {"code":"UPSTREAM_CONFLICT","message":"[ALREADY_PUBLISHED] conflict","traceId":"t1"}
+        """.getBytes(StandardCharsets.UTF_8),
       StandardCharsets.UTF_8
     );
 
     when(debtPositionApiMock.publishDebtPosition(debtPositionId))
       .thenThrow(ex);
 
-    Assertions.assertThrows(ConflictException.class, () -> debtPositionClient.publishDebtPosition(debtPositionId, accessToken));
+    when(upstreamErrorMapperMock.from(any(HttpClientErrorException.class)))
+      .thenReturn(new UpstreamErrorMapper.MappedUpstreamError("ALREADY_PUBLISHED", "conflict"));
+
+    Assertions.assertThrows(
+      ConflictException.class,
+      () -> debtPositionClient.publishDebtPosition(debtPositionId, accessToken)
+    );
   }
 }

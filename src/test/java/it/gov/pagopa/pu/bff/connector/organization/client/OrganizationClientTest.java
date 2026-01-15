@@ -95,7 +95,12 @@ class OrganizationClientTest {
     Mockito.when(organizationApisHolderMock.getOrganizationApi(accessToken))
       .thenReturn(organizationApiMock);
     Mockito.doThrow(badRequest)
-      .when(organizationApiMock).updateOrganization(organizationDetailDTO);
+      .when(organizationApiMock)
+      .updateOrganization(organizationDetailDTO);
+
+    // ✅ Stub del mapper (fondamentale!)
+    Mockito.when(upstreamErrorMapperMock.from(Mockito.any(HttpClientErrorException.class)))
+      .thenReturn(new UpstreamErrorMapper.MappedUpstreamError("INVALID_ORGANIZATION", "Error from upstream"));
 
     InvalidOrganizationException ex = Assertions.assertThrows(
       InvalidOrganizationException.class,

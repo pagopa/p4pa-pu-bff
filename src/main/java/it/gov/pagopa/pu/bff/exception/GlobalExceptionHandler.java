@@ -1,9 +1,8 @@
 package it.gov.pagopa.pu.bff.exception;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import it.gov.pagopa.pu.bff.dto.UpstreamErrorDTO;
 import it.gov.pagopa.pu.bff.dto.generated.ErrorDTO;
 import it.gov.pagopa.pu.bff.dto.generated.ErrorDTO.TitleEnum;
+import it.gov.pagopa.pu.bff.mapper.UpstreamErrorMapper;
 import it.gov.pagopa.pu.bff.util.ErrorMessageParser;
 import it.gov.pagopa.pu.bff.util.Utilities;
 import jakarta.servlet.ServletException;
@@ -34,11 +33,10 @@ import java.util.stream.Collectors;
 @RestControllerAdvice
 @Slf4j
 public class GlobalExceptionHandler {
+  private final UpstreamErrorMapper upstreamErrorMapper;
 
-  private final ObjectMapper objectMapper;
-
-  public GlobalExceptionHandler(ObjectMapper objectMapper) {
-    this.objectMapper = objectMapper;
+  public GlobalExceptionHandler(UpstreamErrorMapper upstreamErrorMapper) {
+    this.upstreamErrorMapper = upstreamErrorMapper;
   }
 
   @ExceptionHandler(InvalidAssessmentsRegistryException.class)
@@ -96,33 +94,22 @@ public class GlobalExceptionHandler {
   public ResponseEntity<ErrorDTO> handleHttpClientErrorException(HttpClientErrorException ex, HttpServletRequest request) {
     logException(ex, request, ex.getStatusCode());
 
-    // 1) Try to read the upstream error from body
-    UpstreamErrorDTO upstream = tryParseUpstreamError(ex);
+    ErrorDTO.TitleEnum title = transcodeStatus(ex.getStatusCode()); // move on a separate method this
+    String traceId = Utilities.getTraceId(); // the traceId is the same by definition, it's not required to read it from the exception returned
+    String description = ex.getMessage();
+    String code = "GENERIC_ERROR";
 
-    String upstreamMessage = upstream != null ? upstream.getMessage() : null;
-    String upstreamTraceId = upstream != null ? upstream.getTraceId() : null;
-
-    // 2) Extract code and description from message
-    ErrorMessageParser.ParsedError parsed = ErrorMessageParser.parse(upstreamMessage);
-
-    // 3) Map title from status
-    ErrorDTO.TitleEnum title = TitleEnum.GENERIC_ERROR;
-    if (ex.getStatusCode().isSameCodeAs(HttpStatus.NOT_FOUND)) title = TitleEnum.NOT_FOUND;
-    else if (ex.getStatusCode().isSameCodeAs(HttpStatus.CONFLICT)) title = TitleEnum.CONFLICT;
-    else if (ex.getStatusCode().is4xxClientError()) title = TitleEnum.BAD_REQUEST;
-    else if (ex.getStatusCode().isSameCodeAs(HttpStatus.FORBIDDEN)) title = TitleEnum.FORBIDDEN;
-
-    // 4) Resolve description independently
-    String description = parsed.description();
-    if (description == null) {
-      description = upstreamMessage != null ? upstreamMessage : ex.getMessage();
+    UpstreamErrorMapper.MappedUpstreamError mapped = upstreamErrorMapper.from(ex);
+    if(mapped != null) {
+      description = mapped.description();
+      code = mapped.code();
     }
 
     ErrorDTO dto = new ErrorDTO();
     dto.setTitle(title);
-    dto.setCode(parsed.code());
     dto.setDescription(description);
-    dto.setTraceId(upstreamTraceId != null ? upstreamTraceId : Utilities.getTraceId());
+    dto.setTraceId(traceId);
+    dto.setCode(code);
 
     return ResponseEntity
       .status(ex.getStatusCode())
@@ -130,15 +117,12 @@ public class GlobalExceptionHandler {
       .body(dto);
   }
 
-  private UpstreamErrorDTO tryParseUpstreamError(HttpClientErrorException ex) {
-    try {
-      if (ex.getResponseBodyAsString().isBlank()) {
-        return null;
-      }
-      return objectMapper.readValue(ex.getResponseBodyAsString(), UpstreamErrorDTO.class);
-    } catch (Exception e) {
-      return null;
-    }
+  private static TitleEnum transcodeStatus(HttpStatusCode status) {
+    if (status.isSameCodeAs(HttpStatus.NOT_FOUND)) return TitleEnum.NOT_FOUND;
+    if (status.isSameCodeAs(HttpStatus.CONFLICT)) return TitleEnum.CONFLICT;
+    if (status.isSameCodeAs(HttpStatus.FORBIDDEN)) return TitleEnum.FORBIDDEN;
+    if (status.is4xxClientError()) return TitleEnum.BAD_REQUEST;
+    return TitleEnum.GENERIC_ERROR;
   }
 
   @ExceptionHandler(InvalidOrgSilServiceException.class)
@@ -148,6 +132,16 @@ public class GlobalExceptionHandler {
 
   @ExceptionHandler({InvalidAssessmentsDetailException.class})
   public ResponseEntity<ErrorDTO> handleInvalidAssessmentsDetailException(InvalidAssessmentsDetailException ex, HttpServletRequest request) {
+    return handleException(ex, request, HttpStatus.BAD_REQUEST, TitleEnum.BAD_REQUEST);
+  }
+
+  @ExceptionHandler({InvalidAccessTokenException.class})
+  public ResponseEntity<ErrorDTO> handleInvalidAccessTokenException(InvalidAccessTokenException ex, HttpServletRequest request) {
+    return handleException(ex, request, HttpStatus.BAD_REQUEST, TitleEnum.BAD_REQUEST);
+  }
+
+  @ExceptionHandler({InvalidUserInfoException.class})
+  public ResponseEntity<ErrorDTO> handleInvalidUserInfoException(InvalidUserInfoException ex, HttpServletRequest request) {
     return handleException(ex, request, HttpStatus.BAD_REQUEST, TitleEnum.BAD_REQUEST);
   }
 
@@ -178,7 +172,7 @@ public class GlobalExceptionHandler {
     String description = message;
     String code;
 
-    if (ex instanceof HasErrorCode codedEx && codedEx.getCode() != null && !codedEx.getCode().isBlank()) {
+    if (ex instanceof ErrorCodeProvider codedEx && codedEx.getCode() != null && !codedEx.getCode().isBlank()) {
       code = codedEx.getCode();
     } else {
       ErrorMessageParser.ParsedError parsed = ErrorMessageParser.parse(message);

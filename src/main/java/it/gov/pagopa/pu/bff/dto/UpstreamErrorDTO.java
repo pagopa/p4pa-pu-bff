@@ -12,5 +12,4 @@ import lombok.NoArgsConstructor;
 public class UpstreamErrorDTO {
   private String code;
   private String message;
-  private String traceId;
 }

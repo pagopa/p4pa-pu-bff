@@ -1,15 +1,7 @@
 package it.gov.pagopa.pu.bff.exception;
 
-public class InvalidAssessmentsDetailException extends RuntimeException implements HasErrorCode {
-  private final String code;
-
+public class InvalidAssessmentsDetailException extends BaseBusinessException {
   public InvalidAssessmentsDetailException(String code, String message) {
-    super(message);
-    this.code = code;
-  }
-
-  @Override
-  public String getCode() {
-    return code;
+    super(code, message);
   }
 }

@@ -1,16 +1,8 @@
 package it.gov.pagopa.pu.bff.exception;
 
-public class InvalidDebtPositionException extends RuntimeException implements HasErrorCode {
-  private final String code;
-
+public class InvalidDebtPositionException extends BaseBusinessException {
   public InvalidDebtPositionException(String code, String message) {
-    super(message);
-    this.code = code;
-  }
-
-  @Override
-  public String getCode() {
-    return code;
+    super(code, message);
   }
 }
 

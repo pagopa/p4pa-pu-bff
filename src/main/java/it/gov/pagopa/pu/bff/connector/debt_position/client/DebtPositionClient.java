@@ -1,9 +1,7 @@
 package it.gov.pagopa.pu.bff.connector.debt_position.client;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import it.gov.pagopa.pu.bff.connector.debt_position.config.DebtPositionApisHolder;
 import it.gov.pagopa.pu.bff.dto.DebtPositionViewFiltersDTO;
-import it.gov.pagopa.pu.bff.dto.UpstreamErrorDTO;
 import it.gov.pagopa.pu.bff.exception.ConflictException;
 import it.gov.pagopa.pu.bff.exception.ResourceNotFoundException;
 import it.gov.pagopa.pu.bff.mapper.UpstreamErrorMapper;
@@ -27,11 +25,11 @@ public class DebtPositionClient {
 
   public static final String DEBT_POSITION_NOT_FOUND = "DebtPosition with ID %d not found";
   private final DebtPositionApisHolder debtPositionApisHolder;
-  private final ObjectMapper objectMapper;
+  private final UpstreamErrorMapper upstreamErrorMapper;
 
-  public DebtPositionClient(DebtPositionApisHolder debtPositionApisHolder, ObjectMapper objectMapper) {
+  public DebtPositionClient(DebtPositionApisHolder debtPositionApisHolder, UpstreamErrorMapper upstreamErrorMapper) {
     this.debtPositionApisHolder = debtPositionApisHolder;
-    this.objectMapper = objectMapper;
+    this.upstreamErrorMapper = upstreamErrorMapper;
   }
 
   public DebtPositionDTO createDebtPosition(DebtPositionDTO debtPositionDTO, Boolean massive, String accessToken) {
@@ -110,25 +108,9 @@ public class DebtPositionClient {
     } catch (HttpClientErrorException.NotFound e) {
       throw new ResourceNotFoundException("DEBT_POSITION_NOT_FOUND", DEBT_POSITION_NOT_FOUND.formatted(debtPositionId));
     } catch (HttpClientErrorException.Conflict e) {
-
-      UpstreamErrorDTO upstream = tryParseUpstreamError(e);
-      String upstreamMessage = upstream != null ? upstream.getMessage() : null;
-
-      UpstreamErrorMapper.MappedUpstreamError mapped =
-        UpstreamErrorMapper.map(upstreamMessage, e.getMessage());
+      UpstreamErrorMapper.MappedUpstreamError mapped = upstreamErrorMapper.from(e);
 
       throw new ConflictException(mapped.code(), mapped.description());
-    }
-  }
-
-  private UpstreamErrorDTO tryParseUpstreamError(HttpClientErrorException e) {
-    try {
-      if (e.getResponseBodyAsString().isBlank()) {
-        return null;
-      }
-      return objectMapper.readValue(e.getResponseBodyAsString(), UpstreamErrorDTO.class);
-    } catch (Exception ignore) {
-      return null;
     }
   }
 }

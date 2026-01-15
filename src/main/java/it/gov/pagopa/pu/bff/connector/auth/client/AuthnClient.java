@@ -24,8 +24,9 @@ public class AuthnClient {
       return authApisHolder.getAuthnApi(accessToken)
         .getUserInfo();
     } catch (HttpClientErrorException.Unauthorized e) {
-      throw new InvalidAccessTokenException(e.getResponseBodyAsString());
+      throw new InvalidAccessTokenException("INVALID_ACCESS_TOKEN", "The provided access token is invalid or expired");
     }
+
   }
 
   public AccessToken postToken(String clientId, String grantType, String scope, String subjectToken, String subjectIssuer, String subjectTokenType, String clientSecret) {

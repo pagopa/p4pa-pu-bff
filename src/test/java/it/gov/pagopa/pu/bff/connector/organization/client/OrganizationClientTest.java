@@ -1,12 +1,11 @@
 package it.gov.pagopa.pu.bff.connector.organization.client;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import it.gov.pagopa.pu.bff.connector.organization.config.OrganizationApisHolder;
 import it.gov.pagopa.pu.bff.exception.InvalidOrganizationException;
 import it.gov.pagopa.pu.bff.exception.ResourceNotFoundException;
+import it.gov.pagopa.pu.bff.mapper.UpstreamErrorMapper;
 import it.gov.pagopa.pu.organization.controller.generated.OrganizationApi;
 import it.gov.pagopa.pu.organization.dto.generated.OrganizationDetailDTO;
-import it.gov.pagopa.pu.organization.dto.generated.OrganizationErrorDTO;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -30,13 +29,13 @@ class OrganizationClientTest {
   @Mock
   private HttpClientErrorException.BadRequest badRequestMock;
   @Mock
-  private ObjectMapper objectMapperMock;
+  private UpstreamErrorMapper upstreamErrorMapperMock;
 
   private OrganizationClient organizationClient;
 
   @BeforeEach
   void setUp() {
-    organizationClient = new OrganizationClient(organizationApisHolderMock, objectMapperMock);
+    organizationClient = new OrganizationClient(organizationApisHolderMock, upstreamErrorMapperMock);
   }
 
   @AfterEach
@@ -76,7 +75,7 @@ class OrganizationClientTest {
   }
 
   @Test
-  void givenBadRequestWhenUpdateOrganizationThenInvalidOrganizationException() throws Exception {
+  void givenBadRequestWhenUpdateOrganizationThenInvalidOrganizationException() {
     OrganizationDetailDTO organizationDetailDTO = new OrganizationDetailDTO();
     String accessToken = "ACCESSTOKEN";
 
@@ -95,11 +94,8 @@ class OrganizationClientTest {
 
     Mockito.when(organizationApisHolderMock.getOrganizationApi(accessToken))
       .thenReturn(organizationApiMock);
-    Mockito.doThrow(badRequest).when(organizationApiMock).updateOrganization(organizationDetailDTO);
-
-    OrganizationErrorDTO errorDTO = new OrganizationErrorDTO();
-    errorDTO.setMessage(upstreamMessage);
-    Mockito.when(objectMapperMock.readValue(body, OrganizationErrorDTO.class)).thenReturn(errorDTO);
+    Mockito.doThrow(badRequest)
+      .when(organizationApiMock).updateOrganization(organizationDetailDTO);
 
     InvalidOrganizationException ex = Assertions.assertThrows(
       InvalidOrganizationException.class,
@@ -108,7 +104,5 @@ class OrganizationClientTest {
 
     Assertions.assertEquals("INVALID_ORGANIZATION", ex.getCode());
     Assertions.assertEquals("Error from upstream", ex.getMessage());
-
-    Mockito.verify(objectMapperMock).readValue(body, OrganizationErrorDTO.class);
   }
 }

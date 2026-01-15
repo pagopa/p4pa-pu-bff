@@ -1,5 +1,7 @@
 package it.gov.pagopa.pu.bff.util;
 
+import org.apache.commons.lang3.StringUtils;
+
 public final class ErrorMessageParser {
   private static final String GENERIC_ERROR = "GENERIC_ERROR";
 
@@ -7,7 +9,7 @@ public final class ErrorMessageParser {
   }
 
   public static ParsedError parse(String message) {
-    if (message == null || message.isBlank()) {
+    if (StringUtils.isBlank(message)) {
       return new ParsedError(GENERIC_ERROR, null);
     }
 
@@ -22,10 +24,14 @@ public final class ErrorMessageParser {
     }
 
     String code = s.substring(1, end).trim();
-    if (code.isBlank()) code = GENERIC_ERROR;
+    if (StringUtils.isBlank(code)) {
+      code = GENERIC_ERROR;
+    }
 
     String description = s.substring(end + 1).trim();
-    if (description.isBlank()) description = null;
+    if (StringUtils.isBlank(description)) {
+      description = null;
+    }
 
     return new ParsedError(code, description);
   }

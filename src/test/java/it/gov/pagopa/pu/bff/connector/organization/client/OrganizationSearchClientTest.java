@@ -108,17 +108,18 @@ class OrganizationSearchClientTest {
     Long brokerId = 1L;
     String orgName = "orgName";
     String ipaCode = "ipaCode";
+    String orgFiscalCode = "orgFiscalCode";
     String accessToken = "ACCESSTOKEN";
     Set<Long> allowedOrganizationIds = Set.of(123L);
     PagedModelOrganization expectedResult = new PagedModelOrganization();
 
     Mockito.when(organizationApisHolder.getOrganizationSearchControllerApi(accessToken))
       .thenReturn(organizationSearchControllerApiMock);
-    Mockito.when(organizationSearchControllerApiMock.crudOrganizationsFindByBrokerIdAndFilters(brokerId, orgName, ipaCode, allowedOrganizationIds, 0, 1, Collections.emptyList()))
+    Mockito.when(organizationSearchControllerApiMock.crudOrganizationsFindByBrokerIdAndFilters(brokerId, orgName, ipaCode, orgFiscalCode, allowedOrganizationIds, 0, 1, Collections.emptyList()))
       .thenReturn(expectedResult);
 
     //when
-    PagedModelOrganization result = organizationSearchClient.getOrganizationsByBrokerIdAndFilters(brokerId, orgName, ipaCode, allowedOrganizationIds, Pageable.ofSize(1), accessToken);
+    PagedModelOrganization result = organizationSearchClient.getOrganizationsByBrokerIdAndFilters(brokerId, orgName, ipaCode, orgFiscalCode, allowedOrganizationIds, Pageable.ofSize(1), accessToken);
 
     //then
     Assertions.assertNotNull(result);

@@ -112,14 +112,14 @@ public class OrganizationRetrieverServiceImpl implements OrganizationRetrieverSe
   }
 
   @Override
-  public PagedOrganizationWithDebtPositionTypeOrgAndOperatorsCount getOrganizationsByBrokerIdAndFilters(UserInfo userInfo, String orgName, String ipaCode, Pageable pageable, String accessToken) {
+  public PagedOrganizationWithDebtPositionTypeOrgAndOperatorsCount getOrganizationsByBrokerIdAndFilters(UserInfo userInfo, String orgName, String ipaCode, String orgFiscalCode, Pageable pageable, String accessToken) {
     authorizationService.validateBrokerAdminRole(userInfo);
 
     Set<Long> allowedOrganizationIds = userInfo.getOrganizations().stream()
       .map(UserOrganizationRoles::getOrganizationId)
       .collect(Collectors.toSet());
 
-    PagedModelOrganization pagedModelOrganization = organizationService.getOrganizationsByBrokerIdAndFilters(userInfo.getBrokerId(), orgName, ipaCode, allowedOrganizationIds, pageable, accessToken);
+    PagedModelOrganization pagedModelOrganization = organizationService.getOrganizationsByBrokerIdAndFilters(userInfo.getBrokerId(), orgName, ipaCode, orgFiscalCode, allowedOrganizationIds, pageable, accessToken);
 
     if (pagedModelOrganization == null
       || pagedModelOrganization.getEmbedded() == null

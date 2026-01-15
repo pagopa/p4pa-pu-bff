@@ -53,6 +53,7 @@ import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.containsString;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.when;
 
 @ExtendWith({SpringExtension.class})
 @WebMvcTest(value = {GlobalExceptionHandlerTest.TestController.class})
@@ -297,8 +298,8 @@ class GlobalExceptionHandlerTest {
   @Test
   void handleHttpClientErrorException() throws Exception {
     String upstreamBody = """
-    {"code":"SOME_UPSTREAM_CODE","message":"[INVALID_IBAN] eltjhreigjpo","traceId":"slfjhdio"}
-    """;
+  {"code":"SOME_UPSTREAM_CODE","message":"[INVALID_IBAN] eltjhreigjpo","traceId":"slfjhdio"}
+  """;
 
     HttpClientErrorException ex = HttpClientErrorException.create(
       HttpStatus.BAD_REQUEST,
@@ -307,6 +308,12 @@ class GlobalExceptionHandlerTest {
       upstreamBody.getBytes(StandardCharsets.UTF_8),
       StandardCharsets.UTF_8
     );
+
+    when(upstreamErrorMapper.from(any(HttpClientErrorException.class)))
+      .thenReturn(new UpstreamErrorMapper.MappedUpstreamError(
+        "INVALID_IBAN",
+        "eltjhreigjpo"
+      ));
 
     doThrow(ex).when(testControllerSpy).testEndpoint(DATA, BODY);
 

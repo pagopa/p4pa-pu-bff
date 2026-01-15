@@ -1,6 +1,6 @@
 package it.gov.pagopa.pu.bff.mapper;
 
-import com.fasterxml.jackson.databind.json.JsonMapper;
+import tools.jackson.databind.json.JsonMapper;
 import it.gov.pagopa.pu.bff.dto.UpstreamErrorDTO;
 import it.gov.pagopa.pu.bff.util.ErrorMessageParser;
 import org.apache.commons.lang3.StringUtils;

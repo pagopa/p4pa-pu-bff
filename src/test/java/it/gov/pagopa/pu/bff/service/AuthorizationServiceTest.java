@@ -43,11 +43,19 @@ class AuthorizationServiceTest {
 
   @Test
   void givenInvalidAccessTokenWhenValidateTokenThenInvalidAccessTokenException() {
-    when(authClientImplMock.getUserInfo("INVALIDACCESSTOKEN")).thenThrow(new InvalidAccessTokenException("Bad Access Token provided"));
-    InvalidAccessTokenException result = Assertions.assertThrows(InvalidAccessTokenException.class,
-      () -> authorizationService.validateToken("INVALIDACCESSTOKEN"));
+    when(authClientImplMock.getUserInfo("INVALIDACCESSTOKEN"))
+      .thenThrow(new InvalidAccessTokenException(
+        "INVALID_ACCESS_TOKEN",
+        "The provided access token is invalid or expired"
+      ));
 
-    Assertions.assertEquals("Bad Access Token provided", result.getMessage());
+    InvalidAccessTokenException result = Assertions.assertThrows(
+      InvalidAccessTokenException.class,
+      () -> authorizationService.validateToken("INVALIDACCESSTOKEN")
+    );
+
+    Assertions.assertEquals("INVALID_ACCESS_TOKEN", result.getCode());
+    Assertions.assertEquals("The provided access token is invalid or expired", result.getMessage());
   }
 
   @Test

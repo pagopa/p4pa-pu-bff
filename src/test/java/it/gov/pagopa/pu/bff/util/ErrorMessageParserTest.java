@@ -75,7 +75,7 @@ class ErrorMessageParserTest {
       ErrorMessageParser.parse("[   ] something wrong");
 
     assertEquals("GENERIC_ERROR", result.code());
-    assertEquals("[   ] something wrong", result.description());
+    assertEquals("something wrong", result.description());
   }
 
   @Test

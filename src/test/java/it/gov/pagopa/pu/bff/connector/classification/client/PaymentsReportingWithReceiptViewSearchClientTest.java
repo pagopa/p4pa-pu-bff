@@ -51,6 +51,8 @@ class PaymentsReportingWithReceiptViewSearchClientTest {
     Long organizationId = 1L;
     String iuf = "IUF123";
     String iuv = "iuv";
+    String debtPositionTypeOrgCode = "DPT123";
+    String debtorFiscalCode = "DF123";
     LocalDate payDateFrom = LocalDate.now().minusDays(10);
     LocalDate payDateTo = LocalDate.now();
     LocalDateIntervalFilter payDateFilter = new LocalDateIntervalFilter(payDateFrom, payDateTo);
@@ -65,12 +67,14 @@ class PaymentsReportingWithReceiptViewSearchClientTest {
       iuv,
       payDateFilter.getFrom(),
       payDateFilter.getTo(),
+      debtPositionTypeOrgCode,
+      debtorFiscalCode,
       PageUtils.getPageNumber(pageable),
       PageUtils.getPageSize(pageable),
       PageUtils.getSortList(pageable)))
       .thenReturn(expectedResult);
 
-    PagedModelPaymentsReportingWithReceiptView result = paymentsReportingWithReceiptViewSearchClient.getPaymentsReportingRows(organizationId, iuf, iuv, payDateFilter, pageable, accessToken);
+    PagedModelPaymentsReportingWithReceiptView result = paymentsReportingWithReceiptViewSearchClient.getPaymentsReportingRows(organizationId, iuf, iuv, payDateFilter, debtPositionTypeOrgCode, debtorFiscalCode, pageable, accessToken);
 
     assertSame(expectedResult, result);
   }

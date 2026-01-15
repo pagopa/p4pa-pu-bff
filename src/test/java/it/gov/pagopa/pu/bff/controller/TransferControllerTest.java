@@ -76,7 +76,7 @@ class TransferControllerTest {
     Mockito.when(transferRetrieverServiceMock.validateTaxonomyCategory(category, orgFiscalCode, accessToken))
       .thenReturn(true);
 
-    ResponseEntity<Boolean> response = transferController.validateTaxonomyCategory(category, orgFiscalCode);
+    ResponseEntity<Boolean> response = transferController.validateTaxonomyCategory(orgFiscalCode, category);
 
     Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
     Assertions.assertNotNull(response.getBody());

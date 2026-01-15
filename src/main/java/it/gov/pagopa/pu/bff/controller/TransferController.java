@@ -28,8 +28,8 @@ public class TransferController implements TransfersApi {
   }
 
   @Override
-  public ResponseEntity<Boolean> validateTaxonomyCategory(String taxonomyCategory, String orgFiscalCode) {
-    log.info("User requested validateTaxonomyCategory on category {} and orgFiscalCode", taxonomyCategory);
+  public ResponseEntity<Boolean> validateTaxonomyCategory(String orgFiscalCode, String taxonomyCategory) {
+    log.info("User requested validateTaxonomyCategory on category {} and orgFiscalCode {}", taxonomyCategory, orgFiscalCode);
     return ResponseEntity.ok(transferRetrieverService.validateTaxonomyCategory(taxonomyCategory, orgFiscalCode, SecurityUtils.getAccessToken()));
   }
 

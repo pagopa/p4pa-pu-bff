@@ -5070,6 +5070,20 @@
             "format" : "date-time"
           }
         }, {
+          "name" : "debtPositionTypeOrgCode",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "debtorFiscalCode",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
           "name" : "page",
           "in" : "query",
           "description" : "Zero-based page index (0..N)",
@@ -8863,6 +8877,13 @@
             "type" : "string"
           }
         }, {
+          "name" : "orgFiscalCode",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
           "name" : "page",
           "in" : "query",
           "description" : "Zero-based page index (0..N)",
@@ -9757,7 +9778,7 @@
       },
       "DebtPositionOrigin" : {
         "type" : "string",
-        "enum" : [ "ORDINARY", "ORDINARY_SIL", "SPONTANEOUS", "SPONTANEOUS_SIL", "SPONTANEOUS_MIXED", "SECONDARY_ORG", "RECEIPT_FILE", "RECEIPT_PAGOPA", "REPORTING_PAGOPA" ]
+        "enum" : [ "ORDINARY", "ORDINARY_SIL", "SPONTANEOUS", "SPONTANEOUS_SIL", "SPONTANEOUS_MIXED", "SPONTANEOUS_PSP", "SECONDARY_ORG", "RECEIPT_FILE", "RECEIPT_PAGOPA", "REPORTING_PAGOPA" ]
       },
       "DebtPositionStatus" : {
         "type" : "string",
@@ -12242,6 +12263,9 @@
           "iud" : {
             "type" : "string"
           },
+          "debtPositionTypeOrgDescription" : {
+            "type" : "string"
+          },
           "_links" : {
             "type" : "object",
             "additionalProperties" : {
@@ -12397,7 +12421,7 @@
       },
       "RegistryPagoPaEventType" : {
         "type" : "string",
-        "enum" : [ "PaForNode_paVerifyPaymentNotice", "PaForNode_paGetPaymentV2", "PaForNode_paSendRTV2", "ACA_newDebtPosition", "GPD_createPosition", "GPD_updatePosition", "GPD_deletePosition", "NodeForPa_fetchPaymentReporting" ]
+        "enum" : [ "PaForNode_paVerifyPaymentNotice", "PaForNode_paGetPaymentV2", "PaForNode_paSendRTV2", "PaForNode_paDemandPaymentNotice", "ACA_newDebtPosition", "GPD_createPosition", "GPD_updatePosition", "GPD_deletePosition", "NodeForPa_fetchPaymentReporting" ]
       },
       "PagoPaRegistryDTO" : {
         "type" : "object",
@@ -13786,6 +13810,9 @@
             "type" : "string"
           },
           "debtPositionTypeOrgCode" : {
+            "type" : "string"
+          },
+          "debtPositionTypeOrgDescription" : {
             "type" : "string"
           },
           "installmentIngestionFlowFileName" : {

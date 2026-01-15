@@ -107,6 +107,8 @@ class PaymentsReportingControllerTest {
     long organizationId = 1L;
     String iuf = "iuf";
     String iuv = "iuv";
+    String debtPositionTypeOrgCode = "DPT123";
+    String debtorFiscalCode = "DF123";
     LocalDate payDateFrom = LocalDate.now().minusDays(10);
     LocalDate payDateTo = LocalDate.now();
     Pageable pageable = PageRequest.of(0, 10);
@@ -119,10 +121,11 @@ class PaymentsReportingControllerTest {
     PagedPaymentsReportingRow expectedResult = new PagedPaymentsReportingRow();
 
     Mockito.when(paymentsReportingRetrieverServiceMock.getPaymentsReportingRows(organizationId, iuf, iuv, payDateFilter,
+        debtPositionTypeOrgCode, debtorFiscalCode,
         pageable, loggedUser, accessToken))
       .thenReturn(expectedResult);
 
-    ResponseEntity<PagedPaymentsReportingRow> response = paymentsReportingController.getPaymentsReportingRows(organizationId, iuf, iuv, payDateTimeFrom, payDateTimeTo, pageable);
+    ResponseEntity<PagedPaymentsReportingRow> response = paymentsReportingController.getPaymentsReportingRows(organizationId, iuf, iuv, payDateTimeFrom, payDateTimeTo, debtPositionTypeOrgCode, debtorFiscalCode, pageable);
 
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertNotNull(response.getBody());

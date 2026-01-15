@@ -63,15 +63,17 @@ class PaymentsReportingServiceImplTest {
     Long organizationId = 1L;
     String iuf = "IUF123";
     String iuv = "RUI123";
+    String debtPositionTypeOrgCode = "DPT123";
+    String debtorFiscalCode = "DF123";
     LocalDateIntervalFilter payDateFilter = new LocalDateIntervalFilter(LocalDate.now().minusDays(10), LocalDate.now());
     Pageable pageable = Mockito.mock(Pageable.class);
     String accessToken = "ACCESSTOKEN";
     PagedModelPaymentsReportingWithReceiptView expectedResult = new PagedModelPaymentsReportingWithReceiptView();
 
-    when(paymentsReportingWithReceiptViewSearchClientMock.getPaymentsReportingRows(organizationId, iuf, iuv, payDateFilter, pageable, accessToken))
+    when(paymentsReportingWithReceiptViewSearchClientMock.getPaymentsReportingRows(organizationId, iuf, iuv, payDateFilter, debtPositionTypeOrgCode, debtorFiscalCode, pageable, accessToken))
       .thenReturn(expectedResult);
 
-    PagedModelPaymentsReportingWithReceiptView result = service.getPaymentsReportingRows(organizationId, iuf, iuv, payDateFilter, pageable, accessToken);
+    PagedModelPaymentsReportingWithReceiptView result = service.getPaymentsReportingRows(organizationId, iuf, iuv, payDateFilter, debtPositionTypeOrgCode, debtorFiscalCode, pageable, accessToken);
 
     assertSame(expectedResult, result);
   }

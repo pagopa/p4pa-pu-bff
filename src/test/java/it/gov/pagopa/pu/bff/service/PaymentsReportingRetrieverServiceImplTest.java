@@ -297,6 +297,8 @@ class PaymentsReportingRetrieverServiceImplTest {
     long organizationId = 1L;
     String iuf = "IUF123";
     String iuv = "iuv";
+    String debtPositionTypeOrgCode = "DPT123";
+    String debtorFiscalCode = "DF123";
     LocalDate payDateFrom = LocalDate.now().minusDays(10);
     LocalDate payDateTo = LocalDate.now();
     LocalDateIntervalFilter payDateFilter = new LocalDateIntervalFilter(
@@ -313,7 +315,7 @@ class PaymentsReportingRetrieverServiceImplTest {
           loggedUser)).thenAnswer(a -> null);
 
       when(paymentsReportingServiceMock.getPaymentsReportingRows(organizationId,
-        iuf, iuv, payDateFilter, pageable, accessToken))
+        iuf, iuv, payDateFilter, debtPositionTypeOrgCode, debtorFiscalCode, pageable, accessToken))
         .thenReturn(pagedModelPaymentsReporting);
 
       when(paymentsReportingMapperMock.mapToPagedPaymentsReporting(
@@ -321,7 +323,7 @@ class PaymentsReportingRetrieverServiceImplTest {
         .thenReturn(expectedResult);
 
       PagedPaymentsReportingRow result = paymentsReportingRetrieverService.getPaymentsReportingRows(
-        organizationId, iuf, iuv, payDateFilter, pageable, loggedUser,
+        organizationId, iuf, iuv, payDateFilter, debtPositionTypeOrgCode, debtorFiscalCode, pageable, loggedUser,
         accessToken);
 
       assertNotNull(result);
@@ -341,6 +343,8 @@ class PaymentsReportingRetrieverServiceImplTest {
     long organizationId = 1L;
     String iuf = "IUF123";
     String iuv = "iuv";
+    String debtPositionTypeOrgCode = "DPT123";
+    String debtorFiscalCode = "DF123";
     LocalDate payDateFrom = LocalDate.now().minusDays(10);
     LocalDate payDateTo = LocalDate.now();
     LocalDateIntervalFilter payDateFilter = new LocalDateIntervalFilter(
@@ -356,7 +360,8 @@ class PaymentsReportingRetrieverServiceImplTest {
 
       assertThrows(AuthorizationDeniedException.class, () ->
         paymentsReportingRetrieverService.getPaymentsReportingRows(
-          organizationId, iuf, iuv, payDateFilter, pageable, loggedUser,
+          organizationId, iuf, iuv, payDateFilter, debtPositionTypeOrgCode, debtorFiscalCode,
+          pageable, loggedUser,
           accessToken));
 
       authorizationServiceMockedStatic.verify(

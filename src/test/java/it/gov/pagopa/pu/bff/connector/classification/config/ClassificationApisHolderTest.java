@@ -61,7 +61,7 @@ class ClassificationApisHolderTest extends BaseApiHolderTest {
   void whenGetPaymentsReportingSearchControllerApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
     assertAuthenticationShouldBeSetInThreadSafeMode(
       accessToken -> classificationApisHolder.getPaymentsReportingWithReceiptViewSearchControllerApi(accessToken)
-        .crudPaymentsReportingWithReceiptViewFindPaymentsReportingByFilters(1L, "IUF123", "iuv", null, null, 0, 10, Collections.emptyList()),
+        .crudPaymentsReportingWithReceiptViewFindPaymentsReportingByFilters(1L, "IUF123", "iuv", null, null, "CODE123","FC123", 0, 10, Collections.emptyList()),
       new ParameterizedTypeReference<>() {
       },
       classificationApisHolder::unload);

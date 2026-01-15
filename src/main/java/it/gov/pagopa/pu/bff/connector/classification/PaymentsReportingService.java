@@ -15,6 +15,7 @@ public interface PaymentsReportingService {
 
   PagedModelPaymentsReportingWithReceiptView getPaymentsReportingRows(Long organizationId,
                                                                       String iuf, String iuv, LocalDateIntervalFilter payDateFilter,
+                                                                      String debtPositionTypeOrgCode, String debtorFiscalCode,
                                                                       Pageable pageable, String accessToken);
 
   PaymentsReporting getPaymentsReportingDetail(Long organizationId,

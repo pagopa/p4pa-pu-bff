@@ -14,7 +14,7 @@ public interface OrganizationRetrieverService {
 
   List<OrganizationDTO> getOrganizations(UserInfo userInfo, String accessToken);
 
-  PagedOrganizationWithDebtPositionTypeOrgAndOperatorsCount getOrganizationsByBrokerIdAndFilters(UserInfo userInfo, String orgName, String ipaCode, Pageable pageable, String accessToken);
+  PagedOrganizationWithDebtPositionTypeOrgAndOperatorsCount getOrganizationsByBrokerIdAndFilters(UserInfo userInfo, String orgName, String ipaCode, String orgFiscalCode, Pageable pageable, String accessToken);
 
   PagedOrganizationWithDebtPositionTypeOrgCount getOrganizationsWithDebtPositionTypeOrgCount(Long organizationId, String organizationName, Pageable pageable, UserInfo loggedUser, String accessToken);
 

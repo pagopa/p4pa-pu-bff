@@ -49,6 +49,11 @@ paths:
           required: false
           schema:
             type: string
+        - name: orgFiscalCode
+          in: query
+          required: false
+          schema:
+            type: string
       responses:
         '200':
           description: OK

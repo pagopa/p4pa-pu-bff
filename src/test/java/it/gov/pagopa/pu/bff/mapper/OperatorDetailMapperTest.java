@@ -8,6 +8,7 @@ import it.gov.pagopa.pu.bff.exception.InvalidOperatorRoleException;
 import it.gov.pagopa.pu.bff.util.TestUtils;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionType;
 import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelDebtPositionTypeOrg;
+import it.gov.pagopa.pu.organization.dto.generated.Organization;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
@@ -34,6 +35,7 @@ class OperatorDetailMapperTest {
     PagedModelDebtPositionTypeOrg pagedModelDebtPositionTypeOrg = podamFactory.manufacturePojo(PagedModelDebtPositionTypeOrg.class);
     PagedDebtPositionTypeOrgDTO pagedDebtPositionTypeOrg = podamFactory.manufacturePojo(PagedDebtPositionTypeOrgDTO.class);
     OperatorDTO operatorDTO = podamFactory.manufacturePojo(OperatorDTO.class);
+    Organization organization = podamFactory.manufacturePojo(Organization.class);
     operatorDTO.setRoles(List.of("ROLE_ADMIN"));
     try (MockedStatic<Mappers> mappersMockedStatic = Mockito.mockStatic(Mappers.class)) {
       Mockito.when(pagedDebtPositionTypeOrgDTOMapperMock.map(pagedModelDebtPositionTypeOrg,Collections.emptyMap())).thenReturn(pagedDebtPositionTypeOrg);
@@ -41,7 +43,7 @@ class OperatorDetailMapperTest {
               .when(() -> Mappers.getMapper(PagedDebtPositionTypeOrgDTOMapper.class))
               .thenAnswer(a -> pagedDebtPositionTypeOrgDTOMapperMock);
       //when
-      OperatorsDetail result = mapper.map(pagedModelDebtPositionTypeOrg, operatorDTO, Collections.emptyMap());
+      OperatorsDetail result = mapper.map(pagedModelDebtPositionTypeOrg, operatorDTO, Collections.emptyMap(), organization);
       //then
       Assertions.assertNotNull(result);
       Assertions.assertEquals(operatorDTO.getOperatorId(), result.getOperatorId());
@@ -59,12 +61,13 @@ class OperatorDetailMapperTest {
   void testMap_InvalidRole() {
     PagedModelDebtPositionTypeOrg pagedModelDebtPositionTypeOrg = podamFactory.manufacturePojo(PagedModelDebtPositionTypeOrg.class);
     OperatorDTO operatorDTO = podamFactory.manufacturePojo(OperatorDTO.class);
+    Organization organization = podamFactory.manufacturePojo(Organization.class);
     List<String> roles = Collections.singletonList("INVALID_ROLE");
     operatorDTO.setRoles(roles);
     Map<Long, DebtPositionType> debtPositionTypes = new HashMap<>();
 
     Exception exception = assertThrows(InvalidOperatorRoleException.class, () ->
-      mapper.map(pagedModelDebtPositionTypeOrg, operatorDTO, debtPositionTypes));
+      mapper.map(pagedModelDebtPositionTypeOrg, operatorDTO, debtPositionTypes, organization));
 
     assertEquals("INVALID_OPERATOR_ROLE: INVALID_ROLE", exception.getMessage());
   }
@@ -73,10 +76,11 @@ class OperatorDetailMapperTest {
   void testMap_EmptyRoles() {
     PagedModelDebtPositionTypeOrg pagedModelDebtPositionTypeOrg = podamFactory.manufacturePojo(PagedModelDebtPositionTypeOrg.class);
     OperatorDTO operatorDTO = podamFactory.manufacturePojo(OperatorDTO.class);
+    Organization organization = podamFactory.manufacturePojo(Organization.class);
     List<String> roles = Collections.emptyList();
     operatorDTO.setRoles(roles);
 
-    OperatorsDetail result = mapper.map(pagedModelDebtPositionTypeOrg, operatorDTO, Collections.emptyMap());
+    OperatorsDetail result = mapper.map(pagedModelDebtPositionTypeOrg, operatorDTO, Collections.emptyMap(), organization);
 
     assertNull(result.getOperatorRole());
   }

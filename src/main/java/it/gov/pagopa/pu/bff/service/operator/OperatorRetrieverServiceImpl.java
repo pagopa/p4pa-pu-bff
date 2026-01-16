@@ -101,8 +101,11 @@ public class OperatorRetrieverServiceImpl implements OperatorRetrieverService {
 
     PagedModelDebtPositionTypeOrg pagedDebtPositionTypeOrg = debtPositionTypeOrgService.findPagedDebtPositionTypeOrg(operatorDetailsFiltersDTO, pageable, accessToken );
 
+    Organization organization = organizationService.getOrganizationByOrganizationId(operatorDetailsFiltersDTO.getOrganizationId(), accessToken);
+
     return operatorDetailMapper.map(pagedDebtPositionTypeOrg, organizationOperator,
-            getDebtPositionTypes(pagedDebtPositionTypeOrg,accessToken));
+      getDebtPositionTypes(pagedDebtPositionTypeOrg,accessToken),
+      organization);
   }
 
   private Map<Long, DebtPositionType> getDebtPositionTypes(PagedModelDebtPositionTypeOrg pagedDebtPositionTypeOrg, String accessToken) {

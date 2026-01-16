@@ -7,6 +7,7 @@ import it.gov.pagopa.pu.bff.dto.generated.PagedDebtPositionTypeOrgDTO;
 import it.gov.pagopa.pu.bff.exception.InvalidOperatorRoleException;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionType;
 import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelDebtPositionTypeOrg;
+import it.gov.pagopa.pu.organization.dto.generated.Organization;
 import org.mapstruct.Context;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -26,7 +27,8 @@ public interface OperatorDetailMapper {
   @Mapping(target= "operatorName", source = "organizationOperator.firstName")
   @Mapping(target= "operatorLastName", source = "organizationOperator.lastName")
   @Mapping(target= "operatorEmail", source= "organizationOperator.email")
-  OperatorsDetail map(PagedModelDebtPositionTypeOrg pagedModelDebtPositionTypeOrg, OperatorDTO organizationOperator, @Context Map<Long, DebtPositionType> debtPositionTypes);
+  @Mapping(target = "orgName", expression = "java(organization != null ? organization.getOrgName() : null)")
+  OperatorsDetail map(PagedModelDebtPositionTypeOrg pagedModelDebtPositionTypeOrg, OperatorDTO organizationOperator, @Context Map<Long, DebtPositionType> debtPositionTypes, @Context Organization organization);
 
   default PagedDebtPositionTypeOrgDTO mapToPagedDebtPositionTypeOrgDTO(PagedModelDebtPositionTypeOrg pagedModelDebtPositionTypeOrg, @Context Map<Long, DebtPositionType> debtPositionTypes) {
     return Mappers.getMapper(PagedDebtPositionTypeOrgDTOMapper.class).map(pagedModelDebtPositionTypeOrg, debtPositionTypes);

@@ -17,7 +17,8 @@ public class PaymentsReportingWithReceiptViewSearchClient {
   }
 
   public PagedModelPaymentsReportingWithReceiptView getPaymentsReportingRows(Long organizationId, String iuf, String iuv, LocalDateIntervalFilter payDateFilter,
-                                                                        Pageable pageable, String accessToken) {
+                                                                             String debtPositionTypeOrgCode, String debtorFiscalCode,
+                                                                             Pageable pageable, String accessToken) {
     return classificationApisHolder.getPaymentsReportingWithReceiptViewSearchControllerApi(accessToken)
       .crudPaymentsReportingWithReceiptViewFindPaymentsReportingByFilters(
         organizationId,
@@ -25,6 +26,8 @@ public class PaymentsReportingWithReceiptViewSearchClient {
         iuv,
         payDateFilter.getFrom(),
         payDateFilter.getTo(),
+        debtPositionTypeOrgCode,
+        debtorFiscalCode,
         PageUtils.getPageNumber(pageable),
         PageUtils.getPageSize(pageable),
         PageUtils.getSortList(pageable));

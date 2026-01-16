@@ -40,9 +40,12 @@ public class PaymentsReportingServiceImpl implements PaymentsReportingService {
   public PagedModelPaymentsReportingWithReceiptView getPaymentsReportingRows(
     Long organizationId, String iuf, String iuv,
     LocalDateIntervalFilter payDateFilter,
+    String debtPositionTypeOrgCode, String debtorFiscalCode,
     Pageable pageable, String accessToken) {
     return paymentsReportingWithReceiptViewSearchClient.getPaymentsReportingRows(
-      organizationId, iuf, iuv, payDateFilter, pageable, accessToken);
+      organizationId, iuf, iuv, payDateFilter,
+      debtPositionTypeOrgCode, debtorFiscalCode,
+      pageable, accessToken);
   }
 
   @Override

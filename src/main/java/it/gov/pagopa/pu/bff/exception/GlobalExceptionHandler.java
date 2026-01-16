@@ -2,12 +2,15 @@ package it.gov.pagopa.pu.bff.exception;
 
 import it.gov.pagopa.pu.bff.dto.generated.ErrorDTO;
 import it.gov.pagopa.pu.bff.dto.generated.ErrorDTO.TitleEnum;
+import it.gov.pagopa.pu.bff.mapper.UpstreamErrorMapper;
+import it.gov.pagopa.pu.bff.util.ErrorMessageParser;
 import it.gov.pagopa.pu.bff.util.Utilities;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.ValidationException;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.event.Level;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -31,6 +34,11 @@ import java.util.stream.Collectors;
 @RestControllerAdvice
 @Slf4j
 public class GlobalExceptionHandler {
+  private final UpstreamErrorMapper upstreamErrorMapper;
+
+  public GlobalExceptionHandler(UpstreamErrorMapper upstreamErrorMapper) {
+    this.upstreamErrorMapper = upstreamErrorMapper;
+  }
 
   @ExceptionHandler(InvalidAssessmentsRegistryException.class)
   public ResponseEntity<ErrorDTO> handleInvalidAssessmentRegistryException(InvalidAssessmentsRegistryException ex, HttpServletRequest request) {
@@ -85,7 +93,37 @@ public class GlobalExceptionHandler {
 
   @ExceptionHandler({HttpClientErrorException.class})
   public ResponseEntity<ErrorDTO> handleHttpClientErrorException(HttpClientErrorException ex, HttpServletRequest request) {
-    return handleException(ex, request, ex.getStatusCode(), TitleEnum.GENERIC_ERROR);
+    logException(ex, request, ex.getStatusCode());
+
+    ErrorDTO.TitleEnum title = transcodeStatus(ex.getStatusCode());
+    String traceId = Utilities.getTraceId();
+    String description = ex.getMessage();
+    String code = "GENERIC_ERROR";
+
+    UpstreamErrorMapper.MappedUpstreamError mapped = upstreamErrorMapper.from(ex);
+    if(mapped != null) {
+      description = mapped.description();
+      code = mapped.code();
+    }
+
+    ErrorDTO dto = new ErrorDTO();
+    dto.setTitle(title);
+    dto.setDescription(description);
+    dto.setTraceId(traceId);
+    dto.setCode(code);
+
+    return ResponseEntity
+      .status(ex.getStatusCode())
+      .contentType(MediaType.APPLICATION_JSON)
+      .body(dto);
+  }
+
+  private static TitleEnum transcodeStatus(HttpStatusCode status) {
+    if (status.isSameCodeAs(HttpStatus.NOT_FOUND)) return TitleEnum.NOT_FOUND;
+    if (status.isSameCodeAs(HttpStatus.CONFLICT)) return TitleEnum.CONFLICT;
+    if (status.isSameCodeAs(HttpStatus.FORBIDDEN)) return TitleEnum.FORBIDDEN;
+    if (status.is4xxClientError()) return TitleEnum.BAD_REQUEST;
+    return TitleEnum.GENERIC_ERROR;
   }
 
   @ExceptionHandler(InvalidOrgSilServiceException.class)
@@ -95,6 +133,16 @@ public class GlobalExceptionHandler {
 
   @ExceptionHandler({InvalidAssessmentsDetailException.class})
   public ResponseEntity<ErrorDTO> handleInvalidAssessmentsDetailException(InvalidAssessmentsDetailException ex, HttpServletRequest request) {
+    return handleException(ex, request, HttpStatus.BAD_REQUEST, TitleEnum.BAD_REQUEST);
+  }
+
+  @ExceptionHandler({InvalidAccessTokenException.class})
+  public ResponseEntity<ErrorDTO> handleInvalidAccessTokenException(InvalidAccessTokenException ex, HttpServletRequest request) {
+    return handleException(ex, request, HttpStatus.BAD_REQUEST, TitleEnum.BAD_REQUEST);
+  }
+
+  @ExceptionHandler({InvalidUserInfoException.class})
+  public ResponseEntity<ErrorDTO> handleInvalidUserInfoException(InvalidUserInfoException ex, HttpServletRequest request) {
     return handleException(ex, request, HttpStatus.BAD_REQUEST, TitleEnum.BAD_REQUEST);
   }
 
@@ -121,10 +169,30 @@ public class GlobalExceptionHandler {
   static ResponseEntity<ErrorDTO> handleException(Exception ex, HttpServletRequest request, HttpStatusCode httpStatus, ErrorDTO.TitleEnum errorEnum) {
     logException(ex, request, httpStatus);
 
+    String message = buildReturnedMessage(ex);
+    String description = message;
+    String code;
+
+    if (ex instanceof BaseBusinessException codedEx && StringUtils.isNotBlank(codedEx.getCode())) {
+      code = codedEx.getCode();
+    } else {
+      ErrorMessageParser.ParsedError parsed = ErrorMessageParser.parse(message);
+      code = parsed.code();
+      if (parsed.description() != null) {
+        description = parsed.description();
+      }
+    }
+
+    ErrorDTO dto = new ErrorDTO();
+    dto.setTitle(errorEnum);
+    dto.setDescription(description);
+    dto.setTraceId(Utilities.getTraceId());
+    dto.setCode(code);
+
     return ResponseEntity
       .status(httpStatus)
       .contentType(MediaType.APPLICATION_JSON)
-      .body(new ErrorDTO(errorEnum, buildReturnedMessage(ex), Utilities.getTraceId()));
+      .body(dto);
   }
 
   private static void logException(Exception ex, HttpServletRequest request, HttpStatusCode httpStatus) {

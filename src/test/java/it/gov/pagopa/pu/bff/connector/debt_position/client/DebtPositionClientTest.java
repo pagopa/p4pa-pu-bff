@@ -1,11 +1,10 @@
 package it.gov.pagopa.pu.bff.connector.debt_position.client;
 
-import static org.mockito.Mockito.when;
-
 import it.gov.pagopa.pu.bff.connector.debt_position.config.DebtPositionApisHolder;
 import it.gov.pagopa.pu.bff.dto.DebtPositionViewFiltersDTO;
 import it.gov.pagopa.pu.bff.exception.ConflictException;
 import it.gov.pagopa.pu.bff.exception.ResourceNotFoundException;
+import it.gov.pagopa.pu.bff.mapper.UpstreamErrorMapper;
 import it.gov.pagopa.pu.bff.util.TestUtils;
 import it.gov.pagopa.pu.debtpositions.controller.generated.DebtPositionApi;
 import it.gov.pagopa.pu.debtpositions.controller.generated.DebtPositionViewSearchControllerApi;
@@ -13,8 +12,6 @@ import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionDTO;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionOrigin;
 import it.gov.pagopa.pu.debtpositions.dto.generated.ManageDebtPositionDTO;
 import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelDebtPositionView;
-import java.util.Collections;
-import java.util.List;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -24,10 +21,18 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpClientErrorException;
 import uk.co.jemos.podam.api.PodamFactory;
+
+import java.nio.charset.StandardCharsets;
+import java.util.Collections;
+import java.util.List;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class DebtPositionClientTest {
@@ -38,6 +43,8 @@ class DebtPositionClientTest {
   private DebtPositionViewSearchControllerApi debtPositionViewSearchControllerApiMock;
   @Mock
   private DebtPositionApi debtPositionApiMock;
+  @Mock
+  private UpstreamErrorMapper upstreamErrorMapperMock;
 
   private DebtPositionClient debtPositionClient;
 
@@ -45,15 +52,15 @@ class DebtPositionClientTest {
 
   @BeforeEach
   void setUp() {
-    debtPositionClient = new DebtPositionClient(debtPositionApisHolderMock);
+    debtPositionClient = new DebtPositionClient(debtPositionApisHolderMock, upstreamErrorMapperMock);
   }
 
   @AfterEach
   void verifyNoMoreInteractions() {
     Mockito.verifyNoMoreInteractions(
-            debtPositionApisHolderMock,
-            debtPositionViewSearchControllerApiMock,
-            debtPositionApiMock
+      debtPositionApisHolderMock,
+      debtPositionViewSearchControllerApiMock,
+      debtPositionApiMock
     );
   }
 
@@ -194,9 +201,9 @@ class DebtPositionClientTest {
     DebtPositionDTO expectedResult = new DebtPositionDTO();
 
     when(debtPositionApisHolderMock.getDebtPositionApi(accessToken))
-            .thenReturn(debtPositionApiMock);
-    when(debtPositionApiMock.manageDebtPositionInstallments(debtPositionId,manageDebtPositionDTO))
-            .thenReturn(expectedResult);
+      .thenReturn(debtPositionApiMock);
+    when(debtPositionApiMock.manageDebtPositionInstallments(debtPositionId, manageDebtPositionDTO))
+      .thenReturn(expectedResult);
 
     DebtPositionDTO result = debtPositionClient.manageDebtPositionInstallments(debtPositionId, manageDebtPositionDTO, accessToken);
 
@@ -210,10 +217,10 @@ class DebtPositionClientTest {
     String accessToken = "ACCESSTOKEN";
 
     when(debtPositionApisHolderMock.getDebtPositionApi(accessToken))
-            .thenReturn(debtPositionApiMock);
-    when(debtPositionApiMock.manageDebtPositionInstallments(debtPositionId,manageDebtPositionDTO))
-            .thenThrow(
-                    HttpClientErrorException.create(HttpStatus.NOT_FOUND, "NotFound", null, null, null));
+      .thenReturn(debtPositionApiMock);
+    when(debtPositionApiMock.manageDebtPositionInstallments(debtPositionId, manageDebtPositionDTO))
+      .thenThrow(
+        HttpClientErrorException.create(HttpStatus.NOT_FOUND, "NotFound", null, null, null));
 
     ResourceNotFoundException ex = Assertions.assertThrows(ResourceNotFoundException.class, () -> debtPositionClient.manageDebtPositionInstallments(debtPositionId, manageDebtPositionDTO, accessToken));
 
@@ -227,9 +234,9 @@ class DebtPositionClientTest {
     DebtPositionDTO expectedResult = new DebtPositionDTO();
 
     when(debtPositionApisHolderMock.getDebtPositionApi(accessToken))
-            .thenReturn(debtPositionApiMock);
+      .thenReturn(debtPositionApiMock);
     when(debtPositionApiMock.publishDebtPosition(debtPositionId))
-            .thenReturn(expectedResult);
+      .thenReturn(expectedResult);
 
     DebtPositionDTO result = debtPositionClient.publishDebtPosition(debtPositionId, accessToken);
 
@@ -242,10 +249,10 @@ class DebtPositionClientTest {
     String accessToken = "ACCESSTOKEN";
 
     when(debtPositionApisHolderMock.getDebtPositionApi(accessToken))
-            .thenReturn(debtPositionApiMock);
+      .thenReturn(debtPositionApiMock);
     when(debtPositionApiMock.publishDebtPosition(debtPositionId))
-            .thenThrow(
-                    HttpClientErrorException.create(HttpStatus.NOT_FOUND, "NotFound", null, null, null));
+      .thenThrow(
+        HttpClientErrorException.create(HttpStatus.NOT_FOUND, "NotFound", null, null, null));
 
     Assertions.assertThrows(ResourceNotFoundException.class, () -> debtPositionClient.publishDebtPosition(debtPositionId, accessToken));
   }
@@ -256,11 +263,27 @@ class DebtPositionClientTest {
     String accessToken = "ACCESSTOKEN";
 
     when(debtPositionApisHolderMock.getDebtPositionApi(accessToken))
-            .thenReturn(debtPositionApiMock);
-    when(debtPositionApiMock.publishDebtPosition(debtPositionId))
-            .thenThrow(
-                    HttpClientErrorException.create(HttpStatus.CONFLICT, "Conflict", null, null, null));
+      .thenReturn(debtPositionApiMock);
 
-    Assertions.assertThrows(ConflictException.class, () -> debtPositionClient.publishDebtPosition(debtPositionId, accessToken));
+    HttpClientErrorException ex = HttpClientErrorException.create(
+      HttpStatus.CONFLICT,
+      "Conflict",
+      HttpHeaders.EMPTY,
+      """
+        {"code":"UPSTREAM_CONFLICT","message":"[ALREADY_PUBLISHED] conflict","traceId":"t1"}
+        """.getBytes(StandardCharsets.UTF_8),
+      StandardCharsets.UTF_8
+    );
+
+    when(debtPositionApiMock.publishDebtPosition(debtPositionId))
+      .thenThrow(ex);
+
+    when(upstreamErrorMapperMock.from(any(HttpClientErrorException.class)))
+      .thenReturn(new UpstreamErrorMapper.MappedUpstreamError("ALREADY_PUBLISHED", "conflict"));
+
+    Assertions.assertThrows(
+      ConflictException.class,
+      () -> debtPositionClient.publishDebtPosition(debtPositionId, accessToken)
+    );
   }
 }

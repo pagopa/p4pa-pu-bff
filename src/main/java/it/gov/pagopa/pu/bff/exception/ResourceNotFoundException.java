@@ -1,8 +1,8 @@
 package it.gov.pagopa.pu.bff.exception;
 
-public class ResourceNotFoundException extends RuntimeException {
-  public ResourceNotFoundException(String message) {
-    super(message);
+public class ResourceNotFoundException extends BaseBusinessException {
+  public ResourceNotFoundException(String code, String message) {
+    super(code, message);
   }
 }
 

@@ -144,7 +144,8 @@ public class DebtPositionRegistryRetrieverServiceImplTest {
         Long debtPositionId=2L;
       try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
         authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)).thenAnswer(a -> null);
-        Mockito.doThrow(new ResourceNotFoundException("")).when(debtPositionRetrieverServiceMock).validateOperator(debtPositionId, organizationId, loggedUser, accessToken);
+        Mockito.doThrow(new ResourceNotFoundException("DEBT_POSITION_NOT_FOUND", "DebtPosition not found"))
+          .when(debtPositionRetrieverServiceMock).validateOperator(debtPositionId, organizationId, loggedUser, accessToken);
 
         Assertions.assertThrows(ResourceNotFoundException.class, () ->
           debtPositionRegistryRetrieverService.getDebtPositionRegistry(organizationId, debtPositionId, loggedUser, accessToken));

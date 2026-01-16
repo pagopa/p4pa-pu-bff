@@ -1,7 +1,7 @@
 package it.gov.pagopa.pu.bff.exception;
 
-public class ZipFileException extends RuntimeException {
-  public ZipFileException(String message) {
-    super(message);
+public class ZipFileException extends BaseBusinessException {
+  public ZipFileException(String code, String message) {
+    super(code, message);
   }
 }

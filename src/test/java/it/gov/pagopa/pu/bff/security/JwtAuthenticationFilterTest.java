@@ -159,13 +159,17 @@ class JwtAuthenticationFilterTest {
   void givenInvalidTokenWhenDoFilterInternalThenInvalidAccessTokenException() throws ServletException, IOException {
     // Given
     String accessToken = "INVALIDACCESSTOKEN";
-    String message = "An invalid accessToken has been provided";
+    String code = "INVALID_ACCESS_TOKEN";
+    String message = "The provided access token is invalid or expired";
+
     MockHttpServletRequest request = new MockHttpServletRequest(HttpMethod.GET.name(), "/path");
     request.addHeader(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken);
 
     MockHttpServletResponse response = new MockHttpServletResponse();
 
-    Mockito.doThrow(new InvalidAccessTokenException(message)).when(authorizationServiceMock).validateToken(accessToken);
+    Mockito.doThrow(new InvalidAccessTokenException(code, message))
+      .when(authorizationServiceMock)
+      .validateToken(accessToken);
 
     // When
     jwtAuthenticationFilterMock.doFilterInternal(request, response, filterChainMock);
@@ -174,7 +178,7 @@ class JwtAuthenticationFilterTest {
     Assertions.assertNull(MDC.get("externalUserId"));
     Assertions.assertEquals(HttpStatus.UNAUTHORIZED.value(), response.getStatus());
     Assertions.assertEquals(message, response.getContentAsString());
-    Mockito.verify(filterChainMock, Mockito.times(0)).doFilter(request, response);
+    Mockito.verify(filterChainMock, Mockito.never()).doFilter(request, response);
   }
 
   @Test

@@ -4,6 +4,7 @@ import it.gov.pagopa.pu.bff.connector.debt_position.config.DebtPositionApisHolde
 import it.gov.pagopa.pu.bff.dto.DebtPositionViewFiltersDTO;
 import it.gov.pagopa.pu.bff.exception.ConflictException;
 import it.gov.pagopa.pu.bff.exception.ResourceNotFoundException;
+import it.gov.pagopa.pu.bff.mapper.UpstreamErrorMapper;
 import it.gov.pagopa.pu.bff.util.DateUtils;
 import it.gov.pagopa.pu.bff.util.PageUtils;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionDTO;
@@ -24,9 +25,11 @@ public class DebtPositionClient {
 
   public static final String DEBT_POSITION_NOT_FOUND = "DebtPosition with ID %d not found";
   private final DebtPositionApisHolder debtPositionApisHolder;
+  private final UpstreamErrorMapper upstreamErrorMapper;
 
-  public DebtPositionClient(DebtPositionApisHolder debtPositionApisHolder) {
+  public DebtPositionClient(DebtPositionApisHolder debtPositionApisHolder, UpstreamErrorMapper upstreamErrorMapper) {
     this.debtPositionApisHolder = debtPositionApisHolder;
+    this.upstreamErrorMapper = upstreamErrorMapper;
   }
 
   public DebtPositionDTO createDebtPosition(DebtPositionDTO debtPositionDTO, Boolean massive, String accessToken) {
@@ -87,7 +90,7 @@ public class DebtPositionClient {
       ResponseEntity<Void> voidResponseEntity = debtPositionApisHolder.getDebtPositionApi(accessToken).deleteDebtPositionWithHttpInfo(debtPositionId);
       return voidResponseEntity.getStatusCode().equals(HttpStatus.NO_CONTENT);
     }catch (HttpClientErrorException.NotFound e) {
-      throw new ResourceNotFoundException(DEBT_POSITION_NOT_FOUND.formatted(debtPositionId));
+      throw new ResourceNotFoundException("DEBT_POSITION_NOT_FOUND", DEBT_POSITION_NOT_FOUND.formatted(debtPositionId));
     }
   }
 
@@ -95,7 +98,7 @@ public class DebtPositionClient {
     try {
       return debtPositionApisHolder.getDebtPositionApi(accessToken).manageDebtPositionInstallments(debtPositionId, manageDebtPositionDTO);
     }catch (HttpClientErrorException.NotFound e) {
-      throw new ResourceNotFoundException(DEBT_POSITION_NOT_FOUND.formatted(debtPositionId));
+      throw new ResourceNotFoundException("DEBT_POSITION_NOT_FOUND", DEBT_POSITION_NOT_FOUND.formatted(debtPositionId));
     }
   }
 
@@ -103,9 +106,11 @@ public class DebtPositionClient {
     try {
       return debtPositionApisHolder.getDebtPositionApi(accessToken).publishDebtPosition(debtPositionId);
     } catch (HttpClientErrorException.NotFound e) {
-      throw new ResourceNotFoundException(DEBT_POSITION_NOT_FOUND.formatted(debtPositionId));
+      throw new ResourceNotFoundException("DEBT_POSITION_NOT_FOUND", DEBT_POSITION_NOT_FOUND.formatted(debtPositionId));
     } catch (HttpClientErrorException.Conflict e) {
-      throw new ConflictException("Conflict detected publishing DebtPosition with ID %d".formatted(debtPositionId));
+      UpstreamErrorMapper.MappedUpstreamError mapped = upstreamErrorMapper.from(e);
+
+      throw new ConflictException(mapped.code(), mapped.description());
     }
   }
 }

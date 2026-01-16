@@ -55,11 +55,10 @@ public class DebtPositionNoticeRetrieverServiceImpl implements DebtPositionNotic
     DebtPositionDTO debtPosition = debtPositionService.getDebtPosition(
       debtPositionId, accessToken);
     if(debtPosition==null){
-      throw new ResourceNotFoundException(
-        "DebtPosition having ID %d not found".formatted(debtPositionId));
+      throw new ResourceNotFoundException("DEBT_POSITION_NOT_FOUND", "DebtPosition having ID %d not found".formatted(debtPositionId));
     }
     if(!organizationId.equals(debtPosition.getOrganizationId())){
-      throw new InvalidDebtPositionException(
+      throw new InvalidDebtPositionException("INVALID_ORGANIZATION",
         "The DebtPositionTypeOrg's organizationId "+ debtPosition.getOrganizationId()+
           " does not match the given organizationId "+ organizationId);
     }

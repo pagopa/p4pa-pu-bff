@@ -1,8 +1,9 @@
 package it.gov.pagopa.pu.bff.exception;
 
-public class InvalidOrganizationException extends RuntimeException {
-  public InvalidOrganizationException(String message) {
-    super(message);
+public class InvalidOrganizationException extends BaseBusinessException {
+
+  public InvalidOrganizationException(String code, String message) {
+    super(code, message);
   }
 }
 

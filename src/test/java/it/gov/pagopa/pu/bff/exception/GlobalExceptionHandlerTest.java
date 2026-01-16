@@ -2,6 +2,7 @@ package it.gov.pagopa.pu.bff.exception;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import it.gov.pagopa.pu.bff.config.json.JsonConfig;
+import it.gov.pagopa.pu.bff.mapper.UpstreamErrorMapper;
 import it.gov.pagopa.pu.bff.util.TestUtils;
 import it.gov.pagopa.pu.bff.util.UtilitiesTest;
 import jakarta.servlet.ServletException;
@@ -22,10 +23,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
@@ -41,12 +44,16 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.server.ServerErrorException;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter;
 
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.Set;
 
+import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.containsString;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.when;
 
 @ExtendWith({SpringExtension.class})
 @WebMvcTest(value = {GlobalExceptionHandlerTest.TestController.class})
@@ -64,7 +71,8 @@ class GlobalExceptionHandlerTest {
   private MockMvc mockMvc;
   @Autowired
   private ObjectMapper objectMapper;
-
+  @MockitoBean
+  private UpstreamErrorMapper upstreamErrorMapper;
   @MockitoSpyBean
   private TestController testControllerSpy;
   @MockitoSpyBean
@@ -126,13 +134,14 @@ class GlobalExceptionHandlerTest {
 
   @Test
   void handleInvalidDebtPositionException() throws Exception {
-    doThrow(new InvalidDebtPositionException("Bad Request: Debt Position ID should not be provided"))
+    doThrow(new InvalidDebtPositionException("DEBT_POSITION_TYPE_IN_USE", "Bad Request: Debt Position ID should not be provided"))
       .when(testControllerSpy).testEndpoint(DATA, BODY);
 
     performRequest(DATA, MediaType.APPLICATION_JSON)
       .andExpect(MockMvcResultMatchers.status().isBadRequest())
       .andExpect(MockMvcResultMatchers.jsonPath("$.title").value("BAD_REQUEST"))
       .andExpect(MockMvcResultMatchers.jsonPath("$.description").value("Bad Request: Debt Position ID should not be provided"))
+      .andExpect(MockMvcResultMatchers.jsonPath("$.code").value("DEBT_POSITION_TYPE_IN_USE"))
       .andExpect(MockMvcResultMatchers.jsonPath("$.traceId").value(traceId));
   }
 
@@ -203,7 +212,13 @@ class GlobalExceptionHandlerTest {
       "{\"notRequiredField\":\"notRequired\",\"lowerCaseAlphabeticField\":\"ABC\"}")
       .andExpect(MockMvcResultMatchers.status().isBadRequest())
       .andExpect(MockMvcResultMatchers.jsonPath("$.title").value("BAD_REQUEST"))
-      .andExpect(MockMvcResultMatchers.jsonPath("$.description").value("Invalid request content. lowerCaseAlphabeticField: must match \"[a-z]+\"; requiredField: must not be null"))
+      .andExpect(MockMvcResultMatchers.jsonPath("$.code").value("GENERIC_ERROR"))
+      .andExpect(MockMvcResultMatchers.jsonPath("$.description").value(allOf(
+        containsString("Invalid request content."),
+        containsString("lowerCaseAlphabeticField:"),
+        containsString("must match"),
+        containsString("requiredField: must not be null")
+      )))
       .andExpect(MockMvcResultMatchers.jsonPath("$.traceId").value(traceId));
   }
 
@@ -257,112 +272,168 @@ class GlobalExceptionHandlerTest {
 
   @Test
   void handleConflictException() throws Exception {
-    doThrow(new ConflictException("Error")).when(testControllerSpy).testEndpoint(DATA, BODY);
+    doThrow(new ConflictException("DEBT_POSITION_TYPE_IN_USE", "Error"))
+      .when(testControllerSpy).testEndpoint(DATA, BODY);
 
     performRequest(DATA, MediaType.APPLICATION_JSON)
       .andExpect(MockMvcResultMatchers.status().isConflict())
       .andExpect(MockMvcResultMatchers.jsonPath("$.title").value("CONFLICT"))
       .andExpect(MockMvcResultMatchers.jsonPath("$.description").value("Error"))
+      .andExpect(MockMvcResultMatchers.jsonPath("$.code").value("DEBT_POSITION_TYPE_IN_USE"))
       .andExpect(MockMvcResultMatchers.jsonPath("$.traceId").value(traceId));
   }
 
   @Test
   void handleResourceNotFoundException() throws Exception {
-    doThrow(new ResourceNotFoundException("Error")).when(testControllerSpy).testEndpoint(DATA, BODY);
+    doThrow(new ResourceNotFoundException("DEBT_POSITION_NOT_FOUND", "Error")).when(testControllerSpy).testEndpoint(DATA, BODY);
 
     performRequest(DATA, MediaType.APPLICATION_JSON)
       .andExpect(MockMvcResultMatchers.status().isNotFound())
       .andExpect(MockMvcResultMatchers.jsonPath("$.title").value("NOT_FOUND"))
       .andExpect(MockMvcResultMatchers.jsonPath("$.description").value("Error"))
+      .andExpect(MockMvcResultMatchers.jsonPath("$.code").value("DEBT_POSITION_NOT_FOUND"))
       .andExpect(MockMvcResultMatchers.jsonPath("$.traceId").value(traceId));
   }
 
   @Test
   void handleHttpClientErrorException() throws Exception {
-    doThrow(new HttpClientErrorException(HttpStatus.FORBIDDEN, "Error")).when(testControllerSpy).testEndpoint(DATA, BODY);
+    String upstreamBody = """
+  {"code":"SOME_UPSTREAM_CODE","message":"[INVALID_IBAN] eltjhreigjpo","traceId":"slfjhdio"}
+  """;
+
+    HttpClientErrorException ex = HttpClientErrorException.create(
+      HttpStatus.BAD_REQUEST,
+      "Error",
+      HttpHeaders.EMPTY,
+      upstreamBody.getBytes(StandardCharsets.UTF_8),
+      StandardCharsets.UTF_8
+    );
+
+    when(upstreamErrorMapper.from(any(HttpClientErrorException.class)))
+      .thenReturn(new UpstreamErrorMapper.MappedUpstreamError(
+        "INVALID_IBAN",
+        "eltjhreigjpo"
+      ));
+
+    doThrow(ex).when(testControllerSpy).testEndpoint(DATA, BODY);
 
     performRequest(DATA, MediaType.APPLICATION_JSON)
-      .andExpect(MockMvcResultMatchers.status().isForbidden())
-      .andExpect(MockMvcResultMatchers.jsonPath("$.title").value("GENERIC_ERROR"))
-      .andExpect(MockMvcResultMatchers.jsonPath("$.description").value(HttpStatus.FORBIDDEN.value()+" Error"))
+      .andExpect(MockMvcResultMatchers.status().isBadRequest())
+      .andExpect(MockMvcResultMatchers.jsonPath("$.title").value("BAD_REQUEST"))
+      .andExpect(MockMvcResultMatchers.jsonPath("$.code").value("INVALID_IBAN"))
+      .andExpect(MockMvcResultMatchers.jsonPath("$.description").value("eltjhreigjpo"))
       .andExpect(MockMvcResultMatchers.jsonPath("$.traceId").value(traceId));
   }
 
   @Test
   void handleInvalidDebtPositionTypeOrgException() throws Exception {
-    doThrow(new InvalidDebtPositionTypeOrgException("Error")).when(testControllerSpy).testEndpoint(DATA, BODY);
+    doThrow(new InvalidDebtPositionTypeOrgException("DEBT_POSITION_TYPE_ORG_ERROR", "Error"))
+      .when(testControllerSpy).testEndpoint(DATA, BODY);
 
     performRequest(DATA, MediaType.APPLICATION_JSON)
       .andExpect(MockMvcResultMatchers.status().isBadRequest())
       .andExpect(MockMvcResultMatchers.jsonPath("$.title").value("BAD_REQUEST"))
       .andExpect(MockMvcResultMatchers.jsonPath("$.description").value("Error"))
+      .andExpect(MockMvcResultMatchers.jsonPath("$.code").value("DEBT_POSITION_TYPE_ORG_ERROR"))
       .andExpect(MockMvcResultMatchers.jsonPath("$.traceId").value(traceId));
   }
 
   @Test
   void handleInvalidOperatorRoleException() throws Exception {
-    doThrow(new InvalidOperatorRoleException("Error")).when(testControllerSpy).testEndpoint(DATA, BODY);
+    doThrow(new InvalidOperatorRoleException("INVALID_OPERATOR_ROLE", "Error"))
+      .when(testControllerSpy).testEndpoint(DATA, BODY);
 
     performRequest(DATA, MediaType.APPLICATION_JSON)
       .andExpect(MockMvcResultMatchers.status().isBadRequest())
       .andExpect(MockMvcResultMatchers.jsonPath("$.title").value("GENERIC_ERROR"))
       .andExpect(MockMvcResultMatchers.jsonPath("$.description").value("Error"))
+      .andExpect(MockMvcResultMatchers.jsonPath("$.code").value("INVALID_OPERATOR_ROLE"))
       .andExpect(MockMvcResultMatchers.jsonPath("$.traceId").value(traceId));
   }
 
   @Test
   void handleZipFileException() throws Exception {
-    doThrow(new ZipFileException("Error")).when(testControllerSpy).testEndpoint(DATA, BODY);
+    doThrow(new ZipFileException("ZIPPING_ERROR", "Error")).when(testControllerSpy).testEndpoint(DATA, BODY);
 
     performRequest(DATA, MediaType.APPLICATION_JSON)
       .andExpect(MockMvcResultMatchers.status().isInternalServerError())
       .andExpect(MockMvcResultMatchers.jsonPath("$.title").value("GENERIC_ERROR"))
       .andExpect(MockMvcResultMatchers.jsonPath("$.description").value("Error"))
+      .andExpect(MockMvcResultMatchers.jsonPath("$.code").value("ZIPPING_ERROR"))
       .andExpect(MockMvcResultMatchers.jsonPath("$.traceId").value(traceId));
   }
 
   @Test
   void handleInvalidAssessmentsRegistryException() throws Exception {
-    doThrow(new InvalidAssessmentsRegistryException("Error")).when(testControllerSpy).testEndpoint(DATA, BODY);
+    doThrow(new InvalidAssessmentsRegistryException("ASSESSMENT_REGISTRY_GENERIC", "Error"))
+      .when(testControllerSpy).testEndpoint(DATA, BODY);
 
     performRequest(DATA, MediaType.APPLICATION_JSON)
-            .andExpect(MockMvcResultMatchers.status().isBadRequest())
-            .andExpect(MockMvcResultMatchers.jsonPath("$.title").value("BAD_REQUEST"))
-            .andExpect(MockMvcResultMatchers.jsonPath("$.description").value("Error"))
+      .andExpect(MockMvcResultMatchers.status().isBadRequest())
+      .andExpect(MockMvcResultMatchers.jsonPath("$.title").value("BAD_REQUEST"))
+      .andExpect(MockMvcResultMatchers.jsonPath("$.description").value("Error"))
+      .andExpect(MockMvcResultMatchers.jsonPath("$.code").value("ASSESSMENT_REGISTRY_GENERIC"))
       .andExpect(MockMvcResultMatchers.jsonPath("$.traceId").value(traceId));
   }
 
   @Test
   void handleInvalidAssessmentsDetailException() throws Exception {
-    doThrow(new InvalidAssessmentsDetailException("Error")).when(testControllerSpy).testEndpoint(DATA, BODY);
+    doThrow(new InvalidAssessmentsDetailException("INVALID_ASSESSMENT_DETAIL", "Error")).when(testControllerSpy).testEndpoint(DATA, BODY);
 
     performRequest(DATA, MediaType.APPLICATION_JSON)
       .andExpect(MockMvcResultMatchers.status().isBadRequest())
       .andExpect(MockMvcResultMatchers.jsonPath("$.title").value("BAD_REQUEST"))
       .andExpect(MockMvcResultMatchers.jsonPath("$.description").value("Error"))
+      .andExpect(MockMvcResultMatchers.jsonPath("$.code").value("INVALID_ASSESSMENT_DETAIL"))
       .andExpect(MockMvcResultMatchers.jsonPath("$.traceId").value(traceId));
   }
 
   @Test
   void handleInvalidOrganizationException() throws Exception {
-    doThrow(new InvalidOrganizationException("Error")).when(testControllerSpy).testEndpoint(DATA, BODY);
+    doThrow(new InvalidOrganizationException("INVALID_ORGANIZATION", "Error"))
+      .when(testControllerSpy).testEndpoint(DATA, BODY);
 
     performRequest(DATA, MediaType.APPLICATION_JSON)
       .andExpect(MockMvcResultMatchers.status().isBadRequest())
       .andExpect(MockMvcResultMatchers.jsonPath("$.title").value("BAD_REQUEST"))
       .andExpect(MockMvcResultMatchers.jsonPath("$.description").value("Error"))
+      .andExpect(MockMvcResultMatchers.jsonPath("$.code").value("INVALID_ORGANIZATION"))
       .andExpect(MockMvcResultMatchers.jsonPath("$.traceId").value(traceId));
   }
 
   @Test
   void handleInvalidOrgSilServiceException() throws Exception {
-    doThrow(new InvalidOrgSilServiceException("Error")).when(testControllerSpy).testEndpoint(DATA, BODY);
+    doThrow(new InvalidOrgSilServiceException("ORG_SIL_SERVICE_ALREADY_EXISTS", "Error")).when(testControllerSpy).testEndpoint(DATA, BODY);
 
     performRequest(DATA, MediaType.APPLICATION_JSON)
       .andExpect(MockMvcResultMatchers.status().isBadRequest())
       .andExpect(MockMvcResultMatchers.jsonPath("$.title").value("BAD_REQUEST"))
       .andExpect(MockMvcResultMatchers.jsonPath("$.description").value("Error"))
+      .andExpect(MockMvcResultMatchers.jsonPath("$.code").value("ORG_SIL_SERVICE_ALREADY_EXISTS"))
       .andExpect(MockMvcResultMatchers.jsonPath("$.traceId").value(traceId));
   }
 
+  @Test
+  void handleInvalidAccessTokenException() throws Exception {
+    doThrow(new InvalidAccessTokenException("INVALID_ACCESS_TOKEN", "Error")).when(testControllerSpy).testEndpoint(DATA, BODY);
+
+    performRequest(DATA, MediaType.APPLICATION_JSON)
+      .andExpect(MockMvcResultMatchers.status().isBadRequest())
+      .andExpect(MockMvcResultMatchers.jsonPath("$.title").value("BAD_REQUEST"))
+      .andExpect(MockMvcResultMatchers.jsonPath("$.description").value("Error"))
+      .andExpect(MockMvcResultMatchers.jsonPath("$.code").value("INVALID_ACCESS_TOKEN"))
+      .andExpect(MockMvcResultMatchers.jsonPath("$.traceId").value(traceId));
+  }
+
+  @Test
+  void handleInvalidUserInfoException() throws Exception {
+    doThrow(new InvalidUserInfoException("INVALID_USER_INFO", "Error")).when(testControllerSpy).testEndpoint(DATA, BODY);
+
+    performRequest(DATA, MediaType.APPLICATION_JSON)
+      .andExpect(MockMvcResultMatchers.status().isBadRequest())
+      .andExpect(MockMvcResultMatchers.jsonPath("$.title").value("BAD_REQUEST"))
+      .andExpect(MockMvcResultMatchers.jsonPath("$.description").value("Error"))
+      .andExpect(MockMvcResultMatchers.jsonPath("$.code").value("INVALID_USER_INFO"))
+      .andExpect(MockMvcResultMatchers.jsonPath("$.traceId").value(traceId));
+  }
 }

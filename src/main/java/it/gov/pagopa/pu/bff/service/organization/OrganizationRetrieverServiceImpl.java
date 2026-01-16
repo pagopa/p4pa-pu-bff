@@ -185,7 +185,7 @@ public class OrganizationRetrieverServiceImpl implements OrganizationRetrieverSe
     if(organization!=null && organization.getBrokerId()!=null && organization.getBrokerId().equals(loggedUser.getBrokerId())){
       return organization.getOrgFiscalCode();
     }else{
-      throw new ResourceNotFoundException("Organization having organizationId "+ organizationId +" and brokerId "+loggedUser.getBrokerId()+" not found");
+      throw new ResourceNotFoundException("ORGANIZATION_NOT_FOUND", "Organization having organizationId "+ organizationId +" and brokerId "+loggedUser.getBrokerId()+" not found");
     }
   }
 
@@ -195,7 +195,7 @@ public class OrganizationRetrieverServiceImpl implements OrganizationRetrieverSe
 
     Organization organization = organizationService.getOrganizationByOrganizationId(organizationId, accessToken);
     if (organization == null) {
-      throw new ResourceNotFoundException("Organization having organizationId " + organizationId + " not found");
+      throw new ResourceNotFoundException("ORGANIZATION_NOT_FOUND", "Organization having organizationId " + organizationId + " not found");
     }
 
     OrganizationDetailDTO orgDetail = organizationService.getOrganizationDetail(organizationId, accessToken);
@@ -222,12 +222,12 @@ public class OrganizationRetrieverServiceImpl implements OrganizationRetrieverSe
 
   private void validateOrganization(Long organizationId, OrganizationDetailDTO organizationDetailDTO, String accessToken) {
     if(!organizationId.equals(organizationDetailDTO.getOrganizationId())){
-      throw new InvalidOrganizationException("The Organization's id " + organizationDetailDTO.getOrganizationId() +
+      throw new InvalidOrganizationException("INVALID_ORGANIZATION", "The Organization's id " + organizationDetailDTO.getOrganizationId() +
               " does not match the given organizationId "+ organizationId);
     }
     Organization existingOrganization = organizationService.getOrganizationByOrganizationId(organizationId, accessToken);
     if(existingOrganization==null){
-      throw new ResourceNotFoundException("Organization having id "+ organizationId +" not found");
+      throw new ResourceNotFoundException("ORGANIZATION_NOT_FOUND", "Organization having id "+ organizationId +" not found");
     }
     checkReadOnlyFields(existingOrganization, organizationDetailDTO);
   }

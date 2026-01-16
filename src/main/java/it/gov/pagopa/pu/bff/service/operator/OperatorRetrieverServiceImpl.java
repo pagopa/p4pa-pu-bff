@@ -125,7 +125,7 @@ public class OperatorRetrieverServiceImpl implements OperatorRetrieverService {
     );
 
     if (organizationOperator == null) {
-      throw new ResourceNotFoundException("Operator not found for organization ipaCode %s and userId %s".formatted(userOrganizationIpaCode, operatorDetailsFiltersDTO.getMappedExternalUserId()));
+      throw new ResourceNotFoundException("OPERATOR_NOT_FOUND", "Operator not found for organization ipaCode %s and userId %s".formatted(userOrganizationIpaCode, operatorDetailsFiltersDTO.getMappedExternalUserId()));
     }
     return organizationOperator;
   }
@@ -162,19 +162,19 @@ public class OperatorRetrieverServiceImpl implements OperatorRetrieverService {
   private void validateDebtPositionTypeOrgIds(Long organizationId, Set<Long> debtPositionTypeOrgIds, String accessToken) {
     CollectionModelDebtPositionTypeOrg collection = debtPositionTypeOrgService.getByDebtPositionTypeOrgIdIn(debtPositionTypeOrgIds, accessToken);
     if (collection == null || collection.getEmbedded() == null || collection.getEmbedded().getDebtPositionTypeOrgs() == null) {
-      throw new ResourceNotFoundException("No debtPositionTypeOrg found for the id: " + debtPositionTypeOrgIds);
+      throw new ResourceNotFoundException("DEBT_POSITION_TYPE_ORG_NOT_FOUND", "No debtPositionTypeOrg found for the id: " + debtPositionTypeOrgIds);
     }
 
     List<DebtPositionTypeOrg> foundDptos = collection.getEmbedded().getDebtPositionTypeOrgs();
     if (foundDptos.size() != debtPositionTypeOrgIds.size()) {
-      throw new ResourceNotFoundException("Some debtPositionTypeOrgIds do not exist: " + debtPositionTypeOrgIds);
+      throw new ResourceNotFoundException("DEBT_POSITION_TYPE_ORG_NOT_FOUND", "Some debtPositionTypeOrgIds do not exist: " + debtPositionTypeOrgIds);
     }
 
     boolean allMatchOrg = foundDptos.stream()
       .map(DebtPositionTypeOrg::getOrganizationId)
       .allMatch(organizationId::equals);
     if (!allMatchOrg) {
-      throw new ResourceNotFoundException("One or more DebtPositionTypeOrg do not belong to organizationId: " + organizationId);
+      throw new ResourceNotFoundException("DEBT_POSITION_TYPE_ORG_NOT_FOUND", "One or more DebtPositionTypeOrg do not belong to organizationId: " + organizationId);
     }
   }
 }

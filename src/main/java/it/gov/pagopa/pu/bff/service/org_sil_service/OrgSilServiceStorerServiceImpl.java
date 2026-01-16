@@ -58,7 +58,7 @@ public class OrgSilServiceStorerServiceImpl implements OrgSilServiceStorerServic
 
     OrgSilService existingOrgSilService = orgSilServiceService.getOrgSilServiceById(body.getOrgSilServiceId(), accessToken);
     if (existingOrgSilService == null) {
-      throw new ResourceNotFoundException("OrgSilService having ID %d not found".formatted(body.getOrgSilServiceId()));
+      throw new ResourceNotFoundException("ORG_SIL_SERVICE_NOT_FOUND", "OrgSilService having ID %d not found".formatted(body.getOrgSilServiceId()));
     }
 
     verifyOrgSilService(existingOrgSilService, body);
@@ -101,7 +101,7 @@ public class OrgSilServiceStorerServiceImpl implements OrgSilServiceStorerServic
 
   private void verifyIfOrgSilServiceWithSameApplicationNameAlreadyExist(Long organizationId, String applicationName, String accessToken){
     if (orgSilServiceService.getOrgSilServiceByOrganizationIdAndApplicationName(organizationId, applicationName, accessToken) != null){
-      throw new InvalidOrgSilServiceException("OrgSilService with same applicationName %s already exist for the organization %d".formatted(applicationName, organizationId));
+      throw new InvalidOrgSilServiceException("ORG_SIL_SERVICE_ALREADY_EXISTS", "OrgSilService with same applicationName %s already exist for the organization %d".formatted(applicationName, organizationId));
     }
   }
 }

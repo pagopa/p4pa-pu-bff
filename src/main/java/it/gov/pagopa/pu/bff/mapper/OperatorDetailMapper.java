@@ -46,7 +46,7 @@ public interface OperatorDetailMapper {
     try {
       return OperatorRole.fromValue(operatorRoleValue);
     } catch (IllegalArgumentException e) {
-      throw new InvalidOperatorRoleException("INVALID_OPERATOR_ROLE: " + operatorRoleValue);
+      throw new InvalidOperatorRoleException("INVALID_OPERATOR_ROLE", "INVALID_OPERATOR_ROLE: " + operatorRoleValue);
     }
   }
 }

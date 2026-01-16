@@ -326,7 +326,7 @@ class AssessmentsRegistryRetrieverServiceImplTest {
       authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser))
         .thenAnswer(a -> null);
 
-      Mockito.doThrow(new ResourceNotFoundException("Operator not found"))
+      Mockito.doThrow(new ResourceNotFoundException("OPERATOR_NOT_FOUND", "Operator not found"))
         .when(debtPositionTypeOrgRetrieverServiceMock)
         .getDebtPositionTypeOrgByCode(organizationId, "INVALID_CODE", loggedUser.getMappedExternalUserId(), accessToken);
 
@@ -518,9 +518,12 @@ class AssessmentsRegistryRetrieverServiceImplTest {
       authMock.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)).thenAnswer(a -> null);
       Mockito.when(assessmentsRegistryServiceMock.getAssessmentsRegistry(assessmentRegistryId, accessToken)).thenReturn(existing);
 
-      assertThrows(IllegalArgumentException.class, () ->
+      InvalidAssessmentsRegistryException ex =  assertThrows(InvalidAssessmentsRegistryException.class, () ->
         assessmentsRegistryRetrieverService.updateAssessmentsRegistry(
           organizationId, assessmentRegistryId, body, loggedUser, accessToken));
+
+      assertEquals("IMMUTABLE_DEBT_POSITION_TYPE_ORG_CODE", ex.getCode());
+      assertTrue(ex.getMessage().contains("debtPositionTypeOrgCode cannot be modified"));
     }
   }
 
@@ -537,9 +540,13 @@ class AssessmentsRegistryRetrieverServiceImplTest {
     try (MockedStatic<AuthorizationService> authMock = Mockito.mockStatic(AuthorizationService.class)) {
       authMock.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)).thenAnswer(a -> null);
 
-      assertThrows(IllegalArgumentException.class, () ->
-        assessmentsRegistryRetrieverService.updateAssessmentsRegistry(
+      InvalidAssessmentsRegistryException ex = assertThrows(
+        InvalidAssessmentsRegistryException.class,
+        () -> assessmentsRegistryRetrieverService.updateAssessmentsRegistry(
           organizationId, assessmentRegistryId, body, loggedUser, accessToken));
+
+      assertEquals("INVALID_ASSESSMENT_REGISTRY", ex.getCode());
+      assertTrue(ex.getMessage().contains("assessmentRegistryId in path and body must match"));
 
       authMock.verify(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser));
     }

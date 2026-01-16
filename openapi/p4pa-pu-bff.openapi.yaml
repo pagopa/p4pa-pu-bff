@@ -4275,6 +4275,8 @@ components:
           type: string
         operatorRole:
           $ref: '#/components/schemas/OperatorRole'
+        orgName:
+          type: string
     PagedDebtPositionTypeWithCount:
       type: object
       required:

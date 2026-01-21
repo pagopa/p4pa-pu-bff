@@ -87,7 +87,7 @@ class ClassificationDetailDTOMapperTest {
       Arguments.of(IUD_RT_IUF_TES, null, true, true, true, ClassificationStatus.INFO),
       Arguments.of(RT_IUF_TES, null, true, true, true, ClassificationStatus.INFO),
       Arguments.of(IUF_TES_DIV_IMP, null, true, true, true, ClassificationStatus.ERROR),
-      Arguments.of(IUD_NO_RT, null, true, false, false, ClassificationStatus.ERROR),
+      Arguments.of(IUD_NO_RT, null, false, false, false, ClassificationStatus.ERROR),
       Arguments.of(TES_NO_MATCH, null, false, false, true, ClassificationStatus.ERROR),
       Arguments.of(UNKNOWN, null, false, false, false, ClassificationStatus.ERROR)
     );

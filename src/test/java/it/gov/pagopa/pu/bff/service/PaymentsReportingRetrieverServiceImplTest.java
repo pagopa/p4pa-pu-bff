@@ -409,6 +409,7 @@ class PaymentsReportingRetrieverServiceImplTest {
       .paymentOutcomeCode("OUTCOMECODE")
       .payDate(LocalDate.now())
       .acquiringDate(LocalDate.now())
+      .revision(1)
       .build();
     InstallmentNoPII installmentNoPII = InstallmentNoPII.builder()
       .receiptId(receiptId)
@@ -513,6 +514,7 @@ class PaymentsReportingRetrieverServiceImplTest {
       .paymentOutcomeCode("OUTCOMECODE")
       .payDate(LocalDate.now())
       .acquiringDate(LocalDate.now())
+      .revision(1)
       .build();
 
     PaymentsReportingDetailDTO expectedResult = PaymentsReportingDetailDTO.builder()
@@ -591,6 +593,7 @@ class PaymentsReportingRetrieverServiceImplTest {
       .paymentOutcomeCode("OUTCOMECODE")
       .payDate(LocalDate.now())
       .acquiringDate(LocalDate.now())
+      .revision(1)
       .build();
 
     try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(

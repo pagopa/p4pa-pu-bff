@@ -10,7 +10,7 @@ import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
 public interface ClassificationDetailDTOMapper {
-  @Mapping(target = "payed", expression = "java(isPayed(classificationDetailViewDTO.getLabel(), classificationDetailViewDTO.getReceiptPaymentRequestId()))")
+  @Mapping(target = "paid", expression = "java(isPaid(classificationDetailViewDTO.getLabel(), classificationDetailViewDTO.getReceiptPaymentRequestId()))")
   @Mapping(target = "reported", expression = "java(isReported(classificationDetailViewDTO.getLabel()))")
   @Mapping(target = "collected", expression = "java(isCollected(classificationDetailViewDTO.getLabel()))")
   @Mapping(target = "status", expression = "java(ClassificationStatusMapper.mapStatus(classificationDetailViewDTO.getLabel(), classificationDetailViewDTO.getReceiptPaymentRequestId()))")
@@ -18,10 +18,10 @@ public interface ClassificationDetailDTOMapper {
   @Mapping(target = "flagTreasury", expression = "java(organization != null ? organization.getFlagTreasury() : null)")
   ClassificationDetailDTO map(ClassificationDetailViewDTO classificationDetailViewDTO, @Context Organization organization);
 
-  default boolean isPayed(ClassificationsEnum classification, String receiptPaymentRequestId) {
+  default boolean isPaid(ClassificationsEnum classification, String receiptPaymentRequestId) {
     return switch (classification) {
       case DOPPI, RT_NO_IUF, RT_NO_IUD, IUD_RT_IUF, RT_IUF, RT_TES,
-           IUD_RT_IUF_TES, RT_IUF_TES, IUF_TES_DIV_IMP, IUD_NO_RT -> true;
+           IUD_RT_IUF_TES, RT_IUF_TES, IUF_TES_DIV_IMP -> true;
       case IUF_NO_TES -> receiptPaymentRequestId != null;
       default -> false;
     };

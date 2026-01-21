@@ -14,7 +14,7 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @SuperBuilder(toBuilder = true)
 public class ClassificationDetailDTO extends ClassificationDetailViewDTO {
-  private boolean payed;
+  private boolean paid;
   private boolean reported;
   private boolean collected;
   private ClassificationStatus status;

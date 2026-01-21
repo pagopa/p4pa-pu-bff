@@ -9896,6 +9896,9 @@
           },
           "updateTraceId" : {
             "type" : "string"
+          },
+          "originalRemittanceInformation" : {
+            "type" : "string"
           }
         },
         "required" : [ "amountCents", "debtor", "remittanceInformation" ]
@@ -13049,6 +13052,9 @@
           "notificationFeeCents" : {
             "type" : "integer",
             "format" : "int64"
+          },
+          "originalRemittanceInformation" : {
+            "type" : "string"
           }
         },
         "required" : [ "amountCents", "debtPositionId", "debtPositionOrigin", "debtPositionTypeOrgDescription", "debtor", "installmentId", "iuv", "status" ]
@@ -14063,7 +14069,7 @@
           "receiptOrigin" : {
             "$ref" : "#/components/schemas/ReceiptOriginType"
           },
-          "payed" : {
+          "paid" : {
             "type" : "boolean"
           },
           "reported" : {

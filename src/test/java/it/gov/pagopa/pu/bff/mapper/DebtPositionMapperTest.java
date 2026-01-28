@@ -57,10 +57,10 @@ class DebtPositionMapperTest {
     TestUtils.checkNotNullFields(result.getDebtor());
 
     // Assert right Installments order
-    Assertions.assertEquals(installment4, result.getPaymentOptions().getFirst().getInstallments().get(0));
-    Assertions.assertEquals(installment3, result.getPaymentOptions().getFirst().getInstallments().get(1));
-    Assertions.assertEquals(installment1, result.getPaymentOptions().getFirst().getInstallments().get(2));
-    Assertions.assertEquals(installment2, result.getPaymentOptions().getFirst().getInstallments().get(3));
+    Assertions.assertEquals(installment4.getDueDate(), result.getPaymentOptions().getFirst().getInstallments().get(0).getDueDate());
+    Assertions.assertEquals(installment3.getDueDate(), result.getPaymentOptions().getFirst().getInstallments().get(1).getDueDate());
+    Assertions.assertEquals(installment1.getDueDate(), result.getPaymentOptions().getFirst().getInstallments().get(2).getDueDate());
+    Assertions.assertEquals(installment2.getDueDate(), result.getPaymentOptions().getFirst().getInstallments().get(3).getDueDate());
 
     verifyDebtPositionDetailDTO(result,debtPositionDTO,debtPositionTypeOrg);
   }

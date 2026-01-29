@@ -106,6 +106,7 @@ class DebtPositionMapperTest {
     transfer.setRemittanceInformation(remittanceInformation);
     InstallmentDTO installment = podamFactory.manufacturePojo(InstallmentDTO.class);
     installment.transfers(List.of(transfer));
+    installment.setRemittanceInformation(remittanceInformation);
     installment.setOriginalRemittanceInformation(originalRemittanceInformation);
     PaymentOptionDTO paymentOption = podamFactory.manufacturePojo(PaymentOptionDTO.class);
     paymentOption.setInstallments(List.of(installment));

@@ -1,12 +1,15 @@
 package it.gov.pagopa.pu.bff.mapper;
 
 import it.gov.pagopa.pu.bff.dto.generated.DebtPositionDetailDTO;
+import it.gov.pagopa.pu.bff.util.Utilities;
 import it.gov.pagopa.pu.debtpositions.dto.generated.*;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Component
 public class DebtPositionMapper {
@@ -46,9 +49,21 @@ public class DebtPositionMapper {
     paymentOptions
       .forEach(po -> po.setInstallments(po.getInstallments()
         .stream()
+        .map(this::resolveRemittanceInformation)
         .sorted(Comparator.comparing(InstallmentDTO::getDueDate, Comparator.nullsLast(Comparator.naturalOrder())))
         .toList()));
 
     return paymentOptions;
+  }
+
+  private InstallmentDTO resolveRemittanceInformation(InstallmentDTO installment) {
+    return installment.toBuilder()
+      .remittanceInformation(Optional.ofNullable(installment.getOriginalRemittanceInformation()).orElse(installment.getRemittanceInformation()))
+      .transfers(installment.getTransfers().stream()
+        .map(t -> t.toBuilder()
+          .remittanceInformation(Utilities.resolveRemittanceInformation(t.getRemittanceInformation(), installment.getOriginalRemittanceInformation()))
+          .build())
+        .collect(Collectors.toUnmodifiableList()))
+      .build();
   }
 }

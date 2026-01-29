@@ -9,10 +9,16 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.junit.jupiter.MockitoExtension;
 import uk.co.jemos.podam.api.PodamFactory;
 
 import java.util.List;
+import java.util.stream.Stream;
+
+import static it.gov.pagopa.pu.bff.util.Constants.INSTALLMENT_REMITTANCE_INFORMATION_PLACEHOLDER;
 
 @ExtendWith(MockitoExtension.class)
 class DebtPositionMapperTest {
@@ -50,10 +56,10 @@ class DebtPositionMapperTest {
     TestUtils.checkNotNullFields(result.getDebtor());
 
     // Assert right Installments order
-    Assertions.assertEquals(installment4, result.getPaymentOptions().getFirst().getInstallments().get(0));
-    Assertions.assertEquals(installment3, result.getPaymentOptions().getFirst().getInstallments().get(1));
-    Assertions.assertEquals(installment1, result.getPaymentOptions().getFirst().getInstallments().get(2));
-    Assertions.assertEquals(installment2, result.getPaymentOptions().getFirst().getInstallments().get(3));
+    Assertions.assertEquals(installment4.getInstallmentId(), result.getPaymentOptions().getFirst().getInstallments().get(0).getInstallmentId());
+    Assertions.assertEquals(installment3.getInstallmentId(), result.getPaymentOptions().getFirst().getInstallments().get(1).getInstallmentId());
+    Assertions.assertEquals(installment1.getInstallmentId(), result.getPaymentOptions().getFirst().getInstallments().get(2).getInstallmentId());
+    Assertions.assertEquals(installment2.getInstallmentId(), result.getPaymentOptions().getFirst().getInstallments().get(3).getInstallmentId());
 
     verifyDebtPositionDetailDTO(result,debtPositionDTO,debtPositionTypeOrg);
   }
@@ -88,6 +94,37 @@ class DebtPositionMapperTest {
     verifyDebtPositionDetailDTO(result,debtPositionDTO,debtPositionTypeOrg);
   }
 
+  @ParameterizedTest
+  @MethodSource("provideRemittanceInformation")
+  void givenInstallmentWithVariousRemittanceInformationWhenResolveRemittanceInformationThenCorrectValueIsSet(
+    String remittanceInformation,
+    String originalRemittanceInformation,
+    String expectedTransferRemittanceInformation,
+    String expectedInstallmentRemittanceInformation) {
+
+    TransferDTO transfer = podamFactory.manufacturePojo(TransferDTO.class);
+    transfer.setRemittanceInformation(remittanceInformation);
+    InstallmentDTO installment = podamFactory.manufacturePojo(InstallmentDTO.class);
+    installment.transfers(List.of(transfer));
+    installment.setRemittanceInformation(remittanceInformation);
+    installment.setOriginalRemittanceInformation(originalRemittanceInformation);
+    PaymentOptionDTO paymentOption = podamFactory.manufacturePojo(PaymentOptionDTO.class);
+    paymentOption.setInstallments(List.of(installment));
+    DebtPositionDTO debtPositionDTO = podamFactory.manufacturePojo(DebtPositionDTO.class);
+    debtPositionDTO.setMultiDebtor(false);
+    debtPositionDTO.setPaymentOptions(List.of(paymentOption));
+
+    DebtPositionTypeOrg debtPositionTypeOrg = podamFactory.manufacturePojo(DebtPositionTypeOrg.class);
+
+    DebtPositionDetailDTO result = mapper.mapToDebtPositionDetailDTO(debtPositionDTO,debtPositionTypeOrg);
+
+    Assertions.assertNotNull(result);
+    Assertions.assertEquals(expectedTransferRemittanceInformation, result.getPaymentOptions().getFirst().getInstallments().getFirst().getTransfers().getFirst().getRemittanceInformation());
+
+    String installmentRemittanceInformation = result.getPaymentOptions().getFirst().getInstallments().getFirst().getRemittanceInformation();
+    Assertions.assertEquals(expectedInstallmentRemittanceInformation, installmentRemittanceInformation);
+  }
+
   private void verifyDebtPositionDetailDTO(DebtPositionDetailDTO result, DebtPositionDTO debtPositionDTO,
     DebtPositionTypeOrg debtPositionTypeOrg) {
     if(debtPositionTypeOrg!=null){
@@ -110,5 +147,13 @@ class DebtPositionMapperTest {
     }else{
       TestUtils.reflectionEqualsByName(debtor,debtPositionDTO.getPaymentOptions().getFirst().getInstallments().getFirst().getDebtor());
     }
+  }
+
+  private static Stream<Arguments> provideRemittanceInformation() {
+    return Stream.of(
+      Arguments.of("remittanceInformation", null, "remittanceInformation", "remittanceInformation"),
+      Arguments.of("remittanceInformation", "originalRemittanceInformation", "remittanceInformation", "originalRemittanceInformation"),
+      Arguments.of(INSTALLMENT_REMITTANCE_INFORMATION_PLACEHOLDER +" with remittanceInformation", "originalRemittanceInformation", "originalRemittanceInformation", "originalRemittanceInformation")
+    );
   }
 }

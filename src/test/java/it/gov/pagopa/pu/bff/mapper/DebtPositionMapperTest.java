@@ -16,7 +16,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import uk.co.jemos.podam.api.PodamFactory;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Stream;
 
 import static it.gov.pagopa.pu.bff.util.Constants.INSTALLMENT_REMITTANCE_INFORMATION_PLACEHOLDER;
@@ -57,10 +56,10 @@ class DebtPositionMapperTest {
     TestUtils.checkNotNullFields(result.getDebtor());
 
     // Assert right Installments order
-    Assertions.assertEquals(installment4.getDueDate(), result.getPaymentOptions().getFirst().getInstallments().get(0).getDueDate());
-    Assertions.assertEquals(installment3.getDueDate(), result.getPaymentOptions().getFirst().getInstallments().get(1).getDueDate());
-    Assertions.assertEquals(installment1.getDueDate(), result.getPaymentOptions().getFirst().getInstallments().get(2).getDueDate());
-    Assertions.assertEquals(installment2.getDueDate(), result.getPaymentOptions().getFirst().getInstallments().get(3).getDueDate());
+    Assertions.assertEquals(installment4.getInstallmentId(), result.getPaymentOptions().getFirst().getInstallments().get(0).getInstallmentId());
+    Assertions.assertEquals(installment3.getInstallmentId(), result.getPaymentOptions().getFirst().getInstallments().get(1).getInstallmentId());
+    Assertions.assertEquals(installment1.getInstallmentId(), result.getPaymentOptions().getFirst().getInstallments().get(2).getInstallmentId());
+    Assertions.assertEquals(installment2.getInstallmentId(), result.getPaymentOptions().getFirst().getInstallments().get(3).getInstallmentId());
 
     verifyDebtPositionDetailDTO(result,debtPositionDTO,debtPositionTypeOrg);
   }
@@ -100,7 +99,8 @@ class DebtPositionMapperTest {
   void givenInstallmentWithVariousRemittanceInformationWhenResolveRemittanceInformationThenCorrectValueIsSet(
     String remittanceInformation,
     String originalRemittanceInformation,
-    String expectedRemittanceInformation) {
+    String expectedTransferRemittanceInformation,
+    String expectedInstallmentRemittanceInformation) {
 
     TransferDTO transfer = podamFactory.manufacturePojo(TransferDTO.class);
     transfer.setRemittanceInformation(remittanceInformation);
@@ -118,10 +118,9 @@ class DebtPositionMapperTest {
     DebtPositionDetailDTO result = mapper.mapToDebtPositionDetailDTO(debtPositionDTO,debtPositionTypeOrg);
 
     Assertions.assertNotNull(result);
-    Assertions.assertEquals(expectedRemittanceInformation, result.getPaymentOptions().getFirst().getInstallments().getFirst().getTransfers().getFirst().getRemittanceInformation());
+    Assertions.assertEquals(expectedTransferRemittanceInformation, result.getPaymentOptions().getFirst().getInstallments().getFirst().getTransfers().getFirst().getRemittanceInformation());
 
     String installmentRemittanceInformation = result.getPaymentOptions().getFirst().getInstallments().getFirst().getRemittanceInformation();
-    String expectedInstallmentRemittanceInformation = Optional.ofNullable(installment.getOriginalRemittanceInformation()).orElse(installment.getRemittanceInformation());
     Assertions.assertEquals(expectedInstallmentRemittanceInformation, installmentRemittanceInformation);
   }
 
@@ -151,9 +150,9 @@ class DebtPositionMapperTest {
 
   private static Stream<Arguments> provideRemittanceInformation() {
     return Stream.of(
-      Arguments.of("remittanceInformation", null, "remittanceInformation"),
-      Arguments.of("remittanceInformation", "originalRemittanceInformation", "remittanceInformation"),
-      Arguments.of(INSTALLMENT_REMITTANCE_INFORMATION_PLACEHOLDER +" with remittanceInformation", "originalRemittanceInformation", "originalRemittanceInformation")
+      Arguments.of("remittanceInformation", null, "remittanceInformation", "remittanceInformation"),
+      Arguments.of("remittanceInformation", "originalRemittanceInformation", "remittanceInformation", "originalRemittanceInformation"),
+      Arguments.of(INSTALLMENT_REMITTANCE_INFORMATION_PLACEHOLDER +" with remittanceInformation", "originalRemittanceInformation", "originalRemittanceInformation", "originalRemittanceInformation")
     );
   }
 }

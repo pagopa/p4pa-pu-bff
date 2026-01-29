@@ -1,5 +1,6 @@
 package it.gov.pagopa.pu.bff.mapper;
 
+import it.gov.pagopa.pu.bff.dto.PaymentOptionsExtendedDTO;
 import it.gov.pagopa.pu.bff.dto.generated.DebtPositionDetailDTO;
 import it.gov.pagopa.pu.bff.util.TestUtils;
 import it.gov.pagopa.pu.debtpositions.dto.generated.*;
@@ -12,6 +13,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import uk.co.jemos.podam.api.PodamFactory;
 
@@ -19,15 +22,18 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import static it.gov.pagopa.pu.bff.util.Constants.INSTALLMENT_REMITTANCE_INFORMATION_PLACEHOLDER;
+import static org.mockito.ArgumentMatchers.anyList;
 
 @ExtendWith(MockitoExtension.class)
 class DebtPositionMapperTest {
   private DebtPositionMapper mapper;
+  @Mock
+  private PaymentOptionsMapper paymentOptionsMapperMock;
   private final PodamFactory podamFactory = TestUtils.getPodamFactory();
 
   @BeforeEach
   void setUp() {
-    mapper = new DebtPositionMapper();
+    mapper = new DebtPositionMapper(paymentOptionsMapperMock);
   }
 
   @Test
@@ -48,6 +54,12 @@ class DebtPositionMapperTest {
     debtPositionDTO.setPaymentOptions(List.of(paymentOption));
 
     DebtPositionTypeOrg debtPositionTypeOrg = podamFactory.manufacturePojo(DebtPositionTypeOrg.class);
+
+    PaymentOptionsExtendedDTO paymentOptionsExtendedDTO = podamFactory.manufacturePojo(PaymentOptionsExtendedDTO.class);
+    paymentOptionsExtendedDTO.setInstallments(List.of(installment4, installment3, installment1, installment2));
+
+    Mockito.when(paymentOptionsMapperMock.mapToExtended(List.of(paymentOption)))
+      .thenReturn(List.of(paymentOptionsExtendedDTO));
 
     DebtPositionDetailDTO result = mapper.mapToDebtPositionDetailDTO(debtPositionDTO,debtPositionTypeOrg);
 
@@ -103,10 +115,10 @@ class DebtPositionMapperTest {
     String expectedInstallmentRemittanceInformation) {
 
     TransferDTO transfer = podamFactory.manufacturePojo(TransferDTO.class);
-    transfer.setRemittanceInformation(remittanceInformation);
+    transfer.setRemittanceInformation(expectedTransferRemittanceInformation);
     InstallmentDTO installment = podamFactory.manufacturePojo(InstallmentDTO.class);
     installment.transfers(List.of(transfer));
-    installment.setRemittanceInformation(remittanceInformation);
+    installment.setRemittanceInformation(expectedInstallmentRemittanceInformation);
     installment.setOriginalRemittanceInformation(originalRemittanceInformation);
     PaymentOptionDTO paymentOption = podamFactory.manufacturePojo(PaymentOptionDTO.class);
     paymentOption.setInstallments(List.of(installment));
@@ -115,6 +127,12 @@ class DebtPositionMapperTest {
     debtPositionDTO.setPaymentOptions(List.of(paymentOption));
 
     DebtPositionTypeOrg debtPositionTypeOrg = podamFactory.manufacturePojo(DebtPositionTypeOrg.class);
+
+    PaymentOptionsExtendedDTO paymentOptionsExtendedDTO = podamFactory.manufacturePojo(PaymentOptionsExtendedDTO.class);
+    paymentOptionsExtendedDTO.setInstallments(List.of(installment));
+
+    Mockito.when(paymentOptionsMapperMock.mapToExtended(anyList()))
+      .thenReturn(List.of(paymentOptionsExtendedDTO));
 
     DebtPositionDetailDTO result = mapper.mapToDebtPositionDetailDTO(debtPositionDTO,debtPositionTypeOrg);
 
@@ -134,7 +152,7 @@ class DebtPositionMapperTest {
       Assertions.assertNull(result.getDebtPositionTypeOrgCode());
       Assertions.assertNull(result.getDebtPositionTypeOrgDescription());
     }
-    TestUtils.reflectionEqualsByName(debtPositionDTO,result);
+    TestUtils.reflectionEqualsByName(debtPositionDTO,result, "paymentOptions");
     verifyDebtor(result.getDebtor(),debtPositionDTO);
   }
 

@@ -1,5 +1,6 @@
 package it.gov.pagopa.pu.bff.mapper;
 
+import it.gov.pagopa.pu.bff.dto.PaymentOptionsExtendedDTO;
 import it.gov.pagopa.pu.bff.dto.generated.DebtPositionDetailDTO;
 import it.gov.pagopa.pu.bff.util.TestUtils;
 import it.gov.pagopa.pu.debtpositions.dto.generated.*;
@@ -9,6 +10,8 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import uk.co.jemos.podam.api.PodamFactory;
 
@@ -17,12 +20,13 @@ import java.util.List;
 @ExtendWith(MockitoExtension.class)
 class DebtPositionMapperTest {
   private DebtPositionMapper mapper;
-  private PaymentOptionsMapper paymentOptionsMapper;
+  @Mock
+  private PaymentOptionsMapper paymentOptionsMapperMock;
   private final PodamFactory podamFactory = TestUtils.getPodamFactory();
 
   @BeforeEach
   void setUp() {
-    mapper = new DebtPositionMapper(paymentOptionsMapper);
+    mapper = new DebtPositionMapper(paymentOptionsMapperMock);
   }
 
   @Test
@@ -43,6 +47,12 @@ class DebtPositionMapperTest {
     debtPositionDTO.setPaymentOptions(List.of(paymentOption));
 
     DebtPositionTypeOrg debtPositionTypeOrg = podamFactory.manufacturePojo(DebtPositionTypeOrg.class);
+
+    PaymentOptionsExtendedDTO paymentOptionsExtendedDTO = podamFactory.manufacturePojo(PaymentOptionsExtendedDTO.class);
+    paymentOptionsExtendedDTO.setInstallments(List.of(installment4, installment3, installment1, installment2));
+
+    Mockito.when(paymentOptionsMapperMock.mapToExtended(List.of(paymentOption)))
+      .thenReturn(List.of(paymentOptionsExtendedDTO));
 
     DebtPositionDetailDTO result = mapper.mapToDebtPositionDetailDTO(debtPositionDTO,debtPositionTypeOrg);
 
@@ -98,7 +108,7 @@ class DebtPositionMapperTest {
       Assertions.assertNull(result.getDebtPositionTypeOrgCode());
       Assertions.assertNull(result.getDebtPositionTypeOrgDescription());
     }
-    TestUtils.reflectionEqualsByName(debtPositionDTO,result);
+    TestUtils.reflectionEqualsByName(debtPositionDTO,result, "paymentOptions");
     verifyDebtor(result.getDebtor(),debtPositionDTO);
   }
 

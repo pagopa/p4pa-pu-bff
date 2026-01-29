@@ -13339,11 +13339,65 @@
           "paymentOptions" : {
             "type" : "array",
             "items" : {
-              "$ref" : "#/components/schemas/PaymentOptionDTO"
+              "$ref" : "#/components/schemas/PaymentOptionsExtendedDTO"
             }
           }
         },
         "required" : [ "debtPositionTypeOrgCode", "debtPositionTypeOrgDescription", "debtor", "paymentOptions", "status" ]
+      },
+      "PaymentOptionsExtendedDTO" : {
+        "type" : "object",
+        "properties" : {
+          "paymentOptionId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "debtPositionId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "totalAmountCents" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "status" : {
+            "$ref" : "#/components/schemas/PaymentOptionStatus"
+          },
+          "description" : {
+            "type" : "string"
+          },
+          "paymentOptionType" : {
+            "$ref" : "#/components/schemas/PaymentOptionType"
+          },
+          "paymentOptionIndex" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "creationDate" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "updateDate" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "updateOperatorExternalId" : {
+            "type" : "string"
+          },
+          "updateTraceId" : {
+            "type" : "string"
+          },
+          "installments" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/InstallmentDTO"
+            }
+          },
+          "debtor" : {
+            "$ref" : "#/components/schemas/PersonDTO"
+          }
+        },
+        "required" : [ "installments", "paymentOptionType", "totalAmountCents" ]
       },
       "DebtPositionTypeWithCount" : {
         "type" : "object",

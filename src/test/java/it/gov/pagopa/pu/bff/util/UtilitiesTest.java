@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
+import static it.gov.pagopa.pu.bff.util.Constants.INSTALLMENT_REMITTANCE_INFORMATION_PLACEHOLDER;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class UtilitiesTest {
@@ -148,5 +149,20 @@ public class UtilitiesTest {
   }
   public static void clearTraceIdContext(){
     MDC.clear();
+  }
+
+  @ParameterizedTest
+  @MethodSource("provideRemittanceInformation")
+  void testResolveRemittanceInformation(String remittanceInformation, String originalRemittanceInformation, String expectedResult) {
+    String result = Utilities.resolveRemittanceInformation(remittanceInformation, originalRemittanceInformation);
+    Assertions.assertEquals(expectedResult, result);
+  }
+
+  private static Stream<Arguments> provideRemittanceInformation() {
+    return Stream.of(
+      Arguments.of("remittanceInformation", null, "remittanceInformation"),
+      Arguments.of("remittanceInformation", "originalRemittanceInformation", "remittanceInformation"),
+      Arguments.of(INSTALLMENT_REMITTANCE_INFORMATION_PLACEHOLDER +" with remittanceInformation", "originalRemittanceInformation", "originalRemittanceInformation")
+    );
   }
 }

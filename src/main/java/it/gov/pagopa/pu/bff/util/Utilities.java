@@ -90,4 +90,12 @@ public class Utilities {
   public static String getTraceId(){
     return MDC.get("traceId");
   }
+
+  public static String resolveRemittanceInformation(String remittanceInformation, String originalRemittanceInformation) {
+    if (originalRemittanceInformation != null &&
+      remittanceInformation.startsWith(Constants.INSTALLMENT_REMITTANCE_INFORMATION_PLACEHOLDER)) {
+      remittanceInformation = originalRemittanceInformation;
+    }
+    return remittanceInformation;
+  }
 }

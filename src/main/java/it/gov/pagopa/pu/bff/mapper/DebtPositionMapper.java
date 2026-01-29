@@ -10,7 +10,13 @@ import java.util.List;
 
 @Component
 public class DebtPositionMapper {
+  private final PaymentOptionsMapper paymentOptionsMapper;
+
   private static final String MULTI_DEBTOR_NAME = "CO-OBBLIGATO";
+
+  public DebtPositionMapper(PaymentOptionsMapper paymentOptionsMapper) {
+    this.paymentOptionsMapper = paymentOptionsMapper;
+  }
 
   public DebtPositionDetailDTO mapToDebtPositionDetailDTO(DebtPositionDTO debtPosition, DebtPositionTypeOrg debtPositionTypeOrg){
       DebtPositionDetailDTO debtPositionDetailDTO = DebtPositionDetailDTO.builder()
@@ -22,7 +28,7 @@ public class DebtPositionMapper {
           .description(debtPosition.getDescription())
       		.build();
       List<PaymentOptionDTO> paymentOptions = sortInstallments(debtPosition.getPaymentOptions());
-      debtPositionDetailDTO.setPaymentOptions(paymentOptions);
+      debtPositionDetailDTO.setPaymentOptions(paymentOptionsMapper.mapToExtended(paymentOptions));
       debtPositionDetailDTO.setDebtor(buildDebtor(debtPosition));
       return debtPositionDetailDTO;
   }
@@ -48,7 +54,6 @@ public class DebtPositionMapper {
         .stream()
         .sorted(Comparator.comparing(InstallmentDTO::getDueDate, Comparator.nullsLast(Comparator.naturalOrder())))
         .toList()));
-
     return paymentOptions;
   }
 }

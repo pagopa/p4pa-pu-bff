@@ -17,11 +17,12 @@ import java.util.List;
 @ExtendWith(MockitoExtension.class)
 class DebtPositionMapperTest {
   private DebtPositionMapper mapper;
+  private PaymentOptionsMapper paymentOptionsMapper;
   private final PodamFactory podamFactory = TestUtils.getPodamFactory();
 
   @BeforeEach
   void setUp() {
-    mapper = new DebtPositionMapper();
+    mapper = new DebtPositionMapper(paymentOptionsMapper);
   }
 
   @Test

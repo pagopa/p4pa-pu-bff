@@ -4638,7 +4638,7 @@ components:
         paymentOptions:
           type: array
           items:
-            type: 'PaymentOptionDTO'
+            type: 'PaymentOptionsExtendedDTO'
     PagedPaymentsReportingRow:
       type: object
       required:

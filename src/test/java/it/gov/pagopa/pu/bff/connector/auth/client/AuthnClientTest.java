@@ -61,16 +61,25 @@ class AuthnClientTest {
   @Test
   void givenUnauthorizedExceptionWhenGetUserInfoThenThrowInvalidAccessTokenException() {
     String accessToken = "ACCESSTOKEN";
-    String bodyMessage = "bodyMessage";
 
     when(authApisHolderMock.getAuthnApi(accessToken))
       .thenReturn(authnApiMock);
     when(authnApiMock.getUserInfo())
-      .thenThrow(HttpClientErrorException.create(HttpStatus.UNAUTHORIZED, "Unauthorized", null, bodyMessage.getBytes(), null));
+      .thenThrow(HttpClientErrorException.create(
+        HttpStatus.UNAUTHORIZED,
+        "Unauthorized",
+        null,
+        "bodyMessage".getBytes(),
+        null
+      ));
 
-    InvalidAccessTokenException exception = Assertions.assertThrows(InvalidAccessTokenException.class, () -> authnClient.getUserInfo(accessToken));
+    InvalidAccessTokenException exception = Assertions.assertThrows(
+      InvalidAccessTokenException.class,
+      () -> authnClient.getUserInfo(accessToken)
+    );
 
-    assertEquals(bodyMessage, exception.getMessage());
+    assertEquals("INVALID_ACCESS_TOKEN", exception.getCode());
+    assertEquals("The provided access token is invalid or expired", exception.getMessage());
   }
 
   @Test

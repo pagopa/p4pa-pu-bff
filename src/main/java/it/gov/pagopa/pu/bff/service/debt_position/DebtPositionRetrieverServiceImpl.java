@@ -65,7 +65,7 @@ public class DebtPositionRetrieverServiceImpl implements DebtPositionRetrieverSe
   public DebtPositionDTO createDebtPosition(DebtPositionDTO debtPositionDTO, UserInfo loggedUser, String accessToken) {
     AuthorizationService.validateUserForOrganizationId(debtPositionDTO.getOrganizationId(), loggedUser);
     if (debtPositionDTO.getDebtPositionId() != null) {
-      throw new InvalidDebtPositionException("Bad Request: Debt Position ID should not be provided");
+      throw new InvalidDebtPositionException("DEBT_POSITION_ID_NOT_ALLOWED", "Bad Request: Debt Position ID should not be provided");
     }
     debtPositionDTO.setDebtPositionOrigin(DebtPositionOrigin.ORDINARY);
     debtPositionDTO.getPaymentOptions().forEach(paymentOptionDTO ->
@@ -171,7 +171,7 @@ public class DebtPositionRetrieverServiceImpl implements DebtPositionRetrieverSe
     );
 
     if (!hasOperatorGrantOnDebtPosition) {
-      throw new ResourceNotFoundException("DebtPosition with debtPositionId "+debtPositionId+" and organizationId "+organizationId+" not found");
+      throw new ResourceNotFoundException("DEBT_POSITION_NOT_FOUND", "DebtPosition with debtPositionId "+debtPositionId+" and organizationId "+organizationId+" not found");
     }
   }
 

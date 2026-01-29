@@ -40,7 +40,7 @@ public class ZipFileService {
       return new ByteArrayResource(baos.toByteArray());
 
     } catch (IOException e) {
-      throw new ZipFileException("Error while zipping");
+      throw new ZipFileException("ZIPPING_ERROR", "Error while zipping");
     }
   }
 

@@ -4198,6 +4198,8 @@ components:
           description: Description of the error
         traceId:
           type: string
+        code:
+          type: string
     PagedDebtPositionTypeOrgWithCount:
       type: object
       required:
@@ -4273,6 +4275,8 @@ components:
           type: string
         operatorRole:
           $ref: '#/components/schemas/OperatorRole'
+        orgName:
+          type: string
     PagedDebtPositionTypeWithCount:
       type: object
       required:

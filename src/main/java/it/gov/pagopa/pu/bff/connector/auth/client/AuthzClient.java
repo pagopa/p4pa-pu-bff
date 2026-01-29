@@ -58,7 +58,7 @@ public class AuthzClient {
       return authApisHolder.getAuthzApi(accessToken)
         .generateClientSecret(organizationIpaCode, clientId);
     } catch (HttpClientErrorException.NotFound e) {
-      throw new ResourceNotFoundException("Client with ID not found: " + clientId);
+      throw new ResourceNotFoundException("CLIENT_NOT_FOUND", "Client with ID not found: " + clientId);
     }
   }
 

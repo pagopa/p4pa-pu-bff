@@ -9279,6 +9279,9 @@
           },
           "traceId" : {
             "type" : "string"
+          },
+          "code" : {
+            "type" : "string"
           }
         },
         "required" : [ "description", "title" ]
@@ -9892,6 +9895,9 @@
             "type" : "string"
           },
           "updateTraceId" : {
+            "type" : "string"
+          },
+          "originalRemittanceInformation" : {
             "type" : "string"
           }
         },
@@ -12421,7 +12427,7 @@
       },
       "RegistryPagoPaEventType" : {
         "type" : "string",
-        "enum" : [ "PaForNode_paVerifyPaymentNotice", "PaForNode_paGetPaymentV2", "PaForNode_paSendRTV2", "PaForNode_paDemandPaymentNotice", "ACA_newDebtPosition", "GPD_createPosition", "GPD_updatePosition", "GPD_deletePosition", "NodeForPa_fetchPaymentReporting" ]
+        "enum" : [ "PaForNode_paVerifyPaymentNotice", "PaForNode_paGetPaymentV2", "PaForNode_paSendRTV2", "PaForNode_paDemandPaymentNotice", "ACA_newDebtPosition", "ACA_createPosition", "ACA_updatePosition", "ACA_deletePosition", "GPD_createPosition", "GPD_updatePosition", "GPD_deletePosition", "NodeForPa_fetchPaymentReporting" ]
       },
       "PagoPaRegistryDTO" : {
         "type" : "object",
@@ -12851,6 +12857,9 @@
           },
           "operatorRole" : {
             "$ref" : "#/components/schemas/OperatorRole"
+          },
+          "orgName" : {
+            "type" : "string"
           }
         },
         "required" : [ "operatorEmail", "operatorFiscalCode", "operatorId", "operatorLastName", "operatorName", "operatorRole", "pagedDebtPositionTypeOrg" ]
@@ -13043,6 +13052,9 @@
           "notificationFeeCents" : {
             "type" : "integer",
             "format" : "int64"
+          },
+          "originalRemittanceInformation" : {
+            "type" : "string"
           }
         },
         "required" : [ "amountCents", "debtPositionId", "debtPositionOrigin", "debtPositionTypeOrgDescription", "debtor", "installmentId", "iuv", "status" ]
@@ -14057,7 +14069,7 @@
           "receiptOrigin" : {
             "$ref" : "#/components/schemas/ReceiptOriginType"
           },
-          "payed" : {
+          "paid" : {
             "type" : "boolean"
           },
           "reported" : {

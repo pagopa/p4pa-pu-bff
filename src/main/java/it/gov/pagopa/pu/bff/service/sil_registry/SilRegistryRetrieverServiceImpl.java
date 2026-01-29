@@ -41,7 +41,7 @@ public class SilRegistryRetrieverServiceImpl implements SilRegistryRetrieverServ
   private void validateSilRegistry(Long organizationId, SilRegistryDTO silRegistryDTO, UserInfo loggedUser, String accessToken) {
     String orgFiscalCode = organizationRetrieverService.getOrgFiscalCode(organizationId, loggedUser, accessToken);
     if (StringUtils.isBlank(orgFiscalCode) || !orgFiscalCode.equals(silRegistryDTO.getOrgFiscalCode())) {
-      throw new ResourceNotFoundException("SilRegistry having id " + silRegistryDTO.getRegistryId() + " not found");
+      throw new ResourceNotFoundException("SIL_REGISTRY_NOT_FOUND", "SilRegistry having id " + silRegistryDTO.getRegistryId() + " not found");
     }
   }
 

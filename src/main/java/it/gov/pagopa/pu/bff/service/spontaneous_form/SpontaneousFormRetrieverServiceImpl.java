@@ -65,17 +65,12 @@ public class SpontaneousFormRetrieverServiceImpl implements SpontaneousFormRetri
 
   private static void validateRetrievedSpontaneousForm(SpontaneousForm spontaneousForm, Long organizationId, Long spontaneousFormId) {
     if (spontaneousForm == null){
-      throw new ResourceNotFoundException("SpontaneousForm with id %d not found".formatted(spontaneousFormId));
+      throw new ResourceNotFoundException("SPONTANEOUS_FORM_NOT_FOUND", "SpontaneousForm with id %d not found".formatted(spontaneousFormId));
     }
 
     if (!organizationId.equals(spontaneousForm.getOrganizationId())){
-      throw new ConflictException(
-        "OrganizationId %d does not match OrganizationId %d of SpontaneousForm %d"
-          .formatted(
-            organizationId,
-            spontaneousForm.getOrganizationId(),
-            spontaneousFormId
-          ));
+      throw new ConflictException("INVALID_ORGANIZATION",
+        "OrganizationId %d does not match OrganizationId %d of SpontaneousForm %d".formatted(organizationId, spontaneousForm.getOrganizationId(), spontaneousFormId));
     }
   }
 
@@ -117,7 +112,7 @@ public class SpontaneousFormRetrieverServiceImpl implements SpontaneousFormRetri
         .map(PageMetadata::getTotalElements)
         .filter(total -> total > 0)
         .isPresent()){
-      throw new ConflictException("There is another SpontaneousForm with organizationId "+ spontaneousForm.getOrganizationId()+" and code "+ spontaneousForm.getCode());
+      throw new ConflictException("SPONTANEOUS_FORM_ALREADY_EXISTS", "There is another SpontaneousForm with organizationId "+ spontaneousForm.getOrganizationId()+" and code "+ spontaneousForm.getCode());
     }
   }
 
@@ -126,7 +121,7 @@ public class SpontaneousFormRetrieverServiceImpl implements SpontaneousFormRetri
     authorizationService.validateAdminRole(organizationId, loggedUser);
     getSpontaneousFormAndValidate(spontaneousFormId, organizationId, accessToken);
     if(debtPositionTypeOrgService.isSpontaneousFormReferencedByDpto(spontaneousFormId, accessToken)){
-      throw new ConflictException("The SpontaneousForm having id "+ spontaneousFormId +" is referenced by some DebtPositionTypeOrgs");
+      throw new ConflictException("SPONTANEOUS_FORM_IN_USE", "The SpontaneousForm having id "+ spontaneousFormId +" is referenced by some DebtPositionTypeOrgs");
     }
     spontaneousFormService.deleteSpontaneousForm(spontaneousFormId,accessToken);
   }

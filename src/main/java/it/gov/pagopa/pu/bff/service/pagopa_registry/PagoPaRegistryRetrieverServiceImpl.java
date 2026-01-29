@@ -62,7 +62,7 @@ public class PagoPaRegistryRetrieverServiceImpl implements PagoPaRegistryRetriev
     private void validatePagoPaRegistry(Long organizationId, PagoPaRegistryDTO pagoPaRegistryDTO, UserInfo loggedUser, String accessToken) {
         String orgFiscalCode = organizationRetrieverService.getOrgFiscalCode(organizationId, loggedUser, accessToken);
         if (StringUtils.isBlank(orgFiscalCode) || !orgFiscalCode.equals(pagoPaRegistryDTO.getOrgFiscalCode())) {
-            throw new ResourceNotFoundException("PagoPaRegistry having id " + pagoPaRegistryDTO.getRegistryId() + " not found");
+            throw new ResourceNotFoundException("PAGOPA_REGISTRY_NOT_FOUND", "PagoPaRegistry having id " + pagoPaRegistryDTO.getRegistryId() + " not found");
         }
     }
 }

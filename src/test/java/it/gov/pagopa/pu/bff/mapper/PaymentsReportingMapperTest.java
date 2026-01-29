@@ -118,6 +118,7 @@ class PaymentsReportingMapperTest {
       .paymentOutcomeCode("OUTCOMECODE")
       .payDate(LocalDate.now())
       .acquiringDate(LocalDate.now())
+      .revision(1)
       .build();
     ReceiptDetailDTO receiptDetailDTO = ReceiptDetailDTO.builder()
       .debtor(
@@ -180,6 +181,7 @@ class PaymentsReportingMapperTest {
       .paymentOutcomeCode("OUTCOMECODE")
       .payDate(LocalDate.now())
       .acquiringDate(LocalDate.now())
+      .revision(1)
       .build();
 
     PaymentsReportingDetailDTO expected = PaymentsReportingDetailDTO.builder()

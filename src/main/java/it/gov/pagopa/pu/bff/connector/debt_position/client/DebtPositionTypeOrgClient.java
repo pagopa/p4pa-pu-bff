@@ -49,7 +49,7 @@ public class DebtPositionTypeOrgClient {
     try{
       debtPositionApisHolder.getDebtPositionTypeOrgApi(accessToken).deleteDebtPositionTypeOrg(debtPositionTypeOrgId);
     } catch (HttpClientErrorException.NotFound e) {
-      throw new ResourceNotFoundException("DebtPositionTypeOrg with debtPositionTypeOrgId %d not found".formatted(debtPositionTypeOrgId));
+      throw new ResourceNotFoundException("DEBT_POSITION_TYPE_ORG_NOT_FOUND", "DebtPositionTypeOrg with debtPositionTypeOrgId %d not found".formatted(debtPositionTypeOrgId));
     }
   }
 
@@ -61,7 +61,7 @@ public class DebtPositionTypeOrgClient {
     try{
       debtPositionApisHolder.getDebtPositionTypeOrgApi(accessToken).updateFlagActiveDebtPositionTypeOrg(debtPositionTypeOrgId, flagActive);
     } catch (HttpClientErrorException.NotFound e) {
-      throw new ResourceNotFoundException("DebtPositionTypeOrg with debtPositionTypeOrgId %d not found".formatted(debtPositionTypeOrgId));
+      throw new ResourceNotFoundException("DEBT_POSITION_TYPE_ORG_NOT_FOUND", "DebtPositionTypeOrg with debtPositionTypeOrgId %d not found".formatted(debtPositionTypeOrgId));
     }
   }
 

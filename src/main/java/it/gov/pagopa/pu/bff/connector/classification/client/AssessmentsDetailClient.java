@@ -30,7 +30,7 @@ public class AssessmentsDetailClient {
       classificationApisHolder.getAssessmentsDetailEntityControllerApi(accessToken)
         .crudDeleteAssessmentsdetail(String.valueOf(assessmentDetailId));
     } catch (HttpClientErrorException.NotFound e) {
-      throw new ResourceNotFoundException("AssessmentsDetail with ID %d not found".formatted(assessmentDetailId));
+      throw new ResourceNotFoundException("ASSESSMENT_DETAIL_NOT_FOUND", "AssessmentsDetail with ID %d not found".formatted(assessmentDetailId));
     }
   }
 }

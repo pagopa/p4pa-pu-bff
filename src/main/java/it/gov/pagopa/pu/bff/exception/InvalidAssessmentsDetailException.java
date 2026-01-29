@@ -1,7 +1,7 @@
 package it.gov.pagopa.pu.bff.exception;
 
-public class InvalidAssessmentsDetailException extends RuntimeException {
-  public InvalidAssessmentsDetailException(String message) {
-    super(message);
+public class InvalidAssessmentsDetailException extends BaseBusinessException {
+  public InvalidAssessmentsDetailException(String code, String message) {
+    super(code, message);
   }
 }

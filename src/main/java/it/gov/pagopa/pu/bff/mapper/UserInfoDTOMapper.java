@@ -15,7 +15,7 @@ public class UserInfoDTOMapper {
     }
 
     if (userInfo instanceof UserInfoLimitedScope) {
-      throw new InvalidUserInfoException("Limited scope user information is not supported");
+      throw new InvalidUserInfoException("INVALID_USER_INFO", "Limited scope user information is not supported");
     }
 
     return UserInfoDTO.builder()

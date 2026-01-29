@@ -72,7 +72,7 @@ public class AssessmentsRegistryRetrieverServiceImpl implements AssessmentsRegis
   private List<DebtPositionTypeOrg> getDebtPositionTypeOrgs(Long organizationId, String mappedExternalUserId, String accessToken) {
     List<DebtPositionTypeOrg> debtPositionTypeOrgs = debtPositionTypeOrgRetrieverService.getDebtPositionTypeOrgs(organizationId, null, mappedExternalUserId, accessToken);
     if(CollectionUtils.isEmpty(debtPositionTypeOrgs)){
-      throw new ResourceNotFoundException("AssessmentsRegistries not found for organizationId " + organizationId);
+      throw new ResourceNotFoundException("ASSESSMENT_REGISTRY_NOT_FOUND", "AssessmentsRegistries not found for organizationId " + organizationId);
     }
     return debtPositionTypeOrgs;
   }
@@ -90,7 +90,7 @@ public class AssessmentsRegistryRetrieverServiceImpl implements AssessmentsRegis
   public AssessmentsRegistry createAssessmentsRegistry(Long organizationId, AssessmentsRegistry assessmentsRegistry, UserInfo loggedUser, String accessToken) {
     AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser);
     if (assessmentsRegistry.getAssessmentRegistryId() != null) {
-      throw new InvalidAssessmentsRegistryException("assessmentRegistryId should not be provided");
+      throw new InvalidAssessmentsRegistryException("ASSESSMENT_REGISTRY_ID_NOT_ALLOWED", "assessmentRegistryId should not be provided");
     }
     validateAssessmentRegistry(organizationId, assessmentsRegistry, loggedUser.getMappedExternalUserId(), accessToken);
     assessmentsRegistry.setStatus(AssessmentsRegistryStatus.ACTIVE);
@@ -102,13 +102,13 @@ public class AssessmentsRegistryRetrieverServiceImpl implements AssessmentsRegis
     AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser);
 
     if (!Objects.equals(assessmentRegistryId, body.getAssessmentRegistryId())) {
-      throw new IllegalArgumentException("assessmentRegistryId in path and body must match");
+      throw new InvalidAssessmentsRegistryException("INVALID_ASSESSMENT_REGISTRY", "assessmentRegistryId in path and body must match");
     }
 
     AssessmentsRegistry existingRegistry = assessmentsRegistryService.getAssessmentsRegistry(body.getAssessmentRegistryId(), accessToken);
 
     if (!Objects.equals(body.getDebtPositionTypeOrgCode(), existingRegistry.getDebtPositionTypeOrgCode())) {
-      throw new IllegalArgumentException("debtPositionTypeOrgCode cannot be modified");
+      throw new InvalidAssessmentsRegistryException("IMMUTABLE_DEBT_POSITION_TYPE_ORG_CODE", "debtPositionTypeOrgCode cannot be modified");
     }
 
     validateAssessmentRegistry(organizationId, body, loggedUser.getMappedExternalUserId(), accessToken);
@@ -121,7 +121,7 @@ public class AssessmentsRegistryRetrieverServiceImpl implements AssessmentsRegis
 
   private void validateAssessmentRegistry(Long organizationId, AssessmentsRegistry assessmentsRegistry, String mappedExternalUserId, String accessToken) {
     if (!organizationId.equals(assessmentsRegistry.getOrganizationId())) {
-      throw new InvalidAssessmentsRegistryException("The AssessmentsRegistry's organizationId " + assessmentsRegistry.getOrganizationId() +
+      throw new InvalidAssessmentsRegistryException("INVALID_ORGANIZATION", "The AssessmentsRegistry's organizationId " + assessmentsRegistry.getOrganizationId() +
         " does not match the given organizationId " + organizationId);
     }
     debtPositionTypeOrgRetrieverService.validateOperator(assessmentsRegistry.getOrganizationId(), assessmentsRegistry.getDebtPositionTypeOrgCode(), mappedExternalUserId, accessToken);

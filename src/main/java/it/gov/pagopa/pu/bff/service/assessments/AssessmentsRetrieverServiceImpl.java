@@ -137,7 +137,7 @@ public class AssessmentsRetrieverServiceImpl implements AssessmentsRetrieverServ
       return debtPositionTypeOrgs.getEmbedded().getDebtPositionTypeOrgs().stream()
               .collect(Collectors.toMap(DebtPositionTypeOrg::getCode, DebtPositionTypeOrg::getDescription));
     } else {
-      throw new ResourceNotFoundException("Assessments not found for organizationId " + organizationId);
+      throw new ResourceNotFoundException("ASSESSMENT_NOT_FOUND", "Assessments not found for organizationId " + organizationId);
     }
   }
 
@@ -145,7 +145,7 @@ public class AssessmentsRetrieverServiceImpl implements AssessmentsRetrieverServ
     DebtPositionTypeOrg debtPositionTypeOrg = debtPositionTypeOrgService.findDebtPositionTypeOrg(organizationId, debtPositionTypeOrgCode, mappedExternalUserId, accessToken);
 
     if (debtPositionTypeOrg == null){
-      throw new ResourceNotFoundException("DebtPositionTypeOrg " + debtPositionTypeOrgCode + " not found for user " + mappedExternalUserId);
+      throw new ResourceNotFoundException("DEBT_POSITION_TYPE_ORG_NOT_FOUND", "DebtPositionTypeOrg " + debtPositionTypeOrgCode + " not found for user " + mappedExternalUserId);
     }
 
     return debtPositionTypeOrg.getDescription();
@@ -160,7 +160,7 @@ public class AssessmentsRetrieverServiceImpl implements AssessmentsRetrieverServ
 
     Assessments assessments = assessmentsService.getAssessmentsById(assessmentsRowsDetailFiltersDTO.getAssessmentId(), accessToken);
     if(assessments==null){
-      throw new ResourceNotFoundException("Assessment with id %s not found".formatted(assessmentsRowsDetailFiltersDTO.getAssessmentId()));
+      throw new ResourceNotFoundException("ASSESSMENT_NOT_FOUND", "Assessment with id %s not found".formatted(assessmentsRowsDetailFiltersDTO.getAssessmentId()));
     }
 
     String debtPositionTypeOrgDescription = getDebtPositionTypeOrgDescription(assessmentsRowsDetailFiltersDTO.getOrganizationId(),
@@ -202,7 +202,7 @@ public class AssessmentsRetrieverServiceImpl implements AssessmentsRetrieverServ
     if (assessmentsDetail != null && assessmentsDetail.getAssessmentId().equals(assessmentId)){
       return assessmentsDetail;
     }else {
-      throw new InvalidAssessmentsDetailException("The assessment detail with ID %s is either invalid or does not belong to the assessment with ID %s".formatted(assessmentDetailId, assessmentId));
+      throw new InvalidAssessmentsDetailException("INVALID_ASSESSMENT_DETAIL", "The assessment detail with ID %s is either invalid or does not belong to the assessment with ID %s".formatted(assessmentDetailId, assessmentId));
     }
 
   }
@@ -228,7 +228,7 @@ public class AssessmentsRetrieverServiceImpl implements AssessmentsRetrieverServ
   private Assessments getManuallyGeneratedAssessment(Long organizationId, Long assessmentId, String accessToken) {
     Assessments assessments = assessmentsService.getAssessmentsById(assessmentId, accessToken);
     if(assessments == null || !organizationId.equals(assessments.getOrganizationId())){
-      throw new ResourceNotFoundException("Assessments having assessmentsId "+ assessmentId +" and organizationId "+ organizationId +" not found");
+      throw new ResourceNotFoundException("ASSESSMENT_NOT_FOUND", "Assessments having assessmentsId "+ assessmentId +" and organizationId "+ organizationId +" not found");
     } else if(!assessments.getFlagManualGeneration()){
       throw new IllegalArgumentException("Assessments having id "+ assessmentId +" has not been manually generated");
     }

@@ -761,7 +761,7 @@ class DebtPositionRetrieverServiceImplTest {
       Mockito.when(debtPositionServiceMock.manageDebtPositionInstallments(debtPositionId, manageDebtPositionDTO, accessToken))
               .thenReturn(expectedResult);
       Mockito.when(debtPositionServiceMock.publishDebtPosition(debtPositionId, accessToken))
-              .thenThrow(new ResourceNotFoundException(""));
+              .thenThrow(new ResourceNotFoundException("DEBT_POSITION_NOT_FOUND", "DebtPosition not found"));
 
       DebtPositionDTO result = debtPositionRetrieverService.manageDebtPositionInstallments(organizationId,debtPositionId,manageDebtPositionDTO,true,loggedUser, accessToken);
 
@@ -789,7 +789,7 @@ class DebtPositionRetrieverServiceImplTest {
       Mockito.when(debtPositionServiceMock.manageDebtPositionInstallments(debtPositionId, manageDebtPositionDTO, accessToken))
         .thenReturn(expectedResult);
       Mockito.when(debtPositionServiceMock.publishDebtPosition(debtPositionId, accessToken))
-        .thenThrow(new ConflictException(""));
+        .thenThrow(new ConflictException("DEBT_POSITION_PUBLISH_CONFLICT", "conflict"));
 
       DebtPositionDTO result = debtPositionRetrieverService.manageDebtPositionInstallments(organizationId,debtPositionId,manageDebtPositionDTO,true,loggedUser, accessToken);
 

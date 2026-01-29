@@ -44,7 +44,7 @@ public class AssessmentsDetailRetrieverServiceImpl implements AssessmentsDetailR
 
   private void validateAssessments(Long organizationId, Long assessmentId, Assessments assessments, UserInfo loggedUser, String accessToken) {
     if (assessments == null || !organizationId.equals(assessments.getOrganizationId())) {
-      throw new ResourceNotFoundException("Assessments having assessmentId " + assessmentId + " and organizationId " + organizationId + " not found");
+      throw new ResourceNotFoundException("ASSESSMENT_NOT_FOUND", "Assessments having assessmentId " + assessmentId + " and organizationId " + organizationId + " not found");
     }
     debtPositionTypeOrgRetrieverService.validateOperator(organizationId, assessments.getDebtPositionTypeOrgCode(), loggedUser.getMappedExternalUserId(), accessToken);
   }
@@ -65,7 +65,7 @@ public class AssessmentsDetailRetrieverServiceImpl implements AssessmentsDetailR
       AssessmentsDetail detail = assessmentsService.findAssessmentsDetail(id, accessToken);
 
       if (detail == null || !organizationId.equals(detail.getOrganizationId())) {
-        throw new ResourceNotFoundException("AssessmentDetailId " + id + " was not found or does not belong to organization.");
+        throw new ResourceNotFoundException("ASSESSMENT_DETAIL_NOT_FOUND", "AssessmentDetailId " + id + " was not found or does not belong to organization.");
       }
 
       debtPositionTypeOrgRetrieverService.validateOperator(organizationId, detail.getDebtPositionTypeOrgCode(), mappedExternalUserId, accessToken);

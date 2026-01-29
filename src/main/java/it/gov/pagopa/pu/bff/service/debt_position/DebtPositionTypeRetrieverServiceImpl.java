@@ -134,7 +134,7 @@ public class DebtPositionTypeRetrieverServiceImpl implements DebtPositionTypeRet
       debtPositionTypeId, PageRequest.of(0, 1), accessToken);
 
     if (debtPositionTypeOrgs != null && debtPositionTypeOrgs.getEmbedded() != null && !CollectionUtils.isEmpty(debtPositionTypeOrgs.getEmbedded().getDebtPositionTypeOrgs())) {
-      throw new ConflictException("Cannot delete DebtPositionType: it is associated with one or more DebtPositionTypeOrgs");
+      throw new ConflictException("DEBT_POSITION_TYPE_IN_USE", "Cannot delete DebtPositionType: it is associated with one or more DebtPositionTypeOrgs");
     }
     debtPositionTypeService.deleteDebtPositionType(debtPositionTypeId, accessToken);
   }

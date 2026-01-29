@@ -25,7 +25,7 @@ public class SpontaneousFormClient {
      debtPositionApisHolder.getSpontaneousFormApi(accessToken)
           .deleteSpontaneousForm(spontaneousFormId);
     }catch (HttpClientErrorException.NotFound e) {
-      throw new ResourceNotFoundException("SpontaneousForm having id "+spontaneousFormId+" not found");
+      throw new ResourceNotFoundException("SPONTANEOUS_FORM_NOT_FOUND", "SpontaneousForm having id "+spontaneousFormId+" not found");
     }
   }
 
@@ -34,7 +34,7 @@ public class SpontaneousFormClient {
       debtPositionApisHolder.getSpontaneousFormApi(accessToken)
         .updateSpontaneousForm(spontaneousForm);
     }catch (HttpClientErrorException.NotFound e) {
-      throw new ResourceNotFoundException("SpontaneousForm having id "+spontaneousForm.getSpontaneousFormId()+" not found");
+      throw new ResourceNotFoundException("SPONTANEOUS_FORM_NOT_FOUND", "SpontaneousForm having id "+spontaneousForm.getSpontaneousFormId()+" not found");
     }
   }
 }

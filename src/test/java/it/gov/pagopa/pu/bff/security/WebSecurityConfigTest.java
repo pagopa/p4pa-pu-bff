@@ -1,6 +1,7 @@
 package it.gov.pagopa.pu.bff.security;
 
 import it.gov.pagopa.pu.bff.controller.generated.BrokersApi;
+import it.gov.pagopa.pu.bff.mapper.UpstreamErrorMapper;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
 import it.gov.pagopa.pu.bff.service.broker.BrokerRetrieverServiceImpl;
 import org.junit.jupiter.api.Test;
@@ -28,6 +29,9 @@ class WebSecurityConfigTest {
 
   @MockitoBean
   private AuthorizationService authorizationServiceMock;
+
+  @MockitoBean
+  private UpstreamErrorMapper upstreamErrorMapper;
 
   @Test
   void givenURLWhenWithoutAccessTokenThenReturn403() throws Exception {

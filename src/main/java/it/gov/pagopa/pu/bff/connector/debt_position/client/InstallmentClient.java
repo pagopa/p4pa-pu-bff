@@ -7,7 +7,7 @@ import it.gov.pagopa.pu.bff.util.PageUtils;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionOrigin;
 import it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentDetailDTO;
 import it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentNoPII;
-import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelInstallmentView;
+import it.gov.pagopa.pu.debtpositions.dto.generated.PagedInstallmentsView;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -25,11 +25,11 @@ public class InstallmentClient {
     this.debtPositionApisHolder = debtPositionApisHolder;
   }
 
-  public PagedModelInstallmentView getInstallments(InstallmentViewFiltersDTO installmentViewFiltersDTO, Pageable pageable, String accessToken) {
+  public PagedInstallmentsView getInstallments(InstallmentViewFiltersDTO installmentViewFiltersDTO, Pageable pageable, String accessToken) {
     LocalDateIntervalFilter dueDate =  installmentViewFiltersDTO.getDueDate();
 
-    return debtPositionApisHolder.getInstallmentViewSearchControllerApi(accessToken)
-      .crudInstallmentViewsFindInstallmentsByFilters(
+    return debtPositionApisHolder.getInstallmentApi(accessToken)
+      .getInstallmentsByFilters(
         installmentViewFiltersDTO.getOrganizationId(),
         installmentViewFiltersDTO.getOperatorExternalUserId(),
         dueDate != null ? dueDate.getFrom() : null,

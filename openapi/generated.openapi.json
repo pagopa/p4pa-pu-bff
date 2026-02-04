@@ -12427,7 +12427,7 @@
       },
       "RegistryPagoPaEventType" : {
         "type" : "string",
-        "enum" : [ "PaForNode_paVerifyPaymentNotice", "PaForNode_paGetPaymentV2", "PaForNode_paSendRTV2", "PaForNode_paDemandPaymentNotice", "ACA_newDebtPosition", "GPD_createPosition", "GPD_updatePosition", "GPD_deletePosition", "NodeForPa_fetchPaymentReporting" ]
+        "enum" : [ "PaForNode_paVerifyPaymentNotice", "PaForNode_paGetPaymentV2", "PaForNode_paSendRTV2", "PaForNode_paDemandPaymentNotice", "ACA_newDebtPosition", "ACA_createPosition", "ACA_updatePosition", "ACA_deletePosition", "GPD_createPosition", "GPD_updatePosition", "GPD_deletePosition", "NodeForPa_fetchPaymentReporting" ]
       },
       "PagoPaRegistryDTO" : {
         "type" : "object",
@@ -12892,7 +12892,7 @@
         },
         "required" : [ "content", "number", "size", "totalElements", "totalPages" ]
       },
-      "InstallmentView" : {
+      "InstallmentViewDTO" : {
         "type" : "object",
         "properties" : {
           "installmentId" : {
@@ -12934,18 +12934,15 @@
           "remittanceInformation" : {
             "type" : "string"
           },
+          "originalRemittanceInformation" : {
+            "type" : "string"
+          },
           "debtorFiscalCodeHash" : {
             "type" : "string",
             "format" : "byte"
           },
           "debtPositionTypeOrgDescription" : {
             "type" : "string"
-          },
-          "_links" : {
-            "type" : "object",
-            "additionalProperties" : {
-              "$ref" : "#/components/schemas/Link"
-            }
           }
         },
         "required" : [ "amountCents", "debtPositionId", "debtPositionTypeOrgDescription", "debtorFiscalCodeHash", "paymentOptionId", "remittanceInformation", "status" ]
@@ -12956,7 +12953,7 @@
           "content" : {
             "type" : "array",
             "items" : {
-              "$ref" : "#/components/schemas/InstallmentView"
+              "$ref" : "#/components/schemas/InstallmentViewDTO"
             }
           },
           "size" : {

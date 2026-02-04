@@ -16,7 +16,7 @@ import it.gov.pagopa.pu.bff.service.installment.InstallmentRetrieverServiceImpl;
 import it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentDetailDTO;
 import it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentNoPII;
 import it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentStatus;
-import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelInstallmentView;
+import it.gov.pagopa.pu.debtpositions.dto.generated.PagedInstallmentsView;
 import it.gov.pagopa.pu.debtpositions.dto.generated.PersonDTO;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
@@ -71,16 +71,16 @@ class InstallmentRetrieverServiceImplTest {
     filtersDTO.setDueDate(new LocalDateIntervalFilter(LocalDate.now().minusDays(5), LocalDate.now().plusDays(5)));
     Pageable pageable = PageRequest.of(0, 10);
 
-    PagedModelInstallmentView pagedModelInstallmentView = new PagedModelInstallmentView();
+    PagedInstallmentsView PagedInstallmentsView = new PagedInstallmentsView();
     PagedInstallmentView expectedPagedInstallmentView = new PagedInstallmentView();
 
     try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
       authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(filtersDTO.getOrganizationId(), loggedUser)).thenAnswer(a -> null);
 
       Mockito.when(installmentServiceMock.getInstallments(filtersDTO, pageable, accessToken))
-        .thenReturn(pagedModelInstallmentView);
+        .thenReturn(PagedInstallmentsView);
 
-      Mockito.when(installmentViewMapperMock.mapToPagedInstallmentView(pagedModelInstallmentView))
+      Mockito.when(installmentViewMapperMock.mapToPagedInstallmentView(PagedInstallmentsView))
         .thenReturn(expectedPagedInstallmentView);
 
       PagedInstallmentView result = installmentRetrieverService.getInstallments(filtersDTO, pageable, loggedUser, accessToken);
@@ -170,7 +170,7 @@ class InstallmentRetrieverServiceImplTest {
     loggedUser.setUserId("user-123");
 
     Pageable pageable = PageRequest.of(0, 10);
-    PagedModelInstallmentView pagedModel = new PagedModelInstallmentView();
+    PagedInstallmentsView pagedInstallmentsView = new PagedInstallmentsView();
     PagedInstallmentView expected = new PagedInstallmentView();
 
     try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
@@ -179,9 +179,9 @@ class InstallmentRetrieverServiceImplTest {
         .thenAnswer(a -> null);
 
       Mockito.when(installmentServiceMock.getInstallments(filtersDTO, pageable, accessToken))
-        .thenReturn(pagedModel);
+        .thenReturn(pagedInstallmentsView);
 
-      Mockito.when(installmentViewMapperMock.mapToPagedInstallmentView(pagedModel))
+      Mockito.when(installmentViewMapperMock.mapToPagedInstallmentView(pagedInstallmentsView))
         .thenReturn(expected);
 
       PagedInstallmentView result = installmentRetrieverService.getInstallments(filtersDTO, pageable, loggedUser, accessToken);

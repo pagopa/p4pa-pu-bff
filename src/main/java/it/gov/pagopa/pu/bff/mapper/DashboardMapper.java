@@ -4,7 +4,7 @@ import it.gov.pagopa.pu.bff.dto.generated.*;
 import it.gov.pagopa.pu.classification.dto.generated.Classification;
 import it.gov.pagopa.pu.classification.dto.generated.PagedModelClassification;
 import it.gov.pagopa.pu.classification.dto.generated.PagedModelClassificationEmbedded;
-import it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentView;
+import it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentViewDTO;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 public class DashboardMapper {
 
   public DashboardByFc mapToDashboardByFc(PagedInstallmentView pagedInstallments) {
-    List<InstallmentView> installments = Optional.ofNullable(pagedInstallments)
+    List<InstallmentViewDTO> installments = Optional.ofNullable(pagedInstallments)
       .map(PagedInstallmentView::getContent)
       .orElseGet(Collections::emptyList);
 
@@ -29,7 +29,7 @@ public class DashboardMapper {
       }
 
       List<Long> distinctDebtPositionIds = installments.stream()
-        .map(InstallmentView::getDebtPositionId)
+        .map(InstallmentViewDTO::getDebtPositionId)
         .distinct()
         .toList();
       dashboard.setHasDebtPosition(!distinctDebtPositionIds.isEmpty());
@@ -39,7 +39,7 @@ public class DashboardMapper {
       }
 
       List<Long> distinctReceiptIds = installments.stream()
-        .map(InstallmentView::getReceiptId)
+        .map(InstallmentViewDTO::getReceiptId)
         .filter(Objects::nonNull)
         .distinct()
         .toList();

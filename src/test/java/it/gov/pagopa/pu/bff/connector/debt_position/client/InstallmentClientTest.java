@@ -9,11 +9,10 @@ import it.gov.pagopa.pu.bff.dto.LocalDateIntervalFilter;
 import it.gov.pagopa.pu.bff.util.PageUtils;
 import it.gov.pagopa.pu.debtpositions.controller.generated.InstallmentApi;
 import it.gov.pagopa.pu.debtpositions.controller.generated.InstallmentNoPiiSearchControllerApi;
-import it.gov.pagopa.pu.debtpositions.controller.generated.InstallmentViewSearchControllerApi;
 import it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentDetailDTO;
 import it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentNoPII;
 import it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentStatus;
-import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelInstallmentView;
+import it.gov.pagopa.pu.debtpositions.dto.generated.PagedInstallmentsView;
 import java.time.LocalDate;
 import java.util.Collections;
 import org.junit.jupiter.api.AfterEach;
@@ -36,8 +35,6 @@ class InstallmentClientTest {
   @Mock
   private DebtPositionApisHolder debtPositionApisHolderMock;
   @Mock
-  private InstallmentViewSearchControllerApi installmentViewSearchControllerApiMock;
-  @Mock
   private InstallmentNoPiiSearchControllerApi installmentNoPiiSearchControllerApi;
   @Mock
   private InstallmentApi installmentApiMock;
@@ -53,14 +50,14 @@ class InstallmentClientTest {
   void verifyNoMoreInteractions() {
     Mockito.verifyNoMoreInteractions(
       debtPositionApisHolderMock,
-      installmentViewSearchControllerApiMock
+      installmentApiMock
     );
   }
 
   @Test
   void whenGetInstallmentsThenInvokeWithAccessToken() {
     String accessToken = "ACCESSTOKEN";
-    PagedModelInstallmentView expectedResult = new PagedModelInstallmentView();
+    PagedInstallmentsView expectedResult = new PagedInstallmentsView();
 
     LocalDate dueDateFrom = LocalDate.now().minusDays(30);
     LocalDate dueDateTo = LocalDate.now();
@@ -70,10 +67,10 @@ class InstallmentClientTest {
       1L, "operatorExternalUserId", dueDateFilter, "iuv", "iud", "fiscalCode", Collections.emptyList(), 2L, InstallmentStatus.PAID);
     Pageable pageable = PageRequest.of(0, 10, Sort.unsorted());
 
-    when(debtPositionApisHolderMock.getInstallmentViewSearchControllerApi(accessToken))
-      .thenReturn(installmentViewSearchControllerApiMock);
+    when(debtPositionApisHolderMock.getInstallmentApi(accessToken))
+      .thenReturn(installmentApiMock);
 
-    when(installmentViewSearchControllerApiMock.crudInstallmentViewsFindInstallmentsByFilters(
+    when(installmentApiMock.getInstallmentsByFilters(
       filtersDTO.getOrganizationId(),
       filtersDTO.getOperatorExternalUserId(),
       filtersDTO.getDueDate().getFrom(),
@@ -89,7 +86,7 @@ class InstallmentClientTest {
       PageUtils.getSortList(pageable)))
       .thenReturn(expectedResult);
 
-    PagedModelInstallmentView result = installmentClient.getInstallments(filtersDTO, pageable, accessToken);
+    PagedInstallmentsView result = installmentClient.getInstallments(filtersDTO, pageable, accessToken);
 
     assertSame(expectedResult, result);
   }

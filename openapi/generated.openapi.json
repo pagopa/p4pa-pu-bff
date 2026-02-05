@@ -12892,7 +12892,7 @@
         },
         "required" : [ "content", "number", "size", "totalElements", "totalPages" ]
       },
-      "InstallmentView" : {
+      "InstallmentViewDTO" : {
         "type" : "object",
         "properties" : {
           "installmentId" : {
@@ -12934,18 +12934,15 @@
           "remittanceInformation" : {
             "type" : "string"
           },
+          "originalRemittanceInformation" : {
+            "type" : "string"
+          },
           "debtorFiscalCodeHash" : {
             "type" : "string",
             "format" : "byte"
           },
           "debtPositionTypeOrgDescription" : {
             "type" : "string"
-          },
-          "_links" : {
-            "type" : "object",
-            "additionalProperties" : {
-              "$ref" : "#/components/schemas/Link"
-            }
           }
         },
         "required" : [ "amountCents", "debtPositionId", "debtPositionTypeOrgDescription", "debtorFiscalCodeHash", "paymentOptionId", "remittanceInformation", "status" ]
@@ -12956,7 +12953,7 @@
           "content" : {
             "type" : "array",
             "items" : {
-              "$ref" : "#/components/schemas/InstallmentView"
+              "$ref" : "#/components/schemas/InstallmentViewDTO"
             }
           },
           "size" : {

@@ -5,7 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import it.gov.pagopa.pu.bff.dto.generated.*;
 import it.gov.pagopa.pu.bff.util.TestUtils;
 import it.gov.pagopa.pu.classification.dto.generated.PagedModelClassification;
-import it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentView;
+import it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentViewDTO;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -38,8 +38,8 @@ class DashboardMapperTest {
 
   @Test
   void givenValidInputWithSingleInstallmentWhenMapToDashboardByFcThenCorrectMapping() {
-    List<InstallmentView> content = List.of(
-      podamFactory.manufacturePojo(InstallmentView.class));
+    List<InstallmentViewDTO> content = List.of(
+      podamFactory.manufacturePojo(InstallmentViewDTO.class));
     PagedInstallmentView installments = PagedInstallmentView.builder()
       .content(content)
       .size(1L)

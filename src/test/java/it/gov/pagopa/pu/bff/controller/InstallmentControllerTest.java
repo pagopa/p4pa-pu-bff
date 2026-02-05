@@ -15,7 +15,7 @@ import it.gov.pagopa.pu.bff.util.TestUtils;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionOrigin;
 import it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentDetailDTO;
 import it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentStatus;
-import it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentView;
+import it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentViewDTO;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.util.List;
@@ -84,7 +84,7 @@ class InstallmentControllerTest {
       DebtPositionOrigin.ORDINARY), debtPositionTypeOrgId, status);
 
     PagedInstallmentView expectedResult = new PagedInstallmentView();
-    expectedResult.setContent(List.of(InstallmentView.builder()
+    expectedResult.setContent(List.of(InstallmentViewDTO.builder()
       .installmentId(100L)
       .debtPositionId(200L)
       .paymentOptionId(200L)

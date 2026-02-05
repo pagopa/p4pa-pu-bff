@@ -1,10 +1,8 @@
 package it.gov.pagopa.pu.bff.mapper;
 
 import it.gov.pagopa.pu.bff.dto.generated.PagedInstallmentView;
-import it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentView;
-import it.gov.pagopa.pu.debtpositions.dto.generated.PageMetadata;
-import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelInstallmentView;
-import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelInstallmentViewEmbedded;
+import it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentViewDTO;
+import it.gov.pagopa.pu.debtpositions.dto.generated.PagedInstallmentsView;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -21,22 +19,17 @@ class InstallmentViewMapperTest {
 
   @Test
   void givenPopulatedPagedModelWhenMapToPagedInstallmentViewThenCorrectMapping() {
-    PagedModelInstallmentView pagedModel = new PagedModelInstallmentView();
-    PagedModelInstallmentViewEmbedded embedded = new PagedModelInstallmentViewEmbedded();
-    InstallmentView installmentView = new InstallmentView();
+    PagedInstallmentsView pagedInstallmentsView = new PagedInstallmentsView();
+    InstallmentViewDTO installmentView = new InstallmentViewDTO();
     installmentView.setInstallmentId(1L);
 
-    embedded.setInstallmentViews(List.of(installmentView));
-    pagedModel.setEmbedded(embedded);
+    pagedInstallmentsView.setSize(10L);
+    pagedInstallmentsView.setTotalElements(1L);
+    pagedInstallmentsView.setTotalPages(1L);
+    pagedInstallmentsView.setNumber(1L);
+    pagedInstallmentsView.setContent(List.of(installmentView));
 
-    PageMetadata page = new PageMetadata();
-    page.setSize(10L);
-    page.setTotalElements(1L);
-    page.setTotalPages(1L);
-    page.setNumber(1L);
-    pagedModel.setPage(page);
-
-    PagedInstallmentView result = mapper.mapToPagedInstallmentView(pagedModel);
+    PagedInstallmentView result = mapper.mapToPagedInstallmentView(pagedInstallmentsView);
 
     assertNotNull(result);
     assertEquals(1L, result.getNumber());
@@ -45,20 +38,20 @@ class InstallmentViewMapperTest {
     assertEquals(10L, result.getSize());
     assertFalse(CollectionUtils.isEmpty(result.getContent()));
     assertEquals(1, result.getContent().size());
-    assertEquals(installmentView.getInstallmentId(), result.getContent().get(0).getInstallmentId());
+    assertEquals(installmentView.getInstallmentId(), result.getContent().getFirst().getInstallmentId());
   }
 
   @Test
   void givenNoContentWhenMapToPagedInstallmentViewThenPartialMapping() {
-    PagedModelInstallmentView pagedModel = new PagedModelInstallmentView();
-    PageMetadata page = new PageMetadata();
-    page.setSize(10L);
-    page.setTotalElements(1L);
-    page.setTotalPages(1L);
-    page.setNumber(1L);
-    pagedModel.setPage(page);
+    PagedInstallmentsView pagedInstallmentsView = new PagedInstallmentsView();
 
-    PagedInstallmentView result = mapper.mapToPagedInstallmentView(pagedModel);
+    pagedInstallmentsView.setSize(10L);
+    pagedInstallmentsView.setTotalElements(1L);
+    pagedInstallmentsView.setTotalPages(1L);
+    pagedInstallmentsView.setNumber(1L);
+    pagedInstallmentsView.setContent(List.of());
+
+    PagedInstallmentView result = mapper.mapToPagedInstallmentView(pagedInstallmentsView);
 
     assertNotNull(result);
     assertEquals(1L, result.getNumber());
@@ -67,27 +60,4 @@ class InstallmentViewMapperTest {
     assertEquals(10L, result.getSize());
     assertTrue(CollectionUtils.isEmpty(result.getContent()));
   }
-
-  @Test
-  void givenNoPageWhenMapToPagedInstallmentViewThenPartialMapping() {
-    PagedModelInstallmentView pagedModel = new PagedModelInstallmentView();
-    PagedModelInstallmentViewEmbedded embedded = new PagedModelInstallmentViewEmbedded();
-    InstallmentView installmentView = new InstallmentView();
-    installmentView.setInstallmentId(1L);
-
-    embedded.setInstallmentViews(List.of(installmentView));
-    pagedModel.setEmbedded(embedded);
-
-    PagedInstallmentView result = mapper.mapToPagedInstallmentView(pagedModel);
-
-    assertNotNull(result);
-    assertNull(result.getNumber());
-    assertNull(result.getTotalElements());
-    assertNull(result.getTotalPages());
-    assertNull(result.getSize());
-    assertFalse(CollectionUtils.isEmpty(result.getContent()));
-    assertEquals(1, result.getContent().size());
-    assertEquals(installmentView.getInstallmentId(), result.getContent().get(0).getInstallmentId());
-  }
-
 }

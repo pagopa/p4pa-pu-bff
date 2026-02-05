@@ -164,10 +164,10 @@ class DebtPositionApisHolderTest extends BaseApiHolderTest {
   }
 
   @Test
-  void whenGetInstallmentViewSearchControllerApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
+  void givenGetInstallmentsByFiltersWhenGetInstallmentApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
     assertAuthenticationShouldBeSetInThreadSafeMode(
-      accessToken -> debtPositionApisHolder.getInstallmentViewSearchControllerApi(accessToken)
-        .crudInstallmentViewsFindInstallmentsByFilters(1L, "operatorExternalUserId", LocalDate.now().minusDays(30), LocalDate.now(), "iuv", "iud", "fiscalCode", Collections.emptyList(), 2L, InstallmentStatus.PAID, 0, 10, Collections.emptyList()),
+      accessToken -> debtPositionApisHolder.getInstallmentApi(accessToken)
+        .getInstallmentsByFilters(1L, "operatorExternalUserId", LocalDate.now().minusDays(30), LocalDate.now(), "iuv", "iud", "fiscalCode", Collections.emptyList(), 2L, InstallmentStatus.PAID, 0, 10, Collections.emptyList()),
       new ParameterizedTypeReference<>() {
       }, debtPositionApisHolder::unload);
   }

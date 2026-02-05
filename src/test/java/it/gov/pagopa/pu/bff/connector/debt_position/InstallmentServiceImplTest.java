@@ -7,7 +7,7 @@ import it.gov.pagopa.pu.bff.connector.debt_position.client.InstallmentClient;
 import it.gov.pagopa.pu.bff.dto.InstallmentViewFiltersDTO;
 import it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentDetailDTO;
 import it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentNoPII;
-import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelInstallmentView;
+import it.gov.pagopa.pu.debtpositions.dto.generated.PagedInstallmentsView;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -34,12 +34,12 @@ class InstallmentServiceImplTest {
     InstallmentViewFiltersDTO filtersDTO = new InstallmentViewFiltersDTO();
     String accessToken = "ACCESSTOKEN";
     Pageable pageable = Mockito.mock(Pageable.class);
-    PagedModelInstallmentView expectedResult = new PagedModelInstallmentView();
+    PagedInstallmentsView expectedResult = new PagedInstallmentsView();
 
     when(client.getInstallments(Mockito.same(filtersDTO), Mockito.same(pageable), Mockito.same(accessToken)))
       .thenReturn(expectedResult);
 
-    PagedModelInstallmentView result = service.getInstallments(filtersDTO, pageable, accessToken);
+    PagedInstallmentsView result = service.getInstallments(filtersDTO, pageable, accessToken);
 
     assertSame(expectedResult, result);
   }

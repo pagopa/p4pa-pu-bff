@@ -4181,10 +4181,10 @@ components:
     ErrorDTO:
       type: object
       required:
-        - title
-        - description
+        - category
+        - message
       properties:
-        title:
+        category:
           type: string
           description: The title describing the error
           enum:
@@ -4193,7 +4193,7 @@ components:
             - GENERIC_ERROR
             - FORBIDDEN
             - CONFLICT
-        description:
+        message:
           type: string
           description: Description of the error
         traceId:

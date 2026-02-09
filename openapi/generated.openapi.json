@@ -9266,14 +9266,18 @@
   },
   "components" : {
     "schemas" : {
+      "CategoryEnum" : {
+        "type" : "string",
+        "enum" : [ "NOT_FOUND", "BAD_REQUEST", "GENERIC_ERROR", "FORBIDDEN", "CONFLICT" ]
+      },
       "ErrorDTO" : {
         "type" : "object",
         "properties" : {
-          "title" : {
-            "$ref" : "#/components/schemas/TitleEnum",
+          "category" : {
+            "$ref" : "#/components/schemas/CategoryEnum",
             "description" : "The title describing the error"
           },
-          "description" : {
+          "message" : {
             "type" : "string",
             "description" : "Description of the error"
           },
@@ -9284,11 +9288,7 @@
             "type" : "string"
           }
         },
-        "required" : [ "description", "title" ]
-      },
-      "TitleEnum" : {
-        "type" : "string",
-        "enum" : [ "NOT_FOUND", "BAD_REQUEST", "GENERIC_ERROR", "FORBIDDEN", "CONFLICT" ]
+        "required" : [ "category", "message" ]
       },
       "OrganizationAdditionalLanguage" : {
         "type" : "string",

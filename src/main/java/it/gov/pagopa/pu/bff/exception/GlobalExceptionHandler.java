@@ -1,7 +1,7 @@
 package it.gov.pagopa.pu.bff.exception;
 
 import it.gov.pagopa.pu.bff.dto.generated.ErrorDTO;
-import it.gov.pagopa.pu.bff.dto.generated.ErrorDTO.TitleEnum;
+import it.gov.pagopa.pu.bff.dto.generated.ErrorDTO.CategoryEnum;
 import it.gov.pagopa.pu.bff.mapper.UpstreamErrorMapper;
 import it.gov.pagopa.pu.bff.util.ErrorMessageParser;
 import it.gov.pagopa.pu.bff.util.Utilities;
@@ -42,73 +42,73 @@ public class GlobalExceptionHandler {
 
   @ExceptionHandler(InvalidAssessmentsRegistryException.class)
   public ResponseEntity<ErrorDTO> handleInvalidAssessmentRegistryException(InvalidAssessmentsRegistryException ex, HttpServletRequest request) {
-    return handleException(ex, request, HttpStatus.BAD_REQUEST, ErrorDTO.TitleEnum.BAD_REQUEST);
+    return handleException(ex, request, HttpStatus.BAD_REQUEST, ErrorDTO.CategoryEnum.BAD_REQUEST);
   }
 
   @ExceptionHandler(InvalidOrganizationException.class)
   public ResponseEntity<ErrorDTO> handleInvalidOrganizationException(InvalidOrganizationException ex, HttpServletRequest request) {
-    return handleException(ex, request, HttpStatus.BAD_REQUEST, ErrorDTO.TitleEnum.BAD_REQUEST);
+    return handleException(ex, request, HttpStatus.BAD_REQUEST, ErrorDTO.CategoryEnum.BAD_REQUEST);
   }
 
   @ExceptionHandler(InvalidDebtPositionTypeOrgException.class)
   public ResponseEntity<ErrorDTO> handleInvalidDebtPositionTypeOrgException(InvalidDebtPositionTypeOrgException ex, HttpServletRequest request) {
-    return handleException(ex, request, HttpStatus.BAD_REQUEST, ErrorDTO.TitleEnum.BAD_REQUEST);
+    return handleException(ex, request, HttpStatus.BAD_REQUEST, ErrorDTO.CategoryEnum.BAD_REQUEST);
   }
 
   @ExceptionHandler(ConflictException.class)
   public ResponseEntity<ErrorDTO> handleConflictException(
     ConflictException ex, HttpServletRequest request) {
-    return handleException(ex, request, HttpStatus.CONFLICT, ErrorDTO.TitleEnum.CONFLICT);
+    return handleException(ex, request, HttpStatus.CONFLICT, ErrorDTO.CategoryEnum.CONFLICT);
   }
 
   @ExceptionHandler(ResourceNotFoundException.class)
   public ResponseEntity<ErrorDTO> handleResourceNotFoundException(ResourceNotFoundException ex, HttpServletRequest request) {
-    return handleException(ex, request, HttpStatus.NOT_FOUND, TitleEnum.NOT_FOUND);
+    return handleException(ex, request, HttpStatus.NOT_FOUND, CategoryEnum.NOT_FOUND);
   }
 
   @ExceptionHandler(InvalidOperatorRoleException.class)
   public ResponseEntity<ErrorDTO> handleInvalidOperatorRoleException(InvalidOperatorRoleException ex, HttpServletRequest request) {
-    return handleException(ex, request, HttpStatus.BAD_REQUEST, ErrorDTO.TitleEnum.GENERIC_ERROR);
+    return handleException(ex, request, HttpStatus.BAD_REQUEST, ErrorDTO.CategoryEnum.GENERIC_ERROR);
   }
 
   @ExceptionHandler(InvalidDebtPositionException.class)
   public ResponseEntity<ErrorDTO> handleInvalidDebtPositionException(InvalidDebtPositionException ex, HttpServletRequest request) {
-    return handleException(ex, request, HttpStatus.BAD_REQUEST, ErrorDTO.TitleEnum.BAD_REQUEST);
+    return handleException(ex, request, HttpStatus.BAD_REQUEST, ErrorDTO.CategoryEnum.BAD_REQUEST);
   }
 
   @ExceptionHandler(ZipFileException.class)
   public ResponseEntity<ErrorDTO> handleZipFileException(ZipFileException ex, HttpServletRequest request) {
-    return handleException(ex, request, HttpStatus.INTERNAL_SERVER_ERROR, TitleEnum.GENERIC_ERROR);
+    return handleException(ex, request, HttpStatus.INTERNAL_SERVER_ERROR, CategoryEnum.GENERIC_ERROR);
   }
 
   @ExceptionHandler({ValidationException.class, HttpMessageNotReadableException.class, MethodArgumentNotValidException.class, MethodArgumentTypeMismatchException.class, IllegalArgumentException.class})
   public ResponseEntity<ErrorDTO> handleViolationException(Exception ex, HttpServletRequest request) {
-    return handleException(ex, request, HttpStatus.BAD_REQUEST, ErrorDTO.TitleEnum.BAD_REQUEST);
+    return handleException(ex, request, HttpStatus.BAD_REQUEST, ErrorDTO.CategoryEnum.BAD_REQUEST);
   }
 
   @ExceptionHandler({AuthorizationDeniedException.class})
   public ResponseEntity<ErrorDTO> handleAuthorizationDeniedException(AuthorizationDeniedException ex, HttpServletRequest request) {
-    return handleException(ex, request, HttpStatus.FORBIDDEN, ErrorDTO.TitleEnum.FORBIDDEN);
+    return handleException(ex, request, HttpStatus.FORBIDDEN, ErrorDTO.CategoryEnum.FORBIDDEN);
   }
 
   @ExceptionHandler({HttpClientErrorException.class})
   public ResponseEntity<ErrorDTO> handleHttpClientErrorException(HttpClientErrorException ex, HttpServletRequest request) {
     logException(ex, request, ex.getStatusCode());
 
-    ErrorDTO.TitleEnum title = transcodeStatus(ex.getStatusCode());
+    ErrorDTO.CategoryEnum category = transcodeStatus(ex.getStatusCode());
     String traceId = Utilities.getTraceId();
-    String description = ex.getMessage();
+    String message = ex.getMessage();
     String code = "GENERIC_ERROR";
 
     UpstreamErrorMapper.MappedUpstreamError mapped = upstreamErrorMapper.from(ex);
     if(mapped != null) {
-      description = mapped.description();
+      message = mapped.description();
       code = mapped.code();
     }
 
     ErrorDTO dto = new ErrorDTO();
-    dto.setTitle(title);
-    dto.setDescription(description);
+    dto.setCategory(category);
+    dto.setMessage(message);
     dto.setTraceId(traceId);
     dto.setCode(code);
 
@@ -118,59 +118,58 @@ public class GlobalExceptionHandler {
       .body(dto);
   }
 
-  private static TitleEnum transcodeStatus(HttpStatusCode status) {
-    if (status.isSameCodeAs(HttpStatus.NOT_FOUND)) return TitleEnum.NOT_FOUND;
-    if (status.isSameCodeAs(HttpStatus.CONFLICT)) return TitleEnum.CONFLICT;
-    if (status.isSameCodeAs(HttpStatus.FORBIDDEN)) return TitleEnum.FORBIDDEN;
-    if (status.is4xxClientError()) return TitleEnum.BAD_REQUEST;
-    return TitleEnum.GENERIC_ERROR;
+  private static CategoryEnum transcodeStatus(HttpStatusCode status) {
+    if (status.isSameCodeAs(HttpStatus.NOT_FOUND)) return CategoryEnum.NOT_FOUND;
+    if (status.isSameCodeAs(HttpStatus.CONFLICT)) return CategoryEnum.CONFLICT;
+    if (status.isSameCodeAs(HttpStatus.FORBIDDEN)) return CategoryEnum.FORBIDDEN;
+    if (status.is4xxClientError()) return CategoryEnum.BAD_REQUEST;
+    return CategoryEnum.GENERIC_ERROR;
   }
 
   @ExceptionHandler(InvalidOrgSilServiceException.class)
   public  ResponseEntity<ErrorDTO> handleInvalidOrgSilServiceException(InvalidOrgSilServiceException ex, HttpServletRequest request){
-    return handleException(ex, request, HttpStatus.BAD_REQUEST, TitleEnum.BAD_REQUEST);
+    return handleException(ex, request, HttpStatus.BAD_REQUEST, CategoryEnum.BAD_REQUEST);
   }
 
   @ExceptionHandler({InvalidAssessmentsDetailException.class})
   public ResponseEntity<ErrorDTO> handleInvalidAssessmentsDetailException(InvalidAssessmentsDetailException ex, HttpServletRequest request) {
-    return handleException(ex, request, HttpStatus.BAD_REQUEST, TitleEnum.BAD_REQUEST);
+    return handleException(ex, request, HttpStatus.BAD_REQUEST, CategoryEnum.BAD_REQUEST);
   }
 
   @ExceptionHandler({InvalidAccessTokenException.class})
   public ResponseEntity<ErrorDTO> handleInvalidAccessTokenException(InvalidAccessTokenException ex, HttpServletRequest request) {
-    return handleException(ex, request, HttpStatus.BAD_REQUEST, TitleEnum.BAD_REQUEST);
+    return handleException(ex, request, HttpStatus.BAD_REQUEST, CategoryEnum.BAD_REQUEST);
   }
 
   @ExceptionHandler({InvalidUserInfoException.class})
   public ResponseEntity<ErrorDTO> handleInvalidUserInfoException(InvalidUserInfoException ex, HttpServletRequest request) {
-    return handleException(ex, request, HttpStatus.BAD_REQUEST, TitleEnum.BAD_REQUEST);
+    return handleException(ex, request, HttpStatus.BAD_REQUEST, CategoryEnum.BAD_REQUEST);
   }
 
   @ExceptionHandler({ServletException.class, ErrorResponseException.class})
   public ResponseEntity<ErrorDTO> handleServletException(Exception ex, HttpServletRequest request) {
     HttpStatusCode httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
-    ErrorDTO.TitleEnum errorCode = ErrorDTO.TitleEnum.GENERIC_ERROR;
+    ErrorDTO.CategoryEnum category = ErrorDTO.CategoryEnum.GENERIC_ERROR;
     if (ex instanceof ErrorResponse errorResponse) {
       httpStatus = errorResponse.getStatusCode();
       if (httpStatus.isSameCodeAs(HttpStatus.NOT_FOUND)) {
-        errorCode = ErrorDTO.TitleEnum.NOT_FOUND;
+        category = ErrorDTO.CategoryEnum.NOT_FOUND;
       } else if (httpStatus.is4xxClientError()) {
-        errorCode = ErrorDTO.TitleEnum.BAD_REQUEST;
+        category = ErrorDTO.CategoryEnum.BAD_REQUEST;
       }
     }
-    return handleException(ex, request, httpStatus, errorCode);
+    return handleException(ex, request, httpStatus, category);
   }
 
   @ExceptionHandler({RuntimeException.class})
   public ResponseEntity<ErrorDTO> handleRuntimeException(RuntimeException ex, HttpServletRequest request) {
-    return handleException(ex, request, HttpStatus.INTERNAL_SERVER_ERROR, ErrorDTO.TitleEnum.GENERIC_ERROR);
+    return handleException(ex, request, HttpStatus.INTERNAL_SERVER_ERROR, ErrorDTO.CategoryEnum.GENERIC_ERROR);
   }
 
-  static ResponseEntity<ErrorDTO> handleException(Exception ex, HttpServletRequest request, HttpStatusCode httpStatus, ErrorDTO.TitleEnum errorEnum) {
+  static ResponseEntity<ErrorDTO> handleException(Exception ex, HttpServletRequest request, HttpStatusCode httpStatus, ErrorDTO.CategoryEnum category) {
     logException(ex, request, httpStatus);
 
     String message = buildReturnedMessage(ex);
-    String description = message;
     String code;
 
     if (ex instanceof BaseBusinessException codedEx && StringUtils.isNotBlank(codedEx.getCode())) {
@@ -179,13 +178,13 @@ public class GlobalExceptionHandler {
       ErrorMessageParser.ParsedError parsed = ErrorMessageParser.parse(message);
       code = parsed.code();
       if (parsed.description() != null) {
-        description = parsed.description();
+        message = parsed.description();
       }
     }
 
     ErrorDTO dto = new ErrorDTO();
-    dto.setTitle(errorEnum);
-    dto.setDescription(description);
+    dto.setCategory(category);
+    dto.setMessage(message);
     dto.setTraceId(Utilities.getTraceId());
     dto.setCode(code);
 

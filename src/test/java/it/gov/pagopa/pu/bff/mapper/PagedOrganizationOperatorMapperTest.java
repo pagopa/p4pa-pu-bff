@@ -34,7 +34,7 @@ class PagedOrganizationOperatorMapperTest {
     Map<String,OperatorDTO> operatorMap = operatorsPage.getContent().stream().collect(Collectors.toMap(OperatorDTO::getMappedExternalUserId, Function.identity()));
     Map<String, Long> operatorDptoCount = operatorsPage.getContent().stream().collect(Collectors.toMap(OperatorDTO::getMappedExternalUserId, o -> new Random().nextLong(101)));
 
-    Organization org = Organization.builder().organizationId(1L).ipaCode("IPA").orgFiscalCode("FISCAL").orgName("TEST").status(OrganizationStatus.ACTIVE).orgTypeCode("orgType").flagNotifyIo(false).flagTreasury(false).flagNotifyOutcomePush(false).pdndEnabled(false).flagPaymentNotification(false).build();
+    Organization org = Organization.builder().organizationId(1L).ipaCode("IPA").orgFiscalCode("FISCAL").orgName("TEST").status(OrganizationStatus.ACTIVE).orgTypeCode("orgType").flagNotifyIo(false).flagTreasury(false).flagNotifyOutcomePush(false).pdndEnabled(false).flagPaymentNotification(false).flagPaymentsReporting(true).flagClassification(true).build();
 
     PagedOrganizationOperator result = mapper.mapToPagedOrganizationOperator(
             operatorsPage, operatorDptoCount, org);
@@ -70,7 +70,7 @@ class PagedOrganizationOperatorMapperTest {
             OperatorDTO.class);
     operatorsPage.setContent(List.of(operator));
 
-    Organization org = Organization.builder().organizationId(1L).ipaCode("IPA").orgFiscalCode("FISCAL").orgName("TEST").status(OrganizationStatus.ACTIVE).orgTypeCode("orgType").flagNotifyIo(false).flagTreasury(false).flagNotifyOutcomePush(false).pdndEnabled(false).flagPaymentNotification(false).build();
+    Organization org = Organization.builder().organizationId(1L).ipaCode("IPA").orgFiscalCode("FISCAL").orgName("TEST").status(OrganizationStatus.ACTIVE).orgTypeCode("orgType").flagNotifyIo(false).flagTreasury(false).flagNotifyOutcomePush(false).pdndEnabled(false).flagPaymentNotification(false).flagPaymentsReporting(true).flagClassification(true).build();
 
     PagedOrganizationOperator result = mapper.mapToPagedOrganizationOperator(
             operatorsPage, Collections.emptyMap(), org);
@@ -102,7 +102,7 @@ class PagedOrganizationOperatorMapperTest {
             OperatorDTO.class);
     operatorsPage.setContent(List.of(operator));
 
-    Organization org = Organization.builder().organizationId(1L).ipaCode("IPA").orgFiscalCode("FISCAL").orgName("TEST").status(OrganizationStatus.ACTIVE).orgTypeCode("orgType").flagNotifyIo(false).flagTreasury(false).flagNotifyOutcomePush(false).pdndEnabled(false).flagPaymentNotification(false).build();
+    Organization org = Organization.builder().organizationId(1L).ipaCode("IPA").orgFiscalCode("FISCAL").orgName("TEST").status(OrganizationStatus.ACTIVE).orgTypeCode("orgType").flagNotifyIo(false).flagTreasury(false).flagNotifyOutcomePush(false).pdndEnabled(false).flagPaymentNotification(false).flagPaymentsReporting(true).flagClassification(true).build();
 
     PagedOrganizationOperator result = mapper.mapToPagedOrganizationOperator(
             operatorsPage, null, org);

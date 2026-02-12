@@ -19,7 +19,6 @@ import it.gov.pagopa.pu.debtpositions.controller.generated.DebtPositionTypeWithC
 import it.gov.pagopa.pu.debtpositions.controller.generated.DebtPositionViewSearchControllerApi;
 import it.gov.pagopa.pu.debtpositions.controller.generated.InstallmentApi;
 import it.gov.pagopa.pu.debtpositions.controller.generated.InstallmentNoPiiSearchControllerApi;
-import it.gov.pagopa.pu.debtpositions.controller.generated.InstallmentViewSearchControllerApi;
 import it.gov.pagopa.pu.debtpositions.controller.generated.ReceiptApi;
 import it.gov.pagopa.pu.debtpositions.controller.generated.ReceiptViewSearchControllerApi;
 import it.gov.pagopa.pu.debtpositions.controller.generated.SpontaneousFormApi;
@@ -41,7 +40,6 @@ public class DebtPositionApisHolder {
   private final DebtPositionTypeOrgSearchControllerApi debtPositionTypeOrgSearchControllerApi;
   private final DebtPositionTypeOrgCountByOrganizationIdSearchControllerApi debtPositionTypeOrgCountByOrganizationIdSearchControllerApi;
   private final InstallmentApi installmentApi;
-  private final InstallmentViewSearchControllerApi installmentViewSearchControllerApi;
   private final InstallmentNoPiiSearchControllerApi installmentNoPiiSearchControllerApi;
   private final ReceiptViewSearchControllerApi receiptViewSearchControllerApi;
   private final TransferApi transferApi;
@@ -80,7 +78,6 @@ public class DebtPositionApisHolder {
     this.debtPositionTypeOrgWithCountSearchControllerApi = new DebtPositionTypeOrgWithCountSearchControllerApi(apiClient);
     this.debtPositionTypeOrgSearchControllerApi = new DebtPositionTypeOrgSearchControllerApi(apiClient);
     this.debtPositionTypeOrgCountByOrganizationIdSearchControllerApi = new DebtPositionTypeOrgCountByOrganizationIdSearchControllerApi(apiClient);
-    this.installmentViewSearchControllerApi = new InstallmentViewSearchControllerApi(apiClient);
     this.installmentApi = new InstallmentApi(apiClient);
     this.installmentNoPiiSearchControllerApi = new InstallmentNoPiiSearchControllerApi(apiClient);
     this.receiptViewSearchControllerApi = new ReceiptViewSearchControllerApi(apiClient);
@@ -138,10 +135,6 @@ public class DebtPositionApisHolder {
 
   public TransferSearchControllerApi getTransferSearchControllerApi(String accessToken) {
     return getApi(accessToken, transferSearchControllerApi);
-  }
-
-  public InstallmentViewSearchControllerApi getInstallmentViewSearchControllerApi(String accessToken) {
-    return getApi(accessToken, installmentViewSearchControllerApi);
   }
 
   public InstallmentNoPiiSearchControllerApi getInstallmentNoPiiSearchControllerApi(String accessToken) {

@@ -98,7 +98,7 @@ public class OperatorRetrieverServiceImplTest {
     String lastName = "lastName";
     String fiscalCode = "fiscalCode";
     Pageable pageable = PageRequest.of(0,20);
-    Organization organization = Organization.builder().organizationId(1L).ipaCode("IPA").orgFiscalCode("FISCAL").orgName("TEST").status(OrganizationStatus.ACTIVE).orgTypeCode("orgType").flagNotifyIo(false).flagTreasury(false).flagNotifyOutcomePush(false).pdndEnabled(false).flagPaymentNotification(false).build();
+    Organization organization = Organization.builder().organizationId(1L).ipaCode("IPA").orgFiscalCode("FISCAL").orgName("TEST").status(OrganizationStatus.ACTIVE).orgTypeCode("orgType").flagNotifyIo(false).flagTreasury(false).flagNotifyOutcomePush(false).pdndEnabled(false).flagPaymentNotification(false).flagPaymentsReporting(true).flagClassification(true).build();
     OperatorsPage operatorsPage = podamFactory.manufacturePojo(OperatorsPage.class);
     Map<String, DebtPositionTypeOrgOperatorsDptoCountView> dptoViewMap = new HashMap<>();
     for (OperatorDTO operator : operatorsPage.getContent()) {
@@ -135,7 +135,7 @@ public class OperatorRetrieverServiceImplTest {
     Pageable pageable = PageRequest.of(0,20);
     OperatorsPage operatorsPage = podamFactory.manufacturePojo(OperatorsPage.class);
     PagedOrganizationOperator expectedResult = new PagedOrganizationOperator();
-    Organization organization = Organization.builder().organizationId(1L).ipaCode("IPA").orgFiscalCode("FISCAL").orgName("TEST").status(OrganizationStatus.ACTIVE).orgTypeCode("orgType").flagNotifyIo(false).flagTreasury(false).flagNotifyOutcomePush(false).pdndEnabled(false).flagPaymentNotification(false).build();
+    Organization organization = Organization.builder().organizationId(1L).ipaCode("IPA").orgFiscalCode("FISCAL").orgName("TEST").status(OrganizationStatus.ACTIVE).orgTypeCode("orgType").flagNotifyIo(false).flagTreasury(false).flagNotifyOutcomePush(false).pdndEnabled(false).flagPaymentNotification(false).flagPaymentsReporting(true).flagClassification(true).build();
 
     doNothing().when(authorizationServiceMock).validateOrganizationOrBrokerAdmin(organizationId,loggedUser,accessToken);
     when(authzServiceMock.getOrganizationOperators(userOrgRole.getOrganizationIpaCode(),fiscalCode,firstName,lastName,pageable.getPageNumber(),pageable.getPageSize(),accessToken))

@@ -9266,14 +9266,18 @@
   },
   "components" : {
     "schemas" : {
+      "CategoryEnum" : {
+        "type" : "string",
+        "enum" : [ "NOT_FOUND", "BAD_REQUEST", "GENERIC_ERROR", "FORBIDDEN", "CONFLICT" ]
+      },
       "ErrorDTO" : {
         "type" : "object",
         "properties" : {
-          "title" : {
-            "$ref" : "#/components/schemas/TitleEnum",
+          "category" : {
+            "$ref" : "#/components/schemas/CategoryEnum",
             "description" : "The title describing the error"
           },
-          "description" : {
+          "message" : {
             "type" : "string",
             "description" : "Description of the error"
           },
@@ -9284,11 +9288,7 @@
             "type" : "string"
           }
         },
-        "required" : [ "description", "title" ]
-      },
-      "TitleEnum" : {
-        "type" : "string",
-        "enum" : [ "NOT_FOUND", "BAD_REQUEST", "GENERIC_ERROR", "FORBIDDEN", "CONFLICT" ]
+        "required" : [ "category", "message" ]
       },
       "OrganizationAdditionalLanguage" : {
         "type" : "string",
@@ -9374,6 +9374,12 @@
           },
           "pdndEnabled" : {
             "type" : "boolean"
+          },
+          "flagPaymentsReporting" : {
+            "type" : "boolean"
+          },
+          "flagClassification" : {
+            "type" : "boolean"
           }
         },
         "required" : [ "flagNotifyIo", "flagNotifyOutcomePush", "flagPaymentNotification", "flagTreasury", "ipaCode", "orgFiscalCode", "orgName", "organizationId", "pdndEnabled", "status" ]
@@ -9413,7 +9419,7 @@
       },
       "RenderType" : {
         "type" : "string",
-        "enum" : [ "TEXT", "INTEGER", "DOUBLE", "BOOLEAN", "DATE", "DATETIME", "TEXTAREA", "HTMLAREA", "IMAGE", "SELECT", "MULTILINK", "FILE", "NONE", "SINGLESELECT", "MULTISELECT", "MULTIFIELD", "ASSOCIATION", "LINKGENERATOR", "TAGS", "TAB", "LABEL", "CURRENCY", "CURRENCY_LABEL" ]
+        "enum" : [ "TEXT", "INTEGER", "DOUBLE", "BOOLEAN", "DATE", "DATETIME", "TEXTAREA", "HTMLAREA", "IMAGE", "SELECT", "MULTILINK", "FILE", "NONE", "SINGLESELECT", "MULTISELECT", "MULTIFIELD", "ASSOCIATION", "LINKGENERATOR", "TAGS", "TAB", "LABEL", "CURRENCY", "CURRENCY_LABEL", "DYNAMIC_SELECT", "DYNAMIC_AMOUNT_LABEL" ]
       },
       "SpontaneousForm" : {
         "type" : "object",
@@ -9605,6 +9611,15 @@
           },
           "helpMessage" : {
             "type" : "string"
+          },
+          "source" : {
+            "type" : "string"
+          },
+          "sourceParams" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
           }
         },
         "required" : [ "association", "detailLink", "htmlRender", "indexable", "insertable", "insertableOrder", "listable", "listableOrder", "maxOccurences", "minOccurences", "name", "renderable", "renderableOrder", "searchable", "searchableOrder" ]
@@ -9620,6 +9635,18 @@
           },
           "amountFieldName" : {
             "type" : "string"
+          },
+          "summaryFields" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "submitFields" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
           }
         }
       },
@@ -12892,7 +12919,7 @@
         },
         "required" : [ "content", "number", "size", "totalElements", "totalPages" ]
       },
-      "InstallmentView" : {
+      "InstallmentViewDTO" : {
         "type" : "object",
         "properties" : {
           "installmentId" : {
@@ -12934,18 +12961,15 @@
           "remittanceInformation" : {
             "type" : "string"
           },
+          "originalRemittanceInformation" : {
+            "type" : "string"
+          },
           "debtorFiscalCodeHash" : {
             "type" : "string",
             "format" : "byte"
           },
           "debtPositionTypeOrgDescription" : {
             "type" : "string"
-          },
-          "_links" : {
-            "type" : "object",
-            "additionalProperties" : {
-              "$ref" : "#/components/schemas/Link"
-            }
           }
         },
         "required" : [ "amountCents", "debtPositionId", "debtPositionTypeOrgDescription", "debtorFiscalCodeHash", "paymentOptionId", "remittanceInformation", "status" ]
@@ -12956,7 +12980,7 @@
           "content" : {
             "type" : "array",
             "items" : {
-              "$ref" : "#/components/schemas/InstallmentView"
+              "$ref" : "#/components/schemas/InstallmentViewDTO"
             }
           },
           "size" : {

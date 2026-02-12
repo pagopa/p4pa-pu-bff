@@ -5,7 +5,7 @@ import it.gov.pagopa.pu.bff.dto.InstallmentViewFiltersDTO;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionOrigin;
 import it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentDetailDTO;
 import it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentNoPII;
-import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelInstallmentView;
+import it.gov.pagopa.pu.debtpositions.dto.generated.PagedInstallmentsView;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +21,7 @@ public class InstallmentServiceImpl implements InstallmentService {
   }
 
   @Override
-  public PagedModelInstallmentView getInstallments(InstallmentViewFiltersDTO installmentViewFiltersDTO, Pageable pageable, String accessToken) {
+  public PagedInstallmentsView getInstallments(InstallmentViewFiltersDTO installmentViewFiltersDTO, Pageable pageable, String accessToken) {
     return client.getInstallments(installmentViewFiltersDTO, pageable, accessToken);
   }
 

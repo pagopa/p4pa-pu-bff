@@ -10260,6 +10260,9 @@
             "type" : "integer",
             "format" : "int64"
           },
+          "allowedEntityType" : {
+            "$ref" : "#/components/schemas/PersonEntityType"
+          },
           "_links" : {
             "type" : "object",
             "additionalProperties" : {
@@ -11726,6 +11729,9 @@
           "mbdAttachment" : {
             "type" : "string"
           },
+          "flagOwner" : {
+            "type" : "boolean"
+          },
           "_links" : {
             "type" : "object",
             "additionalProperties" : {
@@ -12781,9 +12787,6 @@
           "orgSector" : {
             "type" : "string",
             "readOnly" : true
-          },
-          "xsdDefinitionRef" : {
-            "type" : "string"
           },
           "amountCents" : {
             "type" : "integer",

@@ -10110,6 +10110,9 @@
           },
           "mbdAttachment" : {
             "type" : "string"
+          },
+          "flagOwner" : {
+            "type" : "boolean"
           }
         },
         "required" : [ "amountCents", "category", "orgFiscalCode", "orgName", "remittanceInformation", "transferIndex" ]
@@ -10205,9 +10208,6 @@
           "orgSector" : {
             "type" : "string"
           },
-          "xsdDefinitionRef" : {
-            "type" : "string"
-          },
           "amountCents" : {
             "type" : "integer",
             "format" : "int64"
@@ -10259,6 +10259,9 @@
           "spontaneousFormId" : {
             "type" : "integer",
             "format" : "int64"
+          },
+          "allowedEntityType" : {
+            "$ref" : "#/components/schemas/PersonEntityType"
           },
           "_links" : {
             "type" : "object",
@@ -11726,6 +11729,9 @@
           "mbdAttachment" : {
             "type" : "string"
           },
+          "flagOwner" : {
+            "type" : "boolean"
+          },
           "_links" : {
             "type" : "object",
             "additionalProperties" : {
@@ -12781,9 +12787,6 @@
           "orgSector" : {
             "type" : "string",
             "readOnly" : true
-          },
-          "xsdDefinitionRef" : {
-            "type" : "string"
           },
           "amountCents" : {
             "type" : "integer",

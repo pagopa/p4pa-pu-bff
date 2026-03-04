@@ -9380,6 +9380,15 @@
           },
           "flagClassification" : {
             "type" : "boolean"
+          },
+          "address" : {
+            "type" : "string"
+          },
+          "zipCode" : {
+            "type" : "string"
+          },
+          "city" : {
+            "type" : "string"
           }
         },
         "required" : [ "flagNotifyIo", "flagNotifyOutcomePush", "flagPaymentNotification", "flagTreasury", "ipaCode", "orgFiscalCode", "orgName", "organizationId", "pdndEnabled", "status" ]
@@ -9618,11 +9627,22 @@
           "sourceParams" : {
             "type" : "array",
             "items" : {
-              "type" : "string"
+              "$ref" : "#/components/schemas/SpontaneousFormItemDTO"
             }
           }
         },
         "required" : [ "association", "detailLink", "htmlRender", "indexable", "insertable", "insertableOrder", "listable", "listableOrder", "maxOccurences", "minOccurences", "name", "renderable", "renderableOrder", "searchable", "searchableOrder" ]
+      },
+      "SpontaneousFormItemDTO" : {
+        "type" : "object",
+        "properties" : {
+          "name" : {
+            "type" : "string"
+          },
+          "key" : {
+            "type" : "string"
+          }
+        }
       },
       "SpontaneousFormStructure" : {
         "type" : "object",
@@ -9645,7 +9665,7 @@
           "submitFields" : {
             "type" : "array",
             "items" : {
-              "type" : "string"
+              "$ref" : "#/components/schemas/SpontaneousFormItemDTO"
             }
           }
         }

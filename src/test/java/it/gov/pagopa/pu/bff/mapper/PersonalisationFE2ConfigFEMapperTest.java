@@ -51,7 +51,7 @@ class PersonalisationFE2ConfigFEMapperTest {
     Assertions.assertEquals(String.valueOf(broker.getBrokerId()), configFE.getBrokerId());
     Assertions.assertEquals(broker.getBrokerFiscalCode(), configFE.getBrokerFiscalCode());
     Assertions.assertTrue(configFE.getCanManageUsers());
-    TestUtils.checkNotNullFields(configFE);
+    TestUtils.checkNotNullFields(configFE, "headerAssistanceUrl", "logoFooterImg", "footerDescText", "footerPrivacyInfoUrl", "footerGDPRUrl", "footerTermsCondUrl", "footerAccessibilityUrl");
   }
 
   @Test

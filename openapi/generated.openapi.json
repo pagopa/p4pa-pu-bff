@@ -15055,7 +15055,7 @@
             "type" : "string"
           }
         },
-        "required" : [ "brokerFiscalCode", "brokerId", "canManageUsers", "footerAccessibilityUrl", "footerDescText", "footerGDPRUrl", "footerPrivacyInfoUrl", "footerTermsCondUrl", "headerAssistanceUrl", "logoFooterImg" ]
+        "required" : [ "brokerFiscalCode", "brokerId", "canManageUsers" ]
       },
       "UserInfoDTO" : {
         "type" : "object",

@@ -56,11 +56,12 @@ val openApiToolsVersion = "0.2.9"
 val micrometerVersion = "1.6.3"
 val caffeineVersion = "3.2.3"
 val httpClientVersion = "5.6"
+val httpCoreVersion = "5.4.1"
 val mapStructVersion = "1.6.3"
 val commonsLang3Version = "3.20.0"
 
 val wiremockVersion = "3.13.2"
-val wiremockSpringBootVersion = "4.0.8"
+val wiremockSpringBootVersion = "4.2.0"
 val podamVersion = "8.0.2.RELEASE"
 
 // fix cve
@@ -87,6 +88,7 @@ dependencies {
   implementation("org.springframework.boot:spring-boot-starter-cache")
   implementation("com.github.ben-manes.caffeine:caffeine:$caffeineVersion")
   implementation("org.apache.httpcomponents.client5:httpclient5:$httpClientVersion")
+  implementation("org.apache.httpcomponents.core5:httpcore5:$httpCoreVersion")
   implementation("org.mapstruct:mapstruct:${mapStructVersion}")
 
 

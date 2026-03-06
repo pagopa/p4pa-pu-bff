@@ -26,7 +26,7 @@ public class ReceiptClient {
   public PagedModelReceiptView getReceipts(ReceiptViewFiltersDTO receiptViewFiltersDTO, Pageable pageable, String accessToken) {
     return debtPositionApisHolder.getReceiptViewSearchControllerApi(accessToken)
       .crudReceiptsViewFindReceiptsByFilters(
-        String.valueOf(receiptViewFiltersDTO.getOrganizationId()),
+        receiptViewFiltersDTO.getOrganizationId(),
         receiptViewFiltersDTO.getOperatorExternalUserId(),
         receiptViewFiltersDTO.getReceiptOrigins(),
         receiptViewFiltersDTO.getIuv(),

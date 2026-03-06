@@ -12,5 +12,5 @@ import java.util.List;
 public interface InstallmentService {
   PagedInstallmentsView getInstallments(InstallmentViewFiltersDTO installmentViewFiltersDTO, Pageable pageable, String accessToken);
   InstallmentDetailDTO getInstallmentDetail(Long installmentId, String operatorExternalUserId, String accessToken);
-  InstallmentNoPII getInstallmentFromTransferSemanticKey(Long organizationId, String iuv, String iur, String transferIndex, String operatorExternalUserId, List<DebtPositionOrigin> debtPositionOrigins, String accessToken);
+  InstallmentNoPII getInstallmentFromTransferSemanticKey(Long organizationId, String iuv, String iur, Integer transferIndex, String operatorExternalUserId, List<DebtPositionOrigin> debtPositionOrigins, String accessToken);
 }

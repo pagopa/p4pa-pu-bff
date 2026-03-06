@@ -55,7 +55,7 @@ public class InstallmentClient {
     }
   }
 
-  public InstallmentNoPII getInstallmentFromTransferSemanticKey(Long organizationId, String iuv, String iur, String transferIndex, String operatorExternalUserId, List<DebtPositionOrigin> debtPositionOrigins, String accessToken) {
+  public InstallmentNoPII getInstallmentFromTransferSemanticKey(Long organizationId, String iuv, String iur, Integer transferIndex, String operatorExternalUserId, List<DebtPositionOrigin> debtPositionOrigins, String accessToken) {
     try {
       return debtPositionApisHolder.getInstallmentNoPiiSearchControllerApi(
           accessToken)

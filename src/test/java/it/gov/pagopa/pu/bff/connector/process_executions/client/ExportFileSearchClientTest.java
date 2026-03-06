@@ -68,7 +68,7 @@ class ExportFileSearchClientTest {
     when(processExecutionsApisHolderMock.getExportFileSearchControllerApi(accessToken))
       .thenReturn(exportFileSearchControllerApiMock);
     when(exportFileSearchControllerApiMock.crudExportFilesFindByOrganizationIDFlowTypeCreateDate(
-      String.valueOf(organizationId),exportFileType.toString(),creationDateFrom.toLocalDateTime(),
+      organizationId,exportFileType.toString(),creationDateFrom.toLocalDateTime(),
       creationDateTo.toLocalDateTime(),operatorExternalId, status,fileName,0,10,sortList))
       .thenReturn(expectedResult);
 
@@ -97,7 +97,7 @@ class ExportFileSearchClientTest {
     when(processExecutionsApisHolderMock.getExportFileSearchControllerApi(accessToken))
       .thenReturn(exportFileSearchControllerApiMock);
     when(exportFileSearchControllerApiMock.crudExportFilesFindByOrganizationIDFlowTypeCreateDate(
-      String.valueOf(organizationId),exportFileType.toString(),creationDateFrom.toLocalDateTime(),
+      organizationId,exportFileType.toString(),creationDateFrom.toLocalDateTime(),
       creationDateTo.toLocalDateTime(),operatorExternalId,status,fileName,0,null,Collections.emptyList()))
       .thenReturn(expectedResult);
 
@@ -126,7 +126,7 @@ class ExportFileSearchClientTest {
     when(processExecutionsApisHolderMock.getExportFileSearchControllerApi(accessToken))
       .thenReturn(exportFileSearchControllerApiMock);
     when(exportFileSearchControllerApiMock.crudExportFilesFindByOrganizationIDFlowTypeCreateDate(
-      String.valueOf(organizationId),exportFileType.toString(),creationDateFrom.toLocalDateTime(),
+      organizationId,exportFileType.toString(),creationDateFrom.toLocalDateTime(),
       creationDateTo.toLocalDateTime(),operatorExternalId,status,fileName,0,10,sortList))
       .thenThrow(expectedException);
 
@@ -158,7 +158,7 @@ class ExportFileSearchClientTest {
     when(processExecutionsApisHolderMock.getExportFileSearchControllerApi(accessToken))
       .thenReturn(exportFileSearchControllerApiMock);
     when(exportFileSearchControllerApiMock.crudExportFilesFindByOrganizationIDFlowTypeCreateDate(
-      String.valueOf(organizationId),exportFileType.toString(),creationDateFrom.toLocalDateTime(),
+      organizationId,exportFileType.toString(),creationDateFrom.toLocalDateTime(),
       creationDateTo.toLocalDateTime(),operatorExternalId,status,fileName,0,10,sortList))
       .thenThrow(expectedException);
 

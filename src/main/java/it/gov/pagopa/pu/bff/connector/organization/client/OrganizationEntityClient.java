@@ -30,7 +30,7 @@ public class OrganizationEntityClient {
   }
 
   public PagedModelOrganization getOrganizationByBrokerIdAndOrgName(
-    String brokerId, String orgName, Pageable pageable, String accessToken) {
+    Long brokerId, String orgName, Pageable pageable, String accessToken) {
     return organizationApisHolder.getOrganizationSearchControllerApi(
         accessToken)
       .crudOrganizationsFindByBrokerIdAndOrgName(brokerId, orgName,

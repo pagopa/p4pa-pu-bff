@@ -18,6 +18,7 @@ import org.springframework.web.util.DefaultUriBuilderFactory;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -81,7 +82,7 @@ class DebtPositionApisHolderTest extends BaseApiHolderTest {
   void whenGetReceiptViewSearchControllerApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
     assertAuthenticationShouldBeSetInThreadSafeMode(
       accessToken -> debtPositionApisHolder.getReceiptViewSearchControllerApi(accessToken)
-        .crudReceiptsViewFindReceiptsByFilters("1", "operator", List.of(ReceiptOriginType.RECEIPT_PAGOPA),  "iuv", "iur", "iud", 1L, null, null, "fiscalCode", 0, 10, Collections.emptyList()),
+        .crudReceiptsViewFindReceiptsByFilters(1L, "operator", List.of(ReceiptOriginType.RECEIPT_PAGOPA),  "iuv", "iur", "iud", 1L, OffsetDateTime.now(), OffsetDateTime.now(), "fiscalCode", 0, 10, Collections.emptyList()),
       new ParameterizedTypeReference<>() {
       },
       debtPositionApisHolder::unload);
@@ -91,7 +92,7 @@ class DebtPositionApisHolderTest extends BaseApiHolderTest {
   void whenGetDebtPositionTypeOrgSearchControllerApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
     assertAuthenticationShouldBeSetInThreadSafeMode(
       accessToken -> debtPositionApisHolder.getDebtPositionTypeOrgSearchControllerApi(accessToken)
-        .crudDebtPositionTypeOrgsFindDebtPositionTypeOrgs("1", "operator123", true),
+        .crudDebtPositionTypeOrgsFindDebtPositionTypeOrgs(1L, "operator123", true),
       new ParameterizedTypeReference<>() {
       }, debtPositionApisHolder::unload);
   }
@@ -127,7 +128,7 @@ class DebtPositionApisHolderTest extends BaseApiHolderTest {
   void whenGetTransferSearchControllerApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
     assertAuthenticationShouldBeSetInThreadSafeMode(
       accessToken -> debtPositionApisHolder.getTransferSearchControllerApi(accessToken)
-        .crudTransfersFindAuthorizedByInstallmentId("1", "operatorExternalUserId"),
+        .crudTransfersFindAuthorizedByInstallmentId(1L, "operatorExternalUserId"),
       new ParameterizedTypeReference<>() {
       }, debtPositionApisHolder::unload);
   }
@@ -158,7 +159,7 @@ class DebtPositionApisHolderTest extends BaseApiHolderTest {
       accessToken -> debtPositionApisHolder.getInstallmentNoPiiSearchControllerApi(
           accessToken)
         .crudInstallmentsFindAuthorizedByTransferSemanticKey(1L, "iuv", "iur",
-          "transferIndex", "operatorExternalUserId", null),
+          2, "operatorExternalUserId", List.of()),
       new ParameterizedTypeReference<>() {
       }, debtPositionApisHolder::unload);
   }

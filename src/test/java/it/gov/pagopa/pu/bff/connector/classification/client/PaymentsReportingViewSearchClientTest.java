@@ -60,7 +60,7 @@ class PaymentsReportingViewSearchClientTest {
       .thenReturn(paymentsReportingViewSearchControllerApiMock);
 
     when(paymentsReportingViewSearchControllerApiMock.crudPaymentsReportingViewFindDistinctByIufAndRegulationUniqueIdentifier(
-      String.valueOf(organizationId),
+      organizationId,
       iuf,
       regulationUniqueIdentifier,
       regulationDateFilter.getFrom(),

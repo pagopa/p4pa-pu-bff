@@ -35,7 +35,7 @@ public class OrganizationSearchClient {
     Long brokerId, String orgName, Pageable pageable, String accessToken) {
     return organizationApisHolder.getOrganizationSearchControllerApi(
         accessToken)
-      .crudOrganizationsFindByBrokerIdAndOrgName(String.valueOf(brokerId), orgName,
+      .crudOrganizationsFindByBrokerIdAndOrgName(brokerId, orgName,
         PageUtils.getPageNumber(pageable),
         PageUtils.getPageSize(pageable),
         PageUtils.getSortList(pageable));

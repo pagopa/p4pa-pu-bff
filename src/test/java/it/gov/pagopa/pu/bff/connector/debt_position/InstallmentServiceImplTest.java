@@ -65,7 +65,7 @@ class InstallmentServiceImplTest {
     Long organizationId = 1L;
     String iuv = "iuv";
     String iur = "iur";
-    String transferIndex = "transferIndex";
+    Integer transferIndex = 2;
     String operatorExternalUserId = "operatorExternalUserId";
     InstallmentNoPII expectedResult = new InstallmentNoPII();
 

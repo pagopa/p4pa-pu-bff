@@ -275,7 +275,7 @@ class InstallmentRetrieverServiceImplTest {
     Long organizationId = 1L;
     String iuv = "iuv";
     String iur = "iur";
-    String transferIndex = "transferIndex";
+    Integer transferIndex = 2;
     InstallmentNoPII installmentNoPII = new InstallmentNoPII();
 
     try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
@@ -302,7 +302,7 @@ class InstallmentRetrieverServiceImplTest {
     Long organizationId = 1L;
     String iuv = "iuv";
     String iur = "iur";
-    String transferIndex = "transferIndex";
+    Integer transferIndex = 2;
 
     try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
       authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser))

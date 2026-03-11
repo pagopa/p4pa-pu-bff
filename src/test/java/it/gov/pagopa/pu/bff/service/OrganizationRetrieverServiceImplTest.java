@@ -524,7 +524,7 @@ class OrganizationRetrieverServiceImplTest {
     organization.setOrgName(orgDTO.getOrgName());
     organization.setOrgTypeCode(orgDTO.getOrgTypeCode());
 
-    doNothing().when(authorizationServiceMock).validateOrganizationOrBrokerAdmin(organizationId,loggedUser,accessToken);
+    doNothing().when(authorizationServiceMock).validateAdminRole(organizationId,loggedUser);
     when(organizationServiceMock.getOrganizationByOrganizationId(organizationId,accessToken)).thenReturn(organization);
     doNothing().when(organizationServiceMock).updateOrganization(orgDTO, accessToken);
 
@@ -548,7 +548,7 @@ class OrganizationRetrieverServiceImplTest {
     organization.setOrgName(orgDTO.getOrgName());
     organization.setOrgTypeCode(orgDTO.getOrgTypeCode()+"old");
 
-    doNothing().when(authorizationServiceMock).validateOrganizationOrBrokerAdmin(organizationId,loggedUser,accessToken);
+    doNothing().when(authorizationServiceMock).validateAdminRole(organizationId,loggedUser);
     when(organizationServiceMock.getOrganizationByOrganizationId(organizationId,accessToken)).thenReturn(organization);
 
     Assertions.assertThrows(ValidationException.class,() -> organizationService.updateOrganization(organizationId, orgDTO, loggedUser, accessToken));
@@ -564,7 +564,7 @@ class OrganizationRetrieverServiceImplTest {
     OrganizationDetailDTO orgDTO = podamFactory.manufacturePojo(OrganizationDetailDTO.class);
     orgDTO.setOrganizationId(organizationId);
 
-    doNothing().when(authorizationServiceMock).validateOrganizationOrBrokerAdmin(organizationId,loggedUser,accessToken);
+    doNothing().when(authorizationServiceMock).validateAdminRole(organizationId,loggedUser);
     when(organizationServiceMock.getOrganizationByOrganizationId(organizationId,accessToken)).thenReturn(null);
 
     Assertions.assertThrows(ResourceNotFoundException.class,() -> organizationService.updateOrganization(organizationId, orgDTO, loggedUser, accessToken));
@@ -580,7 +580,7 @@ class OrganizationRetrieverServiceImplTest {
     OrganizationDetailDTO orgDTO = podamFactory.manufacturePojo(OrganizationDetailDTO.class);
     orgDTO.setOrganizationId(organizationId+1);
 
-    doNothing().when(authorizationServiceMock).validateOrganizationOrBrokerAdmin(organizationId,loggedUser,accessToken);
+    doNothing().when(authorizationServiceMock).validateAdminRole(organizationId,loggedUser);
 
     Assertions.assertThrows(InvalidOrganizationException.class,() -> organizationService.updateOrganization(organizationId, orgDTO, loggedUser, accessToken));
   }
@@ -601,7 +601,7 @@ class OrganizationRetrieverServiceImplTest {
       .thenReturn(organization);
 
     doNothing().when(authorizationServiceMock)
-      .validateOrganizationOrBrokerAdmin(organizationId, userInfo, accessToken);
+      .validateAdminRole(organizationId,userInfo);
 
     when(organizationServiceMock.getOrganizationDetail(organizationId, accessToken))
       .thenReturn(orgDetail);
@@ -641,7 +641,7 @@ class OrganizationRetrieverServiceImplTest {
     Long organizationId = 123L;
 
     doNothing().when(authorizationServiceMock)
-      .validateOrganizationOrBrokerAdmin(organizationId, userInfo, accessToken);
+      .validateAdminRole(organizationId, userInfo);
 
     when(organizationServiceMock.getOrganizationByOrganizationId(organizationId, accessToken))
       .thenReturn(null);

@@ -3,7 +3,10 @@ package it.gov.pagopa.pu.bff.service.debt_position_type_org;
 import it.gov.pagopa.pu.auth.dto.generated.OperatorsPage;
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.connector.auth.AuthzService;
-import it.gov.pagopa.pu.bff.connector.debt_position.*;
+import it.gov.pagopa.pu.bff.connector.debt_position.DebtPositionService;
+import it.gov.pagopa.pu.bff.connector.debt_position.DebtPositionTypeOrgOperatorsService;
+import it.gov.pagopa.pu.bff.connector.debt_position.DebtPositionTypeOrgService;
+import it.gov.pagopa.pu.bff.connector.debt_position.DebtPositionTypeService;
 import it.gov.pagopa.pu.bff.dto.generated.DebtPositionTypeOrgDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedDebtPositionTypeOrgOperatorDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedDebtPositionTypeOrgWithCount;
@@ -127,7 +130,7 @@ public class DebtPositionTypeOrgRetrieverServiceImpl implements DebtPositionType
   @Override
   public void deleteDebtPositionTypeOrg(Long organizationId,
     Long debtPositionTypeOrgId, UserInfo loggedUser, String accessToken) {
-    authorizationService.validateOrganizationOrBrokerAdmin(organizationId,loggedUser,accessToken);
+    authorizationService.validateAdminRole(organizationId,loggedUser);
     PagedModelDebtPosition debtPositions = debtPositionService.getDebtPositionByDebtPositionTypeOrgId(
       debtPositionTypeOrgId, PageRequest.of(0,1),accessToken);
     if(debtPositions!=null && debtPositions.getEmbedded()!=null && !CollectionUtils.isEmpty(debtPositions.getEmbedded().getDebtPositions())){

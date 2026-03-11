@@ -2,6 +2,7 @@ package it.gov.pagopa.pu.bff.service.organization;
 
 import it.gov.pagopa.pu.auth.dto.generated.OperatorsPage;
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
+import it.gov.pagopa.pu.auth.dto.generated.UserOrganizationRoles;
 import it.gov.pagopa.pu.bff.connector.auth.AuthzService;
 import it.gov.pagopa.pu.bff.connector.debt_position.DebtPositionTypeOrgService;
 import it.gov.pagopa.pu.bff.connector.organization.OrganizationService;
@@ -26,7 +27,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
-import it.gov.pagopa.pu.auth.dto.generated.UserOrganizationRoles;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -191,7 +191,7 @@ public class OrganizationRetrieverServiceImpl implements OrganizationRetrieverSe
 
   @Override
   public OrganizationDetail getOrganizationDetail(Long organizationId, UserInfo loggedUser, String accessToken) {
-    authorizationService.validateOrganizationOrBrokerAdmin(organizationId, loggedUser, accessToken);
+    authorizationService.validateAdminRole(organizationId, loggedUser);
 
     Organization organization = organizationService.getOrganizationByOrganizationId(organizationId, accessToken);
     if (organization == null) {
@@ -215,7 +215,7 @@ public class OrganizationRetrieverServiceImpl implements OrganizationRetrieverSe
 
   @Override
   public void updateOrganization(Long organizationId, OrganizationDetailDTO organizationDetailDTO, UserInfo loggedUser, String accessToken) {
-    authorizationService.validateOrganizationOrBrokerAdmin(organizationId,loggedUser,accessToken);
+    authorizationService.validateAdminRole(organizationId,loggedUser);
     validateOrganization(organizationId, organizationDetailDTO, accessToken);
     organizationService.updateOrganization(organizationDetailDTO,accessToken);
   }

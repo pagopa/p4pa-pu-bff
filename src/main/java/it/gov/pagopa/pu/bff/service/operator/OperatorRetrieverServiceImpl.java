@@ -18,15 +18,18 @@ import it.gov.pagopa.pu.bff.mapper.PagedDebtPositionTypeOrgDTOMapper;
 import it.gov.pagopa.pu.bff.mapper.PagedOrganizationOperatorMapper;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
 import it.gov.pagopa.pu.debtpositions.dto.generated.*;
-import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
 import it.gov.pagopa.pu.organization.dto.generated.Organization;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -57,7 +60,7 @@ public class OperatorRetrieverServiceImpl implements OperatorRetrieverService {
 
     @Override
   public PagedOrganizationOperator getOrganizationOperators(Long organizationId, String firstName, String lastName, String fiscalCode, Pageable pageable, UserInfo loggedUser, String accessToken) {
-    authorizationService.validateOrganizationOrBrokerAdmin(organizationId,loggedUser,accessToken);
+    authorizationService.validateAdminRole(organizationId,loggedUser);
 
     String orgIpaCode = getUserOrganizationIpaCode(organizationId, loggedUser);
 
@@ -95,7 +98,7 @@ public class OperatorRetrieverServiceImpl implements OperatorRetrieverService {
   @Override
   public OperatorsDetail getOperatorDetails(OperatorDetailsFiltersDTO operatorDetailsFiltersDTO,
                                             Pageable pageable, UserInfo loggedUser, String accessToken) {
-    authorizationService.validateOrganizationOrBrokerAdmin(operatorDetailsFiltersDTO.getOrganizationId(), loggedUser,accessToken);
+    authorizationService.validateAdminRole(operatorDetailsFiltersDTO.getOrganizationId(), loggedUser);
 
     OperatorDTO organizationOperator = getOperatorDTO(operatorDetailsFiltersDTO, loggedUser, accessToken);
 
@@ -135,14 +138,14 @@ public class OperatorRetrieverServiceImpl implements OperatorRetrieverService {
 
   @Override
   public int removeDebtPositionTypeOrgFromOperator(Long organizationId, String mappedExternalUserId, Long debtPositionTypeOrgId, UserInfo loggedUser, String accessToken) {
-    authorizationService.validateOrganizationOrBrokerAdmin(organizationId, loggedUser, accessToken);
+    authorizationService.validateAdminRole(organizationId, loggedUser);
     return debtPositionTypeOrgOperatorsService.deleteOperators(debtPositionTypeOrgId, Set.of(mappedExternalUserId), accessToken);
   }
 
   @Override
   public PagedDebtPositionTypeOrgDTO getDebtPositionTypeOrgsNotEnabledForOperator(OperatorDetailsFiltersDTO operatorDetailsFiltersDTO, Pageable pageable, UserInfo loggedUser,
       String accessToken) {
-    authorizationService.validateOrganizationOrBrokerAdmin(operatorDetailsFiltersDTO.getOrganizationId(), loggedUser,accessToken);
+    authorizationService.validateAdminRole(operatorDetailsFiltersDTO.getOrganizationId(), loggedUser);
     getOperatorDTO(operatorDetailsFiltersDTO, loggedUser, accessToken);
     PagedModelDebtPositionTypeOrg pagedDebtPositionTypeOrg = debtPositionTypeOrgService.findDebtPositionTypeOrgNotEnabledForOperator(operatorDetailsFiltersDTO, pageable, accessToken );
     return pagedDebtPositionTypeOrgDTOMapper.map(pagedDebtPositionTypeOrg,
@@ -152,7 +155,7 @@ public class OperatorRetrieverServiceImpl implements OperatorRetrieverService {
 
   @Override
   public void enableDebtPositionTypeOrgsForOperator(Long organizationId, String operatorExternalUserId, Set<Long> debtPositionTypeOrgIds, UserInfo loggedUser, String accessToken) {
-    authorizationService.validateOrganizationOrBrokerAdmin(organizationId, loggedUser, accessToken);
+    authorizationService.validateAdminRole(organizationId, loggedUser);
 
     OperatorDetailsFiltersDTO filtersDTO = new OperatorDetailsFiltersDTO(organizationId, operatorExternalUserId, null, null, null);
     getOperatorDTO(filtersDTO, loggedUser, accessToken);

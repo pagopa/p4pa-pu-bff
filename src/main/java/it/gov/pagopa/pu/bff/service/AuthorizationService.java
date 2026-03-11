@@ -5,14 +5,13 @@ import it.gov.pagopa.pu.auth.dto.generated.LimitedTokenRequest;
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.auth.dto.generated.UserOrganizationRoles;
 import it.gov.pagopa.pu.bff.connector.auth.client.AuthnClient;
-import it.gov.pagopa.pu.bff.connector.organization.OrganizationService;
-import it.gov.pagopa.pu.organization.dto.generated.Organization;
-import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -25,15 +24,12 @@ public class AuthorizationService {
   public static final String BFF_APP_NAME = "p4pa-pu-bff";
 
   private final AuthnClient authClientImpl;
-  private final OrganizationService organizationService;
   private final String subjectIssuer;
 
   public AuthorizationService(@Value("${rest.auth.token-exchange-issuer}") String subjectIssuer,
-                              AuthnClient authClientImpl,
-    OrganizationService organizationService) {
+                              AuthnClient authClientImpl) {
     this.subjectIssuer = subjectIssuer;
     this.authClientImpl = authClientImpl;
-    this.organizationService = organizationService;
   }
 
   public UserInfo validateToken(String accessToken) {
@@ -117,24 +113,5 @@ public class AuthorizationService {
 
   public void logout(String accessToken) {
     authClientImpl.logout(CLIENT_ID,accessToken);
-  }
-
-  public void validateOrganizationOrBrokerAdmin(Long organizationId, UserInfo loggedUser, String accessToken){
-    if (!isOrganizationOrBrokerAdmin(organizationId,loggedUser,accessToken)) {
-      throw new AuthorizationDeniedException(
-        "User is neither the organization’s admin nor the broker’s admin, or the organization having organizationId "+organizationId+" is not managed by the broker having brokerId "+ loggedUser.getBrokerId());
-    }
-  }
-
-  public boolean isOrganizationOrBrokerAdmin(Long organizationId, UserInfo loggedUser, String accessToken){
-    return isAdminRole(organizationId,loggedUser) ||
-      (isBrokerAdminRole(loggedUser)
-        && isOrganizationHandledByBroker(organizationId,loggedUser,accessToken));
-  }
-
-  private boolean isOrganizationHandledByBroker(Long organizationId, UserInfo loggedUser, String accessToken) {
-    Organization organization = organizationService.getOrganizationByOrganizationId(
-      organizationId, accessToken);
-    return loggedUser.getBrokerId()!=null && organization!=null && loggedUser.getBrokerId().equals(organization.getBrokerId());
   }
 }

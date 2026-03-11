@@ -67,7 +67,7 @@ class IngestionFlowFileSearchClientTest {
     when(processExecutionsApisHolderMock.getIngestionFlowFileSearchControllerApi(accessToken))
       .thenReturn(ingestionFlowFileSearchControllerApiMock);
     when(ingestionFlowFileSearchControllerApiMock.crudIngestionFlowFilesFindByOrganizationIDFlowTypeCreateDate(
-      String.valueOf(organizationId),List.of(IngestionFlowFileTypeEnum.TREASURY_OPI.toString(),IngestionFlowFileTypeEnum.PAYMENTS_REPORTING.toString()),creationDateFrom.toLocalDateTime(),
+      organizationId,List.of(IngestionFlowFileTypeEnum.TREASURY_OPI.toString(),IngestionFlowFileTypeEnum.PAYMENTS_REPORTING.toString()),creationDateFrom.toLocalDateTime(),
       creationDateTo.toLocalDateTime(),status,fileName,operatorExternalId,0,10,sortList))
       .thenReturn(expectedResult);
 
@@ -96,7 +96,7 @@ class IngestionFlowFileSearchClientTest {
     when(processExecutionsApisHolderMock.getIngestionFlowFileSearchControllerApi(accessToken))
       .thenReturn(ingestionFlowFileSearchControllerApiMock);
     when(ingestionFlowFileSearchControllerApiMock.crudIngestionFlowFilesFindByOrganizationIDFlowTypeCreateDate(
-      String.valueOf(organizationId),List.of(ingestionFlowFileTypes.toString()),creationDateFrom.toLocalDateTime(),
+      organizationId,List.of(ingestionFlowFileTypes.toString()),creationDateFrom.toLocalDateTime(),
       creationDateTo.toLocalDateTime(),status,fileName,operatorExternalId,0,null,Collections.emptyList()))
       .thenReturn(expectedResult);
 

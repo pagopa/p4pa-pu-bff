@@ -83,7 +83,7 @@ class ReceiptClientTest {
       .thenReturn(receiptViewSearchControllerApiMock);
 
     when(receiptViewSearchControllerApiMock.crudReceiptsViewFindReceiptsByFilters(
-      String.valueOf(filtersDTO.getOrganizationId()),
+      filtersDTO.getOrganizationId(),
       filtersDTO.getOperatorExternalUserId(),
       filtersDTO.getReceiptOrigins(),
       filtersDTO.getIuv(),

@@ -4129,13 +4129,6 @@ components:
     ConfigFE:
       type: object
       required:
-        - headerAssistanceUrl
-        - logoFooterImg
-        - footerDescText
-        - footerPrivacyInfoUrl
-        - footerGDPRUrl
-        - footerTermsCondUrl
-        - footerAccessibilityUrl
         - brokerId
         - canManageUsers
         - brokerFiscalCode

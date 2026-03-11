@@ -15,7 +15,7 @@ public class TransferSearchClient {
 
   public CollectionModelTransfer getTransfers(Long installmentId, String operatorExternalUserId, String accessToken) {
     return debtPositionApisHolder.getTransferSearchControllerApi(accessToken)
-      .crudTransfersFindAuthorizedByInstallmentId(String.valueOf(installmentId), operatorExternalUserId);
+      .crudTransfersFindAuthorizedByInstallmentId(installmentId, operatorExternalUserId);
   }
 
 }

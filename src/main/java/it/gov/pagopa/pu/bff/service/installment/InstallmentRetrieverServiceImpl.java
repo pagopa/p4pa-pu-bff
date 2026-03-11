@@ -59,7 +59,7 @@ public class InstallmentRetrieverServiceImpl implements InstallmentRetrieverServ
 
   @Override
   public InstallmentNoPII getInstallmentFromTransferSemanticKey(
-    Long organizationId, String iuv, String iur, String transferIndex, UserInfo loggedUser, List<DebtPositionOrigin> debtPositionOrigins, String accessToken) {
+    Long organizationId, String iuv, String iur, Integer transferIndex, UserInfo loggedUser, List<DebtPositionOrigin> debtPositionOrigins, String accessToken) {
     AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser);
     return installmentService.getInstallmentFromTransferSemanticKey(organizationId, iuv, iur, transferIndex,
       loggedUser.getMappedExternalUserId(), debtPositionOrigins, accessToken);

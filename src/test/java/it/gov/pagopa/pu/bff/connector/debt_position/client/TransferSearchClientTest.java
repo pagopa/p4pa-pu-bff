@@ -47,7 +47,7 @@ class TransferSearchClientTest {
       .thenReturn(transferSearchControllerApiMock);
 
     when(transferSearchControllerApiMock.crudTransfersFindAuthorizedByInstallmentId(
-      String.valueOf(installmentId), operatorExternalUserId))
+      installmentId, operatorExternalUserId))
       .thenReturn(expectedResult);
 
     CollectionModelTransfer result = transferSearchClient.getTransfers(installmentId, operatorExternalUserId, accessToken);

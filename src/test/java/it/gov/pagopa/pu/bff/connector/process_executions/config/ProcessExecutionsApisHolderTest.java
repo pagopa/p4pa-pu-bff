@@ -46,7 +46,7 @@ class ProcessExecutionsApisHolderTest extends BaseApiHolderTest {
   void whenGetIngestionFlowFileSearchControllerApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
     assertAuthenticationShouldBeSetInThreadSafeMode(
       accessToken -> processExecutionsApisHolder.getIngestionFlowFileSearchControllerApi(accessToken)
-        .crudIngestionFlowFilesFindByOrganizationIDFlowTypeCreateDate(String.valueOf(123L),
+        .crudIngestionFlowFilesFindByOrganizationIDFlowTypeCreateDate(123L,
           List.of("ingestionFlowFileType"),
           LocalDateTime.now(),LocalDateTime.now(), IngestionFlowFileStatus.PROCESSING,"fileName","operatorExternalId",0,0,null),
       new ParameterizedTypeReference<>() {},
@@ -58,7 +58,7 @@ class ProcessExecutionsApisHolderTest extends BaseApiHolderTest {
   void whenGetExportFileSearchControllerApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
     assertAuthenticationShouldBeSetInThreadSafeMode(
       accessToken -> processExecutionsApisHolder.getExportFileSearchControllerApi(accessToken)
-        .crudExportFilesFindByOrganizationIDFlowTypeCreateDate(String.valueOf(123L), "exportFileType",
+        .crudExportFilesFindByOrganizationIDFlowTypeCreateDate(123L, "exportFileType",
           LocalDateTime.now(),LocalDateTime.now(),"operatorExternalId", ExportFileStatus.PROCESSING,"fileName",0,0,null),
       new ParameterizedTypeReference<>() {},
       processExecutionsApisHolder::unload

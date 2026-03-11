@@ -31,7 +31,7 @@ public class InstallmentServiceImpl implements InstallmentService {
   }
 
   @Override
-  public InstallmentNoPII getInstallmentFromTransferSemanticKey(Long organizationId, String iuv, String iur, String transferIndex, String operatorExternalUserId, List<DebtPositionOrigin> debtPositionOrigins, String accessToken) {
+  public InstallmentNoPII getInstallmentFromTransferSemanticKey(Long organizationId, String iuv, String iur, Integer transferIndex, String operatorExternalUserId, List<DebtPositionOrigin> debtPositionOrigins, String accessToken) {
     return client.getInstallmentFromTransferSemanticKey(organizationId, iuv, iur, transferIndex, operatorExternalUserId, debtPositionOrigins, accessToken);
   }
 }

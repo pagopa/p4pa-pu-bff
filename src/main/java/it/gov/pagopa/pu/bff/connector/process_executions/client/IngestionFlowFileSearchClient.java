@@ -27,7 +27,7 @@ public class IngestionFlowFileSearchClient {
     return processExecutionsApisHolder.getIngestionFlowFileSearchControllerApi(
         accessToken)
       .crudIngestionFlowFilesFindByOrganizationIDFlowTypeCreateDate(
-        String.valueOf(ingestionFlowFileFilters.getOrganizationId()),
+        ingestionFlowFileFilters.getOrganizationId(),
         ingestionFlowFileFilters.getIngestionFlowFileType().stream().map(
           IngestionFlowFileTypeEnum::toString).toList(),
         DateUtils.toLocalDateTime(

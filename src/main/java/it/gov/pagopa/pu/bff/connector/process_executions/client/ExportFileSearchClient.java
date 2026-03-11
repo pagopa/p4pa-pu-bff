@@ -26,7 +26,7 @@ public class ExportFileSearchClient {
     return processExecutionsApisHolder.getExportFileSearchControllerApi(
         accessToken)
       .crudExportFilesFindByOrganizationIDFlowTypeCreateDate(
-        String.valueOf(exportFileFilters.getOrganizationId()),
+        exportFileFilters.getOrganizationId(),
         exportFileFilters.getExportFileType().toString(),
         DateUtils.toLocalDateTime(exportFileFilters.getCreationDate().getFrom()),
         DateUtils.toLocalDateTime(exportFileFilters.getCreationDate().getTo()),

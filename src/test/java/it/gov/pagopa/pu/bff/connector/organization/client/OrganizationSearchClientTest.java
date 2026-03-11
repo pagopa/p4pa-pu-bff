@@ -91,7 +91,7 @@ class OrganizationSearchClientTest {
 
     Mockito.when(organizationApisHolder.getOrganizationSearchControllerApi(accessToken))
       .thenReturn(organizationSearchControllerApiMock);
-    Mockito.when(organizationSearchControllerApiMock.crudOrganizationsFindByBrokerIdAndOrgName(eq(String.valueOf(brokerId)), eq(orgName), any(), any(), anyList()))
+    Mockito.when(organizationSearchControllerApiMock.crudOrganizationsFindByBrokerIdAndOrgName(eq(brokerId), eq(orgName), any(), any(), anyList()))
       .thenReturn(expectedResult);
 
     // When

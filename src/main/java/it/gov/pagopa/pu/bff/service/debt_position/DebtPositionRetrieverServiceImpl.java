@@ -16,6 +16,7 @@ import it.gov.pagopa.pu.bff.mapper.DebtPositionMapper;
 import it.gov.pagopa.pu.bff.mapper.DebtPositionViewMapper;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
 import it.gov.pagopa.pu.bff.service.ZipFileService;
+import it.gov.pagopa.pu.bff.util.Constants;
 import it.gov.pagopa.pu.bff.util.DateUtils;
 import it.gov.pagopa.pu.debtpositions.dto.generated.*;
 import lombok.extern.slf4j.Slf4j;
@@ -38,12 +39,7 @@ public class DebtPositionRetrieverServiceImpl implements DebtPositionRetrieverSe
   private final PrintPaymentNoticeService printPaymentNoticeService;
   private final ZipFileService zipFileService;
 
-  private static final List<String> debtPositionOriginFilterList = List.of(
-    DebtPositionOrigin.ORDINARY.toString(),
-    DebtPositionOrigin.ORDINARY_SIL.toString(),
-    DebtPositionOrigin.SPONTANEOUS.toString(),
-    DebtPositionOrigin.SPONTANEOUS_SIL.toString()
-  );
+  private static final List<String> debtPositionOriginFilterList = Constants.ORDINARY_DEBT_POSITION_ORIGINS.stream().map(DebtPositionOrigin::toString).toList();
 
   public DebtPositionRetrieverServiceImpl(DebtPositionService debtPositionService,
                                           DebtPositionTypeOrgService debtPositionTypeOrgService,

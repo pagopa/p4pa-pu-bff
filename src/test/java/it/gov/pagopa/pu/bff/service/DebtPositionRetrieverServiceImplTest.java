@@ -1,16 +1,5 @@
 package it.gov.pagopa.pu.bff.service;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoInteractions;
-
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.connector.debt_position.DebtPositionService;
 import it.gov.pagopa.pu.bff.connector.debt_position.DebtPositionTypeOrgOperatorsService;
@@ -27,11 +16,9 @@ import it.gov.pagopa.pu.bff.mapper.DebtPositionMapper;
 import it.gov.pagopa.pu.bff.mapper.DebtPositionViewMapper;
 import it.gov.pagopa.pu.bff.service.debt_position.DebtPositionRetrieverService;
 import it.gov.pagopa.pu.bff.service.debt_position.DebtPositionRetrieverServiceImpl;
+import it.gov.pagopa.pu.bff.util.Constants;
 import it.gov.pagopa.pu.bff.util.TestUtils;
 import it.gov.pagopa.pu.debtpositions.dto.generated.*;
-
-import java.time.OffsetDateTime;
-import java.util.List;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -47,6 +34,15 @@ import org.springframework.core.io.Resource;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.authorization.AuthorizationDeniedException;
 import uk.co.jemos.podam.api.PodamFactory;
+
+import java.time.OffsetDateTime;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 
 @ExtendWith(MockitoExtension.class)
 class DebtPositionRetrieverServiceImplTest {
@@ -171,7 +167,7 @@ class DebtPositionRetrieverServiceImplTest {
     UserInfo loggedUser = new UserInfo();
     loggedUser.setMappedExternalUserId("mappedExternalUserId");
     PageRequest pageRequest = PageRequest.of(0, 10);
-    List<String> debtPositionOrigins = List.of(DebtPositionOrigin.ORDINARY.toString(), DebtPositionOrigin.ORDINARY_SIL.toString(), DebtPositionOrigin.SPONTANEOUS.toString(), DebtPositionOrigin.SPONTANEOUS_SIL.toString());
+    List<String> debtPositionOrigins = Constants.ORDINARY_DEBT_POSITION_ORIGINS.stream().map(DebtPositionOrigin::toString).toList();
 
     DebtPositionViewFiltersDTO debtPositionViewFiltersDTO = podamFactory.manufacturePojo(
       DebtPositionViewFiltersDTO.class);
@@ -318,12 +314,7 @@ class DebtPositionRetrieverServiceImplTest {
     loggedUser.setMappedExternalUserId("mappedExternalUserId");
     PageRequest pageRequest = PageRequest.of(0, 10);
 
-    List<String> debtPositionOriginFilterList = List.of(
-      DebtPositionOrigin.ORDINARY.toString(),
-      DebtPositionOrigin.ORDINARY_SIL.toString(),
-      DebtPositionOrigin.SPONTANEOUS.toString(),
-      DebtPositionOrigin.SPONTANEOUS_SIL.toString()
-    );
+    List<String> debtPositionOriginFilterList = Constants.ORDINARY_DEBT_POSITION_ORIGINS.stream().map(DebtPositionOrigin::toString).toList();
 
     PagedModelDebtPositionView pagedModel = new PagedModelDebtPositionView();
     PagedDebtPositionView expected = new PagedDebtPositionView();

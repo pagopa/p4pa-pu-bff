@@ -56,7 +56,7 @@ class DebtPositionNoticeRetrieverServiceImplTest {
 
     Long organizationId=1L;
     Long debtPositionId=2L;
-    String iuv = "iuv";
+    String nav = "nav";
     DebtPositionDTO debtPositionDTO = podamFactory.manufacturePojo(DebtPositionDTO.class);
     debtPositionDTO.setOrganizationId(organizationId);
     DebtPositionTypeOrgOperators debtPositionTypeOrgOperators = podamFactory.manufacturePojo(DebtPositionTypeOrgOperators.class);
@@ -70,10 +70,10 @@ class DebtPositionNoticeRetrieverServiceImplTest {
       Mockito.when(debtPositionTypeOrgOperatorsServiceMock.findByDebtPositionTypeOrgIdAndOperatorExternalUserId(debtPositionDTO.getDebtPositionTypeOrgId(),loggedUser.getMappedExternalUserId(),accessToken))
         .thenReturn(debtPositionTypeOrgOperators);
       Mockito.when(
-          printPaymentNoticeServiceMock.generateNotice(iuv,debtPositionDTO,accessToken))
+          printPaymentNoticeServiceMock.generateNotice(nav,debtPositionDTO,accessToken))
         .thenReturn(expectedResult);
 
-      FileResourceDTO result = debtPositionNoticeRetrieverService.getNotice(organizationId, iuv, debtPositionId, loggedUser, accessToken);
+      FileResourceDTO result = debtPositionNoticeRetrieverService.getNotice(organizationId, nav, debtPositionId, loggedUser, accessToken);
 
       assertNotNull(result);
       assertSame(expectedResult, result);
@@ -90,7 +90,7 @@ class DebtPositionNoticeRetrieverServiceImplTest {
 
     Long organizationId=1L;
     Long debtPositionId=2L;
-    String iuv = "iuv";
+    String nav = "nav";
 
     try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
       authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)).thenAnswer(a->null);
@@ -99,7 +99,7 @@ class DebtPositionNoticeRetrieverServiceImplTest {
         .thenReturn(null);
 
       Assertions.assertThrows(ResourceNotFoundException.class,
-        ()-> debtPositionNoticeRetrieverService.getNotice(organizationId, iuv, debtPositionId, loggedUser, accessToken));
+        ()-> debtPositionNoticeRetrieverService.getNotice(organizationId, nav, debtPositionId, loggedUser, accessToken));
 
       authorizationServiceMockedStatic.verify(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser));
       Mockito.verifyNoInteractions(printPaymentNoticeServiceMock);
@@ -113,7 +113,7 @@ class DebtPositionNoticeRetrieverServiceImplTest {
 
     Long organizationId=1L;
     Long debtPositionId=2L;
-    String iuv = "iuv";
+    String nav = "nav";
     DebtPositionDTO debtPositionDTO = podamFactory.manufacturePojo(DebtPositionDTO.class);
     debtPositionDTO.setOrganizationId(organizationId+1);
 
@@ -124,7 +124,7 @@ class DebtPositionNoticeRetrieverServiceImplTest {
         .thenReturn(debtPositionDTO);
 
       Assertions.assertThrows(InvalidDebtPositionException.class,
-        ()-> debtPositionNoticeRetrieverService.getNotice(organizationId, iuv, debtPositionId, loggedUser, accessToken));
+        ()-> debtPositionNoticeRetrieverService.getNotice(organizationId, nav, debtPositionId, loggedUser, accessToken));
 
       authorizationServiceMockedStatic.verify(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser));
       Mockito.verifyNoInteractions(printPaymentNoticeServiceMock);
@@ -132,14 +132,14 @@ class DebtPositionNoticeRetrieverServiceImplTest {
   }
 
   @Test
-  void givenNonExistingOperatorWhenGetNoticeThenAuthorizationDeniedExteption() {
+  void givenNonExistingOperatorWhenGetNoticeThenAuthorizationDeniedException() {
     UserInfo loggedUser = new UserInfo();
     loggedUser.setUserId("user-123");
     loggedUser.setMappedExternalUserId("operatorExternalUserId");
 
     Long organizationId=1L;
     Long debtPositionId=2L;
-    String iuv = "iuv";
+    String nav = "nav";
     DebtPositionDTO debtPositionDTO = podamFactory.manufacturePojo(DebtPositionDTO.class);
     debtPositionDTO.setOrganizationId(organizationId);
 
@@ -152,7 +152,7 @@ class DebtPositionNoticeRetrieverServiceImplTest {
         .thenReturn(null);
 
       Assertions.assertThrows(AuthorizationDeniedException.class,
-        ()-> debtPositionNoticeRetrieverService.getNotice(organizationId, iuv, debtPositionId, loggedUser, accessToken));
+        ()-> debtPositionNoticeRetrieverService.getNotice(organizationId, nav, debtPositionId, loggedUser, accessToken));
 
       authorizationServiceMockedStatic.verify(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser));
       Mockito.verifyNoInteractions(printPaymentNoticeServiceMock);
@@ -167,14 +167,14 @@ class DebtPositionNoticeRetrieverServiceImplTest {
 
     Long organizationId=1L;
     Long debtPositionId=2L;
-    String iuv = "iuv";
+    String nav = "nav";
 
     try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
       authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser))
         .thenThrow(new AuthorizationDeniedException("Access denied"));
 
       Assertions.assertThrows(AuthorizationDeniedException.class, () ->
-        debtPositionNoticeRetrieverService.getNotice(organizationId, iuv, debtPositionId, loggedUser, accessToken));
+        debtPositionNoticeRetrieverService.getNotice(organizationId, nav, debtPositionId, loggedUser, accessToken));
 
       authorizationServiceMockedStatic.verify(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser));
     }

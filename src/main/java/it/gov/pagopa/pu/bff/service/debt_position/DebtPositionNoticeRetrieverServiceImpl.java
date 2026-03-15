@@ -29,13 +29,13 @@ public class DebtPositionNoticeRetrieverServiceImpl implements DebtPositionNotic
   }
 
   @Override
-  public FileResourceDTO getNotice(Long organizationId, String iuv,
+  public FileResourceDTO getNotice(Long organizationId, String nav,
     Long debtPositionId, UserInfo loggedUser, String accessToken) {
     AuthorizationService.validateUserForOrganizationId(organizationId,loggedUser);
     DebtPositionDTO debtPosition = getDebtPosition(organizationId,
       debtPositionId, accessToken);
     validateOperator(loggedUser, accessToken, debtPosition);
-    return printPaymentNoticeService.generateNotice(iuv,
+    return printPaymentNoticeService.generateNotice(nav,
       debtPosition,
       accessToken);
   }

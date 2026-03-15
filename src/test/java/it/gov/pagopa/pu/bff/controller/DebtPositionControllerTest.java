@@ -210,16 +210,16 @@ class DebtPositionControllerTest {
   @Test
   void givenCorrectRequestWhenGetPaymentNoticeThenOk() {
     long organizationId = 1L;
-    String iuv = "iuv";
+    String nav = "nav";
     Long debtPositionId = 2L;
     FileResourceDTO fileResourceDTO = new FileResourceDTO();
     fileResourceDTO.setResource(new ByteArrayResource("PDF-DATA".getBytes()));
     fileResourceDTO.setFileName("filename");
 
-    Mockito.when(debtPositionNoticeRetrieverServiceMock.getNotice(organizationId, iuv, debtPositionId, loggedUser, accessToken))
+    Mockito.when(debtPositionNoticeRetrieverServiceMock.getNotice(organizationId, nav, debtPositionId, loggedUser, accessToken))
       .thenReturn(fileResourceDTO);
 
-    ResponseEntity<Resource> response = debtPositionController.getPaymentNotice(organizationId, debtPositionId, iuv);
+    ResponseEntity<Resource> response = debtPositionController.getPaymentNotice(organizationId, debtPositionId, nav);
 
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertNotNull(response.getBody());

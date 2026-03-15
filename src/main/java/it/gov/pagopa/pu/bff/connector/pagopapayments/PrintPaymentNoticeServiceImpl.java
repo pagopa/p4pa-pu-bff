@@ -15,8 +15,8 @@ public class PrintPaymentNoticeServiceImpl implements PrintPaymentNoticeService 
   }
 
   @Override
-  public FileResourceDTO generateNotice(String iuv,
+  public FileResourceDTO generateNotice(String nav,
     DebtPositionDTO debtPositionDTO, String accessToken) {
-    return client.generateNotice(iuv, debtPositionDTO, accessToken);
+    return client.generateNotice(nav, debtPositionDTO, accessToken);
   }
 }

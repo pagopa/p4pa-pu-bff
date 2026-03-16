@@ -502,22 +502,22 @@ class DebtPositionRetrieverServiceImplTest {
     loggedUser.setMappedExternalUserId("mappedExternalUserId");
     Long organizationId = 1L;
     Long debtPositionId = 2L;
-    String iuv = "1";
+    String nav = "1";
 
     DebtPositionDTO debtPositionDTO = new DebtPositionDTO();
     PaymentOptionDTO paymentOptionDTO = new PaymentOptionDTO();
     PaymentOptionDTO paymentOptionDTO1 = new PaymentOptionDTO();
     InstallmentDTO installmentDTOUNPAID = podamFactory.manufacturePojo(InstallmentDTO.class);
-    installmentDTOUNPAID.setIuv(iuv);
+    installmentDTOUNPAID.setNav(nav);
     installmentDTOUNPAID.setStatus(InstallmentStatus.UNPAID);
     InstallmentDTO installmentDTOUNPAYABLE = podamFactory.manufacturePojo(InstallmentDTO.class);
-    installmentDTOUNPAYABLE.setIuv(iuv);
+    installmentDTOUNPAYABLE.setNav(nav);
     installmentDTOUNPAYABLE.setStatus(InstallmentStatus.UNPAYABLE);
     InstallmentDTO installmentDTOPAID = podamFactory.manufacturePojo(InstallmentDTO.class);
-    installmentDTOPAID.setIuv(iuv);
+    installmentDTOPAID.setNav(nav);
     installmentDTOPAID.setStatus(InstallmentStatus.PAID);
     InstallmentDTO installmentDTOWithNullStatus = podamFactory.manufacturePojo(InstallmentDTO.class);
-    installmentDTOWithNullStatus.setIuv(iuv);
+    installmentDTOWithNullStatus.setNav(nav);
     installmentDTOWithNullStatus.setStatus(null);
     paymentOptionDTO.setInstallments(List.of(installmentDTOUNPAID, installmentDTOUNPAYABLE));
     paymentOptionDTO1.setInstallments(List.of(installmentDTOPAID, installmentDTOWithNullStatus));
@@ -531,14 +531,14 @@ class DebtPositionRetrieverServiceImplTest {
       authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)).thenAnswer(a -> null);
       Mockito.when(debtPositionServiceMock.hasOperatorGrantOnDebtPosition(debtPositionId, organizationId, loggedUser.getMappedExternalUserId(), accessToken)).thenReturn(true);
       Mockito.when(debtPositionServiceMock.getDebtPosition(debtPositionId, accessToken)).thenReturn(debtPositionDTO);
-      Mockito.when(printPaymentNoticeServiceMock.generateNotice(iuv, debtPositionDTO, accessToken)).thenReturn(fileResourceDTO);
+      Mockito.when(printPaymentNoticeServiceMock.generateNotice(nav, debtPositionDTO, accessToken)).thenReturn(fileResourceDTO);
 
       Mockito.when(zipFileServiceMock.zipper(List.of(fileResourceDTO, fileResourceDTO))).thenReturn(expectedResult);
       Resource result = debtPositionRetrieverService.getDebtPositionNoticesZip(organizationId, debtPositionId, loggedUser, accessToken);
 
       assertNotNull(result);
       assertEquals(expectedResult, result);
-      Mockito.verify(printPaymentNoticeServiceMock, Mockito.times(2)).generateNotice(iuv, debtPositionDTO, accessToken);
+      Mockito.verify(printPaymentNoticeServiceMock, Mockito.times(2)).generateNotice(nav, debtPositionDTO, accessToken);
       authorizationServiceMockedStatic.verify(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser));
     }
   }

@@ -31,15 +31,15 @@ class PrintPaymentNoticeServiceTest {
 
   @Test
   void whenGenerateNoticeThenInvokeClient() {
-    String iuv = "iuv";
+    String nav = "nav";
     DebtPositionDTO debtPositionDTO = podamFactory.manufacturePojo(DebtPositionDTO.class);
     FileResourceDTO expectedResult = new FileResourceDTO();
 
-    when(printPaymentNoticeClientMock.generateNotice(iuv,debtPositionDTO,
+    when(printPaymentNoticeClientMock.generateNotice(nav,debtPositionDTO,
       ACCESS_TOKEN))
       .thenReturn(expectedResult);
 
-    FileResourceDTO result = service.generateNotice(iuv,debtPositionDTO,
+    FileResourceDTO result = service.generateNotice(nav,debtPositionDTO,
       ACCESS_TOKEN);
 
     assertSame(expectedResult, result);

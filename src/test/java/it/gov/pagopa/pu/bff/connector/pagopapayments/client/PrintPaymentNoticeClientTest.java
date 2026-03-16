@@ -47,7 +47,7 @@ class PrintPaymentNoticeClientTest {
   @Test
   void whenGenerateNoticeThenOk() {
     String accessToken = "ACCESSTOKEN";
-    String iuv = "iuv";
+    String nav = "nav";
     DebtPositionDTO debtPositionDTO = podamFactory.manufacturePojo(DebtPositionDTO.class);
     ByteArrayResource expectedResource = new ByteArrayResource("PDF-DATA".getBytes());
     String expectedFileName = "filename";
@@ -58,10 +58,10 @@ class PrintPaymentNoticeClientTest {
 
     when(pagoPAPaymentsApisHolderMock.getPrintPaymentNoticeControllerApi(accessToken))
       .thenReturn(printPaymentNoticeApiMock);
-    when(printPaymentNoticeApiMock.generateNoticeWithHttpInfo(iuv,debtPositionDTO)).thenReturn(
+    when(printPaymentNoticeApiMock.generateNoticeWithHttpInfo(nav,debtPositionDTO)).thenReturn(
       responseEntity);
 
-    FileResourceDTO response = printPaymentNoticeClient.generateNotice(iuv,debtPositionDTO,accessToken);
+    FileResourceDTO response = printPaymentNoticeClient.generateNotice(nav,debtPositionDTO,accessToken);
 
     Assertions.assertNotNull(response);
     Assertions.assertEquals(expectedResource,response.getResource());

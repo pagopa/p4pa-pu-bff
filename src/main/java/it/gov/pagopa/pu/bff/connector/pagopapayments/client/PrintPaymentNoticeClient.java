@@ -20,10 +20,10 @@ public class PrintPaymentNoticeClient {
   }
 
   public FileResourceDTO generateNotice(
-    String iuv, DebtPositionDTO debtPositionDTO, String accessToken) {
+    String nav, DebtPositionDTO debtPositionDTO, String accessToken) {
     ResponseEntity<Resource> resourceResponseEntity = pagoPAPaymentsApisHolder.getPrintPaymentNoticeControllerApi(
         accessToken)
-      .generateNoticeWithHttpInfo(iuv, debtPositionDTO);
+      .generateNoticeWithHttpInfo(nav, debtPositionDTO);
     return FileResourceDTO.builder()
       .resource(resourceResponseEntity.getBody())
       .fileName(resourceResponseEntity.getHeaders().getContentDisposition().getFilename())

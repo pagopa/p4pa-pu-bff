@@ -87,11 +87,11 @@ public class DebtPositionController implements DebtPositionsApi {
 
   @Override
   public ResponseEntity<Resource> getPaymentNotice(Long organizationId,
-    Long debtPositionId, String iuv) {
-    log.info("User requested getPaymentNotice having organizationId {} debtPositionId {} and iuv {}", organizationId, debtPositionId, iuv);
+    Long debtPositionId, String nav) {
+    log.info("User requested getPaymentNotice having organizationId {} debtPositionId {} and nav {}", organizationId, debtPositionId, nav);
 
     FileResourceDTO fileResourceDTO = debtPositionNoticeRetrieverService.getNotice(
-      organizationId,iuv,debtPositionId,SecurityUtils.getLoggedUser(),SecurityUtils.getAccessToken());
+      organizationId,nav,debtPositionId,SecurityUtils.getLoggedUser(),SecurityUtils.getAccessToken());
     HttpHeaders headers = new HttpHeaders();
     headers.setContentDisposition(ContentDisposition.attachment()
       .filename(fileResourceDTO.getFileName())

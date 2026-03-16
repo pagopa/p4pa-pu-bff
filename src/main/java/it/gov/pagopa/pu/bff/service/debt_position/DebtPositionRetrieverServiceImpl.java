@@ -148,7 +148,7 @@ public class DebtPositionRetrieverServiceImpl implements DebtPositionRetrieverSe
                 InstallmentStatus.UNPAYABLE.equals(i.getStatus())))
       )
       .map(i ->
-        printPaymentNoticeService.generateNotice(i.getIuv(), debtPosition, accessToken))
+        printPaymentNoticeService.generateNotice(i.getNav(), debtPosition, accessToken))
       .toList();
 
     if (pdfResources.isEmpty()) {

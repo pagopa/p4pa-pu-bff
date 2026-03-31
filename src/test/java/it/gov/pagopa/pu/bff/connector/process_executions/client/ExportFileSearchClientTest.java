@@ -6,6 +6,7 @@ import static org.mockito.Mockito.when;
 import it.gov.pagopa.pu.bff.connector.process_executions.config.ProcessExecutionsApisHolder;
 import it.gov.pagopa.pu.bff.dto.ExportFileFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.OffsetDateTimeIntervalFilter;
+import it.gov.pagopa.pu.bff.util.DateUtils;
 import it.gov.pagopa.pu.processexecutions.controller.generated.ExportFileSearchControllerApi;
 import it.gov.pagopa.pu.processexecutions.dto.generated.ExportFile.ExportFileTypeEnum;
 import it.gov.pagopa.pu.processexecutions.dto.generated.ExportFileStatus;
@@ -68,8 +69,8 @@ class ExportFileSearchClientTest {
     when(processExecutionsApisHolderMock.getExportFileSearchControllerApi(accessToken))
       .thenReturn(exportFileSearchControllerApiMock);
     when(exportFileSearchControllerApiMock.crudExportFilesFindByOrganizationIDFlowTypeCreateDate(
-      organizationId,exportFileType.toString(),creationDateFrom.toLocalDateTime(),
-      creationDateTo.toLocalDateTime(),operatorExternalId, status,fileName,0,10,sortList))
+      organizationId,exportFileType.toString(), DateUtils.toLocalDateTime(creationDateFrom),
+      DateUtils.toLocalDateTime(creationDateTo),operatorExternalId, status,fileName,0,10,sortList))
       .thenReturn(expectedResult);
 
     PagedModelExportFile result = exportFileSearchClient.getExportFiles(
@@ -97,8 +98,8 @@ class ExportFileSearchClientTest {
     when(processExecutionsApisHolderMock.getExportFileSearchControllerApi(accessToken))
       .thenReturn(exportFileSearchControllerApiMock);
     when(exportFileSearchControllerApiMock.crudExportFilesFindByOrganizationIDFlowTypeCreateDate(
-      organizationId,exportFileType.toString(),creationDateFrom.toLocalDateTime(),
-      creationDateTo.toLocalDateTime(),operatorExternalId,status,fileName,0,null,Collections.emptyList()))
+      organizationId,exportFileType.toString(),DateUtils.toLocalDateTime(creationDateFrom),
+      DateUtils.toLocalDateTime(creationDateTo) ,operatorExternalId,status,fileName,0,null,Collections.emptyList()))
       .thenReturn(expectedResult);
 
     PagedModelExportFile result = exportFileSearchClient.getExportFiles(
@@ -126,8 +127,8 @@ class ExportFileSearchClientTest {
     when(processExecutionsApisHolderMock.getExportFileSearchControllerApi(accessToken))
       .thenReturn(exportFileSearchControllerApiMock);
     when(exportFileSearchControllerApiMock.crudExportFilesFindByOrganizationIDFlowTypeCreateDate(
-      organizationId,exportFileType.toString(),creationDateFrom.toLocalDateTime(),
-      creationDateTo.toLocalDateTime(),operatorExternalId,status,fileName,0,10,sortList))
+      organizationId,exportFileType.toString(),DateUtils.toLocalDateTime(creationDateFrom),
+      DateUtils.toLocalDateTime(creationDateTo) ,operatorExternalId,status,fileName,0,10,sortList))
       .thenThrow(expectedException);
 
     HttpClientErrorException result = Assertions.assertThrows(
@@ -158,8 +159,8 @@ class ExportFileSearchClientTest {
     when(processExecutionsApisHolderMock.getExportFileSearchControllerApi(accessToken))
       .thenReturn(exportFileSearchControllerApiMock);
     when(exportFileSearchControllerApiMock.crudExportFilesFindByOrganizationIDFlowTypeCreateDate(
-      organizationId,exportFileType.toString(),creationDateFrom.toLocalDateTime(),
-      creationDateTo.toLocalDateTime(),operatorExternalId,status,fileName,0,10,sortList))
+      organizationId,exportFileType.toString(), DateUtils.toLocalDateTime(creationDateFrom),
+      DateUtils.toLocalDateTime(creationDateTo), operatorExternalId,status,fileName,0,10,sortList))
       .thenThrow(expectedException);
 
     RuntimeException result = Assertions.assertThrows(

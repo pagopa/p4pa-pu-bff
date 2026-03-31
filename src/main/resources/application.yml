@@ -17,6 +17,21 @@ monitoring:
     organization:
       serviceName: "P4PA-Organization Service"
       url: "\${ORGANIZATION_BASE_URL:}/actuator/health/readiness"
+    debt-position:
+      serviceName: "P4PA-Debt-position Service"
+      url: "\${DEBT_POSITIONS_BASE_URL:}/actuator/health/readiness"
+    pagopa-payments:
+      serviceName: "P4PA-PagoPA-payments Service"
+      url: "\${PAGOPA_PAYMENTS_BASE_URL:}/actuator/health/readiness"
+    fileshare:
+      serviceName: "P4PA-Fileshare Service"
+      url: "\${FILESHARE_BASE_URL:}/actuator/health/readiness"
+    workflow-hub:
+      serviceName: "P4PA-Workflow-hub Service"
+      url: "\${WORKFLOW_HUB_BASE_URL:}/actuator/health/readiness"
+    citizen:
+      serviceName: "P4PA-Citizen Service"
+      url: "\${CITIZEN_BASE_URL:}/actuator/health/readiness"
 
 management:
   info:

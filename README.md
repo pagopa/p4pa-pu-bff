@@ -145,6 +145,9 @@ See [application.yml](src/main/resources/application.yml) for each configurable 
 | WORKFLOW_HUB_MAX_ATTEMPTS                | WorkflowHub API max attempts                        | 3       |
 | WORKFLOW_HUB_WAIT_TIME_MILLIS            | WorkflowHub retry waiting time (milliseconds)       | 500     |
 | WORKFLOW_HUB_PRINT_BODY_WHEN_ERROR       | To print body when an error occurs                  | true    |
+| FILESHARE_BASE_URL                       | Fileshare microservice URL                          |         |
+| CITIZEN_BASE_URL                         | Citizen microservice URL                            |         |
+| CIE_BASE_URL                             | CIE microservice URL                                |         |
 
 #### 💼 Business logic
 | ENV                                            | DESCRIPTION                                    | DEFAULT |

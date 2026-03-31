@@ -2,6 +2,7 @@ package it.gov.pagopa.pu.bff.connector.process_executions.client;
 
 import it.gov.pagopa.pu.bff.connector.process_executions.config.ProcessExecutionsApisHolder;
 import it.gov.pagopa.pu.bff.dto.IngestionFlowFileFiltersDTO;
+import it.gov.pagopa.pu.bff.util.DateUtils;
 import it.gov.pagopa.pu.processexecutions.controller.generated.IngestionFlowFileSearchControllerApi;
 import it.gov.pagopa.pu.processexecutions.dto.generated.IngestionFlowFile.IngestionFlowFileTypeEnum;
 import it.gov.pagopa.pu.processexecutions.dto.generated.IngestionFlowFileStatus;
@@ -22,6 +23,7 @@ import java.time.OffsetDateTime;
 import java.util.Collections;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.Mockito.when;
 
@@ -67,8 +69,9 @@ class IngestionFlowFileSearchClientTest {
     when(processExecutionsApisHolderMock.getIngestionFlowFileSearchControllerApi(accessToken))
       .thenReturn(ingestionFlowFileSearchControllerApiMock);
     when(ingestionFlowFileSearchControllerApiMock.crudIngestionFlowFilesFindByOrganizationIDFlowTypeCreateDate(
-      organizationId,List.of(IngestionFlowFileTypeEnum.TREASURY_OPI.toString(),IngestionFlowFileTypeEnum.PAYMENTS_REPORTING.toString()),creationDateFrom.toLocalDateTime(),
-      creationDateTo.toLocalDateTime(),status,fileName,operatorExternalId,0,10,sortList))
+      organizationId,List.of(IngestionFlowFileTypeEnum.TREASURY_OPI.toString(),IngestionFlowFileTypeEnum.PAYMENTS_REPORTING.toString()),
+      DateUtils.toLocalDateTime(creationDateFrom), DateUtils.toLocalDateTime(creationDateTo),
+      status,fileName,operatorExternalId,0,10,sortList))
       .thenReturn(expectedResult);
 
     PagedModelIngestionFlowFile result = ingestionFlowFileSearchClient.getIngestionFlowFiles(
@@ -96,14 +99,14 @@ class IngestionFlowFileSearchClientTest {
     when(processExecutionsApisHolderMock.getIngestionFlowFileSearchControllerApi(accessToken))
       .thenReturn(ingestionFlowFileSearchControllerApiMock);
     when(ingestionFlowFileSearchControllerApiMock.crudIngestionFlowFilesFindByOrganizationIDFlowTypeCreateDate(
-      organizationId,List.of(ingestionFlowFileTypes.toString()),creationDateFrom.toLocalDateTime(),
-      creationDateTo.toLocalDateTime(),status,fileName,operatorExternalId,0,null,Collections.emptyList()))
+      organizationId,List.of(ingestionFlowFileTypes.toString()), DateUtils.toLocalDateTime(creationDateFrom),
+      DateUtils.toLocalDateTime(creationDateTo),status,fileName,operatorExternalId,0,null,Collections.emptyList()))
       .thenReturn(expectedResult);
 
     PagedModelIngestionFlowFile result = ingestionFlowFileSearchClient.getIngestionFlowFiles(
       ingestionFlowFileFilters,operatorExternalId, Pageable.unpaged(), accessToken);
 
-    assertSame(expectedResult, result);
+    assertEquals(expectedResult, result);
   }
 
 }

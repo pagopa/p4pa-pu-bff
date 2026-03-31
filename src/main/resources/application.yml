@@ -32,9 +32,6 @@ monitoring:
     citizen:
       serviceName: "P4PA-Citizen Service"
       url: "\${CITIZEN_BASE_URL:}/actuator/health/readiness"
-    cie:
-      serviceName: "P4PA-Cie Service"
-      url: "\${CIE_BASE_URL:}/actuator/health/readiness"
 
 management:
   info:

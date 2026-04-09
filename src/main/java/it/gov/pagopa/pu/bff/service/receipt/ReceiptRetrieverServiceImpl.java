@@ -16,16 +16,19 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class ReceiptRetrieverServiceImpl implements ReceiptRetrieverService {
+  public static final String LIMITED_SCOPE_RESOURCE_RECEIPT = "receipt";
   private final ReceiptService receiptService;
   private final ReceiptViewMapper receiptViewMapper;
   private final ReceiptDetailDTOMapper receiptDetailDTOMapper;
+  private final AuthorizationService authorizationService;
 
   public ReceiptRetrieverServiceImpl(ReceiptService receiptService,
                                      ReceiptViewMapper receiptViewMapper,
-                                     ReceiptDetailDTOMapper receiptDetailDTOMapper) {
+                                     ReceiptDetailDTOMapper receiptDetailDTOMapper, AuthorizationService authorizationService) {
     this.receiptService = receiptService;
     this.receiptViewMapper = receiptViewMapper;
     this.receiptDetailDTOMapper = receiptDetailDTOMapper;
+    this.authorizationService = authorizationService;
   }
 
   @Override
@@ -60,7 +63,7 @@ public class ReceiptRetrieverServiceImpl implements ReceiptRetrieverService {
 
   @Override
   public FileResourceDTO getReceiptPdf(Long receiptId, Long organizationId, UserInfo loggedUser, String accessToken) {
-    AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser);
+    authorizationService.validateLimitedScopeUserForResource(organizationId, loggedUser, LIMITED_SCOPE_RESOURCE_RECEIPT, receiptId.toString());
     return receiptService.getReceiptPdf(receiptId, organizationId, accessToken);
   }
 }

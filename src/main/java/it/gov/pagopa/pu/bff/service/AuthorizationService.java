@@ -1,9 +1,6 @@
 package it.gov.pagopa.pu.bff.service;
 
-import it.gov.pagopa.pu.auth.dto.generated.AccessToken;
-import it.gov.pagopa.pu.auth.dto.generated.LimitedTokenRequest;
-import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
-import it.gov.pagopa.pu.auth.dto.generated.UserOrganizationRoles;
+import it.gov.pagopa.pu.auth.dto.generated.*;
 import it.gov.pagopa.pu.bff.connector.auth.client.AuthnClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -113,5 +110,22 @@ public class AuthorizationService {
 
   public void logout(String accessToken) {
     authClientImpl.logout(CLIENT_ID,accessToken);
+  }
+
+  public void validateLimitedScopeUserForResource(Long organizationId, UserInfo loggedUser, String resource, String resourceId) {
+    if(getUserOrganizationRoles(organizationId, loggedUser).isPresent()){
+      return;
+    }
+    if(!limitedScopeUserHasAccessToResource(organizationId, loggedUser, resource, resourceId)) {
+      throw new AuthorizationDeniedException("[USER_UNAUTHORIZED] Access denied on organizationId " + organizationId + " and resource "+resource+" having id " +resourceId+" to user " + loggedUser.getMappedExternalUserId());
+    }
+  }
+
+  private boolean limitedScopeUserHasAccessToResource(Long organizationId, UserInfo loggedUser, String resource, String resourceId) {
+    return loggedUser instanceof UserInfoLimitedScope userInfoLimitedScope
+      && userInfoLimitedScope.getResource().getResource().equals(resource)
+      && userInfoLimitedScope.getResource().getApp().equals(BFF_APP_NAME)
+      && userInfoLimitedScope.getResource().getOrganization().getOrganizationId().equals(organizationId)
+      && userInfoLimitedScope.getResource().getResourceId().equals(resourceId);
   }
 }

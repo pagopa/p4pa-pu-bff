@@ -30,6 +30,7 @@ import java.time.OffsetDateTime;
 import java.util.Collections;
 import java.util.List;
 
+import static it.gov.pagopa.pu.bff.service.receipt.ReceiptRetrieverServiceImpl.LIMITED_SCOPE_RESOURCE_RECEIPT;
 import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -41,19 +42,21 @@ class ReceiptRetrieverServiceImplTest {
   private ReceiptViewMapper receiptViewMapperMock;
   @Mock
   private ReceiptDetailDTOMapper receiptDetailDTOMapperMock;
+  @Mock
+  private AuthorizationService authorizationServiceMock;
 
   private ReceiptRetrieverServiceImpl receiptViewService;
   private final String accessToken = "TOKEN";
 
   @BeforeEach
   void setUp() {
-    receiptViewService = new ReceiptRetrieverServiceImpl(receiptServiceMock, receiptViewMapperMock, receiptDetailDTOMapperMock);
+    receiptViewService = new ReceiptRetrieverServiceImpl(receiptServiceMock, receiptViewMapperMock, receiptDetailDTOMapperMock, authorizationServiceMock);
   }
 
   @AfterEach
   void verifyNoMoreInteractions(){
     Mockito.verifyNoMoreInteractions(
-            receiptServiceMock,receiptViewMapperMock,receiptDetailDTOMapperMock
+            receiptServiceMock,receiptViewMapperMock,receiptDetailDTOMapperMock,authorizationServiceMock
     );
   }
 
@@ -331,19 +334,15 @@ class ReceiptRetrieverServiceImplTest {
     expectedResult.setResource(new ByteArrayResource("PDF-DATA".getBytes()));
     expectedResult.setFileName("filename");
 
-    try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
-      authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)).thenAnswer(a -> null);
+    Mockito.doNothing().when(authorizationServiceMock).validateLimitedScopeUserForResource(organizationId,loggedUser,LIMITED_SCOPE_RESOURCE_RECEIPT,receiptId.toString());
 
-      Mockito.when(receiptServiceMock.getReceiptPdf(receiptId, organizationId, accessToken))
-        .thenReturn(expectedResult);
+    Mockito.when(receiptServiceMock.getReceiptPdf(receiptId, organizationId, accessToken))
+      .thenReturn(expectedResult);
 
-      FileResourceDTO result = receiptViewService.getReceiptPdf(receiptId, organizationId, loggedUser, accessToken);
+    FileResourceDTO result = receiptViewService.getReceiptPdf(receiptId, organizationId, loggedUser, accessToken);
 
-      assertNotNull(result);
-      assertSame(expectedResult, result);
-
-      authorizationServiceMockedStatic.verify(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser));
-    }
+    assertNotNull(result);
+    assertSame(expectedResult, result);
   }
 }
 

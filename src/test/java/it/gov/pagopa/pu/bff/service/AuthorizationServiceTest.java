@@ -1,14 +1,14 @@
 package it.gov.pagopa.pu.bff.service;
 
-import it.gov.pagopa.pu.auth.dto.generated.AccessToken;
-import it.gov.pagopa.pu.auth.dto.generated.LimitedTokenRequest;
-import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
-import it.gov.pagopa.pu.auth.dto.generated.UserOrganizationRoles;
+import it.gov.pagopa.pu.auth.dto.generated.*;
 import it.gov.pagopa.pu.bff.connector.auth.client.AuthnClient;
 import it.gov.pagopa.pu.bff.exception.InvalidAccessTokenException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -17,7 +17,9 @@ import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.List;
+import java.util.stream.Stream;
 
+import static it.gov.pagopa.pu.bff.service.AuthorizationService.BFF_APP_NAME;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -269,6 +271,70 @@ class AuthorizationServiceTest {
     // Then
     Assertions.assertNotNull(result);
     Assertions.assertEquals(expectedAccessToken, result);
+  }
+
+  @Test
+  void givenUserHasRoleForOrganizationWhenValidateLimitedScopeUserForResourceThenOk() {
+    Long organizationId = 1L;
+    UserOrganizationRoles userAdminRole = new UserOrganizationRoles();
+    userAdminRole.setRoles(List.of("ROLE_ADMIN"));
+    userAdminRole.setOrganizationId(organizationId);
+    UserInfo userInfo = new UserInfo();
+    userInfo.setOrganizations(List.of(userAdminRole));
+
+    Assertions.assertDoesNotThrow(() -> authorizationService.validateLimitedScopeUserForResource(organizationId,userInfo, "resource","resourceId"));
+  }
+
+  @Test
+  void givenUserHasNoRoleForOrganizationWhenValidateLimitedScopeUserForResourceThenOk() {
+    Long organizationId = 1L;
+    String resource = "resource";
+    String resourceId = "resourceId";
+    UserOrganizationRoles userOrganizationRole = new UserOrganizationRoles();
+    userOrganizationRole.setOrganizationId(organizationId);
+    LimitedScopeResource  limitedScopeResource = new LimitedScopeResource();
+    limitedScopeResource.setApp(BFF_APP_NAME);
+    limitedScopeResource.setResource(resource);
+    limitedScopeResource.setOrganization(userOrganizationRole);
+    limitedScopeResource.setResourceId(resourceId);
+    UserInfoLimitedScope userInfo = new UserInfoLimitedScope();
+    userInfo.setResource(limitedScopeResource);
+
+    Assertions.assertDoesNotThrow(() -> authorizationService.validateLimitedScopeUserForResource(organizationId,userInfo, resource, resourceId));
+  }
+
+  @ParameterizedTest
+  @MethodSource("limitedScopeResourceSource")
+  void givenUserHasNoRoleForOrganizationAndNoMatchingLimitedScopeWhenValidateLimitedScopeUserForResourceThenOk(Long parameterizedOrganizationId, String parameterizedResourceStr, String parameterizedResourceId, String parameterizedAppName) {
+    Long organizationId = 1L;
+    String resource = "resource";
+    String resourceId = "resourceId";
+    UserOrganizationRoles userOrganizationRole = new UserOrganizationRoles();
+    userOrganizationRole.setOrganizationId(parameterizedOrganizationId);
+    LimitedScopeResource  limitedScopeResource = new LimitedScopeResource();
+    limitedScopeResource.setApp(parameterizedAppName);
+    limitedScopeResource.setResource(parameterizedResourceStr);
+    limitedScopeResource.setOrganization(userOrganizationRole);
+    limitedScopeResource.setResourceId(parameterizedResourceId);
+    UserInfoLimitedScope userInfo = new UserInfoLimitedScope();
+    userInfo.setResource(limitedScopeResource);
+
+    AuthorizationDeniedException authorizationDeniedException = Assertions.assertThrows(AuthorizationDeniedException.class, () -> authorizationService.validateLimitedScopeUserForResource(organizationId, userInfo, resource, resourceId));
+
+    Assertions.assertTrue(authorizationDeniedException.getMessage().startsWith("[USER_UNAUTHORIZED]"));
+  }
+
+  static Stream<Arguments> limitedScopeResourceSource() {
+    long organizationId = 1L;
+    String resource = "resource";
+    String resourceId = "resourceId";
+    return Stream.of(
+      Arguments.of(organizationId+1,resource,resourceId,BFF_APP_NAME),
+      Arguments.of(organizationId,resource+1,resourceId,BFF_APP_NAME),
+      Arguments.of(organizationId,resource,resourceId+1,BFF_APP_NAME),
+      Arguments.of(organizationId,resource,resourceId,BFF_APP_NAME+1)
+
+    );
   }
 }
 

@@ -1,14 +1,18 @@
 package it.gov.pagopa.pu.bff.service;
 
 import it.gov.pagopa.pu.bff.config.DefaultConfigFe;
+import it.gov.pagopa.pu.bff.connector.organization.BrokerConfigurationService;
 import it.gov.pagopa.pu.bff.connector.organization.BrokerService;
 import it.gov.pagopa.pu.bff.dto.generated.ConfigFE;
+import it.gov.pagopa.pu.bff.exception.ResourceNotFoundException;
 import it.gov.pagopa.pu.bff.mapper.PersonalisationFE2ConfigFEMapper;
 import it.gov.pagopa.pu.bff.service.broker.BrokerRetrieverServiceImpl;
 import it.gov.pagopa.pu.bff.util.TestUtils;
 import it.gov.pagopa.pu.organization.dto.generated.Broker;
+import it.gov.pagopa.pu.organization.dto.generated.BrokerConfiguration;
 import it.gov.pagopa.pu.organization.dto.generated.PersonalisationFe;
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -27,25 +31,30 @@ class BrokerRetrieverServiceImplTest {
   private DefaultConfigFe defaultConfigFeMock;
   @Mock
   private PersonalisationFE2ConfigFEMapper personalisationFE2ConfigFEMapperMock;
+  @Mock
+  private BrokerConfigurationService brokerConfigurationServiceMock;
 
   private BrokerRetrieverServiceImpl brokerService;
   private Broker entityModelBroker;
   private PersonalisationFe personalisationFe;
   private final String accessToken = "TOKEN";
   private ConfigFE defaultFEConfig;
+  private final BrokerConfiguration brokerConfiguration = new BrokerConfiguration();
 
   @BeforeEach
   void setUp() {
     entityModelBroker = new Broker();
+    entityModelBroker.setBrokerId(1L);
     personalisationFe = new PersonalisationFe();
-    entityModelBroker.setPersonalisationFe(personalisationFe);
+    brokerConfiguration.setPersonalisationFe(personalisationFe);
 
     defaultFEConfig = new ConfigFE();
 
     brokerService = new BrokerRetrieverServiceImpl(
       brokerServiceMock,
       defaultConfigFeMock,
-      personalisationFE2ConfigFEMapperMock
+      personalisationFE2ConfigFEMapperMock,
+      brokerConfigurationServiceMock
     );
   }
 
@@ -58,6 +67,8 @@ class BrokerRetrieverServiceImplTest {
     userInfo.setCanManageUsers(true);
 
     Mockito.when(brokerServiceMock.getBrokerById(1L, accessToken)).thenReturn(entityModelBroker);
+    Mockito.when(brokerConfigurationServiceMock.getBrokerConfiguration(1L, accessToken))
+      .thenReturn(brokerConfiguration);
     Mockito.when(personalisationFE2ConfigFEMapperMock.mapPersonalisationFE2ConfigFE(personalisationFe, entityModelBroker, userInfo)).thenReturn(configFE);
 
     ConfigFE result = brokerService.getBrokerConfig(userInfo, accessToken);
@@ -84,5 +95,24 @@ class BrokerRetrieverServiceImplTest {
 
     assertSame(defaultFEConfig, result);
   }
+
+  @Test
+  void givenNotFoundConfigurationWhenGetBrokerConfigThenOK() {
+    TestUtils.addSampleUserIntoSecurityContext();
+    UserInfo userInfo = new UserInfo();
+    userInfo.setBrokerId(1L);
+    userInfo.setCanManageUsers(true);
+
+    Mockito.when(brokerServiceMock.getBrokerById(1L, accessToken)).thenReturn(entityModelBroker);
+    Mockito.when(brokerConfigurationServiceMock.getBrokerConfiguration(1L, accessToken))
+      .thenReturn(null);
+
+    ResourceNotFoundException result = Assertions.assertThrows(
+      ResourceNotFoundException.class,
+      ()-> brokerService.getBrokerConfig(userInfo, accessToken));
+
+    Assertions.assertEquals("BROKER_CONFIGURATION_NOT_FOUND", result.getCode());
+  }
+
 
 }

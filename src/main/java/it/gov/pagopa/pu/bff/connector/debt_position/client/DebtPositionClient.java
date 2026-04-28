@@ -8,6 +8,7 @@ import it.gov.pagopa.pu.bff.mapper.UpstreamErrorMapper;
 import it.gov.pagopa.pu.bff.util.DateUtils;
 import it.gov.pagopa.pu.bff.util.PageUtils;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionDTO;
+import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionOrigin;
 import it.gov.pagopa.pu.debtpositions.dto.generated.ManageDebtPositionDTO;
 import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelDebtPositionView;
 import lombok.extern.slf4j.Slf4j;
@@ -37,7 +38,7 @@ public class DebtPositionClient {
       .createDebtPosition(debtPositionDTO, massive);
   }
 
-  public PagedModelDebtPositionView getDebtPositionViews(DebtPositionViewFiltersDTO filtersDTO, List<String> debtPositionOrigins, String operatorExternalId, Pageable pageable, String accessToken) {
+  public PagedModelDebtPositionView getDebtPositionViews(DebtPositionViewFiltersDTO filtersDTO, List<DebtPositionOrigin> debtPositionOrigins, String operatorExternalId, Pageable pageable, String accessToken) {
     return debtPositionApisHolder.getDebtPositionViewSearchControllerApi(accessToken)
       .crudDebtPositionsViewFindDebtPositionViews(
         filtersDTO.getOrganizationId(),

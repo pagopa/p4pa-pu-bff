@@ -2,7 +2,9 @@
 
 This application belong to the **inbound** tier of the **Piattaforma Unitaria** product.
 
-See [PU Microservice Architecture](https://pagopa.atlassian.net/wiki/spaces/SPAC/pages/1405845916/Architettura+microservizi) for more details.
+See [PU Microservice Architecture](https://raw.githubusercontent.com/pagopa/p4pa-doc/refs/heads/main/reference/technical-docs/Architettura_microservizi.pdf) for more details.
+
+See [p4pa-doc](https://github.com/pagopa/p4pa-doc) for further documentation.
 
 ## 🧱 Role
 
@@ -147,7 +149,6 @@ See [application.yml](src/main/resources/application.yml) for each configurable 
 | WORKFLOW_HUB_PRINT_BODY_WHEN_ERROR       | To print body when an error occurs                  | true    |
 | FILESHARE_BASE_URL                       | Fileshare microservice URL                          |         |
 | CITIZEN_BASE_URL                         | Citizen microservice URL                            |         |
-| CIE_BASE_URL                             | CIE microservice URL                                |         |
 
 #### 💼 Business logic
 | ENV                                            | DESCRIPTION                                    | DEFAULT |

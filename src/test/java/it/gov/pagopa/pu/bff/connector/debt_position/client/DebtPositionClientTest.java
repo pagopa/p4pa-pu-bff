@@ -87,7 +87,7 @@ class DebtPositionClientTest {
       DebtPositionViewFiltersDTO.class);
     String operatorExternalUserId = "operatorExternalUserId";
     String accessToken = "ACCESSTOKEN";
-    List<String> debtPositionOrigins = List.of(DebtPositionOrigin.ORDINARY.toString(), DebtPositionOrigin.RECEIPT_FILE.toString());
+    List<DebtPositionOrigin> debtPositionOrigins = List.of(DebtPositionOrigin.ORDINARY, DebtPositionOrigin.RECEIPT_FILE);
     PagedModelDebtPositionView expectedResult = new PagedModelDebtPositionView();
 
     when(debtPositionApisHolderMock.getDebtPositionViewSearchControllerApi(accessToken))
@@ -95,7 +95,7 @@ class DebtPositionClientTest {
     when(debtPositionViewSearchControllerApiMock.crudDebtPositionsViewFindDebtPositionViews(
       filtersDTO.getOrganizationId(),
       operatorExternalUserId,
-      List.of(DebtPositionOrigin.ORDINARY.toString(), DebtPositionOrigin.RECEIPT_FILE.toString()),
+      List.of(DebtPositionOrigin.ORDINARY, DebtPositionOrigin.RECEIPT_FILE),
       filtersDTO.getCreationDateTimeFrom().toLocalDateTime(),
       filtersDTO.getCreationDateTimeTo().toLocalDateTime(),
       filtersDTO.getFiscalCode(),

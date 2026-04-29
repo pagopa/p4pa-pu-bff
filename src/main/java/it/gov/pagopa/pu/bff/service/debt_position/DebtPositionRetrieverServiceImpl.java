@@ -39,8 +39,6 @@ public class DebtPositionRetrieverServiceImpl implements DebtPositionRetrieverSe
   private final PrintPaymentNoticeService printPaymentNoticeService;
   private final ZipFileService zipFileService;
 
-  private static final List<String> debtPositionOriginFilterList = Constants.ORDINARY_DEBT_POSITION_ORIGINS.stream().map(DebtPositionOrigin::toString).toList();
-
   public DebtPositionRetrieverServiceImpl(DebtPositionService debtPositionService,
                                           DebtPositionTypeOrgService debtPositionTypeOrgService,
                                           DebtPositionTypeOrgOperatorsService debtPositionTypeOrgOperatorsService,
@@ -81,7 +79,7 @@ public class DebtPositionRetrieverServiceImpl implements DebtPositionRetrieverSe
     return debtPositionViewMapper.mapToPagedDebtPositionView(
       debtPositionService.getDebtPositionViews(
         filtersDTO,
-        debtPositionOriginFilterList,
+        Constants.ORDINARY_DEBT_POSITION_ORIGINS,
         loggedUser.getMappedExternalUserId(),
         pageable,
         accessToken));

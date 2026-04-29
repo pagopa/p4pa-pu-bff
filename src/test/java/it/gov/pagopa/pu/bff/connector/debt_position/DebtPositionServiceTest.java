@@ -53,7 +53,7 @@ class DebtPositionServiceTest {
     DebtPositionViewFiltersDTO filtersDTO = new DebtPositionViewFiltersDTO();
     String accessToken = "ACCESSTOKEN";
     String operatorExternalUserId = "operatorExternalUserId";
-    List<String> debtPositionOrigins = List.of(DebtPositionOrigin.ORDINARY.toString(), DebtPositionOrigin.ORDINARY_SIL.toString(), DebtPositionOrigin.SPONTANEOUS.toString());
+    List<DebtPositionOrigin> debtPositionOrigins = List.of(DebtPositionOrigin.ORDINARY, DebtPositionOrigin.ORDINARY_SIL, DebtPositionOrigin.SPONTANEOUS);
     Pageable pageable = Mockito.mock(Pageable.class);
     PagedModelDebtPositionView expectedResult = new PagedModelDebtPositionView();
 

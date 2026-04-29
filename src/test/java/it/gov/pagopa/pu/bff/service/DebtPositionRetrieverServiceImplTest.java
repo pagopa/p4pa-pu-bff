@@ -167,7 +167,6 @@ class DebtPositionRetrieverServiceImplTest {
     UserInfo loggedUser = new UserInfo();
     loggedUser.setMappedExternalUserId("mappedExternalUserId");
     PageRequest pageRequest = PageRequest.of(0, 10);
-    List<String> debtPositionOrigins = Constants.ORDINARY_DEBT_POSITION_ORIGINS.stream().map(DebtPositionOrigin::toString).toList();
 
     DebtPositionViewFiltersDTO debtPositionViewFiltersDTO = podamFactory.manufacturePojo(
       DebtPositionViewFiltersDTO.class);
@@ -179,7 +178,7 @@ class DebtPositionRetrieverServiceImplTest {
     try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
       authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(debtPositionViewFiltersDTO.getOrganizationId(), loggedUser)).thenAnswer(a -> null);
 
-      Mockito.when(debtPositionServiceMock.getDebtPositionViews(debtPositionViewFiltersDTO, debtPositionOrigins, loggedUser.getMappedExternalUserId(), pageRequest,
+      Mockito.when(debtPositionServiceMock.getDebtPositionViews(debtPositionViewFiltersDTO, Constants.ORDINARY_DEBT_POSITION_ORIGINS, loggedUser.getMappedExternalUserId(), pageRequest,
           accessToken))
         .thenReturn(pagedModelDebtPositionView);
       Mockito.when(debtPositionViewMapperMock.mapToPagedDebtPositionView(pagedModelDebtPositionView))
@@ -314,15 +313,13 @@ class DebtPositionRetrieverServiceImplTest {
     loggedUser.setMappedExternalUserId("mappedExternalUserId");
     PageRequest pageRequest = PageRequest.of(0, 10);
 
-    List<String> debtPositionOriginFilterList = Constants.ORDINARY_DEBT_POSITION_ORIGINS.stream().map(DebtPositionOrigin::toString).toList();
-
     PagedModelDebtPositionView pagedModel = new PagedModelDebtPositionView();
     PagedDebtPositionView expected = new PagedDebtPositionView();
 
     try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
       authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(filtersDTO.getOrganizationId(), loggedUser)).thenAnswer(a -> null);
 
-      Mockito.when(debtPositionServiceMock.getDebtPositionViews(filtersDTO, debtPositionOriginFilterList, loggedUser.getMappedExternalUserId(), pageRequest, accessToken))
+      Mockito.when(debtPositionServiceMock.getDebtPositionViews(filtersDTO, Constants.ORDINARY_DEBT_POSITION_ORIGINS, loggedUser.getMappedExternalUserId(), pageRequest, accessToken))
         .thenReturn(pagedModel);
 
       Mockito.when(debtPositionViewMapperMock.mapToPagedDebtPositionView(pagedModel))

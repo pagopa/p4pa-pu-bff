@@ -1,10 +1,7 @@
 package it.gov.pagopa.pu.bff.connector.debt_position.config;
 
 import it.gov.pagopa.pu.bff.connector.BaseApiHolderTest;
-import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionStatus;
-import it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentStatus;
-import it.gov.pagopa.pu.debtpositions.dto.generated.ReceiptOriginType;
-import it.gov.pagopa.pu.debtpositions.dto.generated.SpontaneousForm;
+import it.gov.pagopa.pu.debtpositions.dto.generated.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -180,7 +177,7 @@ class DebtPositionApisHolderTest extends BaseApiHolderTest {
         .crudDebtPositionsViewFindDebtPositionViews(
           1L,
           "operatorExternalUserId",
-          List.of("debtPositionOrigin"),
+          List.of(DebtPositionOrigin.ORDINARY),
           LocalDateTime.now(),
           LocalDateTime.now(),
           "fiscalCode",

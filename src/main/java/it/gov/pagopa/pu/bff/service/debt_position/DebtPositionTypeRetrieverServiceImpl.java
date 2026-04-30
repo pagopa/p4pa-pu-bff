@@ -1,0 +1,161 @@
+package it.gov.pagopa.pu.bff.service.debt_position;
+
+import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
+import it.gov.pagopa.pu.bff.connector.debt_position.DebtPositionTypeOrgService;
+import it.gov.pagopa.pu.bff.connector.debt_position.DebtPositionTypeService;
+import it.gov.pagopa.pu.bff.connector.organization.OrganizationService;
+import it.gov.pagopa.pu.bff.dto.generated.DebtPositionTypeDetailDTO;
+import it.gov.pagopa.pu.bff.dto.generated.DebtPositionTypePatchRequestBody;
+import it.gov.pagopa.pu.bff.dto.generated.PagedDebtPositionTypeWithCount;
+import it.gov.pagopa.pu.bff.exception.ConflictException;
+import it.gov.pagopa.pu.bff.mapper.DebtPositionTypeMapper;
+import it.gov.pagopa.pu.bff.mapper.DebtPositionTypeWithCountMapper;
+import it.gov.pagopa.pu.bff.service.AuthorizationService;
+import it.gov.pagopa.pu.bff.service.taxonomy.TaxonomyRetrieverService;
+import it.gov.pagopa.pu.debtpositions.dto.generated.CollectionModelDebtPositionType;
+import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionType;
+import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeRequestBody;
+import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelDebtPositionTypeOrg;
+import it.gov.pagopa.pu.organization.dto.generated.Organization;
+import it.gov.pagopa.pu.organization.dto.generated.Taxonomy;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
+
+import java.util.Collections;
+import java.util.List;
+
+@Service
+public class DebtPositionTypeRetrieverServiceImpl implements DebtPositionTypeRetrieverService {
+
+  private final AuthorizationService authorizationService;
+  private final DebtPositionTypeService debtPositionTypeService;
+  private final DebtPositionTypeOrgService debtPositionTypeOrgService;
+  private final DebtPositionTypeWithCountMapper debtPositionTypeWithCountMapper;
+  private final TaxonomyRetrieverService taxonomyRetrieverService;
+  private final DebtPositionTypeMapper debtPositionTypeMapper;
+  private final OrganizationService organizationService;
+  public static final String DEBT_POSITION_TYPE_CODE_UNKNOWN = "UNKNOWN";
+
+  public DebtPositionTypeRetrieverServiceImpl(
+    DebtPositionTypeService debtPositionTypeService,
+    DebtPositionTypeWithCountMapper debtPositionTypeWithCountMapper,
+    TaxonomyRetrieverService taxonomyRetrieverService,
+    AuthorizationService authorizationService,
+    DebtPositionTypeMapper debtPositionTypeMapper,
+    DebtPositionTypeOrgService debtPositionTypeOrgService,
+    OrganizationService organizationService
+  ) {
+    this.authorizationService = authorizationService;
+    this.debtPositionTypeService = debtPositionTypeService;
+    this.debtPositionTypeWithCountMapper = debtPositionTypeWithCountMapper;
+    this.taxonomyRetrieverService = taxonomyRetrieverService;
+    this.debtPositionTypeMapper = debtPositionTypeMapper;
+    this.debtPositionTypeOrgService = debtPositionTypeOrgService;
+    this.organizationService = organizationService;
+  }
+
+  public DebtPositionType getDebtPositionTypeById(String accessToken, Long id) {
+    return debtPositionTypeService.getDebtPositionTypeById(id, accessToken);
+  }
+
+  @Override
+  public PagedDebtPositionTypeWithCount getDebtPositionTypeWithCount(
+    Long organizationId, String code, String description, Pageable pageable,
+    UserInfo loggedUser, String accessToken) {
+    authorizationService.validateAdminRole(organizationId, loggedUser);
+    return debtPositionTypeWithCountMapper.mapToPagedDebtPositionWithCount(
+      debtPositionTypeService.getDebtPositionTypeWithCount(
+        loggedUser.getBrokerId(),
+        code,
+        description,
+        pageable,
+        accessToken)
+    );
+  }
+
+  @Override
+  public DebtPositionTypeDetailDTO getDebtPositionTypeDetail(
+    Long organizationId, Long debtPositionTypeId, UserInfo loggedUser,
+    String accessToken) {
+    authorizationService.validateBrokerAdminRole(loggedUser);
+
+    DebtPositionType debtPositionType = getDebtPositionTypeById(accessToken,
+      debtPositionTypeId);
+    if (debtPositionType == null ||
+      !loggedUser.getBrokerId().equals(debtPositionType.getBrokerId()) ||
+      StringUtils.isBlank(debtPositionType.getTaxonomyCode())) {
+      return null;
+    }
+
+    Taxonomy taxonomy = taxonomyRetrieverService.getTaxonomyByTaxonomyCode(
+      debtPositionType.getTaxonomyCode(), accessToken);
+    if (taxonomy == null) {
+      return null;
+    }
+
+    return debtPositionTypeMapper.mapToDebtPositionTypeDetailDTO(
+      debtPositionType, taxonomy);
+  }
+
+  public DebtPositionType createDebtPositionType(
+    DebtPositionTypeRequestBody debtPositionType, UserInfo loggedUser, String accessToken) {
+    authorizationService.validateBrokerAdminRole(loggedUser);
+    if (debtPositionType.getDebtPositionTypeId() != null) {
+      throw new IllegalArgumentException("DebtPositionTypeId must be null");
+    }
+    return debtPositionTypeService.createDebtPositionType(debtPositionType, accessToken);
+  }
+
+  @Override
+  public DebtPositionType patchDebtPositionType(
+    Long debtPositionTypeId,
+    DebtPositionTypePatchRequestBody debtPositionTypePatchRequestBody,
+    UserInfo loggedUser,
+    String accessToken) {
+    authorizationService.validateBrokerAdminRole(loggedUser);
+    DebtPositionType oldDpType = debtPositionTypeService.getDebtPositionTypeById(debtPositionTypeId, accessToken);
+    if (oldDpType == null) {
+      return null;
+    }
+    return debtPositionTypeService.patchDebtPositionType(
+      debtPositionTypeId,
+      debtPositionTypeMapper.mapToDebtPositionTypeRequestBody(debtPositionTypePatchRequestBody, oldDpType),
+      accessToken);
+  }
+
+  @Override
+  public void deleteDebtPositionType(Long debtPositionTypeId, UserInfo loggedUser, String accessToken) {
+    authorizationService.validateBrokerAdminRole(loggedUser);
+
+    PagedModelDebtPositionTypeOrg debtPositionTypeOrgs = debtPositionTypeOrgService.getDebtPositionTypeOrgByDebtPositionTypeId(
+      debtPositionTypeId, PageRequest.of(0, 1), accessToken);
+
+    if (debtPositionTypeOrgs != null && debtPositionTypeOrgs.getEmbedded() != null && !CollectionUtils.isEmpty(debtPositionTypeOrgs.getEmbedded().getDebtPositionTypeOrgs())) {
+      throw new ConflictException("DEBT_POSITION_TYPE_IN_USE", "Cannot delete DebtPositionType: it is associated with one or more DebtPositionTypeOrgs");
+    }
+    debtPositionTypeService.deleteDebtPositionType(debtPositionTypeId, accessToken);
+  }
+
+  @Override
+  public List<DebtPositionType> getDebtPositionTypesByOrganizationId(Long organizationId, UserInfo loggedUser, String accessToken) {
+    AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser);
+
+    Organization organization = organizationService.getOrganizationByOrganizationId(organizationId, accessToken);
+    Long brokerId = organization.getBrokerId();
+    String orgType = organization.getOrgTypeCode();
+
+    CollectionModelDebtPositionType collectionModel = debtPositionTypeService.getDebtPositionTypesByBrokerIdAndOrgType(brokerId, orgType, accessToken);
+
+    if (collectionModel != null && collectionModel.getEmbedded() != null && !CollectionUtils.isEmpty(collectionModel.getEmbedded().getDebtPositionTypes())) {
+      return collectionModel.getEmbedded().getDebtPositionTypes()
+        .stream()
+        .filter(debtPositionType -> !DEBT_POSITION_TYPE_CODE_UNKNOWN.equals(debtPositionType.getCode()))
+        .toList();
+    }
+    return Collections.emptyList();
+  }
+
+}

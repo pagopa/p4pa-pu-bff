@@ -1,0 +1,68 @@
+package it.gov.pagopa.pu.bff.mapper;
+
+import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
+import it.gov.pagopa.pu.bff.connector.auth.AuthzService;
+import it.gov.pagopa.pu.bff.dto.generated.IngestionFlowFile;
+import it.gov.pagopa.pu.bff.dto.generated.PagedIngestionFlowFile;
+import it.gov.pagopa.pu.bff.util.UserUtils;
+import it.gov.pagopa.pu.processexecutions.dto.generated.PagedModelIngestionFlowFile;
+import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
+
+import java.util.Collections;
+
+@Component
+public class IngestionFlowFileMapper {
+  private final AuthzService authzService;
+
+  public IngestionFlowFileMapper(AuthzService authzService) {
+    this.authzService = authzService;
+  }
+
+  public PagedIngestionFlowFile mapToPagedIngestionFlowFile(
+    PagedModelIngestionFlowFile pagedModelIngestionFlowFile, UserInfo userInfo, String accessToken) {
+    PagedIngestionFlowFile mappedIngestionFlowFile = new PagedIngestionFlowFile();
+    if(pagedModelIngestionFlowFile != null){
+      if( pagedModelIngestionFlowFile.getEmbedded() != null
+        && !CollectionUtils.isEmpty(pagedModelIngestionFlowFile.getEmbedded().getIngestionFlowFiles())){
+        mappedIngestionFlowFile.setContent(pagedModelIngestionFlowFile.getEmbedded().getIngestionFlowFiles().stream().map(i->this.mapToIngestionFlowFile(i, userInfo, accessToken)).toList());
+      }else{
+        mappedIngestionFlowFile.setContent(Collections.emptyList());
+      }
+      if(pagedModelIngestionFlowFile.getPage()!=null){
+        mappedIngestionFlowFile.setTotalPages(pagedModelIngestionFlowFile.getPage().getTotalPages());
+        mappedIngestionFlowFile.setSize(pagedModelIngestionFlowFile.getPage().getSize());
+        mappedIngestionFlowFile.setNumber(pagedModelIngestionFlowFile.getPage().getNumber());
+        mappedIngestionFlowFile.setTotalElements(pagedModelIngestionFlowFile.getPage().getTotalElements());
+      }
+    }
+    return mappedIngestionFlowFile;
+  }
+
+  private IngestionFlowFile mapToIngestionFlowFile(it.gov.pagopa.pu.processexecutions.dto.generated.IngestionFlowFile ingestionFlowFile,
+    UserInfo userInfo, String accessToken) {
+
+    return IngestionFlowFile.builder()
+      .ingestionFlowFileId(ingestionFlowFile.getIngestionFlowFileId())
+      .fileName(ingestionFlowFile.getFileName())
+      .creationDate(ingestionFlowFile.getCreationDate())
+      .operator(UserUtils.getOperator(ingestionFlowFile.getOperatorExternalId(), userInfo,
+        authzService.getUserInfoFromMappedExternaUserId(
+          ingestionFlowFile.getOperatorExternalId(), accessToken)))
+      .totalRows(ingestionFlowFile.getNumTotalRows())
+      .correctlyImportedRows(ingestionFlowFile.getNumCorrectlyImportedRows())
+      .discardedRows(getDiscardedRows(ingestionFlowFile))
+      .status(ingestionFlowFile.getStatus())
+      .errorDescription(ingestionFlowFile.getErrorDescription())
+      .discardFileName(ingestionFlowFile.getDiscardFileName())
+      .build();
+  }
+
+  private static long getDiscardedRows(
+    it.gov.pagopa.pu.processexecutions.dto.generated.IngestionFlowFile ingestionFlowFile) {
+    Long totalRows = ingestionFlowFile.getNumTotalRows()!=null?ingestionFlowFile.getNumTotalRows():0L;
+    Long correctlyImportedRows = ingestionFlowFile.getNumCorrectlyImportedRows()!=null?ingestionFlowFile.getNumCorrectlyImportedRows():0L;
+    return Math.max(totalRows
+      - correctlyImportedRows,0);
+  }
+}

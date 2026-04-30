@@ -1,0 +1,70 @@
+package it.gov.pagopa.pu.bff.connector.debt_position;
+
+import it.gov.pagopa.pu.bff.connector.debt_position.client.DebtPositionTypeClient;
+import it.gov.pagopa.pu.debtpositions.dto.generated.CollectionModelDebtPositionType;
+import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionType;
+import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeRequestBody;
+import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelDebtPositionTypeWithCount;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Set;
+
+@Service
+@CacheConfig(cacheNames = it.gov.pagopa.pu.bff.config.CacheConfig.Fields.debtPositionType)
+public class DebtPositionTypeServiceImpl implements DebtPositionTypeService {
+
+  private final DebtPositionTypeClient client;
+
+  public DebtPositionTypeServiceImpl(DebtPositionTypeClient client) {
+    this.client = client;
+  }
+
+  @Override
+  @Cacheable(key = "#id", unless="#result == null")
+  public DebtPositionType getDebtPositionTypeById(Long id, String accessToken) {
+    return client.getDebtPositionTypeById(id, accessToken);
+  }
+
+  @Override
+  public PagedModelDebtPositionTypeWithCount getDebtPositionTypeWithCount(Long brokerId, String code, String description, Pageable pageable, String accessToken) {
+    return client.getDebtPositionTypeWithCount(brokerId, code, description, pageable, accessToken);
+  }
+
+  @Override
+  public DebtPositionType createDebtPositionType(
+    DebtPositionTypeRequestBody debtPositionType,
+    String accessToken) {
+    return client.createDebtPositionType(debtPositionType, accessToken);
+  }
+
+  @Override
+  @CacheEvict(key = "#debtPositionTypeId", condition = "#debtPositionTypeId!=null")
+  public DebtPositionType patchDebtPositionType(
+    Long debtPositionTypeId,
+    DebtPositionTypeRequestBody debtPositionType,
+    String accessToken) {
+    return client.patchDebtPositionType(debtPositionTypeId, debtPositionType, accessToken);
+  }
+
+  @Override
+  public void deleteDebtPositionType(Long debtPositionTypeId, String accessToken) {
+    client.deleteDebtPositionType(debtPositionTypeId, accessToken);
+  }
+
+  @Override
+  public CollectionModelDebtPositionType getDebtPositionTypesByBrokerIdAndOrgType(Long brokerId, String orgType, String accessToken) {
+    return client.getDebtPositionTypesByBrokerIdAndOrgType(brokerId, orgType, accessToken);
+  }
+
+  @Override
+  public List<DebtPositionType> findByDebtPositionTypeIds(Set<Long> debtPositionTypeIds, String accessToken) {
+    return client.findByDebtPositionTypeIds(debtPositionTypeIds, accessToken);
+  }
+
+
+}

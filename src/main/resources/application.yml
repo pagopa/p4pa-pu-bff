@@ -1,18 +1,181 @@
+server:
+  port: "\${SERVER_PORT:8080}"
+
 spring:
-    application:
-      name: ${artifactId}
-      version: ${version}
-    jmx.enabled: true
+  application:
+    name: ${artifactId}
+    version: ${version}
+  jmx.enabled: true
+  threads:
+    virtual:
+      enabled: "\${VIRTUAL_THREADS_ENABLED:true}"
+monitoring:
+  services:
+    auth:
+      serviceName: "P4PA-Auth Service"
+      url: "\${AUTH_SERVER_BASE_URL:}/actuator/health/readiness"
+    organization:
+      serviceName: "P4PA-Organization Service"
+      url: "\${ORGANIZATION_BASE_URL:}/actuator/health/readiness"
+    debt-position:
+      serviceName: "P4PA-Debt-position Service"
+      url: "\${DEBT_POSITIONS_BASE_URL:}/actuator/health/readiness"
+    pagopa-payments:
+      serviceName: "P4PA-PagoPA-payments Service"
+      url: "\${PAGOPA_PAYMENTS_BASE_URL:}/actuator/health/readiness"
+    fileshare:
+      serviceName: "P4PA-Fileshare Service"
+      url: "\${FILESHARE_BASE_URL:}/actuator/health/readiness"
+    workflow-hub:
+      serviceName: "P4PA-Workflow-hub Service"
+      url: "\${WORKFLOW_HUB_BASE_URL:}/actuator/health/readiness"
+    citizen:
+      serviceName: "P4PA-Citizen Service"
+      url: "\${CITIZEN_BASE_URL:}/actuator/health/readiness"
+
 management:
-    endpoint:
-      health:
-        probes.enabled: true
-        group:
-          readiness.include: "*"
-          liveness.include: livenessState,diskSpace,ping
-    endpoints:
-      jmx:
-        exposure.include: "*"
-      web:
-        exposure.include: info, health
+  info:
+    build.enabled: true
+    java.enabled: true
+    git.enabled: true
+  otlp.metrics.export.enabled: "\${TRACING_EXPORT:false}"
+  tracing:
+    sampling.probability: "\${TRACING_SAMPLING_PROBABILITY:1.0}"
+    baggage.remote-fields:
+      - X-user-id
+  observations:
+    http.server:
+        filter.order: -100
+  endpoints:
+    jmx:
+      exposure.include: "*"
+    web:
+      exposure:
+        include: health, info, prometheus, metrics, caches
+      base-path: /actuator
+  endpoint:
+    health:
+      probes.enabled: true
+      logging.slow-indicator-threshold: "\${HEALTH_ACTUATOR_LOGGER_TIMEOUT_DURATION:PT1S}"
+      show-details: "\${HEALTH_ACTUATOR_SHOW_DETAILS:when-authorized}"
+      group:
+        readiness.include: "*"
+        liveness.include: livenessState,diskSpace,ping
+    prometheus:
+      enabled: true
+  metrics:
+    tags:
+      application: ${artifactId}
+    export:
+      prometheus:
+        enabled: true
+        step: 1m
+        descriptions: true
+    enable:
+      jvm: true
+      process: true
+      system: true
+      http: true
+      logback: true
+
+logging:
+  level:
+    root: "\${LOG_LEVEL_ROOT:INFO}"
+    it.gov.pagopa: "\${LOG_LEVEL_PAGOPA:INFO}"
+    org.springframework: "\${LOG_LEVEL_SPRING:INFO}"
+    org.springframework.boot.availability: "\${LOG_LEVEL_SPRING_BOOT_AVAILABILITY:DEBUG}"
+    it.gov.pagopa.pu.bff.exception.GlobalExceptionHandler: "\${LOGGING_LEVEL_API_REQUEST_EXCEPTION:INFO}"
+    org.springdoc.core.utils.SpringDocAnnotationsUtils: "\${LOG_LEVEL_SPRING_DOC:ERROR}"
+    PERFORMANCE_LOG: "\${LOG_LEVEL_PERFORMANCE_LOG:INFO}"
+    PERFORMANCE_LOG.API_REQUEST: "\${LOG_LEVEL_PERFORMANCE_LOG_API_REQUEST:\${logging.level.PERFORMANCE_LOG}}"
+    PERFORMANCE_LOG.REST_INVOKE: "\${LOG_LEVEL_PERFORMANCE_LOG_REST_INVOKE:\${logging.level.PERFORMANCE_LOG}}"
+
+springdoc:
+  api-docs.version: openapi_3_0
+  writer-with-default-pretty-printer: true
+
 app:
+  default-config-fe:
+    headerAssistanceUrl: "\${BROKER_FE_DEFAULT_CONFIG_HEADER_ASSISTANCE_URL:DEFAULT}"
+    logoFooterImg: "\${BROKER_FE_DEFAULT_CONFIG_LOGO_FOOTER_IMG:DEFAULT}"
+    footerDescText: "\${BROKER_FE_DEFAULT_CONFIG_FOOTER_DESC_TEXT:PagoPA S.p.A - Società per azioni con socio unico - capitale sociale di euro 1,000,000 interamente versato - sede legale in Roma, Piazza Colonna 370, CAP 00187 - N. di iscrizione a Registro Imprese di Roma, CF e P.IVA 15376371009}"
+    footerPrivacyInfoUrl: "\${BROKER_FE_DEFAULT_CONFIG_FOOTER_PRIVACY_INFO_URL:https://www.pagopa.it/it/privacy-policy}"
+    footerGDPRUrl: "\${BROKER_FE_DEFAULT_CONFIG_GDPR_URL:https://www.pagopa.it/it/informativa-sul-trattamento-dei-dati-personali}"
+    footerTermsCondUrl: "\${BROKER_FE_DEFAULT_CONFIG_FOOTER_TERMS_COND_URL:https://www.pagopa.it/it/termini-e-condizioni-di-utilizzo-del-sito}"
+    footerAccessibilityUrl: "\${BROKER_FE_DEFAULT_CONFIG_FOOTER_ACCESSIBILITY_URL:https://form.agid.gov.it/view/c299ac76-6d08-4c34-9957-00519dde4ea9}"
+
+rest:
+  defaults:
+    connection-pool:
+      size: "\${DEFAULT_REST_CONNECTION_POOL_SIZE:10}"
+      size-per-route: "\${DEFAULT_REST_CONNECTION_POOL_SIZE_PER_ROUTE:5}"
+      time-to-live-minutes: "\${DEFAULT_REST_CONNECTION_POOL_TIME_TO_LIVE_MINUTES:10}"
+    timeout:
+      connect-millis: "\${DEFAULT_REST_TIMEOUT_CONNECT_MILLIS:120000}"
+      read-millis: "\${DEFAULT_REST_TIMEOUT_READ_MILLIS:120000}"
+  page:
+    request-max-page-size: "\${REST_PAGE_REQUEST_MAX_PAGE_SIZE:1000}"
+  auth:
+    base-url: "\${AUTH_SERVER_BASE_URL:}/payhub"
+    max-attempts: "\${AUTH_MAX_ATTEMPTS:3}" # It's counting also the first attempt
+    wait-time-millis: "\${AUTH_WAIT_TIME_MILLIS:500}"
+    print-body-when-error: "\${AUTH_PRINT_BODY_WHEN_ERROR:true}"
+    token-exchange-issuer: "\${TOKEN_EXCHANGE_ISSUER:}"
+  organization:
+    base-url: "\${ORGANIZATION_BASE_URL:}"
+    max-attempts: "\${ORGANIZATION_MAX_ATTEMPTS:3}" # It's counting also the first attempt
+    wait-time-millis: "\${ORGANIZATION_WAIT_TIME_MILLIS:500}"
+    print-body-when-error: "\${ORGANIZATION_PRINT_BODY_WHEN_ERROR:true}"
+  debt-positions:
+    base-url: "\${DEBT_POSITIONS_BASE_URL:}"
+    max-attempts: "\${DEBT_POSITIONS_MAX_ATTEMPTS:3}" # It's counting also the first attempt
+    wait-time-millis: "\${DEBT_POSITIONS_WAIT_TIME_MILLIS:500}"
+    print-body-when-error: "\${DEBT_POSITIONS_PRINT_BODY_WHEN_ERROR:true}"
+  process-executions:
+    base-url: "\${PROCESS_EXECUTIONS_BASE_URL:}"
+    max-attempts: "\${PROCESS_EXECUTIONS_MAX_ATTEMPTS:3}" # It's counting also the first attempt
+    wait-time-millis: "\${PROCESS_EXECUTIONS_WAIT_TIME_MILLIS:500}"
+    print-body-when-error: "\${PROCESS_EXECUTIONS_PRINT_BODY_WHEN_ERROR:true}"
+  classification:
+    base-url: "\${CLASSIFICATION_BASE_URL:}"
+    max-attempts: "\${CLASSIFICATION_MAX_ATTEMPTS:3}" # It's counting also the first attempt
+    wait-time-millis: "\${CLASSIFICATION_WAIT_TIME_MILLIS:500}"
+    print-body-when-error: "\${CLASSIFICATION_PRINT_BODY_WHEN_ERROR:true}"
+  pagopa-payments:
+    base-url: "\${PAGOPA_PAYMENTS_BASE_URL:}"
+    max-attempts: "\${PAGOPA_PAYMENTS_MAX_ATTEMPTS:3}" # It's counting also the first attempt
+    wait-time-millis: "\${PAGOPA_PAYMENTS_WAIT_TIME_MILLIS:500}"
+    print-body-when-error: "\${PAGOPA_PAYMENTS_PRINT_BODY_WHEN_ERROR:true}"
+  registries:
+    base-url: "\${REGISTRIES_BASE_URL:}"
+    max-attempts: "\${REGISTRIES_MAX_ATTEMPTS:3}" # It's counting also the first attempt
+    wait-time-millis: "\${REGISTRIES_WAIT_TIME_MILLIS:500}"
+    print-body-when-error: "\${REGISTRIES_PRINT_BODY_WHEN_ERROR:true}"
+  workflow-hub:
+    base-url: "\${WORKFLOW_HUB_BASE_URL:}"
+    max-attempts: "\${WORKFLOW_HUB_MAX_ATTEMPTS:3}" # It's counting also the first attempt
+    wait-time-millis: "\${WORKFLOW_HUB_WAIT_TIME_MILLIS:500}"
+    print-body-when-error: "\${WORKFLOW_HUB_PRINT_BODY_WHEN_ERROR:true}"
+
+analytics:
+  superset:
+    sso-url: "\${SUPERSET_BASE_URL:}/sso-login"
+
+cache:
+  taxonomy:
+    size: "\${CACHE_TAXONOMY_SIZE:100}"
+    expire-in: "\${CACHE_TAXONOMY_MINUTES:60}"
+  broker:
+    size: "\${CACHE_BROKER_SIZE:100}"
+    expire-in: "\${CACHE_BROKER_MINUTES:60}"
+  debtPositionTypeOrg:
+    size: "\${CACHE_DEBT_POSITION_TYPE_ORG_MAXIMUM_SIZE:100}"
+    expire-in: "\${CACHE_DEBT_POSITION_TYPE_ORG_MINUTES:60}"
+  debtPositionType:
+    size: "\${CACHE_DEBT_POSITION_TYPE_MAXIMUM_SIZE:100}"
+    expire-in: "\${CACHE_DEBT_POSITION_TYPE_MINUTES:60}"
+
+page:
+  debtPositionTypeOrg:
+    operators:
+      max-page-size: "\${DEBT_POSITION_TYPE_ORG_OPERATORS_MAX_PAGE_SIZE:10000}"

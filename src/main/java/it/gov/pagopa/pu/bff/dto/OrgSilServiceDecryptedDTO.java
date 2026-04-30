@@ -1,0 +1,37 @@
+package it.gov.pagopa.pu.bff.dto;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import it.gov.pagopa.pu.organization.dto.generated.OrgSilServiceDTO;
+import it.gov.pagopa.pu.organization.dto.generated.OrgSilServiceDTOAuthConfig;
+import it.gov.pagopa.pu.organization.dto.generated.SilServiceLegacyBasicAuthConfigDTO;
+import it.gov.pagopa.pu.organization.dto.generated.SilServiceLegacyJwtAuthConfigDTO;
+import jakarta.annotation.Nullable;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
+
+@JsonIgnoreProperties({"authConfig"})
+@EqualsAndHashCode(callSuper = true)
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@SuperBuilder(toBuilder = true)
+public class OrgSilServiceDecryptedDTO extends OrgSilServiceDTO {
+
+  private SilServiceLegacyBasicAuthConfigDTO legacyBasicAuthConfig;
+  private SilServiceLegacyJwtAuthConfigDTO legacyJwtAuthConfig;
+
+  //This method should not be used since the authConfig field has been remapped
+  @Override
+  public OrgSilServiceDTOAuthConfig getAuthConfig() {
+    return null;
+  }
+
+  //This method should not be used since the authConfig field has been remapped
+  @Override
+  public void setAuthConfig(@Nullable OrgSilServiceDTOAuthConfig authConfig) {
+    throw new UnsupportedOperationException("This method is not supported in OrgSilServiceDecryptedDTO.");
+  }
+}

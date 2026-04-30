@@ -1,0 +1,139 @@
+package it.gov.pagopa.pu.bff.connector.organization;
+
+import it.gov.pagopa.pu.bff.connector.organization.client.OrgSilServiceEntityClient;
+import it.gov.pagopa.pu.bff.connector.organization.client.OrgSilServiceSearchClient;
+import it.gov.pagopa.pu.bff.util.TestUtils;
+import it.gov.pagopa.pu.organization.dto.generated.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import uk.co.jemos.podam.api.PodamFactory;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.mockito.Mockito.*;
+
+@ExtendWith(MockitoExtension.class)
+class OrgSilServiceServiceTest {
+
+  public static final PodamFactory podamFactory = TestUtils.getPodamFactory();
+  private final String accessToken = "accessToken";
+
+  @Mock
+  private OrgSilServiceSearchClient orgSilServiceSearchClientMock;
+  @Mock
+  private OrgSilServiceEntityClient orgSilServiceEntityClientMock;
+
+  private OrgSilServiceService service;
+
+  @BeforeEach
+  void setUp() {
+    service = new OrgSilServiceServiceImpl(orgSilServiceSearchClientMock, orgSilServiceEntityClientMock);
+  }
+
+  @AfterEach
+  void verifyNoMoreInteractions() {
+    Mockito.verifyNoMoreInteractions(orgSilServiceSearchClientMock, orgSilServiceEntityClientMock);
+  }
+
+  @Test
+  void whenGetOrgSilServicesThenInvokeClient() {
+    Long organizationId=1L;
+    OrgSilServiceType serviceType = OrgSilServiceType.ACTUALIZATION;
+    CollectionModelOrgSilService expectedResult = podamFactory.manufacturePojo(CollectionModelOrgSilService.class);
+    when(orgSilServiceSearchClientMock.getOrgSilServices(organizationId,serviceType,accessToken))
+      .thenReturn(expectedResult);
+
+    CollectionModelOrgSilService result = service.getOrgSilServices(organizationId,serviceType, accessToken);
+
+    assertSame(expectedResult, result);
+  }
+
+  @Test
+  void whenGetOrgSilServiceByIdThenInvokeClient() {
+    Long orgSilServiceId = 1L;
+    OrgSilService expectedResult = podamFactory.manufacturePojo(OrgSilService.class);
+    when(orgSilServiceSearchClientMock.getOrgSilServiceById(orgSilServiceId, accessToken))
+      .thenReturn(expectedResult);
+
+    OrgSilService result = service.getOrgSilServiceById(orgSilServiceId, accessToken);
+
+    assertSame(expectedResult, result);
+  }
+
+  @Test
+  void whenGetOrgSilServicesByFiltersThenInvokeClient() {
+    Long organizationId = 1L;
+    String applicationName = "myApp";
+    OrgSilServiceType serviceType = OrgSilServiceType.ACTUALIZATION;
+    boolean flagLegacy = true;
+    Pageable pageable = PageRequest.of(0, 10);
+
+    PagedModelOrgSilServiceView expectedResult =
+      podamFactory.manufacturePojo(PagedModelOrgSilServiceView.class);
+
+    when(orgSilServiceSearchClientMock.getOrgSilServicesByFilters(organizationId, applicationName, serviceType, flagLegacy, pageable, accessToken))
+      .thenReturn(expectedResult);
+
+    PagedModelOrgSilServiceView result = service.getOrgSilServicesByFilters(
+        organizationId, applicationName, serviceType, flagLegacy, pageable, accessToken);
+
+    assertSame(expectedResult, result);
+  }
+
+  @Test
+  void whenGetOrgSilServiceDetailsThenInvokeClient() {
+    Long orgSilServiceId = 1L;
+
+    OrgSilServiceDTO orgSilServiceDTO = podamFactory.manufacturePojo(OrgSilServiceDTO.class);
+
+    when(orgSilServiceSearchClientMock.getOrgSilServiceByIdDecrypted(orgSilServiceId, accessToken))
+      .thenReturn(orgSilServiceDTO);
+
+    OrgSilServiceDTO result = service.getOrgSilServiceByIdDecrypted(orgSilServiceId, accessToken);
+
+    assertSame(orgSilServiceDTO, result);
+  }
+
+  @Test
+  void whenCreateOrUpdateOrgSilServiceThenInvokeClient() {
+    OrgSilServiceDTO inputDto = podamFactory.manufacturePojo(OrgSilServiceDTO.class);
+    OrgSilServiceDTO expectedResponse = podamFactory.manufacturePojo(OrgSilServiceDTO.class);
+
+    when(orgSilServiceSearchClientMock.createOrUpdateOrgSilService(inputDto, accessToken))
+      .thenReturn(expectedResponse);
+
+    OrgSilServiceDTO result = service.createOrUpdateOrgSilService(inputDto, accessToken);
+
+    assertSame(expectedResponse, result);
+  }
+
+  @Test
+  void whenDeleteOrgSilServiceThenInvokeClient() {
+    Long orgSilServiceId = 123L;
+
+    service.deleteOrgSilService(orgSilServiceId, accessToken);
+
+    verify(orgSilServiceEntityClientMock, times(1))
+      .deleteOrgSilService(orgSilServiceId, accessToken);
+  }
+
+  @Test
+  void whenGetOrgSilServiceByOrganizationIdAndApplicationNameThenInvokeClient() {
+    Long organizationId= 123L;
+    String applicationName = "applicationName";
+    OrgSilService orgSilService= podamFactory.manufacturePojo(OrgSilService.class);
+
+    when(orgSilServiceSearchClientMock.getOrgSilServiceByOrganizationIdAndApplicationName(organizationId, applicationName, accessToken)).thenReturn(orgSilService);
+    OrgSilService result = service.getOrgSilServiceByOrganizationIdAndApplicationName(organizationId, applicationName, accessToken);
+
+    assertNotNull(result);
+    assertSame(orgSilService, result);
+  }
+}

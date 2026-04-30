@@ -1,0 +1,141 @@
+package it.gov.pagopa.pu.bff.controller;
+
+import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
+import it.gov.pagopa.pu.bff.dto.generated.PagedSpontaneousForm;
+import it.gov.pagopa.pu.bff.dto.generated.SpontaneousFormDetailDTO;
+import it.gov.pagopa.pu.bff.security.SecurityUtilsTest;
+import it.gov.pagopa.pu.bff.service.spontaneous_form.SpontaneousFormRetrieverService;
+import it.gov.pagopa.pu.bff.util.TestUtils;
+import it.gov.pagopa.pu.debtpositions.dto.generated.SpontaneousForm;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import uk.co.jemos.podam.api.PodamFactory;
+
+import java.util.List;
+
+@ExtendWith(MockitoExtension.class)
+class SpontaneousFormControllerTest {
+
+  public static final PodamFactory podamFactory = TestUtils.getPodamFactory();
+  private final String accessToken = "fakeAccessToken";
+  private final UserInfo loggedUser = podamFactory.manufacturePojo(UserInfo.class);
+
+  @Mock
+  private SpontaneousFormRetrieverService spontaneousFormRetrieverServiceMock;
+  @InjectMocks
+  private SpontaneousFormController spontaneousFormController;
+
+  @BeforeEach
+  void setUp() {
+    SecurityUtilsTest.configureSecurityContext(accessToken, loggedUser);
+  }
+
+  @AfterEach
+  void verifyNoMoreInteractions() {
+    Mockito.verifyNoMoreInteractions(spontaneousFormRetrieverServiceMock);
+  }
+
+  @AfterEach
+  void clearContext(){
+    SecurityUtilsTest.clearSecurityContext();
+  }
+
+  @Test
+  void givenCorrectRequestWhenGetSpontaneousFormsThenOk() {
+    long organizationId = 1L;
+    List<SpontaneousForm> expectedResult = podamFactory.manufacturePojo(List.class,SpontaneousForm.class);
+
+    Mockito.when(spontaneousFormRetrieverServiceMock.getSpontaneousForms(organizationId, loggedUser, accessToken)).thenReturn(expectedResult);
+
+    ResponseEntity<List<SpontaneousForm>> response = spontaneousFormController.getSpontaneousForms(
+        organizationId);
+
+    Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
+    Assertions.assertNotNull(response.getBody());
+    Assertions.assertSame(expectedResult, response.getBody());
+  }
+
+  @Test
+  void givenCorrectRequestWhenGetPagedSpontaneousFormsThenOk() {
+    long organizationId = 1L;
+    String code = "code";
+    Pageable pageable = PageRequest.ofSize(10);
+    PagedSpontaneousForm expectedResult = podamFactory.manufacturePojo(PagedSpontaneousForm.class);
+
+    Mockito.when(spontaneousFormRetrieverServiceMock.getPagedSpontaneousForms(organizationId, code, pageable, loggedUser, accessToken)).thenReturn(expectedResult);
+
+    ResponseEntity<PagedSpontaneousForm> response = spontaneousFormController.getPagedSpontaneousForms(
+        organizationId, code, pageable);
+
+    Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
+    Assertions.assertNotNull(response.getBody());
+    Assertions.assertSame(expectedResult, response.getBody());
+  }
+
+  @Test
+  void givenCorrectRequestWhenGetSpontaneousFormDetailThenOk() {
+    long organizationId = 1L;
+    SpontaneousFormDetailDTO expectedResult = podamFactory.manufacturePojo(SpontaneousFormDetailDTO.class);
+
+    Mockito.when(spontaneousFormRetrieverServiceMock.getSpontaneousFormDetail(organizationId, expectedResult.getSpontaneousFormId(), loggedUser, accessToken)).thenReturn(expectedResult);
+
+    ResponseEntity<SpontaneousFormDetailDTO> response = spontaneousFormController.getSpontaneousFormDetail(
+        organizationId, expectedResult.getSpontaneousFormId());
+
+    Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
+    Assertions.assertNotNull(response.getBody());
+    Assertions.assertSame(expectedResult, response.getBody());
+  }
+
+  @Test
+  void givenCorrectRequestWhenCreateSpontaneousFormThenOk() {
+    long organizationId = 1L;
+    SpontaneousForm expectedResult = podamFactory.manufacturePojo(SpontaneousForm.class);
+
+    Mockito.when(spontaneousFormRetrieverServiceMock.createSpontaneousForm(organizationId, expectedResult, loggedUser, accessToken)).thenReturn(expectedResult);
+
+    ResponseEntity<SpontaneousForm> response = spontaneousFormController.createSpontaneousForm(
+        organizationId, expectedResult);
+
+    Assertions.assertEquals(HttpStatus.CREATED, response.getStatusCode());
+    Assertions.assertNotNull(response.getBody());
+    Assertions.assertSame(expectedResult, response.getBody());
+  }
+
+  @Test
+  void givenCorrectRequestWhenDeleteSpontaneousFormThenOk() {
+    long organizationId = 1L;
+    long spontaneousFormId = 2L;
+
+    Mockito.doNothing().when(spontaneousFormRetrieverServiceMock).deleteSpontaneousForm(organizationId, spontaneousFormId, loggedUser, accessToken);
+
+    ResponseEntity<Void> response = spontaneousFormController.deleteSpontaneousForm(
+        organizationId, spontaneousFormId);
+
+    Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
+  }
+
+  @Test
+  void givenCorrectRequestWhenUpdateSpontaneousFormThenOk() {
+    long organizationId = 1L;
+    SpontaneousForm spontaneousForm = podamFactory.manufacturePojo(SpontaneousForm.class);
+
+    Mockito.doNothing().when(spontaneousFormRetrieverServiceMock).updateSpontaneousForm(organizationId, spontaneousForm, loggedUser, accessToken);
+
+    ResponseEntity<Void> response = spontaneousFormController.updateSpontaneousForm(
+        organizationId, spontaneousForm);
+
+    Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
+  }
+}

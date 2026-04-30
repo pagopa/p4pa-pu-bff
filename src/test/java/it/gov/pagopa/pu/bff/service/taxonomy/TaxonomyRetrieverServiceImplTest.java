@@ -1,0 +1,238 @@
+package it.gov.pagopa.pu.bff.service.taxonomy;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import it.gov.pagopa.pu.bff.connector.organization.TaxonomyService;
+import it.gov.pagopa.pu.bff.connector.workflow_hub.WorkflowTaxonomyService;
+import it.gov.pagopa.pu.bff.dto.generated.PagedTaxonomy;
+import it.gov.pagopa.pu.bff.dto.generated.TaxonomyCodeDTO;
+import it.gov.pagopa.pu.bff.dto.generated.TaxonomyCollectionReasonDTO;
+import it.gov.pagopa.pu.bff.dto.generated.TaxonomyMacroAreaCodeDTO;
+import it.gov.pagopa.pu.bff.dto.generated.TaxonomyOrganizationTypeDTO;
+import it.gov.pagopa.pu.bff.dto.generated.TaxonomyServiceTypeCodeDTO;
+import it.gov.pagopa.pu.bff.mapper.TaxonomyMapper;
+import it.gov.pagopa.pu.bff.mapper.taxonomy.TaxonomyCodeMapper;
+import it.gov.pagopa.pu.bff.mapper.taxonomy.TaxonomyCollectionReasonMapper;
+import it.gov.pagopa.pu.bff.mapper.taxonomy.TaxonomyMacroAreaCodeMapper;
+import it.gov.pagopa.pu.bff.mapper.taxonomy.TaxonomyOrganizationTypeMapper;
+import it.gov.pagopa.pu.bff.mapper.taxonomy.TaxonomyServiceTypeCodeMapper;
+import it.gov.pagopa.pu.organization.dto.generated.CollectionModelTaxonomyCodeDTO;
+import it.gov.pagopa.pu.organization.dto.generated.CollectionModelTaxonomyCodeDTOEmbedded;
+import it.gov.pagopa.pu.organization.dto.generated.CollectionModelTaxonomyCollectionReasonDTO;
+import it.gov.pagopa.pu.organization.dto.generated.CollectionModelTaxonomyCollectionReasonDTOEmbedded;
+import it.gov.pagopa.pu.organization.dto.generated.CollectionModelTaxonomyMacroAreaCodeDTO;
+import it.gov.pagopa.pu.organization.dto.generated.CollectionModelTaxonomyMacroAreaCodeDTOEmbedded;
+import it.gov.pagopa.pu.organization.dto.generated.CollectionModelTaxonomyOrganizationTypeDTO;
+import it.gov.pagopa.pu.organization.dto.generated.CollectionModelTaxonomyOrganizationTypeDTOEmbedded;
+import it.gov.pagopa.pu.organization.dto.generated.CollectionModelTaxonomyServiceTypeCodeDTO;
+import it.gov.pagopa.pu.organization.dto.generated.CollectionModelTaxonomyServiceTypeCodeDTOEmbedded;
+import it.gov.pagopa.pu.organization.dto.generated.PagedModelTaxonomy;
+import it.gov.pagopa.pu.organization.dto.generated.Taxonomy;
+import java.util.List;
+
+import it.gov.pagopa.pu.workflowhub.dto.generated.WorkflowCreatedDTO;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageRequest;
+
+@ExtendWith(MockitoExtension.class)
+class TaxonomyRetrieverServiceImplTest {
+  @Mock
+  private TaxonomyService taxonomyServiceMock;
+  @Mock
+  private TaxonomyMapper taxonomyMapperMock;
+  @Mock
+  private TaxonomyCodeMapper taxonomyCodeMapperMock;
+  @Mock
+  private TaxonomyServiceTypeCodeMapper taxonomyServiceTypeCodeMapperMock;
+  @Mock
+  private TaxonomyCollectionReasonMapper taxonomyCollectionReasonMapperMock;
+  @Mock
+  private TaxonomyOrganizationTypeMapper taxonomyOrganizationTypeMapperMock;
+  @Mock
+  private TaxonomyMacroAreaCodeMapper taxonomyMacroAreaCodeMapperMock;
+  @Mock
+  private WorkflowTaxonomyService workflowTaxonomyServiceMock;
+
+  @InjectMocks
+  private TaxonomyRetrieverServiceImpl taxonomyService;
+
+  @Test
+  void testGetTaxonomyDetail() {
+    Long taxonomyId = 123L;
+    String token = "token";
+    Taxonomy expectedTaxonomy = new Taxonomy();
+
+    Mockito.when(taxonomyServiceMock.getTaxonomyDetail(taxonomyId, token))
+      .thenReturn(expectedTaxonomy);
+
+    Taxonomy result = taxonomyService.getTaxonomyDetail(taxonomyId, token);
+
+    assertEquals(expectedTaxonomy, result);
+  }
+
+  @Test
+  void testGetByTaxonomyCode() {
+    Taxonomy taxonomy = new Taxonomy();
+
+    Mockito.when(taxonomyServiceMock.getTaxonomyByTaxonomyCode("TAX", "token"))
+      .thenReturn(taxonomy);
+
+    Taxonomy result = taxonomyService.getTaxonomyByTaxonomyCode("TAX", "token");
+
+    // Assert the result
+    assertEquals(taxonomy, result);
+  }
+
+  @Test
+  void testGetTaxonomyCode() {
+    // Mock input and output DTOs
+    CollectionModelTaxonomyCodeDTO taxonomyCodeDTO = new CollectionModelTaxonomyCodeDTO();
+    CollectionModelTaxonomyCodeDTOEmbedded collectionModelTaxonomyCodeDTOEmbedded = new CollectionModelTaxonomyCodeDTOEmbedded();
+
+    var inputDTO = new it.gov.pagopa.pu.organization.dto.generated.TaxonomyCodeDTO();
+    var outputDTO = new TaxonomyCodeDTO();
+
+    collectionModelTaxonomyCodeDTOEmbedded.addTaxonomyCodeDTOesItem(inputDTO);
+    taxonomyCodeDTO.setEmbedded(collectionModelTaxonomyCodeDTOEmbedded);
+
+    Mockito.when(taxonomyServiceMock.getTaxonomyCode(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(), Mockito.anyString(), Mockito.anyString()))
+      .thenReturn(taxonomyCodeDTO);
+    Mockito.when(taxonomyCodeMapperMock.map(inputDTO)).thenReturn(outputDTO);
+
+    // Call the service method
+    List<TaxonomyCodeDTO> result = taxonomyService.getTaxonomyCode("Type1", "Macro1", "ServiceCode1", "Reason1", "token");
+
+    // Assert the result
+    assertEquals(1, result.size());
+    assertEquals(outputDTO, result.getFirst());
+  }
+
+  @Test
+  void testGetServiceType() {
+    // Mock input and output DTOs
+    CollectionModelTaxonomyServiceTypeCodeDTO collectionModelTaxonomyServiceTypeCodeDTO = new CollectionModelTaxonomyServiceTypeCodeDTO();
+    CollectionModelTaxonomyServiceTypeCodeDTOEmbedded collectionModelTaxonomyServiceTypeCodeDTOEmbedded = new CollectionModelTaxonomyServiceTypeCodeDTOEmbedded();
+
+    var inputDTO = new it.gov.pagopa.pu.organization.dto.generated.TaxonomyServiceTypeCodeDTO();
+    var outputDTO = new TaxonomyServiceTypeCodeDTO();
+
+    collectionModelTaxonomyServiceTypeCodeDTOEmbedded.addTaxonomyServiceTypeCodeDTOesItem(inputDTO);
+    collectionModelTaxonomyServiceTypeCodeDTO.setEmbedded(collectionModelTaxonomyServiceTypeCodeDTOEmbedded);
+
+    Mockito.when(taxonomyServiceMock.getServiceType(Mockito.anyString(), Mockito.anyString(), Mockito.anyString()))
+      .thenReturn(collectionModelTaxonomyServiceTypeCodeDTO);
+    Mockito.when(taxonomyServiceTypeCodeMapperMock.map(inputDTO)).thenReturn(outputDTO);
+
+    // Call the service method
+    List<TaxonomyServiceTypeCodeDTO> result = taxonomyService.getServiceType("Type1", "Macro1", "token");
+
+    // Assert the result
+    assertEquals(1, result.size());
+    assertEquals(outputDTO, result.getFirst());
+  }
+
+  @Test
+  void testGetOrganizationTypes() {
+    // Mock input and output DTOs
+    CollectionModelTaxonomyOrganizationTypeDTO collectionModelTaxonomyOrganizationTypeDTO = new CollectionModelTaxonomyOrganizationTypeDTO();
+    CollectionModelTaxonomyOrganizationTypeDTOEmbedded collectionModelTaxonomyOrganizationTypeDTOEmbedded = new CollectionModelTaxonomyOrganizationTypeDTOEmbedded();
+
+    var inputDTO = new it.gov.pagopa.pu.organization.dto.generated.TaxonomyOrganizationTypeDTO();
+    var outputDTO = new TaxonomyOrganizationTypeDTO();
+
+    collectionModelTaxonomyOrganizationTypeDTOEmbedded.addTaxonomyOrganizationTypeDTOesItem(inputDTO);
+    collectionModelTaxonomyOrganizationTypeDTO.setEmbedded(collectionModelTaxonomyOrganizationTypeDTOEmbedded);
+
+    Mockito.when(taxonomyServiceMock.getOrganizationType(Mockito.anyString()))
+      .thenReturn(collectionModelTaxonomyOrganizationTypeDTO);
+    Mockito.when(taxonomyOrganizationTypeMapperMock.map(inputDTO)).thenReturn(outputDTO);
+
+    // Call the service method
+    List<TaxonomyOrganizationTypeDTO> result = taxonomyService.getOrganizationTypes("token");
+
+    // Assert the result
+    assertEquals(1, result.size());
+    assertEquals(outputDTO, result.getFirst());
+  }
+
+  @Test
+  void testGetMacroArea() {
+    // Mock input and output DTOs
+    CollectionModelTaxonomyMacroAreaCodeDTO collectionModelTaxonomyMacroAreaCodeDTO = new CollectionModelTaxonomyMacroAreaCodeDTO();
+    CollectionModelTaxonomyMacroAreaCodeDTOEmbedded collectionModelTaxonomyMacroAreaCodeDTOEmbedded = new CollectionModelTaxonomyMacroAreaCodeDTOEmbedded();
+
+    var inputDTO = new it.gov.pagopa.pu.organization.dto.generated.TaxonomyMacroAreaCodeDTO();
+    var outputDTO = new TaxonomyMacroAreaCodeDTO();
+
+    collectionModelTaxonomyMacroAreaCodeDTOEmbedded.addTaxonomyMacroAreaCodeDTOesItem(inputDTO);
+    collectionModelTaxonomyMacroAreaCodeDTO.setEmbedded(collectionModelTaxonomyMacroAreaCodeDTOEmbedded);
+
+    Mockito.when(taxonomyServiceMock.getMacroArea(Mockito.anyString(), Mockito.anyString()))
+      .thenReturn(collectionModelTaxonomyMacroAreaCodeDTO);
+    Mockito.when(taxonomyMacroAreaCodeMapperMock.map(inputDTO)).thenReturn(outputDTO);
+
+    // Call the service method
+    List<TaxonomyMacroAreaCodeDTO> result = taxonomyService.getMacroArea("Type1", "token");
+
+    // Assert the result
+    assertEquals(1, result.size());
+    assertEquals(outputDTO, result.getFirst());
+  }
+
+  @Test
+  void testGetCollectionReason() {
+    // Mock input and output DTOs
+    CollectionModelTaxonomyCollectionReasonDTO collectionModelTaxonomyCollectionReasonDTO = new CollectionModelTaxonomyCollectionReasonDTO();
+    CollectionModelTaxonomyCollectionReasonDTOEmbedded collectionModelTaxonomyCollectionReasonDTOEmbedded = new CollectionModelTaxonomyCollectionReasonDTOEmbedded();
+
+    var inputDTO = new it.gov.pagopa.pu.organization.dto.generated.TaxonomyCollectionReasonDTO();
+    var outputDTO = new TaxonomyCollectionReasonDTO();
+
+    collectionModelTaxonomyCollectionReasonDTOEmbedded.addTaxonomyCollectionReasonDTOesItem(inputDTO);
+    collectionModelTaxonomyCollectionReasonDTO.setEmbedded(collectionModelTaxonomyCollectionReasonDTOEmbedded);
+
+    Mockito.when(taxonomyServiceMock.getCollectionReason(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(), Mockito.anyString()))
+      .thenReturn(collectionModelTaxonomyCollectionReasonDTO);
+    Mockito.when(taxonomyCollectionReasonMapperMock.map(inputDTO)).thenReturn(outputDTO);
+
+    // Call the service method
+    List<TaxonomyCollectionReasonDTO> result = taxonomyService.getCollectionReason("Type1", "Macro1", "ServiceCode1", "token");
+
+    // Assert the result
+    assertEquals(1, result.size());
+    assertEquals(outputDTO, result.getFirst());
+  }
+
+  @Test
+  void testGetTaxonomies() {
+    PagedModelTaxonomy pagedModelTaxonomy = new PagedModelTaxonomy();
+
+    PagedTaxonomy expected = new PagedTaxonomy();
+
+    Mockito.when(taxonomyServiceMock.getTaxonomies("Type1", "Macro1", "ServiceCode1", "Reason1",
+        PageRequest.of(0,10), "token"))
+      .thenReturn(pagedModelTaxonomy);
+    Mockito.when(taxonomyMapperMock.mapToPagedTaxonomy(pagedModelTaxonomy)).thenReturn(expected);
+
+    PagedTaxonomy result = taxonomyService.getTaxonomies("Type1", "Macro1", "ServiceCode1", "Reason1",
+      PageRequest.of(0,10), "token");
+
+    assertEquals(expected, result);
+  }
+
+  @Test
+  void testSynchronizeTaxonomy() {
+    WorkflowCreatedDTO expected = new WorkflowCreatedDTO();
+
+    Mockito.when(workflowTaxonomyServiceMock.synchronizeTaxonomy("token")).thenReturn(expected);
+
+    WorkflowCreatedDTO result = taxonomyService.synchronizeTaxonomy("token");
+
+    assertEquals(expected, result);
+  }
+}

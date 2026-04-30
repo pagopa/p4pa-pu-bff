@@ -1,0 +1,94 @@
+package it.gov.pagopa.pu.bff.connector.debt_position.client;
+
+import it.gov.pagopa.pu.bff.connector.debt_position.config.DebtPositionApisHolder;
+import it.gov.pagopa.pu.bff.dto.OperatorDetailsFiltersDTO;
+import it.gov.pagopa.pu.bff.util.PageUtils;
+import it.gov.pagopa.pu.debtpositions.dto.generated.CollectionModelDebtPositionTypeOrg;
+import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrg;
+import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelDebtPositionTypeOrg;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
+
+@Slf4j
+@Service
+public class DebtPositionTypeOrgSearchClient {
+
+  private final DebtPositionApisHolder debtPositionApisHolder;
+
+  public DebtPositionTypeOrgSearchClient(DebtPositionApisHolder debtPositionApisHolder) {
+    this.debtPositionApisHolder = debtPositionApisHolder;
+  }
+
+  public PagedModelDebtPositionTypeOrg getDebtPositionTypeOrgByDebtPositionTypeId(Long debtPositionTypeId, Pageable pageable, String accessToken) {
+    return debtPositionApisHolder.getDebtPositionTypeOrgSearchControllerApi(accessToken)
+      .crudDebtPositionTypeOrgsFindByDebtPositionTypeId(
+        debtPositionTypeId,
+        PageUtils.getPageNumber(pageable),
+        PageUtils.getPageSize(pageable),
+        PageUtils.getSortList(pageable)
+      );
+  }
+
+  public DebtPositionTypeOrg findDebtPositionTypeOrg(Long organizationId, String debtPositionTypeOrgCode, String mappedExternalUserId, String accessToken) {
+      try {
+          return debtPositionApisHolder.getDebtPositionTypeOrgSearchControllerApi(accessToken)
+            .crudDebtPositionTypeOrgsFindDebtPositionTypeOrg(
+              organizationId,debtPositionTypeOrgCode,mappedExternalUserId
+            );
+      } catch (HttpClientErrorException.NotFound e) {
+        log.warn("DebtPositionTypeOrg with organizationId {} and code {} not found", organizationId, debtPositionTypeOrgCode);
+        return null;
+    }
+  }
+
+  public List<DebtPositionTypeOrg> findDebtPositionTypeOrgByOrganizationIdAndIuds(Long organizationId, Set<String> iuds, String accessToken) {
+    CollectionModelDebtPositionTypeOrg collectionModelDebtPositionTypeOrg = debtPositionApisHolder.getDebtPositionTypeOrgSearchControllerApi(accessToken)
+            .crudDebtPositionTypeOrgsFindDebtPositionTypeOrgByOrganizationIdAndIuds(
+                    organizationId, iuds
+            );
+    return collectionModelDebtPositionTypeOrg!=null && collectionModelDebtPositionTypeOrg.getEmbedded() !=null?
+            collectionModelDebtPositionTypeOrg.getEmbedded().getDebtPositionTypeOrgs(): Collections.emptyList();
+  }
+
+  public Long countByOrgSilServiceId(Long orgSilServiceId, String accessToken) {
+    return debtPositionApisHolder.getDebtPositionTypeOrgSearchControllerApi(accessToken)
+      .crudDebtPositionTypeOrgsCountByOrgSilServiceId(orgSilServiceId);
+  }
+
+  public PagedModelDebtPositionTypeOrg findPagedDebtPositionTypeOrg(OperatorDetailsFiltersDTO operatorDetailsFiltersDTO, Pageable pageable, String accessToken){
+    return debtPositionApisHolder.getDebtPositionTypeOrgSearchControllerApi(accessToken)
+      .crudDebtPositionTypeOrgsFindPagedDebtPositionTypeOrg(
+        operatorDetailsFiltersDTO.getOrganizationId(),
+        operatorDetailsFiltersDTO.getMappedExternalUserId(),
+        operatorDetailsFiltersDTO.getDebtPositionTypeOrgCode(),
+        operatorDetailsFiltersDTO.getDebtPositionTypeOrgDescription(),
+        operatorDetailsFiltersDTO.getDebtPositionTypeId(),
+        PageUtils.getPageNumber(pageable),
+        PageUtils.getPageSize(pageable),
+        PageUtils.getSortList(pageable));
+  }
+
+  public PagedModelDebtPositionTypeOrg findDebtPositionTypeOrgNotEnabledForOperator(OperatorDetailsFiltersDTO operatorDetailsFiltersDTO, Pageable pageable, String accessToken) {
+    return debtPositionApisHolder.getDebtPositionTypeOrgSearchControllerApi(accessToken)
+        .crudDebtPositionTypeOrgsFindDebtPositionTypeOrgNotEnabledForOperator(
+        operatorDetailsFiltersDTO.getOrganizationId(),
+        operatorDetailsFiltersDTO.getMappedExternalUserId(),
+        operatorDetailsFiltersDTO.getDebtPositionTypeOrgCode(),
+        operatorDetailsFiltersDTO.getDebtPositionTypeOrgDescription(),
+        operatorDetailsFiltersDTO.getDebtPositionTypeId(),
+        PageUtils.getPageNumber(pageable),
+        PageUtils.getPageSize(pageable),
+        PageUtils.getSortList(pageable));
+  }
+
+  public long countBySpontaneousFormId(Long spontaneousFormId, String accessToken) {
+    return debtPositionApisHolder.getDebtPositionTypeOrgSearchControllerApi(accessToken)
+        .crudDebtPositionTypeOrgsCountBySpontaneousFormId(
+        spontaneousFormId);
+  }
+}

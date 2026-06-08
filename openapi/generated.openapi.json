@@ -16006,6 +16006,10 @@
           },
           "brokerFiscalCode" : {
             "type" : "string"
+          },
+          "externalId" : {
+            "type" : "string",
+            "nullable" : true
           }
         }
       },

@@ -4162,6 +4162,8 @@ components:
           description: Indicates if the user can manage other users
         brokerFiscalCode:
           type: string
+        externalId:
+          type: string
     ServiceStatus:
       type: object
       properties:

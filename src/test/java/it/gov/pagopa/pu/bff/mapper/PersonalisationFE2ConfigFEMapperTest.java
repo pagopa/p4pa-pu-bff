@@ -11,8 +11,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static it.gov.pagopa.pu.bff.mapper.PersonalisationFE2ConfigFEMapper.DEFAULT_EXTERNAL_ID;
-
 @ExtendWith(MockitoExtension.class)
 class PersonalisationFE2ConfigFEMapperTest {
 
@@ -69,7 +67,7 @@ class PersonalisationFE2ConfigFEMapperTest {
     ConfigFE configFE = mapper.mapPersonalisationFE2ConfigFE(new PersonalisationFe(), null, null);
     Assertions.assertNotNull(configFE);
     Assertions.assertNull(configFE.getBrokerId());
-    Assertions.assertEquals(DEFAULT_EXTERNAL_ID, configFE.getExternalId());
+    Assertions.assertEquals("default", configFE.getExternalId());
     Assertions.assertFalse(configFE.getCanManageUsers());
   }
 

@@ -8,7 +8,6 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class PersonalisationFE2ConfigFEMapper {
-  public static final String DEFAULT_EXTERNAL_ID = "default";
 
   public ConfigFE mapPersonalisationFE2ConfigFE(PersonalisationFe personalisationFe, Broker broker, UserInfo userInfo) {
     if(personalisationFe == null){
@@ -28,7 +27,7 @@ public class PersonalisationFE2ConfigFEMapper {
       out.setBrokerFiscalCode(broker.getBrokerFiscalCode());
       out.setExternalId(broker.getExternalId());
     } else {
-      out.setExternalId(DEFAULT_EXTERNAL_ID);
+      out.setExternalId("default");
     }
     out.setCanManageUsers(userInfo!=null && Boolean.TRUE.equals(userInfo.getCanManageUsers()));
     return out;

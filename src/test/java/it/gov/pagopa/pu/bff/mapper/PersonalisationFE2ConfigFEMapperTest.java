@@ -35,6 +35,7 @@ class PersonalisationFE2ConfigFEMapperTest {
     Broker broker = new Broker();
     broker.setBrokerId(1L);
     broker.setBrokerFiscalCode("brokerFiscalCode");
+    broker.setExternalId("brokerExternalId");
 
     UserInfo userInfo = new UserInfo();
     userInfo.setCanManageUsers(true);
@@ -50,6 +51,7 @@ class PersonalisationFE2ConfigFEMapperTest {
     Assertions.assertEquals("Accessibility URL", configFE.getFooterAccessibilityUrl());
     Assertions.assertEquals(String.valueOf(broker.getBrokerId()), configFE.getBrokerId());
     Assertions.assertEquals(broker.getBrokerFiscalCode(), configFE.getBrokerFiscalCode());
+    Assertions.assertEquals(broker.getExternalId(), configFE.getExternalId());
     Assertions.assertTrue(configFE.getCanManageUsers());
     TestUtils.checkNotNullFields(configFE, "headerAssistanceUrl", "logoFooterImg", "footerDescText", "footerPrivacyInfoUrl", "footerGDPRUrl", "footerTermsCondUrl", "footerAccessibilityUrl");
   }
@@ -65,6 +67,7 @@ class PersonalisationFE2ConfigFEMapperTest {
     ConfigFE configFE = mapper.mapPersonalisationFE2ConfigFE(new PersonalisationFe(), null, null);
     Assertions.assertNotNull(configFE);
     Assertions.assertNull(configFE.getBrokerId());
+    Assertions.assertEquals("default", configFE.getExternalId());
     Assertions.assertFalse(configFE.getCanManageUsers());
   }
 

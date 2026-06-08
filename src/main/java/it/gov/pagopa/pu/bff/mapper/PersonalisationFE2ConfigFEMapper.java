@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class PersonalisationFE2ConfigFEMapper {
+  public final static String DEFAULT_EXTERNAL_ID = "default";
 
   public ConfigFE mapPersonalisationFE2ConfigFE(PersonalisationFe personalisationFe, Broker broker, UserInfo userInfo) {
     if(personalisationFe == null){

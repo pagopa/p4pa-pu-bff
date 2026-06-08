@@ -15958,7 +15958,7 @@
         "enum" : [ "ACTIVE", "DRAFT", "CANCELLED" ]
       },
       "ConfigFE" : {
-        "required" : [ "brokerFiscalCode", "brokerId", "canManageUsers" ],
+        "required" : [ "brokerFiscalCode", "brokerId", "canManageUsers", "externalId" ],
         "type" : "object",
         "properties" : {
           "headerAssistanceUrl" : {
@@ -16008,8 +16008,7 @@
             "type" : "string"
           },
           "externalId" : {
-            "type" : "string",
-            "nullable" : true
+            "type" : "string"
           }
         }
       },

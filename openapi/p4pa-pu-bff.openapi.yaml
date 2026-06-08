@@ -4132,6 +4132,7 @@ components:
         - brokerId
         - canManageUsers
         - brokerFiscalCode
+        - externalId
       properties:
         headerAssistanceUrl:
           type: string

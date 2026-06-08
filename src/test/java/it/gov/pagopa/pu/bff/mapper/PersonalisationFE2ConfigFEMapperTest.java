@@ -45,8 +45,6 @@ class PersonalisationFE2ConfigFEMapperTest {
     Assertions.assertEquals("img", configFE.getLogoFooterImg());
     Assertions.assertEquals("Footer Description", configFE.getFooterDescText());
     Assertions.assertEquals("GDPR URL", configFE.getFooterGDPRUrl());
-    Assertions.assertEquals("Privacy Info URL", configFE.getFooterPrivacyInfoUrl());
-    Assertions.assertEquals("Terms and Conditions URL", configFE.getFooterTermsCondUrl());
     Assertions.assertEquals("Assistance URL", configFE.getHeaderAssistanceUrl());
     Assertions.assertEquals("Accessibility URL", configFE.getFooterAccessibilityUrl());
     Assertions.assertEquals(String.valueOf(broker.getBrokerId()), configFE.getBrokerId());

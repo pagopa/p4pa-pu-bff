@@ -26,8 +26,6 @@ class PersonalisationFE2ConfigFEMapperTest {
     PersonalisationFe personalisationFe = new PersonalisationFe();
     personalisationFe.setFooterDescText("Footer Description");
     personalisationFe.setFooterGDPRUrl("GDPR URL");
-    personalisationFe.setFooterPrivacyInfoUrl("Privacy Info URL");
-    personalisationFe.setFooterTermsCondUrl("Terms and Conditions URL");
     personalisationFe.setHeaderAssistanceUrl("Assistance URL");
     personalisationFe.setFooterAccessibilityUrl("Accessibility URL");
     personalisationFe.setLogoFooterImg("img");
@@ -51,7 +49,7 @@ class PersonalisationFE2ConfigFEMapperTest {
     Assertions.assertEquals(broker.getBrokerFiscalCode(), configFE.getBrokerFiscalCode());
     Assertions.assertEquals(broker.getExternalId(), configFE.getExternalId());
     Assertions.assertTrue(configFE.getCanManageUsers());
-    TestUtils.checkNotNullFields(configFE, "headerAssistanceUrl", "logoFooterImg", "footerDescText", "footerPrivacyInfoUrl", "footerGDPRUrl", "footerTermsCondUrl", "footerAccessibilityUrl");
+    TestUtils.checkNotNullFields(configFE, "headerAssistanceUrl", "logoFooterImg", "footerDescText", "footerGDPRUrl", "footerAccessibilityUrl");
   }
 
   @Test

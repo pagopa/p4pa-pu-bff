@@ -33,7 +33,7 @@ public interface PagedDebtPositionTypeOrgDTOMapper {
             null,
             null,
             null,
-            Collections.emptyList()
+            null
     );
   }
 }

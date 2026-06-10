@@ -35,6 +35,7 @@ class DebtPositionTypeOrgDTOMapperTest {
     assertEquals("debtPositionTypeTaxonomyCode", result.getDebtPositionTypeTaxonomyCode());
     assertEquals("NotifyOutcomePushOrgSilServiceApplicationName", result.getNotifyOutcomePushOrgSilServiceApplicationName());
     assertEquals("AmountActualizationOrgSilServiceApplicationName", result.getAmountActualizationOrgSilServiceApplicationName());
+    assertEquals(dptobcList, result.getDebtPositionTypeOrgBalanceCosts());
   }
 
   @Test
@@ -58,13 +59,14 @@ class DebtPositionTypeOrgDTOMapperTest {
     assertEquals("Test Taxonomy Code", result.getDebtPositionTypeTaxonomyCode());
     assertEquals("NotifyOutcomePushOrgSilServiceApplicationName", result.getNotifyOutcomePushOrgSilServiceApplicationName());
     assertEquals("AmountActualizationOrgSilServiceApplicationName", result.getAmountActualizationOrgSilServiceApplicationName());
+    assertEquals(dptobcList, result.getDebtPositionTypeOrgBalanceCosts());
   }
 
   @Test
   void givenNullDebtPositionTypeAndNullApplicationNamesWhenMapThenMapWithNullFields() {
     DebtPositionTypeOrg debtPositionTypeOrg = TestUtils.getPodamFactory().manufacturePojo(DebtPositionTypeOrg.class);
 
-    DebtPositionTypeOrgDTO result = mapper.map(debtPositionTypeOrg, null, null, null, null, Collections.emptyList());
+    DebtPositionTypeOrgDTO result = mapper.map(debtPositionTypeOrg, null, null, null, null, null);
 
     TestUtils.reflectionEqualsByName(debtPositionTypeOrg, result);
 
@@ -73,5 +75,6 @@ class DebtPositionTypeOrgDTOMapperTest {
     assertNull(result.getDebtPositionTypeTaxonomyCode());
     assertNull(result.getNotifyOutcomePushOrgSilServiceApplicationName());
     assertNull(result.getAmountActualizationOrgSilServiceApplicationName());
+    assertNull(result.getDebtPositionTypeOrgBalanceCosts());
   }
 }

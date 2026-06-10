@@ -33,7 +33,7 @@ class PagedDebtPositionTypeOrgDTOMapperTest {
     pagedModelDebtPositionTypeOrg.getEmbedded().setDebtPositionTypeOrgs(List.of(dpto));
     //when
     try (MockedStatic<Mappers> mappersMockedStatic = Mockito.mockStatic(Mappers.class)) {
-      Mockito.when(debtPositionTypeOrgDTOMapperMock.map(dpto, null, null, null, null, Collections.emptyList()))
+      Mockito.when(debtPositionTypeOrgDTOMapperMock.map(dpto, null, null, null, null, null))
               .thenReturn(expectedDpto);
       mappersMockedStatic
               .when(() -> Mappers.getMapper(DebtPositionTypeOrgDTOMapper.class))
@@ -62,7 +62,7 @@ class PagedDebtPositionTypeOrgDTOMapperTest {
     pagedModelDebtPositionTypeOrg.getEmbedded().setDebtPositionTypeOrgs(List.of(dpto));
     //when
     try (MockedStatic<Mappers> mappersMockedStatic = Mockito.mockStatic(Mappers.class)) {
-      Mockito.when(debtPositionTypeOrgDTOMapperMock.map(dpto, null, null, null, null, Collections.emptyList()))
+      Mockito.when(debtPositionTypeOrgDTOMapperMock.map(dpto, null, null, null, null, null))
               .thenReturn(expectedDpto);
       mappersMockedStatic
               .when(() -> Mappers.getMapper(DebtPositionTypeOrgDTOMapper.class))
@@ -93,7 +93,7 @@ class PagedDebtPositionTypeOrgDTOMapperTest {
     pagedModelDebtPositionTypeOrg.getEmbedded().setDebtPositionTypeOrgs(List.of(dpto));
     //when
     try (MockedStatic<Mappers> mappersMockedStatic = Mockito.mockStatic(Mappers.class)) {
-      Mockito.when(debtPositionTypeOrgDTOMapperMock.map(dpto, dpt, null, null, null, Collections.emptyList()))
+      Mockito.when(debtPositionTypeOrgDTOMapperMock.map(dpto, dpt, null, null, null, null))
               .thenReturn(expectedDpto);
       mappersMockedStatic
               .when(() -> Mappers.getMapper(DebtPositionTypeOrgDTOMapper.class))

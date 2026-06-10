@@ -1,11 +1,16 @@
 package it.gov.pagopa.pu.bff.mapper;
 
+import it.gov.pagopa.pu.bff.dto.generated.DebtPositionTypeOrgBalanceCostDTO;
 import it.gov.pagopa.pu.bff.dto.generated.DebtPositionTypeOrgDTO;
 import it.gov.pagopa.pu.bff.util.TestUtils;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionType;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrg;
+import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrgBalanceCost;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
+
+import java.util.Collections;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -18,7 +23,10 @@ class DebtPositionTypeOrgDTOMapperTest {
   void givenDtoWhenMapThenMapIt() {
     DebtPositionTypeOrg dto = TestUtils.getPodamFactory().manufacturePojo(DebtPositionTypeOrg.class);
 
-    DebtPositionTypeOrgDTO result = mapper.map(dto, "DebtPositionTypeDescription", "DebtPositionTypeCode", "debtPositionTypeTaxonomyCode", "NotifyOutcomePushOrgSilServiceApplicationName", "AmountActualizationOrgSilServiceApplicationName", "spontaneousFormCode");
+    DebtPositionTypeOrgBalanceCostDTO dptobc = TestUtils.getPodamFactory().manufacturePojo(DebtPositionTypeOrgBalanceCostDTO.class);
+    List<DebtPositionTypeOrgBalanceCostDTO> dptobcList = List.of(dptobc);
+
+    DebtPositionTypeOrgDTO result = mapper.map(dto, "DebtPositionTypeDescription", "DebtPositionTypeCode", "debtPositionTypeTaxonomyCode", "NotifyOutcomePushOrgSilServiceApplicationName", "AmountActualizationOrgSilServiceApplicationName", "spontaneousFormCode", dptobcList);
 
     TestUtils.reflectionEqualsByName(dto, result);
     TestUtils.checkNotNullFields(result);
@@ -38,7 +46,10 @@ class DebtPositionTypeOrgDTOMapperTest {
     debtPositionType.setCode("Test Code");
     debtPositionType.setTaxonomyCode("Test Taxonomy Code");
 
-    DebtPositionTypeOrgDTO result = mapper.map(debtPositionTypeOrg, debtPositionType, "NotifyOutcomePushOrgSilServiceApplicationName", "AmountActualizationOrgSilServiceApplicationName", "spontaneousFormCode");
+    DebtPositionTypeOrgBalanceCostDTO dptobc = TestUtils.getPodamFactory().manufacturePojo(DebtPositionTypeOrgBalanceCostDTO.class);
+    List<DebtPositionTypeOrgBalanceCostDTO> dptobcList = List.of(dptobc);
+
+    DebtPositionTypeOrgDTO result = mapper.map(debtPositionTypeOrg, debtPositionType, "NotifyOutcomePushOrgSilServiceApplicationName", "AmountActualizationOrgSilServiceApplicationName", "spontaneousFormCode", dptobcList);
 
     TestUtils.reflectionEqualsByName(debtPositionTypeOrg, result);
     TestUtils.checkNotNullFields(result);
@@ -54,7 +65,7 @@ class DebtPositionTypeOrgDTOMapperTest {
   void givenNullDebtPositionTypeAndNullApplicationNamesWhenMapThenMapWithNullFields() {
     DebtPositionTypeOrg debtPositionTypeOrg = TestUtils.getPodamFactory().manufacturePojo(DebtPositionTypeOrg.class);
 
-    DebtPositionTypeOrgDTO result = mapper.map(debtPositionTypeOrg, null, null, null, null);
+    DebtPositionTypeOrgDTO result = mapper.map(debtPositionTypeOrg, null, null, null, null, Collections.emptyList());
 
     TestUtils.reflectionEqualsByName(debtPositionTypeOrg, result);
 

@@ -10,6 +10,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -28,10 +29,11 @@ public interface PagedDebtPositionTypeOrgDTOMapper {
   default DebtPositionTypeOrgDTO map(DebtPositionTypeOrg dpto, @Context Map<Long, DebtPositionType> debtPositionTypes) {
     return Mappers.getMapper(DebtPositionTypeOrgDTOMapper.class).map(
             dpto,
-            debtPositionTypes!=null?debtPositionTypes.get(dpto.getDebtPositionTypeId()):null,
+            debtPositionTypes != null ? debtPositionTypes.get(dpto.getDebtPositionTypeId()) : null,
             null,
             null,
-      null
+            null,
+            Collections.emptyList()
     );
   }
 }

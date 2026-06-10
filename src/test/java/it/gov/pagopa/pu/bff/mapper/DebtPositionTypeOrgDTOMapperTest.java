@@ -8,7 +8,6 @@ import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrg;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
 
-import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

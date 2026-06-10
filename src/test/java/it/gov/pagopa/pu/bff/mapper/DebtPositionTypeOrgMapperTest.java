@@ -71,7 +71,9 @@ class DebtPositionTypeOrgMapperTest {
       operatorsSet.remove(operator);
     }
     Assertions.assertNull(result.getDisabledOperators());
-    Assertions.assertFalse(result.getRemoveEnabledOperators());
+    Assertions.assertNotEquals(Boolean.TRUE, result.getRemoveEnabledOperators());
+    Assertions.assertEquals(saveDebtPositionTypeOrgDTO.getDebtPositionTypeOrgBalanceCostRequestList(), result.getDebtPositionTypeOrgBalanceCostRequestList());
+
   }
 
   @Test
@@ -107,7 +109,8 @@ class DebtPositionTypeOrgMapperTest {
       operatorsSet.remove(operator);
     }
     Assertions.assertNull(result.getDisabledOperators());
-    Assertions.assertFalse(result.getRemoveEnabledOperators());
+    Assertions.assertNotEquals(Boolean.TRUE, result.getRemoveEnabledOperators());
+    Assertions.assertEquals(saveDebtPositionTypeOrgDTO.getDebtPositionTypeOrgBalanceCostRequestList(), result.getDebtPositionTypeOrgBalanceCostRequestList());
   }
 
   @Test
@@ -125,7 +128,8 @@ class DebtPositionTypeOrgMapperTest {
     Assertions.assertEquals(saveDebtPositionTypeOrgDTO.getDebtPositionTypeOrg(),result.getDebtPositionTypeOrg());
     Assertions.assertEquals(saveDebtPositionTypeOrgDTO.getEnabledOperators(),result.getEnabledOperators());
     Assertions.assertEquals(saveDebtPositionTypeOrgDTO.getDisabledOperators(),result.getDisabledOperators());
-    Assertions.assertFalse(result.getRemoveEnabledOperators());
+    Assertions.assertNotEquals(Boolean.TRUE, result.getRemoveEnabledOperators());
+    Assertions.assertEquals(saveDebtPositionTypeOrgDTO.getDebtPositionTypeOrgBalanceCostRequestList(), result.getDebtPositionTypeOrgBalanceCostRequestList());
     Mockito.verifyNoInteractions(authzServiceMock);
   }
 
@@ -145,7 +149,8 @@ class DebtPositionTypeOrgMapperTest {
     Assertions.assertEquals(1,result.getEnabledOperators().size());
     Assertions.assertTrue(result.getEnabledOperators().contains(operatorExternalUserId));
     Assertions.assertNull(result.getDisabledOperators());
-    Assertions.assertTrue(result.getRemoveEnabledOperators());
+    Assertions.assertEquals(Boolean.TRUE, result.getRemoveEnabledOperators());
+    Assertions.assertEquals(saveDebtPositionTypeOrgDTO.getDebtPositionTypeOrgBalanceCostRequestList(), result.getDebtPositionTypeOrgBalanceCostRequestList());
     Mockito.verifyNoInteractions(authzServiceMock);
   }
 

@@ -300,5 +300,15 @@ class DebtPositionApisHolderTest extends BaseApiHolderTest {
       },
       debtPositionApisHolder::unload);
   }
+
+  @Test
+  void whenGetDebtPositionTypeOrgBalanceCostSearchControllerApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
+    assertAuthenticationShouldBeSetInThreadSafeMode(
+      accessToken -> debtPositionApisHolder.getDebtPositionTypeOrgBalanceCostSearchControllerApi(accessToken)
+        .crudDebtPositionTypeOrgBalanceCostsGetByDebtPositionTypeOrgIdAndOperatingYear(1L, "2026"),
+      new ParameterizedTypeReference<>() {
+      },
+      debtPositionApisHolder::unload);
+  }
 }
 

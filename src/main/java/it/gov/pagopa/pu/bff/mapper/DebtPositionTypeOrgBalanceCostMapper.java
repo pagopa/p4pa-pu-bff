@@ -12,7 +12,7 @@ public class DebtPositionTypeOrgBalanceCostMapper {
     dto.setType(dptobc.getType());
     dto.setOperatingYear(dptobc.getOperatingYear());
     dto.setOfficeCode(dptobc.getOfficeCode());
-    dto.sectionDescription(dptobc.getSectionDescription());
+    dto.setOfficeDescription(dptobc.getOfficeDescription());
     dto.setSectionCode(dptobc.getSectionCode());
     dto.setSectionDescription(dptobc.getSectionDescription());
     dto.setAssessmentCode(dptobc.getAssessmentCode());

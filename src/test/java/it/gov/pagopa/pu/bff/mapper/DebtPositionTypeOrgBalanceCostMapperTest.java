@@ -1,6 +1,7 @@
 package it.gov.pagopa.pu.bff.mapper;
 
 import it.gov.pagopa.pu.bff.dto.generated.DebtPositionTypeOrgBalanceCostDTO;
+import it.gov.pagopa.pu.bff.util.TestUtils;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrgBalanceCost;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrgBalanceCostType;
 import org.junit.jupiter.api.BeforeEach;
@@ -36,9 +37,11 @@ class DebtPositionTypeOrgBalanceCostMapperTest {
     DebtPositionTypeOrgBalanceCostDTO result = mapper.map(source);
 
     assertNotNull(result);
+    TestUtils.checkNotNullFields(result);
     assertEquals(source.getType(), result.getType());
     assertEquals(source.getOperatingYear(), result.getOperatingYear());
     assertEquals(source.getOfficeCode(), result.getOfficeCode());
+    assertEquals(source.getOfficeDescription(), result.getOfficeDescription());
     assertEquals(source.getSectionCode(), result.getSectionCode());
     assertEquals(source.getSectionDescription(), result.getSectionDescription());
     assertEquals(source.getAssessmentCode(), result.getAssessmentCode());

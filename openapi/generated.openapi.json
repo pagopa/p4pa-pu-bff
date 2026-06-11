@@ -427,7 +427,7 @@
         } ]
       }
     },
-    "/bff/organization/{organizationId}/org-sub-units/{orgSubUnitId}" : {
+    "/bff/organization/{organizationId}/org-sub-units/{subUnitCode}" : {
       "get" : {
         "tags" : [ "OrgSubUnits" ],
         "summary" : "Retrieve an Organization Subunit",
@@ -441,7 +441,7 @@
             "format" : "int64"
           }
         }, {
-          "name" : "orgSubUnitId",
+          "name" : "subUnitCode",
           "in" : "path",
           "required" : true,
           "schema" : {
@@ -517,7 +517,7 @@
             "format" : "int64"
           }
         }, {
-          "name" : "orgSubUnitId",
+          "name" : "subUnitCode",
           "in" : "path",
           "required" : true,
           "schema" : {
@@ -613,7 +613,7 @@
             "format" : "int64"
           }
         }, {
-          "name" : "orgSubUnitId",
+          "name" : "subUnitCode",
           "in" : "path",
           "required" : true,
           "schema" : {

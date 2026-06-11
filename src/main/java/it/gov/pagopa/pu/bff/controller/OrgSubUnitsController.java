@@ -25,21 +25,21 @@ public class OrgSubUnitsController implements OrgSubUnitsApi {
   }
 
   @Override
-  public ResponseEntity<Void> deleteOrgSubUnitById(Long organizationId, String orgSubUnitId) {
-    log.info("User requested deleteOrgSubUnitById having organizationId {} and orgSubUnitId {}", organizationId, orgSubUnitId);
-    subUnitRetrieverService.deleteOrgSubUnit(organizationId, orgSubUnitId, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken());
+  public ResponseEntity<Void> deleteOrgSubUnitById(Long organizationId, String subUnitCode) {
+    log.info("User requested deleteOrgSubUnitById having organizationId {} and subUnitCode {}", organizationId, subUnitCode);
+    subUnitRetrieverService.deleteOrgSubUnit(organizationId, subUnitCode, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken());
     return ResponseEntity.ok().build();
   }
 
   @Override
-  public ResponseEntity<OrgSubUnit> getOrgSubUnitById(Long organizationId, String orgSubUnitId) {
-    log.info("User requested getOrgSubUnitById having orgSubUnitId {}", orgSubUnitId);
-    return ResponseEntity.ok(subUnitRetrieverService.getOrgSubUnitById(organizationId, orgSubUnitId, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken()));
+  public ResponseEntity<OrgSubUnit> getOrgSubUnitById(Long organizationId, String subUnitCode) {
+    log.info("User requested getOrgSubUnitById having subUnitCode {}", subUnitCode);
+    return ResponseEntity.ok(subUnitRetrieverService.getOrgSubUnitById(organizationId, subUnitCode, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken()));
   }
 
   @Override
-  public ResponseEntity<OrgSubUnit> updateOrgSubUnit(Long organizationId, String orgSubUnitId, OrgSubUnitRequestBody body) {
-    log.info("User requested updateOrgSubUnit having organizationId {} and orgSubUnitCode {}", organizationId, body.getSubUnitCode());
-    return ResponseEntity.ok(subUnitRetrieverService.updateOrgSubUnit(organizationId, orgSubUnitId, body, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken()));
+  public ResponseEntity<OrgSubUnit> updateOrgSubUnit(Long organizationId, String subUnitCode, OrgSubUnitRequestBody body) {
+    log.info("User requested updateOrgSubUnit having organizationId {} and subUnitCode {}", organizationId, subUnitCode);
+    return ResponseEntity.ok(subUnitRetrieverService.updateOrgSubUnit(organizationId, subUnitCode, body, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken()));
   }
 }

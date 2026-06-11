@@ -21,12 +21,11 @@ public class OrgSubUnitRetrieverServiceImpl implements OrgSubUnitRetrieverServic
   }
 
   @Override
-  public OrgSubUnit getOrgSubUnitById(Long organizationId, String orgSubUnitId, UserInfo loggedUser, String accessToken) {
+  public OrgSubUnit getOrgSubUnitById(Long organizationId, String subUnitCode, UserInfo loggedUser, String accessToken) {
     AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser);
-    validateOrganizationForSubUnit(organizationId, orgSubUnitId);
-    OrgSubUnit  orgSubUnit = orgSubUnitService.getOrgSubUnitById(orgSubUnitId, accessToken);
+    OrgSubUnit orgSubUnit = orgSubUnitService.getOrgSubUnitById(calculateOrgSubUnitId(organizationId, subUnitCode), accessToken);
     if (orgSubUnit == null) {
-      throw new ResourceNotFoundException("ORG_SUB_UNIT_NOT_FOUND", "Organization SubUnit having orgSubUnitId " + orgSubUnitId + " not found");
+      throw new ResourceNotFoundException("ORG_SUB_UNIT_NOT_FOUND", "Organization SubUnit having subUnitCode " + subUnitCode + " not found");
     }
     return orgSubUnit;
   }
@@ -39,34 +38,28 @@ public class OrgSubUnitRetrieverServiceImpl implements OrgSubUnitRetrieverServic
   }
 
   @Override
-  public void deleteOrgSubUnit(Long organizationId, String orgSubUnitId, UserInfo loggedUser, String accessToken) {
+  public void deleteOrgSubUnit(Long organizationId, String subUnitCode, UserInfo loggedUser, String accessToken) {
     authorizationService.validateAdminRole(organizationId, loggedUser);
-    validateOrganizationForSubUnit(organizationId, orgSubUnitId);
-    orgSubUnitService.deleteOrgSubUnit(orgSubUnitId, accessToken);
+    orgSubUnitService.deleteOrgSubUnit(calculateOrgSubUnitId(organizationId, subUnitCode), accessToken);
   }
 
   @Override
-  public OrgSubUnit updateOrgSubUnit(Long organizationId, String orgSubUnitId, OrgSubUnitRequestBody orgSubUnit, UserInfo loggedUser, String accessToken) {
+  public OrgSubUnit updateOrgSubUnit(Long organizationId, String subUnitCode, OrgSubUnitRequestBody orgSubUnit, UserInfo loggedUser, String accessToken) {
     authorizationService.validateAdminRole(organizationId, loggedUser);
-    validateOrganizationForSubUnit(organizationId, orgSubUnitId);
     validateOrganizationForSubUnit(organizationId, orgSubUnit.getOrganizationId());
-    return orgSubUnitService.updateOrgSubUnit(orgSubUnitId, orgSubUnit, accessToken);
+    return orgSubUnitService.updateOrgSubUnit(calculateOrgSubUnitId(organizationId, subUnitCode), orgSubUnit, accessToken);
   }
 
-  private void validateOrganizationForSubUnit(Long organizationId, String orgSubUnitId) {
-    try {
-      Long orgIdFromSubUnit = Long.valueOf(orgSubUnitId.split("-")[0]);
-      validateOrganizationForSubUnit(organizationId, orgIdFromSubUnit);
-    } catch (NumberFormatException e) {
-      throw new InvalidOrgSubUnitException("INVALID_ORG_SUB_UNIT", "Error while retrieve organizationId from orgSubUnitId: "+orgSubUnitId);
-    }
-  }
 
   private void validateOrganizationForSubUnit(Long organizationId, Long orgIdFromSubUnit) {
     if(!organizationId.equals(orgIdFromSubUnit)){
       throw new InvalidOrgSubUnitException("INVALID_ORG_SUB_UNIT",
-        String.format("Mismatch organizationId %s retrieved from request with organizationId %s retrieved from OrgSubUnitId", organizationId , orgIdFromSubUnit));
+        String.format("Mismatch organizationId %s retrieved from path request with organizationId %s retrieved from body request", organizationId , orgIdFromSubUnit));
     }
+  }
+
+  private String calculateOrgSubUnitId(Long organizationId, String subUnitCode){
+    return organizationId+"-"+subUnitCode;
   }
 
 }

@@ -51,7 +51,8 @@ class OrgSubUnitRetrieverServiceImplTest {
   void givenValidIdWhenGetOrgSubUnitByIdThenReturnSubUnit() {
     // Given
     Long organizationId = 1L;
-    String orgSubUnitId = "1-SUBUNIT";
+    String subUnitCode = "CODE";
+    String orgSubUnitId = organizationId+"-"+subUnitCode;
     UserInfo loggedUser = podamFactory.manufacturePojo(UserInfo.class);
     OrgSubUnit expectedResult = podamFactory.manufacturePojo(OrgSubUnit.class);
 
@@ -63,7 +64,7 @@ class OrgSubUnitRetrieverServiceImplTest {
         .thenReturn(expectedResult);
 
       // When
-      OrgSubUnit result = orgSubUnitRetrieverService.getOrgSubUnitById(organizationId, orgSubUnitId, loggedUser, accessToken);
+      OrgSubUnit result = orgSubUnitRetrieverService.getOrgSubUnitById(organizationId, subUnitCode, loggedUser, accessToken);
 
       // Then
       assertNotNull(result);
@@ -75,7 +76,8 @@ class OrgSubUnitRetrieverServiceImplTest {
   void givenNonExistentIdWhenGetOrgSubUnitByIdThenThrowResourceNotFoundException() {
     // Given
     Long organizationId = 1L;
-    String orgSubUnitId = "1-SUBUNIT";
+    String subUnitCode = "CODE";
+    String orgSubUnitId = organizationId+"-"+subUnitCode;
     UserInfo loggedUser = podamFactory.manufacturePojo(UserInfo.class);
 
     try (MockedStatic<AuthorizationService> authMock = Mockito.mockStatic(AuthorizationService.class)) {
@@ -88,11 +90,11 @@ class OrgSubUnitRetrieverServiceImplTest {
       // When & Then
       ResourceNotFoundException exception = assertThrows(
         ResourceNotFoundException.class,
-        () -> orgSubUnitRetrieverService.getOrgSubUnitById(organizationId, orgSubUnitId, loggedUser, accessToken)
+        () -> orgSubUnitRetrieverService.getOrgSubUnitById(organizationId, subUnitCode, loggedUser, accessToken)
       );
 
       assertEquals("ORG_SUB_UNIT_NOT_FOUND", exception.getCode());
-      assertEquals("Organization SubUnit having orgSubUnitId " + orgSubUnitId + " not found", exception.getMessage());
+      assertEquals("Organization SubUnit having subUnitCode " + subUnitCode + " not found", exception.getMessage());
     }
   }
 
@@ -118,30 +120,17 @@ class OrgSubUnitRetrieverServiceImplTest {
   }
 
   @Test
-  void givenValidUserWhenDeleteOrgSubUnitThenOk() {
+  void givenInvalidOrgIdWhenCreateOrgSubUnitThenError() {
     // Given
     Long organizationId = 1L;
-    String orgSubUnitId = "1-SUBUNIT";
-    UserInfo loggedUser = podamFactory.manufacturePojo(UserInfo.class);
-
-    // When & Then
-    assertDoesNotThrow(() -> orgSubUnitRetrieverService.deleteOrgSubUnit(organizationId, orgSubUnitId, loggedUser, accessToken));
-
-    verify(authorizationServiceMock).validateAdminRole(organizationId, loggedUser);
-    verify(orgSubUnitServiceMock).deleteOrgSubUnit(orgSubUnitId, accessToken);
-  }
-
-  @Test
-  void givenInvalidOrgIdWhenDeleteOrgSubUnitThenError() {
-    // Given
-    Long organizationId = 1L;
-    String orgSubUnitId = "2-SUBUNIT";
+    OrgSubUnitRequestBody requestBody = podamFactory.manufacturePojo(OrgSubUnitRequestBody.class);
+    requestBody.setOrganizationId(2L);
     UserInfo loggedUser = podamFactory.manufacturePojo(UserInfo.class);
 
     // When & Then
     InvalidOrgSubUnitException exception = assertThrows(
       InvalidOrgSubUnitException.class,
-      () -> orgSubUnitRetrieverService.deleteOrgSubUnit(organizationId, orgSubUnitId, loggedUser, accessToken)
+      () -> orgSubUnitRetrieverService.createOrgSubUnit(organizationId, requestBody, loggedUser, accessToken)
     );
 
     assertEquals("INVALID_ORG_SUB_UNIT", exception.getCode());
@@ -150,28 +139,27 @@ class OrgSubUnitRetrieverServiceImplTest {
   }
 
   @Test
-  void givenInvalidOrgSubUnitIdWhenDeleteOrgSubUnitThenError() {
+  void givenValidUserWhenDeleteOrgSubUnitThenOk() {
     // Given
     Long organizationId = 1L;
-    String orgSubUnitId = "-SUBUNIT";
+    String subUnitCode = "CODE";
+    String orgSubUnitId = organizationId+"-"+subUnitCode;
     UserInfo loggedUser = podamFactory.manufacturePojo(UserInfo.class);
 
     // When & Then
-    InvalidOrgSubUnitException exception = assertThrows(
-      InvalidOrgSubUnitException.class,
-      () -> orgSubUnitRetrieverService.deleteOrgSubUnit(organizationId, orgSubUnitId, loggedUser, accessToken)
-    );
+    assertDoesNotThrow(() -> orgSubUnitRetrieverService.deleteOrgSubUnit(organizationId, subUnitCode, loggedUser, accessToken));
 
-    assertEquals("INVALID_ORG_SUB_UNIT", exception.getCode());
-    assertTrue(exception.getMessage().contains("Error while retrieve organizationId from orgSubUnitId"));
     verify(authorizationServiceMock).validateAdminRole(organizationId, loggedUser);
+    verify(orgSubUnitServiceMock).deleteOrgSubUnit(orgSubUnitId, accessToken);
   }
+
 
   @Test
   void givenValidUserWhenUpdateOrgSubUnitThenOk() {
     // Given
     Long organizationId = 1L;
-    String orgSubUnitId = "1-SUBUNIT";
+    String subUnitCode = "CODE";
+    String orgSubUnitId = organizationId+"-"+subUnitCode;
     UserInfo loggedUser = podamFactory.manufacturePojo(UserInfo.class);
     OrgSubUnitRequestBody requestBody = podamFactory.manufacturePojo(OrgSubUnitRequestBody.class);
     requestBody.setOrganizationId(organizationId);
@@ -181,7 +169,7 @@ class OrgSubUnitRetrieverServiceImplTest {
       .thenReturn(expectedResult);
 
     // When
-    OrgSubUnit result = orgSubUnitRetrieverService.updateOrgSubUnit(organizationId, orgSubUnitId, requestBody, loggedUser, accessToken);
+    OrgSubUnit result = orgSubUnitRetrieverService.updateOrgSubUnit(organizationId, subUnitCode, requestBody, loggedUser, accessToken);
 
     // Then
     assertNotNull(result);

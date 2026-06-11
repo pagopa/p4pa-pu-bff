@@ -3952,7 +3952,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorDTO'
-  /organization/{organizationId}/org-sub-units/{orgSubUnitId}:
+  /organization/{organizationId}/org-sub-units/{subUnitCode}:
     get:
       tags:
         - OrgSubUnits
@@ -3965,7 +3965,7 @@ paths:
           schema:
             type: integer
             format: int64
-        - name: orgSubUnitId
+        - name: subUnitCode
           in: path
           required: true
           schema:
@@ -3997,7 +3997,7 @@ paths:
           schema:
             type: integer
             format: int64
-        - name: orgSubUnitId
+        - name: subUnitCode
           in: path
           required: true
           schema:
@@ -4037,7 +4037,7 @@ paths:
           schema:
             type: integer
             format: int64
-        - name: orgSubUnitId
+        - name: subUnitCode
           in: path
           required: true
           schema:

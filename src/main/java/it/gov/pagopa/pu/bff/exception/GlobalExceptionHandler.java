@@ -74,7 +74,7 @@ public class GlobalExceptionHandler {
 
   @ExceptionHandler(InvalidOrgSubUnitException.class)
   public ResponseEntity<ErrorDTO> handleInvalidOrgSubUnitException(InvalidOrgSubUnitException ex, HttpServletRequest request) {
-    return handleException(ex, request, HttpStatus.BAD_REQUEST, ErrorDTO.CategoryEnum.GENERIC_ERROR);
+    return handleException(ex, request, HttpStatus.BAD_REQUEST, ErrorDTO.CategoryEnum.BAD_REQUEST);
   }
 
 

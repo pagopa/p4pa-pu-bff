@@ -2,6 +2,7 @@ package it.gov.pagopa.pu.bff.service.org_sub_unit;
 
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.connector.organization.OrgSubUnitService;
+import it.gov.pagopa.pu.bff.exception.InvalidOrgSubUnitException;
 import it.gov.pagopa.pu.bff.exception.ResourceNotFoundException;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
 import it.gov.pagopa.pu.bff.util.TestUtils;
@@ -128,6 +129,42 @@ class OrgSubUnitRetrieverServiceImplTest {
 
     verify(authorizationServiceMock).validateAdminRole(organizationId, loggedUser);
     verify(orgSubUnitServiceMock).deleteOrgSubUnit(orgSubUnitId, accessToken);
+  }
+
+  @Test
+  void givenInvalidOrgIdWhenDeleteOrgSubUnitThenError() {
+    // Given
+    Long organizationId = 1L;
+    String orgSubUnitId = "2-SUBUNIT";
+    UserInfo loggedUser = podamFactory.manufacturePojo(UserInfo.class);
+
+    // When & Then
+    InvalidOrgSubUnitException exception = assertThrows(
+      InvalidOrgSubUnitException.class,
+      () -> orgSubUnitRetrieverService.deleteOrgSubUnit(organizationId, orgSubUnitId, loggedUser, accessToken)
+    );
+
+    assertEquals("INVALID_ORG_SUB_UNIT", exception.getCode());
+    assertTrue(exception.getMessage().contains("Mismatch organizationId"));
+    verify(authorizationServiceMock).validateAdminRole(organizationId, loggedUser);
+  }
+
+  @Test
+  void givenInvalidOrgSubUnitIdWhenDeleteOrgSubUnitThenError() {
+    // Given
+    Long organizationId = 1L;
+    String orgSubUnitId = "-SUBUNIT";
+    UserInfo loggedUser = podamFactory.manufacturePojo(UserInfo.class);
+
+    // When & Then
+    InvalidOrgSubUnitException exception = assertThrows(
+      InvalidOrgSubUnitException.class,
+      () -> orgSubUnitRetrieverService.deleteOrgSubUnit(organizationId, orgSubUnitId, loggedUser, accessToken)
+    );
+
+    assertEquals("INVALID_ORG_SUB_UNIT", exception.getCode());
+    assertTrue(exception.getMessage().contains("Error while retrieve organizationId from orgSubUnitId"));
+    verify(authorizationServiceMock).validateAdminRole(organizationId, loggedUser);
   }
 
   @Test

@@ -436,4 +436,16 @@ class GlobalExceptionHandlerTest {
       .andExpect(MockMvcResultMatchers.jsonPath("$.code").value("INVALID_USER_INFO"))
       .andExpect(MockMvcResultMatchers.jsonPath("$.traceId").value(traceId));
   }
+
+  @Test
+  void handleInvalidOrgSubUnitException() throws Exception {
+    doThrow(new InvalidOrgSubUnitException("INVALID_ORG_SUB_UNIT", "Error")).when(testControllerSpy).testEndpoint(DATA, BODY);
+
+    performRequest(DATA, MediaType.APPLICATION_JSON)
+      .andExpect(MockMvcResultMatchers.status().isBadRequest())
+      .andExpect(MockMvcResultMatchers.jsonPath("$.category").value("BAD_REQUEST"))
+      .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("Error"))
+      .andExpect(MockMvcResultMatchers.jsonPath("$.code").value("INVALID_ORG_SUB_UNIT"))
+      .andExpect(MockMvcResultMatchers.jsonPath("$.traceId").value(traceId));
+  }
 }

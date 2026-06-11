@@ -55,7 +55,7 @@ public class OrgSubUnitRetrieverServiceImpl implements OrgSubUnitRetrieverServic
     try {
       Long orgIdFromSubUnit = Long.valueOf(orgSubUnitId.split("-")[0]);
       validateOrganizationForSubUnit(organizationId, orgIdFromSubUnit);
-    } catch (Exception e) {
+    } catch (NumberFormatException e) {
       throw new InvalidOrgSubUnitException("INVALID_ORG_SUB_UNIT", "Error while retrieve organizationId from orgSubUnitId: "+orgSubUnitId);
     }
   }

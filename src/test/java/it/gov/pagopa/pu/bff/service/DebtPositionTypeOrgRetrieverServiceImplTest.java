@@ -44,6 +44,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(MockitoExtension.class)
 class DebtPositionTypeOrgRetrieverServiceImplTest {
@@ -135,6 +136,7 @@ class DebtPositionTypeOrgRetrieverServiceImplTest {
     expectedResult.setNotifyOutcomePushOrgSilServiceApplicationName("NotifyApp");
     expectedResult.setAmountActualizationOrgSilServiceApplicationName("AmountApp");
     expectedResult.setSpontaneousFormCode(spontaneousForm.getCode());
+    expectedResult.setDebtPositionTypeOrgBalanceCosts(dptobcList);
 
     try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
       authorizationServiceMockedStatic
@@ -166,7 +168,7 @@ class DebtPositionTypeOrgRetrieverServiceImplTest {
       assertEquals("NotifyApp", result.getNotifyOutcomePushOrgSilServiceApplicationName());
       assertEquals("AmountApp", result.getAmountActualizationOrgSilServiceApplicationName());
       assertEquals(spontaneousForm.getCode(), result.getSpontaneousFormCode());
-
+      assertEquals(dptobcList, result.getDebtPositionTypeOrgBalanceCosts());
       authorizationServiceMockedStatic.verify(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser));
     }
   }

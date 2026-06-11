@@ -34,6 +34,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static it.gov.pagopa.pu.bff.util.Constants.ZONEID;
 import static it.gov.pagopa.pu.bff.util.Utilities.checkImmutableField;
 
 @Service
@@ -104,7 +105,7 @@ public class DebtPositionTypeOrgRetrieverServiceImpl implements DebtPositionType
     }
 
     List<DebtPositionTypeOrgBalanceCostDTO> debtPositionTypeOrgBalanceCosts = debtPositionTypeOrgBalanceCostRetrieverService
-      .getDebtPositionTypeOrgBalanceCostsByDptoIdAndOpYear(debtPositionTypeOrgId, String.valueOf(LocalDate.now().getYear()), accessToken);
+      .getDebtPositionTypeOrgBalanceCostsByDptoIdAndOpYear(debtPositionTypeOrgId, String.valueOf(LocalDate.now(ZONEID).getYear()), accessToken);
 
     return debtPositionTypeOrgDTOMapper.map(debtPositionTypeOrg, debtPositionType, notifyOutcomePushOrgSilServiceApplicationName, amountActualizationOrgSilServiceApplicationName, spontaneousFormCode, debtPositionTypeOrgBalanceCosts);
   }

@@ -4,13 +4,8 @@ import it.gov.pagopa.pu.auth.dto.generated.OperatorsPage;
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.auth.dto.generated.UserOrganizationRoles;
 import it.gov.pagopa.pu.bff.connector.auth.AuthzService;
-import it.gov.pagopa.pu.bff.connector.debt_position.DebtPositionService;
-import it.gov.pagopa.pu.bff.connector.debt_position.DebtPositionTypeOrgOperatorsService;
-import it.gov.pagopa.pu.bff.connector.debt_position.DebtPositionTypeOrgService;
-import it.gov.pagopa.pu.bff.connector.debt_position.DebtPositionTypeService;
-import it.gov.pagopa.pu.bff.dto.generated.DebtPositionTypeOrgDTO;
-import it.gov.pagopa.pu.bff.dto.generated.PagedDebtPositionTypeOrgOperatorDTO;
-import it.gov.pagopa.pu.bff.dto.generated.PagedDebtPositionTypeOrgWithCount;
+import it.gov.pagopa.pu.bff.connector.debt_position.*;
+import it.gov.pagopa.pu.bff.dto.generated.*;
 import it.gov.pagopa.pu.bff.dto.generated.SaveDebtPositionTypeOrgDTO;
 import it.gov.pagopa.pu.bff.exception.ConflictException;
 import it.gov.pagopa.pu.bff.exception.InvalidDebtPositionTypeOrgException;
@@ -20,6 +15,7 @@ import it.gov.pagopa.pu.bff.mapper.DebtPositionTypeOrgMapper;
 import it.gov.pagopa.pu.bff.mapper.DebtPositionTypeOrgOperatorsMapper;
 import it.gov.pagopa.pu.bff.mapper.DebtPositionTypeOrgWithCountMapper;
 import it.gov.pagopa.pu.bff.service.debt_position_type_org.DebtPositionTypeOrgRetrieverServiceImpl;
+import it.gov.pagopa.pu.bff.service.debt_position_type_org_balance_cost.DebtPositionTypeOrgBalanceCostRetrieverService;
 import it.gov.pagopa.pu.bff.service.org_sil_service.OrgSilServiceRetrieverService;
 import it.gov.pagopa.pu.bff.service.spontaneous_form.SpontaneousFormRetrieverService;
 import it.gov.pagopa.pu.bff.util.TestUtils;
@@ -47,6 +43,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(MockitoExtension.class)
 class DebtPositionTypeOrgRetrieverServiceImplTest {
@@ -75,6 +72,8 @@ class DebtPositionTypeOrgRetrieverServiceImplTest {
   private OrgSilServiceRetrieverService orgSilServiceRetrieverServiceMock;
   @Mock
   private SpontaneousFormRetrieverService spontaneousFormRetrieverServiceMock;
+  @Mock
+  private DebtPositionTypeOrgBalanceCostRetrieverService debtPositionTypeOrgBalanceCostRetrieverServiceMock;
 
   private DebtPositionTypeOrgRetrieverServiceImpl debtPositionTypeOrgService;
 
@@ -84,9 +83,12 @@ class DebtPositionTypeOrgRetrieverServiceImplTest {
 
   @BeforeEach
   void setUp() {
-    debtPositionTypeOrgService = new DebtPositionTypeOrgRetrieverServiceImpl(debtPositionTypeOrgServiceMock, debtPositionTypeOrgOperatorsServiceMock,
-      debtPositionServiceMock, authorizationServiceMock, authzServiceMock, debtPositionTypeServiceMock, debtPositionTypeOrgWithCountMapperMock,
-      debtPositionTypeOrgOperatorsMapperMock, debtPositionTypeOrgMapperMock, debtPositionTypeOrgMapperDTOMock, orgSilServiceRetrieverServiceMock, spontaneousFormRetrieverServiceMock);
+    debtPositionTypeOrgService = new DebtPositionTypeOrgRetrieverServiceImpl(
+      debtPositionTypeOrgServiceMock, debtPositionTypeOrgOperatorsServiceMock, debtPositionServiceMock,
+      authorizationServiceMock, authzServiceMock, debtPositionTypeServiceMock, debtPositionTypeOrgWithCountMapperMock,
+      debtPositionTypeOrgOperatorsMapperMock, debtPositionTypeOrgMapperMock, debtPositionTypeOrgMapperDTOMock,
+      orgSilServiceRetrieverServiceMock, spontaneousFormRetrieverServiceMock, debtPositionTypeOrgBalanceCostRetrieverServiceMock
+    );
   }
 
   @AfterEach
@@ -124,14 +126,16 @@ class DebtPositionTypeOrgRetrieverServiceImplTest {
     spontaneousForm.setSpontaneousFormId(1L);
     spontaneousForm.setCode("spontaneousFormCode");
 
+    DebtPositionTypeOrgBalanceCostDTO dptobc = TestUtils.getPodamFactory().manufacturePojo(DebtPositionTypeOrgBalanceCostDTO.class);
+    List<DebtPositionTypeOrgBalanceCostDTO> dptobcList = List.of(dptobc);
+
     DebtPositionTypeOrgDTO expectedResult = new DebtPositionTypeOrgDTO();
     expectedResult.setDebtPositionTypeDescription("Description");
     expectedResult.setDebtPositionTypeCode("Code");
     expectedResult.setNotifyOutcomePushOrgSilServiceApplicationName("NotifyApp");
     expectedResult.setAmountActualizationOrgSilServiceApplicationName("AmountApp");
     expectedResult.setSpontaneousFormCode(spontaneousForm.getCode());
-
-
+    expectedResult.setDebtPositionTypeOrgBalanceCosts(dptobcList);
 
     try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
       authorizationServiceMockedStatic
@@ -146,7 +150,12 @@ class DebtPositionTypeOrgRetrieverServiceImplTest {
         .thenReturn("NotifyApp");
       Mockito.when(orgSilServiceRetrieverServiceMock.getOrgSilServiceApplicationName(amountServiceId, accessToken))
         .thenReturn("AmountApp");
-      Mockito.when(debtPositionTypeOrgMapperDTOMock.map(debtPositionTypeOrg, debtPositionType, "NotifyApp", "AmountApp", spontaneousForm.getCode()))
+      Mockito.when(debtPositionTypeOrgBalanceCostRetrieverServiceMock.getDebtPositionTypeOrgBalanceCostsByDptoIdAndOpYear(
+        Mockito.eq(debtPositionTypeOrgId),
+        Mockito.anyString(),
+        Mockito.eq(accessToken)
+      )).thenReturn(dptobcList);
+      Mockito.when(debtPositionTypeOrgMapperDTOMock.map(debtPositionTypeOrg, debtPositionType, "NotifyApp", "AmountApp", spontaneousForm.getCode(), dptobcList))
         .thenReturn(expectedResult);
       Mockito.when(spontaneousFormRetrieverServiceMock.getSpontaneousFormAndValidate(debtPositionTypeOrg.getSpontaneousFormId(), debtPositionTypeOrg, accessToken))
         .thenReturn(spontaneousForm);
@@ -161,7 +170,7 @@ class DebtPositionTypeOrgRetrieverServiceImplTest {
       assertEquals("NotifyApp", result.getNotifyOutcomePushOrgSilServiceApplicationName());
       assertEquals("AmountApp", result.getAmountActualizationOrgSilServiceApplicationName());
       assertEquals(spontaneousForm.getCode(), result.getSpontaneousFormCode());
-
+      assertEquals(dptobcList, result.getDebtPositionTypeOrgBalanceCosts());
       authorizationServiceMockedStatic.verify(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser));
     }
   }
@@ -223,7 +232,7 @@ class DebtPositionTypeOrgRetrieverServiceImplTest {
         .thenReturn(null);
       Mockito.when(orgSilServiceRetrieverServiceMock.getOrgSilServiceApplicationName(amountServiceId, accessToken))
         .thenReturn(null);
-      Mockito.when(debtPositionTypeOrgMapperDTOMock.map(debtPositionTypeOrg, null, null, null, null))
+      Mockito.when(debtPositionTypeOrgMapperDTOMock.map(debtPositionTypeOrg, null, null, null, null, Collections.emptyList()))
         .thenReturn(expectedDTO);
 
       DebtPositionTypeOrgDTO result = debtPositionTypeOrgService.getDebtPositionTypeOrgById(
@@ -276,7 +285,7 @@ class DebtPositionTypeOrgRetrieverServiceImplTest {
         .thenReturn(debtPositionType);
       Mockito.when(orgSilServiceRetrieverServiceMock.getOrgSilServiceApplicationName(null, accessToken))
         .thenReturn(null);
-      Mockito.when(debtPositionTypeOrgMapperDTOMock.map(debtPositionTypeOrg, debtPositionType, null, null, null))
+      Mockito.when(debtPositionTypeOrgMapperDTOMock.map(debtPositionTypeOrg, debtPositionType, null, null, null, Collections.emptyList()))
         .thenReturn(expectedDTO);
 
       DebtPositionTypeOrgDTO result = debtPositionTypeOrgService.getDebtPositionTypeOrgById(

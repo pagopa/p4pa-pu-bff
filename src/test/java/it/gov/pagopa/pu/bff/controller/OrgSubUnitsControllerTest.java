@@ -88,8 +88,7 @@ class OrgSubUnitsControllerTest {
     String orgSubUnitId = "SUB_UNIT_ID";
     OrgSubUnit expectedResult = podamFactory.manufacturePojo(OrgSubUnit.class);
 
-    // Nota: Il controller per questa specifica API invoca il service passando solo id e token
-    when(subUnitRetrieverServiceMock.getOrgSubUnitById(orgSubUnitId, accessToken))
+    when(subUnitRetrieverServiceMock.getOrgSubUnitById(organizationId, orgSubUnitId, loggedUser, accessToken))
       .thenReturn(expectedResult);
 
     // When

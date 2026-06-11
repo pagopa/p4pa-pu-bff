@@ -12,6 +12,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
+import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import uk.co.jemos.podam.api.PodamFactory;
@@ -48,36 +49,50 @@ class OrgSubUnitRetrieverServiceImplTest {
   @Test
   void givenValidIdWhenGetOrgSubUnitByIdThenReturnSubUnit() {
     // Given
-    String orgSubUnitId = "SUB_UNIT_ID";
+    Long organizationId = 1L;
+    String orgSubUnitId = "1-SUBUNIT";
+    UserInfo loggedUser = podamFactory.manufacturePojo(UserInfo.class);
     OrgSubUnit expectedResult = podamFactory.manufacturePojo(OrgSubUnit.class);
 
-    when(orgSubUnitServiceMock.getOrgSubUnitById(orgSubUnitId, accessToken))
-      .thenReturn(expectedResult);
+    try (MockedStatic<AuthorizationService> authMock = Mockito.mockStatic(AuthorizationService.class)) {
+      authMock.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser))
+        .thenAnswer(a -> null);
 
-    // When
-    OrgSubUnit result = orgSubUnitRetrieverService.getOrgSubUnitById(orgSubUnitId, accessToken);
+      when(orgSubUnitServiceMock.getOrgSubUnitById(orgSubUnitId, accessToken))
+        .thenReturn(expectedResult);
 
-    // Then
-    assertNotNull(result);
-    assertSame(expectedResult, result);
+      // When
+      OrgSubUnit result = orgSubUnitRetrieverService.getOrgSubUnitById(organizationId, orgSubUnitId, loggedUser, accessToken);
+
+      // Then
+      assertNotNull(result);
+      assertSame(expectedResult, result);
+    }
   }
 
   @Test
   void givenNonExistentIdWhenGetOrgSubUnitByIdThenThrowResourceNotFoundException() {
     // Given
-    String orgSubUnitId = "SUB_UNIT_ID";
+    Long organizationId = 1L;
+    String orgSubUnitId = "1-SUBUNIT";
+    UserInfo loggedUser = podamFactory.manufacturePojo(UserInfo.class);
 
-    when(orgSubUnitServiceMock.getOrgSubUnitById(orgSubUnitId, accessToken))
-      .thenReturn(null);
+    try (MockedStatic<AuthorizationService> authMock = Mockito.mockStatic(AuthorizationService.class)) {
+      authMock.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser))
+        .thenAnswer(a -> null);
 
-    // When & Then
-    ResourceNotFoundException exception = assertThrows(
-      ResourceNotFoundException.class,
-      () -> orgSubUnitRetrieverService.getOrgSubUnitById(orgSubUnitId, accessToken)
-    );
+      when(orgSubUnitServiceMock.getOrgSubUnitById(orgSubUnitId, accessToken))
+        .thenReturn(null);
 
-    assertEquals("ORG_SUB_UNIT_NOT_FOUND", exception.getCode());
-    assertEquals("Organization SubUnit having orgSubUnitId " + orgSubUnitId + " not found", exception.getMessage());
+      // When & Then
+      ResourceNotFoundException exception = assertThrows(
+        ResourceNotFoundException.class,
+        () -> orgSubUnitRetrieverService.getOrgSubUnitById(organizationId, orgSubUnitId, loggedUser, accessToken)
+      );
+
+      assertEquals("ORG_SUB_UNIT_NOT_FOUND", exception.getCode());
+      assertEquals("Organization SubUnit having orgSubUnitId " + orgSubUnitId + " not found", exception.getMessage());
+    }
   }
 
   @Test
@@ -86,6 +101,7 @@ class OrgSubUnitRetrieverServiceImplTest {
     Long organizationId = 1L;
     UserInfo loggedUser = podamFactory.manufacturePojo(UserInfo.class);
     OrgSubUnitRequestBody requestBody = podamFactory.manufacturePojo(OrgSubUnitRequestBody.class);
+    requestBody.setOrganizationId(organizationId);
     OrgSubUnit expectedResult = podamFactory.manufacturePojo(OrgSubUnit.class);
 
     when(orgSubUnitServiceMock.createOrgSubUnit(requestBody, accessToken))
@@ -104,7 +120,7 @@ class OrgSubUnitRetrieverServiceImplTest {
   void givenValidUserWhenDeleteOrgSubUnitThenOk() {
     // Given
     Long organizationId = 1L;
-    String orgSubUnitId = "SUB_UNIT_ID";
+    String orgSubUnitId = "1-SUBUNIT";
     UserInfo loggedUser = podamFactory.manufacturePojo(UserInfo.class);
 
     // When & Then
@@ -118,7 +134,7 @@ class OrgSubUnitRetrieverServiceImplTest {
   void givenValidUserWhenUpdateOrgSubUnitThenOk() {
     // Given
     Long organizationId = 1L;
-    String orgSubUnitId = "SUB_UNIT_ID";
+    String orgSubUnitId = "1-SUBUNIT";
     UserInfo loggedUser = podamFactory.manufacturePojo(UserInfo.class);
     OrgSubUnitRequestBody requestBody = podamFactory.manufacturePojo(OrgSubUnitRequestBody.class);
     OrgSubUnit expectedResult = podamFactory.manufacturePojo(OrgSubUnit.class);

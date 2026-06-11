@@ -34,7 +34,7 @@ public class OrgSubUnitsController implements OrgSubUnitsApi {
   @Override
   public ResponseEntity<OrgSubUnit> getOrgSubUnitById(Long organizationId, String orgSubUnitId) {
     log.info("User requested getOrgSubUnitById having orgSubUnitId {}", orgSubUnitId);
-    return ResponseEntity.ok(subUnitRetrieverService.getOrgSubUnitById(orgSubUnitId, SecurityUtils.getAccessToken()));
+    return ResponseEntity.ok(subUnitRetrieverService.getOrgSubUnitById(organizationId, orgSubUnitId, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken()));
   }
 
   @Override

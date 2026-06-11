@@ -174,6 +174,7 @@ class OrgSubUnitRetrieverServiceImplTest {
     String orgSubUnitId = "1-SUBUNIT";
     UserInfo loggedUser = podamFactory.manufacturePojo(UserInfo.class);
     OrgSubUnitRequestBody requestBody = podamFactory.manufacturePojo(OrgSubUnitRequestBody.class);
+    requestBody.setOrganizationId(organizationId);
     OrgSubUnit expectedResult = podamFactory.manufacturePojo(OrgSubUnit.class);
 
     when(orgSubUnitServiceMock.updateOrgSubUnit(orgSubUnitId, requestBody, accessToken))

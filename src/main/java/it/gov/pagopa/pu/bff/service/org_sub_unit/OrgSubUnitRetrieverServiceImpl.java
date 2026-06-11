@@ -49,6 +49,7 @@ public class OrgSubUnitRetrieverServiceImpl implements OrgSubUnitRetrieverServic
   public OrgSubUnit updateOrgSubUnit(Long organizationId, String orgSubUnitId, OrgSubUnitRequestBody orgSubUnit, UserInfo loggedUser, String accessToken) {
     authorizationService.validateAdminRole(organizationId, loggedUser);
     validateOrganizationForSubUnit(organizationId, orgSubUnitId);
+    validateOrganizationForSubUnit(organizationId, orgSubUnit.getOrganizationId());
     return orgSubUnitService.updateOrgSubUnit(orgSubUnitId, orgSubUnit, accessToken);
   }
 

@@ -44,10 +44,6 @@ class OrgSubUnitsControllerTest {
   @AfterEach
   void verifyNoMoreInteractions() {
     Mockito.verifyNoMoreInteractions(subUnitRetrieverServiceMock);
-  }
-
-  @AfterEach
-  void clearContext() {
     SecurityUtilsTest.clearSecurityContext();
   }
 

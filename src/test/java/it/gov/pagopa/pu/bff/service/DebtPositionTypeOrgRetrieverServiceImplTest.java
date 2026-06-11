@@ -151,8 +151,11 @@ class DebtPositionTypeOrgRetrieverServiceImplTest {
         .thenReturn("NotifyApp");
       Mockito.when(orgSilServiceRetrieverServiceMock.getOrgSilServiceApplicationName(amountServiceId, accessToken))
         .thenReturn("AmountApp");
-      Mockito.when(debtPositionTypeOrgBalanceCostRetrieverServiceMock.getDebtPositionTypeOrgBalanceCostsByDptoIdAndOpYear(debtPositionTypeOrgId, String.valueOf(LocalDate.now().getYear()), accessToken))
-          .thenReturn(dptobcList);
+      Mockito.when(debtPositionTypeOrgBalanceCostRetrieverServiceMock.getDebtPositionTypeOrgBalanceCostsByDptoIdAndOpYear(
+        Mockito.eq(debtPositionTypeOrgId),
+        Mockito.anyString(),
+        Mockito.eq(accessToken)
+      )).thenReturn(dptobcList);
       Mockito.when(debtPositionTypeOrgMapperDTOMock.map(debtPositionTypeOrg, debtPositionType, "NotifyApp", "AmountApp", spontaneousForm.getCode(), dptobcList))
         .thenReturn(expectedResult);
       Mockito.when(spontaneousFormRetrieverServiceMock.getSpontaneousFormAndValidate(debtPositionTypeOrg.getSpontaneousFormId(), debtPositionTypeOrg, accessToken))

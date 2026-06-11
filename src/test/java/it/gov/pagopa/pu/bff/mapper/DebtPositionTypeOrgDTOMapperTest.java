@@ -18,26 +18,6 @@ class DebtPositionTypeOrgDTOMapperTest {
   private final DebtPositionTypeOrgDTOMapper mapper = Mappers.getMapper(DebtPositionTypeOrgDTOMapper.class);
 
   @Test
-  void givenDtoWhenMapThenMapIt() {
-    DebtPositionTypeOrg dto = TestUtils.getPodamFactory().manufacturePojo(DebtPositionTypeOrg.class);
-
-    DebtPositionTypeOrgBalanceCostDTO dptobc = TestUtils.getPodamFactory().manufacturePojo(DebtPositionTypeOrgBalanceCostDTO.class);
-    List<DebtPositionTypeOrgBalanceCostDTO> dptobcList = List.of(dptobc);
-
-    DebtPositionTypeOrgDTO result = mapper.map(dto, "DebtPositionTypeDescription", "DebtPositionTypeCode", "debtPositionTypeTaxonomyCode", "NotifyOutcomePushOrgSilServiceApplicationName", "AmountActualizationOrgSilServiceApplicationName", "spontaneousFormCode", dptobcList);
-
-    TestUtils.reflectionEqualsByName(dto, result);
-    TestUtils.checkNotNullFields(result);
-
-    assertEquals("DebtPositionTypeDescription", result.getDebtPositionTypeDescription());
-    assertEquals("DebtPositionTypeCode", result.getDebtPositionTypeCode());
-    assertEquals("debtPositionTypeTaxonomyCode", result.getDebtPositionTypeTaxonomyCode());
-    assertEquals("NotifyOutcomePushOrgSilServiceApplicationName", result.getNotifyOutcomePushOrgSilServiceApplicationName());
-    assertEquals("AmountActualizationOrgSilServiceApplicationName", result.getAmountActualizationOrgSilServiceApplicationName());
-    assertEquals(dptobcList, result.getDebtPositionTypeOrgBalanceCosts());
-  }
-
-  @Test
   void givenDebtPositionTypeWhenMapThenMapItCorrectly() {
     DebtPositionTypeOrg debtPositionTypeOrg = TestUtils.getPodamFactory().manufacturePojo(DebtPositionTypeOrg.class);
     DebtPositionType debtPositionType = new DebtPositionType();

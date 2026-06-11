@@ -2,6 +2,8 @@ package it.gov.pagopa.pu.bff.connector.debt_position;
 
 import it.gov.pagopa.pu.bff.connector.debt_position.client.DebtPositionTypeOrgBalanceCostClient;
 import it.gov.pagopa.pu.debtpositions.dto.generated.CollectionModelDebtPositionTypeOrgBalanceCost;
+import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrgBalanceCost;
+import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrgBalanceCostType;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -42,6 +44,23 @@ class DebtPositionTypeOrgBalanceCostServiceImplTest {
       .thenReturn(expectedResult);
 
     CollectionModelDebtPositionTypeOrgBalanceCost result = service.getDebtPositionTypeOrgBalanceCostsByDptoIdAndOpYear(dptoId, opYear, accessToken);
+
+    assertSame(expectedResult, result);
+  }
+
+  @Test
+  void whenGetDebtPositionTypeOrgBalanceCostsByDptoIdAndOpYearAndTypeThenInvokeClient() {
+    long dptoId = 1L;
+    String opYear = "2026";
+    DebtPositionTypeOrgBalanceCostType type = DebtPositionTypeOrgBalanceCostType.DELAY_COST;
+    String accessToken = "accessToken";
+
+    DebtPositionTypeOrgBalanceCost expectedResult = new DebtPositionTypeOrgBalanceCost();
+
+    when(debtPositionTypeOrgBalanceCostClientMock.getDebtPositionTypeOrgBalanceCostsByDptoIdAndOpYearAndType(dptoId, opYear, type, accessToken))
+      .thenReturn(expectedResult);
+
+    DebtPositionTypeOrgBalanceCost result = service.getDebtPositionTypeOrgBalanceCostsByDptoIdAndOpYearAndType(dptoId, opYear, type, accessToken);
 
     assertSame(expectedResult, result);
   }

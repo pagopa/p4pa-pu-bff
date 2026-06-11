@@ -8,6 +8,8 @@ import it.gov.pagopa.pu.bff.dto.generated.SaveDebtPositionTypeOrgDTO;
 import it.gov.pagopa.pu.bff.security.SecurityUtils;
 import it.gov.pagopa.pu.bff.service.debt_position_type_org.DebtPositionTypeOrgRetrieverService;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrg;
+import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrgBalanceCost;
+import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrgBalanceCostType;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -86,5 +88,11 @@ public class DebtPositionTypeOrgController implements DebtPositionTypeOrgsApi {
     log.info("User requested updateFlagActiveDebtPositionTypeOrg having organizationId {}, debtPositionTypeOrgId {} and flagActive {}", organizationId, debtPositionTypeOrgId, flagActive);
     debtPositionTypeOrgRetrieverService.updateFlagActiveDebtPositionTypeOrg(organizationId, debtPositionTypeOrgId, flagActive, SecurityUtils.getLoggedUser(),SecurityUtils.getAccessToken());
     return ResponseEntity.ok().build();
+  }
+
+  @Override
+  public ResponseEntity<DebtPositionTypeOrgBalanceCost> getDebtPositionTypeOrgBalanceCostByDebtPositionTypeOrgIdAndYearAndType(Long organizationId, Long debtPositionTypeOrgId, String operatingYear, DebtPositionTypeOrgBalanceCostType type){
+    log.info("User requested getDebtPositionTypeOrgBalanceCost having organizationId {}, debtPositionTypeOrgId {}, operatingYear {} and type {}", organizationId, debtPositionTypeOrgId, operatingYear, type);
+    return ResponseEntity.ok(debtPositionTypeOrgRetrieverService.getDebtPositionTypeOrgBalanceCostByDebtPositionTypeOrgIdAndYearAndType(organizationId, debtPositionTypeOrgId, operatingYear, type, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken()));
   }
 }

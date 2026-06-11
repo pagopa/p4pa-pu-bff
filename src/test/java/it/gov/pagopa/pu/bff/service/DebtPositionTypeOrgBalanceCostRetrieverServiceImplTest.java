@@ -6,6 +6,7 @@ import it.gov.pagopa.pu.bff.mapper.DebtPositionTypeOrgBalanceCostMapper;
 import it.gov.pagopa.pu.bff.service.debt_position_type_org_balance_cost.DebtPositionTypeOrgBalanceCostRetrieverServiceImpl;
 import it.gov.pagopa.pu.debtpositions.dto.generated.CollectionModelDebtPositionTypeOrgBalanceCost;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrgBalanceCost;
+import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrgBalanceCostType;
 import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelDebtPositionTypeOrgBalanceCostEmbedded;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
@@ -60,5 +61,24 @@ class DebtPositionTypeOrgBalanceCostRetrieverServiceImplTest {
     assertNotNull(result);
     assertEquals(1, result.size());
     assertEquals(mappedDto, result.getFirst());
+  }
+
+  @Test
+  void givenValidParametersWhenGetDebtPositionTypeOrgBalanceCostsByDptoIdAndOpYearAndTypeThenOk() {
+    Long dptoId = 1L;
+    String opYear = "2025";
+    DebtPositionTypeOrgBalanceCostType type = DebtPositionTypeOrgBalanceCostType.DELAY_COST;
+    String accessToken = "accessToken";
+
+    DebtPositionTypeOrgBalanceCost expected = new DebtPositionTypeOrgBalanceCost();
+
+    Mockito.when(debtPositionTypeOrgBalanceCostServiceMock.getDebtPositionTypeOrgBalanceCostsByDptoIdAndOpYearAndType(dptoId, opYear, type, accessToken))
+      .thenReturn(expected);
+
+    DebtPositionTypeOrgBalanceCost result = debtPositionTypeOrgBalanceCostRetrieverService
+      .getDebtPositionTypeOrgBalanceCostByDptoIdAndOpYearAndType(dptoId, opYear, type, accessToken);
+
+    assertNotNull(result);
+    assertEquals(expected, result);
   }
 }

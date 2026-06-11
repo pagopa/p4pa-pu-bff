@@ -3,6 +3,8 @@ package it.gov.pagopa.pu.bff.service.debt_position_type_org_balance_cost;
 import it.gov.pagopa.pu.bff.connector.debt_position.DebtPositionTypeOrgBalanceCostService;
 import it.gov.pagopa.pu.bff.dto.generated.DebtPositionTypeOrgBalanceCostDTO;
 import it.gov.pagopa.pu.bff.mapper.DebtPositionTypeOrgBalanceCostMapper;
+import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrgBalanceCost;
+import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrgBalanceCostType;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -29,5 +31,10 @@ public class DebtPositionTypeOrgBalanceCostRetrieverServiceImpl implements DebtP
       .stream()
       .map(debtPositionTypeOrgBalanceCostMapper::map)
       .toList();
+  }
+
+  @Override
+  public DebtPositionTypeOrgBalanceCost getDebtPositionTypeOrgBalanceCostByDptoIdAndOpYearAndType(Long debtPositionTypeOrgId, String opYear, DebtPositionTypeOrgBalanceCostType type, String accessToken) {
+    return debtPositionTypeOrgBalanceCostService.getDebtPositionTypeOrgBalanceCostsByDptoIdAndOpYearAndType(debtPositionTypeOrgId, opYear, type, accessToken);
   }
 }

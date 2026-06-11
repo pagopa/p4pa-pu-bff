@@ -9,6 +9,8 @@ import it.gov.pagopa.pu.bff.security.SecurityUtilsTest;
 import it.gov.pagopa.pu.bff.service.debt_position_type_org.DebtPositionTypeOrgRetrieverService;
 import it.gov.pagopa.pu.bff.util.TestUtils;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrg;
+import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrgBalanceCost;
+import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrgBalanceCostType;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -230,6 +232,24 @@ class DebtPositionTypeOrgControllerTest {
     //then
     Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
 
+  }
+
+  @Test
+  void givenCorrectRequestWhenGetDebtPositionTypeOrgBalanceCostByDebtPositionTypeOrgIdAndYearAndTypeThenOk() {
+    long organizationId = 1L;
+    long dptoId = 1L;
+    String opYear = "2026";
+    DebtPositionTypeOrgBalanceCostType type = DebtPositionTypeOrgBalanceCostType.NOTIFICATION_COST;
+    DebtPositionTypeOrgBalanceCost expectedResult = new DebtPositionTypeOrgBalanceCost();
+
+    Mockito.when(debtPositionTypeOrgRetrieverServiceMock.getDebtPositionTypeOrgBalanceCostByDebtPositionTypeOrgIdAndYearAndType(
+      organizationId, dptoId, opYear, type, loggedUser, accessToken)).thenReturn(expectedResult);
+
+    ResponseEntity<DebtPositionTypeOrgBalanceCost> response = debtPositionTypeOrgController.getDebtPositionTypeOrgBalanceCostByDebtPositionTypeOrgIdAndYearAndType(organizationId, dptoId, opYear, type);
+
+    Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
+    Assertions.assertNotNull(response.getBody());
+    Assertions.assertSame(expectedResult, response.getBody());
   }
 }
 

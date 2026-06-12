@@ -16,6 +16,9 @@
     "name" : "Classifications",
     "description" : "the Classifications API"
   }, {
+    "name" : "DebtPositionTypeOrgBalanceCost",
+    "description" : "the DebtPositionTypeOrgBalanceCost API"
+  }, {
     "name" : "OrgSilService",
     "description" : "the OrgSilService API"
   }, {
@@ -7505,7 +7508,7 @@
     },
     "/bff/organization/{organizationId}/debt-position-type-org-balance-cost" : {
       "get" : {
-        "tags" : [ "DebtPositionTypeOrgs" ],
+        "tags" : [ "DebtPositionTypeOrgBalanceCost" ],
         "summary" : "Retrieve a specific DebtPositionTypeOrgBalanceCost based on debtPositionTypeOrgId, operatingYear and type",
         "operationId" : "getDebtPositionTypeOrgBalanceCostByDebtPositionTypeOrgIdAndYearAndType",
         "parameters" : [ {

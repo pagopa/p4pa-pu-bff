@@ -872,7 +872,7 @@ paths:
   /organization/{organizationId}/debt-position-type-org-balance-cost:
     get:
       tags:
-        - DebtPositionTypeOrgs
+        - DebtPositionTypeOrgBalanceCost
       summary: "Retrieve a specific DebtPositionTypeOrgBalanceCost based on debtPositionTypeOrgId, operatingYear and type"
       operationId: getDebtPositionTypeOrgBalanceCostByDebtPositionTypeOrgIdAndYearAndType
       parameters:

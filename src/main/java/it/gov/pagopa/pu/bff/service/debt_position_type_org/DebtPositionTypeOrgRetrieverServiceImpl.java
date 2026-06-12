@@ -7,8 +7,8 @@ import it.gov.pagopa.pu.bff.connector.debt_position.DebtPositionService;
 import it.gov.pagopa.pu.bff.connector.debt_position.DebtPositionTypeOrgOperatorsService;
 import it.gov.pagopa.pu.bff.connector.debt_position.DebtPositionTypeOrgService;
 import it.gov.pagopa.pu.bff.connector.debt_position.DebtPositionTypeService;
-import it.gov.pagopa.pu.bff.dto.generated.*;
 import it.gov.pagopa.pu.bff.dto.generated.SaveDebtPositionTypeOrgDTO;
+import it.gov.pagopa.pu.bff.dto.generated.*;
 import it.gov.pagopa.pu.bff.exception.ConflictException;
 import it.gov.pagopa.pu.bff.exception.InvalidDebtPositionTypeOrgException;
 import it.gov.pagopa.pu.bff.exception.ResourceNotFoundException;
@@ -276,15 +276,4 @@ public class DebtPositionTypeOrgRetrieverServiceImpl implements DebtPositionType
     }
     return debtPositionTypeOrg;
   }
-
-  @Override
-  public DebtPositionTypeOrgBalanceCost getDebtPositionTypeOrgBalanceCostByDebtPositionTypeOrgIdAndYearAndType(Long organizationId, Long debtPositionTypeOrgId, String operatingYear, DebtPositionTypeOrgBalanceCostType type, UserInfo loggedUser, String accessToken) {
-    authorizationService.validateAdminRole(organizationId, loggedUser);
-    DebtPositionTypeOrgBalanceCost debtPositionTypeOrgBalanceCost = debtPositionTypeOrgBalanceCostRetrieverService.getDebtPositionTypeOrgBalanceCostByDptoIdAndOpYearAndType(debtPositionTypeOrgId, operatingYear, type, accessToken);
-    if (debtPositionTypeOrgBalanceCost == null) {
-      throw new ResourceNotFoundException("DEBT_POSITION_TYPE_ORG_BALANCE_COST_NOT_FOUND", "DebtPositionTypeOrgBalanceCost with debtPositionTypeOrgId %d, opYear %s and type %s not found".formatted(debtPositionTypeOrgId, operatingYear, type));
-    }
-    return debtPositionTypeOrgBalanceCost;
-  }
-
 }

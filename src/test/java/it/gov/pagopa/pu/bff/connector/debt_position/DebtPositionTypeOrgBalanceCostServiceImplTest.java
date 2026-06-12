@@ -60,7 +60,7 @@ class DebtPositionTypeOrgBalanceCostServiceImplTest {
     when(debtPositionTypeOrgBalanceCostClientMock.getDebtPositionTypeOrgBalanceCostsByDptoIdAndOpYearAndType(dptoId, opYear, type, accessToken))
       .thenReturn(expectedResult);
 
-    DebtPositionTypeOrgBalanceCost result = service.getDebtPositionTypeOrgBalanceCostsByDptoIdAndOpYearAndType(dptoId, opYear, type, accessToken);
+    DebtPositionTypeOrgBalanceCost result = service.getDebtPositionTypeOrgBalanceCostByDptoIdAndOpYearAndType(dptoId, opYear, type, accessToken);
 
     assertSame(expectedResult, result);
   }

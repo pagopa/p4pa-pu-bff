@@ -6,8 +6,6 @@ import it.gov.pagopa.pu.bff.dto.generated.PagedDebtPositionTypeOrgOperatorDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedDebtPositionTypeOrgWithCount;
 import it.gov.pagopa.pu.bff.dto.generated.SaveDebtPositionTypeOrgDTO;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrg;
-import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrgBalanceCost;
-import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrgBalanceCostType;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
@@ -36,6 +34,4 @@ public interface DebtPositionTypeOrgRetrieverService {
   void updateFlagActiveDebtPositionTypeOrg(Long organizationId, Long debtPositionTypeOrgCodeId, boolean flagActive, UserInfo loggedUser, String accessToken);
   DebtPositionTypeOrg getDebtPositionTypeOrgByCode(Long organizationId, String debtPositionTypeOrgCode, String mappedExternalUserId, String accessToken);
   List<DebtPositionTypeOrg> getDebtPositionTypeOrgs(Long organizationId, Boolean flagActive, String mappedExternalUserId, String accessToken);
-
-  DebtPositionTypeOrgBalanceCost getDebtPositionTypeOrgBalanceCostByDebtPositionTypeOrgIdAndYearAndType(Long organizationId, Long debtPositionTypeOrgId, String operatingYear, DebtPositionTypeOrgBalanceCostType type, UserInfo loggedUser, String accessToken);
 }

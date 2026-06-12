@@ -1116,47 +1116,6 @@ class DebtPositionTypeOrgRetrieverServiceImplTest {
 
     Assertions.assertThrows(ResourceNotFoundException.class, () ->
             debtPositionTypeOrgService.getDebtPositionTypeOrgByCode(organizationId,debtPositionTypeOrgCode,mappedExternalUserId,accessToken));
-  }
 
-  @Test
-  void whenGetDebtPositionTypeOrgBalanceCostByDebtPositionTypeOrgIdAndYearAndTypeThenOk() {
-    UserInfo loggedUser = new UserInfo();
-    loggedUser.setUserId("user-123");
-    loggedUser.setMappedExternalUserId("mappedExternalUserId");
-
-    Long organizationId = 1L;
-    Long dptoId = 1L;
-    String opYear = "2026";
-    DebtPositionTypeOrgBalanceCostType type = DebtPositionTypeOrgBalanceCostType.DELAY_COST;
-    DebtPositionTypeOrgBalanceCost expectedResult = podamFactory.manufacturePojo(DebtPositionTypeOrgBalanceCost.class);
-
-    Mockito.doNothing().when(authorizationServiceMock).validateAdminRole(organizationId, loggedUser);
-    Mockito.when(debtPositionTypeOrgBalanceCostRetrieverServiceMock.getDebtPositionTypeOrgBalanceCostByDptoIdAndOpYearAndType(dptoId,opYear,type,accessToken))
-      .thenReturn(expectedResult);
-
-    DebtPositionTypeOrgBalanceCost result = debtPositionTypeOrgService.getDebtPositionTypeOrgBalanceCostByDebtPositionTypeOrgIdAndYearAndType(organizationId, dptoId, opYear, type, loggedUser, accessToken);
-
-    assertNotNull(result);
-    assertEquals(expectedResult,result);
-  }
-
-  @Test
-  void givenNoDebtPositionTypeOrgBalanceCostWhenGetDebtPositionTypeOrgBalanceCostByDebtPositionTypeOrgIdAndYearAndTypeThenResourceNotFound() {
-    UserInfo loggedUser = new UserInfo();
-    loggedUser.setUserId("user-123");
-    loggedUser.setMappedExternalUserId("mappedExternalUserId");
-
-    Long organizationId = 1L;
-    Long dptoId = 1L;
-    String opYear = "2026";
-    DebtPositionTypeOrgBalanceCostType type = DebtPositionTypeOrgBalanceCostType.DELAY_COST;
-
-    Mockito.doNothing().when(authorizationServiceMock).validateAdminRole(organizationId, loggedUser);
-    Mockito.when(debtPositionTypeOrgBalanceCostRetrieverServiceMock.getDebtPositionTypeOrgBalanceCostByDptoIdAndOpYearAndType(dptoId,opYear,type,accessToken))
-      .thenReturn(null);
-
-    Assertions.assertThrows(ResourceNotFoundException.class, () ->
-      debtPositionTypeOrgService.getDebtPositionTypeOrgBalanceCostByDebtPositionTypeOrgIdAndYearAndType(organizationId,dptoId,opYear, type, loggedUser,accessToken));
   }
 }
-

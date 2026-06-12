@@ -1116,6 +1116,6 @@ class DebtPositionTypeOrgRetrieverServiceImplTest {
 
     Assertions.assertThrows(ResourceNotFoundException.class, () ->
             debtPositionTypeOrgService.getDebtPositionTypeOrgByCode(organizationId,debtPositionTypeOrgCode,mappedExternalUserId,accessToken));
+
   }
 }
-

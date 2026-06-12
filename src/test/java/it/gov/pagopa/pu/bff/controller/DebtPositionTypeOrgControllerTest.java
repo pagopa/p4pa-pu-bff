@@ -231,7 +231,6 @@ class DebtPositionTypeOrgControllerTest {
     Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
 
   }
-
 }
 
 

@@ -206,7 +206,7 @@ tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>("ope
       "ReceiptView" to "it.gov.pagopa.pu.debtpositions.dto.generated.ReceiptView",
       "ReceiptOriginType" to "it.gov.pagopa.pu.debtpositions.dto.generated.ReceiptOriginType",
       "DebtPositionTypeOrg" to "it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrg",
-      "DebtPositionTypeOrgBalanceCostRequestDTO" to "it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrgBalanceCostRequestDTO",
+      "DebtPositionTypeOrgBalanceCostDTO" to "it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrgBalanceCostDTO",
       "DebtPositionTypeOrgBalanceCostType" to "it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrgBalanceCostType",
       "DebtPositionTypeOrgBalanceCost" to "it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrgBalanceCost",
       "DebtPositionTypeOrgWithCount" to "it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrgWithCount",

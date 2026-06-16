@@ -206,6 +206,9 @@ tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>("ope
       "ReceiptView" to "it.gov.pagopa.pu.debtpositions.dto.generated.ReceiptView",
       "ReceiptOriginType" to "it.gov.pagopa.pu.debtpositions.dto.generated.ReceiptOriginType",
       "DebtPositionTypeOrg" to "it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrg",
+      "DebtPositionTypeOrgBalanceCostDTO" to "it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrgBalanceCostDTO",
+      "DebtPositionTypeOrgBalanceCostType" to "it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrgBalanceCostType",
+      "DebtPositionTypeOrgBalanceCost" to "it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrgBalanceCost",
       "DebtPositionTypeOrgWithCount" to "it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrgWithCount",
       "InstallmentView" to "it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentViewDTO",
       "PaymentsReportingView" to "it.gov.pagopa.pu.classification.dto.generated.PaymentsReportingView",
@@ -264,7 +267,9 @@ tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>("ope
       "OrganizationStatus" to "it.gov.pagopa.pu.organization.dto.generated.OrganizationStatus",
       "SpontaneousForm" to "it.gov.pagopa.pu.debtpositions.dto.generated.SpontaneousForm",
       "SpontaneousFormStructure" to "it.gov.pagopa.pu.debtpositions.dto.generated.SpontaneousFormStructure",
-      "OrganizationAdditionalLanguage" to "it.gov.pagopa.pu.organization.dto.generated.OrganizationAdditionalLanguage"
+      "OrganizationAdditionalLanguage" to "it.gov.pagopa.pu.organization.dto.generated.OrganizationAdditionalLanguage",
+      "OrgSubUnit" to "it.gov.pagopa.pu.organization.dto.generated.OrgSubUnit",
+      "OrgSubUnitRequestBody" to "it.gov.pagopa.pu.organization.dto.generated.OrgSubUnitRequestBody"
     )
   )
   configOptions.set(

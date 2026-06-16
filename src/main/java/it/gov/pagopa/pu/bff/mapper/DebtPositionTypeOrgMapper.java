@@ -39,6 +39,7 @@ public class DebtPositionTypeOrgMapper {
       .enabledOperators(getEnabledOperators(saveDebtPositionTypeOrgDTO.getEnabledOperators(),operatorExternalUserId,saveDebtPositionTypeOrgDTO.getOperatorsSelection(), organizationIpaCode, accessToken))
       .disabledOperators(OperatorsSelection.SELECTED.equals(saveDebtPositionTypeOrgDTO.getOperatorsSelection())?saveDebtPositionTypeOrgDTO.getDisabledOperators():null)
       .removeEnabledOperators(OperatorsSelection.NONE.equals(saveDebtPositionTypeOrgDTO.getOperatorsSelection()))
+      .debtPositionTypeOrgBalanceCostRequestList(saveDebtPositionTypeOrgDTO.getDebtPositionTypeOrgBalanceCostRequestList())
       .build();
   }
 

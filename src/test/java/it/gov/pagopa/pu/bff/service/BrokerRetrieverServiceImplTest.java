@@ -76,7 +76,6 @@ class BrokerRetrieverServiceImplTest {
     assertEquals(personalisationFe.getFooterAccessibilityUrl(), result.getFooterAccessibilityUrl());
     assertEquals(personalisationFe.getFooterGDPRUrl(), result.getFooterGDPRUrl());
     assertEquals(personalisationFe.getFooterDescText(), result.getFooterDescText());
-    assertEquals(personalisationFe.getFooterTermsCondUrl(), result.getFooterTermsCondUrl());
     assertEquals(personalisationFe.getHeaderAssistanceUrl(), result.getHeaderAssistanceUrl());
     assertEquals(personalisationFe.getLogoFooterImg(), result.getLogoFooterImg());
   }

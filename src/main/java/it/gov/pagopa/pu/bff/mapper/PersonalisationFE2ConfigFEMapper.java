@@ -17,8 +17,6 @@ public class PersonalisationFE2ConfigFEMapper {
       .logoFooterImg(personalisationFe.getLogoFooterImg())
       .footerDescText(personalisationFe.getFooterDescText())
       .footerGDPRUrl(personalisationFe.getFooterGDPRUrl())
-      .footerPrivacyInfoUrl(personalisationFe.getFooterPrivacyInfoUrl())
-      .footerTermsCondUrl(personalisationFe.getFooterTermsCondUrl())
       .headerAssistanceUrl(personalisationFe.getHeaderAssistanceUrl())
       .footerAccessibilityUrl(personalisationFe.getFooterAccessibilityUrl())
       .build();

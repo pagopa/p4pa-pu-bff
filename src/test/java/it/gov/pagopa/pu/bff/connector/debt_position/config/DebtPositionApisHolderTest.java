@@ -13,9 +13,7 @@ import org.springframework.boot.restclient.RestTemplateBuilder;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.web.util.DefaultUriBuilderFactory;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.OffsetDateTime;
+import java.time.*;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -27,6 +25,24 @@ class DebtPositionApisHolderTest extends BaseApiHolderTest {
   private RestTemplateBuilder restTemplateBuilderMock;
 
   private DebtPositionApisHolder debtPositionApisHolder;
+
+  private static final OffsetDateTime FIXED_OFFSET_DATETIME_FROM =
+    OffsetDateTime.of(2026, 4, 18, 12, 0, 0, 0, ZoneOffset.UTC);
+
+  private static final OffsetDateTime FIXED_OFFSET_DATETIME_TO =
+    OffsetDateTime.of(2026, 6, 18, 12, 0, 0, 0, ZoneOffset.UTC);
+
+  private static final LocalDate FIXED_LOCAL_DATE_FROM =
+    LocalDate.of(2026, Month.JUNE, 15);
+
+  private static final LocalDate FIXED_LOCAL_DATE_TO =
+    LocalDate.of(2026, Month.JUNE, 18);
+
+  private static final LocalDateTime FIXED_LOCAL_DATETIME_FROM =
+    LocalDateTime.of(2026, Month.JUNE, 18, 12, 0);
+
+  private static final LocalDateTime FIXED_LOCAL_DATETIME_TO =
+    LocalDateTime.of(2026, Month.JUNE, 18, 12, 0);
 
   @BeforeEach
   void setUp() {
@@ -79,7 +95,7 @@ class DebtPositionApisHolderTest extends BaseApiHolderTest {
   void whenGetReceiptViewSearchControllerApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
     assertAuthenticationShouldBeSetInThreadSafeMode(
       accessToken -> debtPositionApisHolder.getReceiptViewSearchControllerApi(accessToken)
-        .crudReceiptsViewFindReceiptsByFilters(1L, "operator", List.of(ReceiptOriginType.RECEIPT_PAGOPA),  "iuv", "iur", "iud", 1L, OffsetDateTime.now(), OffsetDateTime.now(), "fiscalCode", 0, 10, Collections.emptyList()),
+        .crudReceiptsViewFindReceiptsByFilters(1L, "operator", List.of(ReceiptOriginType.RECEIPT_PAGOPA),  "iuv", "iur", "iud", 1L, FIXED_OFFSET_DATETIME_FROM, FIXED_OFFSET_DATETIME_TO, "fiscalCode", 0, 10, Collections.emptyList()),
       new ParameterizedTypeReference<>() {
       },
       debtPositionApisHolder::unload);
@@ -165,7 +181,7 @@ class DebtPositionApisHolderTest extends BaseApiHolderTest {
   void givenGetInstallmentsByFiltersWhenGetInstallmentApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
     assertAuthenticationShouldBeSetInThreadSafeMode(
       accessToken -> debtPositionApisHolder.getInstallmentApi(accessToken)
-        .getInstallmentsByFilters(1L, "operatorExternalUserId", LocalDate.now().minusDays(30), LocalDate.now(), "iuv", "iud", "fiscalCode", Collections.emptyList(), 2L, InstallmentStatus.PAID, 0, 10, Collections.emptyList()),
+        .getInstallmentsByFilters(1L, "operatorExternalUserId", FIXED_LOCAL_DATE_FROM, FIXED_LOCAL_DATE_TO, "iuv", "iud", "fiscalCode", Collections.emptyList(), 2L, InstallmentStatus.PAID, 0, 10, Collections.emptyList()),
       new ParameterizedTypeReference<>() {
       }, debtPositionApisHolder::unload);
   }
@@ -178,8 +194,8 @@ class DebtPositionApisHolderTest extends BaseApiHolderTest {
           1L,
           "operatorExternalUserId",
           List.of(DebtPositionOrigin.ORDINARY),
-          LocalDateTime.now(),
-          LocalDateTime.now(),
+          FIXED_LOCAL_DATETIME_FROM,
+          FIXED_LOCAL_DATETIME_TO,
           "fiscalCode",
           1L,
           DebtPositionStatus.PAID,
@@ -296,6 +312,16 @@ class DebtPositionApisHolderTest extends BaseApiHolderTest {
     assertAuthenticationShouldBeSetInThreadSafeMode(
       accessToken -> debtPositionApisHolder.getSpontaneousFormApi(accessToken)
         .createSpontaneousForm(new SpontaneousForm()),
+      new ParameterizedTypeReference<>() {
+      },
+      debtPositionApisHolder::unload);
+  }
+
+  @Test
+  void whenGetDebtPositionTypeOrgBalanceCostSearchControllerApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
+    assertAuthenticationShouldBeSetInThreadSafeMode(
+      accessToken -> debtPositionApisHolder.getDebtPositionTypeOrgBalanceCostSearchControllerApi(accessToken)
+        .crudDebtPositionTypeOrgBalanceCostsGetByDebtPositionTypeOrgIdAndOperatingYear(1L, "2026"),
       new ParameterizedTypeReference<>() {
       },
       debtPositionApisHolder::unload);

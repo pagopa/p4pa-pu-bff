@@ -26,8 +26,6 @@ class PersonalisationFE2ConfigFEMapperTest {
     PersonalisationFe personalisationFe = new PersonalisationFe();
     personalisationFe.setFooterDescText("Footer Description");
     personalisationFe.setFooterGDPRUrl("GDPR URL");
-    personalisationFe.setFooterPrivacyInfoUrl("Privacy Info URL");
-    personalisationFe.setFooterTermsCondUrl("Terms and Conditions URL");
     personalisationFe.setHeaderAssistanceUrl("Assistance URL");
     personalisationFe.setFooterAccessibilityUrl("Accessibility URL");
     personalisationFe.setLogoFooterImg("img");
@@ -35,6 +33,7 @@ class PersonalisationFE2ConfigFEMapperTest {
     Broker broker = new Broker();
     broker.setBrokerId(1L);
     broker.setBrokerFiscalCode("brokerFiscalCode");
+    broker.setExternalId("brokerExternalId");
 
     UserInfo userInfo = new UserInfo();
     userInfo.setCanManageUsers(true);
@@ -44,14 +43,13 @@ class PersonalisationFE2ConfigFEMapperTest {
     Assertions.assertEquals("img", configFE.getLogoFooterImg());
     Assertions.assertEquals("Footer Description", configFE.getFooterDescText());
     Assertions.assertEquals("GDPR URL", configFE.getFooterGDPRUrl());
-    Assertions.assertEquals("Privacy Info URL", configFE.getFooterPrivacyInfoUrl());
-    Assertions.assertEquals("Terms and Conditions URL", configFE.getFooterTermsCondUrl());
     Assertions.assertEquals("Assistance URL", configFE.getHeaderAssistanceUrl());
     Assertions.assertEquals("Accessibility URL", configFE.getFooterAccessibilityUrl());
     Assertions.assertEquals(String.valueOf(broker.getBrokerId()), configFE.getBrokerId());
     Assertions.assertEquals(broker.getBrokerFiscalCode(), configFE.getBrokerFiscalCode());
+    Assertions.assertEquals(broker.getExternalId(), configFE.getExternalId());
     Assertions.assertTrue(configFE.getCanManageUsers());
-    TestUtils.checkNotNullFields(configFE, "headerAssistanceUrl", "logoFooterImg", "footerDescText", "footerPrivacyInfoUrl", "footerGDPRUrl", "footerTermsCondUrl", "footerAccessibilityUrl");
+    TestUtils.checkNotNullFields(configFE, "headerAssistanceUrl", "logoFooterImg", "footerDescText", "footerGDPRUrl", "footerAccessibilityUrl");
   }
 
   @Test
@@ -65,6 +63,7 @@ class PersonalisationFE2ConfigFEMapperTest {
     ConfigFE configFE = mapper.mapPersonalisationFE2ConfigFE(new PersonalisationFe(), null, null);
     Assertions.assertNotNull(configFE);
     Assertions.assertNull(configFE.getBrokerId());
+    Assertions.assertEquals("default", configFE.getExternalId());
     Assertions.assertFalse(configFE.getCanManageUsers());
   }
 

@@ -46,6 +46,7 @@ import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandl
 
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
+import java.time.Month;
 import java.util.Map;
 import java.util.Set;
 
@@ -65,7 +66,7 @@ import static org.mockito.Mockito.when;
 class GlobalExceptionHandlerTest {
 
   public static final String DATA = "data";
-  public static final TestRequestBody BODY = new TestRequestBody("bodyData", null, "abc", LocalDateTime.now());
+  public static final TestRequestBody BODY = new TestRequestBody("bodyData", null, "abc", LocalDateTime.of(2026, Month.JUNE, 18, 12, 0));
 
   @Autowired
   private MockMvc mockMvc;
@@ -77,6 +78,8 @@ class GlobalExceptionHandlerTest {
   private TestController testControllerSpy;
   @MockitoSpyBean
   private RequestMappingHandlerAdapter requestMappingHandlerAdapterSpy;
+
+  private final String traceId = "TRACEID";
 
   @RestController
   @Slf4j
@@ -90,6 +93,7 @@ class GlobalExceptionHandlerTest {
   @BeforeEach
   void init() {
     TestUtils.clearDefaultTimezone();
+    UtilitiesTest.setTraceId(traceId);
   }
 
   @Data
@@ -104,11 +108,6 @@ class GlobalExceptionHandlerTest {
     private LocalDateTime dateTimeField;
   }
 
-  private final String traceId = "TRACEID";
-  @BeforeEach
-  void setTraceId(){
-    UtilitiesTest.setTraceId(traceId);
-  }
   @AfterEach
   void clearTraceId(){
     UtilitiesTest.clearTraceIdContext();
@@ -434,6 +433,18 @@ class GlobalExceptionHandlerTest {
       .andExpect(MockMvcResultMatchers.jsonPath("$.category").value("BAD_REQUEST"))
       .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("Error"))
       .andExpect(MockMvcResultMatchers.jsonPath("$.code").value("INVALID_USER_INFO"))
+      .andExpect(MockMvcResultMatchers.jsonPath("$.traceId").value(traceId));
+  }
+
+  @Test
+  void handleInvalidOrgSubUnitException() throws Exception {
+    doThrow(new InvalidOrgSubUnitException("INVALID_ORG_SUB_UNIT", "Error")).when(testControllerSpy).testEndpoint(DATA, BODY);
+
+    performRequest(DATA, MediaType.APPLICATION_JSON)
+      .andExpect(MockMvcResultMatchers.status().isBadRequest())
+      .andExpect(MockMvcResultMatchers.jsonPath("$.category").value("BAD_REQUEST"))
+      .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("Error"))
+      .andExpect(MockMvcResultMatchers.jsonPath("$.code").value("INVALID_ORG_SUB_UNIT"))
       .andExpect(MockMvcResultMatchers.jsonPath("$.traceId").value(traceId));
   }
 }

@@ -79,6 +79,8 @@ class GlobalExceptionHandlerTest {
   @MockitoSpyBean
   private RequestMappingHandlerAdapter requestMappingHandlerAdapterSpy;
 
+  private final String traceId = "TRACEID";
+
   @RestController
   @Slf4j
   static class TestController {
@@ -91,6 +93,7 @@ class GlobalExceptionHandlerTest {
   @BeforeEach
   void init() {
     TestUtils.clearDefaultTimezone();
+    UtilitiesTest.setTraceId(traceId);
   }
 
   @Data
@@ -105,11 +108,6 @@ class GlobalExceptionHandlerTest {
     private LocalDateTime dateTimeField;
   }
 
-  private final String traceId = "TRACEID";
-  @BeforeEach
-  void setTraceId(){
-    UtilitiesTest.setTraceId(traceId);
-  }
   @AfterEach
   void clearTraceId(){
     UtilitiesTest.clearTraceIdContext();

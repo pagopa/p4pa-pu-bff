@@ -46,6 +46,7 @@ import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandl
 
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
+import java.time.Month;
 import java.util.Map;
 import java.util.Set;
 
@@ -65,7 +66,7 @@ import static org.mockito.Mockito.when;
 class GlobalExceptionHandlerTest {
 
   public static final String DATA = "data";
-  public static final TestRequestBody BODY = new TestRequestBody("bodyData", null, "abc", LocalDateTime.now());
+  public static final TestRequestBody BODY = new TestRequestBody("bodyData", null, "abc", LocalDateTime.of(2026, Month.JUNE, 18, 12, 0));
 
   @Autowired
   private MockMvc mockMvc;

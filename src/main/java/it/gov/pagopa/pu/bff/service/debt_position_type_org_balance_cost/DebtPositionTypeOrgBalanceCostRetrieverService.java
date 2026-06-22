@@ -8,7 +8,7 @@ import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrgBalanceCo
 import java.util.List;
 
 public interface DebtPositionTypeOrgBalanceCostRetrieverService {
-  List<DebtPositionTypeOrgBalanceCostDTO> getDebtPositionTypeOrgBalanceCostsByDptoIdAndOpYear(Long debtPositionTypeOrgId, String opYear, String accessToken);
+  List<DebtPositionTypeOrgBalanceCostDTO> getDebtPositionTypeOrgBalanceCostsByDptoIdAndOpYears(Long debtPositionTypeOrgId, List<String> opYears, String accessToken);
 
   DebtPositionTypeOrgBalanceCost getDebtPositionTypeOrgBalanceCostByDptoIdAndYearAndType(Long organizationId, Long debtPositionTypeOrgId, String operatingYear, DebtPositionTypeOrgBalanceCostType type, UserInfo loggedUser, String accessToken);
 }

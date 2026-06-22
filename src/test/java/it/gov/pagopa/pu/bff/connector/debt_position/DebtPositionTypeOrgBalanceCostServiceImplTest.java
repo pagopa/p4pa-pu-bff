@@ -12,6 +12,8 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.Mockito.when;
 
@@ -35,15 +37,15 @@ class DebtPositionTypeOrgBalanceCostServiceImplTest {
   @Test
   void whenGetDebtPositionTypeOrgBalanceCostsByDptoIdAndOpYearThenInvokeClient() {
     long dptoId = 1L;
-    String opYear = "2026";
+    List<String> opYears = List.of("2026");
     String accessToken = "accessToken";
 
     CollectionModelDebtPositionTypeOrgBalanceCost expectedResult = new CollectionModelDebtPositionTypeOrgBalanceCost();
 
-    when(debtPositionTypeOrgBalanceCostClientMock.getDebtPositionTypeOrgBalanceCostsByDptoIdAndOpYear(dptoId, opYear, accessToken))
+    when(debtPositionTypeOrgBalanceCostClientMock.getDebtPositionTypeOrgBalanceCostsByDptoIdAndOpYears(dptoId, opYears, accessToken))
       .thenReturn(expectedResult);
 
-    CollectionModelDebtPositionTypeOrgBalanceCost result = service.getDebtPositionTypeOrgBalanceCostsByDptoIdAndOpYear(dptoId, opYear, accessToken);
+    CollectionModelDebtPositionTypeOrgBalanceCost result = service.getDebtPositionTypeOrgBalanceCostsByDptoIdAndOpYears(dptoId, opYears, accessToken);
 
     assertSame(expectedResult, result);
   }

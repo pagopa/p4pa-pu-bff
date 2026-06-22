@@ -15,6 +15,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.client.HttpClientErrorException;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.Mockito.when;
@@ -41,17 +43,17 @@ class DebtPositionTypeOrgBalanceCostClientTest {
   @Test
   void whenGetDebtPositionTypeOrgBalanceCostsByDptoIdAndOpYearThenInvokeWithAccessToken() {
     long dptoId = 1L;
-    String opYear = "2025";
+    List<String> opYears = List.of("2025");
     String accessToken = "accessToken";
 
     CollectionModelDebtPositionTypeOrgBalanceCost expectedResult = new CollectionModelDebtPositionTypeOrgBalanceCost();
 
     when(debtPositionApisHolderMock.getDebtPositionTypeOrgBalanceCostSearchControllerApi(accessToken))
       .thenReturn(debtPositionTypeOrgBalanceCostSearchControllerApiMock);
-    when(debtPositionTypeOrgBalanceCostSearchControllerApiMock.crudDebtPositionTypeOrgBalanceCostsGetByDebtPositionTypeOrgIdAndOperatingYear(dptoId, opYear))
+    when(debtPositionTypeOrgBalanceCostSearchControllerApiMock.crudDebtPositionTypeOrgBalanceCostsGetByDebtPositionTypeOrgIdAndOperatingYears(dptoId, opYears))
       .thenReturn(expectedResult);
 
-    CollectionModelDebtPositionTypeOrgBalanceCost result = debtPositionTypeOrgBalanceCostClient.getDebtPositionTypeOrgBalanceCostsByDptoIdAndOpYear(dptoId, opYear, accessToken);
+    CollectionModelDebtPositionTypeOrgBalanceCost result = debtPositionTypeOrgBalanceCostClient.getDebtPositionTypeOrgBalanceCostsByDptoIdAndOpYears(dptoId, opYears, accessToken);
 
     assertSame(expectedResult, result);
   }

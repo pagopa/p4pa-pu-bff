@@ -36,12 +36,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.authorization.AuthorizationDeniedException;
 import uk.co.jemos.podam.api.PodamFactory;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static it.gov.pagopa.pu.bff.util.Constants.ZONEID;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -137,10 +139,14 @@ class DebtPositionTypeOrgRetrieverServiceImplTest {
     expectedResult.setSpontaneousFormCode(spontaneousForm.getCode());
     expectedResult.setDebtPositionTypeOrgBalanceCosts(dptobcList);
 
-    try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
+    LocalDate now = LocalDate.now(ZONEID);
+
+    try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class);
+         MockedStatic<LocalDate> localDateMockedStatic = Mockito.mockStatic(LocalDate.class)) {
       authorizationServiceMockedStatic
         .when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser))
         .thenAnswer(a -> null);
+      localDateMockedStatic.when(() -> LocalDate.now(ZONEID)).thenReturn(now);
 
       Mockito.when(debtPositionTypeOrgServiceMock.getDebtPositionTypeOrg(debtPositionTypeOrgId, accessToken))
         .thenReturn(debtPositionTypeOrg);
@@ -152,7 +158,7 @@ class DebtPositionTypeOrgRetrieverServiceImplTest {
         .thenReturn("AmountApp");
       Mockito.when(debtPositionTypeOrgBalanceCostRetrieverServiceMock.getDebtPositionTypeOrgBalanceCostsByDptoIdAndOpYears(
         Mockito.eq(debtPositionTypeOrgId),
-        Mockito.anyList(),
+        Mockito.eq(List.of(String.valueOf(now.getYear() - 1), String.valueOf(now.getYear()), String.valueOf(now.getYear() + 1))),
         Mockito.eq(accessToken)
       )).thenReturn(dptobcList);
       Mockito.when(debtPositionTypeOrgMapperDTOMock.map(debtPositionTypeOrg, debtPositionType, "NotifyApp", "AmountApp", spontaneousForm.getCode(), dptobcList))

@@ -29,9 +29,9 @@ public class DebtPositionTypeOrgBalanceCostRetrieverServiceImpl implements DebtP
   }
 
   @Override
-  public List<DebtPositionTypeOrgBalanceCostDTO> getDebtPositionTypeOrgBalanceCostsByDptoIdAndOpYear(Long debtPositionTypeOrgId, String opYear, String accessToken) {
+  public List<DebtPositionTypeOrgBalanceCostDTO> getDebtPositionTypeOrgBalanceCostsByDptoIdAndOpYears(Long debtPositionTypeOrgId, List<String> opYears, String accessToken) {
     return debtPositionTypeOrgBalanceCostService
-      .getDebtPositionTypeOrgBalanceCostsByDptoIdAndOpYear(debtPositionTypeOrgId, opYear, accessToken)
+      .getDebtPositionTypeOrgBalanceCostsByDptoIdAndOpYears(debtPositionTypeOrgId, opYears, accessToken)
       .getEmbedded()
       .getDebtPositionTypeOrgBalanceCosts()
       .stream()

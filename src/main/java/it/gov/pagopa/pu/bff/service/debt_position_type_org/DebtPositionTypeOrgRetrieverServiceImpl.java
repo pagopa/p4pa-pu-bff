@@ -104,8 +104,14 @@ public class DebtPositionTypeOrgRetrieverServiceImpl implements DebtPositionType
       spontaneousFormCode = spontaneousForm.getCode();
     }
 
+    int currentYear = LocalDate.now(ZONEID).getYear();
+
     List<DebtPositionTypeOrgBalanceCostDTO> debtPositionTypeOrgBalanceCosts = debtPositionTypeOrgBalanceCostRetrieverService
-      .getDebtPositionTypeOrgBalanceCostsByDptoIdAndOpYear(debtPositionTypeOrgId, String.valueOf(LocalDate.now(ZONEID).getYear()), accessToken);
+      .getDebtPositionTypeOrgBalanceCostsByDptoIdAndOpYears(
+        debtPositionTypeOrgId,
+        List.of(String.valueOf(currentYear - 1), String.valueOf(currentYear), String.valueOf(currentYear + 1)),
+        accessToken
+      );
 
     return debtPositionTypeOrgDTOMapper.map(debtPositionTypeOrg, debtPositionType, notifyOutcomePushOrgSilServiceApplicationName, amountActualizationOrgSilServiceApplicationName, spontaneousFormCode, debtPositionTypeOrgBalanceCosts);
   }

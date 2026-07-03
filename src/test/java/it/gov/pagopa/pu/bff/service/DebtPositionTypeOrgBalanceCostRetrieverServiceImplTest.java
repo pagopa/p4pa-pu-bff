@@ -43,7 +43,7 @@ class DebtPositionTypeOrgBalanceCostRetrieverServiceImplTest {
   @Test
   void givenValidParametersWhenGetDebtPositionTypeOrgBalanceCostsByDptoIdAndOpYearThenOk() {
     Long dptoId = 1L;
-    String opYear = "2026";
+    List<String> opYears = List.of("2026");
     String accessToken = "accessToken";
 
     DebtPositionTypeOrgBalanceCost sourceDto = new DebtPositionTypeOrgBalanceCost();
@@ -54,13 +54,13 @@ class DebtPositionTypeOrgBalanceCostRetrieverServiceImplTest {
     pagedModelDebtPositionTypeOrgBalanceCostEmbedded.setDebtPositionTypeOrgBalanceCosts(List.of(sourceDto));
     collectionModelDebtPositionTypeOrgBalanceCost.setEmbedded(pagedModelDebtPositionTypeOrgBalanceCostEmbedded);
 
-    Mockito.when(debtPositionTypeOrgBalanceCostServiceMock.getDebtPositionTypeOrgBalanceCostsByDptoIdAndOpYear(dptoId, opYear, accessToken))
+    Mockito.when(debtPositionTypeOrgBalanceCostServiceMock.getDebtPositionTypeOrgBalanceCostsByDptoIdAndOpYears(dptoId, opYears, accessToken))
       .thenReturn(collectionModelDebtPositionTypeOrgBalanceCost);
     Mockito.when(debtPositionTypeOrgBalanceCostMapperMock.map(sourceDto))
       .thenReturn(mappedDto);
 
     List<DebtPositionTypeOrgBalanceCostDTO> result = debtPositionTypeOrgBalanceCostRetrieverService
-      .getDebtPositionTypeOrgBalanceCostsByDptoIdAndOpYear(dptoId, opYear, accessToken);
+      .getDebtPositionTypeOrgBalanceCostsByDptoIdAndOpYears(dptoId, opYears, accessToken);
 
     assertNotNull(result);
     assertEquals(1, result.size());

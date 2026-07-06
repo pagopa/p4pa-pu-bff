@@ -193,18 +193,16 @@ public class OrganizationRetrieverServiceImpl implements OrganizationRetrieverSe
   public OrganizationDetail getOrganizationDetail(Long organizationId, UserInfo loggedUser, String accessToken) {
     authorizationService.validateAdminRole(organizationId, loggedUser);
 
-    Organization organization = organizationService.getOrganizationByOrganizationId(organizationId, accessToken);
-    if (organization == null) {
+    OrganizationDetailDTO orgDetail = organizationService.getOrganizationDetail(organizationId, accessToken);
+
+    if (orgDetail == null) {
       throw new ResourceNotFoundException("ORGANIZATION_NOT_FOUND", "Organization having organizationId " + organizationId + " not found");
     }
-
-    OrganizationDetailDTO orgDetail = organizationService.getOrganizationDetail(organizationId, accessToken);
 
     Map<Long, Integer> dptoCountsByOrgId = getDptoCountsByOrgIdMap(accessToken, List.of(organizationId));
     Integer debtPositionTypeOrgCount = dptoCountsByOrgId.getOrDefault(organizationId, 0);
 
-    Map<Long, OperatorsPage> operatorsPageMap = getOperatorsPageMap(accessToken, List.of(organization));
-    OperatorsPage operatorsPage = operatorsPageMap.get(organizationId);
+    OperatorsPage operatorsPage = authzService.getOrganizationOperators(orgDetail.getIpaCode(), null, null, null, 0, 1, accessToken);
 
     OrganizationDetail organizationDetail = organizationDetailMapper.mapToBffDTO(orgDetail);
     organizationDetail.setDebtPositionTypeOrgCount(debtPositionTypeOrgCount);

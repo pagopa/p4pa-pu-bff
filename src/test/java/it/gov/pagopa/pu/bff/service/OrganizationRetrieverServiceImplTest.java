@@ -590,18 +590,13 @@ class OrganizationRetrieverServiceImplTest {
     Long organizationId = 123L;
     String ipaCode = "IPA123";
 
-    Organization organization = new Organization();
-    organization.setOrganizationId(organizationId);
-    organization.setIpaCode(ipaCode);
-
     OrganizationDetailDTO orgDetail = podamFactory.manufacturePojo(OrganizationDetailDTO.class);
+    orgDetail.setOrganizationId(organizationId);
+    orgDetail.setIpaCode(ipaCode);
+
     OrganizationDetail expectedDetail = podamFactory.manufacturePojo(OrganizationDetail.class);
 
-    when(organizationServiceMock.getOrganizationByOrganizationId(organizationId, accessToken))
-      .thenReturn(organization);
-
-    doNothing().when(authorizationServiceMock)
-      .validateAdminRole(organizationId,userInfo);
+    doNothing().when(authorizationServiceMock).validateAdminRole(organizationId, userInfo);
 
     when(organizationServiceMock.getOrganizationDetail(organizationId, accessToken))
       .thenReturn(orgDetail);
@@ -613,7 +608,9 @@ class OrganizationRetrieverServiceImplTest {
     mockDptoCount.setOrganizationId(organizationId);
     mockDptoCount.setActiveOrganizations(7);
 
-    CollectionModelDebtPositionTypeOrgCountByOrganizationId collectionModel = new CollectionModelDebtPositionTypeOrgCountByOrganizationId();
+    CollectionModelDebtPositionTypeOrgCountByOrganizationId collectionModel =
+      new CollectionModelDebtPositionTypeOrgCountByOrganizationId();
+
     collectionModel.setEmbedded(new CollectionModelDebtPositionTypeOrgCountByOrganizationIdEmbedded());
     collectionModel.getEmbedded().setDebtPositionTypeOrgCountByOrganizationIds(Collections.singletonList(mockDptoCount));
 
@@ -643,7 +640,7 @@ class OrganizationRetrieverServiceImplTest {
     doNothing().when(authorizationServiceMock)
       .validateAdminRole(organizationId, userInfo);
 
-    when(organizationServiceMock.getOrganizationByOrganizationId(organizationId, accessToken))
+    when(organizationServiceMock.getOrganizationDetail(organizationId, accessToken))
       .thenReturn(null);
 
     ResourceNotFoundException ex = assertThrows(ResourceNotFoundException.class,

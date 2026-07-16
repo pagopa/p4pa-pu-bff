@@ -98,14 +98,14 @@ class AuthnClientTest {
     expectedToken.setExpiresIn(3600);
 
     when(authApisHolderMock.getAuthnApi(null)).thenReturn(authnApiMock);
-    when(authnApiMock.postToken(clientId, grantType, scope, subjectToken, subjectIssuer, subjectTokenType, clientSecret))
+    when(authnApiMock.postToken(clientId, grantType, scope, subjectToken, subjectIssuer, subjectTokenType, clientSecret, null))
       .thenReturn(expectedToken);
 
     AccessToken result = authnClient.postToken(clientId, grantType, scope, subjectToken, subjectIssuer, subjectTokenType, clientSecret);
 
     assertSame(expectedToken, result);
     verify(authApisHolderMock).getAuthnApi(null);
-    verify(authnApiMock).postToken(clientId, grantType, scope, subjectToken, subjectIssuer, subjectTokenType, clientSecret);
+    verify(authnApiMock).postToken(clientId, grantType, scope, subjectToken, subjectIssuer, subjectTokenType, clientSecret, null);
   }
 
   @Test

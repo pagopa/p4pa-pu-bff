@@ -55,10 +55,6 @@ class AuthenticationControllerTest {
       authorizationServiceMock,
       userInfoDTOMapperMock
     );
-  }
-
-  @AfterEach
-  void clearContext(){
     SecurityUtilsTest.clearSecurityContext();
   }
 
@@ -76,7 +72,7 @@ class AuthenticationControllerTest {
 
   @Test
   void testGetUserInfo() {
-    Mockito.when(userInfoDTOMapperMock.mapToDTO(loggedUser)).thenReturn(UserInfoDTO.builder().userId("test").build());
+    when(userInfoDTOMapperMock.mapToDTO(loggedUser)).thenReturn(UserInfoDTO.builder().userId("test").build());
 
     ResponseEntity<UserInfoDTO> response = authenticationController.getUserInfo();
 
@@ -100,4 +96,17 @@ class AuthenticationControllerTest {
 
     assertEquals(HttpStatus.OK, response.getStatusCode());
   }
+
+  @Test
+  void whenRefreshTokenThenOk() {
+    String refreshToken = "validIdToken";
+
+    when(authorizationServiceMock.refreshToken(refreshToken)).thenReturn(accessTokenDTO);
+
+    ResponseEntity<AccessToken> response = authenticationController.refreshToken(refreshToken);
+
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertSame(accessTokenDTO, response.getBody());
+  }
+
 }

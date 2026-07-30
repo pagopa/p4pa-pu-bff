@@ -53,4 +53,10 @@ public class AuthenticationController implements AuthenticationApi {
     authorizationService.logout(SecurityUtils.getAccessToken());
     return ResponseEntity.ok().build();
   }
+
+  @Override
+  public ResponseEntity<AccessToken> refreshToken(String refreshToken) {
+    log.info("User requested refreshToken()");
+    return ResponseEntity.ok(authorizationService.refreshToken(refreshToken));
+  }
 }

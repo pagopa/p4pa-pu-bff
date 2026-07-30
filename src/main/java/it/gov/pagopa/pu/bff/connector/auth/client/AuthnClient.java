@@ -4,6 +4,7 @@ import it.gov.pagopa.pu.auth.dto.generated.AccessToken;
 import it.gov.pagopa.pu.auth.dto.generated.LimitedTokenRequest;
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.connector.auth.config.AuthApisHolder;
+import it.gov.pagopa.pu.bff.dto.PostTokenRequest;
 import it.gov.pagopa.pu.bff.exception.InvalidAccessTokenException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -28,9 +29,18 @@ public class AuthnClient {
     }
   }
 
-  public AccessToken postToken(String clientId, String grantType, String scope, String subjectToken, String subjectIssuer, String subjectTokenType, String clientSecret) {
+  public AccessToken postToken(PostTokenRequest postTokenRequest) {
     return authApisHolder.getAuthnApi(null)
-      .postToken(clientId, grantType, scope, subjectToken, subjectIssuer, subjectTokenType, clientSecret, null);
+      .postToken(
+        postTokenRequest.getClientId(),
+        postTokenRequest.getGrantType(),
+        postTokenRequest.getScope(),
+        postTokenRequest.getSubjectToken(),
+        postTokenRequest.getSubjectIssuer(),
+        postTokenRequest.getSubjectTokenType(),
+        null,
+        postTokenRequest.getRefreshToken()
+      );
   }
 
   public AccessToken postLimitedToken(LimitedTokenRequest limitedTokenRequest, String accessToken) {

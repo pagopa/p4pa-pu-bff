@@ -1,8 +1,9 @@
 package it.gov.pagopa.pu.bff.service;
 
 import it.gov.pagopa.pu.auth.dto.generated.*;
-import it.gov.pagopa.pu.bff.connector.auth.client.AuthnClient;
+import it.gov.pagopa.pu.bff.connector.auth.AuthnService;
 import it.gov.pagopa.pu.bff.exception.InvalidAccessTokenException;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,27 +15,29 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.authorization.AuthorizationDeniedException;
-import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.List;
 import java.util.stream.Stream;
 
 import static it.gov.pagopa.pu.bff.service.AuthorizationService.BFF_APP_NAME;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class AuthorizationServiceTest {
-
   @InjectMocks
   private AuthorizationService authorizationService;
   @Mock
-  private AuthnClient authClientImplMock;
+  private AuthnService authnServiceMock;
+
+  @AfterEach
+  void verifyNoMoreInteractions() {
+    Mockito.verifyNoMoreInteractions(authnServiceMock);
+  }
 
   @Test
   void givenValidAccessTokenWhenValidateTokenThenOk() {
     UserInfo ui = new UserInfo();
-    when(authClientImplMock.getUserInfo("ACCESSTOKEN")).thenReturn(ui);
+    when(authnServiceMock.getUserInfo("ACCESSTOKEN")).thenReturn(ui);
     UserInfo result = authorizationService.validateToken("ACCESSTOKEN");
 
     Assertions.assertEquals(ui, result);
@@ -42,7 +45,7 @@ class AuthorizationServiceTest {
 
   @Test
   void givenInvalidAccessTokenWhenValidateTokenThenInvalidAccessTokenException() {
-    when(authClientImplMock.getUserInfo("INVALIDACCESSTOKEN"))
+    when(authnServiceMock.getUserInfo("INVALIDACCESSTOKEN"))
       .thenThrow(new InvalidAccessTokenException(
         "INVALID_ACCESS_TOKEN",
         "The provided access token is invalid or expired"
@@ -59,36 +62,16 @@ class AuthorizationServiceTest {
 
   @Test
   void testPostToken() {
-    ReflectionTestUtils.setField(authorizationService, "subjectIssuer", "fake-subject-issuer");
-
     String idToken = "idToken";
-    String subjectIssuer = "fake-subject-issuer";
 
     AccessToken accessToken = new AccessToken();
     accessToken.setAccessToken("fake-access-token");
     accessToken.setExpiresIn(3600);
     accessToken.setTokenType("bearer");
 
-    when(authClientImplMock.postToken(
-      "piattaforma-unitaria",
-      "urn:ietf:params:oauth:grant-type:token-exchange",
-      "openid",
-      idToken,
-      subjectIssuer,
-      "urn:ietf:params:oauth:token-type:jwt",
-      null))
-      .thenReturn(accessToken);
+    when(authnServiceMock.postToken(idToken)).thenReturn(accessToken);
 
     AccessToken result = authorizationService.postToken(idToken);
-
-    verify(authClientImplMock).postToken(
-      "piattaforma-unitaria",
-      "urn:ietf:params:oauth:grant-type:token-exchange",
-      "openid",
-      idToken,
-      subjectIssuer,
-      "urn:ietf:params:oauth:token-type:jwt",
-      null);
 
     Assertions.assertEquals("fake-access-token", result.getAccessToken());
     Assertions.assertEquals("bearer", result.getTokenType());
@@ -249,11 +232,9 @@ class AuthorizationServiceTest {
   void whenLogoutThenOk(){
     String accessToken = "accessToken";
 
-    Mockito.doNothing().when(authClientImplMock).logout(AuthorizationService.CLIENT_ID,accessToken);
+    Mockito.doNothing().when(authnServiceMock).logout(accessToken);
 
-    authorizationService.logout(accessToken);
-
-    Mockito.verifyNoMoreInteractions(authClientImplMock);
+    Assertions.assertDoesNotThrow(() -> authorizationService.logout(accessToken));
   }
 
   @Test
@@ -263,7 +244,7 @@ class AuthorizationServiceTest {
     AccessToken expectedAccessToken = new AccessToken();
     expectedAccessToken.setAccessToken("access-token");
 
-    when(authClientImplMock.postLimitedToken(LimitedTokenRequest.builder()
+    when(authnServiceMock.postLimitedToken(LimitedTokenRequest.builder()
       .app("APP").resource("p4pa-pu-bff").organizationId(organizationId).build(), "ACCESSTOKEN"))
       .thenReturn(expectedAccessToken);
     // When
@@ -335,6 +316,22 @@ class AuthorizationServiceTest {
       Arguments.of(organizationId,resource,resourceId,BFF_APP_NAME+1)
 
     );
+  }
+
+  @Test
+  void whenRefreshTokenThenOk(){
+    String refreshToken = "ACCESSTOKEN";
+
+    AccessToken expectedResult = new AccessToken();
+    expectedResult.setAccessToken("fake-access-token");
+    expectedResult.setExpiresIn(3600);
+    expectedResult.setTokenType("bearer");
+
+    when(authnServiceMock.refreshToken(refreshToken)).thenReturn(expectedResult);
+
+    AccessToken result = authorizationService.refreshToken(refreshToken);
+
+    Assertions.assertEquals(expectedResult, result);
   }
 }
 

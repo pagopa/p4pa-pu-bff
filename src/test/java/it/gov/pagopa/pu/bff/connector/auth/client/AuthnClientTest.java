@@ -10,9 +10,9 @@ import it.gov.pagopa.pu.bff.exception.InvalidAccessTokenException;
 import it.gov.pagopa.pu.bff.util.TestUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -33,12 +33,8 @@ class AuthnClientTest {
   @Mock
   private AuthnApi authnApiMock;
 
+  @InjectMocks
   private AuthnClient authnClient;
-
-  @BeforeEach
-  void setUp() {
-    authnClient = new AuthnClient(authApisHolderMock);
-  }
 
   @AfterEach
   void verifyNoMoreInteractions() {

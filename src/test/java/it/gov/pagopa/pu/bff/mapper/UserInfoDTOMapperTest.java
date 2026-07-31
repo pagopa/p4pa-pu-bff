@@ -54,7 +54,15 @@ class UserInfoDTOMapperTest {
     userInfo.setName("John");
     userInfo.setIssuer("issuer-system");
     userInfo.setOrganizationAccess("ACCESS1");
-    userInfo.setOrganizations(List.of(UserOrganizationRoles.builder().operatorId("OPID").organizationId(1L).organizationIpaCode("IPA").organizationFiscalCode("FISC").roles(Collections.emptyList()).build()));
+    userInfo.setOrganizations(List.of(
+      UserOrganizationRoles.builder()
+        .operatorId("OPID")
+        .organizationId(1L)
+        .organizationIpaCode("IPA")
+        .organizationFiscalCode("FISC")
+        .roles(Collections.emptyList())
+        .orgSubUnitCodes(List.of("CODE1", "CODE2"))
+        .build()));
     userInfo.setBrokerId(1L);
     userInfo.setBrokerFiscalCode("BRFISC");
     userInfo.setCanManageUsers(true);
@@ -80,5 +88,7 @@ class UserInfoDTOMapperTest {
     assertThat(dto.getSystemUser()).isFalse();
     assertThat(dto.getTraceId()).isEqualTo("trace-123");
     assertThat(dto.getType()).isEqualTo("STANDARD");
+    assertThat(dto.getOrganizations()).hasSize(1);
+    assertThat(dto.getOrganizations().getFirst().getOrgSubUnitCodes()).containsExactly("CODE1", "CODE2");
   }
 }

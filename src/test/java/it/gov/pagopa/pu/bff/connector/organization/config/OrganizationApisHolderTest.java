@@ -198,4 +198,13 @@ class OrganizationApisHolderTest extends BaseApiHolderTest {
       new ParameterizedTypeReference<>() {},
       organizationApisHolder::unload);
   }
+
+  @Test
+  void whenGetPdndClientApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
+    assertAuthenticationShouldBeSetInThreadSafeMode(
+      accessToken -> organizationApisHolder.getPdndClientApi(accessToken)
+        .getPdndClientsByOrganizationIdAndSubUnitCode(1L, "subUnitCode"),
+      new ParameterizedTypeReference<>() {},
+      organizationApisHolder::unload);
+  }
 }

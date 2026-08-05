@@ -29,6 +29,7 @@ public class OrganizationApisHolder {
     private final OrganizationApi organizationApi;
     private final BrokerConfigurationEntityControllerApi brokerConfigurationEntityControllerApi;
     private final OrgSubUnitEntityControllerApi orgSubUnitEntityControllerApi;
+    private final PdndClientApi pdndClientApi;
     private final ThreadLocal<String> bearerTokenHolder = new ThreadLocal<>();
 
     public OrganizationApisHolder(
@@ -62,6 +63,7 @@ public class OrganizationApisHolder {
         this.organizationApi = new OrganizationApi(apiClient);
         this.brokerConfigurationEntityControllerApi = new BrokerConfigurationEntityControllerApi(apiClient);
         this.orgSubUnitEntityControllerApi = new OrgSubUnitEntityControllerApi(apiClient);
+        this.pdndClientApi = new PdndClientApi(apiClient);
     }
 
     @PreDestroy
@@ -137,6 +139,10 @@ public class OrganizationApisHolder {
 
     public OrgSubUnitEntityControllerApi getOrgSubUnitEntityControllerApi(String accessToken) {
       return getApi(accessToken, orgSubUnitEntityControllerApi);
+    }
+
+    public PdndClientApi getPdndClientApi(String accessToken) {
+      return getApi(accessToken, pdndClientApi);
     }
 
     private <T extends BaseApi> T getApi(String accessToken, T api) {

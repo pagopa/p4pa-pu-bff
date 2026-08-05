@@ -1,5 +1,6 @@
 package it.gov.pagopa.pu.bff.controller;
 
+import io.micrometer.tracing.Tracer;
 import it.gov.pagopa.pu.bff.config.json.JsonConfig;
 import it.gov.pagopa.pu.bff.controller.generated.TaxonomyApi;
 import it.gov.pagopa.pu.bff.dto.generated.*;
@@ -27,6 +28,7 @@ import tools.jackson.databind.json.JsonMapper;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -44,12 +46,12 @@ class TaxonomyControllerTest {
 
   @MockitoBean
   private TaxonomyRetrieverService serviceMock;
-
   @MockitoBean
   private UpstreamErrorMapper upstreamErrorMapperMock;
-
   @MockitoBean
   private BrokerRetrieverService serviceBrokerMock;
+  @MockitoBean
+  private Tracer tracerMock;
 
   @Test
   void testGetTaxonomyDetail() throws Exception {
@@ -57,7 +59,7 @@ class TaxonomyControllerTest {
     Long taxonomyId = 123L;
     Taxonomy taxonomy = new Taxonomy();
 
-    Mockito.when(serviceMock.getTaxonomyDetail(taxonomyId, "token")).thenReturn(taxonomy);
+    when(serviceMock.getTaxonomyDetail(taxonomyId, "token")).thenReturn(taxonomy);
 
     MvcResult result = mockMvc.perform(get("/bff/taxonomy/" + taxonomyId))
       .andExpect(status().isOk())
@@ -71,7 +73,7 @@ class TaxonomyControllerTest {
     TestUtils.addSampleUserIntoSecurityContext();
     Long taxonomyId = 123L;
 
-    Mockito.when(serviceMock.getTaxonomyDetail(taxonomyId, "token")).thenReturn(null);
+    when(serviceMock.getTaxonomyDetail(taxonomyId, "token")).thenReturn(null);
 
     mockMvc.perform(get("/bff/taxonomy/" + taxonomyId))
       .andExpect(status().isNotFound());
@@ -81,7 +83,7 @@ class TaxonomyControllerTest {
   void testGetCollectionReason() throws Exception {
     TestUtils.addSampleUserIntoSecurityContext();
     List<TaxonomyCollectionReasonDTO> res = new ArrayList<>();
-    Mockito.when(serviceMock.getCollectionReason("organizationType", "macroAreaCode", "serviceTypeCode", "token")).thenReturn(res);
+    when(serviceMock.getCollectionReason("organizationType", "macroAreaCode", "serviceTypeCode", "token")).thenReturn(res);
     MvcResult result = mockMvc.perform(get("/bff/taxonomy/getCollectionReason")
         .queryParam("organizationType", "organizationType")
         .queryParam("macroAreaCode", "macroAreaCode")
@@ -95,7 +97,7 @@ class TaxonomyControllerTest {
   void testGetMacroArea() throws Exception {
     TestUtils.addSampleUserIntoSecurityContext();
     List<TaxonomyMacroAreaCodeDTO> res = new ArrayList<>();
-    Mockito.when(serviceMock.getMacroArea("organizationType", "token")).thenReturn(res);
+    when(serviceMock.getMacroArea("organizationType", "token")).thenReturn(res);
     MvcResult result = mockMvc.perform(get("/bff/taxonomy/getMacroArea")
         .queryParam("organizationType", "organizationType"))
       .andExpect(status().isOk())
@@ -107,7 +109,7 @@ class TaxonomyControllerTest {
   void testGetOrganizationTypes() throws Exception {
     TestUtils.addSampleUserIntoSecurityContext();
     List<TaxonomyOrganizationTypeDTO> res = new ArrayList<>();
-    Mockito.when(serviceMock.getOrganizationTypes("token")).thenReturn(res);
+    when(serviceMock.getOrganizationTypes("token")).thenReturn(res);
     MvcResult result = mockMvc.perform(get("/bff/taxonomy/getOrganizationTypes"))
       .andExpect(status().isOk())
       .andReturn();
@@ -118,7 +120,7 @@ class TaxonomyControllerTest {
   void testGetServiceType() throws Exception {
     TestUtils.addSampleUserIntoSecurityContext();
     List<TaxonomyServiceTypeCodeDTO> res = new ArrayList<>();
-    Mockito.when(serviceMock.getServiceType("organizationType", "macroAreaCode", "token")).thenReturn(res);
+    when(serviceMock.getServiceType("organizationType", "macroAreaCode", "token")).thenReturn(res);
     MvcResult result = mockMvc.perform(get("/bff/taxonomy/getServiceType")
         .queryParam("organizationType", "organizationType")
         .queryParam("macroAreaCode", "macroAreaCode"))
@@ -131,7 +133,7 @@ class TaxonomyControllerTest {
   void testGetTaxonomyCode() throws Exception {
     TestUtils.addSampleUserIntoSecurityContext();
     List<TaxonomyCodeDTO> res = new ArrayList<>();
-    Mockito.when(serviceMock.getTaxonomyCode("organizationType", "macroAreaCode", "serviceTypeCode", "collectionReason", "token")).thenReturn(res);
+    when(serviceMock.getTaxonomyCode("organizationType", "macroAreaCode", "serviceTypeCode", "collectionReason", "token")).thenReturn(res);
     MvcResult result = mockMvc.perform(get("/bff/taxonomy/getTaxonomyCode")
         .queryParam("organizationType", "organizationType")
         .queryParam("macroAreaCode", "macroAreaCode")
@@ -146,7 +148,7 @@ class TaxonomyControllerTest {
   void testGetTaxonomies() throws Exception {
     TestUtils.addSampleUserIntoSecurityContext();
     PagedTaxonomy res = new PagedTaxonomy();
-    Mockito.when(serviceMock.getTaxonomies(Mockito.eq("organizationType"), Mockito.eq("macroAreaCode"), Mockito.eq("serviceTypeCode"), Mockito.eq("collectionReason"), Mockito.any(), Mockito.eq("token")))
+    when(serviceMock.getTaxonomies(Mockito.eq("organizationType"), Mockito.eq("macroAreaCode"), Mockito.eq("serviceTypeCode"), Mockito.eq("collectionReason"), Mockito.any(), Mockito.eq("token")))
       .thenReturn(res);
     MvcResult result = mockMvc.perform(get("/bff/taxonomy")
         .queryParam("organizationType", "organizationType")
@@ -163,7 +165,7 @@ class TaxonomyControllerTest {
     TestUtils.addSampleUserIntoSecurityContext();
     WorkflowCreatedDTO mockResponse = new WorkflowCreatedDTO();
 
-    Mockito.when(serviceMock.synchronizeTaxonomy("token"))
+    when(serviceMock.synchronizeTaxonomy("token"))
       .thenReturn(mockResponse);
 
     MvcResult result = mockMvc.perform(get("/bff/workflow/taxonomy/synchronize"))

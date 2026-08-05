@@ -1,18 +1,11 @@
 package it.gov.pagopa.pu.bff.controller;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
+import io.micrometer.tracing.Tracer;
 import it.gov.pagopa.pu.bff.dto.generated.ServiceStatus;
 import it.gov.pagopa.pu.bff.mapper.UpstreamErrorMapper;
 import it.gov.pagopa.pu.bff.security.JwtAuthenticationFilter;
 import it.gov.pagopa.pu.bff.service.CoreHealthIndicatorService;
-import java.util.Arrays;
-import java.util.List;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
@@ -21,6 +14,14 @@ import org.springframework.context.annotation.FilterType;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
+
+import java.util.Arrays;
+import java.util.List;
+
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(value = CoreHealthIndicatorController.class, excludeFilters = {
   @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = JwtAuthenticationFilter.class)
@@ -36,9 +37,8 @@ class CoreHealthIndicatorControllerTest {
 
   @MockitoBean
   private UpstreamErrorMapper upstreamErrorMapper;
-
-  @InjectMocks
-  private CoreHealthIndicatorController coreHealthIndicatorController;
+  @MockitoBean
+  private Tracer tracerMock;
 
   private List<ServiceStatus> mockServiceStatuses;
 
@@ -50,7 +50,7 @@ class CoreHealthIndicatorControllerTest {
       new ServiceStatus("ServiceB", "UP")
     );
 
-    Mockito.when(coreHealthIndicatorService.getStatus()).thenReturn(mockServiceStatuses);
+    when(coreHealthIndicatorService.getStatus()).thenReturn(mockServiceStatuses);
 
     // Then
     mockMvc.perform(get("/bff/core-health")
@@ -68,7 +68,7 @@ class CoreHealthIndicatorControllerTest {
       new ServiceStatus("ServiceA", "UP"),
       new ServiceStatus("ServiceB", "DOWN")
     );
-    Mockito.when(coreHealthIndicatorService.getStatus()).thenReturn(mockServiceStatuses);
+    when(coreHealthIndicatorService.getStatus()).thenReturn(mockServiceStatuses);
 
     // Then
     mockMvc.perform(get("/bff/core-health")

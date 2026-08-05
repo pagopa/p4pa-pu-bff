@@ -1,5 +1,6 @@
 package it.gov.pagopa.pu.bff.security;
 
+import io.micrometer.tracing.Tracer;
 import it.gov.pagopa.pu.bff.controller.generated.BrokersApi;
 import it.gov.pagopa.pu.bff.mapper.UpstreamErrorMapper;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
@@ -26,12 +27,12 @@ class WebSecurityConfigTest {
 
   @MockitoBean
   private BrokerRetrieverServiceImpl serviceMock;
-
   @MockitoBean
   private AuthorizationService authorizationServiceMock;
-
   @MockitoBean
   private UpstreamErrorMapper upstreamErrorMapper;
+  @MockitoBean
+  private Tracer tracerMock;
 
   @Test
   void givenURLWhenWithoutAccessTokenThenReturn403() throws Exception {

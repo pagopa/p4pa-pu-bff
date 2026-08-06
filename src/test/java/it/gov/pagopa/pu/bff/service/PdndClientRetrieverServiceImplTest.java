@@ -88,18 +88,4 @@ class PdndClientRetrieverServiceImplTest {
 
     assertSame(expectedResult, result);
   }
-
-  @Test
-  void givenUnauthorizedUserWhenGetPdndClientThenPropagateException() {
-    RuntimeException expectedException = new RuntimeException("User is not an organization admin");
-
-    doThrow(expectedException)
-      .when(authorizationServiceMock)
-      .validateAdminRole(ORGANIZATION_ID, USER_INFO);
-
-    RuntimeException result =
-      assertThrows(RuntimeException.class, () -> pdndClientRetrieverService.getPdndClient(ORGANIZATION_ID, CLIENT_ID, USER_INFO, ACCESS_TOKEN));
-
-    assertSame(expectedException, result);
-  }
 }

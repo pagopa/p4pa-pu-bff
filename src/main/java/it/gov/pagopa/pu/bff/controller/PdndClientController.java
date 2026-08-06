@@ -25,4 +25,10 @@ public class PdndClientController implements PdndClientApi {
     log.info("User requested getPdndClientsByOrgSubUnitCode having organizationId {} and orgSubUnitCode {}", organizationId, orgSubUnitCode);
     return ResponseEntity.ok(pdndClientRetrieverService.getPdndClientsByOrganizationIdAndSubUnitCode(organizationId, orgSubUnitCode, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken()));
   }
+
+  @Override
+  public ResponseEntity<PdndClientNoSecretDTO> getPdndClient(Long organizationId, String clientId) {
+    log.info("User requested getPdndClient having organizationId {} and clientId {}", organizationId, clientId);
+    return ResponseEntity.ok(pdndClientRetrieverService.getPdndClient(organizationId, clientId, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken()));
+  }
 }

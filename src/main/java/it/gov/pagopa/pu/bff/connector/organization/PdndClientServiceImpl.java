@@ -19,4 +19,9 @@ public class PdndClientServiceImpl implements PdndClientService {
   public List<PdndClientNoSecretDTO> getPdndClientsByOrganizationIdAndSubUnitCode(Long organizationId, String subUnitCode, String accessToken) {
     return client.getPdndClientsByOrganizationIdAndSubUnitCode(organizationId, subUnitCode, accessToken);
   }
+
+  @Override
+  public PdndClientNoSecretDTO getPdndClient(Long organizationId, String clientId, String accessToken) {
+    return client.getPdndClient(organizationId, clientId, accessToken);
+  }
 }

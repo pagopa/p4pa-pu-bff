@@ -8,4 +8,5 @@ import java.util.List;
 public interface PdndClientRetrieverService {
 
   List<PdndClientNoSecretDTO> getPdndClientsByOrganizationIdAndSubUnitCode(Long organizationId, String subUnitCode, UserInfo userInfo, String accessToken);
+  PdndClientNoSecretDTO getPdndClient(Long organizationId, String clientId, UserInfo userInfo, String accessToken);
 }

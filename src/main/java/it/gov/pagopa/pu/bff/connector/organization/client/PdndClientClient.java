@@ -19,4 +19,9 @@ public class PdndClientClient {
     return organizationApisHolder.getPdndClientApi(accessToken)
       .getPdndClientsByOrganizationIdAndSubUnitCode(organizationId, subUnitCode);
   }
+
+  public PdndClientNoSecretDTO getPdndClient(Long organizationId, String clientId, String accessToken) {
+    return organizationApisHolder.getPdndClientApi(accessToken)
+      .getPdndClient(organizationId, clientId);
+  }
 }

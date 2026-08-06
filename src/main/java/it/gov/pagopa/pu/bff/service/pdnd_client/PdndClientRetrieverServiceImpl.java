@@ -24,4 +24,10 @@ public class PdndClientRetrieverServiceImpl implements PdndClientRetrieverServic
     authorizationService.validateAdminRole(organizationId, userInfo);
     return pdndClientService.getPdndClientsByOrganizationIdAndSubUnitCode(organizationId, subUnitCode, accessToken);
   }
+
+  @Override
+  public PdndClientNoSecretDTO getPdndClient(Long organizationId, String clientId, UserInfo userInfo, String accessToken) {
+    authorizationService.validateAdminRole(organizationId, userInfo);
+    return pdndClientService.getPdndClient(organizationId, clientId, accessToken);
+  }
 }

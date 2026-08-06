@@ -22,6 +22,7 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class PdndClientRetrieverServiceImplTest {
 
+  private static final String CLIENT_ID = "CLIENT_001";
   private static final Long ORGANIZATION_ID = 123L;
   private static final String SUB_UNIT_CODE = "SUB_UNIT_001";
   private static final String ACCESS_TOKEN = "fakeAccessToken";
@@ -70,6 +71,34 @@ class PdndClientRetrieverServiceImplTest {
 
     RuntimeException result =
       assertThrows(RuntimeException.class, () -> pdndClientRetrieverService.getPdndClientsByOrganizationIdAndSubUnitCode(ORGANIZATION_ID, SUB_UNIT_CODE, USER_INFO, ACCESS_TOKEN));
+
+    assertSame(expectedException, result);
+  }
+
+  @Test
+  void givenAuthorizedAdminWhenGetPdndClientThenReturnClient() {
+    PdndClientNoSecretDTO expectedResult = TestUtils.getPodamFactory().manufacturePojo(PdndClientNoSecretDTO.class);
+
+    doNothing().when(authorizationServiceMock).validateAdminRole(ORGANIZATION_ID, USER_INFO);
+
+    when(pdndClientServiceMock.getPdndClient(ORGANIZATION_ID, CLIENT_ID, ACCESS_TOKEN))
+      .thenReturn(expectedResult);
+
+    PdndClientNoSecretDTO result = pdndClientRetrieverService.getPdndClient(ORGANIZATION_ID, CLIENT_ID, USER_INFO, ACCESS_TOKEN);
+
+    assertSame(expectedResult, result);
+  }
+
+  @Test
+  void givenUnauthorizedUserWhenGetPdndClientThenPropagateException() {
+    RuntimeException expectedException = new RuntimeException("User is not an organization admin");
+
+    doThrow(expectedException)
+      .when(authorizationServiceMock)
+      .validateAdminRole(ORGANIZATION_ID, USER_INFO);
+
+    RuntimeException result =
+      assertThrows(RuntimeException.class, () -> pdndClientRetrieverService.getPdndClient(ORGANIZATION_ID, CLIENT_ID, USER_INFO, ACCESS_TOKEN));
 
     assertSame(expectedException, result);
   }

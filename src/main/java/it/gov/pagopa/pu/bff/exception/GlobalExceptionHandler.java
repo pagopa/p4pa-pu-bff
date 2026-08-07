@@ -39,6 +39,10 @@ public class GlobalExceptionHandler extends CommonExceptionHandler {
     return handleException(ex, request, HttpStatus.BAD_REQUEST, ErrorDTO.CategoryEnum.BAD_REQUEST);
   }
 
+  @ExceptionHandler(InvalidPdndClientException.class)
+  public ResponseEntity<ErrorDTO> handleInvalidPdndClientException(InvalidPdndClientException ex, HttpServletRequest request) {
+    return handleException(ex, request, HttpStatus.BAD_REQUEST, ErrorDTO.CategoryEnum.BAD_REQUEST);
+  }
 
   @ExceptionHandler(InvalidDebtPositionException.class)
   public ResponseEntity<ErrorDTO> handleInvalidDebtPositionException(InvalidDebtPositionException ex, HttpServletRequest request) {

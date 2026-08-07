@@ -11,7 +11,7 @@ import it.gov.pagopa.pu.bff.dto.generated.OrganizationDetail;
 import it.gov.pagopa.pu.bff.dto.generated.PagedOrganizationWithDebtPositionTypeOrgAndOperatorsCount;
 import it.gov.pagopa.pu.bff.dto.generated.PagedOrganizationWithDebtPositionTypeOrgCount;
 import it.gov.pagopa.pu.bff.exception.InvalidOrganizationException;
-import it.gov.pagopa.pu.bff.exception.ResourceNotFoundException;
+import it.gov.pagopa.pu.bff.exception.common.NotFoundException;
 import it.gov.pagopa.pu.bff.mapper.OrganizationDTOMapper;
 import it.gov.pagopa.pu.bff.mapper.OrganizationDetailMapper;
 import it.gov.pagopa.pu.bff.mapper.OrganizationWithDebtPositionTypeOrgCountMapper;
@@ -185,7 +185,7 @@ public class OrganizationRetrieverServiceImpl implements OrganizationRetrieverSe
     if(organization!=null && organization.getBrokerId()!=null && organization.getBrokerId().equals(loggedUser.getBrokerId())){
       return organization.getOrgFiscalCode();
     }else{
-      throw new ResourceNotFoundException("ORGANIZATION_NOT_FOUND", "Organization having organizationId "+ organizationId +" and brokerId "+loggedUser.getBrokerId()+" not found");
+      throw new NotFoundException("ORGANIZATION_NOT_FOUND", "Organization having organizationId "+ organizationId +" and brokerId "+loggedUser.getBrokerId()+" not found");
     }
   }
 
@@ -196,7 +196,7 @@ public class OrganizationRetrieverServiceImpl implements OrganizationRetrieverSe
     OrganizationDetailDTO orgDetail = organizationService.getOrganizationDetail(organizationId, accessToken);
 
     if (orgDetail == null) {
-      throw new ResourceNotFoundException("ORGANIZATION_NOT_FOUND", "Organization having organizationId " + organizationId + " not found");
+      throw new NotFoundException("ORGANIZATION_NOT_FOUND", "Organization having organizationId " + organizationId + " not found");
     }
 
     Map<Long, Integer> dptoCountsByOrgId = getDptoCountsByOrgIdMap(accessToken, List.of(organizationId));
@@ -225,7 +225,7 @@ public class OrganizationRetrieverServiceImpl implements OrganizationRetrieverSe
     }
     Organization existingOrganization = organizationService.getOrganizationByOrganizationId(organizationId, accessToken);
     if(existingOrganization==null){
-      throw new ResourceNotFoundException("ORGANIZATION_NOT_FOUND", "Organization having id "+ organizationId +" not found");
+      throw new NotFoundException("ORGANIZATION_NOT_FOUND", "Organization having id "+ organizationId +" not found");
     }
     checkReadOnlyFields(existingOrganization, organizationDetailDTO);
   }

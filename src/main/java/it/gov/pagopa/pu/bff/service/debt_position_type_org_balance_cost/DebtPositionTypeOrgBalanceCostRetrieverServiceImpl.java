@@ -2,7 +2,7 @@ package it.gov.pagopa.pu.bff.service.debt_position_type_org_balance_cost;
 
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.connector.debt_position.DebtPositionTypeOrgBalanceCostService;
-import it.gov.pagopa.pu.bff.exception.ResourceNotFoundException;
+import it.gov.pagopa.pu.bff.exception.common.NotFoundException;
 import it.gov.pagopa.pu.bff.mapper.DebtPositionTypeOrgBalanceCostMapper;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrgBalanceCost;
@@ -44,7 +44,7 @@ public class DebtPositionTypeOrgBalanceCostRetrieverServiceImpl implements DebtP
     authorizationService.validateAdminRole(organizationId, loggedUser);
     DebtPositionTypeOrgBalanceCost debtPositionTypeOrgBalanceCost = debtPositionTypeOrgBalanceCostService.getDebtPositionTypeOrgBalanceCostByDptoIdAndOpYearAndType(debtPositionTypeOrgId, operatingYear, type, accessToken);
     if (debtPositionTypeOrgBalanceCost == null) {
-      throw new ResourceNotFoundException("DEBT_POSITION_TYPE_ORG_BALANCE_COST_NOT_FOUND", "DebtPositionTypeOrgBalanceCost with debtPositionTypeOrgId %d, opYear %s and type %s not found".formatted(debtPositionTypeOrgId, operatingYear, type));
+      throw new NotFoundException("DEBT_POSITION_TYPE_ORG_BALANCE_COST_NOT_FOUND", "DebtPositionTypeOrgBalanceCost with debtPositionTypeOrgId %d, opYear %s and type %s not found".formatted(debtPositionTypeOrgId, operatingYear, type));
     }
     return debtPositionTypeOrgBalanceCost;
   }

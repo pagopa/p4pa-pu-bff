@@ -1,7 +1,7 @@
 package it.gov.pagopa.pu.bff.connector.debt_position.client;
 
 import it.gov.pagopa.pu.bff.connector.debt_position.config.DebtPositionApisHolder;
-import it.gov.pagopa.pu.bff.exception.ResourceNotFoundException;
+import it.gov.pagopa.pu.bff.exception.common.NotFoundException;
 import it.gov.pagopa.pu.debtpositions.dto.generated.CollectionModelDebtPositionTypeOrg;
 import it.gov.pagopa.pu.debtpositions.dto.generated.CollectionModelDebtPositionTypeOrgCountByOrganizationId;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrg;
@@ -49,7 +49,7 @@ public class DebtPositionTypeOrgClient {
     try{
       debtPositionApisHolder.getDebtPositionTypeOrgApi(accessToken).deleteDebtPositionTypeOrg(debtPositionTypeOrgId);
     } catch (HttpClientErrorException.NotFound e) {
-      throw new ResourceNotFoundException("DEBT_POSITION_TYPE_ORG_NOT_FOUND", "DebtPositionTypeOrg with debtPositionTypeOrgId %d not found".formatted(debtPositionTypeOrgId));
+      throw new NotFoundException("DEBT_POSITION_TYPE_ORG_NOT_FOUND", "DebtPositionTypeOrg with debtPositionTypeOrgId %d not found".formatted(debtPositionTypeOrgId));
     }
   }
 
@@ -61,7 +61,7 @@ public class DebtPositionTypeOrgClient {
     try{
       debtPositionApisHolder.getDebtPositionTypeOrgApi(accessToken).updateFlagActiveDebtPositionTypeOrg(debtPositionTypeOrgId, flagActive);
     } catch (HttpClientErrorException.NotFound e) {
-      throw new ResourceNotFoundException("DEBT_POSITION_TYPE_ORG_NOT_FOUND", "DebtPositionTypeOrg with debtPositionTypeOrgId %d not found".formatted(debtPositionTypeOrgId));
+      throw new NotFoundException("DEBT_POSITION_TYPE_ORG_NOT_FOUND", "DebtPositionTypeOrg with debtPositionTypeOrgId %d not found".formatted(debtPositionTypeOrgId));
     }
   }
 

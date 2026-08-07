@@ -4,7 +4,7 @@ import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.connector.registries.PagoPaRegistryService;
 import it.gov.pagopa.pu.bff.dto.PagoPaRegistryFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedPagoPaRegistry;
-import it.gov.pagopa.pu.bff.exception.ResourceNotFoundException;
+import it.gov.pagopa.pu.bff.exception.common.NotFoundException;
 import it.gov.pagopa.pu.bff.mapper.PagoPaRegistryMapper;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
 import it.gov.pagopa.pu.bff.service.organization.OrganizationRetrieverService;
@@ -62,7 +62,7 @@ public class PagoPaRegistryRetrieverServiceImpl implements PagoPaRegistryRetriev
     private void validatePagoPaRegistry(Long organizationId, PagoPaRegistryDTO pagoPaRegistryDTO, UserInfo loggedUser, String accessToken) {
         String orgFiscalCode = organizationRetrieverService.getOrgFiscalCode(organizationId, loggedUser, accessToken);
         if (StringUtils.isBlank(orgFiscalCode) || !orgFiscalCode.equals(pagoPaRegistryDTO.getOrgFiscalCode())) {
-            throw new ResourceNotFoundException("PAGOPA_REGISTRY_NOT_FOUND", "PagoPaRegistry having id " + pagoPaRegistryDTO.getRegistryId() + " not found");
+            throw new NotFoundException("PAGOPA_REGISTRY_NOT_FOUND", "PagoPaRegistry having id " + pagoPaRegistryDTO.getRegistryId() + " not found");
         }
     }
 }

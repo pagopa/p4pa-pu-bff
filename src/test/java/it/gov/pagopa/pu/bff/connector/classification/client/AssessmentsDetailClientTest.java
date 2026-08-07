@@ -1,7 +1,7 @@
 package it.gov.pagopa.pu.bff.connector.classification.client;
 
 import it.gov.pagopa.pu.bff.connector.classification.config.ClassificationApisHolder;
-import it.gov.pagopa.pu.bff.exception.ResourceNotFoundException;
+import it.gov.pagopa.pu.bff.exception.common.NotFoundException;
 import it.gov.pagopa.pu.classification.controller.generated.AssessmentsDetailApi;
 import it.gov.pagopa.pu.classification.controller.generated.AssessmentsDetailEntityControllerApi;
 import it.gov.pagopa.pu.classification.dto.generated.AssessmentsDetail;
@@ -88,7 +88,7 @@ class AssessmentsDetailClientTest {
       .when(assessmentsDetailEntityControllerApiMock)
       .crudDeleteAssessmentsdetail(String.valueOf(assessmentDetailId));
 
-    Assertions.assertThrows(ResourceNotFoundException.class, () ->
+    Assertions.assertThrows(NotFoundException.class, () ->
       assessmentsDetailClient.deleteAssessmentsDetails(assessmentDetailId, accessToken));
   }
 }

@@ -1,7 +1,7 @@
 package it.gov.pagopa.pu.bff.connector.classification.client;
 
 import it.gov.pagopa.pu.bff.connector.classification.config.ClassificationApisHolder;
-import it.gov.pagopa.pu.bff.exception.ResourceNotFoundException;
+import it.gov.pagopa.pu.bff.exception.common.NotFoundException;
 import it.gov.pagopa.pu.classification.dto.generated.AssessmentsDetail;
 import it.gov.pagopa.pu.classification.dto.generated.CreateAssessmentsDetail;
 import lombok.extern.slf4j.Slf4j;
@@ -30,7 +30,7 @@ public class AssessmentsDetailClient {
       classificationApisHolder.getAssessmentsDetailEntityControllerApi(accessToken)
         .crudDeleteAssessmentsdetail(String.valueOf(assessmentDetailId));
     } catch (HttpClientErrorException.NotFound e) {
-      throw new ResourceNotFoundException("ASSESSMENT_DETAIL_NOT_FOUND", "AssessmentsDetail with ID %d not found".formatted(assessmentDetailId));
+      throw new NotFoundException("ASSESSMENT_DETAIL_NOT_FOUND", "AssessmentsDetail with ID %d not found".formatted(assessmentDetailId));
     }
   }
 }

@@ -1,7 +1,7 @@
 package it.gov.pagopa.pu.bff.connector.organization.client;
 
 import it.gov.pagopa.pu.bff.connector.organization.config.OrganizationApisHolder;
-import it.gov.pagopa.pu.bff.exception.ResourceNotFoundException;
+import it.gov.pagopa.pu.bff.exception.common.NotFoundException;
 import it.gov.pagopa.pu.organization.controller.generated.OrgSilServiceEntityControllerApi;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -60,7 +60,7 @@ class OrgSilServiceEntityClientTest {
       .when(orgSilServiceEntityControllerApiMock)
       .crudDeleteOrgsilservice(String.valueOf(orgSilServiceId));
 
-    Assertions.assertThrows(ResourceNotFoundException.class, () ->
+    Assertions.assertThrows(NotFoundException.class, () ->
       orgSilServiceEntityClient.deleteOrgSilService(orgSilServiceId, accessToken));
   }
 }

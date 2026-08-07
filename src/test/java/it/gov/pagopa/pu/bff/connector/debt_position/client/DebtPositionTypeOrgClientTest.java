@@ -7,7 +7,7 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
 import it.gov.pagopa.pu.bff.connector.debt_position.config.DebtPositionApisHolder;
-import it.gov.pagopa.pu.bff.exception.ResourceNotFoundException;
+import it.gov.pagopa.pu.bff.exception.common.NotFoundException;
 import it.gov.pagopa.pu.bff.util.TestUtils;
 import it.gov.pagopa.pu.debtpositions.controller.generated.DebtPositionTypeOrgApi;
 import it.gov.pagopa.pu.debtpositions.controller.generated.DebtPositionTypeOrgCountByOrganizationIdSearchControllerApi;
@@ -153,7 +153,7 @@ class DebtPositionTypeOrgClientTest {
     doThrow(HttpClientErrorException.create(HttpStatus.NOT_FOUND, "NotFound", null, null, null))
       .when(debtPositionTypeOrgApiMock).deleteDebtPositionTypeOrg(debtPositionTypeOrgId);
 
-    Assertions.assertThrows(ResourceNotFoundException.class,()->
+    Assertions.assertThrows(NotFoundException.class,()->
       debtPositionTypeOrgClient.deleteDebtPositionTypeOrg(debtPositionTypeOrgId, accessToken));
   }
 
@@ -195,7 +195,7 @@ class DebtPositionTypeOrgClientTest {
     doThrow(HttpClientErrorException.create(HttpStatus.NOT_FOUND, "NotFound", null, null, null))
       .when(debtPositionTypeOrgApiMock).updateFlagActiveDebtPositionTypeOrg(debtPositionTypeOrgId, false);
 
-    Assertions.assertThrows(ResourceNotFoundException.class,()->
+    Assertions.assertThrows(NotFoundException.class,()->
       debtPositionTypeOrgClient.updateFlagActiveDebtPositionTypeOrg(debtPositionTypeOrgId, false, accessToken));
   }
 

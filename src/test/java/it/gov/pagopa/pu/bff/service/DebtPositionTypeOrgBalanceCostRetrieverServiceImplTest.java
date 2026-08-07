@@ -2,7 +2,7 @@ package it.gov.pagopa.pu.bff.service;
 
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.connector.debt_position.DebtPositionTypeOrgBalanceCostService;
-import it.gov.pagopa.pu.bff.exception.ResourceNotFoundException;
+import it.gov.pagopa.pu.bff.exception.common.NotFoundException;
 import it.gov.pagopa.pu.bff.mapper.DebtPositionTypeOrgBalanceCostMapper;
 import it.gov.pagopa.pu.bff.service.debt_position_type_org_balance_cost.DebtPositionTypeOrgBalanceCostRetrieverServiceImpl;
 import it.gov.pagopa.pu.bff.util.TestUtils;
@@ -20,6 +20,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class DebtPositionTypeOrgBalanceCostRetrieverServiceImplTest {
@@ -54,9 +55,9 @@ class DebtPositionTypeOrgBalanceCostRetrieverServiceImplTest {
     pagedModelDebtPositionTypeOrgBalanceCostEmbedded.setDebtPositionTypeOrgBalanceCosts(List.of(sourceDto));
     collectionModelDebtPositionTypeOrgBalanceCost.setEmbedded(pagedModelDebtPositionTypeOrgBalanceCostEmbedded);
 
-    Mockito.when(debtPositionTypeOrgBalanceCostServiceMock.getDebtPositionTypeOrgBalanceCostsByDptoIdAndOpYears(dptoId, opYears, accessToken))
+    when(debtPositionTypeOrgBalanceCostServiceMock.getDebtPositionTypeOrgBalanceCostsByDptoIdAndOpYears(dptoId, opYears, accessToken))
       .thenReturn(collectionModelDebtPositionTypeOrgBalanceCost);
-    Mockito.when(debtPositionTypeOrgBalanceCostMapperMock.map(sourceDto))
+    when(debtPositionTypeOrgBalanceCostMapperMock.map(sourceDto))
       .thenReturn(mappedDto);
 
     List<DebtPositionTypeOrgBalanceCostDTO> result = debtPositionTypeOrgBalanceCostRetrieverService
@@ -78,7 +79,7 @@ class DebtPositionTypeOrgBalanceCostRetrieverServiceImplTest {
     DebtPositionTypeOrgBalanceCost expected = new DebtPositionTypeOrgBalanceCost();
 
     Mockito.doNothing().when(authorizationServiceMock).validateAdminRole(orgId, loggedUser);
-    Mockito.when(debtPositionTypeOrgBalanceCostServiceMock.getDebtPositionTypeOrgBalanceCostByDptoIdAndOpYearAndType(dptoId, opYear, type, accessToken))
+    when(debtPositionTypeOrgBalanceCostServiceMock.getDebtPositionTypeOrgBalanceCostByDptoIdAndOpYearAndType(dptoId, opYear, type, accessToken))
       .thenReturn(expected);
 
     DebtPositionTypeOrgBalanceCost result = debtPositionTypeOrgBalanceCostRetrieverService
@@ -97,10 +98,10 @@ class DebtPositionTypeOrgBalanceCostRetrieverServiceImplTest {
     String accessToken = "accessToken";
 
     Mockito.doNothing().when(authorizationServiceMock).validateAdminRole(organizationId, loggedUser);
-    Mockito.when(debtPositionTypeOrgBalanceCostServiceMock.getDebtPositionTypeOrgBalanceCostByDptoIdAndOpYearAndType(dptoId,opYear,type, accessToken))
+    when(debtPositionTypeOrgBalanceCostServiceMock.getDebtPositionTypeOrgBalanceCostByDptoIdAndOpYearAndType(dptoId,opYear,type, accessToken))
       .thenReturn(null);
 
-    Assertions.assertThrows(ResourceNotFoundException.class, () ->
+    Assertions.assertThrows(NotFoundException.class, () ->
       debtPositionTypeOrgBalanceCostRetrieverService.getDebtPositionTypeOrgBalanceCostByDptoIdAndYearAndType(organizationId,dptoId,opYear, type, loggedUser,accessToken));
   }
 }

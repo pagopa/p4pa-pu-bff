@@ -1,7 +1,7 @@
 package it.gov.pagopa.pu.bff.connector.debt_position.client;
 
 import it.gov.pagopa.pu.bff.connector.debt_position.config.DebtPositionApisHolder;
-import it.gov.pagopa.pu.bff.exception.ResourceNotFoundException;
+import it.gov.pagopa.pu.bff.exception.common.NotFoundException;
 import it.gov.pagopa.pu.bff.util.TestUtils;
 import it.gov.pagopa.pu.debtpositions.controller.generated.SpontaneousFormApi;
 import it.gov.pagopa.pu.debtpositions.dto.generated.SpontaneousForm;
@@ -87,7 +87,7 @@ class SpontaneousFormClientTest {
     doThrow(HttpClientErrorException.create(HttpStatus.NOT_FOUND, "NotFound", null, null, null))
         .when(spontaneousFormApiMock).deleteSpontaneousForm(spontaneousFormId);
 
-    assertThrows(ResourceNotFoundException.class, ()->spontaneousFormClient.deleteSpontaneousForm(spontaneousFormId, accessToken));
+    assertThrows(NotFoundException.class, ()->spontaneousFormClient.deleteSpontaneousForm(spontaneousFormId, accessToken));
   }
 
   @Test
@@ -116,6 +116,6 @@ class SpontaneousFormClientTest {
     doThrow(HttpClientErrorException.create(HttpStatus.NOT_FOUND, "NotFound", null, null, null))
         .when(spontaneousFormApiMock).updateSpontaneousForm(spontaneousForm);
 
-    assertThrows(ResourceNotFoundException.class, ()->spontaneousFormClient.updateSpontaneousForm(spontaneousForm, accessToken));
+    assertThrows(NotFoundException.class, ()->spontaneousFormClient.updateSpontaneousForm(spontaneousForm, accessToken));
   }
 }

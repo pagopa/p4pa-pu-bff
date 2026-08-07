@@ -3,7 +3,7 @@ package it.gov.pagopa.pu.bff.connector.auth.client;
 import it.gov.pagopa.pu.auth.controller.generated.AuthzApi;
 import it.gov.pagopa.pu.auth.dto.generated.*;
 import it.gov.pagopa.pu.bff.connector.auth.config.AuthApisHolder;
-import it.gov.pagopa.pu.bff.exception.ResourceNotFoundException;
+import it.gov.pagopa.pu.bff.exception.common.NotFoundException;
 import it.gov.pagopa.pu.bff.util.PageUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -194,7 +194,7 @@ class AuthzClientTest {
     doThrow(HttpClientErrorException.create(HttpStatus.NOT_FOUND, "NotFound", null, null, null))
       .when(authzApiMock).generateClientSecret(organizationIpaCode, clientId);
 
-    ResourceNotFoundException thrown = assertThrows(ResourceNotFoundException.class, () -> authzClient.generateClientSecret(organizationIpaCode, clientId, accessToken));
+    NotFoundException thrown = assertThrows(NotFoundException.class, () -> authzClient.generateClientSecret(organizationIpaCode, clientId, accessToken));
 
     assertTrue(thrown.getMessage().contains(clientId));
   }

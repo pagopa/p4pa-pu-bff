@@ -2,7 +2,6 @@ package it.gov.pagopa.pu.bff.security;
 
 import io.micrometer.tracing.Tracer;
 import it.gov.pagopa.pu.bff.controller.generated.BrokersApi;
-import it.gov.pagopa.pu.bff.mapper.UpstreamErrorMapper;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
 import it.gov.pagopa.pu.bff.service.broker.BrokerRetrieverServiceImpl;
 import org.junit.jupiter.api.Test;
@@ -29,8 +28,6 @@ class WebSecurityConfigTest {
   private BrokerRetrieverServiceImpl serviceMock;
   @MockitoBean
   private AuthorizationService authorizationServiceMock;
-  @MockitoBean
-  private UpstreamErrorMapper upstreamErrorMapper;
   @MockitoBean
   private Tracer tracerMock;
 

@@ -1,7 +1,7 @@
 package it.gov.pagopa.pu.bff.connector.debt_position.client;
 
 import it.gov.pagopa.pu.bff.connector.debt_position.config.DebtPositionApisHolder;
-import it.gov.pagopa.pu.bff.exception.ResourceNotFoundException;
+import it.gov.pagopa.pu.bff.exception.common.NotFoundException;
 import it.gov.pagopa.pu.bff.util.PageUtils;
 import it.gov.pagopa.pu.debtpositions.dto.generated.CollectionModelDebtPositionType;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionType;
@@ -74,7 +74,7 @@ public class DebtPositionTypeClient {
       debtPositionApisHolder.getDebtPositionTypeControllerApi(accessToken)
         .crudDeleteDebtpositiontype(String.valueOf(debtPositionTypeId));
     } catch (HttpClientErrorException.NotFound e) {
-      throw new ResourceNotFoundException("DEBT_POSITION_TYPE_NOT_FOUND", "DebtPositionType with ID %d not found".formatted(debtPositionTypeId));
+      throw new NotFoundException("DEBT_POSITION_TYPE_NOT_FOUND", "DebtPositionType with ID %d not found".formatted(debtPositionTypeId));
     }
   }
 

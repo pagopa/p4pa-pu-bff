@@ -33,6 +33,8 @@ class PdndClientMapperTest {
     PdndClientNoSecretDTO result = pdndClientMapper.mapToPdndClientNoSecretDTO(pdndClient);
 
     assertNotNull(result);
+    TestUtils.checkNotNullFields(result);
+
     assertEquals(pdndClient.getClientId(), result.getClientId());
     assertEquals(pdndClient.getOrganizationId(), result.getOrganizationId());
     assertEquals(pdndClient.getSubUnitCode(), result.getSubUnitCode());

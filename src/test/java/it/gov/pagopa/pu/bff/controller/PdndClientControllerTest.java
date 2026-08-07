@@ -4,6 +4,7 @@ import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.security.SecurityUtilsTest;
 import it.gov.pagopa.pu.bff.service.pdnd_client.PdndClientRetrieverService;
 import it.gov.pagopa.pu.bff.util.TestUtils;
+import it.gov.pagopa.pu.organization.dto.generated.PdndClientDTO;
 import it.gov.pagopa.pu.organization.dto.generated.PdndClientNoSecretDTO;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -71,6 +72,21 @@ class PdndClientControllerTest {
       .thenReturn(expectedClient);
 
     ResponseEntity<PdndClientNoSecretDTO> result = controller.getPdndClient(ORGANIZATION_ID, CLIENT_ID);
+
+    assertNotNull(result);
+    assertEquals(HttpStatus.OK, result.getStatusCode());
+    assertSame(expectedClient, result.getBody());
+  }
+
+  @Test
+  void givenOrganizationIdAndPdndClientDTOWhenCreatePdndClientThenReturnCreatedClient() {
+    PdndClientDTO body = TestUtils.getPodamFactory().manufacturePojo(PdndClientDTO.class);
+    PdndClientNoSecretDTO expectedClient = TestUtils.getPodamFactory().manufacturePojo(PdndClientNoSecretDTO.class);
+
+    when(pdndClientRetrieverServiceMock.createPdndClient(ORGANIZATION_ID, body, loggedUser, ACCESS_TOKEN))
+      .thenReturn(expectedClient);
+
+    ResponseEntity<PdndClientNoSecretDTO> result = controller.createPdndClient(ORGANIZATION_ID, body);
 
     assertNotNull(result);
     assertEquals(HttpStatus.OK, result.getStatusCode());

@@ -164,8 +164,9 @@ class GlobalExceptionHandlerTest extends CommonExceptionHandlerTest {
     performRequest(DATA, MediaType.APPLICATION_JSON)
       .andExpect(MockMvcResultMatchers.status().isBadRequest())
       .andExpect(MockMvcResultMatchers.jsonPath("$.category").value("BAD_REQUEST"))
-      .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("Error"))
       .andExpect(MockMvcResultMatchers.jsonPath("$.code").value("INVALID_PDND_CLIENT"))
+      .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("Error"))
+      .andExpect(MockMvcResultMatchers.jsonPath("$.fields").doesNotExist())
       .andExpect(MockMvcResultMatchers.jsonPath("$.traceId").value(traceId));
   }
 }

@@ -2,6 +2,8 @@ package it.gov.pagopa.pu.bff.connector.organization.client;
 
 import it.gov.pagopa.pu.bff.connector.organization.config.OrganizationApisHolder;
 import it.gov.pagopa.pu.organization.controller.generated.PdndClientApi;
+import it.gov.pagopa.pu.organization.dto.generated.PdndClient;
+import it.gov.pagopa.pu.organization.dto.generated.PdndClientDTO;
 import it.gov.pagopa.pu.organization.dto.generated.PdndClientNoSecretDTO;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -71,6 +73,22 @@ class PdndClientClientTest {
       .thenReturn(expectedResult);
 
     PdndClientNoSecretDTO result = pdndClientClient.getPdndClient(ORGANIZATION_ID, CLIENT_ID, ACCESS_TOKEN);
+
+    assertSame(expectedResult, result);
+  }
+
+  @Test
+  void givenPdndClientDTOWhenSavePdndClientThenReturnSavedPdndClient() {
+    PdndClientDTO pdndClientDTO = new PdndClientDTO();
+    PdndClient expectedResult = new PdndClient();
+
+    when(organizationApisHolderMock.getPdndClientApi(ACCESS_TOKEN))
+      .thenReturn(pdndClientApiMock);
+
+    when(pdndClientApiMock.savePdndClient(pdndClientDTO))
+      .thenReturn(expectedResult);
+
+    PdndClient result = pdndClientClient.savePdndClient(pdndClientDTO, ACCESS_TOKEN);
 
     assertSame(expectedResult, result);
   }

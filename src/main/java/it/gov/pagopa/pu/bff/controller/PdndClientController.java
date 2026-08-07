@@ -3,6 +3,7 @@ package it.gov.pagopa.pu.bff.controller;
 import it.gov.pagopa.pu.bff.controller.generated.PdndClientApi;
 import it.gov.pagopa.pu.bff.security.SecurityUtils;
 import it.gov.pagopa.pu.bff.service.pdnd_client.PdndClientRetrieverService;
+import it.gov.pagopa.pu.organization.dto.generated.PdndClientDTO;
 import it.gov.pagopa.pu.organization.dto.generated.PdndClientNoSecretDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -30,5 +31,11 @@ public class PdndClientController implements PdndClientApi {
   public ResponseEntity<PdndClientNoSecretDTO> getPdndClient(Long organizationId, String clientId) {
     log.info("User requested getPdndClient having organizationId {} and clientId {}", organizationId, clientId);
     return ResponseEntity.ok(pdndClientRetrieverService.getPdndClient(organizationId, clientId, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken()));
+  }
+
+  @Override
+  public ResponseEntity<PdndClientNoSecretDTO> createPdndClient(Long organizationId, PdndClientDTO body) {
+    log.info("User requested createPdndClient having organizationId {}", organizationId);
+    return ResponseEntity.ok(pdndClientRetrieverService.createPdndClient(organizationId, body, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken()));
   }
 }

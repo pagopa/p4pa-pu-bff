@@ -1,19 +1,10 @@
 package it.gov.pagopa.pu.bff.mapper;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.connector.auth.client.AuthzClient;
 import it.gov.pagopa.pu.bff.dto.generated.PagedExportFile;
 import it.gov.pagopa.pu.bff.util.TestUtils;
 import it.gov.pagopa.pu.processexecutions.dto.generated.*;
-
-import java.time.OffsetDateTime;
-import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,6 +12,13 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.util.CollectionUtils;
+
+import java.time.OffsetDateTime;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class ExportFileMapperTest {
@@ -77,9 +75,9 @@ class ExportFileMapperTest {
     page.setNumber(4L);
     pagedModelExportFile.setPage(page);
 
-    Mockito.when(authzClientMock.getUserInfoFromMappedExternaUserId(
+    when(authzClientMock.getUserInfoFromMappedExternalUserId(
       operatorExternalId, accessToken)).thenReturn(userInfo);
-    Mockito.when(authzClientMock.getUserInfoFromMappedExternaUserId(
+    when(authzClientMock.getUserInfoFromMappedExternalUserId(
       otherOperatorExternalId, accessToken)).thenReturn(otherUserInfo);
 
     PagedExportFile result = mapper.mapToPagedExportFile(
@@ -104,10 +102,10 @@ class ExportFileMapperTest {
       otherUserInfo.getFamilyName() + " " + otherUserInfo.getName(),
       ExportFileStatus.ERROR,
       "totalRows");
-    Mockito.verify(authzClientMock)
-      .getUserInfoFromMappedExternaUserId(operatorExternalId, accessToken);
-    Mockito.verify(authzClientMock)
-      .getUserInfoFromMappedExternaUserId(otherOperatorExternalId, accessToken);
+    verify(authzClientMock)
+      .getUserInfoFromMappedExternalUserId(operatorExternalId, accessToken);
+    verify(authzClientMock)
+      .getUserInfoFromMappedExternalUserId(otherOperatorExternalId, accessToken);
     Mockito.verifyNoMoreInteractions(authzClientMock);
   }
 

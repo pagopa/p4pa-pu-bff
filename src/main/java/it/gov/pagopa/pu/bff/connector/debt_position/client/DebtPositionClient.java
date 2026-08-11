@@ -3,6 +3,7 @@ package it.gov.pagopa.pu.bff.connector.debt_position.client;
 import it.gov.pagopa.pu.bff.connector.debt_position.config.DebtPositionApisHolder;
 import it.gov.pagopa.pu.bff.dto.DebtPositionViewFiltersDTO;
 import it.gov.pagopa.pu.bff.exception.common.NotFoundException;
+import it.gov.pagopa.pu.bff.exception.common.RestInvokeNotFoundException;
 import it.gov.pagopa.pu.bff.util.DateUtils;
 import it.gov.pagopa.pu.bff.util.PageUtils;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionDTO;
@@ -58,7 +59,7 @@ public class DebtPositionClient {
     try {
       return debtPositionApisHolder.getDebtPositionApi(accessToken)
         .getDebtPosition(debtPositionId);
-    } catch (HttpClientErrorException.NotFound e) {
+    } catch (RestInvokeNotFoundException e) {
       log.warn("DebtPosition with debtPositionId {} not found", debtPositionId);
       return null;
     }
@@ -86,7 +87,7 @@ public class DebtPositionClient {
     try {
       ResponseEntity<Void> voidResponseEntity = debtPositionApisHolder.getDebtPositionApi(accessToken).deleteDebtPositionWithHttpInfo(debtPositionId);
       return voidResponseEntity.getStatusCode().equals(HttpStatus.NO_CONTENT);
-    }catch (HttpClientErrorException.NotFound e) {
+    }catch (RestInvokeNotFoundException e) {
       throw new NotFoundException("DEBT_POSITION_NOT_FOUND", DEBT_POSITION_NOT_FOUND.formatted(debtPositionId));
     }
   }
@@ -94,7 +95,7 @@ public class DebtPositionClient {
   public DebtPositionDTO manageDebtPositionInstallments(Long debtPositionId, ManageDebtPositionDTO manageDebtPositionDTO, String accessToken){
     try {
       return debtPositionApisHolder.getDebtPositionApi(accessToken).manageDebtPositionInstallments(debtPositionId, manageDebtPositionDTO);
-    }catch (HttpClientErrorException.NotFound e) {
+    }catch (RestInvokeNotFoundException e) {
       throw new NotFoundException("DEBT_POSITION_NOT_FOUND", DEBT_POSITION_NOT_FOUND.formatted(debtPositionId));
     }
   }
@@ -102,7 +103,7 @@ public class DebtPositionClient {
   public DebtPositionDTO publishDebtPosition(Long debtPositionId, String accessToken){
     try {
       return debtPositionApisHolder.getDebtPositionApi(accessToken).publishDebtPosition(debtPositionId);
-    } catch (HttpClientErrorException.NotFound e) {
+    } catch (RestInvokeNotFoundException e) {
       throw new NotFoundException("DEBT_POSITION_NOT_FOUND", DEBT_POSITION_NOT_FOUND.formatted(debtPositionId));
     }
   }

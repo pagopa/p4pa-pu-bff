@@ -1,5 +1,6 @@
 package it.gov.pagopa.pu.bff.connector.workflow_hub.config;
 
+import it.gov.pagopa.pu.bff.config.json.JsonConfig;
 import it.gov.pagopa.pu.bff.connector.BaseApiHolderTest;
 import it.gov.pagopa.pu.workflowhub.dto.generated.ScheduleEnum;
 import org.junit.jupiter.api.AfterEach;
@@ -13,20 +14,29 @@ import org.springframework.boot.restclient.RestTemplateBuilder;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.web.util.DefaultUriBuilderFactory;
 
+import static org.mockito.Mockito.when;
+
 @ExtendWith(MockitoExtension.class)
 class WorkflowHubApisHolderTest extends BaseApiHolderTest {
-  private WorkflowHubApisHolder workflowHubApisHolder;
+
   @Mock
   private RestTemplateBuilder restTemplateBuilderMock;
 
+  private WorkflowHubApisHolder apisHolder;
+  private WorkflowHubApiClientConfig apiClientConfig;
+
   @BeforeEach
   void setUp() {
-    Mockito.when(restTemplateBuilderMock.build()).thenReturn(restTemplateMock);
-    Mockito.when(restTemplateMock.getUriTemplateHandler()).thenReturn(new DefaultUriBuilderFactory());
-    WorkflowHubApiClientConfig clientConfig = WorkflowHubApiClientConfig.builder()
+    when(restTemplateBuilderMock.build()).thenReturn(restTemplateMock);
+    when(restTemplateMock.getUriTemplateHandler()).thenReturn(new DefaultUriBuilderFactory());
+
+    apiClientConfig = WorkflowHubApiClientConfig.builder()
       .baseUrl("http://example.com")
+      .maxAttempts(3)
       .build();
-    workflowHubApisHolder = new WorkflowHubApisHolder(clientConfig, restTemplateBuilderMock);
+    apisHolder = new WorkflowHubApisHolder(apiClientConfig, restTemplateBuilderMock, new JsonConfig().objectMapperJackson3());
+
+    verifyHttpClientErrorJsonBodyHandlerConfiguration(apisHolder.getTaxonomyApi(null));
   }
 
   @AfterEach
@@ -35,20 +45,29 @@ class WorkflowHubApisHolderTest extends BaseApiHolderTest {
   }
 
   @Test
+  void testRetryConfiguration() {
+    assertRetry(apiClientConfig,
+      accessToken -> apisHolder.getTaxonomyApi(accessToken)
+        .synchronizeTaxonomy(),
+      new ParameterizedTypeReference<>() {}
+    );
+  }
+
+  @Test
   void whenGetTaxonomyApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
     assertAuthenticationShouldBeSetInThreadSafeMode(
-      accessToken -> workflowHubApisHolder.getTaxonomyApi(accessToken)
+      accessToken -> apisHolder.getTaxonomyApi(accessToken)
         .synchronizeTaxonomy(),
       new ParameterizedTypeReference<>() {},
-      workflowHubApisHolder::unload);
+      apisHolder::unload);
   }
 
   @Test
   void whenGetScheduleApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
     assertAuthenticationShouldBeSetInThreadSafeMode(
-      accessToken -> workflowHubApisHolder.getScheduleApi(accessToken)
+      accessToken -> apisHolder.getScheduleApi(accessToken)
         .getScheduleInfo(ScheduleEnum.PAYMENTS_REPORTING_PAGOPA_BROKERS_FETCH),
       new ParameterizedTypeReference<>() {},
-      workflowHubApisHolder::unload);
+      apisHolder::unload);
   }
 }

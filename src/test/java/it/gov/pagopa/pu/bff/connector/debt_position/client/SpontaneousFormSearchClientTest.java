@@ -6,7 +6,7 @@ import static org.mockito.Mockito.when;
 
 import it.gov.pagopa.pu.bff.connector.debt_position.config.DebtPositionApisHolder;
 import it.gov.pagopa.pu.bff.util.TestUtils;
-import it.gov.pagopa.pu.debtpositions.controller.generated.SpontaneousFormSearchControllerApi;
+import it.gov.pagopa.pu.debtpositions.client.generated.SpontaneousFormSearchControllerApi;
 import it.gov.pagopa.pu.debtpositions.dto.generated.CollectionModelSpontaneousForm;
 import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelSpontaneousForm;
 import it.gov.pagopa.pu.debtpositions.dto.generated.SpontaneousForm;

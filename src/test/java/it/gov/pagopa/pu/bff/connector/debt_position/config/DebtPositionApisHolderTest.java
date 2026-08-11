@@ -1,5 +1,6 @@
 package it.gov.pagopa.pu.bff.connector.debt_position.config;
 
+import it.gov.pagopa.pu.bff.config.json.JsonConfig;
 import it.gov.pagopa.pu.bff.connector.BaseApiHolderTest;
 import it.gov.pagopa.pu.debtpositions.dto.generated.*;
 import org.junit.jupiter.api.AfterEach;
@@ -18,13 +19,16 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
+import static org.mockito.Mockito.when;
+
 @ExtendWith(MockitoExtension.class)
 class DebtPositionApisHolderTest extends BaseApiHolderTest {
 
   @Mock
   private RestTemplateBuilder restTemplateBuilderMock;
 
-  private DebtPositionApisHolder debtPositionApisHolder;
+  private DebtPositionApisHolder apisHolder;
+  private DebtPositionApiClientConfig apiClientConfig;
 
   private static final OffsetDateTime FIXED_OFFSET_DATETIME_FROM =
     OffsetDateTime.of(2026, 4, 18, 12, 0, 0, 0, ZoneOffset.UTC);
@@ -46,12 +50,16 @@ class DebtPositionApisHolderTest extends BaseApiHolderTest {
 
   @BeforeEach
   void setUp() {
-    Mockito.when(restTemplateBuilderMock.build()).thenReturn(restTemplateMock);
-    Mockito.when(restTemplateMock.getUriTemplateHandler()).thenReturn(new DefaultUriBuilderFactory());
-    DebtPositionApiClientConfig clientConfig = DebtPositionApiClientConfig.builder()
+    when(restTemplateBuilderMock.build()).thenReturn(restTemplateMock);
+    when(restTemplateMock.getUriTemplateHandler()).thenReturn(new DefaultUriBuilderFactory());
+
+    apiClientConfig = DebtPositionApiClientConfig.builder()
       .baseUrl("http://example.com")
+      .maxAttempts(3)
       .build();
-    debtPositionApisHolder = new DebtPositionApisHolder(clientConfig, restTemplateBuilderMock);
+    apisHolder = new DebtPositionApisHolder(apiClientConfig, restTemplateBuilderMock, new JsonConfig().objectMapperJackson3());
+
+    verifyHttpClientErrorJsonBodyHandlerConfiguration(apisHolder.getDebtPositionTypeControllerApi(null));
   }
 
   @AfterEach
@@ -62,134 +70,143 @@ class DebtPositionApisHolderTest extends BaseApiHolderTest {
   }
 
   @Test
+  void testRetryConfiguration() {
+    assertRetry(apiClientConfig,
+      accessToken -> apisHolder.getDebtPositionTypeControllerApi(accessToken)
+        .crudGetDebtpositiontype(String.valueOf(123L)),
+      new ParameterizedTypeReference<>() {}
+    );
+  }
+
+  @Test
   void whenGetDebtPositionTypeControllerApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
     assertAuthenticationShouldBeSetInThreadSafeMode(
-      accessToken -> debtPositionApisHolder.getDebtPositionTypeControllerApi(accessToken)
+      accessToken -> apisHolder.getDebtPositionTypeControllerApi(accessToken)
         .crudGetDebtpositiontype(String.valueOf(123L)),
       new ParameterizedTypeReference<>() {
       },
-      debtPositionApisHolder::unload);
+      apisHolder::unload);
   }
 
   @Test
   void whenGetDebtPositionTypeWithCountSearchControllerApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
     assertAuthenticationShouldBeSetInThreadSafeMode(
-      accessToken -> debtPositionApisHolder.getDebtPositionTypeWithCountSearchControllerApi(accessToken)
+      accessToken -> apisHolder.getDebtPositionTypeWithCountSearchControllerApi(accessToken)
         .crudDebtPositionTypesWithCountFindByBrokerId(1L, "code", "description", 0, 0, Collections.emptyList()),
       new ParameterizedTypeReference<>() {
       },
-      debtPositionApisHolder::unload);
+      apisHolder::unload);
   }
 
   @Test
   void whenGetDebtPositionTypeOrgWithCountSearchControllerApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
     assertAuthenticationShouldBeSetInThreadSafeMode(
-      accessToken -> debtPositionApisHolder.getDebtPositionTypeOrgWithCountSearchControllerApi(accessToken)
+      accessToken -> apisHolder.getDebtPositionTypeOrgWithCountSearchControllerApi(accessToken)
         .crudDebtPositionTypeOrgsWithCountFindByCodeAndDescription(1L, "code", "description", true, 0, 10, Collections.emptyList()),
       new ParameterizedTypeReference<>() {
       },
-      debtPositionApisHolder::unload);
+      apisHolder::unload);
   }
 
   @Test
   void whenGetReceiptViewSearchControllerApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
     assertAuthenticationShouldBeSetInThreadSafeMode(
-      accessToken -> debtPositionApisHolder.getReceiptViewSearchControllerApi(accessToken)
+      accessToken -> apisHolder.getReceiptViewSearchControllerApi(accessToken)
         .crudReceiptsViewFindReceiptsByFilters(1L, "operator", List.of(ReceiptOriginType.RECEIPT_PAGOPA),  "iuv", "iur", "iud", 1L, FIXED_OFFSET_DATETIME_FROM, FIXED_OFFSET_DATETIME_TO, "fiscalCode", 0, 10, Collections.emptyList()),
       new ParameterizedTypeReference<>() {
       },
-      debtPositionApisHolder::unload);
+      apisHolder::unload);
   }
 
   @Test
   void whenGetDebtPositionTypeOrgSearchControllerApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
     assertAuthenticationShouldBeSetInThreadSafeMode(
-      accessToken -> debtPositionApisHolder.getDebtPositionTypeOrgSearchControllerApi(accessToken)
+      accessToken -> apisHolder.getDebtPositionTypeOrgSearchControllerApi(accessToken)
         .crudDebtPositionTypeOrgsFindDebtPositionTypeOrgs(1L, "operator123", true),
       new ParameterizedTypeReference<>() {
-      }, debtPositionApisHolder::unload);
+      }, apisHolder::unload);
   }
 
   @Test
   void whenGetDebtPositionTypeOrgCountByOrganizationIdSearchControllerApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
     assertAuthenticationShouldBeSetInThreadSafeMode(
-      accessToken -> debtPositionApisHolder.getDebtPositionTypeOrgCountByOrganizationIdSearchControllerApi(accessToken)
+      accessToken -> apisHolder.getDebtPositionTypeOrgCountByOrganizationIdSearchControllerApi(accessToken)
         .crudDebtPositionTypeOrgsByOrganizationCountByOrganizationIds(List.of(1L)),
       new ParameterizedTypeReference<>() {
-      }, debtPositionApisHolder::unload);
+      }, apisHolder::unload);
   }
 
   @Test
   void whenGetDebtPositionTypeOrgOperatorsSearchControllerApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
     assertAuthenticationShouldBeSetInThreadSafeMode(
-      accessToken -> debtPositionApisHolder.getDebtPositionTypeOrgOperatorsSearchControllerApi(accessToken)
+      accessToken -> apisHolder.getDebtPositionTypeOrgOperatorsSearchControllerApi(accessToken)
         .crudDebtPositionTypeOrgOperatorsFindByDebtPositionTypeOrgId(1L),
       new ParameterizedTypeReference<>() {
-      }, debtPositionApisHolder::unload);
+      }, apisHolder::unload);
   }
 
   @Test
   void whenGetTransferApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
     assertAuthenticationShouldBeSetInThreadSafeMode(
-      accessToken -> debtPositionApisHolder.getTransferApi(accessToken)
+      accessToken -> apisHolder.getTransferApi(accessToken)
         .validateTaxonomyCategory("001122233", "orgFiscalCode"),
       new ParameterizedTypeReference<>() {},
-      debtPositionApisHolder::unload);
+      apisHolder::unload);
   }
 
   @Test
   void whenGetTransferSearchControllerApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
     assertAuthenticationShouldBeSetInThreadSafeMode(
-      accessToken -> debtPositionApisHolder.getTransferSearchControllerApi(accessToken)
+      accessToken -> apisHolder.getTransferSearchControllerApi(accessToken)
         .crudTransfersFindAuthorizedByInstallmentId(1L, "operatorExternalUserId"),
       new ParameterizedTypeReference<>() {
-      }, debtPositionApisHolder::unload);
+      }, apisHolder::unload);
   }
 
   @Test
   void whenGetReceiptApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
     assertAuthenticationShouldBeSetInThreadSafeMode(
-      accessToken -> debtPositionApisHolder.getReceiptApi(accessToken)
+      accessToken -> apisHolder.getReceiptApi(accessToken)
         .getReceiptDetail(1L, 1L, "operatorExternalUserId", "iud"),
       new ParameterizedTypeReference<>() {
       },
-      debtPositionApisHolder::unload);
+      apisHolder::unload);
   }
 
   @Test
   void whenGetInstallmentApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
     assertAuthenticationShouldBeSetInThreadSafeMode(
-      accessToken -> debtPositionApisHolder.getInstallmentApi(accessToken)
+      accessToken -> apisHolder.getInstallmentApi(accessToken)
         .getInstallmentDetail(1L, "operatorExternalUserId"),
       new ParameterizedTypeReference<>() {
-      }, debtPositionApisHolder::unload);
+      }, apisHolder::unload);
   }
 
   @Test
   void whenGetInstallmentNoPiiSearchControllerApiThenAuthenticationShouldBeSetInThreadSafeMode()
     throws InterruptedException {
     assertAuthenticationShouldBeSetInThreadSafeMode(
-      accessToken -> debtPositionApisHolder.getInstallmentNoPiiSearchControllerApi(
+      accessToken -> apisHolder.getInstallmentNoPiiSearchControllerApi(
           accessToken)
         .crudInstallmentsFindAuthorizedByTransferSemanticKey(1L, "iuv", "iur",
           2, "operatorExternalUserId", List.of()),
       new ParameterizedTypeReference<>() {
-      }, debtPositionApisHolder::unload);
+      }, apisHolder::unload);
   }
 
   @Test
   void givenGetInstallmentsByFiltersWhenGetInstallmentApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
     assertAuthenticationShouldBeSetInThreadSafeMode(
-      accessToken -> debtPositionApisHolder.getInstallmentApi(accessToken)
+      accessToken -> apisHolder.getInstallmentApi(accessToken)
         .getInstallmentsByFilters(1L, "operatorExternalUserId", FIXED_LOCAL_DATE_FROM, FIXED_LOCAL_DATE_TO, "iuv", "iud", "fiscalCode", Collections.emptyList(), 2L, InstallmentStatus.PAID, 0, 10, Collections.emptyList()),
       new ParameterizedTypeReference<>() {
-      }, debtPositionApisHolder::unload);
+      }, apisHolder::unload);
   }
 
   @Test
   void whenGetDebtPositionViewSearchControllerApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
     assertAuthenticationShouldBeSetInThreadSafeMode(
-      accessToken -> debtPositionApisHolder.getDebtPositionViewSearchControllerApi(accessToken)
+      accessToken -> apisHolder.getDebtPositionViewSearchControllerApi(accessToken)
         .crudDebtPositionsViewFindDebtPositionViews(
           1L,
           "operatorExternalUserId",
@@ -205,126 +222,126 @@ class DebtPositionApisHolderTest extends BaseApiHolderTest {
           Collections.emptyList()),
       new ParameterizedTypeReference<>() {
       },
-      debtPositionApisHolder::unload);
+      apisHolder::unload);
   }
 
   @Test
   void whenGetDebtPositionApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
     assertAuthenticationShouldBeSetInThreadSafeMode(
-      accessToken -> debtPositionApisHolder.getDebtPositionApi(accessToken)
+      accessToken -> apisHolder.getDebtPositionApi(accessToken)
         .getDebtPosition(
           1L),
       new ParameterizedTypeReference<>() {
       },
-      debtPositionApisHolder::unload);
+      apisHolder::unload);
   }
 
   @Test
   void whenGetDebtPositionTypeOrgEntityControllerApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
     assertAuthenticationShouldBeSetInThreadSafeMode(
-      accessToken -> debtPositionApisHolder.getDebtPositionTypeOrgEntityControllerApi(accessToken)
+      accessToken -> apisHolder.getDebtPositionTypeOrgEntityControllerApi(accessToken)
         .crudGetDebtpositiontypeorg(
           "1"),
       new ParameterizedTypeReference<>() {
       },
-      debtPositionApisHolder::unload);
+      apisHolder::unload);
   }
 
   @Test
   void whenGetDebtPositionSearchControllerApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
     assertAuthenticationShouldBeSetInThreadSafeMode(
-      accessToken -> debtPositionApisHolder.getDebtPositionSearchControllerApi(accessToken)
+      accessToken -> apisHolder.getDebtPositionSearchControllerApi(accessToken)
         .crudDebtPositionsFindByDebtPositionTypeOrgId(
           1L,1,1,Collections.emptyList()),
       new ParameterizedTypeReference<>() {
       },
-      debtPositionApisHolder::unload);
+      apisHolder::unload);
   }
 
   @Test
   void whenGetDebtPositionTypeOrgApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
     assertAuthenticationShouldBeSetInThreadSafeMode(
       accessToken -> {
-        debtPositionApisHolder.getDebtPositionTypeOrgApi(accessToken)
+        apisHolder.getDebtPositionTypeOrgApi(accessToken)
           .deleteDebtPositionTypeOrg(
             1L);
         return voidMock;
       },
       new ParameterizedTypeReference<>() {
       },
-      debtPositionApisHolder::unload);
+      apisHolder::unload);
   }
 
   @Test
   void whenGetDebtPositionTypeSearchControllerApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
     assertAuthenticationShouldBeSetInThreadSafeMode(
-      accessToken -> debtPositionApisHolder.getDebtPositionTypeSearchControllerApi(accessToken)
+      accessToken -> apisHolder.getDebtPositionTypeSearchControllerApi(accessToken)
         .crudDebtPositionTypesFindAllByBrokerIdAndOrgType(
           1L,"01"),
       new ParameterizedTypeReference<>() {
       },
-      debtPositionApisHolder::unload);
+      apisHolder::unload);
   }
 
   @Test
   void whenGetDebtPositionTypeOrgOperatorsDptoCountViewSearchControllerApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
     assertAuthenticationShouldBeSetInThreadSafeMode(
-      accessToken -> debtPositionApisHolder.getDebtPositionTypeOrgOperatorsDptoCountViewSearchControllerApi(accessToken)
+      accessToken -> apisHolder.getDebtPositionTypeOrgOperatorsDptoCountViewSearchControllerApi(accessToken)
         .crudDebtPositionTypeOrgOperatorsCountViewFindByOrganizationIdAndOperatorExternalUserIds(
           1L, Collections.emptySet()),
       new ParameterizedTypeReference<>() {
       },
-      debtPositionApisHolder::unload);
+      apisHolder::unload);
   }
 
   @Test
   void whenGetDebtPositionTypeOrgOperatorsApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
     assertAuthenticationShouldBeSetInThreadSafeMode(
-      accessToken -> debtPositionApisHolder.getDebtPositionTypeOrgOperatorsApi(accessToken)
+      accessToken -> apisHolder.getDebtPositionTypeOrgOperatorsApi(accessToken)
         .deleteOperators(1L, Set.of("operator1")),
       new ParameterizedTypeReference<>() {
       },
-      debtPositionApisHolder::unload);
+      apisHolder::unload);
   }
 
   @Test
   void whenGetSpontaneousFormSearchControllerApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
     assertAuthenticationShouldBeSetInThreadSafeMode(
-      accessToken -> debtPositionApisHolder.getSpontaneousFormSearchControllerApi(accessToken)
+      accessToken -> apisHolder.getSpontaneousFormSearchControllerApi(accessToken)
         .crudSpontaneousFormsFindAllByOrganizationId(1L),
       new ParameterizedTypeReference<>() {
       },
-      debtPositionApisHolder::unload);
+      apisHolder::unload);
   }
 
   @Test
   void whenGetSpontaneousFormEntityControllerApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
     assertAuthenticationShouldBeSetInThreadSafeMode(
-      accessToken -> debtPositionApisHolder.getSpontaneousFormEntityControllerApi(accessToken)
+      accessToken -> apisHolder.getSpontaneousFormEntityControllerApi(accessToken)
         .crudGetSpontaneousform("1"),
       new ParameterizedTypeReference<>() {
       },
-      debtPositionApisHolder::unload);
+      apisHolder::unload);
   }
 
   @Test
   void whenGetSpontaneousFormApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
     assertAuthenticationShouldBeSetInThreadSafeMode(
-      accessToken -> debtPositionApisHolder.getSpontaneousFormApi(accessToken)
+      accessToken -> apisHolder.getSpontaneousFormApi(accessToken)
         .createSpontaneousForm(new SpontaneousForm()),
       new ParameterizedTypeReference<>() {
       },
-      debtPositionApisHolder::unload);
+      apisHolder::unload);
   }
 
   @Test
   void whenGetDebtPositionTypeOrgBalanceCostSearchControllerApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
     assertAuthenticationShouldBeSetInThreadSafeMode(
-      accessToken -> debtPositionApisHolder.getDebtPositionTypeOrgBalanceCostSearchControllerApi(accessToken)
+      accessToken -> apisHolder.getDebtPositionTypeOrgBalanceCostSearchControllerApi(accessToken)
         .crudDebtPositionTypeOrgBalanceCostsGetByDebtPositionTypeOrgIdAndOperatingYear(1L, "2026"),
       new ParameterizedTypeReference<>() {
       },
-      debtPositionApisHolder::unload);
+      apisHolder::unload);
   }
 }
 

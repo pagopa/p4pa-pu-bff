@@ -1,9 +1,10 @@
 package it.gov.pagopa.pu.bff.connector.auth.client;
 
-import it.gov.pagopa.pu.auth.controller.generated.AuthzApi;
+import it.gov.pagopa.pu.auth.client.generated.AuthzApi;
 import it.gov.pagopa.pu.auth.dto.generated.*;
 import it.gov.pagopa.pu.bff.connector.auth.config.AuthApisHolder;
 import it.gov.pagopa.pu.bff.exception.common.NotFoundException;
+import it.gov.pagopa.pu.bff.exception.common.RestInvokeNotFoundException;
 import it.gov.pagopa.pu.bff.util.PageUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -16,7 +17,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.client.HttpClientErrorException;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -54,7 +54,7 @@ class AuthzClientTest {
     when(authzApiMock.getUserInfoFromMappedExternaUserId(mappedExternalUserId))
       .thenReturn(expectedResult);
 
-    UserInfo result = authzClient.getUserInfoFromMappedExternaUserId(mappedExternalUserId,accessToken);
+    UserInfo result = authzClient.getUserInfoFromMappedExternalUserId(mappedExternalUserId,accessToken);
 
     assertSame(expectedResult, result);
   }
@@ -67,9 +67,9 @@ class AuthzClientTest {
     when(authApisHolderMock.getAuthzApi(accessToken))
       .thenReturn(authzApiMock);
     when(authzApiMock.getUserInfoFromMappedExternaUserId(mappedExternalUserId))
-      .thenThrow(HttpClientErrorException.create(HttpStatus.NOT_FOUND, "NotFound", null, null, null));
+      .thenThrow(new RestInvokeNotFoundException("APPNAME", HttpStatus.NOT_FOUND, "ERROR", "ERRORCODE", "ERRORMESSAGE"));
 
-    UserInfo result = authzClient.getUserInfoFromMappedExternaUserId(mappedExternalUserId,accessToken);
+    UserInfo result = authzClient.getUserInfoFromMappedExternalUserId(mappedExternalUserId,accessToken);
 
     Assertions.assertNull(result);
   }
@@ -191,7 +191,7 @@ class AuthzClientTest {
 
     when(authApisHolderMock.getAuthzApi(accessToken)).thenReturn(authzApiMock);
 
-    doThrow(HttpClientErrorException.create(HttpStatus.NOT_FOUND, "NotFound", null, null, null))
+    doThrow(new RestInvokeNotFoundException("APPNAME", HttpStatus.NOT_FOUND, "ERROR", "ERRORCODE", "ERRORMESSAGE"))
       .when(authzApiMock).generateClientSecret(organizationIpaCode, clientId);
 
     NotFoundException thrown = assertThrows(NotFoundException.class, () -> authzClient.generateClientSecret(organizationIpaCode, clientId, accessToken));
@@ -224,9 +224,12 @@ class AuthzClientTest {
     String mappedExternalUserId = "mappedExternalUserId";
 
     when(authApisHolderMock.getAuthzApi(accessToken)).thenReturn(authzApiMock);
-    doThrow(HttpClientErrorException.create(HttpStatus.NOT_FOUND, "NotFound", null, null, null)).when(authzApiMock).getOrganizationOperator(organizationIpaCode, mappedExternalUserId);
+    doThrow(new RestInvokeNotFoundException("APPNAME", HttpStatus.NOT_FOUND, "ERROR", "ERRORCODE", "ERRORMESSAGE"))
+      .when(authzApiMock).getOrganizationOperator(organizationIpaCode, mappedExternalUserId);
+
     //when
     OperatorDTO result = authzClient.getOrganizationOperator(organizationIpaCode, mappedExternalUserId, accessToken);
+
     //then
     Assertions.assertNull(result);
   }

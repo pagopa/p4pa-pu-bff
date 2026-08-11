@@ -7,7 +7,7 @@ import it.gov.pagopa.pu.bff.connector.process_executions.config.ProcessExecution
 import it.gov.pagopa.pu.bff.dto.ExportFileFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.OffsetDateTimeIntervalFilter;
 import it.gov.pagopa.pu.bff.util.DateUtils;
-import it.gov.pagopa.pu.processexecutions.controller.generated.ExportFileSearchControllerApi;
+import it.gov.pagopa.pu.processexecutions.client.generated.ExportFileSearchControllerApi;
 import it.gov.pagopa.pu.processexecutions.dto.generated.ExportFile.ExportFileTypeEnum;
 import it.gov.pagopa.pu.processexecutions.dto.generated.ExportFileStatus;
 import it.gov.pagopa.pu.processexecutions.dto.generated.PagedModelExportFile;

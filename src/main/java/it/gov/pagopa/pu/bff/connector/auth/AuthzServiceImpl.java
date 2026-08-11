@@ -17,7 +17,7 @@ public class AuthzServiceImpl implements AuthzService {
 
   @Override
   public UserInfo getUserInfoFromMappedExternaUserId(String mappedExternalUserId, String accessToken) {
-    return client.getUserInfoFromMappedExternaUserId(mappedExternalUserId, accessToken);
+    return client.getUserInfoFromMappedExternalUserId(mappedExternalUserId, accessToken);
   }
 
   @Override

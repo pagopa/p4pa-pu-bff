@@ -1,17 +1,14 @@
 package it.gov.pagopa.pu.bff.connector.organization.client;
 
 import it.gov.pagopa.pu.bff.connector.organization.config.OrganizationApisHolder;
+import it.gov.pagopa.pu.bff.exception.common.RestInvokeNotFoundException;
 import it.gov.pagopa.pu.bff.util.PageUtils;
 import it.gov.pagopa.pu.bff.util.TestUtils;
-import it.gov.pagopa.pu.organization.controller.generated.OrgSilServiceEntityControllerApi;
-import it.gov.pagopa.pu.organization.controller.generated.OrgSilServiceSearchControllerApi;
-import it.gov.pagopa.pu.organization.controller.generated.OrgSilServiceViewSearchControllerApi;
-import it.gov.pagopa.pu.organization.controller.generated.OrganizationSilServiceApi;
-import it.gov.pagopa.pu.organization.dto.generated.CollectionModelOrgSilService;
-import it.gov.pagopa.pu.organization.dto.generated.OrgSilService;
-import it.gov.pagopa.pu.organization.dto.generated.OrgSilServiceDTO;
-import it.gov.pagopa.pu.organization.dto.generated.OrgSilServiceType;
-import it.gov.pagopa.pu.organization.dto.generated.PagedModelOrgSilServiceView;
+import it.gov.pagopa.pu.organization.client.generated.OrgSilServiceEntityControllerApi;
+import it.gov.pagopa.pu.organization.client.generated.OrgSilServiceSearchControllerApi;
+import it.gov.pagopa.pu.organization.client.generated.OrgSilServiceViewSearchControllerApi;
+import it.gov.pagopa.pu.organization.client.generated.OrganizationSilServiceApi;
+import it.gov.pagopa.pu.organization.dto.generated.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -24,7 +21,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.client.HttpClientErrorException;
 import uk.co.jemos.podam.api.PodamFactory;
 
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -100,7 +96,7 @@ class OrgSilServiceSearchClientTest {
     when(organizationApisHolderMock.getOrgSilServiceEntityControllerApi(accessToken))
       .thenReturn(orgSilServiceEntityControllerApiMock);
     when(orgSilServiceEntityControllerApiMock.crudGetOrgsilservice(String.valueOf(orgSilServiceId)))
-      .thenThrow(HttpClientErrorException.create(HttpStatus.NOT_FOUND, "NotFound", null, null, null));
+      .thenThrow(new RestInvokeNotFoundException("APPNAME", HttpStatus.NOT_FOUND, "ERROR", "ERRORCODE", "ERRORMESSAGE"));
 
     OrgSilService response = orgSilServiceSearchClient.getOrgSilServiceById(orgSilServiceId, accessToken);
 
@@ -165,8 +161,10 @@ class OrgSilServiceSearchClientTest {
     Long orgSilServiceId = 1L;
     String accessToken = "ACCESSTOKEN";
 
-    when(organizationApisHolderMock.getOrganizationSilServiceApi(accessToken)).thenReturn(organizationSilServiceApiMock);
-    when(organizationSilServiceApiMock.getOrgSilService(orgSilServiceId)).thenThrow(HttpClientErrorException.create(HttpStatus.NOT_FOUND, "NotFound", null, null, null));
+    when(organizationApisHolderMock.getOrganizationSilServiceApi(accessToken))
+      .thenReturn(organizationSilServiceApiMock);
+    when(organizationSilServiceApiMock.getOrgSilService(orgSilServiceId))
+      .thenThrow(new RestInvokeNotFoundException("APPNAME", HttpStatus.NOT_FOUND, "ERROR", "ERRORCODE", "ERRORMESSAGE"));
 
     OrgSilServiceDTO result = orgSilServiceSearchClient.getOrgSilServiceByIdDecrypted(orgSilServiceId, accessToken);
 
@@ -212,10 +210,14 @@ class OrgSilServiceSearchClientTest {
     Long organizationId = 3L;
     String applicationName = "applicationName";
 
-    when(organizationApisHolderMock.getOrgSilServiceSearchControllerApi(accessToken)).thenReturn(orgSilServiceSearchControllerApiMock);
-    when(orgSilServiceSearchControllerApiMock.crudOrgSilServicesFindByOrganizationIdAndApplicationName(organizationId, applicationName)).thenThrow(HttpClientErrorException.create(HttpStatus.NOT_FOUND, "NotFound", null, null, null));
+    when(organizationApisHolderMock.getOrgSilServiceSearchControllerApi(accessToken))
+      .thenReturn(orgSilServiceSearchControllerApiMock);
+    when(orgSilServiceSearchControllerApiMock.crudOrgSilServicesFindByOrganizationIdAndApplicationName(organizationId, applicationName))
+      .thenThrow(new RestInvokeNotFoundException("APPNAME", HttpStatus.NOT_FOUND, "ERROR", "ERRORCODE", "ERRORMESSAGE"));
+
     //when
     OrgSilService result = orgSilServiceSearchClient.getOrgSilServiceByOrganizationIdAndApplicationName(organizationId, applicationName, accessToken);
+
     //then
     assertNull(result);
   }

@@ -2,6 +2,7 @@ package it.gov.pagopa.pu.bff.connector.debt_position.client;
 
 import it.gov.pagopa.pu.bff.connector.debt_position.config.DebtPositionApisHolder;
 import it.gov.pagopa.pu.bff.exception.common.NotFoundException;
+import it.gov.pagopa.pu.bff.exception.common.RestInvokeNotFoundException;
 import it.gov.pagopa.pu.bff.util.PageUtils;
 import it.gov.pagopa.pu.debtpositions.dto.generated.CollectionModelDebtPositionType;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionType;
@@ -10,7 +11,6 @@ import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelDebtPositionTypeWi
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.Collections;
 import java.util.List;
@@ -30,7 +30,7 @@ public class DebtPositionTypeClient {
     try {
       return debtPositionApisHolder.getDebtPositionTypeControllerApi(accessToken)
         .crudGetDebtpositiontype(String.valueOf(id));
-    } catch (HttpClientErrorException.NotFound e) {
+    } catch (RestInvokeNotFoundException e) {
       log.info("Debt Position Type with ID {} not found", id);
       return null;
     }
@@ -46,7 +46,7 @@ public class DebtPositionTypeClient {
           PageUtils.getPageNumber(pageable),
           PageUtils.getPageSize(pageable),
           PageUtils.getSortList(pageable));
-    } catch (HttpClientErrorException.NotFound e) {
+    } catch (RestInvokeNotFoundException e) {
       log.warn("DebtPositionType with brokerId {} not found", brokerId);
       return null;
     }
@@ -63,7 +63,7 @@ public class DebtPositionTypeClient {
     try {
       return debtPositionApisHolder.getDebtPositionTypeControllerApi(accessToken)
         .crudPatchDebtpositiontype(debtPositionTypeId.toString(), debtPositionType);
-    } catch (HttpClientErrorException.NotFound e) {
+    } catch (RestInvokeNotFoundException e) {
       log.warn("DebtPositionType with debtPositionTypeId {} not found", debtPositionTypeId);
       return null;
     }
@@ -73,7 +73,7 @@ public class DebtPositionTypeClient {
     try {
       debtPositionApisHolder.getDebtPositionTypeControllerApi(accessToken)
         .crudDeleteDebtpositiontype(String.valueOf(debtPositionTypeId));
-    } catch (HttpClientErrorException.NotFound e) {
+    } catch (RestInvokeNotFoundException e) {
       throw new NotFoundException("DEBT_POSITION_TYPE_NOT_FOUND", "DebtPositionType with ID %d not found".formatted(debtPositionTypeId));
     }
   }

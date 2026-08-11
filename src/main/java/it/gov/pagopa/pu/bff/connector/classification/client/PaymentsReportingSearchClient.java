@@ -1,10 +1,10 @@
 package it.gov.pagopa.pu.bff.connector.classification.client;
 
 import it.gov.pagopa.pu.bff.connector.classification.config.ClassificationApisHolder;
+import it.gov.pagopa.pu.bff.exception.common.RestInvokeNotFoundException;
 import it.gov.pagopa.pu.classification.dto.generated.PaymentsReporting;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
 
 @Slf4j
 @Service
@@ -22,7 +22,7 @@ public class PaymentsReportingSearchClient {
           accessToken)
         .crudPaymentsReportingFindByOrganizationIdAndPaymentsReportingId(
           organizationId, paymentsReportingId);
-    } catch (HttpClientErrorException.NotFound e) {
+    } catch (RestInvokeNotFoundException e) {
       log.warn("PaymentsReporting with paymentsReportingId {} not found", paymentsReportingId);
       return null;
     }

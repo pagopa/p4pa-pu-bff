@@ -6,9 +6,9 @@ import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.connector.auth.config.AuthApisHolder;
 import it.gov.pagopa.pu.bff.dto.PostTokenRequest;
 import it.gov.pagopa.pu.bff.exception.InvalidAccessTokenException;
+import it.gov.pagopa.pu.bff.exception.common.RestInvokeNotAuthorizedException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
 
 @Service
 @Slf4j
@@ -24,8 +24,8 @@ public class AuthnClient {
     try {
       return authApisHolder.getAuthnApi(accessToken)
         .getUserInfo();
-    } catch (HttpClientErrorException.Unauthorized e) {
-      throw new InvalidAccessTokenException("INVALID_ACCESS_TOKEN", "The provided access token is invalid or expired");
+    } catch (RestInvokeNotAuthorizedException e) {
+      throw new InvalidAccessTokenException("INVALID_ACCESS_TOKEN", e.getMessage());
     }
   }
 

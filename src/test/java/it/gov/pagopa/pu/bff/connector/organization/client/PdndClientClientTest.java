@@ -1,7 +1,7 @@
 package it.gov.pagopa.pu.bff.connector.organization.client;
 
 import it.gov.pagopa.pu.bff.connector.organization.config.OrganizationApisHolder;
-import it.gov.pagopa.pu.organization.controller.generated.PdndClientApi;
+import it.gov.pagopa.pu.organization.client.generated.PdndClientApi;
 import it.gov.pagopa.pu.organization.dto.generated.PdndClient;
 import it.gov.pagopa.pu.organization.dto.generated.PdndClientDTO;
 import it.gov.pagopa.pu.organization.dto.generated.PdndClientNoSecretDTO;

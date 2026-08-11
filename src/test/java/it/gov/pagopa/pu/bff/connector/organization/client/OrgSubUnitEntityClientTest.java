@@ -2,7 +2,8 @@ package it.gov.pagopa.pu.bff.connector.organization.client;
 
 import it.gov.pagopa.pu.bff.connector.organization.config.OrganizationApisHolder;
 import it.gov.pagopa.pu.bff.exception.common.NotFoundException;
-import it.gov.pagopa.pu.organization.controller.generated.OrgSubUnitEntityControllerApi;
+import it.gov.pagopa.pu.bff.exception.common.RestInvokeNotFoundException;
+import it.gov.pagopa.pu.organization.client.generated.OrgSubUnitEntityControllerApi;
 import it.gov.pagopa.pu.organization.dto.generated.OrgSubUnit;
 import it.gov.pagopa.pu.organization.dto.generated.OrgSubUnitRequestBody;
 import org.junit.jupiter.api.AfterEach;
@@ -14,7 +15,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.client.HttpClientErrorException;
 
 import static org.mockito.Mockito.*;
 
@@ -70,7 +70,7 @@ class OrgSubUnitEntityClientTest {
     when(organizationApisHolder.getOrgSubUnitEntityControllerApi(accessToken))
       .thenReturn(orgSubUnitEntityControllerApiMock);
     when(orgSubUnitEntityControllerApiMock.crudGetOrgsubunit(orgSubUnitId))
-      .thenThrow(HttpClientErrorException.create(HttpStatus.NOT_FOUND, "NotFound", null, null, null));
+      .thenThrow(new RestInvokeNotFoundException("APPNAME", HttpStatus.NOT_FOUND, "ERROR", "ERRORCODE", "ERRORMESSAGE"));
 
     // When
     OrgSubUnit result = orgSubUnitEntityClient.getOrgSubUnitById(orgSubUnitId, accessToken);
@@ -121,7 +121,7 @@ class OrgSubUnitEntityClientTest {
     when(organizationApisHolder.getOrgSubUnitEntityControllerApi(accessToken))
       .thenReturn(orgSubUnitEntityControllerApiMock);
 
-    doThrow(HttpClientErrorException.create(HttpStatus.NOT_FOUND, "NotFound", null, null, null))
+    doThrow(new RestInvokeNotFoundException("APPNAME", HttpStatus.NOT_FOUND, "ERROR", "ERRORCODE", "ERRORMESSAGE"))
       .when(orgSubUnitEntityControllerApiMock).crudDeleteOrgsubunit(orgSubUnitId);
 
     // When & Then
@@ -162,7 +162,7 @@ class OrgSubUnitEntityClientTest {
     when(organizationApisHolder.getOrgSubUnitEntityControllerApi(accessToken))
       .thenReturn(orgSubUnitEntityControllerApiMock);
     when(orgSubUnitEntityControllerApiMock.crudUpdateOrgsubunit(orgSubUnitId, requestBody))
-      .thenThrow(HttpClientErrorException.create(HttpStatus.NOT_FOUND, "NotFound", null, null, null));
+      .thenThrow(new RestInvokeNotFoundException("APPNAME", HttpStatus.NOT_FOUND, "ERROR", "ERRORCODE", "ERRORMESSAGE"));
 
     // When & Then
     NotFoundException exception = Assertions.assertThrows(

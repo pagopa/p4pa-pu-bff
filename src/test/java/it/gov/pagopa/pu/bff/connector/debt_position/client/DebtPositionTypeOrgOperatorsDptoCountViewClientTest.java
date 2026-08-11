@@ -2,7 +2,7 @@ package it.gov.pagopa.pu.bff.connector.debt_position.client;
 
 import it.gov.pagopa.pu.bff.connector.debt_position.config.DebtPositionApisHolder;
 import it.gov.pagopa.pu.bff.util.TestUtils;
-import it.gov.pagopa.pu.debtpositions.controller.generated.DebtPositionTypeOrgOperatorsDptoCountViewSearchControllerApi;
+import it.gov.pagopa.pu.debtpositions.client.generated.DebtPositionTypeOrgOperatorsDptoCountViewSearchControllerApi;
 import it.gov.pagopa.pu.debtpositions.dto.generated.CollectionModelDebtPositionTypeOrgOperatorsDptoCountView;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrgOperatorsDptoCountView;
 import org.junit.jupiter.api.AfterEach;

@@ -4,7 +4,7 @@ import it.gov.pagopa.pu.bff.config.DefaultConfigFe;
 import it.gov.pagopa.pu.bff.connector.organization.BrokerConfigurationService;
 import it.gov.pagopa.pu.bff.connector.organization.BrokerService;
 import it.gov.pagopa.pu.bff.dto.generated.ConfigFE;
-import it.gov.pagopa.pu.bff.exception.ResourceNotFoundException;
+import it.gov.pagopa.pu.bff.exception.common.NotFoundException;
 import it.gov.pagopa.pu.bff.mapper.PersonalisationFE2ConfigFEMapper;
 import it.gov.pagopa.pu.organization.dto.generated.Broker;
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
@@ -52,7 +52,7 @@ public class BrokerRetrieverServiceImpl implements BrokerRetrieverService {
     if (broker != null) {
       BrokerConfiguration brokerConfiguration = brokerConfigurationService.getBrokerConfiguration(broker.getBrokerId(), accessToken);
       if(Objects.isNull(brokerConfiguration)) {
-        throw new ResourceNotFoundException("BROKER_CONFIGURATION_NOT_FOUND","Broker configuration having broker id "+broker.getBrokerId()+" not found");
+        throw new NotFoundException("BROKER_CONFIGURATION_NOT_FOUND","Broker configuration having broker id "+broker.getBrokerId()+" not found");
       }
       return personalisationFE2ConfigFEMapper.mapPersonalisationFE2ConfigFE(brokerConfiguration.getPersonalisationFe(), broker, userInfo);
     } else {

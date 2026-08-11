@@ -1,8 +1,9 @@
 package it.gov.pagopa.pu.bff.connector.organization.client;
 
 import it.gov.pagopa.pu.bff.connector.organization.config.OrganizationApisHolder;
-import it.gov.pagopa.pu.bff.exception.ResourceNotFoundException;
-import it.gov.pagopa.pu.organization.controller.generated.OrgSilServiceEntityControllerApi;
+import it.gov.pagopa.pu.bff.exception.common.NotFoundException;
+import it.gov.pagopa.pu.bff.exception.common.RestInvokeNotFoundException;
+import it.gov.pagopa.pu.organization.client.generated.OrgSilServiceEntityControllerApi;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,7 +13,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.client.HttpClientErrorException;
 
 import static org.mockito.Mockito.*;
 
@@ -56,11 +56,11 @@ class OrgSilServiceEntityClientTest {
 
     when(organizationApisHolderMock.getOrgSilServiceEntityControllerApi(accessToken))
       .thenReturn(orgSilServiceEntityControllerApiMock);
-    doThrow(HttpClientErrorException.create(HttpStatus.NOT_FOUND, "NotFound", null, null, null))
+    doThrow(new RestInvokeNotFoundException("APPNAME", HttpStatus.NOT_FOUND, "ERROR", "ERRORCODE", "ERRORMESSAGE"))
       .when(orgSilServiceEntityControllerApiMock)
       .crudDeleteOrgsilservice(String.valueOf(orgSilServiceId));
 
-    Assertions.assertThrows(ResourceNotFoundException.class, () ->
+    Assertions.assertThrows(NotFoundException.class, () ->
       orgSilServiceEntityClient.deleteOrgSilService(orgSilServiceId, accessToken));
   }
 }

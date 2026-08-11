@@ -5,8 +5,8 @@ import it.gov.pagopa.pu.bff.connector.debt_position.DebtPositionTypeOrgService;
 import it.gov.pagopa.pu.bff.connector.debt_position.SpontaneousFormService;
 import it.gov.pagopa.pu.bff.dto.generated.PagedSpontaneousForm;
 import it.gov.pagopa.pu.bff.dto.generated.SpontaneousFormDetailDTO;
-import it.gov.pagopa.pu.bff.exception.ConflictException;
-import it.gov.pagopa.pu.bff.exception.ResourceNotFoundException;
+import it.gov.pagopa.pu.bff.exception.common.ConflictException;
+import it.gov.pagopa.pu.bff.exception.common.NotFoundException;
 import it.gov.pagopa.pu.bff.mapper.PagedSpontaneousFormMapper;
 import it.gov.pagopa.pu.bff.mapper.SpontaneousFormDetailDTOMapper;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
@@ -65,7 +65,7 @@ public class SpontaneousFormRetrieverServiceImpl implements SpontaneousFormRetri
 
   private static void validateRetrievedSpontaneousForm(SpontaneousForm spontaneousForm, Long organizationId, Long spontaneousFormId) {
     if (spontaneousForm == null){
-      throw new ResourceNotFoundException("SPONTANEOUS_FORM_NOT_FOUND", "SpontaneousForm with id %d not found".formatted(spontaneousFormId));
+      throw new NotFoundException("SPONTANEOUS_FORM_NOT_FOUND", "SpontaneousForm with id %d not found".formatted(spontaneousFormId));
     }
 
     if (!organizationId.equals(spontaneousForm.getOrganizationId())){

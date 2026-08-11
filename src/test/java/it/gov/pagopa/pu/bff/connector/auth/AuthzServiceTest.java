@@ -33,7 +33,7 @@ class AuthzServiceTest {
     String accessToken = "ACCESSTOKEN";
     UserInfo expectedResult = new UserInfo();
 
-    when(client.getUserInfoFromMappedExternaUserId(Mockito.same(mappedExternalUserId), Mockito.same(accessToken)))
+    when(client.getUserInfoFromMappedExternalUserId(Mockito.same(mappedExternalUserId), Mockito.same(accessToken)))
       .thenReturn(expectedResult);
 
     UserInfo result = service.getUserInfoFromMappedExternaUserId(mappedExternalUserId, accessToken);

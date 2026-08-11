@@ -3,7 +3,7 @@ package it.gov.pagopa.pu.bff.connector.registries.client;
 import it.gov.pagopa.pu.bff.connector.registries.config.RegistriesApisHolder;
 import it.gov.pagopa.pu.bff.dto.SilRegistryFiltersDTO;
 import it.gov.pagopa.pu.bff.util.TestUtils;
-import it.gov.pagopa.pu.registries.controller.generated.SilRegistrySearchControllerApi;
+import it.gov.pagopa.pu.registries.client.generated.SilRegistrySearchControllerApi;
 import it.gov.pagopa.pu.registries.dto.generated.PagedModelSilRegistry;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;

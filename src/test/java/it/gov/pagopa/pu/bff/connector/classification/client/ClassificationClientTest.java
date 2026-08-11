@@ -3,9 +3,10 @@ package it.gov.pagopa.pu.bff.connector.classification.client;
 import it.gov.pagopa.pu.bff.connector.classification.config.ClassificationApisHolder;
 import it.gov.pagopa.pu.bff.dto.ClassificationPaidInstallmentsFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.TreasuredClassificationFiltersDTO;
+import it.gov.pagopa.pu.bff.exception.common.RestInvokeNotFoundException;
 import it.gov.pagopa.pu.bff.util.PageUtils;
 import it.gov.pagopa.pu.bff.util.TestUtils;
-import it.gov.pagopa.pu.classification.controller.generated.ClassificationsApi;
+import it.gov.pagopa.pu.classification.client.generated.ClassificationsApi;
 import it.gov.pagopa.pu.classification.dto.generated.ClassificationDetailViewDTO;
 import it.gov.pagopa.pu.classification.dto.generated.PagedClassificationPaidInstallmentsView;
 import it.gov.pagopa.pu.classification.dto.generated.PagedTreasuredClassification;
@@ -18,7 +19,6 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.client.HttpClientErrorException;
 import uk.co.jemos.podam.api.PodamFactory;
 
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -129,7 +129,7 @@ class ClassificationClientTest {
       .thenReturn(classificationsApiMock);
 
     when(classificationsApiMock.getClassificationDetail(organizationId, classificationId))
-      .thenThrow(HttpClientErrorException.create(HttpStatus.NOT_FOUND, "NotFound", null, null, null));
+      .thenThrow(new RestInvokeNotFoundException("APPNAME", HttpStatus.NOT_FOUND, "ERROR", "ERRORCODE", "ERRORMESSAGE"));
 
     ClassificationDetailViewDTO result = classificationClient.getClassificationDetail(organizationId, classificationId, accessToken);
 

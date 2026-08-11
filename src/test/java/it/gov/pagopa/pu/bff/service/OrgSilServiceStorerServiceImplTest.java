@@ -4,7 +4,7 @@ import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.connector.organization.OrgSilServiceService;
 import it.gov.pagopa.pu.bff.dto.OrgSilServiceDecryptedDTO;
 import it.gov.pagopa.pu.bff.exception.InvalidOrgSilServiceException;
-import it.gov.pagopa.pu.bff.exception.ResourceNotFoundException;
+import it.gov.pagopa.pu.bff.exception.common.NotFoundException;
 import it.gov.pagopa.pu.bff.mapper.OrgSilServiceDTOMapper;
 import it.gov.pagopa.pu.bff.service.org_sil_service.OrgSilServiceStorerService;
 import it.gov.pagopa.pu.bff.service.org_sil_service.OrgSilServiceStorerServiceImpl;
@@ -181,7 +181,7 @@ public class OrgSilServiceStorerServiceImplTest {
     doNothing().when(authorizationServiceMock).validateAdminRole(organizationId, loggedUser);
     when(orgSilServiceServiceMock.getOrgSilServiceById(orgSilServiceId, accessToken)).thenReturn(null);
 
-    assertThrows(ResourceNotFoundException.class, () ->
+    assertThrows(NotFoundException.class, () ->
       orgSilServiceStorerService.updateOrgSilService(organizationId, body, loggedUser, accessToken));
   }
 

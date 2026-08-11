@@ -1,7 +1,7 @@
 package it.gov.pagopa.pu.bff.connector.debt_position.client;
 
 import it.gov.pagopa.pu.bff.connector.debt_position.config.DebtPositionApisHolder;
-import it.gov.pagopa.pu.debtpositions.controller.generated.TransferSearchControllerApi;
+import it.gov.pagopa.pu.debtpositions.client.generated.TransferSearchControllerApi;
 import it.gov.pagopa.pu.debtpositions.dto.generated.CollectionModelTransfer;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;

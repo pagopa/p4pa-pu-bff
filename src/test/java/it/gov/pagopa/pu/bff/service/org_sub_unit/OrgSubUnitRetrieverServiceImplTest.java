@@ -3,7 +3,7 @@ package it.gov.pagopa.pu.bff.service.org_sub_unit;
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.connector.organization.OrgSubUnitService;
 import it.gov.pagopa.pu.bff.exception.InvalidOrgSubUnitException;
-import it.gov.pagopa.pu.bff.exception.ResourceNotFoundException;
+import it.gov.pagopa.pu.bff.exception.common.NotFoundException;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
 import it.gov.pagopa.pu.bff.util.TestUtils;
 import it.gov.pagopa.pu.organization.dto.generated.OrgSubUnit;
@@ -88,8 +88,8 @@ class OrgSubUnitRetrieverServiceImplTest {
         .thenReturn(null);
 
       // When & Then
-      ResourceNotFoundException exception = assertThrows(
-        ResourceNotFoundException.class,
+      NotFoundException exception = assertThrows(
+        NotFoundException.class,
         () -> orgSubUnitRetrieverService.getOrgSubUnitById(organizationId, subUnitCode, loggedUser, accessToken)
       );
 

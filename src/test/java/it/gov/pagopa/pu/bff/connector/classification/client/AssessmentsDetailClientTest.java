@@ -1,9 +1,10 @@
 package it.gov.pagopa.pu.bff.connector.classification.client;
 
 import it.gov.pagopa.pu.bff.connector.classification.config.ClassificationApisHolder;
-import it.gov.pagopa.pu.bff.exception.ResourceNotFoundException;
-import it.gov.pagopa.pu.classification.controller.generated.AssessmentsDetailApi;
-import it.gov.pagopa.pu.classification.controller.generated.AssessmentsDetailEntityControllerApi;
+import it.gov.pagopa.pu.bff.exception.common.NotFoundException;
+import it.gov.pagopa.pu.bff.exception.common.RestInvokeNotFoundException;
+import it.gov.pagopa.pu.classification.client.generated.AssessmentsDetailApi;
+import it.gov.pagopa.pu.classification.client.generated.AssessmentsDetailEntityControllerApi;
 import it.gov.pagopa.pu.classification.dto.generated.AssessmentsDetail;
 import it.gov.pagopa.pu.classification.dto.generated.CreateAssessmentsDetail;
 import org.junit.jupiter.api.AfterEach;
@@ -15,7 +16,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.client.HttpClientErrorException;
 import uk.co.jemos.podam.api.PodamFactoryImpl;
 
 import java.util.List;
@@ -84,11 +84,11 @@ class AssessmentsDetailClientTest {
 
     when(classificationApisHolderMock.getAssessmentsDetailEntityControllerApi(accessToken))
       .thenReturn(assessmentsDetailEntityControllerApiMock);
-    doThrow(HttpClientErrorException.create(HttpStatus.NOT_FOUND, "NotFound", null, null, null))
+    doThrow(new RestInvokeNotFoundException("APPNAME", HttpStatus.NOT_FOUND, "ERROR", "ERRORCODE", "ERRORMESSAGE"))
       .when(assessmentsDetailEntityControllerApiMock)
       .crudDeleteAssessmentsdetail(String.valueOf(assessmentDetailId));
 
-    Assertions.assertThrows(ResourceNotFoundException.class, () ->
+    Assertions.assertThrows(NotFoundException.class, () ->
       assessmentsDetailClient.deleteAssessmentsDetails(assessmentDetailId, accessToken));
   }
 }

@@ -1,9 +1,10 @@
 package it.gov.pagopa.pu.bff.connector.debt_position.client;
 
 import it.gov.pagopa.pu.bff.connector.debt_position.config.DebtPositionApisHolder;
-import it.gov.pagopa.pu.bff.exception.ResourceNotFoundException;
+import it.gov.pagopa.pu.bff.exception.common.NotFoundException;
+import it.gov.pagopa.pu.bff.exception.common.RestInvokeNotFoundException;
 import it.gov.pagopa.pu.bff.util.TestUtils;
-import it.gov.pagopa.pu.debtpositions.controller.generated.SpontaneousFormApi;
+import it.gov.pagopa.pu.debtpositions.client.generated.SpontaneousFormApi;
 import it.gov.pagopa.pu.debtpositions.dto.generated.SpontaneousForm;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,7 +14,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.client.HttpClientErrorException;
 import uk.co.jemos.podam.api.PodamFactory;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -84,10 +84,10 @@ class SpontaneousFormClientTest {
 
     when(debtPositionApisHolderMock.getSpontaneousFormApi(accessToken))
         .thenReturn(spontaneousFormApiMock);
-    doThrow(HttpClientErrorException.create(HttpStatus.NOT_FOUND, "NotFound", null, null, null))
+    doThrow(new RestInvokeNotFoundException("APPNAME", HttpStatus.NOT_FOUND, "ERROR", "ERRORCODE", "ERRORMESSAGE"))
         .when(spontaneousFormApiMock).deleteSpontaneousForm(spontaneousFormId);
 
-    assertThrows(ResourceNotFoundException.class, ()->spontaneousFormClient.deleteSpontaneousForm(spontaneousFormId, accessToken));
+    assertThrows(NotFoundException.class, ()->spontaneousFormClient.deleteSpontaneousForm(spontaneousFormId, accessToken));
   }
 
   @Test
@@ -113,9 +113,9 @@ class SpontaneousFormClientTest {
 
     when(debtPositionApisHolderMock.getSpontaneousFormApi(accessToken))
         .thenReturn(spontaneousFormApiMock);
-    doThrow(HttpClientErrorException.create(HttpStatus.NOT_FOUND, "NotFound", null, null, null))
+    doThrow(new RestInvokeNotFoundException("APPNAME", HttpStatus.NOT_FOUND, "ERROR", "ERRORCODE", "ERRORMESSAGE"))
         .when(spontaneousFormApiMock).updateSpontaneousForm(spontaneousForm);
 
-    assertThrows(ResourceNotFoundException.class, ()->spontaneousFormClient.updateSpontaneousForm(spontaneousForm, accessToken));
+    assertThrows(NotFoundException.class, ()->spontaneousFormClient.updateSpontaneousForm(spontaneousForm, accessToken));
   }
 }

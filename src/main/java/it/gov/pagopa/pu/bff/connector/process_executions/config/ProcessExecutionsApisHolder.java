@@ -1,15 +1,17 @@
 package it.gov.pagopa.pu.bff.connector.process_executions.config;
 
-import it.gov.pagopa.pu.bff.config.rest.RestTemplateConfig;
-import it.gov.pagopa.pu.processexecutions.controller.ApiClient;
-import it.gov.pagopa.pu.processexecutions.controller.BaseApi;
-import it.gov.pagopa.pu.processexecutions.controller.generated.ExportFileControllerApi;
-import it.gov.pagopa.pu.processexecutions.controller.generated.ExportFileSearchControllerApi;
-import it.gov.pagopa.pu.processexecutions.controller.generated.IngestionFlowFileSearchControllerApi;
+import it.gov.pagopa.pu.bff.config.rest.HttpClientErrorJsonBodyHandler;
+import it.gov.pagopa.pu.processexecutions.generated.ApiClient;
+import it.gov.pagopa.pu.processexecutions.generated.BaseApi;
+import it.gov.pagopa.pu.processexecutions.client.generated.ExportFileControllerApi;
+import it.gov.pagopa.pu.processexecutions.client.generated.ExportFileSearchControllerApi;
+import it.gov.pagopa.pu.processexecutions.client.generated.IngestionFlowFileSearchControllerApi;
+import it.gov.pagopa.pu.processexecutions.dto.generated.ProcessExecutionsErrorDTO;
 import jakarta.annotation.PreDestroy;
 import org.springframework.boot.restclient.RestTemplateBuilder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import tools.jackson.databind.json.JsonMapper;
 
 @Service
 public class ProcessExecutionsApisHolder {
@@ -21,7 +23,8 @@ public class ProcessExecutionsApisHolder {
 
     public ProcessExecutionsApisHolder(
         ProcessExecutionsApiClientConfig clientConfig,
-        RestTemplateBuilder restTemplateBuilder
+        RestTemplateBuilder restTemplateBuilder,
+        JsonMapper jsonMapper
     ) {
       RestTemplate restTemplate = restTemplateBuilder.build();
         ApiClient apiClient = new ApiClient(restTemplate);
@@ -29,9 +32,9 @@ public class ProcessExecutionsApisHolder {
         apiClient.setBearerToken(bearerTokenHolder::get);
         apiClient.setMaxAttemptsForRetry(Math.max(1, clientConfig.getMaxAttempts()));
         apiClient.setWaitTimeMillis(clientConfig.getWaitTimeMillis());
-        if (clientConfig.isPrintBodyWhenError()) {
-          restTemplate.setErrorHandler(RestTemplateConfig.bodyPrinterWhenError("PROCESS-EXECUTIONS"));
-        }
+        restTemplate.setErrorHandler(new HttpClientErrorJsonBodyHandler<>(jsonMapper, "PROCESS-EXECUTIONS", clientConfig.isPrintBodyWhenError(),
+          ProcessExecutionsErrorDTO.class, ProcessExecutionsErrorDTO::getCode, ProcessExecutionsErrorDTO::getMessage)
+      );
 
         this.ingestionFlowFileSearchControllerApi = new IngestionFlowFileSearchControllerApi(apiClient);
         this.exportFileSearchControllerApi = new ExportFileSearchControllerApi(apiClient);

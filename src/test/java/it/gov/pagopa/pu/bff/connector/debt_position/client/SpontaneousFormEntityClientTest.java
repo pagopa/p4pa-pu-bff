@@ -1,8 +1,9 @@
 package it.gov.pagopa.pu.bff.connector.debt_position.client;
 
 import it.gov.pagopa.pu.bff.connector.debt_position.config.DebtPositionApisHolder;
+import it.gov.pagopa.pu.bff.exception.common.RestInvokeNotFoundException;
 import it.gov.pagopa.pu.bff.util.TestUtils;
-import it.gov.pagopa.pu.debtpositions.controller.generated.SpontaneousFormEntityControllerApi;
+import it.gov.pagopa.pu.debtpositions.client.generated.SpontaneousFormEntityControllerApi;
 import it.gov.pagopa.pu.debtpositions.dto.generated.SpontaneousForm;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -13,7 +14,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.client.HttpClientErrorException;
 import uk.co.jemos.podam.api.PodamFactory;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -71,7 +71,7 @@ class SpontaneousFormEntityClientTest {
     when(debtPositionApisHolderMock.getSpontaneousFormEntityControllerApi(accessToken))
       .thenReturn(spontaneousFormEntityControllerApiMock);
     when(spontaneousFormEntityControllerApiMock.crudGetSpontaneousform(String.valueOf(spontaneousFormId)))
-      .thenThrow(HttpClientErrorException.create(HttpStatus.NOT_FOUND, "NotFound", null, null, null));
+      .thenThrow(new RestInvokeNotFoundException("APPNAME", HttpStatus.NOT_FOUND, "ERROR", "ERRORCODE", "ERRORMESSAGE"));
 
     SpontaneousForm result = spontaneousFormEntityClient.getSpontaneousForm(spontaneousFormId, accessToken);
 

@@ -11,7 +11,7 @@ plugins {
   jacoco
   id("org.sonarqube") version "7.3.1.8318"
   id("com.github.ben-manes.versions") version "0.54.0"
-  id("org.openapi.generator") version "7.22.0"
+  id("org.openapi.generator") version "7.23.0"
   id("org.ajoberstar.grgit") version "5.3.2"
   id("com.gorylenko.gradle-git-properties") version "4.0.1"
   id("com.github.jk1.dependency-license-report") version "3.1.4"
@@ -57,7 +57,7 @@ val caffeineVersion = "3.2.4"
 val httpClientVersion = "5.6.1"
 val httpCoreVersion = "5.4.2"
 val kafkaAppender = "0.2.0-RC2"
-val lz4JavaVersion = "1.11.0"
+val lz4JavaVersion = "1.11.1"
 val mapStructVersion = "1.6.3"
 val commonsLang3Version = "3.20.0"
 
@@ -313,7 +313,8 @@ tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>("ope
   generatorName.set("java")
   remoteInputSpec.set("https://raw.githubusercontent.com/pagopa/p4pa-doc/refs/heads/main/openapi/$targetEnv/internal/p4pa-auth.openapi.yaml")
   outputDir.set("$projectDir/build/generated")
-  apiPackage.set("it.gov.pagopa.pu.auth.controller.generated")
+  invokerPackage.set("it.gov.pagopa.pu.auth.generated")
+  apiPackage.set("it.gov.pagopa.pu.auth.client.generated")
   modelPackage.set("it.gov.pagopa.pu.auth.dto.generated")
   configOptions.set(
     mapOf(
@@ -336,6 +337,8 @@ tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>("ope
     )
   )
   library.set("resttemplate")
+
+  workerIsolation.set("process")
 }
 
 tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>("openApiGenerateORGANIZATION") {
@@ -345,7 +348,8 @@ tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>("ope
   generatorName.set("java")
   remoteInputSpec.set("https://raw.githubusercontent.com/pagopa/p4pa-doc/refs/heads/main/openapi/$targetEnv/internal/p4pa-organization.generated.openapi.json")
   outputDir.set("$projectDir/build/generated")
-  apiPackage.set("it.gov.pagopa.pu.organization.controller.generated")
+  invokerPackage.set("it.gov.pagopa.pu.organization.generated")
+  apiPackage.set("it.gov.pagopa.pu.organization.client.generated")
   modelPackage.set("it.gov.pagopa.pu.organization.dto.generated")
   configOptions.set(
     mapOf(
@@ -368,6 +372,8 @@ tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>("ope
     )
   )
   library.set("resttemplate")
+
+  workerIsolation.set("process")
 }
 
 tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>("openApiGenerateDEBTPOSITIONS") {
@@ -377,7 +383,8 @@ tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>("ope
   generatorName.set("java")
   remoteInputSpec.set("https://raw.githubusercontent.com/pagopa/p4pa-doc/refs/heads/main/openapi/$targetEnv/internal/p4pa-debt-positions.generated.openapi.json")
   outputDir.set("$projectDir/build/generated")
-  apiPackage.set("it.gov.pagopa.pu.debtpositions.controller.generated")
+  invokerPackage.set("it.gov.pagopa.pu.debtpositions.generated")
+  apiPackage.set("it.gov.pagopa.pu.debtpositions.client.generated")
   modelPackage.set("it.gov.pagopa.pu.debtpositions.dto.generated")
   typeMappings.set(
     mapOf(
@@ -416,6 +423,8 @@ tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>("ope
     )
   )
   library.set("resttemplate")
+
+  workerIsolation.set("process")
 }
 
 tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>("openApiGeneratePROCESSEXECUTIONS") {
@@ -425,7 +434,8 @@ tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>("ope
   generatorName.set("java")
   remoteInputSpec.set("https://raw.githubusercontent.com/pagopa/p4pa-doc/refs/heads/main/openapi/$targetEnv/internal/p4pa-process-executions.generated.openapi.json")
   outputDir.set("$projectDir/build/generated")
-  apiPackage.set("it.gov.pagopa.pu.processexecutions.controller.generated")
+  invokerPackage.set("it.gov.pagopa.pu.processexecutions.generated")
+  apiPackage.set("it.gov.pagopa.pu.processexecutions.client.generated")
   modelPackage.set("it.gov.pagopa.pu.processexecutions.dto.generated")
   typeMappings.set(
     mapOf(
@@ -452,6 +462,8 @@ tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>("ope
     )
   )
   library.set("resttemplate")
+
+  workerIsolation.set("process")
 }
 
 tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>("openApiGenerateCLASSIFICATION") {
@@ -461,7 +473,8 @@ tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>("ope
   generatorName.set("java")
   remoteInputSpec.set("https://raw.githubusercontent.com/pagopa/p4pa-doc/refs/heads/main/openapi/$targetEnv/internal/p4pa-classification.generated.openapi.json")
   outputDir.set("$projectDir/build/generated")
-  apiPackage.set("it.gov.pagopa.pu.classification.controller.generated")
+  invokerPackage.set("it.gov.pagopa.pu.classification.generated")
+  apiPackage.set("it.gov.pagopa.pu.classification.client.generated")
   modelPackage.set("it.gov.pagopa.pu.classification.dto.generated")
   typeMappings.set(
     mapOf(
@@ -494,6 +507,8 @@ tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>("ope
     )
   )
   library.set("resttemplate")
+
+  workerIsolation.set("process")
 }
 
 tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>("openApiGeneratePAGOPAPAYMENTS") {
@@ -503,7 +518,8 @@ tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>("ope
   generatorName.set("java")
   remoteInputSpec.set("https://raw.githubusercontent.com/pagopa/p4pa-doc/refs/heads/main/openapi/$targetEnv/internal/p4pa-pagopa-payments.openapi.yaml")
   outputDir.set("$projectDir/build/generated")
-  apiPackage.set("it.gov.pagopa.pu.pagopapayments.controller.generated")
+  invokerPackage.set("it.gov.pagopa.pu.pagopapayments.generated")
+  apiPackage.set("it.gov.pagopa.pu.pagopapayments.client.generated")
   modelPackage.set("it.gov.pagopa.pu.pagopapayments.dto.generated")
   configOptions.set(
     mapOf(
@@ -537,6 +553,8 @@ tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>("ope
     )
   )
   library.set("resttemplate")
+
+  workerIsolation.set("process")
 }
 
 tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>("openApiGenerateREGISTRIES") {
@@ -546,7 +564,8 @@ tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>("ope
   generatorName.set("java")
   remoteInputSpec.set("https://raw.githubusercontent.com/pagopa/p4pa-doc/refs/heads/main/openapi/$targetEnv/internal/p4pa-registries.generated.openapi.json")
   outputDir.set("$projectDir/build/generated")
-  apiPackage.set("it.gov.pagopa.pu.registries.controller.generated")
+  invokerPackage.set("it.gov.pagopa.pu.registries.generated")
+  apiPackage.set("it.gov.pagopa.pu.registries.client.generated")
   modelPackage.set("it.gov.pagopa.pu.registries.dto.generated")
   configOptions.set(
     mapOf(
@@ -569,6 +588,8 @@ tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>("ope
     )
   )
   library.set("resttemplate")
+
+  workerIsolation.set("process")
 }
 
 tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>("openApiGenerateWORKFLOWHUB") {
@@ -578,7 +599,8 @@ tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>("ope
   generatorName.set("java")
   remoteInputSpec.set("https://raw.githubusercontent.com/pagopa/p4pa-doc/refs/heads/main/openapi/$targetEnv/internal/p4pa-workflow-hub.generated.openapi.json")
   outputDir.set("$projectDir/build/generated")
-  apiPackage.set("it.gov.pagopa.pu.workflowhub.controller.generated")
+  invokerPackage.set("it.gov.pagopa.pu.workflowhub.generated")
+  apiPackage.set("it.gov.pagopa.pu.workflowhub.client.generated")
   modelPackage.set("it.gov.pagopa.pu.workflowhub.dto.generated")
   configOptions.set(
     mapOf(
@@ -601,4 +623,6 @@ tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>("ope
     )
   )
   library.set("resttemplate")
+
+  workerIsolation.set("process")
 }

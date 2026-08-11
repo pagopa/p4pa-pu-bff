@@ -6,7 +6,7 @@ import it.gov.pagopa.pu.bff.connector.organization.OrgSilServiceService;
 import it.gov.pagopa.pu.bff.dto.OrgSilServiceDecryptedDTO;
 import it.gov.pagopa.pu.bff.dto.OrgSilServiceExtendedDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedOrgSilServiceView;
-import it.gov.pagopa.pu.bff.exception.ConflictException;
+import it.gov.pagopa.pu.bff.exception.common.ConflictException;
 import it.gov.pagopa.pu.bff.mapper.OrgSilServiceDTOMapper;
 import it.gov.pagopa.pu.bff.mapper.OrgSilServiceViewMapper;
 import it.gov.pagopa.pu.bff.service.org_sil_service.OrgSilServiceRetrieverService;
@@ -250,8 +250,8 @@ public class OrgSilServiceRetrieverServiceImplTest {
     loggedUser.setMappedExternalUserId("operatorExternalUserId");
 
     doNothing().when(authorizationServiceMock).validateAdminRole(organizationId, loggedUser);
-    Mockito.when(orgSilServiceServiceMock.getOrgSilServiceByIdDecrypted(2L, accessToken)).thenReturn(orgSilServiceDTO);
-    Mockito.when(orgSilServiceDTOMapperMock.map(orgSilServiceDTO)).thenReturn(orgSilServiceExtended);
+    when(orgSilServiceServiceMock.getOrgSilServiceByIdDecrypted(2L, accessToken)).thenReturn(orgSilServiceDTO);
+    when(orgSilServiceDTOMapperMock.map(orgSilServiceDTO)).thenReturn(orgSilServiceExtended);
 
     OrgSilServiceDecryptedDTO result = orgSilServiceRetrieverService.getOrgSilServiceDetails(organizationId, 2L, loggedUser, accessToken);
 

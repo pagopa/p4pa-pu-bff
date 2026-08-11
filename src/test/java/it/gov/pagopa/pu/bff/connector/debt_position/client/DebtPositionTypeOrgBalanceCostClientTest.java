@@ -1,7 +1,8 @@
 package it.gov.pagopa.pu.bff.connector.debt_position.client;
 
 import it.gov.pagopa.pu.bff.connector.debt_position.config.DebtPositionApisHolder;
-import it.gov.pagopa.pu.debtpositions.controller.generated.DebtPositionTypeOrgBalanceCostSearchControllerApi;
+import it.gov.pagopa.pu.bff.exception.common.RestInvokeNotFoundException;
+import it.gov.pagopa.pu.debtpositions.client.generated.DebtPositionTypeOrgBalanceCostSearchControllerApi;
 import it.gov.pagopa.pu.debtpositions.dto.generated.CollectionModelDebtPositionTypeOrgBalanceCost;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrgBalanceCost;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrgBalanceCostType;
@@ -13,7 +14,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.List;
 
@@ -87,7 +87,7 @@ class DebtPositionTypeOrgBalanceCostClientTest {
     when(debtPositionApisHolderMock.getDebtPositionTypeOrgBalanceCostSearchControllerApi(accessToken))
       .thenReturn(debtPositionTypeOrgBalanceCostSearchControllerApiMock);
     when(debtPositionTypeOrgBalanceCostSearchControllerApiMock.crudDebtPositionTypeOrgBalanceCostsGetByDebtPositionTypeOrgIdAndOperatingYearAndType(dptoId, opYear, type))
-      .thenThrow(HttpClientErrorException.create(HttpStatus.NOT_FOUND, "NotFound", null, null, null));
+      .thenThrow(new RestInvokeNotFoundException("APPNAME", HttpStatus.NOT_FOUND, "ERROR", "ERRORCODE", "ERRORMESSAGE"));
 
     DebtPositionTypeOrgBalanceCost result = debtPositionTypeOrgBalanceCostClient.getDebtPositionTypeOrgBalanceCostsByDptoIdAndOpYearAndType(dptoId, opYear, type, accessToken);
 

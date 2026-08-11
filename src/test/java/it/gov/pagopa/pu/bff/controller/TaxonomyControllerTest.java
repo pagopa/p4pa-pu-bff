@@ -4,7 +4,6 @@ import io.micrometer.tracing.Tracer;
 import it.gov.pagopa.pu.bff.config.json.JsonConfig;
 import it.gov.pagopa.pu.bff.controller.generated.TaxonomyApi;
 import it.gov.pagopa.pu.bff.dto.generated.*;
-import it.gov.pagopa.pu.bff.mapper.UpstreamErrorMapper;
 import it.gov.pagopa.pu.bff.security.JwtAuthenticationFilter;
 import it.gov.pagopa.pu.bff.service.broker.BrokerRetrieverService;
 import it.gov.pagopa.pu.bff.service.taxonomy.TaxonomyRetrieverService;
@@ -46,8 +45,6 @@ class TaxonomyControllerTest {
 
   @MockitoBean
   private TaxonomyRetrieverService serviceMock;
-  @MockitoBean
-  private UpstreamErrorMapper upstreamErrorMapperMock;
   @MockitoBean
   private BrokerRetrieverService serviceBrokerMock;
   @MockitoBean

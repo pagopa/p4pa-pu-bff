@@ -1,7 +1,8 @@
 package it.gov.pagopa.pu.bff.connector.organization.client;
 
 import it.gov.pagopa.pu.bff.connector.organization.config.OrganizationApisHolder;
-import it.gov.pagopa.pu.organization.controller.generated.OrganizationSearchControllerApi;
+import it.gov.pagopa.pu.bff.exception.common.RestInvokeNotFoundException;
+import it.gov.pagopa.pu.organization.client.generated.OrganizationSearchControllerApi;
 import it.gov.pagopa.pu.organization.dto.generated.Organization;
 import it.gov.pagopa.pu.organization.dto.generated.PagedModelOrganization;
 import org.junit.jupiter.api.AfterEach;
@@ -14,12 +15,12 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.Collections;
 import java.util.Set;
 
 import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class OrganizationSearchClientTest {
@@ -50,9 +51,9 @@ class OrganizationSearchClientTest {
     String accessToken = "ACCESSTOKEN";
     Organization expectedResult = new Organization();
 
-    Mockito.when(organizationApisHolder.getOrganizationSearchControllerApi(accessToken))
+    when(organizationApisHolder.getOrganizationSearchControllerApi(accessToken))
       .thenReturn(organizationSearchControllerApiMock);
-    Mockito.when(organizationSearchControllerApiMock.crudOrganizationsFindByIpaCode(orgIpaCode))
+    when(organizationSearchControllerApiMock.crudOrganizationsFindByIpaCode(orgIpaCode))
       .thenReturn(expectedResult);
 
     // When
@@ -68,10 +69,10 @@ class OrganizationSearchClientTest {
     String orgIpaCode = "ORGIPACODE";
     String accessToken = "ACCESSTOKEN";
 
-    Mockito.when(organizationApisHolder.getOrganizationSearchControllerApi(accessToken))
+    when(organizationApisHolder.getOrganizationSearchControllerApi(accessToken))
       .thenReturn(organizationSearchControllerApiMock);
-    Mockito.when(organizationSearchControllerApiMock.crudOrganizationsFindByIpaCode(orgIpaCode))
-      .thenThrow(HttpClientErrorException.create(HttpStatus.NOT_FOUND, "NotFound", null, null, null));
+    when(organizationSearchControllerApiMock.crudOrganizationsFindByIpaCode(orgIpaCode))
+      .thenThrow(new RestInvokeNotFoundException("APPNAME", HttpStatus.NOT_FOUND, "ERROR", "ERRORCODE", "ERRORMESSAGE"));
 
     // When
     Organization result = organizationSearchClient.getOrganizationByIpaCode(orgIpaCode, accessToken);
@@ -89,9 +90,9 @@ class OrganizationSearchClientTest {
     String accessToken = "ACCESSTOKEN";
     PagedModelOrganization expectedResult = new PagedModelOrganization();
 
-    Mockito.when(organizationApisHolder.getOrganizationSearchControllerApi(accessToken))
+    when(organizationApisHolder.getOrganizationSearchControllerApi(accessToken))
       .thenReturn(organizationSearchControllerApiMock);
-    Mockito.when(organizationSearchControllerApiMock.crudOrganizationsFindByBrokerIdAndOrgName(eq(brokerId), eq(orgName), any(), any(), anyList()))
+    when(organizationSearchControllerApiMock.crudOrganizationsFindByBrokerIdAndOrgName(eq(brokerId), eq(orgName), any(), any(), anyList()))
       .thenReturn(expectedResult);
 
     // When
@@ -113,9 +114,9 @@ class OrganizationSearchClientTest {
     Set<Long> allowedOrganizationIds = Set.of(123L);
     PagedModelOrganization expectedResult = new PagedModelOrganization();
 
-    Mockito.when(organizationApisHolder.getOrganizationSearchControllerApi(accessToken))
+    when(organizationApisHolder.getOrganizationSearchControllerApi(accessToken))
       .thenReturn(organizationSearchControllerApiMock);
-    Mockito.when(organizationSearchControllerApiMock.crudOrganizationsFindByBrokerIdAndFilters(brokerId, orgName, ipaCode, orgFiscalCode, allowedOrganizationIds, 0, 1, Collections.emptyList()))
+    when(organizationSearchControllerApiMock.crudOrganizationsFindByBrokerIdAndFilters(brokerId, orgName, ipaCode, orgFiscalCode, allowedOrganizationIds, 0, 1, Collections.emptyList()))
       .thenReturn(expectedResult);
 
     //when

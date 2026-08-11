@@ -1,7 +1,8 @@
 package it.gov.pagopa.pu.bff.connector.registries.client;
 
 import it.gov.pagopa.pu.bff.connector.registries.config.RegistriesApisHolder;
-import it.gov.pagopa.pu.registries.controller.generated.SilRegistryApi;
+import it.gov.pagopa.pu.bff.exception.common.RestInvokeNotFoundException;
+import it.gov.pagopa.pu.registries.client.generated.SilRegistryApi;
 import it.gov.pagopa.pu.registries.dto.generated.SilRegistryDTO;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -12,7 +13,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.client.HttpClientErrorException;
 
 import static org.mockito.Mockito.when;
 
@@ -63,7 +63,7 @@ class SilRegistryClientTest {
     when(registriesApisHolderMock.getSilRegistryApi(accessToken))
       .thenReturn(silRegistryApiMock);
     when(silRegistryApiMock.getSilRegistry(registryId))
-      .thenThrow(HttpClientErrorException.create(HttpStatus.NOT_FOUND, "NotFound", null, null, null));
+      .thenThrow(new RestInvokeNotFoundException("APPNAME", HttpStatus.NOT_FOUND, "ERROR", "ERRORCODE", "ERRORMESSAGE"));
 
     SilRegistryDTO result = silRegistryClient.getSilRegistry(registryId, accessToken);
 

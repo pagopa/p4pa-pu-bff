@@ -1,12 +1,13 @@
 package it.gov.pagopa.pu.bff.connector.auth.client;
 
-import it.gov.pagopa.pu.auth.controller.generated.AuthnApi;
+import it.gov.pagopa.pu.auth.client.generated.AuthnApi;
 import it.gov.pagopa.pu.auth.dto.generated.AccessToken;
 import it.gov.pagopa.pu.auth.dto.generated.LimitedTokenRequest;
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.connector.auth.config.AuthApisHolder;
 import it.gov.pagopa.pu.bff.dto.PostTokenRequest;
 import it.gov.pagopa.pu.bff.exception.InvalidAccessTokenException;
+import it.gov.pagopa.pu.bff.exception.common.RestInvokeNotAuthorizedException;
 import it.gov.pagopa.pu.bff.util.TestUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -17,7 +18,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.client.HttpClientErrorException;
 import uk.co.jemos.podam.api.PodamFactory;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -66,13 +66,7 @@ class AuthnClientTest {
     when(authApisHolderMock.getAuthnApi(accessToken))
       .thenReturn(authnApiMock);
     when(authnApiMock.getUserInfo())
-      .thenThrow(HttpClientErrorException.create(
-        HttpStatus.UNAUTHORIZED,
-        "Unauthorized",
-        null,
-        "bodyMessage".getBytes(),
-        null
-      ));
+      .thenThrow(new RestInvokeNotAuthorizedException("APPNAME", HttpStatus.UNAUTHORIZED, "ERROR", "ERRORCODE", "ERRORMESSAGE"));
 
     InvalidAccessTokenException exception = Assertions.assertThrows(
       InvalidAccessTokenException.class,
@@ -80,7 +74,7 @@ class AuthnClientTest {
     );
 
     assertEquals("INVALID_ACCESS_TOKEN", exception.getCode());
-    assertEquals("The provided access token is invalid or expired", exception.getMessage());
+    assertEquals("ERRORMESSAGE", exception.getMessage());
   }
 
   @Test

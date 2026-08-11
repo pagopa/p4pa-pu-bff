@@ -1,20 +1,16 @@
 package it.gov.pagopa.pu.bff.connector.debt_position.client;
 
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.mockito.Mockito.when;
-
 import it.gov.pagopa.pu.bff.connector.debt_position.config.DebtPositionApisHolder;
 import it.gov.pagopa.pu.bff.dto.InstallmentViewFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.LocalDateIntervalFilter;
+import it.gov.pagopa.pu.bff.exception.common.RestInvokeNotFoundException;
 import it.gov.pagopa.pu.bff.util.PageUtils;
-import it.gov.pagopa.pu.debtpositions.controller.generated.InstallmentApi;
-import it.gov.pagopa.pu.debtpositions.controller.generated.InstallmentNoPiiSearchControllerApi;
+import it.gov.pagopa.pu.debtpositions.client.generated.InstallmentApi;
+import it.gov.pagopa.pu.debtpositions.client.generated.InstallmentNoPiiSearchControllerApi;
 import it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentDetailDTO;
 import it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentNoPII;
 import it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentStatus;
 import it.gov.pagopa.pu.debtpositions.dto.generated.PagedInstallmentsView;
-import java.time.LocalDate;
-import java.util.Collections;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -27,7 +23,12 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.client.HttpClientErrorException;
+
+import java.time.LocalDate;
+import java.util.Collections;
+
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class InstallmentClientTest {
@@ -117,7 +118,7 @@ class InstallmentClientTest {
     when(debtPositionApisHolderMock.getInstallmentApi(accessToken))
       .thenReturn(installmentApiMock);
     when(installmentApiMock.getInstallmentDetail(installmentId, operatorExternalUserId))
-      .thenThrow(HttpClientErrorException.create(HttpStatus.NOT_FOUND, "NotFound", null, null, null));
+      .thenThrow(new RestInvokeNotFoundException("APPNAME", HttpStatus.NOT_FOUND, "ERROR", "ERRORCODE", "ERRORMESSAGE"));
 
     InstallmentDetailDTO result = installmentClient.getInstallmentDetail(installmentId, operatorExternalUserId, accessToken);
 
@@ -156,7 +157,7 @@ class InstallmentClientTest {
     when(debtPositionApisHolderMock.getInstallmentNoPiiSearchControllerApi(accessToken))
       .thenReturn(installmentNoPiiSearchControllerApi);
     when(installmentNoPiiSearchControllerApi.crudInstallmentsFindAuthorizedByTransferSemanticKey(organizationId, iuv, iur, transferIndex, operatorExternalUserId, null))
-      .thenThrow(HttpClientErrorException.create(HttpStatus.NOT_FOUND, "NotFound", null, null, null));
+      .thenThrow(new RestInvokeNotFoundException("APPNAME", HttpStatus.NOT_FOUND, "ERROR", "ERRORCODE", "ERRORMESSAGE"));
 
     InstallmentNoPII result = installmentClient.getInstallmentFromTransferSemanticKey(organizationId, iuv, iur, transferIndex, operatorExternalUserId, null, accessToken);
 

@@ -1,7 +1,8 @@
 package it.gov.pagopa.pu.bff.connector.classification.client;
 
 import it.gov.pagopa.pu.bff.connector.classification.config.ClassificationApisHolder;
-import it.gov.pagopa.pu.classification.controller.generated.TreasurySearchControllerApi;
+import it.gov.pagopa.pu.bff.exception.common.RestInvokeNotFoundException;
+import it.gov.pagopa.pu.classification.client.generated.TreasurySearchControllerApi;
 import it.gov.pagopa.pu.classification.dto.generated.Treasury;
 import it.gov.pagopa.pu.classification.dto.generated.TreasuryOrigin;
 import org.junit.jupiter.api.AfterEach;
@@ -12,12 +13,12 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.client.HttpClientErrorException;
 
 import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -83,12 +84,12 @@ class TreasurySearchClientTest {
       .thenReturn(treasurySearchControllerApiMock);
 
     when(treasurySearchControllerApiMock.crudTreasuryFindByOrganizationIdAndTreasuryId(organizationId, treasuryId))
-      .thenThrow(HttpClientErrorException.create(HttpStatus.NOT_FOUND, "NotFound", null, null, null));
+      .thenThrow(new RestInvokeNotFoundException("APPNAME", HttpStatus.NOT_FOUND, "ERROR", "ERRORCODE", "ERRORMESSAGE"));
 
     Treasury result = treasurySearchClient.getTreasuryDetail(organizationId, treasuryId, accessToken);
 
     assertNull(result);
-    Mockito.verify(treasurySearchControllerApiMock).crudTreasuryFindByOrganizationIdAndTreasuryId(
+    verify(treasurySearchControllerApiMock).crudTreasuryFindByOrganizationIdAndTreasuryId(
       organizationId, treasuryId);
   }
 

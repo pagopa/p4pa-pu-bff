@@ -1,6 +1,7 @@
 package it.gov.pagopa.pu.bff.connector.registries.config;
 
 import it.gov.pagopa.pu.bff.config.rest.HttpClientErrorJsonBodyHandler;
+import it.gov.pagopa.pu.bff.connector.registries.mapper.RegistriesErrorDTOMapper;
 import it.gov.pagopa.pu.registries.generated.ApiClient;
 import it.gov.pagopa.pu.registries.generated.BaseApi;
 import it.gov.pagopa.pu.registries.client.generated.*;
@@ -34,7 +35,7 @@ public class RegistriesApisHolder {
     apiClient.setMaxAttemptsForRetry(Math.max(1, clientConfig.getMaxAttempts()));
     apiClient.setWaitTimeMillis(clientConfig.getWaitTimeMillis());
     restTemplate.setErrorHandler(new HttpClientErrorJsonBodyHandler<>(jsonMapper, "REGISTRIES", clientConfig.isPrintBodyWhenError(),
-      ErrorDTO.class, ErrorDTO::getCode, ErrorDTO::getMessage)
+      ErrorDTO.class, RegistriesErrorDTOMapper::map)
     );
 
     this.debtPositionRegistrySearchControllerApi = new DebtPositionRegistrySearchControllerApi(apiClient);

@@ -1,6 +1,7 @@
 package it.gov.pagopa.pu.bff.connector.workflow_hub.config;
 
 import it.gov.pagopa.pu.bff.config.rest.HttpClientErrorJsonBodyHandler;
+import it.gov.pagopa.pu.bff.connector.workflow_hub.mapper.WorkflowErrorDTOMapper;
 import it.gov.pagopa.pu.workflowhub.generated.ApiClient;
 import it.gov.pagopa.pu.workflowhub.generated.BaseApi;
 import it.gov.pagopa.pu.workflowhub.client.generated.ScheduleApi;
@@ -30,7 +31,7 @@ public class WorkflowHubApisHolder {
     apiClient.setMaxAttemptsForRetry(Math.max(1, clientConfig.getMaxAttempts()));
     apiClient.setWaitTimeMillis(clientConfig.getWaitTimeMillis());
     restTemplate.setErrorHandler(new HttpClientErrorJsonBodyHandler<>(jsonMapper, "WORKFLOW-HUB", clientConfig.isPrintBodyWhenError(),
-      WorkflowErrorDTO.class, WorkflowErrorDTO::getCode, WorkflowErrorDTO::getMessage)
+      WorkflowErrorDTO.class, WorkflowErrorDTOMapper::map)
     );
 
     this.taxonomyApi = new TaxonomyApi(apiClient);

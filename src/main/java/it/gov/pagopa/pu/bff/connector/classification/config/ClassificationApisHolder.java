@@ -1,6 +1,7 @@
 package it.gov.pagopa.pu.bff.connector.classification.config;
 
 import it.gov.pagopa.pu.bff.config.rest.HttpClientErrorJsonBodyHandler;
+import it.gov.pagopa.pu.bff.connector.classification.mapper.ClassificationErrorDTOMapper;
 import it.gov.pagopa.pu.classification.generated.ApiClient;
 import it.gov.pagopa.pu.classification.generated.BaseApi;
 import it.gov.pagopa.pu.classification.client.generated.*;
@@ -44,7 +45,7 @@ public class ClassificationApisHolder {
     apiClient.setMaxAttemptsForRetry(Math.max(1, clientConfig.getMaxAttempts()));
     apiClient.setWaitTimeMillis(clientConfig.getWaitTimeMillis());
     restTemplate.setErrorHandler(new HttpClientErrorJsonBodyHandler<>(jsonMapper, "CLASSIFICATION", clientConfig.isPrintBodyWhenError(),
-      ClassificationErrorDTO.class, ClassificationErrorDTO::getCode, ClassificationErrorDTO::getMessage)
+      ClassificationErrorDTO.class, ClassificationErrorDTOMapper::map)
     );
 
     this.paymentsReportingViewSearchControllerApi = new PaymentsReportingViewSearchControllerApi(apiClient);

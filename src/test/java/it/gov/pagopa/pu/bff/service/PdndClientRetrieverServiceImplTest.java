@@ -14,7 +14,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
@@ -43,8 +42,8 @@ class PdndClientRetrieverServiceImplTest {
   private PdndClientRetrieverServiceImpl pdndClientRetrieverService;
 
   @AfterEach
-  void verifyNoMoreInteractions() {
-    Mockito.verifyNoMoreInteractions(
+  void tearDown() {
+    verifyNoMoreInteractions(
       authorizationServiceMock,
       pdndClientServiceMock,
       pdndClientMapperMock
@@ -131,5 +130,16 @@ class PdndClientRetrieverServiceImplTest {
       assertThrows(InvalidPdndClientException.class, () -> pdndClientRetrieverService.createPdndClient(ORGANIZATION_ID, pdndClientDTO, USER_INFO, ACCESS_TOKEN));
 
     assertEquals("INVALID_PDND_CLIENT", exception.getCode());
+  }
+
+  @Test
+  void givenAuthorizedAdminWhenDeletePdndClientThenOk() {
+    doNothing().when(authorizationServiceMock)
+      .validateAdminRole(ORGANIZATION_ID, USER_INFO);
+
+    doNothing().when(pdndClientServiceMock)
+      .deletePdndClient(ORGANIZATION_ID, CLIENT_ID, ACCESS_TOKEN);
+
+    assertDoesNotThrow(() -> pdndClientRetrieverService.deletePdndClient(ORGANIZATION_ID, CLIENT_ID, USER_INFO, ACCESS_TOKEN));
   }
 }

@@ -12,7 +12,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +19,7 @@ import org.springframework.http.ResponseEntity;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class PdndClientControllerTest {
@@ -44,7 +43,7 @@ class PdndClientControllerTest {
 
   @AfterEach
   void tearDown() {
-    Mockito.verifyNoMoreInteractions(pdndClientRetrieverServiceMock);
+    verifyNoMoreInteractions(pdndClientRetrieverServiceMock);
     SecurityUtilsTest.clearSecurityContext();
   }
 
@@ -91,5 +90,16 @@ class PdndClientControllerTest {
     assertNotNull(result);
     assertEquals(HttpStatus.OK, result.getStatusCode());
     assertSame(expectedClient, result.getBody());
+  }
+
+  @Test
+  void givenOrganizationIdAndClientIdWhenDeletePdndClientThenOk() {
+    doNothing().when(pdndClientRetrieverServiceMock)
+      .deletePdndClient(ORGANIZATION_ID, CLIENT_ID, loggedUser, ACCESS_TOKEN);
+
+    ResponseEntity<Void> result = controller.deletePdndClient(ORGANIZATION_ID, CLIENT_ID);
+
+    assertNotNull(result);
+    assertEquals(HttpStatus.OK, result.getStatusCode());
   }
 }

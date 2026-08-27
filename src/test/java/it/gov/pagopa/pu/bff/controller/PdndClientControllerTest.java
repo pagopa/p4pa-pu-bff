@@ -97,7 +97,7 @@ class PdndClientControllerTest {
     doNothing().when(pdndClientRetrieverServiceMock)
       .deletePdndClient(ORGANIZATION_ID, CLIENT_ID, loggedUser, ACCESS_TOKEN);
 
-    ResponseEntity<Void> result = controller.deletePdndClient(ORGANIZATION_ID, CLIENT_ID);
+    ResponseEntity<Void> result = controller.deletePdndClient(ORGANIZATION_ID,CLIENT_ID);
 
     assertNotNull(result);
     assertEquals(HttpStatus.OK, result.getStatusCode());

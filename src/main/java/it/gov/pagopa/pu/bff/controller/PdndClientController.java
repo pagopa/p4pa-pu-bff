@@ -38,4 +38,11 @@ public class PdndClientController implements PdndClientApi {
     log.info("User requested createPdndClient having organizationId {}", organizationId);
     return ResponseEntity.ok(pdndClientRetrieverService.createPdndClient(organizationId, body, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken()));
   }
+
+  @Override
+  public ResponseEntity<Void> deletePdndClient(Long organizationId, String clientId) {
+    log.info("User requested to delete PdndClient having organizationId {} and clientId {}", organizationId, clientId);
+    pdndClientRetrieverService.deletePdndClient(organizationId, clientId, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken());
+    return ResponseEntity.ok().build();
+  }
 }

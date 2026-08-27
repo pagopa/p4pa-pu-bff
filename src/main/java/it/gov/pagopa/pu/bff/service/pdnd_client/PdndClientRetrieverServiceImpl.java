@@ -57,4 +57,10 @@ public class PdndClientRetrieverServiceImpl implements PdndClientRetrieverServic
         String.format("Mismatch organizationId %s retrieved from path request with organizationId %s retrieved from body request", organizationId , orgIdFromPdndClient));
     }
   }
+
+  @Override
+  public void deletePdndClient(Long organizationId, String clientId, UserInfo userInfo, String accessToken) {
+    authorizationService.validateAdminRole(organizationId, userInfo);
+    pdndClientService.deletePdndClient(organizationId, clientId, accessToken);
+  }
 }

@@ -14,10 +14,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class PdndClientClientTest {
@@ -99,6 +97,8 @@ class PdndClientClientTest {
     when(organizationApisHolderMock.getPdndClientApi(ACCESS_TOKEN))
       .thenReturn(pdndClientApiMock);
 
-    assertDoesNotThrow(() -> pdndClientClient.deletePdndClient(ORGANIZATION_ID, CLIENT_ID, ACCESS_TOKEN));
+    pdndClientClient.deletePdndClient(ORGANIZATION_ID, CLIENT_ID, ACCESS_TOKEN);
+
+    verify(pdndClientApiMock).deletePdndClient(ORGANIZATION_ID, CLIENT_ID);
   }
 }

@@ -1,9 +1,11 @@
 package it.gov.pagopa.pu.bff.connector.organization;
 
 import it.gov.pagopa.pu.bff.connector.organization.client.OrgSubUnitEntityClient;
+import it.gov.pagopa.pu.bff.connector.organization.client.OrgSubUnitEntityExtendedClient;
 import it.gov.pagopa.pu.bff.util.TestUtils;
 import it.gov.pagopa.pu.organization.dto.generated.OrgSubUnit;
 import it.gov.pagopa.pu.organization.dto.generated.OrgSubUnitRequestBody;
+import it.gov.pagopa.pu.organization.dto.generated.OrgSubUnitStatus;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -26,17 +28,19 @@ class OrgSubUnitServiceTest {
 
   @Mock
   private OrgSubUnitEntityClient orgSubUnitEntityClientMock;
+  @Mock
+  private OrgSubUnitEntityExtendedClient orgSubUnitEntityExtendedClientMock;
 
   private OrgSubUnitService service;
 
   @BeforeEach
   void setUp() {
-    service = new OrgSubUnitServiceImpl(orgSubUnitEntityClientMock);
+    service = new OrgSubUnitServiceImpl(orgSubUnitEntityClientMock, orgSubUnitEntityExtendedClientMock);
   }
 
   @AfterEach
   void verifyNoMoreInteractions() {
-    Mockito.verifyNoMoreInteractions(orgSubUnitEntityClientMock);
+    Mockito.verifyNoMoreInteractions(orgSubUnitEntityClientMock, orgSubUnitEntityExtendedClientMock);
   }
 
   @Test
@@ -96,5 +100,16 @@ class OrgSubUnitServiceTest {
 
     // Then
     assertSame(expectedResult, result);
+  }
+
+  @Test
+  void whenUpdateOrgSubUnitStatusThenInvokeClient() {
+    Long organizationId = 1L;
+    String subUnitCode = "subUnitCode";
+    OrgSubUnitStatus orgSubUnitStatus = OrgSubUnitStatus.CANCELLED;
+
+    service.updateOrgSubUnitStatus(organizationId, subUnitCode, orgSubUnitStatus, accessToken);
+
+    verify(orgSubUnitEntityExtendedClientMock).updateStatus(organizationId, subUnitCode, orgSubUnitStatus, accessToken);
   }
 }

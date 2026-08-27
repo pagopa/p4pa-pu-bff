@@ -6,6 +6,7 @@ import it.gov.pagopa.pu.bff.service.org_sub_unit.OrgSubUnitRetrieverService;
 import it.gov.pagopa.pu.bff.util.TestUtils;
 import it.gov.pagopa.pu.organization.dto.generated.OrgSubUnit;
 import it.gov.pagopa.pu.organization.dto.generated.OrgSubUnitRequestBody;
+import it.gov.pagopa.pu.organization.dto.generated.OrgSubUnitStatus;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -120,4 +121,16 @@ class OrgSubUnitsControllerTest {
     assertSame(expectedResult, response.getBody());
   }
 
+  @Test
+  void givenCorrectRequestWhenUpdateOrgSubUnitStatusThenOk() {
+    Long organizationId = 1L;
+    String subUnitCode = "subUnitCode";
+    OrgSubUnitStatus orgSubUnitStatus = OrgSubUnitStatus.CANCELLED;
+
+    ResponseEntity<Void> response = orgSubUnitsController.updateOrgSubUnitStatus(organizationId, subUnitCode, orgSubUnitStatus);
+
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertNull(response.getBody());
+    verify(subUnitRetrieverServiceMock).updateOrgSubUnitStatus(organizationId, subUnitCode, orgSubUnitStatus, loggedUser, accessToken);
+  }
 }

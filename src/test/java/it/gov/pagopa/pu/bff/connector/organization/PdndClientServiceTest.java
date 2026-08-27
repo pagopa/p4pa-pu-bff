@@ -9,13 +9,13 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class PdndClientServiceTest {
@@ -32,8 +32,8 @@ class PdndClientServiceTest {
   private PdndClientServiceImpl service;
 
   @AfterEach
-  void verifyNoMoreInteractions() {
-    Mockito.verifyNoMoreInteractions(clientMock);
+  void tearDown() {
+    verifyNoMoreInteractions(clientMock);
   }
 
   @Test
@@ -71,5 +71,13 @@ class PdndClientServiceTest {
     PdndClient result = service.savePdndClient(pdndClientDTO, ACCESS_TOKEN);
 
     assertSame(expectedResult, result);
+  }
+
+  @Test
+  void givenOrganizationIdAndClientIdWhenDeletePdndClientThenOk() {
+    doNothing().when(clientMock)
+      .deletePdndClient(ORGANIZATION_ID, CLIENT_ID, ACCESS_TOKEN);
+
+   assertDoesNotThrow(() -> service.deletePdndClient(ORGANIZATION_ID, CLIENT_ID, ACCESS_TOKEN));
   }
 }

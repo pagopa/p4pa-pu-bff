@@ -31,4 +31,9 @@ public class PdndClientServiceImpl implements PdndClientService {
   public PdndClient savePdndClient(PdndClientDTO pdndClientDTO, String accessToken) {
     return client.savePdndClient(pdndClientDTO, accessToken);
   }
+
+  @Override
+  public void deletePdndClient(Long organizationId, String clientId, String accessToken) {
+    client.deletePdndClient(organizationId, clientId, accessToken);
+  }
 }

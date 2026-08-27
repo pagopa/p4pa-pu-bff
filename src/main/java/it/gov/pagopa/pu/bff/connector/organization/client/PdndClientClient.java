@@ -31,4 +31,9 @@ public class PdndClientClient {
     return organizationApisHolder.getPdndClientApi(accessToken)
       .savePdndClient(pdndClientDTO);
   }
+
+  public void deletePdndClient(Long organizationId, String clientId, String accessToken) {
+    organizationApisHolder.getPdndClientApi(accessToken)
+      .deletePdndClient(organizationId, clientId);
+  }
 }

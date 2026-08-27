@@ -9,6 +9,10 @@ import java.util.List;
 public interface PdndClientService {
 
   List<PdndClientNoSecretDTO> getPdndClientsByOrganizationIdAndSubUnitCode(Long organizationId, String subUnitCode, String accessToken);
+
   PdndClientNoSecretDTO getPdndClient(Long organizationId, String clientId, String accessToken);
+
   PdndClient savePdndClient(PdndClientDTO pdndClientDTO, String accessToken);
+
+  void deletePdndClient(Long organizationId, String clientId, String accessToken);
 }

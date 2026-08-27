@@ -7,6 +7,7 @@ import it.gov.pagopa.pu.bff.exception.common.NotFoundException;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
 import it.gov.pagopa.pu.organization.dto.generated.OrgSubUnit;
 import it.gov.pagopa.pu.organization.dto.generated.OrgSubUnitRequestBody;
+import it.gov.pagopa.pu.organization.dto.generated.OrgSubUnitStatus;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -48,6 +49,16 @@ public class OrgSubUnitRetrieverServiceImpl implements OrgSubUnitRetrieverServic
     authorizationService.validateAdminRole(organizationId, loggedUser);
     validateOrganizationForSubUnit(organizationId, orgSubUnit.getOrganizationId());
     return orgSubUnitService.updateOrgSubUnit(calculateOrgSubUnitId(organizationId, subUnitCode), orgSubUnit, accessToken);
+  }
+
+  @Override
+  public void updateOrgSubUnitStatus(Long organizationId, String subUnitCode, OrgSubUnitStatus status, UserInfo loggedUser, String accessToken) {
+    authorizationService.validateAdminRole(organizationId, loggedUser);
+    OrgSubUnit orgSubUnit = orgSubUnitService.getOrgSubUnitById(calculateOrgSubUnitId(organizationId, subUnitCode), accessToken);
+    if (orgSubUnit == null) {
+      throw new NotFoundException("ORG_SUB_UNIT_NOT_FOUND", "Organization SubUnit having subUnitCode " + subUnitCode + " not found");
+    }
+    orgSubUnitService.updateOrgSubUnitStatus(organizationId, subUnitCode, status, accessToken);
   }
 
 

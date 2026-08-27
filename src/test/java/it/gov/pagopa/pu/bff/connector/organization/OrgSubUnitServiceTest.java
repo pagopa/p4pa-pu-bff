@@ -1,6 +1,7 @@
 package it.gov.pagopa.pu.bff.connector.organization;
 
 import it.gov.pagopa.pu.bff.connector.organization.client.OrgSubUnitEntityClient;
+import it.gov.pagopa.pu.bff.connector.organization.client.OrgSubUnitEntityExtendedClient;
 import it.gov.pagopa.pu.bff.util.TestUtils;
 import it.gov.pagopa.pu.organization.dto.generated.OrgSubUnit;
 import it.gov.pagopa.pu.organization.dto.generated.OrgSubUnitRequestBody;
@@ -26,17 +27,19 @@ class OrgSubUnitServiceTest {
 
   @Mock
   private OrgSubUnitEntityClient orgSubUnitEntityClientMock;
+  @Mock
+  private OrgSubUnitEntityExtendedClient orgSubUnitEntityExtendedClientMock;
 
   private OrgSubUnitService service;
 
   @BeforeEach
   void setUp() {
-    service = new OrgSubUnitServiceImpl(orgSubUnitEntityClientMock);
+    service = new OrgSubUnitServiceImpl(orgSubUnitEntityClientMock, orgSubUnitEntityExtendedClientMock);
   }
 
   @AfterEach
   void verifyNoMoreInteractions() {
-    Mockito.verifyNoMoreInteractions(orgSubUnitEntityClientMock);
+    Mockito.verifyNoMoreInteractions(orgSubUnitEntityClientMock, orgSubUnitEntityExtendedClientMock);
   }
 
   @Test

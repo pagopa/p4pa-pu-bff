@@ -3,6 +3,7 @@ package it.gov.pagopa.pu.bff.connector.organization.config;
 import it.gov.pagopa.pu.bff.config.json.JsonConfig;
 import it.gov.pagopa.pu.bff.connector.BaseApiHolderTest;
 import it.gov.pagopa.pu.organization.dto.generated.OrgSilServiceType;
+import it.gov.pagopa.pu.organization.dto.generated.OrgSubUnitStatus;
 import it.gov.pagopa.pu.organization.dto.generated.OrganizationDetailDTO;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -221,6 +222,18 @@ class OrganizationApisHolderTest extends BaseApiHolderTest {
     assertAuthenticationShouldBeSetInThreadSafeMode(
       accessToken -> apisHolder.getPdndClientApi(accessToken)
         .getPdndClientsByOrganizationIdAndSubUnitCode(1L, "subUnitCode"),
+      new ParameterizedTypeReference<>() {},
+      apisHolder::unload);
+  }
+
+  @Test
+  void whenGetOrgSubUnitEntityExtendedControllerApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
+    assertAuthenticationShouldBeSetInThreadSafeMode(
+      accessToken -> {
+        apisHolder.getOrgSubUnitEntityExtendedControllerApi(accessToken)
+          .updateStatus(1L, "subUnitCode", OrgSubUnitStatus.CANCELLED);
+        return voidMock;
+      },
       new ParameterizedTypeReference<>() {},
       apisHolder::unload);
   }

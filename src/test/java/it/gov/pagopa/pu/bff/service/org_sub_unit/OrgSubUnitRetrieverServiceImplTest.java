@@ -8,6 +8,7 @@ import it.gov.pagopa.pu.bff.service.AuthorizationService;
 import it.gov.pagopa.pu.bff.util.TestUtils;
 import it.gov.pagopa.pu.organization.dto.generated.OrgSubUnit;
 import it.gov.pagopa.pu.organization.dto.generated.OrgSubUnitRequestBody;
+import it.gov.pagopa.pu.organization.dto.generated.OrgSubUnitStatus;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -177,4 +178,42 @@ class OrgSubUnitRetrieverServiceImplTest {
     verify(authorizationServiceMock).validateAdminRole(organizationId, loggedUser);
   }
 
+  @Test
+  void givenExistingSubUnitWhenUpdateOrgSubUnitStatusThenOk() {
+    Long organizationId = 1L;
+    String subUnitCode = "subUnitCode";
+    OrgSubUnitStatus orgSubUnitStatus = OrgSubUnitStatus.CANCELLED;
+    UserInfo loggedUser = podamFactory.manufacturePojo(UserInfo.class);
+    String orgSubUnitId = organizationId+"-"+subUnitCode;
+    OrgSubUnit existingSubUnit = podamFactory.manufacturePojo(OrgSubUnit.class);
+
+    when(orgSubUnitServiceMock.getOrgSubUnitById(orgSubUnitId, accessToken))
+      .thenReturn(existingSubUnit);
+
+    assertDoesNotThrow(() -> orgSubUnitRetrieverService.updateOrgSubUnitStatus(organizationId, subUnitCode, orgSubUnitStatus, loggedUser, accessToken));
+
+    verify(authorizationServiceMock).validateAdminRole(organizationId, loggedUser);
+    verify(orgSubUnitServiceMock).updateOrgSubUnitStatus(organizationId, subUnitCode, orgSubUnitStatus, accessToken);
+  }
+
+  @Test
+  void givenNotExistingSubUnitWhenUpdateOrgSubUnitStatusThenThrowNotFoundException() {
+    Long organizationId = 1L;
+    String subUnitCode = "subUnitCode";
+    OrgSubUnitStatus orgSubUnitStatus = OrgSubUnitStatus.CANCELLED;
+    UserInfo loggedUser = podamFactory.manufacturePojo(UserInfo.class);
+    String orgSubUnitId = organizationId+"-"+subUnitCode;
+
+    when(orgSubUnitServiceMock.getOrgSubUnitById(orgSubUnitId, accessToken))
+      .thenReturn(null);
+
+    NotFoundException exception = assertThrows(
+      NotFoundException.class,
+      () -> orgSubUnitRetrieverService.updateOrgSubUnitStatus(organizationId, subUnitCode, orgSubUnitStatus, loggedUser, accessToken)
+    );
+
+    assertEquals("ORG_SUB_UNIT_NOT_FOUND", exception.getCode());
+    assertEquals("Organization SubUnit having subUnitCode " + subUnitCode + " not found", exception.getMessage());
+    verify(authorizationServiceMock).validateAdminRole(organizationId, loggedUser);
+  }
 }

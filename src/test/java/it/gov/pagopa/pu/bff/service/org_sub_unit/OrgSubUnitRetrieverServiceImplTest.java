@@ -300,6 +300,43 @@ class OrgSubUnitRetrieverServiceImplTest {
   }
 
   @Test
+  void givenNonAdminUserAndNullAuthorizedOperatorWhenGetPagedOrgSubUnitsThenFallbackToLoggedUser() {
+    Long organizationId = 1L;
+    UserInfo loggedUser = podamFactory.manufacturePojo(UserInfo.class);
+
+    PagedOrgSubUnitFiltersDTO filters = podamFactory.manufacturePojo(PagedOrgSubUnitFiltersDTO.class);
+    filters.setOrganizationId(organizationId);
+    filters.setMappedExternalUserId(null);
+    Pageable pageable = PageRequest.of(0, 10);
+
+    PagedModelOrgSubUnit pagedModel = podamFactory.manufacturePojo(PagedModelOrgSubUnit.class);
+    PagedOrgSubUnit expectedMappedResult = podamFactory.manufacturePojo(PagedOrgSubUnit.class);
+
+    try (MockedStatic<AuthorizationService> authMock = Mockito.mockStatic(AuthorizationService.class)) {
+      authMock.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser))
+        .thenAnswer(a -> null);
+      authMock.when(() -> AuthorizationService.isAdminRole(organizationId, loggedUser))
+        .thenReturn(false);
+
+      when(orgSubUnitServiceMock.findByOrganizationIdAndFilters(
+        organizationId,
+        loggedUser.getMappedExternalUserId(),
+        filters.getSubUnitCode(),
+        filters.getStatus(),
+        filters.getSubUnitType(),
+        pageable,
+        accessToken
+      )).thenReturn(pagedModel);
+
+      when(pagedOrgSubUnitMapperMock.map(pagedModel)).thenReturn(expectedMappedResult);
+
+      PagedOrgSubUnit result = orgSubUnitRetrieverService.getPagedOrgSubUnits(filters, pageable, loggedUser, accessToken);
+
+      assertEquals(expectedMappedResult, result);
+    }
+  }
+
+  @Test
   void givenNonAdminUserAndMismatchingAuthorizedOperatorWhenGetPagedOrgSubUnitsThenThrowAuthorizationDeniedException() {
     Long organizationId = 1L;
     UserInfo loggedUser = podamFactory.manufacturePojo(UserInfo.class);
@@ -315,7 +352,7 @@ class OrgSubUnitRetrieverServiceImplTest {
       authMock.when(() -> AuthorizationService.isAdminRole(organizationId, loggedUser))
         .thenReturn(false);
 
-      AuthorizationDeniedException exception = assertThrows(
+      assertThrows(
         AuthorizationDeniedException.class,
         () -> orgSubUnitRetrieverService.getPagedOrgSubUnits(filters, pageable, loggedUser, accessToken)
       );

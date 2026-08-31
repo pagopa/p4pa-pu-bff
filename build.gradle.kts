@@ -275,10 +275,11 @@ tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>("ope
       "SpontaneousFormStructure" to "it.gov.pagopa.pu.debtpositions.dto.generated.SpontaneousFormStructure",
       "OrganizationAdditionalLanguage" to "it.gov.pagopa.pu.organization.dto.generated.OrganizationAdditionalLanguage",
       "OrgSubUnit" to "it.gov.pagopa.pu.organization.dto.generated.OrgSubUnit",
+      "OrgSubUnitStatus" to "it.gov.pagopa.pu.organization.dto.generated.OrgSubUnitStatus",
+      "SubUnitType" to "it.gov.pagopa.pu.organization.dto.generated.SubUnitType",
       "OrgSubUnitRequestBody" to "it.gov.pagopa.pu.organization.dto.generated.OrgSubUnitRequestBody",
       "PdndClientNoSecretDTO" to "it.gov.pagopa.pu.organization.dto.generated.PdndClientNoSecretDTO",
       "PdndClientDTO" to "it.gov.pagopa.pu.organization.dto.generated.PdndClientDTO",
-      "OrgSubUnitStatus" to "it.gov.pagopa.pu.organization.dto.generated.OrgSubUnitStatus",
       "PdndServiceRequestDTO" to "it.gov.pagopa.pu.organization.dto.generated.PdndServiceRequestDTO",
       "PdndService" to "it.gov.pagopa.pu.organization.dto.generated.PdndService"
     )

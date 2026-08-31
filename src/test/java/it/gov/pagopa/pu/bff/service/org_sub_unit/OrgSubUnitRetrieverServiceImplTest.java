@@ -4,6 +4,7 @@ import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.connector.organization.OrgSubUnitService;
 import it.gov.pagopa.pu.bff.exception.InvalidOrgSubUnitException;
 import it.gov.pagopa.pu.bff.exception.common.NotFoundException;
+import it.gov.pagopa.pu.bff.mapper.PagedOrgSubUnitMapper;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
 import it.gov.pagopa.pu.bff.util.TestUtils;
 import it.gov.pagopa.pu.organization.dto.generated.OrgSubUnit;
@@ -32,6 +33,8 @@ class OrgSubUnitRetrieverServiceImplTest {
   private OrgSubUnitService orgSubUnitServiceMock;
   @Mock
   private AuthorizationService authorizationServiceMock;
+  @Mock
+  private PagedOrgSubUnitMapper pagedOrgSubUnitMapperMock;
 
   private OrgSubUnitRetrieverService orgSubUnitRetrieverService;
 
@@ -39,12 +42,12 @@ class OrgSubUnitRetrieverServiceImplTest {
 
   @BeforeEach
   void setUp() {
-    orgSubUnitRetrieverService = new OrgSubUnitRetrieverServiceImpl(orgSubUnitServiceMock, authorizationServiceMock);
+    orgSubUnitRetrieverService = new OrgSubUnitRetrieverServiceImpl(orgSubUnitServiceMock, authorizationServiceMock, pagedOrgSubUnitMapperMock);
   }
 
   @AfterEach
   void verifyNoMoreInteractions() {
-    Mockito.verifyNoMoreInteractions(orgSubUnitServiceMock, authorizationServiceMock);
+    Mockito.verifyNoMoreInteractions(orgSubUnitServiceMock, authorizationServiceMock, pagedOrgSubUnitMapperMock);
   }
 
 

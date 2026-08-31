@@ -37,7 +37,7 @@ class OrgSubUnitEntityExtendedClientTest {
   }
 
   @Test
-  void whenThenInvokeWithAccessToken() {
+  void whenUpdateStatusThenInvokeWithAccessToken() {
     Long organizationId = 1L;
     String subUnitCode = "subUnitCode";
     OrgSubUnitStatus orgSubUnitStatus = OrgSubUnitStatus.CANCELLED;

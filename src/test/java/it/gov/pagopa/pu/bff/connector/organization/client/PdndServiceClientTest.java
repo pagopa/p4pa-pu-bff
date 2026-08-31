@@ -5,12 +5,15 @@ import it.gov.pagopa.pu.organization.client.generated.PdndServiceApi;
 import it.gov.pagopa.pu.organization.dto.generated.PdndService;
 import it.gov.pagopa.pu.organization.dto.generated.PdndServiceDTO;
 import it.gov.pagopa.pu.organization.dto.generated.PdndServiceRequestDTO;
+import it.gov.pagopa.pu.organization.dto.generated.PdndServiceType;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -68,6 +71,21 @@ class PdndServiceClientTest {
       .thenReturn(expectedResult);
 
     PdndServiceDTO result = pdndServiceClient.getPdndService(ORGANIZATION_ID, purposeId, SUB_UNIT_CODE, ACCESS_TOKEN);
+
+    assertSame(expectedResult, result);
+  }
+
+  @Test
+  void givenOrganizationIdAndServiceTypeWhenGetPdndServicesThenReturnPdndServices() {
+    List<PdndServiceDTO> expectedResult = List.of(new PdndServiceDTO());
+
+    when(organizationApisHolderMock.getPdndServiceApi(ACCESS_TOKEN))
+      .thenReturn(pdndServiceApiMock);
+
+    when(pdndServiceApiMock.getPdndServices(ORGANIZATION_ID, SUB_UNIT_CODE, PdndServiceType.SEND))
+      .thenReturn(expectedResult);
+
+    List<PdndServiceDTO> result = pdndServiceClient.getPdndServices(ORGANIZATION_ID, SUB_UNIT_CODE, PdndServiceType.SEND, ACCESS_TOKEN);
 
     assertSame(expectedResult, result);
   }

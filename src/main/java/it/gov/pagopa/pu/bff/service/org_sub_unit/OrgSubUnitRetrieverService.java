@@ -6,7 +6,6 @@ import it.gov.pagopa.pu.bff.dto.generated.PagedOrgSubUnit;
 import it.gov.pagopa.pu.organization.dto.generated.OrgSubUnit;
 import it.gov.pagopa.pu.organization.dto.generated.OrgSubUnitRequestBody;
 import it.gov.pagopa.pu.organization.dto.generated.OrgSubUnitStatus;
-import it.gov.pagopa.pu.organization.dto.generated.SubUnitType;
 import org.springframework.data.domain.Pageable;
 
 public interface OrgSubUnitRetrieverService {

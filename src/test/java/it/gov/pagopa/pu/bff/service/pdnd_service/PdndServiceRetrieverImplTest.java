@@ -56,4 +56,19 @@ class PdndServiceRetrieverImplTest {
     assertSame(expectedResult, result);
   }
 
+  @Test
+  void givenAuthorizedAdminWhenGetPdndServiceThenReturnService() {
+    String purposeId = "PURPOSE_001";
+    PdndServiceDTO expectedResult = TestUtils.getPodamFactory().manufacturePojo(PdndServiceDTO.class);
+
+    doNothing().when(authorizationServiceMock)
+      .validateAdminRole(ORGANIZATION_ID, USER_INFO);
+
+    when(pdndServiceServiceMock.getPdndService(ORGANIZATION_ID, purposeId, SUB_UNIT_CODE, ACCESS_TOKEN))
+      .thenReturn(expectedResult);
+
+    PdndServiceDTO result = pdndServiceRetriever.getPdndService(ORGANIZATION_ID, purposeId, SUB_UNIT_CODE, USER_INFO, ACCESS_TOKEN);
+
+    assertSame(expectedResult, result);
+  }
 }

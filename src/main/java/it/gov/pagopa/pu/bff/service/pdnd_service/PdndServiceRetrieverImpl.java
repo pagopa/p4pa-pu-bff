@@ -4,6 +4,7 @@ import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.connector.organization.PdndServiceService;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
 import it.gov.pagopa.pu.organization.dto.generated.PdndService;
+import it.gov.pagopa.pu.organization.dto.generated.PdndServiceDTO;
 import it.gov.pagopa.pu.organization.dto.generated.PdndServiceRequestDTO;
 import org.springframework.stereotype.Service;
 
@@ -22,5 +23,11 @@ public class PdndServiceRetrieverImpl implements PdndServiceRetrieverService {
   public PdndService createPdndService(Long organizationId, PdndServiceRequestDTO pdndServiceRequestDTO, String subUnitCode, UserInfo userInfo, String accessToken) {
     authorizationService.validateAdminRole(organizationId, userInfo);
     return pdndServiceService.savePdndService(organizationId, pdndServiceRequestDTO, subUnitCode, accessToken);
+  }
+
+  @Override
+  public PdndServiceDTO getPdndService(Long organizationId, String purposeId, String subUnitCode, UserInfo userInfo, String accessToken) {
+    authorizationService.validateAdminRole(organizationId, userInfo);
+    return pdndServiceService.getPdndService(organizationId, purposeId, subUnitCode, accessToken);
   }
 }

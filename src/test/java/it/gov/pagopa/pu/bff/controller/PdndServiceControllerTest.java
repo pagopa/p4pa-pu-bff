@@ -5,6 +5,7 @@ import it.gov.pagopa.pu.bff.security.SecurityUtilsTest;
 import it.gov.pagopa.pu.bff.service.pdnd_service.PdndServiceRetrieverService;
 import it.gov.pagopa.pu.bff.util.TestUtils;
 import it.gov.pagopa.pu.organization.dto.generated.PdndService;
+import it.gov.pagopa.pu.organization.dto.generated.PdndServiceDTO;
 import it.gov.pagopa.pu.organization.dto.generated.PdndServiceRequestDTO;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -60,5 +61,18 @@ class PdndServiceControllerTest {
     assertSame(expectedClient, result.getBody());
   }
 
+  @Test
+  void givenOrganizationIdPurposeIdAndSubUnitCodeWhenGetPdndServiceThenReturnPdndService() {
+    String purposeId = "PURPOSE_001";
+    PdndServiceDTO expectedService = TestUtils.getPodamFactory().manufacturePojo(PdndServiceDTO.class);
 
+    when(pdndServiceRetrieverServiceMock.getPdndService(ORGANIZATION_ID, purposeId, ORG_SUB_UNIT_CODE, loggedUser, ACCESS_TOKEN))
+      .thenReturn(expectedService);
+
+    ResponseEntity<PdndServiceDTO> result = controller.getPdndService(ORGANIZATION_ID, purposeId, ORG_SUB_UNIT_CODE);
+
+    assertNotNull(result);
+    assertEquals(HttpStatus.OK, result.getStatusCode());
+    assertSame(expectedService, result.getBody());
+  }
 }

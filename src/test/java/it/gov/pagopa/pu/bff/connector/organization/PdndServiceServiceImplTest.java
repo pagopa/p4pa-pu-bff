@@ -2,6 +2,7 @@ package it.gov.pagopa.pu.bff.connector.organization;
 
 import it.gov.pagopa.pu.bff.connector.organization.client.PdndServiceClient;
 import it.gov.pagopa.pu.organization.dto.generated.PdndService;
+import it.gov.pagopa.pu.organization.dto.generated.PdndServiceDTO;
 import it.gov.pagopa.pu.organization.dto.generated.PdndServiceRequestDTO;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
@@ -45,4 +46,16 @@ class PdndServiceServiceImplTest {
     assertSame(expectedResult, result);
   }
 
+  @Test
+  void givenOrganizationIdAndPurposeIdWhenGetPdndServiceThenReturnPdndService() {
+    String purposeId = "PURPOSE_001";
+    PdndServiceDTO expectedResult = new PdndServiceDTO();
+
+    when(clientMock.getPdndService(ORGANIZATION_ID, purposeId, SUB_UNIT_CODE, ACCESS_TOKEN))
+      .thenReturn(expectedResult);
+
+    PdndServiceDTO result = service.getPdndService(ORGANIZATION_ID, purposeId, SUB_UNIT_CODE, ACCESS_TOKEN);
+
+    assertSame(expectedResult, result);
+  }
 }

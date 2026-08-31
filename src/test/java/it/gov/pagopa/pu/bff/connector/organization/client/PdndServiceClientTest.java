@@ -3,6 +3,7 @@ package it.gov.pagopa.pu.bff.connector.organization.client;
 import it.gov.pagopa.pu.bff.connector.organization.config.OrganizationApisHolder;
 import it.gov.pagopa.pu.organization.client.generated.PdndServiceApi;
 import it.gov.pagopa.pu.organization.dto.generated.PdndService;
+import it.gov.pagopa.pu.organization.dto.generated.PdndServiceDTO;
 import it.gov.pagopa.pu.organization.dto.generated.PdndServiceRequestDTO;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
@@ -51,6 +52,22 @@ class PdndServiceClientTest {
       .thenReturn(expectedResult);
 
     PdndService result = pdndServiceClient.savePdndService(ORGANIZATION_ID, pdndServiceRequestDTO, SUB_UNIT_CODE, ACCESS_TOKEN);
+
+    assertSame(expectedResult, result);
+  }
+
+  @Test
+  void givenOrganizationIdAndPurposeIdWhenGetPdndServiceThenReturnPdndService() {
+    String purposeId = "PURPOSE_001";
+    PdndServiceDTO expectedResult = new PdndServiceDTO();
+
+    when(organizationApisHolderMock.getPdndServiceApi(ACCESS_TOKEN))
+      .thenReturn(pdndServiceApiMock);
+
+    when(pdndServiceApiMock.getPdndService(ORGANIZATION_ID, purposeId, SUB_UNIT_CODE))
+      .thenReturn(expectedResult);
+
+    PdndServiceDTO result = pdndServiceClient.getPdndService(ORGANIZATION_ID, purposeId, SUB_UNIT_CODE, ACCESS_TOKEN);
 
     assertSame(expectedResult, result);
   }

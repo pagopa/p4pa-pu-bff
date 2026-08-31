@@ -1,12 +1,13 @@
 package it.gov.pagopa.pu.bff.controller;
 
 import it.gov.pagopa.pu.bff.controller.generated.OrgSubUnitsApi;
+import it.gov.pagopa.pu.bff.dto.PagedOrgSubUnitFiltersDTO;
+import it.gov.pagopa.pu.bff.dto.generated.PagedOrgSubUnit;
 import it.gov.pagopa.pu.bff.security.SecurityUtils;
 import it.gov.pagopa.pu.bff.service.org_sub_unit.OrgSubUnitRetrieverService;
-import it.gov.pagopa.pu.organization.dto.generated.OrgSubUnit;
-import it.gov.pagopa.pu.organization.dto.generated.OrgSubUnitRequestBody;
-import it.gov.pagopa.pu.organization.dto.generated.OrgSubUnitStatus;
+import it.gov.pagopa.pu.organization.dto.generated.*;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -49,5 +50,18 @@ public class OrgSubUnitsController implements OrgSubUnitsApi {
     log.info("User requested updating status to {} for OrgSubUnit [organizationId={}, subUnitCode={}]", status, organizationId, subUnitCode);
     subUnitRetrieverService.updateOrgSubUnitStatus(organizationId, subUnitCode, status, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken());
     return ResponseEntity.ok().build();
+  }
+
+  @Override
+  public ResponseEntity<PagedOrgSubUnit> getPagedOrgSubUnits(Long organizationId, String mappedExternalUserId, String subUnitCode, OrgSubUnitStatus status, SubUnitType subUnitType, Pageable pageable) {
+    log.info("User requested getOrgSubUnits having organizationId {}", organizationId);
+    PagedOrgSubUnitFiltersDTO filters = new PagedOrgSubUnitFiltersDTO(
+      organizationId,
+      mappedExternalUserId,
+      subUnitCode,
+      status,
+      subUnitType
+    );
+    return ResponseEntity.ok(subUnitRetrieverService.getPagedOrgSubUnits(filters, pageable, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken()));
   }
 }

@@ -1,13 +1,17 @@
 package it.gov.pagopa.pu.bff.controller;
 
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
+import it.gov.pagopa.pu.bff.dto.PagedOrgSubUnitFiltersDTO;
+import it.gov.pagopa.pu.bff.dto.generated.PagedOrgSubUnit;
 import it.gov.pagopa.pu.bff.security.SecurityUtilsTest;
 import it.gov.pagopa.pu.bff.service.org_sub_unit.OrgSubUnitRetrieverService;
 import it.gov.pagopa.pu.bff.util.TestUtils;
 import it.gov.pagopa.pu.organization.dto.generated.OrgSubUnit;
 import it.gov.pagopa.pu.organization.dto.generated.OrgSubUnitRequestBody;
 import it.gov.pagopa.pu.organization.dto.generated.OrgSubUnitStatus;
+import it.gov.pagopa.pu.organization.dto.generated.SubUnitType;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,6 +19,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import uk.co.jemos.podam.api.PodamFactory;
@@ -132,5 +138,40 @@ class OrgSubUnitsControllerTest {
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertNull(response.getBody());
     verify(subUnitRetrieverServiceMock).updateOrgSubUnitStatus(organizationId, subUnitCode, orgSubUnitStatus, loggedUser, accessToken);
+  }
+
+  @Test
+  void givenCorrectRequestWhenGetPagedOrgSubUnitsThenOk() {
+    Long organizationId = 1L;
+    String mappedExternalUserId = "mappedExternalUserId";
+    String subUnitCode = "subUnitCode";
+    OrgSubUnitStatus status = OrgSubUnitStatus.ACTIVE;
+    SubUnitType subUnitType = SubUnitType.UO;
+
+    Pageable pageable = PageRequest.ofSize(10);
+
+    PagedOrgSubUnit expectedResult = podamFactory.manufacturePojo(PagedOrgSubUnit.class);
+
+    when(
+      subUnitRetrieverServiceMock.getPagedOrgSubUnits(
+        Mockito.any(PagedOrgSubUnitFiltersDTO.class),
+        Mockito.eq(pageable),
+        Mockito.eq(loggedUser),
+        Mockito.eq(accessToken)
+      )
+    ).thenReturn(expectedResult);
+
+    ResponseEntity<PagedOrgSubUnit> response = orgSubUnitsController.getPagedOrgSubUnits(
+      organizationId,
+      mappedExternalUserId,
+      subUnitCode,
+      status,
+      subUnitType,
+      pageable
+    );
+
+    Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
+    Assertions.assertNotNull(response.getBody());
+    Assertions.assertSame(expectedResult, response.getBody());
   }
 }

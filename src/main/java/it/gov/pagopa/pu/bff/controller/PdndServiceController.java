@@ -4,6 +4,7 @@ import it.gov.pagopa.pu.bff.controller.generated.PdndServiceApi;
 import it.gov.pagopa.pu.bff.security.SecurityUtils;
 import it.gov.pagopa.pu.bff.service.pdnd_service.PdndServiceRetrieverService;
 import it.gov.pagopa.pu.organization.dto.generated.PdndService;
+import it.gov.pagopa.pu.organization.dto.generated.PdndServiceDTO;
 import it.gov.pagopa.pu.organization.dto.generated.PdndServiceRequestDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -23,5 +24,11 @@ public class PdndServiceController implements PdndServiceApi {
   public ResponseEntity<PdndService> createPdndService(Long organizationId, PdndServiceRequestDTO body, String subUnitCode) {
     log.info("User requested savePdndService having organizationId {}", organizationId);
     return ResponseEntity.ok(pdndServiceRetrieverService.createPdndService(organizationId, body, subUnitCode, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken()));
+  }
+
+  @Override
+  public ResponseEntity<PdndServiceDTO> getPdndService(Long organizationId, String purposeId, String subUnitCode) {
+    log.info("User requested getPdndService having organizationId {} and purposeId {}", organizationId, purposeId);
+    return ResponseEntity.ok(pdndServiceRetrieverService.getPdndService(organizationId, purposeId, subUnitCode, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken()));
   }
 }

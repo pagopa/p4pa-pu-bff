@@ -10,6 +10,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -32,7 +33,7 @@ public interface PagedDebtPositionTypeOrgDTOMapper {
             null,
             null,
             null,
-            null
+            Collections.emptyList()
     );
   }
 }

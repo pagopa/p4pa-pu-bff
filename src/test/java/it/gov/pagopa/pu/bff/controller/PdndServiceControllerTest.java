@@ -7,6 +7,7 @@ import it.gov.pagopa.pu.bff.util.TestUtils;
 import it.gov.pagopa.pu.organization.dto.generated.PdndService;
 import it.gov.pagopa.pu.organization.dto.generated.PdndServiceDTO;
 import it.gov.pagopa.pu.organization.dto.generated.PdndServiceRequestDTO;
+import it.gov.pagopa.pu.organization.dto.generated.PdndServiceType;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,6 +17,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -74,5 +77,19 @@ class PdndServiceControllerTest {
     assertNotNull(result);
     assertEquals(HttpStatus.OK, result.getStatusCode());
     assertSame(expectedService, result.getBody());
+  }
+
+  @Test
+  void givenOrganizationIdAndServiceTypeAndSubUnitCodeWhenGetPdndServicesThenReturnPdndServices() {
+    List<PdndServiceDTO> expectedResult = List.of(TestUtils.getPodamFactory().manufacturePojo(PdndServiceDTO.class));
+
+    when(pdndServiceRetrieverServiceMock.getPdndServices(ORGANIZATION_ID, ORG_SUB_UNIT_CODE, PdndServiceType.SEND, loggedUser, ACCESS_TOKEN))
+      .thenReturn(expectedResult);
+
+    ResponseEntity<List<PdndServiceDTO>> result = controller.getPdndServices(ORGANIZATION_ID, ORG_SUB_UNIT_CODE, PdndServiceType.SEND);
+
+    assertNotNull(result);
+    assertEquals(HttpStatus.OK, result.getStatusCode());
+    assertSame(expectedResult, result.getBody());
   }
 }

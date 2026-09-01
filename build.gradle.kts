@@ -282,6 +282,7 @@ tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>("ope
       "PdndClientDTO" to "it.gov.pagopa.pu.organization.dto.generated.PdndClientDTO",
       "PdndServiceRequestDTO" to "it.gov.pagopa.pu.organization.dto.generated.PdndServiceRequestDTO",
       "PdndService" to "it.gov.pagopa.pu.organization.dto.generated.PdndService",
+      "PdndServiceType" to "it.gov.pagopa.pu.organization.dto.generated.PdndServiceType",
       "PdndServiceDTO" to "it.gov.pagopa.pu.organization.dto.generated.PdndServiceDTO"
     )
   )

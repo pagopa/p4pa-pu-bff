@@ -12,6 +12,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.when;
@@ -68,6 +70,21 @@ class PdndServiceRetrieverImplTest {
       .thenReturn(expectedResult);
 
     PdndServiceDTO result = pdndServiceRetriever.getPdndService(ORGANIZATION_ID, purposeId, SUB_UNIT_CODE, USER_INFO, ACCESS_TOKEN);
+
+    assertSame(expectedResult, result);
+  }
+
+  @Test
+  void givenAuthorizedAdminWhenGetPdndServicesThenReturnServices() {
+    List<PdndServiceDTO> expectedResult = List.of(TestUtils.getPodamFactory().manufacturePojo(PdndServiceDTO.class));
+
+    doNothing().when(authorizationServiceMock)
+      .validateAdminRole(ORGANIZATION_ID, USER_INFO);
+
+    when(pdndServiceServiceMock.getPdndServices(ORGANIZATION_ID, SUB_UNIT_CODE, PdndServiceType.SEND, ACCESS_TOKEN))
+      .thenReturn(expectedResult);
+
+    List<PdndServiceDTO> result = pdndServiceRetriever.getPdndServices(ORGANIZATION_ID, SUB_UNIT_CODE, PdndServiceType.SEND, USER_INFO, ACCESS_TOKEN);
 
     assertSame(expectedResult, result);
   }

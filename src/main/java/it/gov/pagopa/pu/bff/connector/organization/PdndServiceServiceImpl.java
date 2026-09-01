@@ -4,7 +4,10 @@ import it.gov.pagopa.pu.bff.connector.organization.client.PdndServiceClient;
 import it.gov.pagopa.pu.organization.dto.generated.PdndService;
 import it.gov.pagopa.pu.organization.dto.generated.PdndServiceDTO;
 import it.gov.pagopa.pu.organization.dto.generated.PdndServiceRequestDTO;
+import it.gov.pagopa.pu.organization.dto.generated.PdndServiceType;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class PdndServiceServiceImpl implements PdndServiceService {
@@ -23,5 +26,10 @@ public class PdndServiceServiceImpl implements PdndServiceService {
   @Override
   public PdndServiceDTO getPdndService(Long organizationId, String purposeId, String subUnitCode, String accessToken) {
     return pdndServiceClient.getPdndService(organizationId, purposeId, subUnitCode, accessToken);
+  }
+
+  @Override
+  public List<PdndServiceDTO> getPdndServices(Long organizationId, String subUnitCode, PdndServiceType pdndServiceType, String accessToken) {
+    return pdndServiceClient.getPdndServices(organizationId, subUnitCode, pdndServiceType, accessToken);
   }
 }

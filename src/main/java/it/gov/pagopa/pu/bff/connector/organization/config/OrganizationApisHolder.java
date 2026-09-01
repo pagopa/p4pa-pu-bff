@@ -35,13 +35,14 @@ public class OrganizationApisHolder {
     private final PdndClientApi pdndClientApi;
     private final OrgSubUnitEntityExtendedControllerApi orgSubUnitEntityExtendedControllerApi;
     private final OrgSubUnitSearchControllerApi orgSubUnitSearchControllerApi;
+    private final OrgSubUnitOperatorsSearchControllerApi orgSubUnitOperatorsSearchControllerApi;
     private final PdndServiceApi pdndServiceApi;
     private final ThreadLocal<String> bearerTokenHolder = new ThreadLocal<>();
 
     public OrganizationApisHolder(
-        OrganizationApiClientConfig clientConfig,
-        RestTemplateBuilder restTemplateBuilder,
-        JsonMapper jsonMapper
+            OrganizationApiClientConfig clientConfig,
+            RestTemplateBuilder restTemplateBuilder,
+            JsonMapper jsonMapper
     ) {
         RestTemplate restTemplate = restTemplateBuilder.build();
         ApiClient apiClient = new ApiClient(restTemplate);
@@ -73,6 +74,7 @@ public class OrganizationApisHolder {
         this.pdndClientApi = new PdndClientApi(apiClient);
         this.orgSubUnitEntityExtendedControllerApi = new OrgSubUnitEntityExtendedControllerApi(apiClient);
         this.orgSubUnitSearchControllerApi = new OrgSubUnitSearchControllerApi(apiClient);
+        this.orgSubUnitOperatorsSearchControllerApi = new OrgSubUnitOperatorsSearchControllerApi(apiClient);
         this.pdndServiceApi = new PdndServiceApi(apiClient);
     }
 
@@ -165,6 +167,10 @@ public class OrganizationApisHolder {
 
     public OrgSubUnitSearchControllerApi getOrgSubUnitSearchControllerApi(String accessToken) {
       return getApi(accessToken, orgSubUnitSearchControllerApi);
+    }
+
+    public OrgSubUnitOperatorsSearchControllerApi getOrgSubUnitOperatorsSearchControllerApi(String accessToken) {
+     return getApi(accessToken, orgSubUnitOperatorsSearchControllerApi);
     }
 
     private <T extends BaseApi> T getApi(String accessToken, T api) {

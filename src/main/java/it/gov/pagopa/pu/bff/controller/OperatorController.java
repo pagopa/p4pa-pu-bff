@@ -2,11 +2,16 @@ package it.gov.pagopa.pu.bff.controller;
 
 import it.gov.pagopa.pu.bff.controller.generated.OperatorsApi;
 import it.gov.pagopa.pu.bff.dto.OperatorDetailsFiltersDTO;
+import it.gov.pagopa.pu.bff.dto.PagedOrgSubUnitFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.generated.OperatorsDetail;
 import it.gov.pagopa.pu.bff.dto.generated.PagedDebtPositionTypeOrgDTO;
+import it.gov.pagopa.pu.bff.dto.generated.PagedOrgSubUnit;
 import it.gov.pagopa.pu.bff.dto.generated.PagedOrganizationOperator;
 import it.gov.pagopa.pu.bff.security.SecurityUtils;
 import it.gov.pagopa.pu.bff.service.operator.OperatorRetrieverService;
+import it.gov.pagopa.pu.bff.service.org_sub_unit.OrgSubUnitRetrieverService;
+import it.gov.pagopa.pu.organization.dto.generated.OrgSubUnitStatus;
+import it.gov.pagopa.pu.organization.dto.generated.SubUnitType;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -18,12 +23,13 @@ import java.util.Set;
 @RestController
 @Slf4j
 public class OperatorController implements OperatorsApi {
-
   private final OperatorRetrieverService operatorRetrieverService;
+  private final OrgSubUnitRetrieverService subUnitRetrieverService;
 
-    public OperatorController(OperatorRetrieverService operatorRetrieverService) {
-        this.operatorRetrieverService = operatorRetrieverService;
-    }
+  public OperatorController(OperatorRetrieverService operatorRetrieverService, OrgSubUnitRetrieverService subUnitRetrieverService) {
+    this.operatorRetrieverService = operatorRetrieverService;
+    this.subUnitRetrieverService = subUnitRetrieverService;
+  }
 
   @Override
   public ResponseEntity<PagedOrganizationOperator> getOrganizationOperators(Long organizationId, String firstName, String lastName, String fiscalCode, Pageable pageable) {
@@ -68,5 +74,18 @@ public class OperatorController implements OperatorsApi {
     log.info("User requested enableDebtPositionTypeOrgsForOperator having organizationId {}, mappedExternalUserId {} and debtPositionTypeOrgIds {}", organizationId, mappedExternalUserId, debtPositionTypeOrgIds);
     operatorRetrieverService.enableDebtPositionTypeOrgsForOperator(organizationId, mappedExternalUserId, debtPositionTypeOrgIds, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken());
     return ResponseEntity.status(HttpStatus.CREATED).build();
+  }
+
+  @Override
+  public ResponseEntity<PagedOrgSubUnit> getOperatorOrgSubUnits(Long organizationId, String mappedExternalUserId, String subUnitCode, OrgSubUnitStatus status, SubUnitType subUnitType, Pageable pageable) {
+    log.info("User requested getOperatorOrgSubUnits having organizationId {}", organizationId);
+    PagedOrgSubUnitFiltersDTO filters = new PagedOrgSubUnitFiltersDTO(
+      organizationId,
+      mappedExternalUserId,
+      subUnitCode,
+      status,
+      subUnitType
+    );
+    return ResponseEntity.ok(subUnitRetrieverService.getPagedOrgSubUnits(filters, pageable, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken()));
   }
 }

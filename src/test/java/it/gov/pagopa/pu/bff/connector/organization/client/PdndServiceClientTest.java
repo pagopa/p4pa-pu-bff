@@ -16,8 +16,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class PdndServiceClientTest {
@@ -88,5 +87,17 @@ class PdndServiceClientTest {
     List<PdndServiceDTO> result = pdndServiceClient.getPdndServices(ORGANIZATION_ID, SUB_UNIT_CODE, PdndServiceType.SEND, ACCESS_TOKEN);
 
     assertSame(expectedResult, result);
+  }
+
+  @Test
+  void givenOrganizationIdAndPurposeIdWhenDeletePdndServiceThenDeletePdndService() {
+    String purposeId = "PURPOSE_001";
+
+    when(organizationApisHolderMock.getPdndServiceApi(ACCESS_TOKEN))
+      .thenReturn(pdndServiceApiMock);
+
+    pdndServiceClient.deletePdndService(ORGANIZATION_ID, purposeId, SUB_UNIT_CODE, ACCESS_TOKEN);
+
+    verify(pdndServiceApiMock).deletePdndService(ORGANIZATION_ID, purposeId, SUB_UNIT_CODE);
   }
 }

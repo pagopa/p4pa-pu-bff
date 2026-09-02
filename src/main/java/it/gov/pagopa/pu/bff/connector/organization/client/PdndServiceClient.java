@@ -31,4 +31,9 @@ public class PdndServiceClient {
     return organizationApisHolder.getPdndServiceApi(accessToken)
       .getPdndServices(organizationId, subUnitCode, pdndServiceType);
   }
+
+  public void deletePdndService(Long organizationId, String purposeId, String subUnitCode, String accessToken) {
+    organizationApisHolder.getPdndServiceApi(accessToken)
+      .deletePdndService(organizationId, purposeId, subUnitCode);
+  }
 }

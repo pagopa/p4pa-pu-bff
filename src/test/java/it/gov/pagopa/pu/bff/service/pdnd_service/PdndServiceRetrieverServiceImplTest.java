@@ -106,4 +106,17 @@ class PdndServiceRetrieverServiceImplTest {
 
     assertSame(expectedResult, result);
   }
+
+  @Test
+  void givenAuthorizedAdminWhenDeletePdndServiceThenDeleteService() {
+    String purposeId = "PURPOSE_001";
+
+    doNothing().when(authorizationServiceMock)
+      .validateAdminRole(ORGANIZATION_ID, USER_INFO);
+
+    doNothing().when(pdndServiceServiceMock)
+      .deletePdndService(ORGANIZATION_ID, purposeId, SUB_UNIT_CODE, ACCESS_TOKEN);
+
+    pdndServiceRetriever.deletePdndService(ORGANIZATION_ID, purposeId, SUB_UNIT_CODE, USER_INFO, ACCESS_TOKEN);
+  }
 }

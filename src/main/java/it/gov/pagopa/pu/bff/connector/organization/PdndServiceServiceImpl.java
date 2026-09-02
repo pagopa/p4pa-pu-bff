@@ -37,6 +37,11 @@ public class PdndServiceServiceImpl implements PdndServiceService {
   }
 
   @Override
+  public void deletePdndService(Long organizationId, String purposeId, String subUnitCode, String accessToken) {
+    pdndServiceClient.deletePdndService(organizationId, purposeId, subUnitCode, accessToken);
+  }
+
+  @Override
   public List<PdndService> findByOrganizationIdAndClientId(Long organizationId, String clientId, PdndServiceType serviceType, String accessToken) {
     return pdndServiceSearchClient.findByOrganizationIdAndClientId(organizationId, clientId, serviceType, accessToken);
   }

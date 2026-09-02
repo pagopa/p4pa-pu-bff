@@ -43,7 +43,7 @@ public class PdndServiceController implements PdndServiceApi {
 
   @Override
   public ResponseEntity<Void> deletePdndService(Long organizationId, String purposeId, String subUnitCode) {
-    log.info("User requested deletePdndService having organizationId {} and purposeId {} and subUnitCode {}", organizationId, purposeId, subUnitCode);
+    log.info("User requested deletePdndService having organizationId {} and purposeId {}", organizationId, purposeId);
     pdndServiceRetrieverService.deletePdndService(organizationId, purposeId, subUnitCode, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken());
     return ResponseEntity.ok().build();
   }

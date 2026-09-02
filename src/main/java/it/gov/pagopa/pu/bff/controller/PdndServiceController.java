@@ -47,4 +47,10 @@ public class PdndServiceController implements PdndServiceApi {
     pdndServiceRetrieverService.deletePdndService(organizationId, purposeId, subUnitCode, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken());
     return ResponseEntity.ok().build();
   }
+
+  @Override
+  public ResponseEntity<List<PdndService>> getPdndClientServices(Long organizationId, String clientId, PdndServiceType serviceType) {
+    log.info("User requested pdndClient's services having organizationId {} and clientId {}", organizationId, clientId);
+    return ResponseEntity.ok(pdndServiceRetrieverService.getPdndClientServices(organizationId, clientId, serviceType, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken()));
+  }
 }

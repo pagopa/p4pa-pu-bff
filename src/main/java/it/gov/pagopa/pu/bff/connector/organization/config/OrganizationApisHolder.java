@@ -2,10 +2,10 @@ package it.gov.pagopa.pu.bff.connector.organization.config;
 
 import it.gov.pagopa.pu.bff.config.rest.HttpClientErrorJsonBodyHandler;
 import it.gov.pagopa.pu.bff.connector.organization.mapper.OrganizationErrorDTOMapper;
-import it.gov.pagopa.pu.organization.generated.ApiClient;
-import it.gov.pagopa.pu.organization.generated.BaseApi;
 import it.gov.pagopa.pu.organization.client.generated.*;
 import it.gov.pagopa.pu.organization.dto.generated.OrganizationErrorDTO;
+import it.gov.pagopa.pu.organization.generated.ApiClient;
+import it.gov.pagopa.pu.organization.generated.BaseApi;
 import jakarta.annotation.PreDestroy;
 import org.springframework.boot.restclient.RestTemplateBuilder;
 import org.springframework.stereotype.Service;
@@ -37,6 +37,7 @@ public class OrganizationApisHolder {
     private final OrgSubUnitSearchControllerApi orgSubUnitSearchControllerApi;
     private final OrgSubUnitOperatorsSearchControllerApi orgSubUnitOperatorsSearchControllerApi;
     private final PdndServiceApi pdndServiceApi;
+    private final PdndServiceSearchControllerApi pdndServiceSearchControllerApi;
     private final ThreadLocal<String> bearerTokenHolder = new ThreadLocal<>();
 
     public OrganizationApisHolder(
@@ -75,6 +76,7 @@ public class OrganizationApisHolder {
         this.orgSubUnitEntityExtendedControllerApi = new OrgSubUnitEntityExtendedControllerApi(apiClient);
         this.orgSubUnitSearchControllerApi = new OrgSubUnitSearchControllerApi(apiClient);
         this.orgSubUnitOperatorsSearchControllerApi = new OrgSubUnitOperatorsSearchControllerApi(apiClient);
+        this.pdndServiceSearchControllerApi = new PdndServiceSearchControllerApi(apiClient);
         this.pdndServiceApi = new PdndServiceApi(apiClient);
     }
 
@@ -171,6 +173,10 @@ public class OrganizationApisHolder {
 
     public OrgSubUnitOperatorsSearchControllerApi getOrgSubUnitOperatorsSearchControllerApi(String accessToken) {
      return getApi(accessToken, orgSubUnitOperatorsSearchControllerApi);
+    }
+
+    public PdndServiceSearchControllerApi getPdndServiceSearchControllerApi(String accessToken) {
+      return getApi(accessToken, pdndServiceSearchControllerApi);
     }
 
     private <T extends BaseApi> T getApi(String accessToken, T api) {

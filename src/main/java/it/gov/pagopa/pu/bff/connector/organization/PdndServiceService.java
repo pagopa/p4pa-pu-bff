@@ -15,4 +15,6 @@ public interface PdndServiceService {
   List<PdndServiceDTO> getPdndServices(Long organizationId, String subUnitCode, PdndServiceType pdndServiceType, String accessToken);
 
   void deletePdndService(Long organizationId, String purposeId, String subUnitCode, String accessToken);
+
+  List<PdndService> findByOrganizationIdAndClientId(Long organizationId, String clientId, PdndServiceType serviceType, String accessToken);
 }

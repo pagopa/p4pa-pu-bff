@@ -12,12 +12,12 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class PdndServiceRetrieverImpl implements PdndServiceRetrieverService {
+public class PdndServiceRetrieverServiceImpl implements PdndServiceRetrieverService {
 
   private final AuthorizationService authorizationService;
   private final PdndServiceService pdndServiceService;
 
-  public PdndServiceRetrieverImpl(AuthorizationService authorizationService, PdndServiceService pdndServiceService) {
+  public PdndServiceRetrieverServiceImpl(AuthorizationService authorizationService, PdndServiceService pdndServiceService) {
     this.authorizationService = authorizationService;
     this.pdndServiceService = pdndServiceService;
   }
@@ -44,5 +44,11 @@ public class PdndServiceRetrieverImpl implements PdndServiceRetrieverService {
   public void deletePdndService(Long organizationId, String purposeId, String subUnitCode, UserInfo userInfo, String accessToken) {
     authorizationService.validateAdminRole(organizationId, userInfo);
     pdndServiceService.deletePdndService(organizationId, purposeId, subUnitCode, accessToken);
+  }
+
+  @Override
+  public List<PdndService> getPdndClientServices(Long organizationId, String clientId, PdndServiceType serviceType, UserInfo userInfo, String accessToken) {
+    authorizationService.validateAdminRole(organizationId, userInfo);
+    return pdndServiceService.findByOrganizationIdAndClientId(organizationId, clientId, serviceType, accessToken);
   }
 }

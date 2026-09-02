@@ -6466,6 +6466,83 @@
         } ]
       }
     },
+    "/bff/organization/{organizationId}/pdnd/clients/{clientId}/services" : {
+      "get" : {
+        "tags" : [ "PdndService" ],
+        "operationId" : "getPdndClientServices",
+        "parameters" : [ {
+          "name" : "organizationId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }, {
+          "name" : "clientId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "serviceType",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/components/schemas/PdndServiceType"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/PdndService"
+                  }
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Unauthorized - Missing or invalid token",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorDTO"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Forbidden",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorDTO"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal Server Error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorDTO"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "BearerAuth" : [ ]
+        } ]
+      }
+    },
     "/bff/organization/{organizationId}/payments-reporting" : {
       "get" : {
         "tags" : [ "PaymentsReporting" ],
@@ -12392,8 +12469,7 @@
             "type" : "string",
             "nullable" : true
           }
-        },
-        "nullable" : true
+        }
       },
       "PaymentOptionDTO" : {
         "required" : [ "installments", "paymentOptionType", "totalAmountCents" ],
@@ -12504,8 +12580,7 @@
             "type" : "string",
             "nullable" : true
           }
-        },
-        "nullable" : true
+        }
       },
       "PersonEntityType" : {
         "type" : "string",
@@ -12859,8 +12934,7 @@
               "$ref" : "#/components/schemas/DebtPositionTypeOrgBalanceCostDTO"
             }
           }
-        },
-        "nullable" : true
+        }
       },
       "AssessmentStatus" : {
         "type" : "string",
@@ -14512,8 +14586,7 @@
             "type" : "string",
             "nullable" : true
           }
-        },
-        "nullable" : true
+        }
       },
       "Transfer" : {
         "required" : [ "amountCents", "category", "installmentId", "orgFiscalCode", "remittanceInformation", "transferIndex" ],
@@ -14993,27 +15066,6 @@
           },
           "debtPositionOrigin" : {
             "$ref" : "#/components/schemas/DebtPositionOrigin"
-          }
-        }
-      },
-      "PdndServiceDTO" : {
-        "required" : [ "clientId", "clientName", "purposeId", "serviceName", "serviceType" ],
-        "type" : "object",
-        "properties" : {
-          "purposeId" : {
-            "type" : "string"
-          },
-          "serviceName" : {
-            "type" : "string"
-          },
-          "serviceType" : {
-            "$ref" : "#/components/schemas/PdndServiceType"
-          },
-          "clientId" : {
-            "type" : "string"
-          },
-          "clientName" : {
-            "type" : "string"
           }
         }
       },
@@ -15843,7 +15895,7 @@
         }
       },
       "DebtPositionTypeOrgDTO" : {
-        "required" : [ "code", "debtPositionTypeId", "debtPositionTypeOrgBalanceCosts", "description", "organizationId" ],
+        "required" : [ "code", "debtPositionTypeId", "description", "organizationId" ],
         "type" : "object",
         "properties" : {
           "debtPositionTypeOrgId" : {

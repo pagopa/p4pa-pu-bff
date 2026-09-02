@@ -39,4 +39,10 @@ public class PdndServiceRetrieverImpl implements PdndServiceRetrieverService {
     authorizationService.validateAdminRole(organizationId, userInfo);
     return pdndServiceService.getPdndServices(organizationId, subUnitCode, pdndServiceType, accessToken);
   }
+
+  @Override
+  public void deletePdndService(Long organizationId, String purposeId, String subUnitCode, UserInfo userInfo, String accessToken) {
+    authorizationService.validateAdminRole(organizationId, userInfo);
+    pdndServiceService.deletePdndService(organizationId, purposeId, subUnitCode, accessToken);
+  }
 }

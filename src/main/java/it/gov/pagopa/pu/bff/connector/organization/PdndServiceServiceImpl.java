@@ -32,4 +32,9 @@ public class PdndServiceServiceImpl implements PdndServiceService {
   public List<PdndServiceDTO> getPdndServices(Long organizationId, String subUnitCode, PdndServiceType pdndServiceType, String accessToken) {
     return pdndServiceClient.getPdndServices(organizationId, subUnitCode, pdndServiceType, accessToken);
   }
+
+  @Override
+  public void deletePdndService(Long organizationId, String purposeId, String subUnitCode, String accessToken) {
+    pdndServiceClient.deletePdndService(organizationId, purposeId, subUnitCode, accessToken);
+  }
 }

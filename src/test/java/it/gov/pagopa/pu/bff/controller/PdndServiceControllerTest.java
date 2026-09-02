@@ -92,4 +92,15 @@ class PdndServiceControllerTest {
     assertEquals(HttpStatus.OK, result.getStatusCode());
     assertSame(expectedResult, result.getBody());
   }
+
+  @Test
+  void givenOrganizationIdPurposeIdAndSubUnitCodeWhenDeletePdndServiceThenReturnOk() {
+    String purposeId = "PURPOSE_001";
+
+    ResponseEntity<Void> result = controller.deletePdndService(ORGANIZATION_ID, purposeId, ORG_SUB_UNIT_CODE);
+
+    assertNotNull(result);
+    assertEquals(HttpStatus.OK, result.getStatusCode());
+    assertNull(result.getBody());
+  }
 }

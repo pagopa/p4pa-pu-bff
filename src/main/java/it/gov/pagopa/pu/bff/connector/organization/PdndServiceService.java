@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface PdndServiceService {
   PdndService savePdndService(Long organizationId, PdndServiceRequestDTO pdndServiceRequestDTO, String subUnitCode, String accessToken);
-
   PdndServiceDTO getPdndService(Long organizationId, String purposeId, String subUnitCode, String accessToken);
   List<PdndServiceDTO> getPdndServices(Long organizationId, String subUnitCode, PdndServiceType pdndServiceType, String accessToken);
+  List<PdndService> findByOrganizationIdAndClientId(Long organizationId, String clientId, PdndServiceType serviceType, String accessToken);
 }

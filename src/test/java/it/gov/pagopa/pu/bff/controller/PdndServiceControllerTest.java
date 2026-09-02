@@ -92,4 +92,20 @@ class PdndServiceControllerTest {
     assertEquals(HttpStatus.OK, result.getStatusCode());
     assertSame(expectedResult, result.getBody());
   }
+
+  @Test
+  void whenGetPdndClientServicesThenReturnOk() {
+    String clientId = "clientId";
+    PdndServiceType serviceType = PdndServiceType.SEND;
+    List<PdndService> expectedResult = List.of(TestUtils.getPodamFactory().manufacturePojo(PdndService.class));
+
+    when(pdndServiceRetrieverServiceMock.getPdndClientServices(ORGANIZATION_ID, clientId, serviceType, loggedUser, ACCESS_TOKEN))
+      .thenReturn(expectedResult);
+
+    ResponseEntity<List<PdndService>> result = controller.getPdndClientServices(ORGANIZATION_ID, clientId, serviceType);
+
+    assertNotNull(result);
+    assertEquals(HttpStatus.OK, result.getStatusCode());
+    assertSame(expectedResult, result.getBody());
+  }
 }

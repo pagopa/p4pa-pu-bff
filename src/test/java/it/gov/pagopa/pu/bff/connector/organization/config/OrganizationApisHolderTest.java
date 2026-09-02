@@ -2,7 +2,10 @@ package it.gov.pagopa.pu.bff.connector.organization.config;
 
 import it.gov.pagopa.pu.bff.config.json.JsonConfig;
 import it.gov.pagopa.pu.bff.connector.BaseApiHolderTest;
-import it.gov.pagopa.pu.organization.dto.generated.*;
+import it.gov.pagopa.pu.organization.dto.generated.OrgSilServiceType;
+import it.gov.pagopa.pu.organization.dto.generated.OrgSubUnitStatus;
+import it.gov.pagopa.pu.organization.dto.generated.OrganizationDetailDTO;
+import it.gov.pagopa.pu.organization.dto.generated.PdndServiceRequestDTO;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -262,6 +265,17 @@ class OrganizationApisHolderTest extends BaseApiHolderTest {
       accessToken ->
         apisHolder.getOrgSubUnitOperatorsSearchControllerApi(accessToken)
           .crudOrgSubUnitOperatorsFindByOrganizationIdAndSubUnitCode(1L, "subUnitCode", 0,0,Collections.emptyList())
+      ,
+      new ParameterizedTypeReference<>() {},
+      apisHolder::unload);
+  }
+
+  @Test
+  void whenGetPdndServiceSearchControllerApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
+    assertAuthenticationShouldBeSetInThreadSafeMode(
+      accessToken ->
+        apisHolder.getPdndServiceSearchControllerApi(accessToken)
+          .crudPdndServicesFindByOrganizationIdAndClientId(1L, "clientId", null)
       ,
       new ParameterizedTypeReference<>() {},
       apisHolder::unload);

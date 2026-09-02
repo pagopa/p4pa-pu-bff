@@ -21,8 +21,7 @@ import org.springframework.http.ResponseEntity;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class PdndServiceControllerTest {
@@ -102,5 +101,7 @@ class PdndServiceControllerTest {
     assertNotNull(result);
     assertEquals(HttpStatus.OK, result.getStatusCode());
     assertNull(result.getBody());
+    verify(pdndServiceRetrieverServiceMock)
+      .deletePdndService(ORGANIZATION_ID, purposeId, ORG_SUB_UNIT_CODE, loggedUser, ACCESS_TOKEN);
   }
 }

@@ -93,6 +93,7 @@ dependencies {
     exclude(group = "org.lz4", module = "lz4-java")
   }
   implementation("at.yawk.lz4:lz4-java:$lz4JavaVersion")
+  implementation("org.mapstruct:mapstruct:$mapStructVersion")
 
   // CVE Security dependencies
   implementation("org.apache.tomcat.embed:tomcat-embed-core:$tomcatEmbedCoreVersion")

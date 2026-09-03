@@ -1,5 +1,6 @@
 package it.gov.pagopa.pu.bff.connector.pagopapayments.config;
 
+import it.gov.pagopa.pu.bff.config.json.JsonConfig;
 import it.gov.pagopa.pu.bff.connector.BaseApiHolderTest;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionDTO;
 import org.junit.jupiter.api.AfterEach;
@@ -13,21 +14,28 @@ import org.springframework.boot.restclient.RestTemplateBuilder;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.web.util.DefaultUriBuilderFactory;
 
+import static org.mockito.Mockito.when;
+
 @ExtendWith(MockitoExtension.class)
 class PagoPAPaymentsApisHolderTest extends BaseApiHolderTest {
   @Mock
   private RestTemplateBuilder restTemplateBuilderMock;
 
-  private PagoPAPaymentsApisHolder pagoPAPaymentsApisHolder;
+  private PagoPAPaymentsApisHolder apisHolder;
+  private PagoPAPaymentsApiClientConfig apiClientConfig;
 
   @BeforeEach
   void setUp() {
-    Mockito.when(restTemplateBuilderMock.build()).thenReturn(restTemplateMock);
-    Mockito.when(restTemplateMock.getUriTemplateHandler()).thenReturn(new DefaultUriBuilderFactory());
-    PagoPAPaymentsApiClientConfig clientConfig = PagoPAPaymentsApiClientConfig.builder()
+    when(restTemplateBuilderMock.build()).thenReturn(restTemplateMock);
+    when(restTemplateMock.getUriTemplateHandler()).thenReturn(new DefaultUriBuilderFactory());
+
+    apiClientConfig = PagoPAPaymentsApiClientConfig.builder()
       .baseUrl("http://example.com")
+      .maxAttempts(3)
       .build();
-    pagoPAPaymentsApisHolder = new PagoPAPaymentsApisHolder(clientConfig, restTemplateBuilderMock);
+    apisHolder = new PagoPAPaymentsApisHolder(apiClientConfig, restTemplateBuilderMock, new JsonConfig().objectMapperJackson3());
+
+    verifyHttpClientErrorJsonBodyHandlerConfiguration(apisHolder.getPrintPaymentNoticeControllerApi(null));
   }
 
   @AfterEach
@@ -39,12 +47,21 @@ class PagoPAPaymentsApisHolderTest extends BaseApiHolderTest {
   }
 
   @Test
+  void testRetryConfiguration() {
+    assertRetry(apiClientConfig,
+      accessToken -> apisHolder.getPrintPaymentNoticeControllerApi(accessToken)
+        .generateNotice("iuv",new DebtPositionDTO()),
+      new ParameterizedTypeReference<>() {}
+    );
+  }
+
+  @Test
   void whenGetPrintPaymentNoticeControllerApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
     assertAuthenticationShouldBeSetInThreadSafeMode(
-      accessToken -> pagoPAPaymentsApisHolder.getPrintPaymentNoticeControllerApi(accessToken)
+      accessToken -> apisHolder.getPrintPaymentNoticeControllerApi(accessToken)
         .generateNotice("iuv",new DebtPositionDTO()),
       new ParameterizedTypeReference<>() {},
-      pagoPAPaymentsApisHolder::unload
+      apisHolder::unload
     );
   }
 }

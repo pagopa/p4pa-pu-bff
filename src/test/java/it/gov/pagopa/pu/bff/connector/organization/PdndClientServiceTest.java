@@ -1,0 +1,83 @@
+package it.gov.pagopa.pu.bff.connector.organization;
+
+import it.gov.pagopa.pu.bff.connector.organization.client.PdndClientClient;
+import it.gov.pagopa.pu.organization.dto.generated.PdndClient;
+import it.gov.pagopa.pu.organization.dto.generated.PdndClientDTO;
+import it.gov.pagopa.pu.organization.dto.generated.PdndClientNoSecretDTO;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.mockito.Mockito.*;
+
+@ExtendWith(MockitoExtension.class)
+class PdndClientServiceTest {
+
+  private static final String CLIENT_ID = "CLIENT_001";
+  private static final Long ORGANIZATION_ID = 123L;
+  private static final String SUB_UNIT_CODE = "SUB_UNIT_001";
+  private static final String ACCESS_TOKEN = "fakeAccessToken";
+
+  @Mock
+  private PdndClientClient clientMock;
+
+  @InjectMocks
+  private PdndClientServiceImpl service;
+
+  @AfterEach
+  void tearDown() {
+    verifyNoMoreInteractions(clientMock);
+  }
+
+  @Test
+  void givenOrganizationIdAndSubUnitCodeWhenGetPdndClientsThenReturnClients() {
+    List<PdndClientNoSecretDTO> expectedResult = List.of(new PdndClientNoSecretDTO());
+
+    when(clientMock.getPdndClientsByOrganizationIdAndSubUnitCode(ORGANIZATION_ID, SUB_UNIT_CODE, ACCESS_TOKEN))
+      .thenReturn(expectedResult);
+
+    List<PdndClientNoSecretDTO> result = service.getPdndClientsByOrganizationIdAndSubUnitCode(ORGANIZATION_ID, SUB_UNIT_CODE, ACCESS_TOKEN);
+
+    assertSame(expectedResult, result);
+  }
+
+  @Test
+  void givenOrganizationIdAndClientIdWhenGetPdndClientThenReturnClient() {
+    PdndClientNoSecretDTO expectedResult = new PdndClientNoSecretDTO();
+
+    when(clientMock.getPdndClient(ORGANIZATION_ID, CLIENT_ID, ACCESS_TOKEN))
+      .thenReturn(expectedResult);
+
+    PdndClientNoSecretDTO result = service.getPdndClient(ORGANIZATION_ID, CLIENT_ID, ACCESS_TOKEN);
+
+    assertSame(expectedResult, result);
+  }
+
+  @Test
+  void givenPdndClientDTOWhenSavePdndClientThenReturnSavedPdndClient() {
+    PdndClientDTO pdndClientDTO = new PdndClientDTO();
+    PdndClient expectedResult = new PdndClient();
+
+    when(clientMock.savePdndClient(pdndClientDTO, ACCESS_TOKEN))
+      .thenReturn(expectedResult);
+
+    PdndClient result = service.savePdndClient(pdndClientDTO, ACCESS_TOKEN);
+
+    assertSame(expectedResult, result);
+  }
+
+  @Test
+  void givenOrganizationIdAndClientIdWhenDeletePdndClientThenOk() {
+    doNothing().when(clientMock)
+      .deletePdndClient(ORGANIZATION_ID, CLIENT_ID, ACCESS_TOKEN);
+
+   assertDoesNotThrow(() -> service.deletePdndClient(ORGANIZATION_ID, CLIENT_ID, ACCESS_TOKEN));
+  }
+}

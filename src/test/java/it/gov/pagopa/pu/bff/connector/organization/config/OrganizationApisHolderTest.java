@@ -1,8 +1,11 @@
 package it.gov.pagopa.pu.bff.connector.organization.config;
 
+import it.gov.pagopa.pu.bff.config.json.JsonConfig;
 import it.gov.pagopa.pu.bff.connector.BaseApiHolderTest;
 import it.gov.pagopa.pu.organization.dto.generated.OrgSilServiceType;
+import it.gov.pagopa.pu.organization.dto.generated.OrgSubUnitStatus;
 import it.gov.pagopa.pu.organization.dto.generated.OrganizationDetailDTO;
+import it.gov.pagopa.pu.organization.dto.generated.PdndServiceRequestDTO;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,21 +19,28 @@ import org.springframework.web.util.DefaultUriBuilderFactory;
 
 import java.util.Collections;
 
+import static org.mockito.Mockito.when;
+
 @ExtendWith(MockitoExtension.class)
 class OrganizationApisHolderTest extends BaseApiHolderTest {
   @Mock
   private RestTemplateBuilder restTemplateBuilderMock;
 
-  private OrganizationApisHolder organizationApisHolder;
+  private OrganizationApisHolder apisHolder;
+  private OrganizationApiClientConfig apiClientConfig;
 
   @BeforeEach
   void setUp() {
-    Mockito.when(restTemplateBuilderMock.build()).thenReturn(restTemplateMock);
-    Mockito.when(restTemplateMock.getUriTemplateHandler()).thenReturn(new DefaultUriBuilderFactory());
-    OrganizationApiClientConfig clientConfig = OrganizationApiClientConfig.builder()
+    when(restTemplateBuilderMock.build()).thenReturn(restTemplateMock);
+    when(restTemplateMock.getUriTemplateHandler()).thenReturn(new DefaultUriBuilderFactory());
+
+    apiClientConfig = OrganizationApiClientConfig.builder()
       .baseUrl("http://example.com")
+      .maxAttempts(3)
       .build();
-    organizationApisHolder = new OrganizationApisHolder(clientConfig, restTemplateBuilderMock);
+    apisHolder = new OrganizationApisHolder(apiClientConfig, restTemplateBuilderMock, new JsonConfig().objectMapperJackson3());
+
+    verifyHttpClientErrorJsonBodyHandlerConfiguration(apisHolder.getOrganizationSearchControllerApi(null));
   }
 
   @AfterEach
@@ -42,160 +52,232 @@ class OrganizationApisHolderTest extends BaseApiHolderTest {
   }
 
   @Test
+  void testRetryConfiguration() {
+    assertRetry(apiClientConfig,
+      accessToken -> apisHolder.getOrganizationSearchControllerApi(accessToken)
+        .crudOrganizationsFindByIpaCode("IPACODE"),
+      new ParameterizedTypeReference<>() {}
+    );
+  }
+
+  @Test
   void whenGetOrganizationSearchControllerApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
     assertAuthenticationShouldBeSetInThreadSafeMode(
-      accessToken -> organizationApisHolder.getOrganizationSearchControllerApi(accessToken)
+      accessToken -> apisHolder.getOrganizationSearchControllerApi(accessToken)
         .crudOrganizationsFindByIpaCode("IPACODE"),
       new ParameterizedTypeReference<>() {},
-      organizationApisHolder::unload);
+      apisHolder::unload);
   }
 
   @Test
   void whenGetAuthnApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
     assertAuthenticationShouldBeSetInThreadSafeMode(
-      accessToken -> organizationApisHolder.getBrokerEntityControllerApi(accessToken)
+      accessToken -> apisHolder.getBrokerEntityControllerApi(accessToken)
         .crudGetBroker("BROKERID"),
       new ParameterizedTypeReference<>() {},
-      organizationApisHolder::unload);
+      apisHolder::unload);
   }
 
   @Test
   void whenGetTaxonomyThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
     assertAuthenticationShouldBeSetInThreadSafeMode(
-      accessToken -> organizationApisHolder.getTaxonomy(accessToken)
+      accessToken -> apisHolder.getTaxonomy(accessToken)
         .crudGetTaxonomy("123"),
       new ParameterizedTypeReference<>() {},
-      organizationApisHolder::unload
+      apisHolder::unload
     );
   }
 
   @Test
   void whenGetTaxonomySearchControllerApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
     assertAuthenticationShouldBeSetInThreadSafeMode(
-      accessToken -> organizationApisHolder.getTaxonomySearchControllerApi(accessToken)
+      accessToken -> apisHolder.getTaxonomySearchControllerApi(accessToken)
         .crudTaxonomiesFindByTaxonomyCode(null),
       new ParameterizedTypeReference<>() {},
-      organizationApisHolder::unload);
+      apisHolder::unload);
   }
 
   @Test
   void whenGetTaxonomyEntityControllerApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
     assertAuthenticationShouldBeSetInThreadSafeMode(
-      accessToken -> organizationApisHolder.getTaxonomyEntityControllerApi(accessToken)
+      accessToken -> apisHolder.getTaxonomyEntityControllerApi(accessToken)
         .crudTaxonomiesCollectionReasonFindCollectionReasons(null,null,null),
       new ParameterizedTypeReference<>() {},
-      organizationApisHolder::unload);
+      apisHolder::unload);
   }
 
   @Test
   void whenGetMacroAreaThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
     assertAuthenticationShouldBeSetInThreadSafeMode(
-      accessToken -> organizationApisHolder.getMacroArea(accessToken)
+      accessToken -> apisHolder.getMacroArea(accessToken)
         .crudTaxonomiesMacroAreaFindMacroAreaCodes(null),
       new ParameterizedTypeReference<>() {},
-      organizationApisHolder::unload);
+      apisHolder::unload);
   }
 
   @Test
   void whenGetOrganizationTypesThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
     assertAuthenticationShouldBeSetInThreadSafeMode(
-      accessToken -> organizationApisHolder.getOrganizationTypes(accessToken)
+      accessToken -> apisHolder.getOrganizationTypes(accessToken)
         .crudTaxonomiesOrganizationTypesFindOrganizationTypes(),
       new ParameterizedTypeReference<>() {},
-      organizationApisHolder::unload);
+      apisHolder::unload);
   }
 
   @Test
   void whenGetServiceTypeThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
     assertAuthenticationShouldBeSetInThreadSafeMode(
-      accessToken -> organizationApisHolder.getServiceType(accessToken)
+      accessToken -> apisHolder.getServiceType(accessToken)
         .crudTaxonomiesServiceTypeFindServiceTypeCodes(null,null),
       new ParameterizedTypeReference<>() {},
-      organizationApisHolder::unload);
+      apisHolder::unload);
   }
 
   @Test
   void whenGetTaxonomyCodeThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
     assertAuthenticationShouldBeSetInThreadSafeMode(
-      accessToken -> organizationApisHolder.getTaxonomyCode(accessToken)
+      accessToken -> apisHolder.getTaxonomyCode(accessToken)
         .crudTaxonomiesTaxonomyCodeFindTaxonomyCodes(null,null,null,null),
       new ParameterizedTypeReference<>() {},
-      organizationApisHolder::unload);
+      apisHolder::unload);
   }
 
   @Test
   void whenGetOrganizationEntityControllerApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
     assertAuthenticationShouldBeSetInThreadSafeMode(
-      accessToken -> organizationApisHolder.getOrganizationEntityControllerApi(accessToken)
+      accessToken -> apisHolder.getOrganizationEntityControllerApi(accessToken)
         .crudGetOrganization("1"),
       new ParameterizedTypeReference<>() {},
-      organizationApisHolder::unload);
+      apisHolder::unload);
   }
 
   @Test
   void whenGetOrgSilServiceSearchControllerApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
     assertAuthenticationShouldBeSetInThreadSafeMode(
-      accessToken -> organizationApisHolder.getOrgSilServiceSearchControllerApi(accessToken)
+      accessToken -> apisHolder.getOrgSilServiceSearchControllerApi(accessToken)
         .crudOrgSilServicesFindAllByOrganizationIdAndServiceType(1L, OrgSilServiceType.ACTUALIZATION),
       new ParameterizedTypeReference<>() {},
-      organizationApisHolder::unload);
+      apisHolder::unload);
   }
 
   @Test
   void whenGetOrgSilServiceEntityControllerApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
     assertAuthenticationShouldBeSetInThreadSafeMode(
-      accessToken -> organizationApisHolder.getOrgSilServiceEntityControllerApi(accessToken)
+      accessToken -> apisHolder.getOrgSilServiceEntityControllerApi(accessToken)
         .crudGetOrgsilservice(String.valueOf(1L)),
       new ParameterizedTypeReference<>() {},
-      organizationApisHolder::unload);
+      apisHolder::unload);
   }
 
   @Test
   void whenGetOrgSilServiceViewSearchControllerApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
     assertAuthenticationShouldBeSetInThreadSafeMode(
-      accessToken -> organizationApisHolder.getOrgSilServiceViewSearchControllerApi(accessToken)
+      accessToken -> apisHolder.getOrgSilServiceViewSearchControllerApi(accessToken)
         .crudOrgSilServicesViewFindOrgSilServicesByFilters(
           1L,"appName",OrgSilServiceType.ACTUALIZATION,true,0,0,Collections.emptyList()),
       new ParameterizedTypeReference<>() {},
-      organizationApisHolder::unload);
+      apisHolder::unload);
   }
 
   @Test
   void whenGetOrganizationSilServiceApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
     assertAuthenticationShouldBeSetInThreadSafeMode(
-      accessToken -> organizationApisHolder.getOrganizationSilServiceApi(accessToken)
+      accessToken -> apisHolder.getOrganizationSilServiceApi(accessToken)
         .getOrgSilService(1L),
       new ParameterizedTypeReference<>() {},
-      organizationApisHolder::unload);
+      apisHolder::unload);
   }
 
   @Test
   void whenGetOrganizationApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
     assertAuthenticationShouldBeSetInThreadSafeMode(
       accessToken ->{
-        organizationApisHolder.getOrganizationApi(accessToken)
+        apisHolder.getOrganizationApi(accessToken)
                 .updateOrganization(new OrganizationDetailDTO());
         return voidMock;
       },
       new ParameterizedTypeReference<>() {},
-      organizationApisHolder::unload);
+      apisHolder::unload);
   }
 
   @Test
   void whenGetBrokerConfigurationEntityControllerApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
     assertAuthenticationShouldBeSetInThreadSafeMode(
-      accessToken -> organizationApisHolder.getBrokerConfigurationEntityControllerApi(accessToken)
+      accessToken -> apisHolder.getBrokerConfigurationEntityControllerApi(accessToken)
         .crudGetBrokerconfiguration("1"),
       new ParameterizedTypeReference<>() {},
-      organizationApisHolder::unload);
+      apisHolder::unload);
   }
 
   @Test
   void whenOrgSubUnitEntityControllerApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
     assertAuthenticationShouldBeSetInThreadSafeMode(
-      accessToken -> organizationApisHolder.getOrgSubUnitEntityControllerApi(accessToken)
+      accessToken -> apisHolder.getOrgSubUnitEntityControllerApi(accessToken)
         .crudGetOrgsubunit("ID"),
       new ParameterizedTypeReference<>() {},
-      organizationApisHolder::unload);
+      apisHolder::unload);
+  }
+
+  @Test
+  void whenGetPdndClientApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
+    assertAuthenticationShouldBeSetInThreadSafeMode(
+      accessToken -> apisHolder.getPdndClientApi(accessToken)
+        .getPdndClientsByOrganizationIdAndSubUnitCode(1L, "subUnitCode"),
+      new ParameterizedTypeReference<>() {},
+      apisHolder::unload);
+  }
+
+  @Test
+  void whenGetOrgSubUnitEntityExtendedControllerApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
+    assertAuthenticationShouldBeSetInThreadSafeMode(
+      accessToken -> {
+        apisHolder.getOrgSubUnitEntityExtendedControllerApi(accessToken)
+          .updateStatus(1L, "subUnitCode", OrgSubUnitStatus.CANCELLED);
+        return voidMock;
+      },
+      new ParameterizedTypeReference<>() {},
+      apisHolder::unload);
+  }
+
+  @Test
+  void whenGetPdndServiceApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
+    assertAuthenticationShouldBeSetInThreadSafeMode(
+      accessToken -> apisHolder.getPdndServiceApi(accessToken)
+        .savePdndService(1L, new PdndServiceRequestDTO(), "subUnitCode"),
+      new ParameterizedTypeReference<>() {},
+      apisHolder::unload);
+  }
+
+  @Test
+  void whenGetOrgSubUnitSearchControllerApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
+    assertAuthenticationShouldBeSetInThreadSafeMode(
+      accessToken ->
+        apisHolder.getOrgSubUnitSearchControllerApi(accessToken)
+          .crudOrgSubUnitFindAllByOrganizationId(1L)
+      ,
+      new ParameterizedTypeReference<>() {},
+      apisHolder::unload);
+  }
+
+  @Test
+  void whenGetOrgSubUnitOperatorsSearchControllerApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
+    assertAuthenticationShouldBeSetInThreadSafeMode(
+      accessToken ->
+        apisHolder.getOrgSubUnitOperatorsSearchControllerApi(accessToken)
+          .crudOrgSubUnitOperatorsFindByOrganizationIdAndSubUnitCode(1L, "subUnitCode", 0,0,Collections.emptyList())
+      ,
+      new ParameterizedTypeReference<>() {},
+      apisHolder::unload);
+  }
+
+  @Test
+  void whenGetPdndServiceSearchControllerApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
+    assertAuthenticationShouldBeSetInThreadSafeMode(
+      accessToken ->
+        apisHolder.getPdndServiceSearchControllerApi(accessToken)
+          .crudPdndServicesFindByOrganizationIdAndClientId(1L, "clientId", null)
+      ,
+      new ParameterizedTypeReference<>() {},
+      apisHolder::unload);
   }
 }

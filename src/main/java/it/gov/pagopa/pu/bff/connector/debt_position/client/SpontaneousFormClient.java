@@ -1,10 +1,10 @@
 package it.gov.pagopa.pu.bff.connector.debt_position.client;
 
 import it.gov.pagopa.pu.bff.connector.debt_position.config.DebtPositionApisHolder;
-import it.gov.pagopa.pu.bff.exception.ResourceNotFoundException;
+import it.gov.pagopa.pu.bff.exception.common.NotFoundException;
+import it.gov.pagopa.pu.bff.exception.common.RestInvokeNotFoundException;
 import it.gov.pagopa.pu.debtpositions.dto.generated.SpontaneousForm;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
 
 @Service
 public class SpontaneousFormClient {
@@ -24,8 +24,8 @@ public class SpontaneousFormClient {
    try{
      debtPositionApisHolder.getSpontaneousFormApi(accessToken)
           .deleteSpontaneousForm(spontaneousFormId);
-    }catch (HttpClientErrorException.NotFound e) {
-      throw new ResourceNotFoundException("SPONTANEOUS_FORM_NOT_FOUND", "SpontaneousForm having id "+spontaneousFormId+" not found");
+    }catch (RestInvokeNotFoundException e) {
+      throw new NotFoundException("SPONTANEOUS_FORM_NOT_FOUND", "SpontaneousForm having id "+spontaneousFormId+" not found");
     }
   }
 
@@ -33,8 +33,8 @@ public class SpontaneousFormClient {
     try{
       debtPositionApisHolder.getSpontaneousFormApi(accessToken)
         .updateSpontaneousForm(spontaneousForm);
-    }catch (HttpClientErrorException.NotFound e) {
-      throw new ResourceNotFoundException("SPONTANEOUS_FORM_NOT_FOUND", "SpontaneousForm having id "+spontaneousForm.getSpontaneousFormId()+" not found");
+    }catch (RestInvokeNotFoundException e) {
+      throw new NotFoundException("SPONTANEOUS_FORM_NOT_FOUND", "SpontaneousForm having id "+spontaneousForm.getSpontaneousFormId()+" not found");
     }
   }
 }

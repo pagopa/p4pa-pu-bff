@@ -1,12 +1,12 @@
 package it.gov.pagopa.pu.bff.connector.organization.client;
 
 import it.gov.pagopa.pu.bff.connector.organization.config.OrganizationApisHolder;
+import it.gov.pagopa.pu.bff.exception.common.RestInvokeNotFoundException;
 import it.gov.pagopa.pu.bff.util.PageUtils;
 import it.gov.pagopa.pu.organization.dto.generated.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
 
 @Service
 @Slf4j
@@ -28,7 +28,7 @@ public class OrgSilServiceSearchClient {
     try {
       return organizationApisHolder.getOrgSilServiceEntityControllerApi(accessToken)
         .crudGetOrgsilservice(String.valueOf(orgSilServiceId));
-    } catch (HttpClientErrorException.NotFound e) {
+    } catch (RestInvokeNotFoundException e) {
       log.info(ORG_SIL_SERVICE_NOT_FOUND_MESSAGE, orgSilServiceId);
       return null;
     }
@@ -49,7 +49,7 @@ public class OrgSilServiceSearchClient {
   public OrgSilServiceDTO getOrgSilServiceByIdDecrypted(Long orgSilServiceId, String accessToken) {
     try {
       return organizationApisHolder.getOrganizationSilServiceApi(accessToken).getOrgSilService(orgSilServiceId);
-    } catch (HttpClientErrorException.NotFound e) {
+    } catch (RestInvokeNotFoundException e) {
       log.info(ORG_SIL_SERVICE_NOT_FOUND_MESSAGE, orgSilServiceId);
       return null;
     }
@@ -63,7 +63,7 @@ public class OrgSilServiceSearchClient {
   public OrgSilService getOrgSilServiceByOrganizationIdAndApplicationName(Long organizationId, String applicationName, String accessToken) {
     try {
       return organizationApisHolder.getOrgSilServiceSearchControllerApi(accessToken).crudOrgSilServicesFindByOrganizationIdAndApplicationName(organizationId, applicationName);
-    } catch (HttpClientErrorException.NotFound e) {
+    } catch (RestInvokeNotFoundException e) {
       log.info(ORG_SIL_SERVICE_NOT_FOUND_MESSAGE, organizationId);
       return null;
     }

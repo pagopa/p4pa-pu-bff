@@ -25,7 +25,7 @@ import it.gov.pagopa.pu.bff.dto.LocalDateIntervalFilter;
 import it.gov.pagopa.pu.bff.dto.OffsetDateTimeIntervalFilter;
 import it.gov.pagopa.pu.bff.dto.TreasuredClassificationFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedTreasuredClassificationExtendedDTO;
-import it.gov.pagopa.pu.bff.exception.ResourceNotFoundException;
+import it.gov.pagopa.pu.bff.exception.common.NotFoundException;
 import it.gov.pagopa.pu.bff.mapper.ClassificationDetailDTOMapper;
 import it.gov.pagopa.pu.bff.mapper.TreasuredClassificationExtendedDTOMapper;
 import it.gov.pagopa.pu.bff.service.classification.ClassificationRetrieverServiceImpl;
@@ -194,7 +194,7 @@ class ClassificationRetrieverServiceImplTest {
         .validateOperator(organizationId, "dummyCode",
           loggedUser.getMappedExternalUserId(), accessToken);
 
-      ResourceNotFoundException ex = assertThrows(ResourceNotFoundException.class,
+      NotFoundException ex = assertThrows(NotFoundException.class,
         () -> classificationRetrieverService.getTreasuredClassification(
           organizationId, filtersDTO, "dummyCode", pageable, loggedUser, accessToken));
 
@@ -752,7 +752,7 @@ class ClassificationRetrieverServiceImplTest {
         accessToken
       );
 
-      ResourceNotFoundException ex = assertThrows(ResourceNotFoundException.class,
+      NotFoundException ex = assertThrows(NotFoundException.class,
         () -> classificationRetrieverService.getClassificationDetail(
           organizationId, classificationId, loggedUser, accessToken));
 
@@ -970,7 +970,7 @@ class ClassificationRetrieverServiceImplTest {
       when(assessmentsServiceMock.getAssessmentsById(assessmentId, accessToken))
         .thenReturn(null);
 
-      ResourceNotFoundException ex = assertThrows(ResourceNotFoundException.class, () ->
+      NotFoundException ex = assertThrows(NotFoundException.class, () ->
         classificationRetrieverService.getPaidInstallments(organizationId, assessmentId, filters, pageable, loggedUser, accessToken)
       );
 
@@ -1004,7 +1004,7 @@ class ClassificationRetrieverServiceImplTest {
       when(assessmentsServiceMock.getAssessmentsById(assessmentId, accessToken))
         .thenReturn(assessment);
 
-      ResourceNotFoundException ex = assertThrows(ResourceNotFoundException.class, () ->
+      NotFoundException ex = assertThrows(NotFoundException.class, () ->
         classificationRetrieverService.getPaidInstallments(organizationId, assessmentId, filters, pageable, loggedUser, accessToken)
       );
 

@@ -4,7 +4,7 @@ import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.connector.organization.OrgSilServiceService;
 import it.gov.pagopa.pu.bff.dto.OrgSilServiceDecryptedDTO;
 import it.gov.pagopa.pu.bff.exception.InvalidOrgSilServiceException;
-import it.gov.pagopa.pu.bff.exception.ResourceNotFoundException;
+import it.gov.pagopa.pu.bff.exception.common.NotFoundException;
 import it.gov.pagopa.pu.bff.mapper.OrgSilServiceDTOMapper;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
 import it.gov.pagopa.pu.organization.dto.generated.OrgSilService;
@@ -58,7 +58,7 @@ public class OrgSilServiceStorerServiceImpl implements OrgSilServiceStorerServic
 
     OrgSilService existingOrgSilService = orgSilServiceService.getOrgSilServiceById(body.getOrgSilServiceId(), accessToken);
     if (existingOrgSilService == null) {
-      throw new ResourceNotFoundException("ORG_SIL_SERVICE_NOT_FOUND", "OrgSilService having ID %d not found".formatted(body.getOrgSilServiceId()));
+      throw new NotFoundException("ORG_SIL_SERVICE_NOT_FOUND", "OrgSilService having ID %d not found".formatted(body.getOrgSilServiceId()));
     }
 
     verifyOrgSilService(existingOrgSilService, body);

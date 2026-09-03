@@ -6,7 +6,7 @@ import it.gov.pagopa.pu.bff.connector.pagopapayments.config.PagoPAPaymentsApisHo
 import it.gov.pagopa.pu.bff.dto.FileResourceDTO;
 import it.gov.pagopa.pu.bff.util.TestUtils;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionDTO;
-import it.gov.pagopa.pu.pagopapayments.controller.generated.PrintPaymentNoticeApi;
+import it.gov.pagopa.pu.pagopapayments.client.generated.PrintPaymentNoticeApi;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;

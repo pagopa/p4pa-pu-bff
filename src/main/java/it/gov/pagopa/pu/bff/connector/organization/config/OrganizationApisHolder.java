@@ -1,13 +1,16 @@
 package it.gov.pagopa.pu.bff.connector.organization.config;
 
-import it.gov.pagopa.pu.bff.config.rest.RestTemplateConfig;
-import it.gov.pagopa.pu.organization.controller.ApiClient;
-import it.gov.pagopa.pu.organization.controller.BaseApi;
-import it.gov.pagopa.pu.organization.controller.generated.*;
+import it.gov.pagopa.pu.bff.config.rest.HttpClientErrorJsonBodyHandler;
+import it.gov.pagopa.pu.bff.connector.organization.mapper.OrganizationErrorDTOMapper;
+import it.gov.pagopa.pu.organization.client.generated.*;
+import it.gov.pagopa.pu.organization.dto.generated.OrganizationErrorDTO;
+import it.gov.pagopa.pu.organization.generated.ApiClient;
+import it.gov.pagopa.pu.organization.generated.BaseApi;
 import jakarta.annotation.PreDestroy;
 import org.springframework.boot.restclient.RestTemplateBuilder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import tools.jackson.databind.json.JsonMapper;
 
 @Service
 public class OrganizationApisHolder {
@@ -29,11 +32,18 @@ public class OrganizationApisHolder {
     private final OrganizationApi organizationApi;
     private final BrokerConfigurationEntityControllerApi brokerConfigurationEntityControllerApi;
     private final OrgSubUnitEntityControllerApi orgSubUnitEntityControllerApi;
+    private final PdndClientApi pdndClientApi;
+    private final OrgSubUnitEntityExtendedControllerApi orgSubUnitEntityExtendedControllerApi;
+    private final OrgSubUnitSearchControllerApi orgSubUnitSearchControllerApi;
+    private final OrgSubUnitOperatorsSearchControllerApi orgSubUnitOperatorsSearchControllerApi;
+    private final PdndServiceApi pdndServiceApi;
+    private final PdndServiceSearchControllerApi pdndServiceSearchControllerApi;
     private final ThreadLocal<String> bearerTokenHolder = new ThreadLocal<>();
 
     public OrganizationApisHolder(
-        OrganizationApiClientConfig clientConfig,
-        RestTemplateBuilder restTemplateBuilder
+            OrganizationApiClientConfig clientConfig,
+            RestTemplateBuilder restTemplateBuilder,
+            JsonMapper jsonMapper
     ) {
         RestTemplate restTemplate = restTemplateBuilder.build();
         ApiClient apiClient = new ApiClient(restTemplate);
@@ -41,9 +51,9 @@ public class OrganizationApisHolder {
         apiClient.setBearerToken(bearerTokenHolder::get);
         apiClient.setMaxAttemptsForRetry(Math.max(1, clientConfig.getMaxAttempts()));
         apiClient.setWaitTimeMillis(clientConfig.getWaitTimeMillis());
-        if (clientConfig.isPrintBodyWhenError()) {
-          restTemplate.setErrorHandler(RestTemplateConfig.bodyPrinterWhenError("ORGANIZATION"));
-        }
+        restTemplate.setErrorHandler(new HttpClientErrorJsonBodyHandler<>(jsonMapper, "ORGANIZATION", clientConfig.isPrintBodyWhenError(),
+          OrganizationErrorDTO.class, OrganizationErrorDTOMapper::map)
+        );
 
         this.taxonomyEntityControllerApi = new TaxonomyEntityControllerApi(apiClient);
         this.organizationSearchControllerApi = new OrganizationSearchControllerApi(apiClient);
@@ -62,6 +72,12 @@ public class OrganizationApisHolder {
         this.organizationApi = new OrganizationApi(apiClient);
         this.brokerConfigurationEntityControllerApi = new BrokerConfigurationEntityControllerApi(apiClient);
         this.orgSubUnitEntityControllerApi = new OrgSubUnitEntityControllerApi(apiClient);
+        this.pdndClientApi = new PdndClientApi(apiClient);
+        this.orgSubUnitEntityExtendedControllerApi = new OrgSubUnitEntityExtendedControllerApi(apiClient);
+        this.orgSubUnitSearchControllerApi = new OrgSubUnitSearchControllerApi(apiClient);
+        this.orgSubUnitOperatorsSearchControllerApi = new OrgSubUnitOperatorsSearchControllerApi(apiClient);
+        this.pdndServiceSearchControllerApi = new PdndServiceSearchControllerApi(apiClient);
+        this.pdndServiceApi = new PdndServiceApi(apiClient);
     }
 
     @PreDestroy
@@ -137,6 +153,30 @@ public class OrganizationApisHolder {
 
     public OrgSubUnitEntityControllerApi getOrgSubUnitEntityControllerApi(String accessToken) {
       return getApi(accessToken, orgSubUnitEntityControllerApi);
+    }
+
+    public PdndClientApi getPdndClientApi(String accessToken) {
+      return getApi(accessToken, pdndClientApi);
+    }
+
+    public OrgSubUnitEntityExtendedControllerApi getOrgSubUnitEntityExtendedControllerApi(String accessToken) {
+      return getApi(accessToken, orgSubUnitEntityExtendedControllerApi);
+    }
+
+    public PdndServiceApi getPdndServiceApi(String accessToken) {
+      return getApi(accessToken, pdndServiceApi);
+    }
+
+    public OrgSubUnitSearchControllerApi getOrgSubUnitSearchControllerApi(String accessToken) {
+      return getApi(accessToken, orgSubUnitSearchControllerApi);
+    }
+
+    public OrgSubUnitOperatorsSearchControllerApi getOrgSubUnitOperatorsSearchControllerApi(String accessToken) {
+     return getApi(accessToken, orgSubUnitOperatorsSearchControllerApi);
+    }
+
+    public PdndServiceSearchControllerApi getPdndServiceSearchControllerApi(String accessToken) {
+      return getApi(accessToken, pdndServiceSearchControllerApi);
     }
 
     private <T extends BaseApi> T getApi(String accessToken, T api) {

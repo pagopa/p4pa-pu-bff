@@ -1,9 +1,10 @@
 package it.gov.pagopa.pu.bff.connector.organization;
 
 import it.gov.pagopa.pu.bff.connector.organization.client.OrgSubUnitEntityClient;
+import it.gov.pagopa.pu.bff.connector.organization.client.OrgSubUnitEntityExtendedClient;
+import it.gov.pagopa.pu.bff.connector.organization.client.OrgSubUnitSearchClient;
 import it.gov.pagopa.pu.bff.util.TestUtils;
-import it.gov.pagopa.pu.organization.dto.generated.OrgSubUnit;
-import it.gov.pagopa.pu.organization.dto.generated.OrgSubUnitRequestBody;
+import it.gov.pagopa.pu.organization.dto.generated.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -11,6 +12,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import uk.co.jemos.podam.api.PodamFactory;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
@@ -26,17 +29,29 @@ class OrgSubUnitServiceTest {
 
   @Mock
   private OrgSubUnitEntityClient orgSubUnitEntityClientMock;
+  @Mock
+  private OrgSubUnitEntityExtendedClient orgSubUnitEntityExtendedClientMock;
+  @Mock
+  private OrgSubUnitSearchClient orgSubUnitSearchClientMock;
 
   private OrgSubUnitService service;
 
   @BeforeEach
   void setUp() {
-    service = new OrgSubUnitServiceImpl(orgSubUnitEntityClientMock);
+    service = new OrgSubUnitServiceImpl(
+      orgSubUnitEntityClientMock,
+      orgSubUnitEntityExtendedClientMock,
+      orgSubUnitSearchClientMock
+    );
   }
 
   @AfterEach
   void verifyNoMoreInteractions() {
-    Mockito.verifyNoMoreInteractions(orgSubUnitEntityClientMock);
+    Mockito.verifyNoMoreInteractions(
+      orgSubUnitEntityClientMock,
+      orgSubUnitEntityExtendedClientMock,
+      orgSubUnitSearchClientMock
+    );
   }
 
   @Test
@@ -95,6 +110,51 @@ class OrgSubUnitServiceTest {
     OrgSubUnit result = service.updateOrgSubUnit(orgSubUnitId, requestBody, accessToken);
 
     // Then
+    assertSame(expectedResult, result);
+  }
+
+  @Test
+  void whenUpdateOrgSubUnitStatusThenInvokeClient() {
+    Long organizationId = 1L;
+    String subUnitCode = "subUnitCode";
+    OrgSubUnitStatus orgSubUnitStatus = OrgSubUnitStatus.CANCELLED;
+
+    service.updateOrgSubUnitStatus(organizationId, subUnitCode, orgSubUnitStatus, accessToken);
+
+    verify(orgSubUnitEntityExtendedClientMock).updateStatus(organizationId, subUnitCode, orgSubUnitStatus, accessToken);
+  }
+
+  @Test
+  void whenFindByOrganizationIdAndFiltersThenInvokeClient() {
+    Long organizationId = 1L;
+    String operatorExternalUserId = "operatorExternalUserId";
+    String subUnitCode = "subUnitCode";
+    OrgSubUnitStatus status = OrgSubUnitStatus.ACTIVE;
+    SubUnitType subUnitType = SubUnitType.AOO;
+    Pageable pageable = PageRequest.ofSize(10);
+
+    PagedModelOrgSubUnit expectedResult = podamFactory.manufacturePojo(PagedModelOrgSubUnit.class);
+
+    when(orgSubUnitSearchClientMock.findByOrganizationIdAndFilters(
+      organizationId,
+      operatorExternalUserId,
+      subUnitCode,
+      status,
+      subUnitType,
+      pageable,
+      accessToken
+    )).thenReturn(expectedResult);
+
+    PagedModelOrgSubUnit result = service.findByOrganizationIdAndFilters(
+      organizationId,
+      operatorExternalUserId,
+      subUnitCode,
+      status,
+      subUnitType,
+      pageable,
+      accessToken
+    );
+
     assertSame(expectedResult, result);
   }
 }

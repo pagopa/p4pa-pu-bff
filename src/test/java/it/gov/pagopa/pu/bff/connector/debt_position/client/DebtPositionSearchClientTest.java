@@ -5,7 +5,7 @@ import static org.mockito.Mockito.when;
 
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.connector.debt_position.config.DebtPositionApisHolder;
-import it.gov.pagopa.pu.debtpositions.controller.generated.DebtPositionSearchControllerApi;
+import it.gov.pagopa.pu.debtpositions.client.generated.DebtPositionSearchControllerApi;
 import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelDebtPosition;
 import java.util.Collections;
 import org.junit.jupiter.api.AfterEach;

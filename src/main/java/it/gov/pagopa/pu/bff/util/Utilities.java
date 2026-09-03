@@ -91,6 +91,10 @@ public class Utilities {
     return MDC.get("traceId");
   }
 
+  public static String getSpanId(){
+    return MDC.get("spanId");
+  }
+
   public static String resolveRemittanceInformation(String remittanceInformation, String originalRemittanceInformation) {
     if (originalRemittanceInformation != null &&
       remittanceInformation.startsWith(Constants.INSTALLMENT_REMITTANCE_INFORMATION_PLACEHOLDER)) {

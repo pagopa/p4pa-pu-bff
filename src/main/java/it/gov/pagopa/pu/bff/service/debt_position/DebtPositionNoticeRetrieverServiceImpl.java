@@ -6,7 +6,7 @@ import it.gov.pagopa.pu.bff.connector.debt_position.DebtPositionTypeOrgOperators
 import it.gov.pagopa.pu.bff.connector.pagopapayments.PrintPaymentNoticeService;
 import it.gov.pagopa.pu.bff.dto.FileResourceDTO;
 import it.gov.pagopa.pu.bff.exception.InvalidDebtPositionException;
-import it.gov.pagopa.pu.bff.exception.ResourceNotFoundException;
+import it.gov.pagopa.pu.bff.exception.common.NotFoundException;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionDTO;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrgOperators;
@@ -55,7 +55,7 @@ public class DebtPositionNoticeRetrieverServiceImpl implements DebtPositionNotic
     DebtPositionDTO debtPosition = debtPositionService.getDebtPosition(
       debtPositionId, accessToken);
     if(debtPosition==null){
-      throw new ResourceNotFoundException("DEBT_POSITION_NOT_FOUND", "DebtPosition having ID %d not found".formatted(debtPositionId));
+      throw new NotFoundException("DEBT_POSITION_NOT_FOUND", "DebtPosition having ID %d not found".formatted(debtPositionId));
     }
     if(!organizationId.equals(debtPosition.getOrganizationId())){
       throw new InvalidDebtPositionException("INVALID_ORGANIZATION",

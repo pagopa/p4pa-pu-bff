@@ -4,7 +4,7 @@ import it.gov.pagopa.pu.bff.connector.classification.config.ClassificationApisHo
 import it.gov.pagopa.pu.bff.dto.ClassificationFiltersDTO;
 import it.gov.pagopa.pu.bff.util.PageUtils;
 import it.gov.pagopa.pu.bff.util.TestUtils;
-import it.gov.pagopa.pu.classification.controller.generated.ClassificationSearchControllerApi;
+import it.gov.pagopa.pu.classification.client.generated.ClassificationSearchControllerApi;
 import it.gov.pagopa.pu.classification.dto.generated.PagedModelClassification;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;

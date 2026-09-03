@@ -6,7 +6,7 @@ import it.gov.pagopa.pu.bff.dto.AssessmentsRegistryFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.generated.AssessmentsRegistryDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedAssessmentsRegistry;
 import it.gov.pagopa.pu.bff.exception.InvalidAssessmentsRegistryException;
-import it.gov.pagopa.pu.bff.exception.ResourceNotFoundException;
+import it.gov.pagopa.pu.bff.exception.common.NotFoundException;
 import it.gov.pagopa.pu.bff.mapper.AssessmentsRegistryDTOMapper;
 import it.gov.pagopa.pu.bff.mapper.AssessmentsRegistryExtendedDTOMapper;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
@@ -72,7 +72,7 @@ public class AssessmentsRegistryRetrieverServiceImpl implements AssessmentsRegis
   private List<DebtPositionTypeOrg> getDebtPositionTypeOrgs(Long organizationId, String mappedExternalUserId, String accessToken) {
     List<DebtPositionTypeOrg> debtPositionTypeOrgs = debtPositionTypeOrgRetrieverService.getDebtPositionTypeOrgs(organizationId, null, mappedExternalUserId, accessToken);
     if(CollectionUtils.isEmpty(debtPositionTypeOrgs)){
-      throw new ResourceNotFoundException("ASSESSMENT_REGISTRY_NOT_FOUND", "AssessmentsRegistries not found for organizationId " + organizationId);
+      throw new NotFoundException("ASSESSMENT_REGISTRY_NOT_FOUND", "AssessmentsRegistries not found for organizationId " + organizationId);
     }
     return debtPositionTypeOrgs;
   }

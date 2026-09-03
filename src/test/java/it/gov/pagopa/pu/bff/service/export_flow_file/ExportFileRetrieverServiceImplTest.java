@@ -6,7 +6,7 @@ import it.gov.pagopa.pu.bff.connector.process_executions.ExportFileService;
 import it.gov.pagopa.pu.bff.dto.ExportFileFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.OffsetDateTimeIntervalFilter;
 import it.gov.pagopa.pu.bff.dto.generated.*;
-import it.gov.pagopa.pu.bff.exception.ResourceNotFoundException;
+import it.gov.pagopa.pu.bff.exception.common.NotFoundException;
 import it.gov.pagopa.pu.bff.mapper.ExportFileMapper;
 import it.gov.pagopa.pu.bff.mapper.export_file.PaidExportFileRequestDTOMapper;
 import it.gov.pagopa.pu.bff.mapper.export_file.ReceiptsArchivingExportFileRequestDTOMapper;
@@ -35,6 +35,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class ExportFileRetrieverServiceImplTest {
@@ -81,10 +82,10 @@ class ExportFileRetrieverServiceImplTest {
       AuthorizationService.class)) {
       authorizationServiceMockedStatic.when(() -> AuthorizationService.isAdminRole(organizationId, userInfo))
         .thenReturn(true);
-      Mockito.when(exportFileServiceMock.getExportFiles(
+      when(exportFileServiceMock.getExportFiles(
           exportFileFilters, null, null, accessToken))
         .thenReturn(pagedModelExportFile);
-      Mockito.when(exportFileMapperMock.mapToPagedExportFile(
+      when(exportFileMapperMock.mapToPagedExportFile(
           pagedModelExportFile, userInfo, accessToken))
         .thenReturn(expectedResult);
 
@@ -120,9 +121,9 @@ class ExportFileRetrieverServiceImplTest {
     try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
       authorizationServiceMockedStatic.when(() -> AuthorizationService.isAdminRole(organizationId, userInfo))
         .thenReturn(false);
-      Mockito.when(exportFileServiceMock.getExportFiles(exportFileFilters, operatorExternalId, null, accessToken))
+      when(exportFileServiceMock.getExportFiles(exportFileFilters, operatorExternalId, null, accessToken))
         .thenReturn(pagedModelExportFile);
-      Mockito.when(exportFileMapperMock.mapToPagedExportFile(pagedModelExportFile, userInfo, accessToken))
+      when(exportFileMapperMock.mapToPagedExportFile(pagedModelExportFile, userInfo, accessToken))
         .thenReturn(expectedResult);
 
       PagedExportFile result = exportFileRetrieverService.getExportFiles(
@@ -231,10 +232,10 @@ class ExportFileRetrieverServiceImplTest {
     try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
       authorizationServiceMockedStatic.when(() -> AuthorizationService.isAdminRole(filtersDTO.getOrganizationId(), loggedUser)).thenReturn(true);
 
-      Mockito.when(exportFileServiceMock.getExportFiles(filtersDTO, null, pageable, accessToken))
+      when(exportFileServiceMock.getExportFiles(filtersDTO, null, pageable, accessToken))
         .thenReturn(pagedModelExportFile);
 
-      Mockito.when(exportFileMapperMock.mapToPagedExportFile(pagedModelExportFile, loggedUser, accessToken))
+      when(exportFileMapperMock.mapToPagedExportFile(pagedModelExportFile, loggedUser, accessToken))
         .thenReturn(expectedPagedExportFile);
 
       PagedExportFile result = exportFileRetrieverService.getExportFiles(filtersDTO, pageable, loggedUser, accessToken);
@@ -262,7 +263,7 @@ class ExportFileRetrieverServiceImplTest {
 
     exportFileRetrieverService.createPaidExportFile(requestDTO, user, accessToken);
 
-    Mockito.verify(exportFileServiceMock).createPaidExportFile(paidExportFileRequestDTOMapper.map2ProcessExecutionsDto(requestDTO), accessToken);
+    verify(exportFileServiceMock).createPaidExportFile(paidExportFileRequestDTOMapper.map2ProcessExecutionsDto(requestDTO), accessToken);
   }
 
   @Test
@@ -289,7 +290,7 @@ class ExportFileRetrieverServiceImplTest {
     exportFileRetrieverService.createClassificationsExportFile(requestDTO, user, accessToken);
 
     ArgumentCaptor<ClassificationsExportFileRequestDTO> captor = ArgumentCaptor.forClass(ClassificationsExportFileRequestDTO.class);
-    Mockito.verify(exportFileServiceMock).createClassificationsExportFile(captor.capture(), Mockito.eq(accessToken));
+    verify(exportFileServiceMock).createClassificationsExportFile(captor.capture(), Mockito.eq(accessToken));
 
     ClassificationsExportFileRequestDTO capturedDTO = captor.getValue();
     Set<String> actualCodes = capturedDTO.getFilterFields().getDebtPositionTypeOrgCodes();
@@ -321,13 +322,13 @@ class ExportFileRetrieverServiceImplTest {
     List<DebtPositionTypeOrg> debtPositionTypeOrgs = podamFactory.manufacturePojo(List.class, DebtPositionTypeOrg.class);
     Set<String> codes = debtPositionTypeOrgs.stream().map(DebtPositionTypeOrg::getCode).collect(Collectors.toSet());
 
-    Mockito.when(debtPositionTypeOrgRetrieverServiceMock.getDebtPositionTypeOrgCodes(1L, null, user.getMappedExternalUserId(), accessToken))
+    when(debtPositionTypeOrgRetrieverServiceMock.getDebtPositionTypeOrgCodes(1L, null, user.getMappedExternalUserId(), accessToken))
       .thenReturn(codes);
 
     exportFileRetrieverService.createClassificationsExportFile(requestDTO, user, accessToken);
 
     ArgumentCaptor<ClassificationsExportFileRequestDTO> captor = ArgumentCaptor.forClass(ClassificationsExportFileRequestDTO.class);
-    Mockito.verify(exportFileServiceMock).createClassificationsExportFile(captor.capture(), Mockito.eq(accessToken));
+    verify(exportFileServiceMock).createClassificationsExportFile(captor.capture(), Mockito.eq(accessToken));
 
     ClassificationsExportFileRequestDTO capturedDTO = captor.getValue();
     Set<String> actualCodes = capturedDTO.getFilterFields().getDebtPositionTypeOrgCodes();
@@ -359,13 +360,13 @@ class ExportFileRetrieverServiceImplTest {
     List<DebtPositionTypeOrg> debtPositionTypeOrgs = podamFactory.manufacturePojo(List.class, DebtPositionTypeOrg.class);
     Set<String> codes = debtPositionTypeOrgs.stream().map(DebtPositionTypeOrg::getCode).collect(Collectors.toSet());
 
-    Mockito.when(debtPositionTypeOrgRetrieverServiceMock.getDebtPositionTypeOrgCodes(1L, null, user.getMappedExternalUserId(), accessToken))
+    when(debtPositionTypeOrgRetrieverServiceMock.getDebtPositionTypeOrgCodes(1L, null, user.getMappedExternalUserId(), accessToken))
       .thenReturn(codes);
 
     exportFileRetrieverService.createClassificationsExportFile(requestDTO, user, accessToken);
 
     ArgumentCaptor<ClassificationsExportFileRequestDTO> captor = ArgumentCaptor.forClass(ClassificationsExportFileRequestDTO.class);
-    Mockito.verify(exportFileServiceMock).createClassificationsExportFile(captor.capture(), Mockito.eq(accessToken));
+    verify(exportFileServiceMock).createClassificationsExportFile(captor.capture(), Mockito.eq(accessToken));
 
     ClassificationsExportFileRequestDTO capturedDTO = captor.getValue();
     Set<String> actualCodes = capturedDTO.getFilterFields().getDebtPositionTypeOrgCodes();
@@ -395,15 +396,15 @@ class ExportFileRetrieverServiceImplTest {
     userOrgRole.setOrganizationId(1L);
     user.setOrganizations(List.of(userOrgRole));
 
-    Mockito.doThrow(new ResourceNotFoundException("DEBT_POSITION_TYPE_ORG_NOT_FOUND", "DebtPositionTypeOrgCode not found"))
+    doThrow(new NotFoundException("DEBT_POSITION_TYPE_ORG_NOT_FOUND", "DebtPositionTypeOrgCode not found"))
       .when(debtPositionTypeOrgRetrieverServiceMock)
       .validateOperator(Mockito.eq(1L), Mockito.eq("UNAUTHORIZED_CODE"), Mockito.anyString(), Mockito.eq(accessToken));
 
-    assertThrows(ResourceNotFoundException.class, () -> {
+    assertThrows(NotFoundException.class, () -> {
       exportFileRetrieverService.createClassificationsExportFile(requestDTO, user, accessToken);
     });
 
-    Mockito.verify(exportFileServiceMock, Mockito.never()).createClassificationsExportFile(Mockito.any(), Mockito.any());
+    verify(exportFileServiceMock, never()).createClassificationsExportFile(Mockito.any(), Mockito.any());
   }
 
 
@@ -426,7 +427,7 @@ class ExportFileRetrieverServiceImplTest {
 
     exportFileRetrieverService.createPaymentsReportingExportFile(requestDTO, user, accessToken);
 
-    Mockito.verify(exportFileServiceMock).createPaymentsReportingExportFile(requestDTO, accessToken);
+    verify(exportFileServiceMock).createPaymentsReportingExportFile(requestDTO, accessToken);
   }
 
   @Test
@@ -449,7 +450,7 @@ class ExportFileRetrieverServiceImplTest {
     exportFileRetrieverService.createReceiptsArchivingExportFile(
       requestDTO, user, accessToken);
 
-    Mockito.verify(exportFileServiceMock).createReceiptsArchivingExportFile(
+    verify(exportFileServiceMock).createReceiptsArchivingExportFile(
       receiptsArchivingExportFileRequestDTOMapper.map2ProcessExecutionsDto(
         requestDTO), accessToken);
   }

@@ -6,6 +6,7 @@ import it.gov.pagopa.pu.bff.dto.generated.OrganizationDetail;
 import it.gov.pagopa.pu.bff.dto.generated.PagedOrganizationWithDebtPositionTypeOrgAndOperatorsCount;
 import it.gov.pagopa.pu.bff.dto.generated.PagedOrganizationWithDebtPositionTypeOrgCount;
 import it.gov.pagopa.pu.organization.dto.generated.OrganizationDetailDTO;
+import it.gov.pagopa.pu.organization.dto.generated.OrganizationUpdateDTO;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
@@ -20,7 +21,7 @@ public interface OrganizationRetrieverService {
 
   String getOrgFiscalCode(Long organizationId, UserInfo loggedUser, String accessToken);
 
-  void updateOrganization(Long organizationId, OrganizationDetailDTO organizationDetailDTO, UserInfo loggedUser, String accessToken);
+  void updateOrganization(Long organizationId, OrganizationUpdateDTO organizationUpdateDTO, UserInfo loggedUser, String accessToken);
 
   OrganizationDetail getOrganizationDetail(Long organizationId, UserInfo loggedUser, String accessToken);
 }

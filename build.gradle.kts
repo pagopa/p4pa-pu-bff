@@ -274,7 +274,7 @@ tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>("ope
       "CreateClientRequest" to "it.gov.pagopa.pu.auth.dto.generated.CreateClientRequest",
       "AssessmentsRegistryExtendedDTO" to "it.gov.pagopa.pu.bff.dto.AssessmentsRegistryExtendedDTO",
       "TreasuredClassificationExtendedDTO" to "it.gov.pagopa.pu.bff.dto.TreasuredClassificationExtendedDTO",
-      "Organization" to "it.gov.pagopa.pu.organization.dto.generated.OrganizationDetailDTO",
+      "OrganizationUpdateDTO" to "it.gov.pagopa.pu.organization.dto.generated.OrganizationUpdateDTO",
       "OrganizationStatus" to "it.gov.pagopa.pu.organization.dto.generated.OrganizationStatus",
       "SpontaneousForm" to "it.gov.pagopa.pu.debtpositions.dto.generated.SpontaneousForm",
       "SpontaneousFormStructure" to "it.gov.pagopa.pu.debtpositions.dto.generated.SpontaneousFormStructure",
@@ -358,7 +358,7 @@ tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>("ope
   description = "description"
 
   generatorName.set("java")
-  remoteInputSpec.set("https://raw.githubusercontent.com/pagopa/p4pa-doc/refs/heads/main/openapi/$targetEnv/internal/p4pa-organization.generated.openapi.json")
+  remoteInputSpec.set("https://raw.githubusercontent.com/pagopa/p4pa-organization/refs/heads/P4ADEV-4997-add-org-sub-unit-count-to-org-details/openapi/generated.openapi.json") // TODO: revert
   outputDir.set("$projectDir/build/generated")
   invokerPackage.set("it.gov.pagopa.pu.organization.generated")
   apiPackage.set("it.gov.pagopa.pu.organization.client.generated")

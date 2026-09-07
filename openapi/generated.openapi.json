@@ -14202,6 +14202,15 @@
             "type" : "integer",
             "format" : "int32",
             "nullable" : true
+          },
+          "orgSubUnitCount" : {
+            "type" : "integer",
+            "format" : "int64",
+            "nullable" : true
+          },
+          "orgTypeDescription" : {
+            "type" : "string",
+            "nullable" : true
           }
         }
       },

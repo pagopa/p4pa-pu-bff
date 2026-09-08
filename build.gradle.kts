@@ -274,7 +274,7 @@ tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>("ope
       "CreateClientRequest" to "it.gov.pagopa.pu.auth.dto.generated.CreateClientRequest",
       "AssessmentsRegistryExtendedDTO" to "it.gov.pagopa.pu.bff.dto.AssessmentsRegistryExtendedDTO",
       "TreasuredClassificationExtendedDTO" to "it.gov.pagopa.pu.bff.dto.TreasuredClassificationExtendedDTO",
-      "Organization" to "it.gov.pagopa.pu.organization.dto.generated.OrganizationDetailDTO",
+      "OrganizationUpdateDTO" to "it.gov.pagopa.pu.organization.dto.generated.OrganizationUpdateDTO",
       "OrganizationStatus" to "it.gov.pagopa.pu.organization.dto.generated.OrganizationStatus",
       "SpontaneousForm" to "it.gov.pagopa.pu.debtpositions.dto.generated.SpontaneousForm",
       "SpontaneousFormStructure" to "it.gov.pagopa.pu.debtpositions.dto.generated.SpontaneousFormStructure",

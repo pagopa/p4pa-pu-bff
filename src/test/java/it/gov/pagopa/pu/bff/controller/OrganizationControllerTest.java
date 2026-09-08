@@ -5,7 +5,7 @@ import it.gov.pagopa.pu.bff.dto.generated.*;
 import it.gov.pagopa.pu.bff.security.SecurityUtilsTest;
 import it.gov.pagopa.pu.bff.service.organization.OrganizationRetrieverService;
 import it.gov.pagopa.pu.bff.util.TestUtils;
-import it.gov.pagopa.pu.organization.dto.generated.OrganizationDetailDTO;
+import it.gov.pagopa.pu.organization.dto.generated.OrganizationUpdateDTO;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -126,7 +126,7 @@ class OrganizationControllerTest {
   @Test
   void givenCorrectRequestWhenUpdateOrganizationThenOk() {
     Long organizationId = 1L;
-    OrganizationDetailDTO organization = new OrganizationDetailDTO();
+    OrganizationUpdateDTO organization = new OrganizationUpdateDTO();
 
     doNothing().when(organizationRetrieverServiceMock).updateOrganization(organizationId, organization, loggedUser, accessToken);
 

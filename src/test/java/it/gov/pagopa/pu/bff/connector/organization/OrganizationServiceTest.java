@@ -6,6 +6,7 @@ import it.gov.pagopa.pu.bff.connector.organization.client.OrganizationEntityClie
 import it.gov.pagopa.pu.bff.connector.organization.client.OrganizationSearchClient;
 import it.gov.pagopa.pu.organization.dto.generated.Organization;
 import it.gov.pagopa.pu.organization.dto.generated.OrganizationDetailDTO;
+import it.gov.pagopa.pu.organization.dto.generated.OrganizationUpdateDTO;
 import it.gov.pagopa.pu.organization.dto.generated.PagedModelOrganization;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -116,12 +117,12 @@ class OrganizationServiceTest {
 
   @Test
   void whenUpdateOrganizationThenInvokeClient() {
-    OrganizationDetailDTO organizationDetailDTO = new OrganizationDetailDTO();
+    OrganizationUpdateDTO organizationUpdateDTO = new OrganizationUpdateDTO();
     String accessToken = "accessToken";
 
-    doNothing().when(organizationClientMock).updateOrganization(organizationDetailDTO, accessToken);
+    doNothing().when(organizationClientMock).updateOrganization(organizationUpdateDTO, accessToken);
 
-    service.updateOrganization(organizationDetailDTO, accessToken);
+    service.updateOrganization(organizationUpdateDTO, accessToken);
 
     Mockito.verifyNoMoreInteractions(organizationClientMock);
   }

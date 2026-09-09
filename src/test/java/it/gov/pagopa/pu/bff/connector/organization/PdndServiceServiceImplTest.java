@@ -4,9 +4,9 @@ import it.gov.pagopa.pu.bff.connector.organization.client.PdndServiceClient;
 import it.gov.pagopa.pu.bff.connector.organization.client.PdndServiceSearchClient;
 import it.gov.pagopa.pu.bff.util.TestUtils;
 import it.gov.pagopa.pu.organization.dto.generated.PdndService;
-import it.gov.pagopa.pu.organization.dto.generated.PdndServiceDTO;
 import it.gov.pagopa.pu.organization.dto.generated.PdndServiceRequestDTO;
 import it.gov.pagopa.pu.organization.dto.generated.PdndServiceType;
+import it.gov.pagopa.pu.organization.dto.generated.PdndServiceView;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -58,24 +58,24 @@ class PdndServiceServiceImplTest {
   @Test
   void givenOrganizationIdAndPurposeIdWhenGetPdndServiceThenReturnPdndService() {
     String purposeId = "PURPOSE_001";
-    PdndServiceDTO expectedResult = new PdndServiceDTO();
+    PdndServiceView expectedResult = new PdndServiceView();
 
-    when(clientMock.getPdndService(ORGANIZATION_ID, purposeId, SUB_UNIT_CODE, ACCESS_TOKEN))
+    when(clientMock.getPdndService(ORGANIZATION_ID, purposeId, ACCESS_TOKEN))
       .thenReturn(expectedResult);
 
-    PdndServiceDTO result = service.getPdndService(ORGANIZATION_ID, purposeId, SUB_UNIT_CODE, ACCESS_TOKEN);
+    PdndServiceView result = service.getPdndService(ORGANIZATION_ID, purposeId, ACCESS_TOKEN);
 
     assertSame(expectedResult, result);
   }
 
   @Test
   void givenOrganizationIdAndServiceTypeWhenGetPdndServicesThenReturnPdndServices() {
-    List<PdndServiceDTO> expectedResult = List.of(new PdndServiceDTO());
+    List<PdndServiceView> expectedResult = List.of(new PdndServiceView());
 
     when(clientMock.getPdndServices(ORGANIZATION_ID, SUB_UNIT_CODE, PdndServiceType.SEND, ACCESS_TOKEN))
       .thenReturn(expectedResult);
 
-    List<PdndServiceDTO> result = service.getPdndServices(ORGANIZATION_ID, SUB_UNIT_CODE, PdndServiceType.SEND, ACCESS_TOKEN);
+    List<PdndServiceView> result = service.getPdndServices(ORGANIZATION_ID, SUB_UNIT_CODE, PdndServiceType.SEND, ACCESS_TOKEN);
 
     assertSame(expectedResult, result);
   }
@@ -97,9 +97,9 @@ class PdndServiceServiceImplTest {
   void givenOrganizationIdAndPurposeIdWhenDeletePdndServiceThenDeletePdndService() {
     String purposeId = "PURPOSE_001";
 
-    service.deletePdndService(ORGANIZATION_ID, purposeId, SUB_UNIT_CODE, ACCESS_TOKEN);
+    service.deletePdndService(ORGANIZATION_ID, purposeId, ACCESS_TOKEN);
 
 
-    verify(clientMock).deletePdndService(ORGANIZATION_ID, purposeId, SUB_UNIT_CODE, ACCESS_TOKEN);
+    verify(clientMock).deletePdndService(ORGANIZATION_ID, purposeId, ACCESS_TOKEN);
   }
 }

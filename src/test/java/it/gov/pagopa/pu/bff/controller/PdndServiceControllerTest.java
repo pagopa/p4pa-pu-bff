@@ -5,9 +5,9 @@ import it.gov.pagopa.pu.bff.security.SecurityUtilsTest;
 import it.gov.pagopa.pu.bff.service.pdnd_service.PdndServiceRetrieverService;
 import it.gov.pagopa.pu.bff.util.TestUtils;
 import it.gov.pagopa.pu.organization.dto.generated.PdndService;
-import it.gov.pagopa.pu.organization.dto.generated.PdndServiceDTO;
 import it.gov.pagopa.pu.organization.dto.generated.PdndServiceRequestDTO;
 import it.gov.pagopa.pu.organization.dto.generated.PdndServiceType;
+import it.gov.pagopa.pu.organization.dto.generated.PdndServiceView;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -66,12 +66,12 @@ class PdndServiceControllerTest {
   @Test
   void givenOrganizationIdPurposeIdAndSubUnitCodeWhenGetPdndServiceThenReturnPdndService() {
     String purposeId = "PURPOSE_001";
-    PdndServiceDTO expectedService = TestUtils.getPodamFactory().manufacturePojo(PdndServiceDTO.class);
+    PdndServiceView expectedService = TestUtils.getPodamFactory().manufacturePojo(PdndServiceView.class);
 
-    when(pdndServiceRetrieverServiceMock.getPdndService(ORGANIZATION_ID, purposeId, ORG_SUB_UNIT_CODE, loggedUser, ACCESS_TOKEN))
+    when(pdndServiceRetrieverServiceMock.getPdndService(ORGANIZATION_ID, purposeId, loggedUser, ACCESS_TOKEN))
       .thenReturn(expectedService);
 
-    ResponseEntity<PdndServiceDTO> result = controller.getPdndService(ORGANIZATION_ID, purposeId, ORG_SUB_UNIT_CODE);
+    ResponseEntity<PdndServiceView> result = controller.getPdndService(ORGANIZATION_ID, purposeId, ORG_SUB_UNIT_CODE);
 
     assertNotNull(result);
     assertEquals(HttpStatus.OK, result.getStatusCode());
@@ -80,12 +80,12 @@ class PdndServiceControllerTest {
 
   @Test
   void givenOrganizationIdAndServiceTypeAndSubUnitCodeWhenGetPdndServicesThenReturnPdndServices() {
-    List<PdndServiceDTO> expectedResult = List.of(TestUtils.getPodamFactory().manufacturePojo(PdndServiceDTO.class));
+    List<PdndServiceView> expectedResult = List.of(TestUtils.getPodamFactory().manufacturePojo(PdndServiceView.class));
 
     when(pdndServiceRetrieverServiceMock.getPdndServices(ORGANIZATION_ID, ORG_SUB_UNIT_CODE, PdndServiceType.SEND, loggedUser, ACCESS_TOKEN))
       .thenReturn(expectedResult);
 
-    ResponseEntity<List<PdndServiceDTO>> result = controller.getPdndServices(ORGANIZATION_ID, ORG_SUB_UNIT_CODE, PdndServiceType.SEND);
+    ResponseEntity<List<PdndServiceView>> result = controller.getPdndServices(ORGANIZATION_ID, ORG_SUB_UNIT_CODE, PdndServiceType.SEND);
 
     assertNotNull(result);
     assertEquals(HttpStatus.OK, result.getStatusCode());
@@ -118,6 +118,6 @@ class PdndServiceControllerTest {
     assertEquals(HttpStatus.OK, result.getStatusCode());
     assertNull(result.getBody());
     verify(pdndServiceRetrieverServiceMock)
-      .deletePdndService(ORGANIZATION_ID, purposeId, ORG_SUB_UNIT_CODE, loggedUser, ACCESS_TOKEN);
+      .deletePdndService(ORGANIZATION_ID, purposeId, loggedUser, ACCESS_TOKEN);
   }
 }

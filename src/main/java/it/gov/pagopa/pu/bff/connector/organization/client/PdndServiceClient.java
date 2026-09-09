@@ -2,9 +2,9 @@ package it.gov.pagopa.pu.bff.connector.organization.client;
 
 import it.gov.pagopa.pu.bff.connector.organization.config.OrganizationApisHolder;
 import it.gov.pagopa.pu.organization.dto.generated.PdndService;
-import it.gov.pagopa.pu.organization.dto.generated.PdndServiceDTO;
 import it.gov.pagopa.pu.organization.dto.generated.PdndServiceRequestDTO;
 import it.gov.pagopa.pu.organization.dto.generated.PdndServiceType;
+import it.gov.pagopa.pu.organization.dto.generated.PdndServiceView;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,18 +22,18 @@ public class PdndServiceClient {
       .savePdndService(organizationId, pdndServiceRequestDTO, subUnitCode);
   }
 
-  public PdndServiceDTO getPdndService(Long organizationId, String purposeId, String subUnitCode, String accessToken) {
+  public PdndServiceView getPdndService(Long organizationId, String purposeId, String accessToken) {
     return organizationApisHolder.getPdndServiceApi(accessToken)
-      .getPdndService(organizationId, purposeId, subUnitCode);
+      .getPdndService(organizationId, purposeId);
   }
 
-  public List<PdndServiceDTO> getPdndServices(Long organizationId, String subUnitCode, PdndServiceType pdndServiceType, String accessToken) {
+  public List<PdndServiceView> getPdndServices(Long organizationId, String subUnitCode, PdndServiceType pdndServiceType, String accessToken) {
     return organizationApisHolder.getPdndServiceApi(accessToken)
       .getPdndServices(organizationId, subUnitCode, pdndServiceType);
   }
 
-  public void deletePdndService(Long organizationId, String purposeId, String subUnitCode, String accessToken) {
+  public void deletePdndService(Long organizationId, String purposeId, String accessToken) {
     organizationApisHolder.getPdndServiceApi(accessToken)
-      .deletePdndService(organizationId, purposeId, subUnitCode);
+      .deletePdndService(organizationId, purposeId);
   }
 }

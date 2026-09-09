@@ -5,9 +5,9 @@ import it.gov.pagopa.pu.bff.connector.organization.PdndServiceService;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
 import it.gov.pagopa.pu.bff.util.TestUtils;
 import it.gov.pagopa.pu.organization.dto.generated.PdndService;
-import it.gov.pagopa.pu.organization.dto.generated.PdndServiceDTO;
 import it.gov.pagopa.pu.organization.dto.generated.PdndServiceRequestDTO;
 import it.gov.pagopa.pu.organization.dto.generated.PdndServiceType;
+import it.gov.pagopa.pu.organization.dto.generated.PdndServiceView;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -63,22 +63,22 @@ class PdndServiceRetrieverServiceImplTest {
   @Test
   void givenAuthorizedAdminWhenGetPdndServiceThenReturnService() {
     String purposeId = "PURPOSE_001";
-    PdndServiceDTO expectedResult = TestUtils.getPodamFactory().manufacturePojo(PdndServiceDTO.class);
+    PdndServiceView expectedResult = TestUtils.getPodamFactory().manufacturePojo(PdndServiceView.class);
 
     doNothing().when(authorizationServiceMock)
       .validateAdminRole(ORGANIZATION_ID, USER_INFO);
 
-    when(pdndServiceServiceMock.getPdndService(ORGANIZATION_ID, purposeId, SUB_UNIT_CODE, ACCESS_TOKEN))
+    when(pdndServiceServiceMock.getPdndService(ORGANIZATION_ID, purposeId, ACCESS_TOKEN))
       .thenReturn(expectedResult);
 
-    PdndServiceDTO result = pdndServiceRetriever.getPdndService(ORGANIZATION_ID, purposeId, SUB_UNIT_CODE, USER_INFO, ACCESS_TOKEN);
+    PdndServiceView result = pdndServiceRetriever.getPdndService(ORGANIZATION_ID, purposeId, USER_INFO, ACCESS_TOKEN);
 
     assertSame(expectedResult, result);
   }
 
   @Test
   void givenAuthorizedAdminWhenGetPdndServicesThenReturnServices() {
-    List<PdndServiceDTO> expectedResult = List.of(TestUtils.getPodamFactory().manufacturePojo(PdndServiceDTO.class));
+    List<PdndServiceView> expectedResult = List.of(TestUtils.getPodamFactory().manufacturePojo(PdndServiceView.class));
 
     doNothing().when(authorizationServiceMock)
       .validateAdminRole(ORGANIZATION_ID, USER_INFO);
@@ -86,7 +86,7 @@ class PdndServiceRetrieverServiceImplTest {
     when(pdndServiceServiceMock.getPdndServices(ORGANIZATION_ID, SUB_UNIT_CODE, PdndServiceType.SEND, ACCESS_TOKEN))
       .thenReturn(expectedResult);
 
-    List<PdndServiceDTO> result = pdndServiceRetriever.getPdndServices(ORGANIZATION_ID, SUB_UNIT_CODE, PdndServiceType.SEND, USER_INFO, ACCESS_TOKEN);
+    List<PdndServiceView> result = pdndServiceRetriever.getPdndServices(ORGANIZATION_ID, SUB_UNIT_CODE, PdndServiceType.SEND, USER_INFO, ACCESS_TOKEN);
 
     assertSame(expectedResult, result);
   }
@@ -115,8 +115,8 @@ class PdndServiceRetrieverServiceImplTest {
       .validateAdminRole(ORGANIZATION_ID, USER_INFO);
 
     doNothing().when(pdndServiceServiceMock)
-      .deletePdndService(ORGANIZATION_ID, purposeId, SUB_UNIT_CODE, ACCESS_TOKEN);
+      .deletePdndService(ORGANIZATION_ID, purposeId, ACCESS_TOKEN);
 
-    pdndServiceRetriever.deletePdndService(ORGANIZATION_ID, purposeId, SUB_UNIT_CODE, USER_INFO, ACCESS_TOKEN);
+    pdndServiceRetriever.deletePdndService(ORGANIZATION_ID, purposeId, USER_INFO, ACCESS_TOKEN);
   }
 }

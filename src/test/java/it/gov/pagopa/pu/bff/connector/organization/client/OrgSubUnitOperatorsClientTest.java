@@ -12,6 +12,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
 
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -49,5 +50,8 @@ class OrgSubUnitOperatorsClientTest {
       .thenReturn(orgSubUnitOperatorsApiMock);
 
     client.addOrgSubUnitsToOperator(organizationId, mappedExternalUserId, orgSubUnitCodes, accessToken);
+
+    verify(organizationApisHolderMock).getOrgSubUnitOperatorsApi(accessToken);
+    verify(orgSubUnitOperatorsApiMock).addOrgSubUnitsToOperator(organizationId, mappedExternalUserId, orgSubUnitCodes);
   }
 }

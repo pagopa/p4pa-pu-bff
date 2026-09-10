@@ -18,6 +18,7 @@ import uk.co.jemos.podam.api.PodamFactory;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -75,5 +76,7 @@ class OrgSubUnitOperatorsServiceTest {
     String accessToken = "accessToken";
 
     service.addOrgSubUnitsToOperator(organizationId, mappedExternalUserId, orgSubUnitCodes, accessToken);
+
+    verify(orgSubUnitOperatorsClientMock).addOrgSubUnitsToOperator(organizationId, mappedExternalUserId, orgSubUnitCodes, accessToken);
   }
 }

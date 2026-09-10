@@ -22,6 +22,7 @@ import uk.co.jemos.podam.api.PodamFactory;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -86,5 +87,8 @@ class OrgSubUnitOperatorsControllerTest {
 
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertNull(response.getBody());
+
+    verify(orgSubUnitOperatorsRetrieverServiceMock)
+      .addOrgSubUnitsToOperator(organizationId, mappedExternalUserId, orgSubUnitCodes, loggedUser, ACCESS_TOKEN);
   }
 }

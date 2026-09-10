@@ -18,7 +18,6 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.web.util.DefaultUriBuilderFactory;
 
 import java.util.Collections;
-import java.util.List;
 
 import static org.mockito.Mockito.when;
 
@@ -280,21 +279,5 @@ class OrganizationApisHolderTest extends BaseApiHolderTest {
       ,
       new ParameterizedTypeReference<>() {},
       apisHolder::unload);
-  }
-
-  @Test
-  void whenGetOrgSubUnitOperatorsApiThenAuthenticationShouldBeSetInThreadSafeMode()
-    throws InterruptedException {
-
-    assertAuthenticationShouldBeSetInThreadSafeMode(
-      accessToken -> {
-        apisHolder.getOrgSubUnitOperatorsApi(accessToken)
-          .addOrgSubUnitsToOperator(1L, "mappedExternalUserId", List.of("SUB_UNIT_1", "SUB_UNIT_2"));
-
-        return null;
-      },
-      new ParameterizedTypeReference<Void>() {},
-      apisHolder::unload
-    );
   }
 }

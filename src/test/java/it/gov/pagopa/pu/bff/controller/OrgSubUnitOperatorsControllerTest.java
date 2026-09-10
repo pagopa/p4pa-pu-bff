@@ -6,7 +6,6 @@ import it.gov.pagopa.pu.bff.security.SecurityUtilsTest;
 import it.gov.pagopa.pu.bff.service.org_sub_unit_operators.OrgSubUnitOperatorsRetrieverService;
 import it.gov.pagopa.pu.bff.util.TestUtils;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,6 +19,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import uk.co.jemos.podam.api.PodamFactory;
 
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -69,8 +72,23 @@ class OrgSubUnitOperatorsControllerTest {
       pageable
     );
 
-    Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
-    Assertions.assertNotNull(response.getBody());
-    Assertions.assertSame(expectedResult, response.getBody());
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertNotNull(response.getBody());
+    assertSame(expectedResult, response.getBody());
+  }
+
+  @Test
+  void givenCorrectRequestWhenAddOrgSubUnitsToOperatorThenOk() {
+    Long organizationId = 1L;
+    String mappedExternalUserId = "mappedExternalUserId";
+    List<String> orgSubUnitCodes = List.of("SUB_UNIT_1", "SUB_UNIT_2");
+
+    ResponseEntity<Void> response = orgSubUnitOperatorsController.addOrgSubUnitsToOperator(organizationId, mappedExternalUserId, orgSubUnitCodes);
+
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertNull(response.getBody());
+
+    verify(orgSubUnitOperatorsRetrieverServiceMock)
+      .addOrgSubUnitsToOperator(organizationId, mappedExternalUserId, orgSubUnitCodes, loggedUser, ACCESS_TOKEN);
   }
 }

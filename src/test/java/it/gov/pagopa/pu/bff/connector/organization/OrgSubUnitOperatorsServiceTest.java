@@ -1,5 +1,6 @@
 package it.gov.pagopa.pu.bff.connector.organization;
 
+import it.gov.pagopa.pu.bff.connector.organization.client.OrgSubUnitOperatorsClient;
 import it.gov.pagopa.pu.bff.connector.organization.client.OrgSubUnitOperatorsSearchClient;
 import it.gov.pagopa.pu.bff.util.TestUtils;
 import it.gov.pagopa.pu.organization.dto.generated.PagedModelOrgSubUnitOperators;
@@ -14,6 +15,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import uk.co.jemos.podam.api.PodamFactory;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.Mockito.when;
 
@@ -23,17 +26,19 @@ class OrgSubUnitOperatorsServiceTest {
   public static final PodamFactory podamFactory = TestUtils.getPodamFactory();
   @Mock
   private OrgSubUnitOperatorsSearchClient orgSubUnitOperatorsSearchClientMock;
+  @Mock
+  private OrgSubUnitOperatorsClient orgSubUnitOperatorsClientMock;
 
   private OrgSubUnitOperatorsService service;
 
   @BeforeEach
   void setUp() {
-    service = new OrgSubUnitOperatorsServiceImpl(orgSubUnitOperatorsSearchClientMock);
+    service = new OrgSubUnitOperatorsServiceImpl(orgSubUnitOperatorsSearchClientMock, orgSubUnitOperatorsClientMock);
   }
 
   @AfterEach
   void verifyNoMoreInteractions() {
-    Mockito.verifyNoMoreInteractions(orgSubUnitOperatorsSearchClientMock);
+    Mockito.verifyNoMoreInteractions(orgSubUnitOperatorsSearchClientMock, orgSubUnitOperatorsClientMock);
   }
 
   @Test
@@ -60,5 +65,15 @@ class OrgSubUnitOperatorsServiceTest {
     );
 
     assertSame(expectedResult, result);
+  }
+
+  @Test
+  void whenAddOrgSubUnitsToOperatorThenInvokeClient() {
+    Long organizationId = 1L;
+    String mappedExternalUserId = "mappedExternalUserId";
+    List<String> orgSubUnitCodes = List.of("SUB_UNIT_1", "SUB_UNIT_2");
+    String accessToken = "accessToken";
+
+    service.addOrgSubUnitsToOperator(organizationId, mappedExternalUserId, orgSubUnitCodes, accessToken);
   }
 }

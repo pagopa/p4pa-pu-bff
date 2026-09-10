@@ -38,6 +38,7 @@ public class OrganizationApisHolder {
     private final OrgSubUnitOperatorsSearchControllerApi orgSubUnitOperatorsSearchControllerApi;
     private final PdndServiceApi pdndServiceApi;
     private final PdndServiceSearchControllerApi pdndServiceSearchControllerApi;
+    private final OrgSubUnitOperatorsApi orgSubUnitOperatorsApi;
     private final ThreadLocal<String> bearerTokenHolder = new ThreadLocal<>();
 
     public OrganizationApisHolder(
@@ -78,6 +79,7 @@ public class OrganizationApisHolder {
         this.orgSubUnitOperatorsSearchControllerApi = new OrgSubUnitOperatorsSearchControllerApi(apiClient);
         this.pdndServiceSearchControllerApi = new PdndServiceSearchControllerApi(apiClient);
         this.pdndServiceApi = new PdndServiceApi(apiClient);
+        this.orgSubUnitOperatorsApi = new OrgSubUnitOperatorsApi(apiClient);
     }
 
     @PreDestroy
@@ -177,6 +179,10 @@ public class OrganizationApisHolder {
 
     public PdndServiceSearchControllerApi getPdndServiceSearchControllerApi(String accessToken) {
       return getApi(accessToken, pdndServiceSearchControllerApi);
+    }
+
+    public OrgSubUnitOperatorsApi getOrgSubUnitOperatorsApi(String accessToken) {
+      return getApi(accessToken, orgSubUnitOperatorsApi);
     }
 
     private <T extends BaseApi> T getApi(String accessToken, T api) {

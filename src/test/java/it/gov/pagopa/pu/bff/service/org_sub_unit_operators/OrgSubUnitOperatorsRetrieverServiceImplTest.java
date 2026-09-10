@@ -218,4 +218,11 @@ class OrgSubUnitOperatorsRetrieverServiceImplTest {
     return pagedModel;
   }
 
+  @Test
+  void givenCorrectRequestWhenAddOrgSubUnitsToOperatorThenOk() {
+    String mappedExternalUserId = "mappedExternalUserId";
+    List<String> orgSubUnitCodes = List.of("SUB_UNIT_1", "SUB_UNIT_2");
+
+    service.addOrgSubUnitsToOperator(ORGANIZATION_ID, mappedExternalUserId, orgSubUnitCodes, loggedUser, ACCESS_TOKEN);
+  }
 }

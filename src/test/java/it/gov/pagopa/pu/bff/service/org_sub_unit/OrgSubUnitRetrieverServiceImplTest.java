@@ -67,7 +67,7 @@ class OrgSubUnitRetrieverServiceImplTest {
     OrgSubUnit expectedResult = podamFactory.manufacturePojo(OrgSubUnit.class);
 
     try (MockedStatic<AuthorizationService> authMock = Mockito.mockStatic(AuthorizationService.class)) {
-      authMock.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser))
+      authMock.when(() -> AuthorizationService.validateUserForOrganizationIdAndOrgSubUnitCode(organizationId, subUnitCode, loggedUser))
         .thenAnswer(a -> null);
 
       when(orgSubUnitServiceMock.getOrgSubUnitById(orgSubUnitId, accessToken))
@@ -91,7 +91,7 @@ class OrgSubUnitRetrieverServiceImplTest {
     UserInfo loggedUser = podamFactory.manufacturePojo(UserInfo.class);
 
     try (MockedStatic<AuthorizationService> authMock = Mockito.mockStatic(AuthorizationService.class)) {
-      authMock.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser))
+      authMock.when(() -> AuthorizationService.validateUserForOrganizationIdAndOrgSubUnitCode(organizationId, subUnitCode, loggedUser))
         .thenAnswer(a -> null);
 
       when(orgSubUnitServiceMock.getOrgSubUnitById(orgSubUnitId, accessToken))

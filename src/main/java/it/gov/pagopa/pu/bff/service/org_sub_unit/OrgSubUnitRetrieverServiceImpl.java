@@ -31,8 +31,9 @@ public class OrgSubUnitRetrieverServiceImpl implements OrgSubUnitRetrieverServic
 
   @Override
   public OrgSubUnit getOrgSubUnitById(Long organizationId, String subUnitCode, UserInfo loggedUser, String accessToken) {
-    AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser);
+    AuthorizationService.validateUserForOrganizationIdAndOrgSubUnitCode(organizationId, subUnitCode, loggedUser);
     OrgSubUnit orgSubUnit = orgSubUnitService.getOrgSubUnitById(calculateOrgSubUnitId(organizationId, subUnitCode), accessToken);
+
     if (orgSubUnit == null) {
       throw new NotFoundException("ORG_SUB_UNIT_NOT_FOUND", "Organization SubUnit having subUnitCode " + subUnitCode + " not found");
     }

@@ -36,6 +36,7 @@ public class OrganizationApisHolder {
     private final OrgSubUnitEntityExtendedControllerApi orgSubUnitEntityExtendedControllerApi;
     private final OrgSubUnitSearchControllerApi orgSubUnitSearchControllerApi;
     private final OrgSubUnitOperatorsSearchControllerApi orgSubUnitOperatorsSearchControllerApi;
+    private final OrgSubUnitApi orgSubUnitApi;
     private final PdndServiceApi pdndServiceApi;
     private final PdndServiceSearchControllerApi pdndServiceSearchControllerApi;
     private final OrgSubUnitOperatorsApi orgSubUnitOperatorsApi;
@@ -80,6 +81,7 @@ public class OrganizationApisHolder {
         this.pdndServiceSearchControllerApi = new PdndServiceSearchControllerApi(apiClient);
         this.pdndServiceApi = new PdndServiceApi(apiClient);
         this.orgSubUnitOperatorsApi = new OrgSubUnitOperatorsApi(apiClient);
+        this.orgSubUnitApi = new OrgSubUnitApi(apiClient);
     }
 
     @PreDestroy
@@ -183,6 +185,10 @@ public class OrganizationApisHolder {
 
     public OrgSubUnitOperatorsApi getOrgSubUnitOperatorsApi(String accessToken) {
       return getApi(accessToken, orgSubUnitOperatorsApi);
+    }
+
+    public OrgSubUnitApi getOrgSubUnitApi(String accessToken) {
+      return getApi(accessToken, orgSubUnitApi);
     }
 
     private <T extends BaseApi> T getApi(String accessToken, T api) {

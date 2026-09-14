@@ -11,6 +11,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @Slf4j
 public class OrgSubUnitsController implements OrgSubUnitsApi {
@@ -37,6 +39,12 @@ public class OrgSubUnitsController implements OrgSubUnitsApi {
   public ResponseEntity<OrgSubUnit> getOrgSubUnitById(Long organizationId, String subUnitCode) {
     log.info("User requested getOrgSubUnitById having subUnitCode {}", subUnitCode);
     return ResponseEntity.ok(subUnitRetrieverService.getOrgSubUnitById(organizationId, subUnitCode, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken()));
+  }
+
+  @Override
+  public ResponseEntity<List<OrgAndSubUnitDTO>> getOrgSubUnitWithNoServiceType(Long organizationId, PdndServiceType pdndServiceType) {
+    log.info("User requested orgSubUnit for organization {} having no serviceType {} configured", organizationId, pdndServiceType);
+    return ResponseEntity.ok(subUnitRetrieverService.getOrgSubUnitWithNoServiceType(organizationId, pdndServiceType,SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken()));
   }
 
   @Override

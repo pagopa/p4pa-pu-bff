@@ -8,13 +8,12 @@ import it.gov.pagopa.pu.bff.exception.InvalidOrgSubUnitException;
 import it.gov.pagopa.pu.bff.exception.common.NotFoundException;
 import it.gov.pagopa.pu.bff.mapper.PagedOrgSubUnitMapper;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
-import it.gov.pagopa.pu.organization.dto.generated.OrgSubUnit;
-import it.gov.pagopa.pu.organization.dto.generated.OrgSubUnitRequestBody;
-import it.gov.pagopa.pu.organization.dto.generated.OrgSubUnitStatus;
-import it.gov.pagopa.pu.organization.dto.generated.PagedModelOrgSubUnit;
+import it.gov.pagopa.pu.organization.dto.generated.*;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class OrgSubUnitRetrieverServiceImpl implements OrgSubUnitRetrieverService{
@@ -105,6 +104,12 @@ public class OrgSubUnitRetrieverServiceImpl implements OrgSubUnitRetrieverServic
     );
 
     return pagedOrgSubUnitMapper.map(pagedModelOrgSubUnit);
+  }
+
+  @Override
+  public List<OrgAndSubUnitDTO> getOrgSubUnitWithNoServiceType(Long organizationId, PdndServiceType pdndServiceType, UserInfo loggedUser, String accessToken) {
+    authorizationService.validateAdminRole(organizationId, loggedUser);
+    return orgSubUnitService.getOrgSubUnitWithNoServiceType(organizationId, pdndServiceType, accessToken);
   }
 
   private void validateOrganizationForSubUnit(Long organizationId, Long orgIdFromSubUnit) {

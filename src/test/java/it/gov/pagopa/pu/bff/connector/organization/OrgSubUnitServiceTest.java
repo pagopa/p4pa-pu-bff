@@ -1,5 +1,6 @@
 package it.gov.pagopa.pu.bff.connector.organization;
 
+import it.gov.pagopa.pu.bff.connector.organization.client.OrgSubUnitClient;
 import it.gov.pagopa.pu.bff.connector.organization.client.OrgSubUnitEntityClient;
 import it.gov.pagopa.pu.bff.connector.organization.client.OrgSubUnitEntityExtendedClient;
 import it.gov.pagopa.pu.bff.connector.organization.client.OrgSubUnitSearchClient;
@@ -33,6 +34,8 @@ class OrgSubUnitServiceTest {
   private OrgSubUnitEntityExtendedClient orgSubUnitEntityExtendedClientMock;
   @Mock
   private OrgSubUnitSearchClient orgSubUnitSearchClientMock;
+  @Mock
+  private OrgSubUnitClient orgSubUnitClient;
 
   private OrgSubUnitService service;
 
@@ -41,7 +44,8 @@ class OrgSubUnitServiceTest {
     service = new OrgSubUnitServiceImpl(
       orgSubUnitEntityClientMock,
       orgSubUnitEntityExtendedClientMock,
-      orgSubUnitSearchClientMock
+      orgSubUnitSearchClientMock,
+      orgSubUnitClient
     );
   }
 
@@ -50,7 +54,8 @@ class OrgSubUnitServiceTest {
     Mockito.verifyNoMoreInteractions(
       orgSubUnitEntityClientMock,
       orgSubUnitEntityExtendedClientMock,
-      orgSubUnitSearchClientMock
+      orgSubUnitSearchClientMock,
+      orgSubUnitClient
     );
   }
 

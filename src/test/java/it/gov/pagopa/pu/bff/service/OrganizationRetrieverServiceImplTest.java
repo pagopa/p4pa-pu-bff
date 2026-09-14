@@ -646,4 +646,21 @@ class OrganizationRetrieverServiceImplTest {
 
     assertTrue(ex.getMessage().contains("Organization having organizationId " + organizationId + " not found"));
   }
+
+  @Test
+  void  givenOrgIdAndSubUnitCodeWhenGetOrganizationApiKeysThenReturnListOrgKeys(){
+    Long organizationId = 123L;
+    String subUnitCode = "CODE";
+    List<OrganizationApiKey> expectedResult = List.of(new OrganizationApiKey());
+
+    doNothing().when(authorizationServiceMock)
+      .validateAdminRole(organizationId, userInfo);
+    when(organizationServiceMock.getOrganizationApiKeys(organizationId, subUnitCode, accessToken))
+      .thenReturn(expectedResult);
+
+    List<OrganizationApiKey> result = organizationService.getOrganizationApiKeys(organizationId, subUnitCode, userInfo, accessToken);
+
+    assertNotNull(result);
+    assertSame(expectedResult, result);
+  }
 }

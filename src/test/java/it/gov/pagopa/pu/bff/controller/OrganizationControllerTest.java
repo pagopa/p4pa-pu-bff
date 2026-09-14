@@ -5,6 +5,7 @@ import it.gov.pagopa.pu.bff.dto.generated.*;
 import it.gov.pagopa.pu.bff.security.SecurityUtilsTest;
 import it.gov.pagopa.pu.bff.service.organization.OrganizationRetrieverService;
 import it.gov.pagopa.pu.bff.util.TestUtils;
+import it.gov.pagopa.pu.organization.dto.generated.OrganizationApiKey;
 import it.gov.pagopa.pu.organization.dto.generated.OrganizationUpdateDTO;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -147,5 +148,20 @@ class OrganizationControllerTest {
     assertEquals(HttpStatus.OK, result.getStatusCode());
     assertNotNull(result.getBody());
     assertEquals(organizationDetailDTO, result.getBody());
+  }
+
+  @Test
+  void givenOrgIdAndSubUnitCodeWhenGetOrganizationApiKeysThenReturnListOrgApiKeys() {
+    List<OrganizationApiKey> expectedResult = List.of(new OrganizationApiKey());
+    Long organizationId = 123L;
+    String subUnitCode = "CODE";
+
+    Mockito.when(organizationRetrieverServiceMock.getOrganizationApiKeys(organizationId, subUnitCode, loggedUser, accessToken)).thenReturn(expectedResult);
+
+    ResponseEntity<List<OrganizationApiKey>> result = organizationController.getOrganizationApiKeys(organizationId, subUnitCode);
+
+    assertEquals(HttpStatus.OK, result.getStatusCode());
+    assertNotNull(result.getBody());
+    assertEquals(expectedResult, result.getBody());
   }
 }

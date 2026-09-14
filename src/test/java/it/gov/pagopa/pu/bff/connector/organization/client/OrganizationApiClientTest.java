@@ -3,6 +3,7 @@ package it.gov.pagopa.pu.bff.connector.organization.client;
 import it.gov.pagopa.pu.bff.connector.organization.config.OrganizationApisHolder;
 import it.gov.pagopa.pu.bff.exception.common.RestInvokeNotFoundException;
 import it.gov.pagopa.pu.organization.client.generated.OrganizationApi;
+import it.gov.pagopa.pu.organization.dto.generated.OrganizationApiKey;
 import it.gov.pagopa.pu.organization.dto.generated.OrganizationDetailDTO;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -13,6 +14,8 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
+
+import java.util.List;
 
 import static org.mockito.Mockito.when;
 
@@ -67,5 +70,22 @@ class OrganizationApiClientTest {
     OrganizationDetailDTO result = organizationApiClient.getOrganizationDetail(organizationId, accessToken);
 
     Assertions.assertNull(result);
+  }
+
+  @Test
+  void whenGetOrganizationApiKeysThenInvokeWithAccessToken() {
+    Long organizationId = 123L;
+    String subUnitCode = "CODE";
+    String accessToken = "ACCESSTOKEN";
+    List<OrganizationApiKey> expectedResult = List.of(new OrganizationApiKey());
+
+    when(organizationApisHolderMock.getOrganizationApi(accessToken))
+      .thenReturn(organizationApiMock);
+    when(organizationApiMock.getOrganizationApiKeys(organizationId, subUnitCode))
+      .thenReturn(expectedResult);
+
+    List<OrganizationApiKey> result = organizationApiClient.getOrganizationApiKeys(organizationId, subUnitCode, accessToken);
+
+    Assertions.assertSame(expectedResult, result);
   }
 }

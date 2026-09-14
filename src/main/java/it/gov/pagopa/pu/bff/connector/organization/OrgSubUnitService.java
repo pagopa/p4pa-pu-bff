@@ -1,6 +1,5 @@
 package it.gov.pagopa.pu.bff.connector.organization;
 
-import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.organization.dto.generated.*;
 import org.springframework.data.domain.Pageable;
 

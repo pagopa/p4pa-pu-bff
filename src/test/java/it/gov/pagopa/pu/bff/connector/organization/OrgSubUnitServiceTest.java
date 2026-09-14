@@ -17,6 +17,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import uk.co.jemos.podam.api.PodamFactory;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.Mockito.verify;
@@ -160,6 +162,22 @@ class OrgSubUnitServiceTest {
       accessToken
     );
 
+    assertSame(expectedResult, result);
+  }
+
+  @Test
+  void whenGetOrgSubUnitWithNoServiceTypeThenInvokeClient() {
+    // Given
+    Long organizationId = 1L;
+    List<OrgAndSubUnitDTO> expectedResult = List.of(podamFactory.manufacturePojo(OrgAndSubUnitDTO.class));
+
+    when(orgSubUnitClient.getOrgSubUnitWithNoServiceType(organizationId, PdndServiceType.SEND, accessToken))
+      .thenReturn(expectedResult);
+
+    // When
+    List<OrgAndSubUnitDTO> result = service.getOrgSubUnitWithNoServiceType(organizationId, PdndServiceType.SEND, accessToken);
+
+    // Then
     assertSame(expectedResult, result);
   }
 }

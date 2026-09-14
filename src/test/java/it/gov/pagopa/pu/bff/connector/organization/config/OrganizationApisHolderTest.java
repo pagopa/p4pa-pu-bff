@@ -2,10 +2,7 @@ package it.gov.pagopa.pu.bff.connector.organization.config;
 
 import it.gov.pagopa.pu.bff.config.json.JsonConfig;
 import it.gov.pagopa.pu.bff.connector.BaseApiHolderTest;
-import it.gov.pagopa.pu.organization.dto.generated.OrgSilServiceType;
-import it.gov.pagopa.pu.organization.dto.generated.OrgSubUnitStatus;
-import it.gov.pagopa.pu.organization.dto.generated.OrganizationUpdateDTO;
-import it.gov.pagopa.pu.organization.dto.generated.PdndServiceRequestDTO;
+import it.gov.pagopa.pu.organization.dto.generated.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -276,6 +273,17 @@ class OrganizationApisHolderTest extends BaseApiHolderTest {
       accessToken ->
         apisHolder.getPdndServiceSearchControllerApi(accessToken)
           .crudPdndServicesFindByOrganizationIdAndClientId(1L, "clientId", null)
+      ,
+      new ParameterizedTypeReference<>() {},
+      apisHolder::unload);
+  }
+
+  @Test
+  void whenGetOrgSubUnitApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
+    assertAuthenticationShouldBeSetInThreadSafeMode(
+      accessToken ->
+        apisHolder.getOrgSubUnitApi(accessToken)
+          .getOrgSubUnitWithNoServiceType(1L, PdndServiceType.SEND)
       ,
       new ParameterizedTypeReference<>() {},
       apisHolder::unload);

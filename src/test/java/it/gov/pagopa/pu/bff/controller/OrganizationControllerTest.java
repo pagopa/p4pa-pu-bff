@@ -61,14 +61,14 @@ class OrganizationControllerTest {
   }
 
   @AfterEach
-  void verifyNoMoreInteractions(){
+  void verifyNoMoreInteractions() {
     Mockito.verifyNoMoreInteractions(
       organizationRetrieverServiceMock
     );
   }
 
   @AfterEach
-  void clearContext(){
+  void clearContext() {
     SecurityUtilsTest.clearSecurityContext();
   }
 
@@ -124,6 +124,7 @@ class OrganizationControllerTest {
     assertNotNull(result.getBody());
     assertEquals(pagedOrganizationWithDebtPositionTypeOrgAndOperatorsCount, result.getBody());
   }
+
   @Test
   void givenCorrectRequestWhenUpdateOrganizationThenOk() {
     Long organizationId = 1L;
@@ -156,7 +157,7 @@ class OrganizationControllerTest {
     Long organizationId = 123L;
     String subUnitCode = "CODE";
 
-    Mockito.when(organizationRetrieverServiceMock.getOrganizationApiKeys(organizationId, subUnitCode, loggedUser, accessToken)).thenReturn(expectedResult);
+    when(organizationRetrieverServiceMock.getOrganizationApiKeys(organizationId, subUnitCode, loggedUser, accessToken)).thenReturn(expectedResult);
 
     ResponseEntity<List<OrganizationApiKey>> result = organizationController.getOrganizationApiKeys(organizationId, subUnitCode);
 

@@ -7,6 +7,7 @@ import it.gov.pagopa.pu.bff.dto.generated.PagedOrganizationWithDebtPositionTypeO
 import it.gov.pagopa.pu.bff.dto.generated.PagedOrganizationWithDebtPositionTypeOrgCount;
 import it.gov.pagopa.pu.bff.security.SecurityUtils;
 import it.gov.pagopa.pu.bff.service.organization.OrganizationRetrieverService;
+import it.gov.pagopa.pu.organization.dto.generated.OrganizationApiKey;
 import it.gov.pagopa.pu.organization.dto.generated.OrganizationUpdateDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -55,5 +56,11 @@ public class OrganizationController implements OrganizationsApi {
   public ResponseEntity<OrganizationDetail> getOrganizationDetail(Long organizationId) {
     log.info("User requested getOrganizationDetail having organizationId {}", organizationId);
     return ResponseEntity.ok(organizationRetrieverService.getOrganizationDetail(organizationId, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken()));
+  }
+
+  @Override
+  public ResponseEntity<List<OrganizationApiKey>> getOrganizationApiKeys(Long organizationId, String subUnitCode) {
+    log.info("User requested getOrganizationApiKeys having organizationId {} and subUnitCode {}", organizationId, subUnitCode);
+    return ResponseEntity.ok(organizationRetrieverService.getOrganizationApiKeys(organizationId, subUnitCode, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken()));
   }
 }

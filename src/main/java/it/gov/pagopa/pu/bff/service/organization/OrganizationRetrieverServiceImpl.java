@@ -19,10 +19,7 @@ import it.gov.pagopa.pu.bff.mapper.PagedOrganizationWithDebtPositionTypeOrgAndOp
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
 import it.gov.pagopa.pu.debtpositions.dto.generated.CollectionModelDebtPositionTypeOrgCountByOrganizationId;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrgCountByOrganizationId;
-import it.gov.pagopa.pu.organization.dto.generated.Organization;
-import it.gov.pagopa.pu.organization.dto.generated.OrganizationDetailDTO;
-import it.gov.pagopa.pu.organization.dto.generated.OrganizationUpdateDTO;
-import it.gov.pagopa.pu.organization.dto.generated.PagedModelOrganization;
+import it.gov.pagopa.pu.organization.dto.generated.*;
 import jakarta.validation.ValidationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -210,6 +207,12 @@ public class OrganizationRetrieverServiceImpl implements OrganizationRetrieverSe
     organizationDetail.setOperatorsCount(operatorsPage != null ? operatorsPage.getTotalElements() : 0);
 
     return organizationDetail;
+  }
+
+  @Override
+  public List<OrganizationApiKey> getOrganizationApiKeys(Long organizationId, String subUnitCode, UserInfo loggedUser, String accessToken) {
+    authorizationService.validateAdminRole(organizationId,loggedUser);
+    return organizationService.getOrganizationApiKeys(organizationId, subUnitCode, accessToken);
   }
 
   @Override

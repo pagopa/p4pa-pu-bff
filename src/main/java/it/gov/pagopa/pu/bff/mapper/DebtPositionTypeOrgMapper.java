@@ -40,6 +40,7 @@ public class DebtPositionTypeOrgMapper {
       .disabledOperators(OperatorsSelection.SELECTED.equals(saveDebtPositionTypeOrgDTO.getOperatorsSelection())?saveDebtPositionTypeOrgDTO.getDisabledOperators():null)
       .removeEnabledOperators(OperatorsSelection.NONE.equals(saveDebtPositionTypeOrgDTO.getOperatorsSelection()))
       .debtPositionTypeOrgBalanceCostRequestList(saveDebtPositionTypeOrgDTO.getDebtPositionTypeOrgBalanceCostRequestList())
+      .deleteDebtPositionTypeOrgBalanceCostList(saveDebtPositionTypeOrgDTO.getDeleteDebtPositionTypeOrgBalanceCostList())
       .build();
   }
 

@@ -18,4 +18,9 @@ public class OrgSubUnitOperatorsClient {
     organizationApisHolder.getOrgSubUnitOperatorsApi(accessToken)
       .addOrgSubUnitsToOperator(organizationId, mappedExternalUserId, orgSubUnitCodes);
   }
+
+  public void deleteOrgSubUnitFromOperator(Long organizationId, String mappedExternalUserId, String subUnitCode, String accessToken) {
+    organizationApisHolder.getOrgSubUnitOperatorsApi(accessToken)
+      .deleteOrgSubUnitFromOperator(organizationId, mappedExternalUserId, subUnitCode);
+  }
 }

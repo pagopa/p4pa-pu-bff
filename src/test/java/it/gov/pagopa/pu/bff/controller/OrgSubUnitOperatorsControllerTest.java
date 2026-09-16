@@ -91,4 +91,19 @@ class OrgSubUnitOperatorsControllerTest {
     verify(orgSubUnitOperatorsRetrieverServiceMock)
       .addOrgSubUnitsToOperator(organizationId, mappedExternalUserId, orgSubUnitCodes, loggedUser, ACCESS_TOKEN);
   }
+
+  @Test
+  void givenCorrectRequestWhenDeleteOrgSubUnitFromOperatorThenOk() {
+    Long organizationId = 1L;
+    String mappedExternalUserId = "mappedExternalUserId";
+    String subUnitCode = "SUB_UNIT_1";
+
+    ResponseEntity<Void> response = orgSubUnitOperatorsController.deleteOrgSubUnitFromOperator(organizationId, mappedExternalUserId, subUnitCode);
+
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertNull(response.getBody());
+
+    verify(orgSubUnitOperatorsRetrieverServiceMock)
+      .deleteOrgSubUnitFromOperator(organizationId, mappedExternalUserId, subUnitCode, loggedUser, ACCESS_TOKEN);
+  }
 }

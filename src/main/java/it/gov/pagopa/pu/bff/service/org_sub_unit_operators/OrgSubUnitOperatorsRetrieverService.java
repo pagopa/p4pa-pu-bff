@@ -11,4 +11,6 @@ public interface OrgSubUnitOperatorsRetrieverService {
   PagedOrgSubUnitOperators getOrgSubUnitOperators(Long organizationId, String subUnitCode, Pageable pageable, UserInfo loggedUser, String accessToken);
 
   void addOrgSubUnitsToOperator(Long organizationId, String mappedExternalUserId, List<String> orgSubUnitCodes, UserInfo loggedUser, String accessToken);
+
+  void deleteOrgSubUnitFromOperator(Long organizationId, String mappedExternalUserId, String subUnitCode, UserInfo loggedUser, String accessToken);
 }

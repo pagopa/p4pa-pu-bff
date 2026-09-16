@@ -79,4 +79,16 @@ class OrgSubUnitOperatorsServiceTest {
 
     verify(orgSubUnitOperatorsClientMock).addOrgSubUnitsToOperator(organizationId, mappedExternalUserId, orgSubUnitCodes, accessToken);
   }
+
+  @Test
+  void whenDeleteOrgSubUnitFromOperatorThenInvokeClient() {
+    Long organizationId = 1L;
+    String mappedExternalUserId = "mappedExternalUserId";
+    String subUnitCode = "SUB_UNIT_1";
+    String accessToken = "accessToken";
+
+    service.deleteOrgSubUnitFromOperator(organizationId, mappedExternalUserId, subUnitCode, accessToken);
+
+    verify(orgSubUnitOperatorsClientMock).deleteOrgSubUnitFromOperator(organizationId, mappedExternalUserId, subUnitCode, accessToken);
+  }
 }

@@ -33,4 +33,11 @@ public class OrgSubUnitOperatorsController implements OrgSubUnitOperatorsApi {
     orgSubUnitOperatorsRetrieverService.addOrgSubUnitsToOperator(organizationId, mappedExternalUserId, orgSubUnitCodes, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken());
     return ResponseEntity.ok().build();
   }
+
+  @Override
+  public ResponseEntity<Void> deleteOrgSubUnitFromOperator(Long organizationId, String mappedExternalUserId, String subUnitCode) {
+    log.info("Requested to remove orgSubUnit {} from operator {} for organization {}", subUnitCode, mappedExternalUserId, organizationId);
+    orgSubUnitOperatorsRetrieverService.deleteOrgSubUnitFromOperator(organizationId, mappedExternalUserId, subUnitCode, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken());
+    return ResponseEntity.ok().build();
+  }
 }

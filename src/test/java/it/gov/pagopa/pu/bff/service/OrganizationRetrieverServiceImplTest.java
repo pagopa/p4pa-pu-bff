@@ -19,10 +19,7 @@ import it.gov.pagopa.pu.bff.util.TestUtils;
 import it.gov.pagopa.pu.debtpositions.dto.generated.CollectionModelDebtPositionTypeOrgCountByOrganizationId;
 import it.gov.pagopa.pu.debtpositions.dto.generated.CollectionModelDebtPositionTypeOrgCountByOrganizationIdEmbedded;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrgCountByOrganizationId;
-import it.gov.pagopa.pu.organization.dto.generated.Organization;
-import it.gov.pagopa.pu.organization.dto.generated.OrganizationDetailDTO;
-import it.gov.pagopa.pu.organization.dto.generated.PagedModelOrganization;
-import it.gov.pagopa.pu.organization.dto.generated.PagedModelOrganizationEmbedded;
+import it.gov.pagopa.pu.organization.dto.generated.*;
 import jakarta.validation.ValidationException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -515,7 +512,7 @@ class OrganizationRetrieverServiceImplTest {
     loggedUser.setMappedExternalUserId("operatorExternalUserId");
 
     Long organizationId = 1L;
-    OrganizationDetailDTO orgDTO = podamFactory.manufacturePojo(OrganizationDetailDTO.class);
+    OrganizationUpdateDTO orgDTO = podamFactory.manufacturePojo(OrganizationUpdateDTO.class);
     orgDTO.setOrganizationId(organizationId);
     Organization organization = podamFactory.manufacturePojo(Organization.class);
     organization.setBrokerId(orgDTO.getBrokerId());
@@ -539,7 +536,7 @@ class OrganizationRetrieverServiceImplTest {
     loggedUser.setMappedExternalUserId("operatorExternalUserId");
 
     Long organizationId = 1L;
-    OrganizationDetailDTO orgDTO = podamFactory.manufacturePojo(OrganizationDetailDTO.class);
+    OrganizationUpdateDTO orgDTO = podamFactory.manufacturePojo(OrganizationUpdateDTO.class);
     orgDTO.setOrganizationId(organizationId);
     Organization organization = podamFactory.manufacturePojo(Organization.class);
     organization.setBrokerId(orgDTO.getBrokerId());
@@ -562,7 +559,7 @@ class OrganizationRetrieverServiceImplTest {
     loggedUser.setMappedExternalUserId("operatorExternalUserId");
 
     Long organizationId = 1L;
-    OrganizationDetailDTO orgDTO = podamFactory.manufacturePojo(OrganizationDetailDTO.class);
+    OrganizationUpdateDTO orgDTO = podamFactory.manufacturePojo(OrganizationUpdateDTO.class);
     orgDTO.setOrganizationId(organizationId);
 
     doNothing().when(authorizationServiceMock).validateAdminRole(organizationId,loggedUser);
@@ -578,7 +575,7 @@ class OrganizationRetrieverServiceImplTest {
     loggedUser.setMappedExternalUserId("operatorExternalUserId");
 
     Long organizationId = 1L;
-    OrganizationDetailDTO orgDTO = podamFactory.manufacturePojo(OrganizationDetailDTO.class);
+    OrganizationUpdateDTO orgDTO = podamFactory.manufacturePojo(OrganizationUpdateDTO.class);
     orgDTO.setOrganizationId(organizationId+1);
 
     doNothing().when(authorizationServiceMock).validateAdminRole(organizationId,loggedUser);
@@ -648,5 +645,22 @@ class OrganizationRetrieverServiceImplTest {
       () -> organizationService.getOrganizationDetail(organizationId, userInfo, accessToken));
 
     assertTrue(ex.getMessage().contains("Organization having organizationId " + organizationId + " not found"));
+  }
+
+  @Test
+  void  givenOrgIdAndSubUnitCodeWhenGetOrganizationApiKeysThenReturnListOrgKeys(){
+    Long organizationId = 123L;
+    String subUnitCode = "CODE";
+    List<OrganizationApiKey> expectedResult = List.of(new OrganizationApiKey());
+
+    doNothing().when(authorizationServiceMock)
+      .validateAdminRole(organizationId, userInfo);
+    when(organizationServiceMock.getOrganizationApiKeys(organizationId, subUnitCode, accessToken))
+      .thenReturn(expectedResult);
+
+    List<OrganizationApiKey> result = organizationService.getOrganizationApiKeys(organizationId, subUnitCode, userInfo, accessToken);
+
+    assertNotNull(result);
+    assertSame(expectedResult, result);
   }
 }

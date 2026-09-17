@@ -3,9 +3,9 @@ package it.gov.pagopa.pu.bff.connector.organization.client;
 import it.gov.pagopa.pu.bff.connector.organization.config.OrganizationApisHolder;
 import it.gov.pagopa.pu.organization.client.generated.PdndServiceApi;
 import it.gov.pagopa.pu.organization.dto.generated.PdndService;
-import it.gov.pagopa.pu.organization.dto.generated.PdndServiceDTO;
 import it.gov.pagopa.pu.organization.dto.generated.PdndServiceRequestDTO;
 import it.gov.pagopa.pu.organization.dto.generated.PdndServiceType;
+import it.gov.pagopa.pu.organization.dto.generated.PdndServiceView;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -61,22 +61,22 @@ class PdndServiceClientTest {
   @Test
   void givenOrganizationIdAndPurposeIdWhenGetPdndServiceThenReturnPdndService() {
     String purposeId = "PURPOSE_001";
-    PdndServiceDTO expectedResult = new PdndServiceDTO();
+    PdndServiceView expectedResult = new PdndServiceView();
 
     when(organizationApisHolderMock.getPdndServiceApi(ACCESS_TOKEN))
       .thenReturn(pdndServiceApiMock);
 
-    when(pdndServiceApiMock.getPdndService(ORGANIZATION_ID, purposeId, SUB_UNIT_CODE))
+    when(pdndServiceApiMock.getPdndService(ORGANIZATION_ID, purposeId))
       .thenReturn(expectedResult);
 
-    PdndServiceDTO result = pdndServiceClient.getPdndService(ORGANIZATION_ID, purposeId, SUB_UNIT_CODE, ACCESS_TOKEN);
+    PdndServiceView result = pdndServiceClient.getPdndService(ORGANIZATION_ID, purposeId, ACCESS_TOKEN);
 
     assertSame(expectedResult, result);
   }
 
   @Test
   void givenOrganizationIdAndServiceTypeWhenGetPdndServicesThenReturnPdndServices() {
-    List<PdndServiceDTO> expectedResult = List.of(new PdndServiceDTO());
+    List<PdndServiceView> expectedResult = List.of(new PdndServiceView());
 
     when(organizationApisHolderMock.getPdndServiceApi(ACCESS_TOKEN))
       .thenReturn(pdndServiceApiMock);
@@ -84,7 +84,7 @@ class PdndServiceClientTest {
     when(pdndServiceApiMock.getPdndServices(ORGANIZATION_ID, SUB_UNIT_CODE, PdndServiceType.SEND))
       .thenReturn(expectedResult);
 
-    List<PdndServiceDTO> result = pdndServiceClient.getPdndServices(ORGANIZATION_ID, SUB_UNIT_CODE, PdndServiceType.SEND, ACCESS_TOKEN);
+    List<PdndServiceView> result = pdndServiceClient.getPdndServices(ORGANIZATION_ID, SUB_UNIT_CODE, PdndServiceType.SEND, ACCESS_TOKEN);
 
     assertSame(expectedResult, result);
   }
@@ -96,8 +96,8 @@ class PdndServiceClientTest {
     when(organizationApisHolderMock.getPdndServiceApi(ACCESS_TOKEN))
       .thenReturn(pdndServiceApiMock);
 
-    pdndServiceClient.deletePdndService(ORGANIZATION_ID, purposeId, SUB_UNIT_CODE, ACCESS_TOKEN);
+    pdndServiceClient.deletePdndService(ORGANIZATION_ID, purposeId, ACCESS_TOKEN);
 
-    verify(pdndServiceApiMock).deletePdndService(ORGANIZATION_ID, purposeId, SUB_UNIT_CODE);
+    verify(pdndServiceApiMock).deletePdndService(ORGANIZATION_ID, purposeId);
   }
 }

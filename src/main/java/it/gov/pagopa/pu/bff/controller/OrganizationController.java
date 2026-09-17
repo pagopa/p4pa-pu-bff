@@ -7,7 +7,8 @@ import it.gov.pagopa.pu.bff.dto.generated.PagedOrganizationWithDebtPositionTypeO
 import it.gov.pagopa.pu.bff.dto.generated.PagedOrganizationWithDebtPositionTypeOrgCount;
 import it.gov.pagopa.pu.bff.security.SecurityUtils;
 import it.gov.pagopa.pu.bff.service.organization.OrganizationRetrieverService;
-import it.gov.pagopa.pu.organization.dto.generated.OrganizationDetailDTO;
+import it.gov.pagopa.pu.organization.dto.generated.OrganizationApiKey;
+import it.gov.pagopa.pu.organization.dto.generated.OrganizationUpdateDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -45,9 +46,9 @@ public class OrganizationController implements OrganizationsApi {
   }
 
   @Override
-  public ResponseEntity<Void> updateOrganization(Long organizationId, OrganizationDetailDTO organizationDetailDTO) {
+  public ResponseEntity<Void> updateOrganization(Long organizationId, OrganizationUpdateDTO organizationUpdateDTO) {
     log.info("User requested updateOrganization having organizationId {}", organizationId);
-    organizationRetrieverService.updateOrganization(organizationId, organizationDetailDTO,SecurityUtils.getLoggedUser(),SecurityUtils.getAccessToken());
+    organizationRetrieverService.updateOrganization(organizationId, organizationUpdateDTO, SecurityUtils.getLoggedUser(),SecurityUtils.getAccessToken());
     return ResponseEntity.ok().build();
   }
 
@@ -55,5 +56,11 @@ public class OrganizationController implements OrganizationsApi {
   public ResponseEntity<OrganizationDetail> getOrganizationDetail(Long organizationId) {
     log.info("User requested getOrganizationDetail having organizationId {}", organizationId);
     return ResponseEntity.ok(organizationRetrieverService.getOrganizationDetail(organizationId, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken()));
+  }
+
+  @Override
+  public ResponseEntity<List<OrganizationApiKey>> getOrganizationApiKeys(Long organizationId, String subUnitCode) {
+    log.info("User requested getOrganizationApiKeys having organizationId {} and subUnitCode {}", organizationId, subUnitCode);
+    return ResponseEntity.ok(organizationRetrieverService.getOrganizationApiKeys(organizationId, subUnitCode, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken()));
   }
 }

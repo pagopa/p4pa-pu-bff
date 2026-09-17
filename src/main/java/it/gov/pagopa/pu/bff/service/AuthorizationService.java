@@ -7,12 +7,14 @@ import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
 @Slf4j
 public class AuthorizationService {
   public static final String ROLE_ADMIN = "ROLE_ADMIN";
+  public static final String ROLE_OPERATOR = "ROLE_OPERATOR";
   public static final String BFF_APP_NAME = "p4pa-pu-bff";
 
   private final AuthnService authnService;
@@ -78,6 +80,27 @@ public class AuthorizationService {
     if (getUserOrganizationRoles(organizationId, loggedUser).isEmpty()) {
       throw buildAuthorizationDeniedException(organizationId, loggedUser);
     }
+  }
+
+  public static void validateUserForOrganizationIdAndOrgSubUnitCode(Long organizationId, String subUnitCode, UserInfo loggedUser) {
+    UserOrganizationRoles organizationRoles = getUserOrganizationRoles(organizationId, loggedUser)
+        .orElseThrow(() -> buildAuthorizationDeniedException(organizationId, loggedUser));
+
+    List<String> roles = organizationRoles.getRoles();
+
+    // ADMIN can see every subUnit of the organization
+    if (roles.contains(ROLE_ADMIN)) {
+      return;
+    }
+
+    // OPERATOR should be explicitly associated to the subUnit
+    if (roles.contains(ROLE_OPERATOR)
+      && !CollectionUtils.isEmpty(organizationRoles.getOrgSubUnitCodes())
+      && organizationRoles.getOrgSubUnitCodes().contains(subUnitCode)) {
+      return;
+    }
+
+    throw buildAuthorizationDeniedException(organizationId, loggedUser);
   }
 
   public static AuthorizationDeniedException buildAuthorizationDeniedException(Long organizationId, UserInfo loggedUser){

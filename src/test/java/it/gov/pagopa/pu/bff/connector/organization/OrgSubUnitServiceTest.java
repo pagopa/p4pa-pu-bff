@@ -1,5 +1,6 @@
 package it.gov.pagopa.pu.bff.connector.organization;
 
+import it.gov.pagopa.pu.bff.connector.organization.client.OrgSubUnitClient;
 import it.gov.pagopa.pu.bff.connector.organization.client.OrgSubUnitEntityClient;
 import it.gov.pagopa.pu.bff.connector.organization.client.OrgSubUnitEntityExtendedClient;
 import it.gov.pagopa.pu.bff.connector.organization.client.OrgSubUnitSearchClient;
@@ -15,6 +16,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import uk.co.jemos.podam.api.PodamFactory;
+
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertSame;
@@ -33,6 +36,8 @@ class OrgSubUnitServiceTest {
   private OrgSubUnitEntityExtendedClient orgSubUnitEntityExtendedClientMock;
   @Mock
   private OrgSubUnitSearchClient orgSubUnitSearchClientMock;
+  @Mock
+  private OrgSubUnitClient orgSubUnitClient;
 
   private OrgSubUnitService service;
 
@@ -41,7 +46,8 @@ class OrgSubUnitServiceTest {
     service = new OrgSubUnitServiceImpl(
       orgSubUnitEntityClientMock,
       orgSubUnitEntityExtendedClientMock,
-      orgSubUnitSearchClientMock
+      orgSubUnitSearchClientMock,
+      orgSubUnitClient
     );
   }
 
@@ -50,7 +56,8 @@ class OrgSubUnitServiceTest {
     Mockito.verifyNoMoreInteractions(
       orgSubUnitEntityClientMock,
       orgSubUnitEntityExtendedClientMock,
-      orgSubUnitSearchClientMock
+      orgSubUnitSearchClientMock,
+      orgSubUnitClient
     );
   }
 
@@ -155,6 +162,22 @@ class OrgSubUnitServiceTest {
       accessToken
     );
 
+    assertSame(expectedResult, result);
+  }
+
+  @Test
+  void whenGetOrgSubUnitWithNoServiceTypeThenInvokeClient() {
+    // Given
+    Long organizationId = 1L;
+    List<OrgAndSubUnitDTO> expectedResult = List.of(podamFactory.manufacturePojo(OrgAndSubUnitDTO.class));
+
+    when(orgSubUnitClient.getOrgSubUnitWithNoServiceType(organizationId, PdndServiceType.SEND, accessToken))
+      .thenReturn(expectedResult);
+
+    // When
+    List<OrgAndSubUnitDTO> result = service.getOrgSubUnitWithNoServiceType(organizationId, PdndServiceType.SEND, accessToken);
+
+    // Then
     assertSame(expectedResult, result);
   }
 }

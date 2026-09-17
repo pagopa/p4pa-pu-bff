@@ -73,7 +73,7 @@ class DebtPositionTypeOrgMapperTest {
     Assertions.assertNull(result.getDisabledOperators());
     Assertions.assertNotEquals(Boolean.TRUE, result.getRemoveEnabledOperators());
     Assertions.assertEquals(saveDebtPositionTypeOrgDTO.getDebtPositionTypeOrgBalanceCostRequestList(), result.getDebtPositionTypeOrgBalanceCostRequestList());
-
+    Assertions.assertEquals(saveDebtPositionTypeOrgDTO.getDeleteDebtPositionTypeOrgBalanceCostList(), result.getDeleteDebtPositionTypeOrgBalanceCostList());
   }
 
   @Test

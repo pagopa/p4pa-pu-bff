@@ -19,9 +19,7 @@ import it.gov.pagopa.pu.bff.mapper.PagedOrganizationWithDebtPositionTypeOrgAndOp
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
 import it.gov.pagopa.pu.debtpositions.dto.generated.CollectionModelDebtPositionTypeOrgCountByOrganizationId;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrgCountByOrganizationId;
-import it.gov.pagopa.pu.organization.dto.generated.Organization;
-import it.gov.pagopa.pu.organization.dto.generated.OrganizationDetailDTO;
-import it.gov.pagopa.pu.organization.dto.generated.PagedModelOrganization;
+import it.gov.pagopa.pu.organization.dto.generated.*;
 import jakarta.validation.ValidationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -212,25 +210,31 @@ public class OrganizationRetrieverServiceImpl implements OrganizationRetrieverSe
   }
 
   @Override
-  public void updateOrganization(Long organizationId, OrganizationDetailDTO organizationDetailDTO, UserInfo loggedUser, String accessToken) {
+  public List<OrganizationApiKey> getOrganizationApiKeys(Long organizationId, String subUnitCode, UserInfo loggedUser, String accessToken) {
     authorizationService.validateAdminRole(organizationId,loggedUser);
-    validateOrganization(organizationId, organizationDetailDTO, accessToken);
-    organizationService.updateOrganization(organizationDetailDTO,accessToken);
+    return organizationService.getOrganizationApiKeys(organizationId, subUnitCode, accessToken);
   }
 
-  private void validateOrganization(Long organizationId, OrganizationDetailDTO organizationDetailDTO, String accessToken) {
-    if(!organizationId.equals(organizationDetailDTO.getOrganizationId())){
-      throw new InvalidOrganizationException("INVALID_ORGANIZATION", "The Organization's id " + organizationDetailDTO.getOrganizationId() +
+  @Override
+  public void updateOrganization(Long organizationId, OrganizationUpdateDTO organizationUpdateDTO, UserInfo loggedUser, String accessToken) {
+    authorizationService.validateAdminRole(organizationId,loggedUser);
+    validateOrganization(organizationId, organizationUpdateDTO, accessToken);
+    organizationService.updateOrganization(organizationUpdateDTO, accessToken);
+  }
+
+  private void validateOrganization(Long organizationId, OrganizationUpdateDTO organizationUpdateDTO, String accessToken) {
+    if(!organizationId.equals(organizationUpdateDTO.getOrganizationId())){
+      throw new InvalidOrganizationException("INVALID_ORGANIZATION", "The Organization's id " + organizationUpdateDTO.getOrganizationId() +
               " does not match the given organizationId "+ organizationId);
     }
     Organization existingOrganization = organizationService.getOrganizationByOrganizationId(organizationId, accessToken);
     if(existingOrganization==null){
       throw new NotFoundException("ORGANIZATION_NOT_FOUND", "Organization having id "+ organizationId +" not found");
     }
-    checkReadOnlyFields(existingOrganization, organizationDetailDTO);
+    checkReadOnlyFields(existingOrganization, organizationUpdateDTO);
   }
 
-  private void checkReadOnlyFields(Organization existingOrganization, OrganizationDetailDTO organization) {
+  private void checkReadOnlyFields(Organization existingOrganization, OrganizationUpdateDTO organization) {
     List<String> modifiedFields = new ArrayList<>();
     checkImmutableField("brokerId", existingOrganization.getBrokerId(), organization.getBrokerId(), modifiedFields);
     checkImmutableField("externalOrganizationId", existingOrganization.getExternalOrganizationId(), organization.getExternalOrganizationId(), modifiedFields);

@@ -1,10 +1,9 @@
 package it.gov.pagopa.pu.bff.connector.organization;
 
-import it.gov.pagopa.pu.organization.dto.generated.Organization;
-import it.gov.pagopa.pu.organization.dto.generated.OrganizationDetailDTO;
-import it.gov.pagopa.pu.organization.dto.generated.PagedModelOrganization;
+import it.gov.pagopa.pu.organization.dto.generated.*;
 import org.springframework.data.domain.Pageable;
 
+import java.util.List;
 import java.util.Set;
 
 public interface OrganizationService {
@@ -17,7 +16,9 @@ public interface OrganizationService {
 
   PagedModelOrganization getOrganizationsByBrokerIdAndFilters(Long brokerId, String orgName, String ipaCode, String orgFiscalCode, Set<Long> allowedOrganizationIds, Pageable pageable, String accessToken);
 
-  void updateOrganization(OrganizationDetailDTO organizationDetailDTO, String accessToken);
+  void updateOrganization(OrganizationUpdateDTO organizationUpdateDTO, String accessToken);
 
   OrganizationDetailDTO getOrganizationDetail(Long organizationId, String accessToken);
+
+  List<OrganizationApiKey> getOrganizationApiKeys(Long organizationId, String subUnitCode, String accessToken);
 }

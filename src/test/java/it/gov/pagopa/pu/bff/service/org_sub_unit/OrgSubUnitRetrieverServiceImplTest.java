@@ -9,10 +9,7 @@ import it.gov.pagopa.pu.bff.exception.common.NotFoundException;
 import it.gov.pagopa.pu.bff.mapper.PagedOrgSubUnitMapper;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
 import it.gov.pagopa.pu.bff.util.TestUtils;
-import it.gov.pagopa.pu.organization.dto.generated.OrgSubUnit;
-import it.gov.pagopa.pu.organization.dto.generated.OrgSubUnitRequestBody;
-import it.gov.pagopa.pu.organization.dto.generated.OrgSubUnitStatus;
-import it.gov.pagopa.pu.organization.dto.generated.PagedModelOrgSubUnit;
+import it.gov.pagopa.pu.organization.dto.generated.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -25,6 +22,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.authorization.AuthorizationDeniedException;
 import uk.co.jemos.podam.api.PodamFactory;
+
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.verify;
@@ -67,7 +66,7 @@ class OrgSubUnitRetrieverServiceImplTest {
     OrgSubUnit expectedResult = podamFactory.manufacturePojo(OrgSubUnit.class);
 
     try (MockedStatic<AuthorizationService> authMock = Mockito.mockStatic(AuthorizationService.class)) {
-      authMock.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser))
+      authMock.when(() -> AuthorizationService.validateUserForOrganizationIdAndOrgSubUnitCode(organizationId, subUnitCode, loggedUser))
         .thenAnswer(a -> null);
 
       when(orgSubUnitServiceMock.getOrgSubUnitById(orgSubUnitId, accessToken))
@@ -91,7 +90,7 @@ class OrgSubUnitRetrieverServiceImplTest {
     UserInfo loggedUser = podamFactory.manufacturePojo(UserInfo.class);
 
     try (MockedStatic<AuthorizationService> authMock = Mockito.mockStatic(AuthorizationService.class)) {
-      authMock.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser))
+      authMock.when(() -> AuthorizationService.validateUserForOrganizationIdAndOrgSubUnitCode(organizationId, subUnitCode, loggedUser))
         .thenAnswer(a -> null);
 
       when(orgSubUnitServiceMock.getOrgSubUnitById(orgSubUnitId, accessToken))
@@ -357,5 +356,24 @@ class OrgSubUnitRetrieverServiceImplTest {
         () -> orgSubUnitRetrieverService.getPagedOrgSubUnits(filters, pageable, loggedUser, accessToken)
       );
     }
+  }
+
+  @Test
+  void givenValidServiceTypeWhenGetOrgSubUnitWithNoServiceTypeThenReturnSubUnit() {
+    // Given
+    Long organizationId = 1L;
+    UserInfo loggedUser = podamFactory.manufacturePojo(UserInfo.class);
+    List<OrgAndSubUnitDTO> expectedResult = List.of(podamFactory.manufacturePojo(OrgAndSubUnitDTO.class));
+
+    when(orgSubUnitServiceMock.getOrgSubUnitWithNoServiceType(organizationId, PdndServiceType.SEND, accessToken))
+      .thenReturn(expectedResult);
+
+    // When
+    List<OrgAndSubUnitDTO> result = orgSubUnitRetrieverService.getOrgSubUnitWithNoServiceType(organizationId, PdndServiceType.SEND, loggedUser, accessToken);
+
+    // Then
+    assertNotNull(result);
+    assertSame(expectedResult, result);
+    verify(authorizationServiceMock).validateAdminRole(organizationId, loggedUser);
   }
 }

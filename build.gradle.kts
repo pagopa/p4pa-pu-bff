@@ -274,7 +274,7 @@ tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>("ope
       "CreateClientRequest" to "it.gov.pagopa.pu.auth.dto.generated.CreateClientRequest",
       "AssessmentsRegistryExtendedDTO" to "it.gov.pagopa.pu.bff.dto.AssessmentsRegistryExtendedDTO",
       "TreasuredClassificationExtendedDTO" to "it.gov.pagopa.pu.bff.dto.TreasuredClassificationExtendedDTO",
-      "Organization" to "it.gov.pagopa.pu.organization.dto.generated.OrganizationDetailDTO",
+      "OrganizationUpdateDTO" to "it.gov.pagopa.pu.organization.dto.generated.OrganizationUpdateDTO",
       "OrganizationStatus" to "it.gov.pagopa.pu.organization.dto.generated.OrganizationStatus",
       "SpontaneousForm" to "it.gov.pagopa.pu.debtpositions.dto.generated.SpontaneousForm",
       "SpontaneousFormStructure" to "it.gov.pagopa.pu.debtpositions.dto.generated.SpontaneousFormStructure",
@@ -288,7 +288,9 @@ tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>("ope
       "PdndServiceRequestDTO" to "it.gov.pagopa.pu.organization.dto.generated.PdndServiceRequestDTO",
       "PdndService" to "it.gov.pagopa.pu.organization.dto.generated.PdndService",
       "PdndServiceType" to "it.gov.pagopa.pu.organization.dto.generated.PdndServiceType",
-      "PdndServiceDTO" to "it.gov.pagopa.pu.organization.dto.generated.PdndServiceDTO"
+      "PdndServiceView" to "it.gov.pagopa.pu.organization.dto.generated.PdndServiceView",
+      "OrgAndSubUnitDTO" to "it.gov.pagopa.pu.organization.dto.generated.OrgAndSubUnitDTO",
+      "OrganizationApiKey" to "it.gov.pagopa.pu.organization.dto.generated.OrganizationApiKey"
     )
   )
   configOptions.set(

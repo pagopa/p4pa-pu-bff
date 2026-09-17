@@ -333,6 +333,108 @@ class AuthorizationServiceTest {
 
     Assertions.assertEquals(expectedResult, result);
   }
+
+  @Test
+  void givenAdminRoleWhenValidateUserForOrganizationIdAndOrgSubUnitCodeThenOk() {
+    Long organizationId = 1L;
+    String subUnitCode = "SUB_UNIT_1";
+
+    UserOrganizationRoles userOrgRole = new UserOrganizationRoles();
+    userOrgRole.setRoles(List.of("ROLE_ADMIN"));
+    userOrgRole.setOrganizationId(organizationId);
+    userOrgRole.setOrgSubUnitCodes(List.of());
+
+    UserInfo userInfo = new UserInfo();
+    userInfo.setOrganizations(List.of(userOrgRole));
+
+    Assertions.assertDoesNotThrow(() ->
+      AuthorizationService.validateUserForOrganizationIdAndOrgSubUnitCode(
+        organizationId,
+        subUnitCode,
+        userInfo
+      )
+    );
+  }
+
+  @Test
+  void givenOperatorEnabledToOrgSubUnitWhenValidateUserForOrganizationIdAndOrgSubUnitCodeThenOk() {
+    Long organizationId = 1L;
+    String subUnitCode = "SUB_UNIT_1";
+
+    UserOrganizationRoles userOrgRole = new UserOrganizationRoles();
+    userOrgRole.setRoles(List.of("ROLE_OPERATOR"));
+    userOrgRole.setOrganizationId(organizationId);
+    userOrgRole.setOrgSubUnitCodes(List.of("SUB_UNIT_1", "SUB_UNIT_2"));
+
+    UserInfo userInfo = new UserInfo();
+    userInfo.setOrganizations(List.of(userOrgRole));
+
+    Assertions.assertDoesNotThrow(() ->
+      AuthorizationService.validateUserForOrganizationIdAndOrgSubUnitCode(
+        organizationId,
+        subUnitCode,
+        userInfo
+      )
+    );
+  }
+
+  @Test
+  void givenOperatorNotEnabledToOrgSubUnitWhenValidateUserForOrganizationIdAndOrgSubUnitCodeThenUnauthorized() {
+    Long organizationId = 1L;
+    String subUnitCode = "SUB_UNIT_2";
+
+    UserOrganizationRoles userOrgRole = new UserOrganizationRoles();
+    userOrgRole.setRoles(List.of("ROLE_OPERATOR"));
+    userOrgRole.setOrganizationId(organizationId);
+    userOrgRole.setOrgSubUnitCodes(List.of("SUB_UNIT_1"));
+
+    UserInfo userInfo = new UserInfo();
+    userInfo.setMappedExternalUserId("externalUserId");
+    userInfo.setOrganizations(List.of(userOrgRole));
+
+    AuthorizationDeniedException result = Assertions.assertThrows(
+      AuthorizationDeniedException.class,
+      () -> AuthorizationService.validateUserForOrganizationIdAndOrgSubUnitCode(
+        organizationId,
+        subUnitCode,
+        userInfo
+      )
+    );
+
+    Assertions.assertEquals(
+      "Access denied on organizationId " + organizationId + " to user externalUserId",
+      result.getMessage()
+    );
+  }
+
+  @Test
+  void givenUserNotEnabledToOrganizationWhenValidateUserForOrganizationIdAndOrgSubUnitCodeThenUnauthorized() {
+    Long organizationId = 1L;
+    String subUnitCode = "SUB_UNIT_1";
+
+    UserOrganizationRoles userOrgRole = new UserOrganizationRoles();
+    userOrgRole.setRoles(List.of("ROLE_ADMIN"));
+    userOrgRole.setOrganizationId(2L);
+    userOrgRole.setOrgSubUnitCodes(List.of());
+
+    UserInfo userInfo = new UserInfo();
+    userInfo.setMappedExternalUserId("externalUserId");
+    userInfo.setOrganizations(List.of(userOrgRole));
+
+    AuthorizationDeniedException result = Assertions.assertThrows(
+      AuthorizationDeniedException.class,
+      () -> AuthorizationService.validateUserForOrganizationIdAndOrgSubUnitCode(
+        organizationId,
+        subUnitCode,
+        userInfo
+      )
+    );
+
+    Assertions.assertEquals(
+      "Access denied on organizationId " + organizationId + " to user externalUserId",
+      result.getMessage()
+    );
+  }
 }
 
 

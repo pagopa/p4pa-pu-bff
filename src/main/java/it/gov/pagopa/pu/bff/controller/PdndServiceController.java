@@ -4,9 +4,9 @@ import it.gov.pagopa.pu.bff.controller.generated.PdndServiceApi;
 import it.gov.pagopa.pu.bff.security.SecurityUtils;
 import it.gov.pagopa.pu.bff.service.pdnd_service.PdndServiceRetrieverService;
 import it.gov.pagopa.pu.organization.dto.generated.PdndService;
-import it.gov.pagopa.pu.organization.dto.generated.PdndServiceDTO;
 import it.gov.pagopa.pu.organization.dto.generated.PdndServiceRequestDTO;
 import it.gov.pagopa.pu.organization.dto.generated.PdndServiceType;
+import it.gov.pagopa.pu.organization.dto.generated.PdndServiceView;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
@@ -30,13 +30,13 @@ public class PdndServiceController implements PdndServiceApi {
   }
 
   @Override
-  public ResponseEntity<PdndServiceDTO> getPdndService(Long organizationId, String purposeId, String subUnitCode) {
+  public ResponseEntity<PdndServiceView> getPdndService(Long organizationId, String purposeId, String subUnitCode) {
     log.info("User requested getPdndService having organizationId {} and purposeId {}", organizationId, purposeId);
-    return ResponseEntity.ok(pdndServiceRetrieverService.getPdndService(organizationId, purposeId, subUnitCode, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken()));
+    return ResponseEntity.ok(pdndServiceRetrieverService.getPdndService(organizationId, purposeId, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken()));
   }
 
   @Override
-  public ResponseEntity<List<PdndServiceDTO>> getPdndServices(Long organizationId, String subUnitCode, PdndServiceType serviceType) {
+  public ResponseEntity<List<PdndServiceView>> getPdndServices(Long organizationId, String subUnitCode, PdndServiceType serviceType) {
     log.info("User requested getPdndServices having organizationId {} and serviceType {}", organizationId, serviceType);
     return ResponseEntity.ok(pdndServiceRetrieverService.getPdndServices(organizationId, subUnitCode, serviceType, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken()));
   }
@@ -44,7 +44,7 @@ public class PdndServiceController implements PdndServiceApi {
   @Override
   public ResponseEntity<Void> deletePdndService(Long organizationId, String purposeId, String subUnitCode) {
     log.info("User requested deletePdndService having organizationId {} and purposeId {}", organizationId, purposeId);
-    pdndServiceRetrieverService.deletePdndService(organizationId, purposeId, subUnitCode, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken());
+    pdndServiceRetrieverService.deletePdndService(organizationId, purposeId, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken());
     return ResponseEntity.ok().build();
   }
 

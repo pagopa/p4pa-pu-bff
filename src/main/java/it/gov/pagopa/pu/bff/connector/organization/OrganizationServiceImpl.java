@@ -4,12 +4,11 @@ import it.gov.pagopa.pu.bff.connector.organization.client.OrganizationApiClient;
 import it.gov.pagopa.pu.bff.connector.organization.client.OrganizationClient;
 import it.gov.pagopa.pu.bff.connector.organization.client.OrganizationEntityClient;
 import it.gov.pagopa.pu.bff.connector.organization.client.OrganizationSearchClient;
-import it.gov.pagopa.pu.organization.dto.generated.Organization;
-import it.gov.pagopa.pu.organization.dto.generated.OrganizationDetailDTO;
-import it.gov.pagopa.pu.organization.dto.generated.PagedModelOrganization;
+import it.gov.pagopa.pu.organization.dto.generated.*;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -52,12 +51,17 @@ public class OrganizationServiceImpl implements OrganizationService {
   }
 
   @Override
-  public void updateOrganization(OrganizationDetailDTO organizationDetailDTO, String accessToken) {
-    organizationClient.updateOrganization(organizationDetailDTO, accessToken);
+  public void updateOrganization(OrganizationUpdateDTO organizationUpdateDTO, String accessToken) {
+    organizationClient.updateOrganization(organizationUpdateDTO, accessToken);
   }
 
   @Override
   public OrganizationDetailDTO getOrganizationDetail(Long organizationId, String accessToken) {
     return organizationApiClient.getOrganizationDetail(organizationId, accessToken);
+  }
+
+  @Override
+  public List<OrganizationApiKey> getOrganizationApiKeys(Long organizationId, String subUnitCode, String accessToken) {
+    return organizationApiClient.getOrganizationApiKeys(organizationId, subUnitCode, accessToken);
   }
 }

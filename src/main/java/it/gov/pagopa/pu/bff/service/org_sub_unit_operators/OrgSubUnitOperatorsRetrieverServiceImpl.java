@@ -67,4 +67,15 @@ public class OrgSubUnitOperatorsRetrieverServiceImpl implements OrgSubUnitOperat
     return pagedOrgSubUnitOperatorsMapper.toOrgSubUnitOperator(sourceOperator, userInfo);
   }
 
+  @Override
+  public void addOrgSubUnitsToOperator(Long organizationId, String mappedExternalUserId, List<String> orgSubUnitCodes, UserInfo loggedUser, String accessToken) {
+    authorizationService.validateAdminRole(organizationId, loggedUser);
+    orgSubUnitOperatorsService.addOrgSubUnitsToOperator(organizationId, mappedExternalUserId, orgSubUnitCodes, accessToken);
+  }
+
+  @Override
+  public void deleteOrgSubUnitFromOperator(Long organizationId, String mappedExternalUserId, String subUnitCode, UserInfo loggedUser, String accessToken) {
+    authorizationService.validateAdminRole(organizationId, loggedUser);
+    orgSubUnitOperatorsService.deleteOrgSubUnitFromOperator(organizationId, mappedExternalUserId, subUnitCode, accessToken);
+  }
 }

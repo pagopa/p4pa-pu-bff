@@ -4,9 +4,7 @@ import it.gov.pagopa.pu.bff.connector.organization.client.OrganizationApiClient;
 import it.gov.pagopa.pu.bff.connector.organization.client.OrganizationClient;
 import it.gov.pagopa.pu.bff.connector.organization.client.OrganizationEntityClient;
 import it.gov.pagopa.pu.bff.connector.organization.client.OrganizationSearchClient;
-import it.gov.pagopa.pu.organization.dto.generated.Organization;
-import it.gov.pagopa.pu.organization.dto.generated.OrganizationDetailDTO;
-import it.gov.pagopa.pu.organization.dto.generated.PagedModelOrganization;
+import it.gov.pagopa.pu.organization.dto.generated.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,6 +14,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Pageable;
 
+import java.util.List;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -116,12 +115,12 @@ class OrganizationServiceTest {
 
   @Test
   void whenUpdateOrganizationThenInvokeClient() {
-    OrganizationDetailDTO organizationDetailDTO = new OrganizationDetailDTO();
+    OrganizationUpdateDTO organizationUpdateDTO = new OrganizationUpdateDTO();
     String accessToken = "accessToken";
 
-    doNothing().when(organizationClientMock).updateOrganization(organizationDetailDTO, accessToken);
+    doNothing().when(organizationClientMock).updateOrganization(organizationUpdateDTO, accessToken);
 
-    service.updateOrganization(organizationDetailDTO, accessToken);
+    service.updateOrganization(organizationUpdateDTO, accessToken);
 
     Mockito.verifyNoMoreInteractions(organizationClientMock);
   }
@@ -136,6 +135,22 @@ class OrganizationServiceTest {
       .thenReturn(expectedResult);
 
     OrganizationDetailDTO result = service.getOrganizationDetail(organizationId, accessToken);
+
+    assertNotNull(result);
+    assertSame(expectedResult, result);
+  }
+
+  @Test
+  void  givenOrgIdAndSubUnitCodeWhenGetOrganizationApiKeysThenReturnListOrgKeys(){
+    String accessToken = "ACCESSTOKEN";
+    Long organizationId = 123L;
+    String subUnitCode = "CODE";
+    List<OrganizationApiKey> expectedResult = List.of(new OrganizationApiKey());
+
+    when(organizationApiClientMock.getOrganizationApiKeys(organizationId, subUnitCode, accessToken))
+      .thenReturn(expectedResult);
+
+    List<OrganizationApiKey> result = service.getOrganizationApiKeys(organizationId, subUnitCode, accessToken);
 
     assertNotNull(result);
     assertSame(expectedResult, result);

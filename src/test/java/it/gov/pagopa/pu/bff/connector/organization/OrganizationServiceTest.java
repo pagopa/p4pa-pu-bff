@@ -17,8 +17,7 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
@@ -154,5 +153,19 @@ class OrganizationServiceTest {
 
     assertNotNull(result);
     assertSame(expectedResult, result);
+  }
+
+  @Test
+  void  givenApiKeysRequestWhenEncryptAndSaveApiKeyThenOk(){
+    Long organizationId = 123L;
+    String accessToken = "ACCESSTOKEN";
+    String subUnitCode = "CODE";
+    OrganizationApiKeys organizationApiKeys = new OrganizationApiKeys();
+
+    doNothing().when(organizationApiClientMock)
+      .encryptAndSaveApiKey(organizationId, organizationApiKeys, subUnitCode, accessToken);
+
+    assertDoesNotThrow(() ->
+      service.encryptAndSaveApiKey(organizationId, organizationApiKeys, subUnitCode, accessToken));
   }
 }

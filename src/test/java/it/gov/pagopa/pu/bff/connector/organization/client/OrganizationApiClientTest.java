@@ -4,6 +4,7 @@ import it.gov.pagopa.pu.bff.connector.organization.config.OrganizationApisHolder
 import it.gov.pagopa.pu.bff.exception.common.RestInvokeNotFoundException;
 import it.gov.pagopa.pu.organization.client.generated.OrganizationApi;
 import it.gov.pagopa.pu.organization.dto.generated.OrganizationApiKey;
+import it.gov.pagopa.pu.organization.dto.generated.OrganizationApiKeys;
 import it.gov.pagopa.pu.organization.dto.generated.OrganizationDetailDTO;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -17,6 +18,7 @@ import org.springframework.http.HttpStatus;
 
 import java.util.List;
 
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -87,5 +89,21 @@ class OrganizationApiClientTest {
     List<OrganizationApiKey> result = organizationApiClient.getOrganizationApiKeys(organizationId, subUnitCode, accessToken);
 
     Assertions.assertSame(expectedResult, result);
+  }
+
+  @Test
+  void whenEncryptAndSaveApiKeyThenInvokeWithAccessToken() {
+    Long organizationId = 123L;
+    String subUnitCode = "CODE";
+    String accessToken = "ACCESSTOKEN";
+    OrganizationApiKeys apiKeys = new OrganizationApiKeys();
+
+    when(organizationApisHolderMock.getOrganizationApi(accessToken))
+      .thenReturn(organizationApiMock);
+    doNothing().when(organizationApiMock)
+      .encryptAndSaveApiKey(organizationId, apiKeys, subUnitCode);
+
+    Assertions.assertDoesNotThrow(() ->
+      organizationApiClient.encryptAndSaveApiKey(organizationId, apiKeys, subUnitCode, accessToken));
   }
 }

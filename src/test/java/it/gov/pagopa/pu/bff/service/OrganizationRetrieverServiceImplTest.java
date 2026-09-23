@@ -663,4 +663,19 @@ class OrganizationRetrieverServiceImplTest {
     assertNotNull(result);
     assertSame(expectedResult, result);
   }
+
+  @Test
+  void  givenApiKeysRequestWhenEncryptAndSaveApiKeyThenOk(){
+    Long organizationId = 123L;
+    String subUnitCode = "CODE";
+    OrganizationApiKeys organizationApiKeys = new OrganizationApiKeys();
+
+    doNothing().when(authorizationServiceMock)
+      .validateAdminRole(organizationId, userInfo);
+    doNothing().when(organizationServiceMock)
+      .encryptAndSaveApiKey(organizationId, organizationApiKeys, subUnitCode, accessToken);
+
+    assertDoesNotThrow(() ->
+      organizationService.encryptAndSaveApiKey(organizationId, organizationApiKeys, subUnitCode, userInfo, accessToken));
+  }
 }

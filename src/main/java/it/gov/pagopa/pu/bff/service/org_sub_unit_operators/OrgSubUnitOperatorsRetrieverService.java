@@ -13,4 +13,6 @@ public interface OrgSubUnitOperatorsRetrieverService {
   void addOrgSubUnitsToOperator(Long organizationId, String mappedExternalUserId, List<String> orgSubUnitCodes, UserInfo loggedUser, String accessToken);
 
   void deleteOrgSubUnitFromOperator(Long organizationId, String mappedExternalUserId, String subUnitCode, UserInfo loggedUser, String accessToken);
+
+  void addOperatorsToOrgSubUnit(Long organizationId, String subUnitCode, List<String> mappedExternalUserIds, UserInfo loggedUser, String accessToken);
 }

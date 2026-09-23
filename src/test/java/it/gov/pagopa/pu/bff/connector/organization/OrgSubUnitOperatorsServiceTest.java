@@ -91,4 +91,16 @@ class OrgSubUnitOperatorsServiceTest {
 
     verify(orgSubUnitOperatorsClientMock).deleteOrgSubUnitFromOperator(organizationId, mappedExternalUserId, subUnitCode, accessToken);
   }
+
+  @Test
+  void whenAddOperatorsToOrgSubUnitThenInvokeClient() {
+    Long organizationId = 1L;
+    String subUnitCode = "SUB_UNIT_1";
+    List<String> mappedExternalUserIds = List.of("mappedExternalUserId1", "mappedExternalUserId2");
+    String accessToken = "accessToken";
+
+    service.addOperatorsToOrgSubUnit(organizationId, subUnitCode, mappedExternalUserIds, accessToken);
+
+    verify(orgSubUnitOperatorsClientMock).addOperatorsToOrgSubUnit(organizationId, subUnitCode, mappedExternalUserIds, accessToken);
+  }
 }

@@ -106,4 +106,18 @@ class OrgSubUnitOperatorsControllerTest {
     verify(orgSubUnitOperatorsRetrieverServiceMock)
       .deleteOrgSubUnitFromOperator(organizationId, mappedExternalUserId, subUnitCode, loggedUser, ACCESS_TOKEN);
   }
+
+  @Test
+  void givenCorrectRequestWhenAddOperatorsToOrgSubUnitThenOk() {
+    Long organizationId = 1L;
+    String subUnitCode = "SUB_UNIT_1";
+    List<String> mappedExternalUserIds = List.of("mappedExternalUserId1", "mappedExternalUserId2");
+
+    ResponseEntity<Void> response = orgSubUnitOperatorsController.addOperatorsToOrgSubUnit(organizationId, subUnitCode, mappedExternalUserIds);
+
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertNull(response.getBody());
+    verify(orgSubUnitOperatorsRetrieverServiceMock).
+      addOperatorsToOrgSubUnit(organizationId, subUnitCode, mappedExternalUserIds, loggedUser, ACCESS_TOKEN);
+  }
 }

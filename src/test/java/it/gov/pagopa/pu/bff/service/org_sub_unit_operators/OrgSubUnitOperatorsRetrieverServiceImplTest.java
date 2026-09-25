@@ -250,4 +250,15 @@ class OrgSubUnitOperatorsRetrieverServiceImplTest {
     verify(authorizationServiceMock).validateAdminRole(ORGANIZATION_ID, loggedUser);
     verify(orgSubUnitOperatorsServiceMock).addOperatorsToOrgSubUnit(ORGANIZATION_ID, subUnitCode, mappedExternalUserIds, ACCESS_TOKEN);
   }
+
+  @Test
+  void givenCorrectRequestWhenDeleteOperatorsFromOrgSubUnitThenOk() {
+    String subUnitCode = "SUB_UNIT_1";
+    List<String> mappedExternalUserIds = List.of("mappedExternalUserId1", "mappedExternalUserId2");
+
+    service.deleteOperatorsFromOrgSubUnit(ORGANIZATION_ID, subUnitCode, mappedExternalUserIds, loggedUser, ACCESS_TOKEN);
+
+    verify(authorizationServiceMock).validateAdminRole(ORGANIZATION_ID, loggedUser);
+    verify(orgSubUnitOperatorsServiceMock).deleteOperatorsFromOrgSubUnit(ORGANIZATION_ID, subUnitCode, mappedExternalUserIds, ACCESS_TOKEN);
+  }
 }

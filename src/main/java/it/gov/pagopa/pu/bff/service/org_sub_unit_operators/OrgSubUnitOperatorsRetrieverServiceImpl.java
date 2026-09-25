@@ -84,4 +84,10 @@ public class OrgSubUnitOperatorsRetrieverServiceImpl implements OrgSubUnitOperat
      authorizationService.validateAdminRole(organizationId, loggedUser);
      orgSubUnitOperatorsService.addOperatorsToOrgSubUnit(organizationId, subUnitCode, mappedExternalUserIds, accessToken);
   }
+
+  @Override
+  public void deleteOperatorsFromOrgSubUnit(Long organizationId, String subUnitCode, List<String> mappedExternalUserIds, UserInfo loggedUser, String accessToken) {
+    authorizationService.validateAdminRole(organizationId, loggedUser);
+    orgSubUnitOperatorsService.deleteOperatorsFromOrgSubUnit(organizationId, subUnitCode, mappedExternalUserIds, accessToken);
+  }
 }

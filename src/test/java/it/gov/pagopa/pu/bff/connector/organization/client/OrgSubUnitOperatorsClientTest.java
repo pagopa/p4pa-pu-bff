@@ -86,4 +86,20 @@ class OrgSubUnitOperatorsClientTest {
     verify(organizationApisHolderMock).getOrgSubUnitOperatorsApi(accessToken);
     verify(orgSubUnitOperatorsApiMock).addOperatorsToOrgSubUnit(organizationId, subUnitCode, mappedExternalUserIds);
   }
+
+  @Test
+  void whenDeleteOperatorsFromOrgSubUnitThenInvokeApi() {
+    Long organizationId = 1L;
+    String subUnitCode = "SUB_UNIT_1";
+    List<String> mappedExternalUserIds = List.of("mappedExternalUserId1", "mappedExternalUserId2");
+    String accessToken = "accessToken";
+
+    when(organizationApisHolderMock.getOrgSubUnitOperatorsApi(accessToken))
+      .thenReturn(orgSubUnitOperatorsApiMock);
+
+    client.deleteOperatorsFromOrgSubUnit(organizationId, subUnitCode, mappedExternalUserIds, accessToken);
+
+    verify(organizationApisHolderMock).getOrgSubUnitOperatorsApi(accessToken);
+    verify(orgSubUnitOperatorsApiMock).deleteOperatorsFromOrgSubUnit(organizationId, subUnitCode, mappedExternalUserIds);
+  }
 }

@@ -24,8 +24,13 @@ public class OrgSubUnitOperatorsClient {
       .deleteOrgSubUnitFromOperator(organizationId, mappedExternalUserId, subUnitCode);
   }
 
-  public void addOperatorsToOrgSubUnit(Long organizationId, String mappedExternalUserId, List<String> orgSubUnitCodes, String accessToken) {
+  public void addOperatorsToOrgSubUnit(Long organizationId, String subUnitCode, List<String> mappedExternalUserIds, String accessToken) {
     organizationApisHolder.getOrgSubUnitOperatorsApi(accessToken)
-      .addOperatorsToOrgSubUnit(organizationId, mappedExternalUserId, orgSubUnitCodes);
+      .addOperatorsToOrgSubUnit(organizationId, subUnitCode, mappedExternalUserIds);
+  }
+
+  public void deleteOperatorsFromOrgSubUnit(Long organizationId, String subUnitCode, List<String> mappedExternalUserIds, String accessToken) {
+    organizationApisHolder.getOrgSubUnitOperatorsApi(accessToken)
+      .deleteOperatorsFromOrgSubUnit(organizationId, subUnitCode, mappedExternalUserIds);
   }
 }

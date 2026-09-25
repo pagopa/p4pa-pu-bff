@@ -38,4 +38,9 @@ public class OrgSubUnitOperatorsServiceImpl implements OrgSubUnitOperatorsServic
   public void addOperatorsToOrgSubUnit(Long organizationId, String subUnitCode, List<String> mappedExternalUserIds, String accessToken) {
     orgSubUnitOperatorsClient.addOperatorsToOrgSubUnit(organizationId, subUnitCode, mappedExternalUserIds, accessToken);
   }
+
+  @Override
+  public void deleteOperatorsFromOrgSubUnit(Long organizationId, String subUnitCode, List<String> mappedExternalUserIds, String accessToken) {
+    orgSubUnitOperatorsClient.deleteOperatorsFromOrgSubUnit(organizationId, subUnitCode, mappedExternalUserIds, accessToken);
+  }
 }

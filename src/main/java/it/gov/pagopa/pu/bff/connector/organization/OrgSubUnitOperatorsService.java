@@ -14,4 +14,6 @@ public interface OrgSubUnitOperatorsService {
   void deleteOrgSubUnitFromOperator(Long organizationId, String mappedExternalUserId, String subUnitCode, String accessToken);
 
   void addOperatorsToOrgSubUnit(Long organizationId, String subUnitCode, List<String> mappedExternalUserIds, String accessToken);
+
+  void deleteOperatorsFromOrgSubUnit(Long organizationId, String subUnitCode, List<String> mappedExternalUserIds, String accessToken);
 }

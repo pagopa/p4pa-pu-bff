@@ -69,4 +69,9 @@ public class OrganizationServiceImpl implements OrganizationService {
   public void encryptAndSaveApiKey(Long organizationId, OrganizationApiKeys organizationApiKeys, String subUnitCode, String accessToken) {
     organizationApiClient.encryptAndSaveApiKey(organizationId, organizationApiKeys, subUnitCode, accessToken);
   }
+
+  @Override
+  public OrganizationApiKeys getOrganizationApiKey(Long organizationId, OrganizationApiKeyType keyType, String subUnitCode, String accessToken) {
+    return organizationApiClient.getOrganizationApiKey(organizationId, keyType, subUnitCode, accessToken);
+  }
 }

@@ -3,6 +3,7 @@ package it.gov.pagopa.pu.bff.connector.organization.client;
 import it.gov.pagopa.pu.bff.connector.organization.config.OrganizationApisHolder;
 import it.gov.pagopa.pu.bff.exception.common.RestInvokeNotFoundException;
 import it.gov.pagopa.pu.organization.dto.generated.OrganizationApiKey;
+import it.gov.pagopa.pu.organization.dto.generated.OrganizationApiKeyType;
 import it.gov.pagopa.pu.organization.dto.generated.OrganizationApiKeys;
 import it.gov.pagopa.pu.organization.dto.generated.OrganizationDetailDTO;
 import lombok.extern.slf4j.Slf4j;
@@ -37,5 +38,9 @@ public class OrganizationApiClient {
   public void encryptAndSaveApiKey(Long organizationId, OrganizationApiKeys organizationApiKeys, String subUnitCode, String accessToken) {
     organizationApisHolder.getOrganizationApi(accessToken)
       .encryptAndSaveApiKey(organizationId, organizationApiKeys, subUnitCode);
+  }
+
+  public OrganizationApiKeys getOrganizationApiKey(Long organizationId, OrganizationApiKeyType keyType, String subUnitCode, String accessToken){
+    return organizationApisHolder.getOrganizationApi(accessToken).getOrganizationApiKey(organizationId, keyType, subUnitCode);
   }
 }

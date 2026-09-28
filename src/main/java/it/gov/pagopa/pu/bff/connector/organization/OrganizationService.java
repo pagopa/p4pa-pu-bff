@@ -23,4 +23,6 @@ public interface OrganizationService {
   List<OrganizationApiKey> getOrganizationApiKeys(Long organizationId, String subUnitCode, String accessToken);
 
   void encryptAndSaveApiKey(Long organizationId, OrganizationApiKeys organizationApiKeys, String subUnitCode, String accessToken);
+
+  OrganizationApiKeys getOrganizationApiKey(Long organizationId, OrganizationApiKeyType keyType, String subUnitCode, String accessToken);
 }

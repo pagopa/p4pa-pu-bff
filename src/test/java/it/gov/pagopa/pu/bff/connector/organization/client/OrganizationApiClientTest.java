@@ -4,6 +4,7 @@ import it.gov.pagopa.pu.bff.connector.organization.config.OrganizationApisHolder
 import it.gov.pagopa.pu.bff.exception.common.RestInvokeNotFoundException;
 import it.gov.pagopa.pu.organization.client.generated.OrganizationApi;
 import it.gov.pagopa.pu.organization.dto.generated.OrganizationApiKey;
+import it.gov.pagopa.pu.organization.dto.generated.OrganizationApiKeyType;
 import it.gov.pagopa.pu.organization.dto.generated.OrganizationApiKeys;
 import it.gov.pagopa.pu.organization.dto.generated.OrganizationDetailDTO;
 import org.junit.jupiter.api.AfterEach;
@@ -105,5 +106,26 @@ class OrganizationApiClientTest {
 
     Assertions.assertDoesNotThrow(() ->
       organizationApiClient.encryptAndSaveApiKey(organizationId, apiKeys, subUnitCode, accessToken));
+  }
+
+
+  @Test
+  void whenGetOrganizationApiKeyhenInvokeWithAccessToken() {
+    // Given
+    String accessToken = "ACCESSTOKEN";
+    Long organizationId = 1L;
+    String subUnit = "SUBUNIT";
+    OrganizationApiKeys expectedResult = new OrganizationApiKeys();
+
+    when(organizationApisHolderMock.getOrganizationApi(accessToken))
+      .thenReturn(organizationApiMock);
+    when(organizationApiMock.getOrganizationApiKey(organizationId, OrganizationApiKeyType.IO, subUnit))
+      .thenReturn(expectedResult);
+
+    // When
+    OrganizationApiKeys result = organizationApiClient.getOrganizationApiKey(organizationId, OrganizationApiKeyType.IO, subUnit, accessToken);
+
+    // Then
+    Assertions.assertSame(expectedResult, result);
   }
 }

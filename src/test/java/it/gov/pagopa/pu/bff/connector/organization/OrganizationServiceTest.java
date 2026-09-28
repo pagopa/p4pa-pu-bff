@@ -168,4 +168,20 @@ class OrganizationServiceTest {
     assertDoesNotThrow(() ->
       service.encryptAndSaveApiKey(organizationId, organizationApiKeys, subUnitCode, accessToken));
   }
+
+  @Test
+  void  givenOrgIdAndSubUnitCodeWhenGetOrganizationApiKeyThenReturnKey(){
+    Long organizationId = 123L;
+    String subUnitCode = "CODE";
+    String accessToken = "ACCESSTOKEN";
+    OrganizationApiKeys expectedResult = new OrganizationApiKeys();
+
+    when(organizationApiClientMock.getOrganizationApiKey(organizationId, OrganizationApiKeyType.IO, subUnitCode, accessToken))
+      .thenReturn(expectedResult);
+
+    OrganizationApiKeys result = service.getOrganizationApiKey(organizationId, OrganizationApiKeyType.IO, subUnitCode, accessToken);
+
+    assertNotNull(result);
+    assertSame(expectedResult, result);
+  }
 }

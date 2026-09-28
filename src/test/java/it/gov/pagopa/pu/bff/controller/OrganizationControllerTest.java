@@ -6,6 +6,7 @@ import it.gov.pagopa.pu.bff.security.SecurityUtilsTest;
 import it.gov.pagopa.pu.bff.service.organization.OrganizationRetrieverService;
 import it.gov.pagopa.pu.bff.util.TestUtils;
 import it.gov.pagopa.pu.organization.dto.generated.OrganizationApiKey;
+import it.gov.pagopa.pu.organization.dto.generated.OrganizationApiKeyType;
 import it.gov.pagopa.pu.organization.dto.generated.OrganizationApiKeys;
 import it.gov.pagopa.pu.organization.dto.generated.OrganizationUpdateDTO;
 import org.junit.jupiter.api.AfterEach;
@@ -179,5 +180,21 @@ class OrganizationControllerTest {
     ResponseEntity<Void> response = organizationController.encryptAndSaveApiKey(organizationId, organizationApiKeys, subUnitCode);
 
     assertEquals(HttpStatus.OK, response.getStatusCode());
+  }
+
+  @Test
+  void givenOrgIdAndSubUnitCodeWhenGetOrganizationApiKeyThenReturnApiKey() {
+    OrganizationApiKeys expectedResult = new OrganizationApiKeys();
+    Long organizationId = 123L;
+    String subUnitCode = "CODE";
+
+    when(organizationRetrieverServiceMock.getOrganizationApiKey(organizationId, OrganizationApiKeyType.IO, subUnitCode, loggedUser, accessToken))
+      .thenReturn(expectedResult);
+
+    ResponseEntity<OrganizationApiKeys> result = organizationController.getOrganizationApiKey(organizationId, OrganizationApiKeyType.IO, subUnitCode);
+
+    assertEquals(HttpStatus.OK, result.getStatusCode());
+    assertNotNull(result.getBody());
+    assertEquals(expectedResult, result.getBody());
   }
 }

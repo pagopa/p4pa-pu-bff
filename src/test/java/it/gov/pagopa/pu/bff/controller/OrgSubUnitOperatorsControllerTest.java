@@ -52,31 +52,24 @@ class OrgSubUnitOperatorsControllerTest {
   void givenCorrectRequestWhenGetOrgSubUnitOperatorsThenOk() {
     Long organizationId = 1L;
     String subUnitCode = "subUnitCode";
+    String mappedExternalUserId = "mappedExternalUserId";
+    String fiscalCode = "fiscalCode";
+    String firstName = "firstName";
+    String lastName = "lastName";
     Pageable pageable = PageRequest.ofSize(10);
 
     PagedOrgSubUnitOperators expectedResult = podamFactory.manufacturePojo(PagedOrgSubUnitOperators.class);
 
-    when(
-      orgSubUnitOperatorsRetrieverServiceMock.getOrgSubUnitOperators(
-        organizationId,
-        subUnitCode,
-        pageable,
-        loggedUser,
-        ACCESS_TOKEN
-      )
-    ).thenReturn(expectedResult);
+    when(orgSubUnitOperatorsRetrieverServiceMock.getOrgSubUnitOperators(organizationId, subUnitCode, mappedExternalUserId, fiscalCode, firstName, lastName, pageable, loggedUser, ACCESS_TOKEN))
+      .thenReturn(expectedResult);
 
-    ResponseEntity<PagedOrgSubUnitOperators> response = orgSubUnitOperatorsController.getOrgSubUnitOperators(
-      organizationId,
-      subUnitCode,
-      pageable
-    );
+    ResponseEntity<PagedOrgSubUnitOperators> response =
+      orgSubUnitOperatorsController.getOrgSubUnitOperators(organizationId, subUnitCode, mappedExternalUserId, fiscalCode, firstName, lastName, pageable);
 
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertNotNull(response.getBody());
     assertSame(expectedResult, response.getBody());
   }
-
   @Test
   void givenCorrectRequestWhenAddOrgSubUnitsToOperatorThenOk() {
     Long organizationId = 1L;

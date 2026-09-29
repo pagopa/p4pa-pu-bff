@@ -1,6 +1,6 @@
 package it.gov.pagopa.pu.bff.mapper;
 
-import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
+import it.gov.pagopa.pu.auth.dto.generated.OperatorDTO;
 import it.gov.pagopa.pu.bff.dto.generated.OrgSubUnitOperator;
 import it.gov.pagopa.pu.bff.dto.generated.PagedOrgSubUnitOperators;
 import it.gov.pagopa.pu.bff.util.TestUtils;
@@ -22,47 +22,48 @@ class PagedOrgSubUnitOperatorsMapperTest {
 
   // ---------- toOrgSubUnitOperator ----------
   @Test
-  void toOrgSubUnitOperator_shouldMapAllFields_whenSourceAndUserInfoArePresent() {
+  void toOrgSubUnitOperator_shouldMapAllFields_whenSourceAndOperatorArePresent() {
     OrgSubUnitOperators sourceOperator = podamFactory.manufacturePojo(OrgSubUnitOperators.class);
-    UserInfo userInfo = podamFactory.manufacturePojo(UserInfo.class);
 
-    OrgSubUnitOperator result = mapper.toOrgSubUnitOperator(sourceOperator, userInfo);
+    OperatorDTO operator = podamFactory.manufacturePojo(OperatorDTO.class);
+
+    OrgSubUnitOperator result = mapper.toOrgSubUnitOperator(sourceOperator, operator);
 
     assertNotNull(result);
-    assertEquals(sourceOperator.getOperatorExternalUserId(), result.getMappedExternalUserId());
-    assertEquals(userInfo.getName(), result.getFirstName());
-    assertEquals(userInfo.getFamilyName(), result.getLastName());
-    assertEquals(userInfo.getFiscalCode(), result.getFiscalCode());
+    assertEquals(operator.getMappedExternalUserId(), result.getMappedExternalUserId());
+    assertEquals(operator.getFirstName(), result.getFirstName());
+    assertEquals(operator.getLastName(), result.getLastName());
+    assertEquals(operator.getFiscalCode(), result.getFiscalCode());
   }
 
   @Test
-  void toOrgSubUnitOperator_shouldLeaveUserFieldsNull_whenUserInfoIsNull() {
+  void toOrgSubUnitOperator_shouldLeaveFieldsNull_whenOperatorIsNull() {
     OrgSubUnitOperators sourceOperator = podamFactory.manufacturePojo(OrgSubUnitOperators.class);
 
     OrgSubUnitOperator result = mapper.toOrgSubUnitOperator(sourceOperator, null);
 
     assertNotNull(result);
-    assertEquals(sourceOperator.getOperatorExternalUserId(), result.getMappedExternalUserId());
+    assertNull(result.getMappedExternalUserId());
     assertNull(result.getFirstName());
     assertNull(result.getLastName());
     assertNull(result.getFiscalCode());
   }
 
   @Test
-  void toOrgSubUnitOperator_shouldLeaveMappedExternalUserIdNull_whenSourceOperatorIsNull() {
-    UserInfo userInfo = podamFactory.manufacturePojo(UserInfo.class);
+  void toOrgSubUnitOperator_shouldMapOperatorFields_whenSourceOperatorIsNull() {
+    OperatorDTO operator = podamFactory.manufacturePojo(OperatorDTO.class);
 
-    OrgSubUnitOperator result = mapper.toOrgSubUnitOperator(null, userInfo);
+    OrgSubUnitOperator result = mapper.toOrgSubUnitOperator(null, operator);
 
     assertNotNull(result);
-    assertNull(result.getMappedExternalUserId());
-    assertEquals(userInfo.getName(), result.getFirstName());
-    assertEquals(userInfo.getFamilyName(), result.getLastName());
-    assertEquals(userInfo.getFiscalCode(), result.getFiscalCode());
+    assertEquals(operator.getMappedExternalUserId(), result.getMappedExternalUserId());
+    assertEquals(operator.getFirstName(), result.getFirstName());
+    assertEquals(operator.getLastName(), result.getLastName());
+    assertEquals(operator.getFiscalCode(), result.getFiscalCode());
   }
 
   @Test
-  void toOrgSubUnitOperator_shouldReturnObjectWithAllNullFields_whenBothParamsAreNull() {
+  void toOrgSubUnitOperator_shouldReturnNull_whenBothParamsAreNull() {
     OrgSubUnitOperator result = mapper.toOrgSubUnitOperator(null, null);
 
     assertNull(result);

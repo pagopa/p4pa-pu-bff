@@ -22,9 +22,11 @@ public class OrgSubUnitOperatorsController implements OrgSubUnitOperatorsApi {
   }
 
   @Override
-  public ResponseEntity<PagedOrgSubUnitOperators> getOrgSubUnitOperators(Long organizationId, String subUnitCode, Pageable pageable) {
+  public ResponseEntity<PagedOrgSubUnitOperators> getOrgSubUnitOperators(
+    Long organizationId, String subUnitCode, String mappedExternalUserId, String fiscalCode, String firstName, String lastName, Pageable pageable) {
     log.info("User requested getOrgSubUnitOperators having organizationId {} and subUnitCode {}", organizationId, subUnitCode);
-    return ResponseEntity.ok(orgSubUnitOperatorsRetrieverService.getOrgSubUnitOperators(organizationId, subUnitCode, pageable, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken()));
+    return ResponseEntity.ok(orgSubUnitOperatorsRetrieverService.getOrgSubUnitOperators(
+      organizationId, subUnitCode, mappedExternalUserId, fiscalCode, firstName, lastName, pageable, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken()));
   }
 
   @Override

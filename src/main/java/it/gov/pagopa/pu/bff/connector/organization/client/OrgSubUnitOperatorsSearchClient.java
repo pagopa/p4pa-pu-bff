@@ -7,6 +7,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.Set;
+
 @Service
 @Slf4j
 public class OrgSubUnitOperatorsSearchClient {
@@ -17,10 +19,12 @@ public class OrgSubUnitOperatorsSearchClient {
     this.organizationApisHolder = organizationApisHolder;
   }
 
-  public PagedModelOrgSubUnitOperators findByOrganizationIdAndSubUnitCode(Long organizationId, String subUnitCode, Pageable pageable, String accessToken) {
-    return organizationApisHolder.getOrgSubUnitOperatorsSearchControllerApi(accessToken).crudOrgSubUnitOperatorsFindByOrganizationIdAndSubUnitCode(
+  public PagedModelOrgSubUnitOperators findByOrganizationIdAndSubUnitCodeAndOperatorExternalUserIdIn(Long organizationId, String subUnitCode, Set<String> mappedExternalUserIds, Pageable pageable, String accessToken) {
+    return organizationApisHolder.getOrgSubUnitOperatorsSearchControllerApi(accessToken)
+      .crudOrgSubUnitOperatorsFindByOrganizationIdAndSubUnitCodeAndOperatorExternalUserIdIn(
       organizationId,
       subUnitCode,
+      mappedExternalUserIds,
       PageUtils.getPageNumber(pageable),
       PageUtils.getPageSize(pageable),
       PageUtils.getSortList(pageable)

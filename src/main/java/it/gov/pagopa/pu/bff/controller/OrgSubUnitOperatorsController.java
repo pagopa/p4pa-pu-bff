@@ -1,6 +1,7 @@
 package it.gov.pagopa.pu.bff.controller;
 
 import it.gov.pagopa.pu.bff.controller.generated.OrgSubUnitOperatorsApi;
+import it.gov.pagopa.pu.bff.dto.OrgSubUnitOperatorsFilters;
 import it.gov.pagopa.pu.bff.dto.generated.PagedOrgSubUnitOperators;
 import it.gov.pagopa.pu.bff.security.SecurityUtils;
 import it.gov.pagopa.pu.bff.service.org_sub_unit_operators.OrgSubUnitOperatorsRetrieverService;
@@ -25,8 +26,11 @@ public class OrgSubUnitOperatorsController implements OrgSubUnitOperatorsApi {
   public ResponseEntity<PagedOrgSubUnitOperators> getOrgSubUnitOperators(
     Long organizationId, String subUnitCode, String mappedExternalUserId, String fiscalCode, String firstName, String lastName, Pageable pageable) {
     log.info("User requested getOrgSubUnitOperators having organizationId {} and subUnitCode {}", organizationId, subUnitCode);
+
+    OrgSubUnitOperatorsFilters filters = new OrgSubUnitOperatorsFilters(mappedExternalUserId, fiscalCode, firstName, lastName);
+
     return ResponseEntity.ok(orgSubUnitOperatorsRetrieverService.getOrgSubUnitOperators(
-      organizationId, subUnitCode, mappedExternalUserId, fiscalCode, firstName, lastName, pageable, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken()));
+      organizationId, subUnitCode, filters, pageable, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken()));
   }
 
   @Override

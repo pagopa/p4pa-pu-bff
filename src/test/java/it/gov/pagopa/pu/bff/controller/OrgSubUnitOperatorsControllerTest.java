@@ -1,6 +1,7 @@
 package it.gov.pagopa.pu.bff.controller;
 
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
+import it.gov.pagopa.pu.bff.dto.OrgSubUnitOperatorsFilters;
 import it.gov.pagopa.pu.bff.dto.generated.PagedOrgSubUnitOperators;
 import it.gov.pagopa.pu.bff.security.SecurityUtilsTest;
 import it.gov.pagopa.pu.bff.service.org_sub_unit_operators.OrgSubUnitOperatorsRetrieverService;
@@ -58,9 +59,11 @@ class OrgSubUnitOperatorsControllerTest {
     String lastName = "lastName";
     Pageable pageable = PageRequest.ofSize(10);
 
+    OrgSubUnitOperatorsFilters filters = new OrgSubUnitOperatorsFilters(mappedExternalUserId, fiscalCode, firstName, lastName);
+
     PagedOrgSubUnitOperators expectedResult = podamFactory.manufacturePojo(PagedOrgSubUnitOperators.class);
 
-    when(orgSubUnitOperatorsRetrieverServiceMock.getOrgSubUnitOperators(organizationId, subUnitCode, mappedExternalUserId, fiscalCode, firstName, lastName, pageable, loggedUser, ACCESS_TOKEN))
+    when(orgSubUnitOperatorsRetrieverServiceMock.getOrgSubUnitOperators(organizationId, subUnitCode, filters, pageable, loggedUser, ACCESS_TOKEN))
       .thenReturn(expectedResult);
 
     ResponseEntity<PagedOrgSubUnitOperators> response =

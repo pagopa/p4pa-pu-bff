@@ -6,6 +6,7 @@ import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.connector.auth.AuthzService;
 import it.gov.pagopa.pu.bff.connector.organization.OrgSubUnitOperatorsService;
 import it.gov.pagopa.pu.bff.connector.organization.OrganizationService;
+import it.gov.pagopa.pu.bff.dto.OrgSubUnitOperatorsFilters;
 import it.gov.pagopa.pu.bff.dto.generated.OrgSubUnitOperator;
 import it.gov.pagopa.pu.bff.dto.generated.PagedOrgSubUnitOperators;
 import it.gov.pagopa.pu.bff.mapper.PagedOrgSubUnitOperatorsMapper;
@@ -51,13 +52,13 @@ public class OrgSubUnitOperatorsRetrieverServiceImpl implements OrgSubUnitOperat
   }
 
   @Override
-  public PagedOrgSubUnitOperators getOrgSubUnitOperators(Long organizationId, String subUnitCode, String mappedExternalUserId, String fiscalCode, String firstName, String lastName, Pageable pageable, UserInfo loggedUser, String accessToken) {
+  public PagedOrgSubUnitOperators getOrgSubUnitOperators(Long organizationId, String subUnitCode, OrgSubUnitOperatorsFilters filters, Pageable pageable, UserInfo loggedUser, String accessToken) {
     authorizationService.validateAdminRole(organizationId, loggedUser);
 
     Organization organization = organizationService.getOrganizationByOrganizationId(organizationId, accessToken);
     String organizationIpaCode = organization.getIpaCode();
 
-    Map<String, OperatorDTO> operatorsMap = retrieveOperatorsMap(organizationIpaCode, mappedExternalUserId, fiscalCode, firstName, lastName, accessToken);
+    Map<String, OperatorDTO> operatorsMap = retrieveOperatorsMap(organizationIpaCode, filters.getMappedExternalUserId(), filters.getFiscalCode(), filters.getFirstName(), filters.getLastName(), accessToken);
     Set<String> mappedExternalUserIds = operatorsMap.keySet();
 
     PagedModelOrgSubUnitOperators pagedModelOrgSubUnitOperators =

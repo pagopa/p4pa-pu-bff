@@ -6,6 +6,7 @@ import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.connector.auth.AuthzService;
 import it.gov.pagopa.pu.bff.connector.organization.OrgSubUnitOperatorsService;
 import it.gov.pagopa.pu.bff.connector.organization.OrganizationService;
+import it.gov.pagopa.pu.bff.dto.OrgSubUnitOperatorsFilters;
 import it.gov.pagopa.pu.bff.dto.generated.OrgSubUnitOperator;
 import it.gov.pagopa.pu.bff.dto.generated.PagedOrgSubUnitOperators;
 import it.gov.pagopa.pu.bff.mapper.PagedOrgSubUnitOperatorsMapper;
@@ -85,15 +86,19 @@ class OrgSubUnitOperatorsRetrieverServiceImplTest {
 
   @Test
   void getOrgSubUnitOperators_shouldPropagateException_whenAuthorizationFails() {
+    OrgSubUnitOperatorsFilters filters = new OrgSubUnitOperatorsFilters(null, null, null, null);
+
     doThrow(new RuntimeException("Not authorized")).when(authorizationServiceMock)
       .validateAdminRole(ORGANIZATION_ID, loggedUser);
 
     assertThrows(RuntimeException.class, () ->
-      service.getOrgSubUnitOperators(ORGANIZATION_ID, SUB_UNIT_CODE, null, null, null, null, PAGEABLE, loggedUser, ACCESS_TOKEN));
+      service.getOrgSubUnitOperators(ORGANIZATION_ID, SUB_UNIT_CODE, filters, PAGEABLE, loggedUser, ACCESS_TOKEN));
   }
 
   @Test
   void getOrgSubUnitOperators_shouldReturnEmptyContent_whenEmbeddedIsNull() {
+    OrgSubUnitOperatorsFilters filters = new OrgSubUnitOperatorsFilters(null, null, null, null);
+
     Organization organization = podamFactory.manufacturePojo(Organization.class);
     organization.setIpaCode(ORGANIZATION_IPA_CODE);
 
@@ -125,13 +130,15 @@ class OrgSubUnitOperatorsRetrieverServiceImplTest {
     when(pagedOrgSubUnitOperatorsMapperMock.map(Collections.emptyList(), pagedModel))
       .thenReturn(expectedResult);
 
-    PagedOrgSubUnitOperators result = service.getOrgSubUnitOperators(ORGANIZATION_ID, SUB_UNIT_CODE, null, null, null, null, PAGEABLE, loggedUser, ACCESS_TOKEN);
+    PagedOrgSubUnitOperators result = service.getOrgSubUnitOperators(ORGANIZATION_ID, SUB_UNIT_CODE, filters, PAGEABLE, loggedUser, ACCESS_TOKEN);
 
     assertEquals(expectedResult, result);
   }
 
   @Test
   void getOrgSubUnitOperators_shouldReturnEmptyContent_whenOperatorsListIsEmpty() {
+    OrgSubUnitOperatorsFilters filters = new OrgSubUnitOperatorsFilters(null, null, null, null);
+
     Organization organization = podamFactory.manufacturePojo(Organization.class);
     organization.setIpaCode(ORGANIZATION_IPA_CODE);
 
@@ -162,13 +169,15 @@ class OrgSubUnitOperatorsRetrieverServiceImplTest {
     when(pagedOrgSubUnitOperatorsMapperMock.map(Collections.emptyList(), pagedModel))
       .thenReturn(expectedResult);
 
-    PagedOrgSubUnitOperators result = service.getOrgSubUnitOperators(ORGANIZATION_ID, SUB_UNIT_CODE, null, null, null, null, PAGEABLE, loggedUser, ACCESS_TOKEN);
+    PagedOrgSubUnitOperators result = service.getOrgSubUnitOperators(ORGANIZATION_ID, SUB_UNIT_CODE, filters, PAGEABLE, loggedUser, ACCESS_TOKEN);
 
     assertEquals(expectedResult, result);
   }
 
   @Test
   void getOrgSubUnitOperators_shouldEnrichEachOperator_withOperatorInfoFromAuthz() {
+    OrgSubUnitOperatorsFilters filters = new OrgSubUnitOperatorsFilters(null, null, null, null);
+
     Organization organization = podamFactory.manufacturePojo(Organization.class);
     organization.setIpaCode(ORGANIZATION_IPA_CODE);
 
@@ -221,7 +230,7 @@ class OrgSubUnitOperatorsRetrieverServiceImplTest {
     when(pagedOrgSubUnitOperatorsMapperMock.map(expectedContent, pagedModel))
       .thenReturn(expectedResult);
 
-    PagedOrgSubUnitOperators result = service.getOrgSubUnitOperators(ORGANIZATION_ID, SUB_UNIT_CODE, null, null, null, null, PAGEABLE, loggedUser, ACCESS_TOKEN);
+    PagedOrgSubUnitOperators result = service.getOrgSubUnitOperators(ORGANIZATION_ID, SUB_UNIT_CODE, filters, PAGEABLE, loggedUser, ACCESS_TOKEN);
 
     assertEquals(expectedResult, result);
   }
@@ -229,6 +238,8 @@ class OrgSubUnitOperatorsRetrieverServiceImplTest {
   @Test
   void getOrgSubUnitOperators_shouldRetrieveSingleOperator_whenMappedExternalUserIdIsProvided() {
     String mappedExternalUserId = "mappedExternalUserId";
+
+    OrgSubUnitOperatorsFilters filters = new OrgSubUnitOperatorsFilters(mappedExternalUserId, null, null, null);
 
     Organization organization = podamFactory.manufacturePojo(Organization.class);
     organization.setIpaCode(ORGANIZATION_IPA_CODE);
@@ -263,7 +274,128 @@ class OrgSubUnitOperatorsRetrieverServiceImplTest {
     when(pagedOrgSubUnitOperatorsMapperMock.map(List.of(mappedOperator), pagedModel))
       .thenReturn(expectedResult);
 
-    PagedOrgSubUnitOperators result = service.getOrgSubUnitOperators(ORGANIZATION_ID, SUB_UNIT_CODE, mappedExternalUserId, null, null, null, PAGEABLE, loggedUser, ACCESS_TOKEN);
+    PagedOrgSubUnitOperators result = service.getOrgSubUnitOperators(ORGANIZATION_ID, SUB_UNIT_CODE, filters, PAGEABLE, loggedUser, ACCESS_TOKEN);
+
+    assertEquals(expectedResult, result);
+  }
+
+  @Test
+  void getOrgSubUnitOperators_shouldMatchFiltersIgnoringCase() {
+    String mappedExternalUserId = "mappedExternalUserId";
+
+    OrgSubUnitOperatorsFilters filters = new OrgSubUnitOperatorsFilters(mappedExternalUserId, "fiscalcode", "mario", "rossi");
+
+    Organization organization = podamFactory.manufacturePojo(Organization.class);
+    organization.setIpaCode(ORGANIZATION_IPA_CODE);
+
+    OperatorDTO operatorDTO = podamFactory.manufacturePojo(OperatorDTO.class);
+    operatorDTO.setMappedExternalUserId(mappedExternalUserId);
+    operatorDTO.setFiscalCode("FISCALCODE");
+    operatorDTO.setFirstName("MARIO");
+    operatorDTO.setLastName("ROSSI");
+
+    OrgSubUnitOperators sourceOperator = podamFactory.manufacturePojo(OrgSubUnitOperators.class);
+    sourceOperator.setOperatorExternalUserId(mappedExternalUserId);
+
+    PagedModelOrgSubUnitOperators pagedModel = buildPagedModelWithEmbedded(List.of(sourceOperator));
+
+    doNothing().when(authorizationServiceMock)
+      .validateAdminRole(ORGANIZATION_ID, loggedUser);
+
+    when(organizationServiceMock.getOrganizationByOrganizationId(ORGANIZATION_ID, ACCESS_TOKEN))
+      .thenReturn(organization);
+
+    when(authzServiceMock.getOrganizationOperator(ORGANIZATION_IPA_CODE, mappedExternalUserId, ACCESS_TOKEN))
+      .thenReturn(operatorDTO);
+
+    when(orgSubUnitOperatorsServiceMock.findByOrganizationIdAndSubUnitCodeAndOperatorExternalUserIdIn(ORGANIZATION_ID, SUB_UNIT_CODE, Set.of(mappedExternalUserId), PAGEABLE, ACCESS_TOKEN))
+      .thenReturn(pagedModel);
+
+    OrgSubUnitOperator mappedOperator = podamFactory.manufacturePojo(OrgSubUnitOperator.class);
+
+    when(pagedOrgSubUnitOperatorsMapperMock.toOrgSubUnitOperator(sourceOperator, operatorDTO))
+      .thenReturn(mappedOperator);
+
+    PagedOrgSubUnitOperators expectedResult = podamFactory.manufacturePojo(PagedOrgSubUnitOperators.class);
+
+    when(pagedOrgSubUnitOperatorsMapperMock.map(List.of(mappedOperator), pagedModel))
+      .thenReturn(expectedResult);
+
+    PagedOrgSubUnitOperators result = service.getOrgSubUnitOperators(ORGANIZATION_ID, SUB_UNIT_CODE, filters, PAGEABLE, loggedUser, ACCESS_TOKEN);
+
+    assertEquals(expectedResult, result);
+  }
+
+  @Test
+  void getOrgSubUnitOperators_shouldReturnEmptyOperators_whenFiscalCodeDoesNotMatch() {
+    String mappedExternalUserId = "mappedExternalUserId";
+
+    OrgSubUnitOperatorsFilters filters = new OrgSubUnitOperatorsFilters(mappedExternalUserId, "DIFFERENT_FISCAL_CODE", null, null);
+
+    Organization organization = podamFactory.manufacturePojo(Organization.class);
+    organization.setIpaCode(ORGANIZATION_IPA_CODE);
+
+    OperatorDTO operatorDTO = podamFactory.manufacturePojo(OperatorDTO.class);
+    operatorDTO.setMappedExternalUserId(mappedExternalUserId);
+    operatorDTO.setFiscalCode("FISCAL_CODE");
+
+    PagedModelOrgSubUnitOperators pagedModel = buildPagedModelWithEmbedded(Collections.emptyList());
+
+    doNothing().when(authorizationServiceMock)
+      .validateAdminRole(ORGANIZATION_ID, loggedUser);
+
+    when(organizationServiceMock.getOrganizationByOrganizationId(ORGANIZATION_ID, ACCESS_TOKEN))
+      .thenReturn(organization);
+
+    when(authzServiceMock.getOrganizationOperator(ORGANIZATION_IPA_CODE, mappedExternalUserId, ACCESS_TOKEN))
+      .thenReturn(operatorDTO);
+
+    when(orgSubUnitOperatorsServiceMock.findByOrganizationIdAndSubUnitCodeAndOperatorExternalUserIdIn(ORGANIZATION_ID, SUB_UNIT_CODE, Collections.emptySet(), PAGEABLE, ACCESS_TOKEN))
+      .thenReturn(pagedModel);
+
+    PagedOrgSubUnitOperators expectedResult = podamFactory.manufacturePojo(PagedOrgSubUnitOperators.class);
+
+    when(pagedOrgSubUnitOperatorsMapperMock.map(Collections.emptyList(), pagedModel))
+      .thenReturn(expectedResult);
+
+    PagedOrgSubUnitOperators result = service.getOrgSubUnitOperators(ORGANIZATION_ID, SUB_UNIT_CODE, filters, PAGEABLE, loggedUser, ACCESS_TOKEN);
+
+    assertEquals(expectedResult, result);
+  }
+
+  @Test
+  void getOrgSubUnitOperators_shouldReturnEmptyOperators_whenFirstNameIsNull() {
+    String mappedExternalUserId = "mappedExternalUserId";
+
+    OrgSubUnitOperatorsFilters filters = new OrgSubUnitOperatorsFilters(mappedExternalUserId, null, "Mario", null);
+
+    Organization organization = podamFactory.manufacturePojo(Organization.class);
+    organization.setIpaCode(ORGANIZATION_IPA_CODE);
+
+    OperatorDTO operatorDTO = podamFactory.manufacturePojo(OperatorDTO.class);
+    operatorDTO.setMappedExternalUserId(mappedExternalUserId);
+    operatorDTO.setFirstName(null);
+
+    PagedModelOrgSubUnitOperators pagedModel = buildPagedModelWithEmbedded(Collections.emptyList());
+
+    doNothing().when(authorizationServiceMock)
+      .validateAdminRole(ORGANIZATION_ID, loggedUser);
+
+    when(organizationServiceMock.getOrganizationByOrganizationId(ORGANIZATION_ID, ACCESS_TOKEN))
+      .thenReturn(organization);
+
+    when(authzServiceMock.getOrganizationOperator(ORGANIZATION_IPA_CODE, mappedExternalUserId, ACCESS_TOKEN))
+      .thenReturn(operatorDTO);
+
+    when(orgSubUnitOperatorsServiceMock.findByOrganizationIdAndSubUnitCodeAndOperatorExternalUserIdIn(ORGANIZATION_ID, SUB_UNIT_CODE, Collections.emptySet(), PAGEABLE, ACCESS_TOKEN))
+      .thenReturn(pagedModel);
+
+    PagedOrgSubUnitOperators expectedResult = podamFactory.manufacturePojo(PagedOrgSubUnitOperators.class);
+
+    when(pagedOrgSubUnitOperatorsMapperMock.map(Collections.emptyList(), pagedModel))
+      .thenReturn(expectedResult);
+
+    PagedOrgSubUnitOperators result = service.getOrgSubUnitOperators(ORGANIZATION_ID, SUB_UNIT_CODE, filters, PAGEABLE, loggedUser, ACCESS_TOKEN);
 
     assertEquals(expectedResult, result);
   }

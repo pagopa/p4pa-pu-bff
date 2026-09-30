@@ -57,7 +57,7 @@ public class OrgSubUnitOperatorsRetrieverServiceImpl implements OrgSubUnitOperat
 
     String organizationIpaCode = organization.getIpaCode();
 
-    Map<String, OperatorDTO> operatorsMap;
+    final Map<String, OperatorDTO> operatorsMap;
     PagedModelOrgSubUnitOperators pagedModelOrgSubUnitOperators;
     List<OrgSubUnitOperators> orgSubUnitOperators;
 
@@ -86,10 +86,8 @@ public class OrgSubUnitOperatorsRetrieverServiceImpl implements OrgSubUnitOperat
       operatorsMap = retrieveOperatorsInfo(organizationIpaCode, orgSubUnitOperators, accessToken);
     }
 
-    final Map<String, OperatorDTO> operatorsMapForEnrichment = operatorsMap;
-
     List<OrgSubUnitOperator> content = orgSubUnitOperators.stream()
-      .map(operator -> enrichWithOperatorInfo(operator, operatorsMapForEnrichment))
+      .map(operator -> enrichWithOperatorInfo(operator, operatorsMap))
       .toList();
 
     return pagedOrgSubUnitOperatorsMapper.map(content, pagedModelOrgSubUnitOperators);

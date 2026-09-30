@@ -30,7 +30,7 @@ class PagedOrgSubUnitOperatorsMapperTest {
     OrgSubUnitOperator result = mapper.toOrgSubUnitOperator(sourceOperator, operator);
 
     assertNotNull(result);
-    assertEquals(operator.getMappedExternalUserId(), result.getMappedExternalUserId());
+    assertEquals(sourceOperator.getOperatorExternalUserId(), result.getMappedExternalUserId());
     assertEquals(operator.getFirstName(), result.getFirstName());
     assertEquals(operator.getLastName(), result.getLastName());
     assertEquals(operator.getFiscalCode(), result.getFiscalCode());
@@ -43,7 +43,7 @@ class PagedOrgSubUnitOperatorsMapperTest {
     OrgSubUnitOperator result = mapper.toOrgSubUnitOperator(sourceOperator, null);
 
     assertNotNull(result);
-    assertNull(result.getMappedExternalUserId());
+    assertEquals(sourceOperator.getOperatorExternalUserId(), result.getMappedExternalUserId());
     assertNull(result.getFirstName());
     assertNull(result.getLastName());
     assertNull(result.getFiscalCode());
@@ -56,7 +56,7 @@ class PagedOrgSubUnitOperatorsMapperTest {
     OrgSubUnitOperator result = mapper.toOrgSubUnitOperator(null, operator);
 
     assertNotNull(result);
-    assertEquals(operator.getMappedExternalUserId(), result.getMappedExternalUserId());
+    assertNull(result.getMappedExternalUserId());
     assertEquals(operator.getFirstName(), result.getFirstName());
     assertEquals(operator.getLastName(), result.getLastName());
     assertEquals(operator.getFiscalCode(), result.getFiscalCode());

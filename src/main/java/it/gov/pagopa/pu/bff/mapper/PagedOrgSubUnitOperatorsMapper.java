@@ -15,7 +15,7 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface PagedOrgSubUnitOperatorsMapper {
 
-  @Mapping(target = "mappedExternalUserId", source = "operator.mappedExternalUserId")
+  @Mapping(target = "mappedExternalUserId", source = "sourceOperator.operatorExternalUserId")
   @Mapping(target = "firstName", source = "operator.firstName")
   @Mapping(target = "lastName", source = "operator.lastName")
   @Mapping(target = "fiscalCode", source = "operator.fiscalCode")

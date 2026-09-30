@@ -52,10 +52,21 @@ public class OrgSubUnitOperatorsRetrieverServiceImpl implements OrgSubUnitOperat
   }
 
   @Override
-  public PagedOrgSubUnitOperators getOrgSubUnitOperators(Long organizationId, String subUnitCode, OrgSubUnitOperatorsFilters filters, Pageable pageable, UserInfo loggedUser, String accessToken) {
+  public PagedOrgSubUnitOperators getOrgSubUnitOperators(
+    Long organizationId,
+    String subUnitCode,
+    OrgSubUnitOperatorsFilters filters,
+    Pageable pageable,
+    UserInfo loggedUser,
+    String accessToken) {
+
     authorizationService.validateAdminRole(organizationId, loggedUser);
 
-    Organization organization = organizationService.getOrganizationByOrganizationId(organizationId, accessToken);
+    Organization organization =
+      organizationService.getOrganizationByOrganizationId(
+        organizationId,
+        accessToken
+      );
 
     String organizationIpaCode = organization.getIpaCode();
 
@@ -63,11 +74,16 @@ public class OrgSubUnitOperatorsRetrieverServiceImpl implements OrgSubUnitOperat
     PagedModelOrgSubUnitOperators pagedModelOrgSubUnitOperators;
 
     if (hasAuthzFilters(filters)) {
-      operatorsMap = retrieveOperatorsMap(organizationIpaCode, filters.getMappedExternalUserId(), filters.getFiscalCode(), filters.getFirstName(), filters.getLastName(), accessToken);
+      operatorsMap = retrieveOperatorsMap(organizationIpaCode, filters.getMappedExternalUserId(), filters.getFiscalCode(), filters.getFirstName(),filters.getLastName(), accessToken);
+
       pagedModelOrgSubUnitOperators = orgSubUnitOperatorsService.findByOrganizationIdAndSubUnitCodeAndOperatorExternalUserIdIn(organizationId, subUnitCode, operatorsMap.keySet(), pageable, accessToken);
+
     } else if (StringUtils.hasText(filters.getMappedExternalUserId())) {
-      pagedModelOrgSubUnitOperators = orgSubUnitOperatorsService.findByOrganizationIdAndSubUnitCodeAndOperatorExternalUserIdIn(organizationId, subUnitCode, Set.of(filters.getMappedExternalUserId()), pageable, accessToken);
+      pagedModelOrgSubUnitOperators =
+        orgSubUnitOperatorsService.findByOrganizationIdAndSubUnitCodeAndOperatorExternalUserIdIn(organizationId, subUnitCode, Set.of(filters.getMappedExternalUserId()), pageable, accessToken);
+
       operatorsMap = Collections.emptyMap();
+
     } else {
       pagedModelOrgSubUnitOperators = orgSubUnitOperatorsService.findByOrganizationIdAndSubUnitCode(organizationId, subUnitCode, pageable, accessToken);
       operatorsMap = Collections.emptyMap();
@@ -75,8 +91,14 @@ public class OrgSubUnitOperatorsRetrieverServiceImpl implements OrgSubUnitOperat
 
     List<OrgSubUnitOperators> orgSubUnitOperators = extractOperators(pagedModelOrgSubUnitOperators);
 
+    if (!hasAuthzFilters(filters)) {
+      operatorsMap = retrieveOperatorsInfo(organizationIpaCode, orgSubUnitOperators, accessToken);
+    }
+
+    final Map<String, OperatorDTO> operatorsMapForEnrichment = operatorsMap;
+
     List<OrgSubUnitOperator> content = orgSubUnitOperators.stream()
-      .map(operator -> enrichWithOperatorInfo(operator, operatorsMap))
+      .map(operator -> enrichWithOperatorInfo(operator, operatorsMapForEnrichment))
       .toList();
 
     return pagedOrgSubUnitOperatorsMapper.map(content, pagedModelOrgSubUnitOperators);
@@ -98,7 +120,7 @@ public class OrgSubUnitOperatorsRetrieverServiceImpl implements OrgSubUnitOperat
   private Map<String, OperatorDTO> retrieveSingleOperator(String organizationIpaCode, String mappedExternalUserId, String fiscalCode, String firstName, String lastName, String accessToken) {
     OperatorDTO operator = authzService.getOrganizationOperator(organizationIpaCode, mappedExternalUserId, accessToken);
 
-    if (!matchesFilters(operator, fiscalCode, firstName, lastName)) {
+    if (operator == null || !matchesFilters(operator, fiscalCode, firstName, lastName)) {
       return Collections.emptyMap();
     }
 
@@ -132,6 +154,15 @@ public class OrgSubUnitOperatorsRetrieverServiceImpl implements OrgSubUnitOperat
     return StringUtils.hasText(filters.getFiscalCode())
       || StringUtils.hasText(filters.getFirstName())
       || StringUtils.hasText(filters.getLastName());
+  }
+
+  private Map<String, OperatorDTO> retrieveOperatorsInfo(String organizationIpaCode, List<OrgSubUnitOperators> operators, String accessToken) {
+    return operators.stream()
+      .map(OrgSubUnitOperators::getOperatorExternalUserId)
+      .distinct()
+      .map(mappedExternalUserId -> authzService.getOrganizationOperator(organizationIpaCode, mappedExternalUserId, accessToken))
+      .filter(Objects::nonNull)
+      .collect(Collectors.toMap(OperatorDTO::getMappedExternalUserId, Function.identity()));
   }
 
   @Override

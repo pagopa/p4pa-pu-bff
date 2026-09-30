@@ -695,4 +695,17 @@ class OrganizationRetrieverServiceImplTest {
     assertNotNull(result);
     assertSame(expectedResult, result);
   }
+
+  @Test
+  void  givenOrgIdAndSubUnitCodeWhenDeleteOrganizationApiKeyThenDoesNotThrow(){
+    Long organizationId = 123L;
+    String subUnitCode = "CODE";
+
+    doNothing().when(authorizationServiceMock)
+      .validateAdminRole(organizationId, userInfo);
+    doNothing().when(organizationServiceMock)
+      .deleteOrganizationApiKey(organizationId, OrganizationApiKeyType.IO, subUnitCode, accessToken);
+
+    assertDoesNotThrow(() -> organizationService.deleteOrganizationApiKey(organizationId, OrganizationApiKeyType.IO, subUnitCode, userInfo, accessToken));
+  }
 }

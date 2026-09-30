@@ -184,4 +184,17 @@ class OrganizationServiceTest {
     assertNotNull(result);
     assertSame(expectedResult, result);
   }
+
+  @Test
+  void  givenOrgIdAndSubUnitCodeWhenDeleteOrganizationApiKeyThenDoesNotThrow(){
+    Long organizationId = 123L;
+    String subUnitCode = "CODE";
+    String accessToken = "ACCESSTOKEN";
+
+    doNothing().when(organizationApiClientMock)
+      .deleteOrganizationApiKey(organizationId, OrganizationApiKeyType.IO, subUnitCode, accessToken);
+
+    assertDoesNotThrow(() -> service
+      .deleteOrganizationApiKey(organizationId, OrganizationApiKeyType.IO, subUnitCode, accessToken));
+  }
 }

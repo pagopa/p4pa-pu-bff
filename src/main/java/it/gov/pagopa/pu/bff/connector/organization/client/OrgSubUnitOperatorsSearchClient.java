@@ -19,6 +19,17 @@ public class OrgSubUnitOperatorsSearchClient {
     this.organizationApisHolder = organizationApisHolder;
   }
 
+  public PagedModelOrgSubUnitOperators findByOrganizationIdAndSubUnitCode(Long organizationId, String subUnitCode, Pageable pageable, String accessToken) {
+    return organizationApisHolder.getOrgSubUnitOperatorsSearchControllerApi(accessToken)
+      .crudOrgSubUnitOperatorsFindByOrganizationIdAndSubUnitCode(
+        organizationId,
+        subUnitCode,
+        PageUtils.getPageNumber(pageable),
+        PageUtils.getPageSize(pageable),
+        PageUtils.getSortList(pageable)
+      );
+  }
+
   public PagedModelOrgSubUnitOperators findByOrganizationIdAndSubUnitCodeAndOperatorExternalUserIdIn(Long organizationId, String subUnitCode, Set<String> mappedExternalUserIds, Pageable pageable, String accessToken) {
     return organizationApisHolder.getOrgSubUnitOperatorsSearchControllerApi(accessToken)
       .crudOrgSubUnitOperatorsFindByOrganizationIdAndSubUnitCodeAndOperatorExternalUserIdIn(

@@ -1,7 +1,6 @@
 package it.gov.pagopa.pu.bff.service.org_sub_unit_operators;
 
 import it.gov.pagopa.pu.auth.dto.generated.OperatorDTO;
-import it.gov.pagopa.pu.auth.dto.generated.OperatorsPage;
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.connector.auth.AuthzService;
 import it.gov.pagopa.pu.bff.connector.organization.OrgSubUnitOperatorsService;
@@ -102,12 +101,6 @@ class OrgSubUnitOperatorsRetrieverServiceImplTest {
     Organization organization = podamFactory.manufacturePojo(Organization.class);
     organization.setIpaCode(ORGANIZATION_IPA_CODE);
 
-    OperatorDTO operatorDTO = podamFactory.manufacturePojo(OperatorDTO.class);
-    operatorDTO.setMappedExternalUserId("mappedExternalUserId");
-
-    OperatorsPage operatorsPage = podamFactory.manufacturePojo(OperatorsPage.class);
-    operatorsPage.setContent(List.of(operatorDTO));
-
     PagedModelOrgSubUnitOperators pagedModel = podamFactory.manufacturePojo(PagedModelOrgSubUnitOperators.class);
     pagedModel.setEmbedded(null);
 
@@ -117,12 +110,7 @@ class OrgSubUnitOperatorsRetrieverServiceImplTest {
     when(organizationServiceMock.getOrganizationByOrganizationId(ORGANIZATION_ID, ACCESS_TOKEN))
       .thenReturn(organization);
 
-    when(authzServiceMock.getOrganizationOperators(ORGANIZATION_IPA_CODE, null, null, null, 0, PAGE_MAX_SIZE, ACCESS_TOKEN))
-      .thenReturn(operatorsPage);
-
-    Set<String> mappedExternalUserIds = Set.of(operatorDTO.getMappedExternalUserId());
-
-    when(orgSubUnitOperatorsServiceMock.findByOrganizationIdAndSubUnitCodeAndOperatorExternalUserIdIn(ORGANIZATION_ID, SUB_UNIT_CODE, mappedExternalUserIds, PAGEABLE, ACCESS_TOKEN))
+    when(orgSubUnitOperatorsServiceMock.findByOrganizationIdAndSubUnitCode(ORGANIZATION_ID, SUB_UNIT_CODE, PAGEABLE, ACCESS_TOKEN))
       .thenReturn(pagedModel);
 
     PagedOrgSubUnitOperators expectedResult = podamFactory.manufacturePojo(PagedOrgSubUnitOperators.class);
@@ -142,12 +130,6 @@ class OrgSubUnitOperatorsRetrieverServiceImplTest {
     Organization organization = podamFactory.manufacturePojo(Organization.class);
     organization.setIpaCode(ORGANIZATION_IPA_CODE);
 
-    OperatorDTO operatorDTO = podamFactory.manufacturePojo(OperatorDTO.class);
-    operatorDTO.setMappedExternalUserId("mappedExternalUserId");
-
-    OperatorsPage operatorsPage = podamFactory.manufacturePojo(OperatorsPage.class);
-    operatorsPage.setContent(List.of(operatorDTO));
-
     PagedModelOrgSubUnitOperators pagedModel = buildPagedModelWithEmbedded(Collections.emptyList());
 
     doNothing().when(authorizationServiceMock)
@@ -156,12 +138,7 @@ class OrgSubUnitOperatorsRetrieverServiceImplTest {
     when(organizationServiceMock.getOrganizationByOrganizationId(ORGANIZATION_ID, ACCESS_TOKEN))
       .thenReturn(organization);
 
-    when(authzServiceMock.getOrganizationOperators(ORGANIZATION_IPA_CODE, null, null, null, 0, PAGE_MAX_SIZE, ACCESS_TOKEN))
-      .thenReturn(operatorsPage);
-
-    Set<String> mappedExternalUserIds = Set.of(operatorDTO.getMappedExternalUserId());
-
-    when(orgSubUnitOperatorsServiceMock.findByOrganizationIdAndSubUnitCodeAndOperatorExternalUserIdIn(ORGANIZATION_ID, SUB_UNIT_CODE, mappedExternalUserIds, PAGEABLE, ACCESS_TOKEN))
+    when(orgSubUnitOperatorsServiceMock.findByOrganizationIdAndSubUnitCode(ORGANIZATION_ID, SUB_UNIT_CODE, PAGEABLE, ACCESS_TOKEN))
       .thenReturn(pagedModel);
 
     PagedOrgSubUnitOperators expectedResult = podamFactory.manufacturePojo(PagedOrgSubUnitOperators.class);
@@ -175,26 +152,14 @@ class OrgSubUnitOperatorsRetrieverServiceImplTest {
   }
 
   @Test
-  void getOrgSubUnitOperators_shouldEnrichEachOperator_withOperatorInfoFromAuthz() {
+  void getOrgSubUnitOperators_shouldMapOperators_whenNoFiltersAreProvided() {
     OrgSubUnitOperatorsFilters filters = new OrgSubUnitOperatorsFilters(null, null, null, null);
 
     Organization organization = podamFactory.manufacturePojo(Organization.class);
     organization.setIpaCode(ORGANIZATION_IPA_CODE);
 
-    OperatorDTO operatorDTO1 = podamFactory.manufacturePojo(OperatorDTO.class);
-    operatorDTO1.setMappedExternalUserId("mappedExternalUserId1");
-
-    OperatorDTO operatorDTO2 = podamFactory.manufacturePojo(OperatorDTO.class);
-    operatorDTO2.setMappedExternalUserId("mappedExternalUserId2");
-
-    OperatorsPage operatorsPage = podamFactory.manufacturePojo(OperatorsPage.class);
-    operatorsPage.setContent(List.of(operatorDTO1, operatorDTO2));
-
     OrgSubUnitOperators operator1 = podamFactory.manufacturePojo(OrgSubUnitOperators.class);
-    operator1.setOperatorExternalUserId(operatorDTO1.getMappedExternalUserId());
-
     OrgSubUnitOperators operator2 = podamFactory.manufacturePojo(OrgSubUnitOperators.class);
-    operator2.setOperatorExternalUserId(operatorDTO2.getMappedExternalUserId());
 
     List<OrgSubUnitOperators> sourceOperators = List.of(operator1, operator2);
 
@@ -206,21 +171,17 @@ class OrgSubUnitOperatorsRetrieverServiceImplTest {
     when(organizationServiceMock.getOrganizationByOrganizationId(ORGANIZATION_ID, ACCESS_TOKEN))
       .thenReturn(organization);
 
-    when(authzServiceMock.getOrganizationOperators(ORGANIZATION_IPA_CODE, null, null, null, 0, PAGE_MAX_SIZE, ACCESS_TOKEN))
-      .thenReturn(operatorsPage);
-
-    Set<String> mappedExternalUserIds = Set.of(operatorDTO1.getMappedExternalUserId(), operatorDTO2.getMappedExternalUserId());
-
-    when(orgSubUnitOperatorsServiceMock.findByOrganizationIdAndSubUnitCodeAndOperatorExternalUserIdIn(ORGANIZATION_ID, SUB_UNIT_CODE, mappedExternalUserIds, PAGEABLE, ACCESS_TOKEN))
+    when(orgSubUnitOperatorsServiceMock.findByOrganizationIdAndSubUnitCode(ORGANIZATION_ID, SUB_UNIT_CODE, PAGEABLE, ACCESS_TOKEN))
       .thenReturn(pagedModel);
 
     OrgSubUnitOperator mapped1 = podamFactory.manufacturePojo(OrgSubUnitOperator.class);
+
     OrgSubUnitOperator mapped2 = podamFactory.manufacturePojo(OrgSubUnitOperator.class);
 
-    when(pagedOrgSubUnitOperatorsMapperMock.toOrgSubUnitOperator(operator1, operatorDTO1))
+    when(pagedOrgSubUnitOperatorsMapperMock.toOrgSubUnitOperator(operator1, null))
       .thenReturn(mapped1);
 
-    when(pagedOrgSubUnitOperatorsMapperMock.toOrgSubUnitOperator(operator2, operatorDTO2))
+    when(pagedOrgSubUnitOperatorsMapperMock.toOrgSubUnitOperator(operator2, null))
       .thenReturn(mapped2);
 
     List<OrgSubUnitOperator> expectedContent = List.of(mapped1, mapped2);
@@ -244,9 +205,6 @@ class OrgSubUnitOperatorsRetrieverServiceImplTest {
     Organization organization = podamFactory.manufacturePojo(Organization.class);
     organization.setIpaCode(ORGANIZATION_IPA_CODE);
 
-    OperatorDTO operatorDTO = podamFactory.manufacturePojo(OperatorDTO.class);
-    operatorDTO.setMappedExternalUserId(mappedExternalUserId);
-
     OrgSubUnitOperators sourceOperator = podamFactory.manufacturePojo(OrgSubUnitOperators.class);
     sourceOperator.setOperatorExternalUserId(mappedExternalUserId);
 
@@ -258,15 +216,12 @@ class OrgSubUnitOperatorsRetrieverServiceImplTest {
     when(organizationServiceMock.getOrganizationByOrganizationId(ORGANIZATION_ID, ACCESS_TOKEN))
       .thenReturn(organization);
 
-    when(authzServiceMock.getOrganizationOperator(ORGANIZATION_IPA_CODE, mappedExternalUserId, ACCESS_TOKEN))
-      .thenReturn(operatorDTO);
-
     when(orgSubUnitOperatorsServiceMock.findByOrganizationIdAndSubUnitCodeAndOperatorExternalUserIdIn(ORGANIZATION_ID, SUB_UNIT_CODE, Set.of(mappedExternalUserId), PAGEABLE, ACCESS_TOKEN))
       .thenReturn(pagedModel);
 
     OrgSubUnitOperator mappedOperator = podamFactory.manufacturePojo(OrgSubUnitOperator.class);
 
-    when(pagedOrgSubUnitOperatorsMapperMock.toOrgSubUnitOperator(sourceOperator, operatorDTO))
+    when(pagedOrgSubUnitOperatorsMapperMock.toOrgSubUnitOperator(sourceOperator, null))
       .thenReturn(mappedOperator);
 
     PagedOrgSubUnitOperators expectedResult = podamFactory.manufacturePojo(PagedOrgSubUnitOperators.class);

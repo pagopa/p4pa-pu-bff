@@ -52,21 +52,10 @@ public class OrgSubUnitOperatorsRetrieverServiceImpl implements OrgSubUnitOperat
   }
 
   @Override
-  public PagedOrgSubUnitOperators getOrgSubUnitOperators(
-    Long organizationId,
-    String subUnitCode,
-    OrgSubUnitOperatorsFilters filters,
-    Pageable pageable,
-    UserInfo loggedUser,
-    String accessToken) {
-
+  public PagedOrgSubUnitOperators getOrgSubUnitOperators(Long organizationId, String subUnitCode, OrgSubUnitOperatorsFilters filters, Pageable pageable, UserInfo loggedUser, String accessToken) {
     authorizationService.validateAdminRole(organizationId, loggedUser);
 
-    Organization organization =
-      organizationService.getOrganizationByOrganizationId(
-        organizationId,
-        accessToken
-      );
+    Organization organization = organizationService.getOrganizationByOrganizationId(organizationId, accessToken);
 
     String organizationIpaCode = organization.getIpaCode();
 

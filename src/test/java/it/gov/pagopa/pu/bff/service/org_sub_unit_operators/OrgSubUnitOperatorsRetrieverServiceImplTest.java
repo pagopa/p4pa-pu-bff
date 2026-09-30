@@ -30,8 +30,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -57,7 +56,6 @@ class OrgSubUnitOperatorsRetrieverServiceImplTest {
   private static final String ACCESS_TOKEN = "accessToken";
   private static final Pageable PAGEABLE = PageRequest.of(0, 10);
   private static final String ORGANIZATION_IPA_CODE = "ipaCode";
-  private static final Integer PAGE_MAX_SIZE = 1000;
 
   @BeforeEach
   void setUp() {
@@ -68,8 +66,7 @@ class OrgSubUnitOperatorsRetrieverServiceImplTest {
       orgSubUnitOperatorsServiceMock,
       pagedOrgSubUnitOperatorsMapperMock,
       authzServiceMock,
-      organizationServiceMock,
-      PAGE_MAX_SIZE
+      organizationServiceMock
     );
   }
 
@@ -330,28 +327,25 @@ class OrgSubUnitOperatorsRetrieverServiceImplTest {
     operatorDTO.setMappedExternalUserId(mappedExternalUserId);
     operatorDTO.setFiscalCode("FISCAL_CODE");
 
-    PagedModelOrgSubUnitOperators pagedModel = buildPagedModelWithEmbedded(Collections.emptyList());
-
     doNothing().when(authorizationServiceMock)
       .validateAdminRole(ORGANIZATION_ID, loggedUser);
 
     when(organizationServiceMock.getOrganizationByOrganizationId(ORGANIZATION_ID, ACCESS_TOKEN))
       .thenReturn(organization);
-
     when(authzServiceMock.getOrganizationOperator(ORGANIZATION_IPA_CODE, mappedExternalUserId, ACCESS_TOKEN))
       .thenReturn(operatorDTO);
 
-    when(orgSubUnitOperatorsServiceMock.findByOrganizationIdAndSubUnitCodeAndOperatorExternalUserIdIn(ORGANIZATION_ID, SUB_UNIT_CODE, Collections.emptySet(), PAGEABLE, ACCESS_TOKEN))
-      .thenReturn(pagedModel);
-
-    PagedOrgSubUnitOperators expectedResult = podamFactory.manufacturePojo(PagedOrgSubUnitOperators.class);
-
-    when(pagedOrgSubUnitOperatorsMapperMock.map(Collections.emptyList(), pagedModel))
-      .thenReturn(expectedResult);
-
     PagedOrgSubUnitOperators result = service.getOrgSubUnitOperators(ORGANIZATION_ID, SUB_UNIT_CODE, filters, PAGEABLE, loggedUser, ACCESS_TOKEN);
 
-    assertEquals(expectedResult, result);
+    assertTrue(result.getContent().isEmpty());
+    assertEquals(PAGEABLE.getPageNumber(), result.getNumber());
+    assertEquals(PAGEABLE.getPageSize(), result.getSize());
+    assertEquals(0L, result.getTotalElements());
+    assertEquals(0, result.getTotalPages());
+
+    verify(authorizationServiceMock).validateAdminRole(ORGANIZATION_ID, loggedUser);
+    verify(organizationServiceMock).getOrganizationByOrganizationId(ORGANIZATION_ID, ACCESS_TOKEN);
+    verify(authzServiceMock).getOrganizationOperator(ORGANIZATION_IPA_CODE, mappedExternalUserId, ACCESS_TOKEN);
   }
 
   @Test
@@ -367,28 +361,25 @@ class OrgSubUnitOperatorsRetrieverServiceImplTest {
     operatorDTO.setMappedExternalUserId(mappedExternalUserId);
     operatorDTO.setFirstName(null);
 
-    PagedModelOrgSubUnitOperators pagedModel = buildPagedModelWithEmbedded(Collections.emptyList());
-
     doNothing().when(authorizationServiceMock)
       .validateAdminRole(ORGANIZATION_ID, loggedUser);
 
-    when(organizationServiceMock.getOrganizationByOrganizationId(ORGANIZATION_ID, ACCESS_TOKEN))
-      .thenReturn(organization);
-
+    when(organizationServiceMock.getOrganizationByOrganizationId(ORGANIZATION_ID, ACCESS_TOKEN)).
+      thenReturn(organization);
     when(authzServiceMock.getOrganizationOperator(ORGANIZATION_IPA_CODE, mappedExternalUserId, ACCESS_TOKEN))
       .thenReturn(operatorDTO);
 
-    when(orgSubUnitOperatorsServiceMock.findByOrganizationIdAndSubUnitCodeAndOperatorExternalUserIdIn(ORGANIZATION_ID, SUB_UNIT_CODE, Collections.emptySet(), PAGEABLE, ACCESS_TOKEN))
-      .thenReturn(pagedModel);
-
-    PagedOrgSubUnitOperators expectedResult = podamFactory.manufacturePojo(PagedOrgSubUnitOperators.class);
-
-    when(pagedOrgSubUnitOperatorsMapperMock.map(Collections.emptyList(), pagedModel))
-      .thenReturn(expectedResult);
-
     PagedOrgSubUnitOperators result = service.getOrgSubUnitOperators(ORGANIZATION_ID, SUB_UNIT_CODE, filters, PAGEABLE, loggedUser, ACCESS_TOKEN);
 
-    assertEquals(expectedResult, result);
+    assertTrue(result.getContent().isEmpty());
+    assertEquals(PAGEABLE.getPageNumber(), result.getNumber());
+    assertEquals(PAGEABLE.getPageSize(), result.getSize());
+    assertEquals(0L, result.getTotalElements());
+    assertEquals(0, result.getTotalPages());
+
+    verify(authorizationServiceMock).validateAdminRole(ORGANIZATION_ID, loggedUser);
+    verify(organizationServiceMock).getOrganizationByOrganizationId(ORGANIZATION_ID, ACCESS_TOKEN);
+    verify(authzServiceMock).getOrganizationOperator(ORGANIZATION_IPA_CODE, mappedExternalUserId, ACCESS_TOKEN);
   }
 
   private PagedModelOrgSubUnitOperators buildPagedModelWithEmbedded(List<OrgSubUnitOperators> operators) {

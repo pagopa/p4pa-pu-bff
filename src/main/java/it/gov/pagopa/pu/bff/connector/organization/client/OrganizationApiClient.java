@@ -43,4 +43,9 @@ public class OrganizationApiClient {
   public OrganizationApiKeys getOrganizationApiKey(Long organizationId, OrganizationApiKeyType keyType, String subUnitCode, String accessToken){
     return organizationApisHolder.getOrganizationApi(accessToken).getOrganizationApiKey(organizationId, keyType, subUnitCode);
   }
+
+  public void deleteOrganizationApiKey(Long organizationId, OrganizationApiKeyType keyType, String subUnitCode, String accessToken) {
+    organizationApisHolder.getOrganizationApi(accessToken)
+      .deleteOrganizationApiKey(organizationId, keyType, subUnitCode);
+  }
 }

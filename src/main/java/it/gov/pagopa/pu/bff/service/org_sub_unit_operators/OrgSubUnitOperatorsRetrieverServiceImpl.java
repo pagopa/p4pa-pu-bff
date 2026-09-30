@@ -60,11 +60,6 @@ public class OrgSubUnitOperatorsRetrieverServiceImpl implements OrgSubUnitOperat
     Map<String, OperatorDTO> operatorsMap = retrieveOperatorsMap(organizationIpaCode, mappedExternalUserId, fiscalCode, firstName, lastName, accessToken);
     Set<String> mappedExternalUserIds = operatorsMap.keySet();
 
-    //TODO ?
-//    if (mappedExternalUserIds.isEmpty()) {
-//      return createEmptyPage(pageable);
-//    }
-
     PagedModelOrgSubUnitOperators pagedModelOrgSubUnitOperators =
       orgSubUnitOperatorsService.findByOrganizationIdAndSubUnitCodeAndOperatorExternalUserIdIn(organizationId, subUnitCode, mappedExternalUserIds, pageable, accessToken);
 

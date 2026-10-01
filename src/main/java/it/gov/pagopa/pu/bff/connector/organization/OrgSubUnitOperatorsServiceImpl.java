@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class OrgSubUnitOperatorsServiceImpl implements OrgSubUnitOperatorsService {
@@ -22,6 +23,11 @@ public class OrgSubUnitOperatorsServiceImpl implements OrgSubUnitOperatorsServic
   @Override
   public PagedModelOrgSubUnitOperators findByOrganizationIdAndSubUnitCode(Long organizationId, String subUnitCode, Pageable pageable, String accessToken) {
     return orgSubUnitOperatorsSearchClient.findByOrganizationIdAndSubUnitCode(organizationId, subUnitCode, pageable, accessToken);
+  }
+
+  @Override
+  public PagedModelOrgSubUnitOperators findByOrganizationIdAndSubUnitCodeAndOperatorExternalUserIdIn(Long organizationId, String subUnitCode, Set<String> mappedExternalUserIds, Pageable pageable, String accessToken) {
+    return orgSubUnitOperatorsSearchClient.findByOrganizationIdAndSubUnitCodeAndOperatorExternalUserIdIn(organizationId, subUnitCode, mappedExternalUserIds, pageable, accessToken);
   }
 
   @Override

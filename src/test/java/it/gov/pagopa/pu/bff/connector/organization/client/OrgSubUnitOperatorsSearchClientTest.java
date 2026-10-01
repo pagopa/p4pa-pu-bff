@@ -15,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import uk.co.jemos.podam.api.PodamFactory;
 
 import java.util.Collections;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -45,27 +46,25 @@ class OrgSubUnitOperatorsSearchClientTest {
   }
 
   @Test
-  void whenFindByOrganizationIdAndSubUnitCodeThenInvokeWithAccessToken() {
+  void whenFindByOrganizationIdAndSubUnitCodeAndOperatorExternalUserIdInThenInvokeWithAccessToken() {
     String accessToken = "accessToken";
     Long organizationId = 1L;
     String subUnitCode = "subUnitCode";
+    Set<String> mappedExternalUserIds = Set.of("mappedExternalUserId1", "mappedExternalUserId2");
     Pageable pageable = PageRequest.ofSize(10);
 
     PagedModelOrgSubUnitOperators expectedResult = podamFactory.manufacturePojo(PagedModelOrgSubUnitOperators.class);
 
     when(organizationApisHolderMock.getOrgSubUnitOperatorsSearchControllerApi(accessToken))
       .thenReturn(orgSubUnitOperatorsSearchControllerApiMock);
+
     when(orgSubUnitOperatorsSearchControllerApiMock
-      .crudOrgSubUnitOperatorsFindByOrganizationIdAndSubUnitCode(organizationId, subUnitCode, 0, 10, Collections.emptyList())
-    )
+      .crudOrgSubUnitOperatorsFindByOrganizationIdAndSubUnitCodeAndOperatorExternalUserIdIn(
+        organizationId, subUnitCode, mappedExternalUserIds, 0, 10, Collections.emptyList()))
       .thenReturn(expectedResult);
 
-    PagedModelOrgSubUnitOperators result = orgSubUnitOperatorsSearchClient.findByOrganizationIdAndSubUnitCode(
-      organizationId,
-      subUnitCode,
-      pageable,
-      accessToken
-    );
+    PagedModelOrgSubUnitOperators result =
+      orgSubUnitOperatorsSearchClient.findByOrganizationIdAndSubUnitCodeAndOperatorExternalUserIdIn(organizationId, subUnitCode, mappedExternalUserIds, pageable, accessToken);
 
     assertSame(expectedResult, result);
   }

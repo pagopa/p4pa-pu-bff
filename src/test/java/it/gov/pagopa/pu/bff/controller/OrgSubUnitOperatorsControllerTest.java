@@ -1,6 +1,7 @@
 package it.gov.pagopa.pu.bff.controller;
 
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
+import it.gov.pagopa.pu.bff.dto.OrgSubUnitOperatorsFilters;
 import it.gov.pagopa.pu.bff.dto.generated.PagedOrgSubUnitOperators;
 import it.gov.pagopa.pu.bff.security.SecurityUtilsTest;
 import it.gov.pagopa.pu.bff.service.org_sub_unit_operators.OrgSubUnitOperatorsRetrieverService;
@@ -52,31 +53,26 @@ class OrgSubUnitOperatorsControllerTest {
   void givenCorrectRequestWhenGetOrgSubUnitOperatorsThenOk() {
     Long organizationId = 1L;
     String subUnitCode = "subUnitCode";
+    String mappedExternalUserId = "mappedExternalUserId";
+    String fiscalCode = "fiscalCode";
+    String firstName = "firstName";
+    String lastName = "lastName";
     Pageable pageable = PageRequest.ofSize(10);
+
+    OrgSubUnitOperatorsFilters filters = new OrgSubUnitOperatorsFilters(mappedExternalUserId, fiscalCode, firstName, lastName);
 
     PagedOrgSubUnitOperators expectedResult = podamFactory.manufacturePojo(PagedOrgSubUnitOperators.class);
 
-    when(
-      orgSubUnitOperatorsRetrieverServiceMock.getOrgSubUnitOperators(
-        organizationId,
-        subUnitCode,
-        pageable,
-        loggedUser,
-        ACCESS_TOKEN
-      )
-    ).thenReturn(expectedResult);
+    when(orgSubUnitOperatorsRetrieverServiceMock.getOrgSubUnitOperators(organizationId, subUnitCode, filters, pageable, loggedUser, ACCESS_TOKEN))
+      .thenReturn(expectedResult);
 
-    ResponseEntity<PagedOrgSubUnitOperators> response = orgSubUnitOperatorsController.getOrgSubUnitOperators(
-      organizationId,
-      subUnitCode,
-      pageable
-    );
+    ResponseEntity<PagedOrgSubUnitOperators> response =
+      orgSubUnitOperatorsController.getOrgSubUnitOperators(organizationId, subUnitCode, mappedExternalUserId, fiscalCode, firstName, lastName, pageable);
 
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertNotNull(response.getBody());
     assertSame(expectedResult, response.getBody());
   }
-
   @Test
   void givenCorrectRequestWhenAddOrgSubUnitsToOperatorThenOk() {
     Long organizationId = 1L;

@@ -228,6 +228,12 @@ public class OrganizationRetrieverServiceImpl implements OrganizationRetrieverSe
   }
 
   @Override
+  public void deleteOrganizationApiKey(Long organizationId, OrganizationApiKeyType keyType, String subUnitCode, UserInfo loggedUser, String accessToken) {
+    authorizationService.validateAdminRole(organizationId,loggedUser);
+    organizationService.deleteOrganizationApiKey(organizationId, keyType, subUnitCode, accessToken);
+  }
+
+  @Override
   public void updateOrganization(Long organizationId, OrganizationUpdateDTO organizationUpdateDTO, UserInfo loggedUser, String accessToken) {
     authorizationService.validateAdminRole(organizationId,loggedUser);
     validateOrganization(organizationId, organizationUpdateDTO, accessToken);

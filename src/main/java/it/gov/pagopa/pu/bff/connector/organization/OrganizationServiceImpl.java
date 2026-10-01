@@ -74,4 +74,9 @@ public class OrganizationServiceImpl implements OrganizationService {
   public OrganizationApiKeys getOrganizationApiKey(Long organizationId, OrganizationApiKeyType keyType, String subUnitCode, String accessToken) {
     return organizationApiClient.getOrganizationApiKey(organizationId, keyType, subUnitCode, accessToken);
   }
+
+  @Override
+  public void deleteOrganizationApiKey(Long organizationId, OrganizationApiKeyType keyType, String subUnitCode, String accessToken) {
+    organizationApiClient.deleteOrganizationApiKey(organizationId, keyType, subUnitCode, accessToken);
+  }
 }

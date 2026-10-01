@@ -32,4 +32,6 @@ public interface OrganizationRetrieverService {
   void encryptAndSaveApiKey(Long organizationId, OrganizationApiKeys organizationApiKeys, String subUnitCode, UserInfo loggedUser, String accessToken);
 
   OrganizationApiKeys getOrganizationApiKey(Long organizationId, OrganizationApiKeyType keyType, String subUnitCode, UserInfo loggedUser, String accessToken);
+
+  void deleteOrganizationApiKey(Long organizationId, OrganizationApiKeyType keyType, String subUnitCode, UserInfo loggedUser, String accessToken);
 }

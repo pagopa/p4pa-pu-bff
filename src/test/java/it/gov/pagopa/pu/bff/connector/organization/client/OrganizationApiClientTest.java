@@ -128,4 +128,20 @@ class OrganizationApiClientTest {
     // Then
     Assertions.assertSame(expectedResult, result);
   }
+
+  @Test
+  void whenDeleteOrganizationApiKeyThenInvokeWithAccessToken() {
+    // Given
+    String accessToken = "ACCESSTOKEN";
+    Long organizationId = 1L;
+    String subUnit = "SUBUNIT";
+
+    when(organizationApisHolderMock.getOrganizationApi(accessToken))
+      .thenReturn(organizationApiMock);
+    doNothing().when(organizationApiMock).deleteOrganizationApiKey(organizationId, OrganizationApiKeyType.IO, subUnit);
+
+    // When
+    Assertions.assertDoesNotThrow(() ->
+      organizationApiClient.deleteOrganizationApiKey(organizationId, OrganizationApiKeyType.IO, subUnit, accessToken));
+  }
 }

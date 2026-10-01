@@ -61,6 +61,13 @@ public class OrganizationController implements OrganizationsApi {
   }
 
   @Override
+  public ResponseEntity<Void> deleteOrganizationApiKey(Long organizationId, OrganizationApiKeyType keyType, String subUnitCode) {
+    log.info("User requested deleteOrganizationApiKey having organizationId {} and subUnitCode {} and type {}", organizationId, subUnitCode, keyType);
+    organizationRetrieverService.deleteOrganizationApiKey(organizationId, keyType, subUnitCode, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken());
+    return ResponseEntity.noContent().build();
+  }
+
+  @Override
   public ResponseEntity<Void> encryptAndSaveApiKey(Long organizationId, OrganizationApiKeys body, String subUnitCode) {
     log.info("User requested encryptAndSaveApiKey having organizationId {} and subUnitCode {}", organizationId, subUnitCode);
     organizationRetrieverService.encryptAndSaveApiKey(organizationId, body, subUnitCode, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken());

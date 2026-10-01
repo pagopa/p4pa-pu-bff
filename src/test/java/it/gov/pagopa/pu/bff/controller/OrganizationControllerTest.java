@@ -197,4 +197,17 @@ class OrganizationControllerTest {
     assertNotNull(result.getBody());
     assertEquals(expectedResult, result.getBody());
   }
+
+  @Test
+  void givenValidRequestWhenDeleteOrganizationApiKeyThenNoContent() {
+    Long organizationId = 1L;
+    String subUnitCode = "CODE";
+
+    doNothing().when(organizationRetrieverServiceMock)
+      .deleteOrganizationApiKey(organizationId, OrganizationApiKeyType.IO, subUnitCode, loggedUser, accessToken);
+
+    ResponseEntity<Void> response = organizationController.deleteOrganizationApiKey(organizationId, OrganizationApiKeyType.IO, subUnitCode);
+
+    assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+  }
 }

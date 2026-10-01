@@ -8,6 +8,8 @@ import it.gov.pagopa.pu.bff.dto.generated.PagedOrganizationWithDebtPositionTypeO
 import it.gov.pagopa.pu.bff.security.SecurityUtils;
 import it.gov.pagopa.pu.bff.service.organization.OrganizationRetrieverService;
 import it.gov.pagopa.pu.organization.dto.generated.OrganizationApiKey;
+import it.gov.pagopa.pu.organization.dto.generated.OrganizationApiKeyType;
+import it.gov.pagopa.pu.organization.dto.generated.OrganizationApiKeys;
 import it.gov.pagopa.pu.organization.dto.generated.OrganizationUpdateDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -56,6 +58,26 @@ public class OrganizationController implements OrganizationsApi {
   public ResponseEntity<OrganizationDetail> getOrganizationDetail(Long organizationId) {
     log.info("User requested getOrganizationDetail having organizationId {}", organizationId);
     return ResponseEntity.ok(organizationRetrieverService.getOrganizationDetail(organizationId, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken()));
+  }
+
+  @Override
+  public ResponseEntity<Void> deleteOrganizationApiKey(Long organizationId, OrganizationApiKeyType keyType, String subUnitCode) {
+    log.info("User requested deleteOrganizationApiKey having organizationId {} and subUnitCode {} and type {}", organizationId, subUnitCode, keyType);
+    organizationRetrieverService.deleteOrganizationApiKey(organizationId, keyType, subUnitCode, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken());
+    return ResponseEntity.noContent().build();
+  }
+
+  @Override
+  public ResponseEntity<Void> encryptAndSaveApiKey(Long organizationId, OrganizationApiKeys body, String subUnitCode) {
+    log.info("User requested encryptAndSaveApiKey having organizationId {} and subUnitCode {}", organizationId, subUnitCode);
+    organizationRetrieverService.encryptAndSaveApiKey(organizationId, body, subUnitCode, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken());
+    return ResponseEntity.ok().build();
+  }
+
+  @Override
+  public ResponseEntity<OrganizationApiKeys> getOrganizationApiKey(Long organizationId, OrganizationApiKeyType keyType, String subUnitCode) {
+    log.info("User requested getOrganizationApiKey having organizationId {} and subUnitCode {} and type {}", organizationId, subUnitCode, keyType);
+    return ResponseEntity.ok(organizationRetrieverService.getOrganizationApiKey(organizationId, keyType, subUnitCode, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken()));
   }
 
   @Override

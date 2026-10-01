@@ -6,6 +6,8 @@ import it.gov.pagopa.pu.bff.security.SecurityUtilsTest;
 import it.gov.pagopa.pu.bff.service.organization.OrganizationRetrieverService;
 import it.gov.pagopa.pu.bff.util.TestUtils;
 import it.gov.pagopa.pu.organization.dto.generated.OrganizationApiKey;
+import it.gov.pagopa.pu.organization.dto.generated.OrganizationApiKeyType;
+import it.gov.pagopa.pu.organization.dto.generated.OrganizationApiKeys;
 import it.gov.pagopa.pu.organization.dto.generated.OrganizationUpdateDTO;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -164,5 +166,48 @@ class OrganizationControllerTest {
     assertEquals(HttpStatus.OK, result.getStatusCode());
     assertNotNull(result.getBody());
     assertEquals(expectedResult, result.getBody());
+  }
+
+  @Test
+  void givenCorrectRequestWhenEncryptAndSaveApiKeyThenOk() {
+    Long organizationId = 1L;
+    String subUnitCode = "CODE";
+    OrganizationApiKeys organizationApiKeys = new OrganizationApiKeys();
+
+    doNothing().when(organizationRetrieverServiceMock)
+      .encryptAndSaveApiKey(organizationId, organizationApiKeys, subUnitCode, loggedUser, accessToken);
+
+    ResponseEntity<Void> response = organizationController.encryptAndSaveApiKey(organizationId, organizationApiKeys, subUnitCode);
+
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+  }
+
+  @Test
+  void givenOrgIdAndSubUnitCodeWhenGetOrganizationApiKeyThenReturnApiKey() {
+    OrganizationApiKeys expectedResult = new OrganizationApiKeys();
+    Long organizationId = 123L;
+    String subUnitCode = "CODE";
+
+    when(organizationRetrieverServiceMock.getOrganizationApiKey(organizationId, OrganizationApiKeyType.IO, subUnitCode, loggedUser, accessToken))
+      .thenReturn(expectedResult);
+
+    ResponseEntity<OrganizationApiKeys> result = organizationController.getOrganizationApiKey(organizationId, OrganizationApiKeyType.IO, subUnitCode);
+
+    assertEquals(HttpStatus.OK, result.getStatusCode());
+    assertNotNull(result.getBody());
+    assertEquals(expectedResult, result.getBody());
+  }
+
+  @Test
+  void givenValidRequestWhenDeleteOrganizationApiKeyThenNoContent() {
+    Long organizationId = 1L;
+    String subUnitCode = "CODE";
+
+    doNothing().when(organizationRetrieverServiceMock)
+      .deleteOrganizationApiKey(organizationId, OrganizationApiKeyType.IO, subUnitCode, loggedUser, accessToken);
+
+    ResponseEntity<Void> response = organizationController.deleteOrganizationApiKey(organizationId, OrganizationApiKeyType.IO, subUnitCode);
+
+    assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
   }
 }

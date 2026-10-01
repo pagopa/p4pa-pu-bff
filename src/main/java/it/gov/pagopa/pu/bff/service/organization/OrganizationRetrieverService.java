@@ -6,6 +6,8 @@ import it.gov.pagopa.pu.bff.dto.generated.OrganizationDetail;
 import it.gov.pagopa.pu.bff.dto.generated.PagedOrganizationWithDebtPositionTypeOrgAndOperatorsCount;
 import it.gov.pagopa.pu.bff.dto.generated.PagedOrganizationWithDebtPositionTypeOrgCount;
 import it.gov.pagopa.pu.organization.dto.generated.OrganizationApiKey;
+import it.gov.pagopa.pu.organization.dto.generated.OrganizationApiKeyType;
+import it.gov.pagopa.pu.organization.dto.generated.OrganizationApiKeys;
 import it.gov.pagopa.pu.organization.dto.generated.OrganizationUpdateDTO;
 import org.springframework.data.domain.Pageable;
 
@@ -26,4 +28,10 @@ public interface OrganizationRetrieverService {
   OrganizationDetail getOrganizationDetail(Long organizationId, UserInfo loggedUser, String accessToken);
 
   List<OrganizationApiKey> getOrganizationApiKeys(Long organizationId, String subUnitCode, UserInfo loggedUser, String accessToken);
+
+  void encryptAndSaveApiKey(Long organizationId, OrganizationApiKeys organizationApiKeys, String subUnitCode, UserInfo loggedUser, String accessToken);
+
+  OrganizationApiKeys getOrganizationApiKey(Long organizationId, OrganizationApiKeyType keyType, String subUnitCode, UserInfo loggedUser, String accessToken);
+
+  void deleteOrganizationApiKey(Long organizationId, OrganizationApiKeyType keyType, String subUnitCode, UserInfo loggedUser, String accessToken);
 }

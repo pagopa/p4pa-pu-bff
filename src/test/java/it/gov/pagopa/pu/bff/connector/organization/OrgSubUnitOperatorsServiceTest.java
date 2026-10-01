@@ -14,10 +14,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import uk.co.jemos.podam.api.PodamFactory;
-
 import java.util.List;
+import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -43,29 +43,24 @@ class OrgSubUnitOperatorsServiceTest {
   }
 
   @Test
-  void whenFindByOrganizationIdAndSubUnitCodeThenInvokeClient() {
+  void whenFindByOrganizationIdAndSubUnitCodeAndOperatorExternalUserIdInThenInvokeSearchClient() {
     Long organizationId = 1L;
-    String subUnitCode = "subUnitCode";
+    String subUnitCode = "SUB_UNIT_1";
+    Set<String> mappedExternalUserIds = Set.of("mappedExternalUserId1", "mappedExternalUserId2");
+    Pageable pageable = PageRequest.of(0, 10);
     String accessToken = "accessToken";
-    Pageable pageable = PageRequest.ofSize(10);
 
     PagedModelOrgSubUnitOperators expectedResult = podamFactory.manufacturePojo(PagedModelOrgSubUnitOperators.class);
 
-    when(orgSubUnitOperatorsSearchClientMock.findByOrganizationIdAndSubUnitCode(
-      organizationId,
-      subUnitCode,
-      pageable,
-      accessToken
-    )).thenReturn(expectedResult);
+    when(orgSubUnitOperatorsSearchClientMock.findByOrganizationIdAndSubUnitCodeAndOperatorExternalUserIdIn(organizationId, subUnitCode, mappedExternalUserIds, pageable, accessToken))
+      .thenReturn(expectedResult);
 
-    PagedModelOrgSubUnitOperators result = service.findByOrganizationIdAndSubUnitCode(
-      organizationId,
-      subUnitCode,
-      pageable,
-      accessToken
-    );
+    PagedModelOrgSubUnitOperators result =
+      service.findByOrganizationIdAndSubUnitCodeAndOperatorExternalUserIdIn(organizationId, subUnitCode, mappedExternalUserIds, pageable, accessToken);
 
-    assertSame(expectedResult, result);
+    assertEquals(expectedResult, result);
+
+    verify(orgSubUnitOperatorsSearchClientMock).findByOrganizationIdAndSubUnitCodeAndOperatorExternalUserIdIn(organizationId, subUnitCode, mappedExternalUserIds, pageable, accessToken);
   }
 
   @Test
@@ -90,5 +85,29 @@ class OrgSubUnitOperatorsServiceTest {
     service.deleteOrgSubUnitFromOperator(organizationId, mappedExternalUserId, subUnitCode, accessToken);
 
     verify(orgSubUnitOperatorsClientMock).deleteOrgSubUnitFromOperator(organizationId, mappedExternalUserId, subUnitCode, accessToken);
+  }
+
+  @Test
+  void whenAddOperatorsToOrgSubUnitThenInvokeClient() {
+    Long organizationId = 1L;
+    String subUnitCode = "SUB_UNIT_1";
+    List<String> mappedExternalUserIds = List.of("mappedExternalUserId1", "mappedExternalUserId2");
+    String accessToken = "accessToken";
+
+    service.addOperatorsToOrgSubUnit(organizationId, subUnitCode, mappedExternalUserIds, accessToken);
+
+    verify(orgSubUnitOperatorsClientMock).addOperatorsToOrgSubUnit(organizationId, subUnitCode, mappedExternalUserIds, accessToken);
+  }
+
+  @Test
+  void whenDeleteOperatorsFromOrgSubUnitThenInvokeClient() {
+    Long organizationId = 1L;
+    String subUnitCode = "SUB_UNIT_1";
+    List<String> mappedExternalUserIds = List.of("mappedExternalUserId1", "mappedExternalUserId2");
+    String accessToken = "accessToken";
+
+    service.deleteOperatorsFromOrgSubUnit(organizationId, subUnitCode, mappedExternalUserIds, accessToken);
+
+    verify(orgSubUnitOperatorsClientMock).deleteOperatorsFromOrgSubUnit(organizationId, subUnitCode, mappedExternalUserIds, accessToken);
   }
 }

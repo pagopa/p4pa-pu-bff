@@ -1,6 +1,7 @@
 package it.gov.pagopa.pu.bff.service.org_sub_unit_operators;
 
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
+import it.gov.pagopa.pu.bff.dto.OrgSubUnitAvailableOperatorsFilters;
 import it.gov.pagopa.pu.bff.dto.OrgSubUnitOperatorsFilters;
 import it.gov.pagopa.pu.bff.dto.generated.PagedOrgSubUnitOperators;
 import org.springframework.data.domain.Pageable;
@@ -8,6 +9,8 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 
 public interface OrgSubUnitOperatorsRetrieverService {
+
+  PagedOrgSubUnitOperators getOrgSubUnitAvailableOperators(Long organizationId, String subUnitCode, OrgSubUnitAvailableOperatorsFilters filters, Pageable pageable, UserInfo loggedUser, String accessToken);
 
   PagedOrgSubUnitOperators getOrgSubUnitOperators(Long organizationId, String subUnitCode, OrgSubUnitOperatorsFilters filters, Pageable pageable, UserInfo loggedUser, String accessToken);
 

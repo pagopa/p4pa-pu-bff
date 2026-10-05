@@ -6,6 +6,7 @@ import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.connector.auth.AuthzService;
 import it.gov.pagopa.pu.bff.connector.organization.OrgSubUnitOperatorsService;
 import it.gov.pagopa.pu.bff.connector.organization.OrganizationService;
+import it.gov.pagopa.pu.bff.dto.OrgSubUnitAvailableOperatorsFilters;
 import it.gov.pagopa.pu.bff.dto.OrgSubUnitOperatorsFilters;
 import it.gov.pagopa.pu.bff.dto.generated.OrgSubUnitOperator;
 import it.gov.pagopa.pu.bff.dto.generated.PagedOrgSubUnitOperators;
@@ -16,6 +17,9 @@ import it.gov.pagopa.pu.organization.dto.generated.Organization;
 import it.gov.pagopa.pu.organization.dto.generated.PagedModelOrgSubUnitOperators;
 import it.gov.pagopa.pu.organization.dto.generated.PagedModelOrgSubUnitOperatorsEmbedded;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -78,9 +82,9 @@ public class OrgSubUnitOperatorsRetrieverServiceImpl implements OrgSubUnitOperat
         pagedModelOrgSubUnitOperators =
           orgSubUnitOperatorsService.findByOrganizationIdAndSubUnitCodeAndOperatorExternalUserIdIn(organizationId, subUnitCode, Set.of(filters.getMappedExternalUserId()), pageable, accessToken);
 
-    }  else {
-      pagedModelOrgSubUnitOperators = orgSubUnitOperatorsService.findByOrganizationIdAndSubUnitCode(organizationId, subUnitCode, pageable, accessToken);
-    }
+      }  else {
+        pagedModelOrgSubUnitOperators = orgSubUnitOperatorsService.findByOrganizationIdAndSubUnitCode(organizationId, subUnitCode, pageable, accessToken);
+      }
 
       orgSubUnitOperators = extractOperators(pagedModelOrgSubUnitOperators);
       operatorsMap = retrieveOperatorsInfo(organizationIpaCode, orgSubUnitOperators, accessToken);
@@ -164,6 +168,63 @@ public class OrgSubUnitOperatorsRetrieverServiceImpl implements OrgSubUnitOperat
   private OrgSubUnitOperator enrichWithOperatorInfo(OrgSubUnitOperators sourceOperator, Map<String, OperatorDTO> operatorsMap) {
     OperatorDTO operatorDTO = operatorsMap.get(sourceOperator.getOperatorExternalUserId());
     return pagedOrgSubUnitOperatorsMapper.toOrgSubUnitOperator(sourceOperator, operatorDTO);
+  }
+
+  @Override
+  public PagedOrgSubUnitOperators getOrgSubUnitAvailableOperators(Long organizationId, String subUnitCode, OrgSubUnitAvailableOperatorsFilters filters, Pageable pageable, UserInfo loggedUser, String accessToken) {
+    authorizationService.validateAdminRole(organizationId, loggedUser);
+
+    Organization organization = organizationService.getOrganizationByOrganizationId(organizationId, accessToken);
+    String organizationIpaCode = organization.getIpaCode();
+
+    OperatorsPage operatorsPage = authzService.getOrganizationOperators(
+      organizationIpaCode, filters.getFiscalCode(), filters.getFirstName(), filters.getLastName(), 0, AUTH_OPERATORS_FETCH_SIZE, accessToken
+    );
+
+    List<OperatorDTO> allCandidateOperators = operatorsPage.getContent();
+    if (allCandidateOperators.isEmpty()) {
+      return buildEmptyPage(pageable);
+    }
+
+    Set<String> alreadyAssociatedIds = getAlreadyAssociatedOperatorIds(organizationId, subUnitCode, allCandidateOperators, accessToken);
+
+    List<OperatorDTO> availableOperators = allCandidateOperators.stream()
+      .filter(op -> !alreadyAssociatedIds.contains(op.getMappedExternalUserId()))
+      .toList();
+
+    Page<OrgSubUnitOperator> paginatedPage = paginateAndMapToDto(availableOperators, pageable);
+
+    return pagedOrgSubUnitOperatorsMapper.map(paginatedPage);
+  }
+
+  private Set<String> getAlreadyAssociatedOperatorIds(Long organizationId, String subUnitCode, List<OperatorDTO> candidates, String accessToken) {
+    Set<String> candidateIds = candidates.stream()
+      .map(OperatorDTO::getMappedExternalUserId)
+      .collect(Collectors.toSet());
+
+    PagedModelOrgSubUnitOperators pagedAssociatedOperators = orgSubUnitOperatorsService
+      .findByOrganizationIdAndSubUnitCodeAndOperatorExternalUserIdIn(
+        organizationId,
+        subUnitCode,
+        candidateIds,
+        PageRequest.of(0, candidateIds.size()),
+        accessToken
+      );
+
+    return extractOperators(pagedAssociatedOperators).stream()
+      .map(OrgSubUnitOperators::getOperatorExternalUserId)
+      .collect(Collectors.toSet());
+  }
+
+  private Page<OrgSubUnitOperator> paginateAndMapToDto(List<OperatorDTO> availableOperators, Pageable pageable) {
+    int start = (int) pageable.getOffset();
+    int end = Math.min((start + pageable.getPageSize()), availableOperators.size());
+
+    List<OrgSubUnitOperator> content = availableOperators.subList(start, end).stream()
+      .map(pagedOrgSubUnitOperatorsMapper::toOrgSubUnitOperator)
+      .toList();
+
+    return new PageImpl<>(content, pageable, availableOperators.size());
   }
 
   @Override

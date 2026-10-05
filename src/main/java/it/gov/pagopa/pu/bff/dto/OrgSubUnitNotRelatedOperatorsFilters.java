@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class OrgSubUnitAvailableOperatorsFilters {
+public class OrgSubUnitNotRelatedOperatorsFilters {
   private String fiscalCode;
   private String firstName;
   private String lastName;

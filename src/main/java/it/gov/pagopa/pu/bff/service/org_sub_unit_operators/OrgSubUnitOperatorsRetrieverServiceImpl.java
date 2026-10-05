@@ -6,7 +6,7 @@ import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.connector.auth.AuthzService;
 import it.gov.pagopa.pu.bff.connector.organization.OrgSubUnitOperatorsService;
 import it.gov.pagopa.pu.bff.connector.organization.OrganizationService;
-import it.gov.pagopa.pu.bff.dto.OrgSubUnitAvailableOperatorsFilters;
+import it.gov.pagopa.pu.bff.dto.OrgSubUnitNotRelatedOperatorsFilters;
 import it.gov.pagopa.pu.bff.dto.OrgSubUnitOperatorsFilters;
 import it.gov.pagopa.pu.bff.dto.generated.OrgSubUnitOperator;
 import it.gov.pagopa.pu.bff.dto.generated.PagedOrgSubUnitOperators;
@@ -171,7 +171,7 @@ public class OrgSubUnitOperatorsRetrieverServiceImpl implements OrgSubUnitOperat
   }
 
   @Override
-  public PagedOrgSubUnitOperators getOrgSubUnitAvailableOperators(Long organizationId, String subUnitCode, OrgSubUnitAvailableOperatorsFilters filters, Pageable pageable, UserInfo loggedUser, String accessToken) {
+  public PagedOrgSubUnitOperators getOrgSubUnitNotRelatedOperators(Long organizationId, String subUnitCode, OrgSubUnitNotRelatedOperatorsFilters filters, Pageable pageable, UserInfo loggedUser, String accessToken) {
     authorizationService.validateAdminRole(organizationId, loggedUser);
 
     Organization organization = organizationService.getOrganizationByOrganizationId(organizationId, accessToken);

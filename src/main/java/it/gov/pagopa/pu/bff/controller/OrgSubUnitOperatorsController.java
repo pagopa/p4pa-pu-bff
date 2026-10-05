@@ -1,7 +1,7 @@
 package it.gov.pagopa.pu.bff.controller;
 
 import it.gov.pagopa.pu.bff.controller.generated.OrgSubUnitOperatorsApi;
-import it.gov.pagopa.pu.bff.dto.OrgSubUnitAvailableOperatorsFilters;
+import it.gov.pagopa.pu.bff.dto.OrgSubUnitNotRelatedOperatorsFilters;
 import it.gov.pagopa.pu.bff.dto.OrgSubUnitOperatorsFilters;
 import it.gov.pagopa.pu.bff.dto.generated.PagedOrgSubUnitOperators;
 import it.gov.pagopa.pu.bff.security.SecurityUtils;
@@ -35,15 +35,15 @@ public class OrgSubUnitOperatorsController implements OrgSubUnitOperatorsApi {
   }
 
   @Override
-  public ResponseEntity<PagedOrgSubUnitOperators> getOrgSubUnitAvailableOperators(
+  public ResponseEntity<PagedOrgSubUnitOperators> getOrgSubUnitNotRelatedOperators(
     Long organizationId, String subUnitCode, String fiscalCode, String firstName, String lastName, Pageable pageable
   ) {
-    log.info("User requested getOrgSubUnitAvailableOperators having organizationId {} and subUnitCode {}", organizationId, subUnitCode);
+    log.info("User requested getOrgSubUnitNotRelatedOperators having organizationId {} and subUnitCode {}", organizationId, subUnitCode);
 
-    OrgSubUnitAvailableOperatorsFilters filters = new OrgSubUnitAvailableOperatorsFilters(fiscalCode, firstName, lastName);
+    OrgSubUnitNotRelatedOperatorsFilters filters = new OrgSubUnitNotRelatedOperatorsFilters(fiscalCode, firstName, lastName);
 
     return ResponseEntity.ok(
-      orgSubUnitOperatorsRetrieverService.getOrgSubUnitAvailableOperators(
+      orgSubUnitOperatorsRetrieverService.getOrgSubUnitNotRelatedOperators(
         organizationId, subUnitCode, filters,  pageable, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken()
       )
     );

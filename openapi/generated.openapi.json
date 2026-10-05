@@ -7791,10 +7791,10 @@
         } ]
       }
     },
-    "/bff/organization/{organizationId}/org-sub-units/{subUnitCode}/available-operators" : {
+    "/bff/organization/{organizationId}/org-sub-units/{subUnitCode}/not-related-operators" : {
       "get" : {
         "tags" : [ "OrgSubUnitOperators" ],
-        "operationId" : "getOrgSubUnitAvailableOperators",
+        "operationId" : "getOrgSubUnitNotRelatedOperators",
         "parameters" : [ {
           "name" : "organizationId",
           "in" : "path",

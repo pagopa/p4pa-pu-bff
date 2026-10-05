@@ -6320,11 +6320,11 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorDTO'
-  /organization/{organizationId}/org-sub-units/{subUnitCode}/available-operators:
+  /organization/{organizationId}/org-sub-units/{subUnitCode}/not-related-operators:
     get:
       tags:
         - OrgSubUnitOperators
-      operationId: getOrgSubUnitAvailableOperators
+      operationId: getOrgSubUnitNotRelatedOperators
       parameters:
         - name: organizationId
           in: path

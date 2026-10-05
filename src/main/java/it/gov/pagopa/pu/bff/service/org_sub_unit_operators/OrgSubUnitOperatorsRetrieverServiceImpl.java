@@ -32,7 +32,7 @@ import java.util.stream.Collectors;
 @Slf4j
 public class OrgSubUnitOperatorsRetrieverServiceImpl implements OrgSubUnitOperatorsRetrieverService {
 
-  private static final int AUTH_OPERATORS_FETCH_SIZE = 2000;
+  private static final int OPERATORS_FETCH_SIZE = 2000;
 
   private final AuthorizationService authorizationService;
   private final OrgSubUnitOperatorsService orgSubUnitOperatorsService;
@@ -132,7 +132,7 @@ public class OrgSubUnitOperatorsRetrieverServiceImpl implements OrgSubUnitOperat
   }
 
   private Map<String, OperatorDTO> retrieveOperators(String organizationIpaCode, String fiscalCode, String firstName, String lastName, String accessToken) {
-    OperatorsPage operatorsPage = authzService.getOrganizationOperators(organizationIpaCode, fiscalCode, firstName, lastName, 0, AUTH_OPERATORS_FETCH_SIZE, accessToken);
+    OperatorsPage operatorsPage = authzService.getOrganizationOperators(organizationIpaCode, fiscalCode, firstName, lastName, 0, OPERATORS_FETCH_SIZE, accessToken);
 
     return operatorsPage.getContent().stream()
       .collect(Collectors.toMap(OperatorDTO::getMappedExternalUserId, Function.identity()));
@@ -177,16 +177,16 @@ public class OrgSubUnitOperatorsRetrieverServiceImpl implements OrgSubUnitOperat
     Organization organization = organizationService.getOrganizationByOrganizationId(organizationId, accessToken);
     String organizationIpaCode = organization.getIpaCode();
 
+    Set<String> alreadyAssociatedIds = getAllAssociatedOperatorIds(organizationId, subUnitCode, accessToken);
+
     OperatorsPage operatorsPage = authzService.getOrganizationOperators(
-      organizationIpaCode, filters.getFiscalCode(), filters.getFirstName(), filters.getLastName(), 0, AUTH_OPERATORS_FETCH_SIZE, accessToken
+      organizationIpaCode, filters.getFiscalCode(), filters.getFirstName(), filters.getLastName(), 0, OPERATORS_FETCH_SIZE, accessToken
     );
 
     List<OperatorDTO> allCandidateOperators = operatorsPage.getContent();
     if (allCandidateOperators.isEmpty()) {
       return buildEmptyPage(pageable);
     }
-
-    Set<String> alreadyAssociatedIds = getAlreadyAssociatedOperatorIds(organizationId, subUnitCode, allCandidateOperators, accessToken);
 
     List<OperatorDTO> availableOperators = allCandidateOperators.stream()
       .filter(op -> !alreadyAssociatedIds.contains(op.getMappedExternalUserId()))
@@ -197,17 +197,12 @@ public class OrgSubUnitOperatorsRetrieverServiceImpl implements OrgSubUnitOperat
     return pagedOrgSubUnitOperatorsMapper.map(paginatedPage);
   }
 
-  private Set<String> getAlreadyAssociatedOperatorIds(Long organizationId, String subUnitCode, List<OperatorDTO> candidates, String accessToken) {
-    Set<String> candidateIds = candidates.stream()
-      .map(OperatorDTO::getMappedExternalUserId)
-      .collect(Collectors.toSet());
-
+  private Set<String> getAllAssociatedOperatorIds(Long organizationId, String subUnitCode, String accessToken) {
     PagedModelOrgSubUnitOperators pagedAssociatedOperators = orgSubUnitOperatorsService
-      .findByOrganizationIdAndSubUnitCodeAndOperatorExternalUserIdIn(
+      .findByOrganizationIdAndSubUnitCode(
         organizationId,
         subUnitCode,
-        candidateIds,
-        PageRequest.of(0, candidateIds.size()),
+        PageRequest.of(0, OPERATORS_FETCH_SIZE),
         accessToken
       );
 

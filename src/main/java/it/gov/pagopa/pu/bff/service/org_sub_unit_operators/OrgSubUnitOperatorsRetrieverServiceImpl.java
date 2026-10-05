@@ -188,11 +188,11 @@ public class OrgSubUnitOperatorsRetrieverServiceImpl implements OrgSubUnitOperat
       return buildEmptyPage(pageable);
     }
 
-    List<OperatorDTO> availableOperators = allCandidateOperators.stream()
+    List<OperatorDTO> notRelatedOperators = allCandidateOperators.stream()
       .filter(op -> !alreadyAssociatedIds.contains(op.getMappedExternalUserId()))
       .toList();
 
-    Page<OrgSubUnitOperator> paginatedPage = paginateAndMapToDto(availableOperators, pageable);
+    Page<OrgSubUnitOperator> paginatedPage = paginateAndMapToDto(notRelatedOperators, pageable);
 
     return pagedOrgSubUnitOperatorsMapper.map(paginatedPage);
   }
@@ -211,15 +211,15 @@ public class OrgSubUnitOperatorsRetrieverServiceImpl implements OrgSubUnitOperat
       .collect(Collectors.toSet());
   }
 
-  private Page<OrgSubUnitOperator> paginateAndMapToDto(List<OperatorDTO> availableOperators, Pageable pageable) {
+  private Page<OrgSubUnitOperator> paginateAndMapToDto(List<OperatorDTO> notRelatedOperators, Pageable pageable) {
     int start = (int) pageable.getOffset();
-    int end = Math.min((start + pageable.getPageSize()), availableOperators.size());
+    int end = Math.min((start + pageable.getPageSize()), notRelatedOperators.size());
 
-    List<OrgSubUnitOperator> content = availableOperators.subList(start, end).stream()
+    List<OrgSubUnitOperator> content = notRelatedOperators.subList(start, end).stream()
       .map(pagedOrgSubUnitOperatorsMapper::toOrgSubUnitOperator)
       .toList();
 
-    return new PageImpl<>(content, pageable, availableOperators.size());
+    return new PageImpl<>(content, pageable, notRelatedOperators.size());
   }
 
   @Override

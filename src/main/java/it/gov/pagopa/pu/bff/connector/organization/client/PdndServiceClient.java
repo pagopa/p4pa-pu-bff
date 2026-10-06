@@ -1,10 +1,9 @@
 package it.gov.pagopa.pu.bff.connector.organization.client;
 
 import it.gov.pagopa.pu.bff.connector.organization.config.OrganizationApisHolder;
-import it.gov.pagopa.pu.organization.dto.generated.PdndService;
-import it.gov.pagopa.pu.organization.dto.generated.PdndServiceRequestDTO;
-import it.gov.pagopa.pu.organization.dto.generated.PdndServiceType;
-import it.gov.pagopa.pu.organization.dto.generated.PdndServiceView;
+import it.gov.pagopa.pu.bff.util.PageUtils;
+import it.gov.pagopa.pu.organization.dto.generated.*;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -35,5 +34,13 @@ public class PdndServiceClient {
   public void deletePdndService(Long organizationId, String purposeId, String accessToken) {
     organizationApisHolder.getPdndServiceApi(accessToken)
       .deletePdndService(organizationId, purposeId);
+  }
+
+  public PagedPdndServiceView getOrgSubUnitsPdndServices(Long organizationId, String subUnitCode, String subUnitName, Pageable pageable, String accessToken) {
+    return organizationApisHolder.getPdndServiceApi(accessToken)
+      .getOrgSubUnitsPdndServices(organizationId, subUnitCode, subUnitName,
+        PageUtils.getPageNumber(pageable),
+        PageUtils.getPageSize(pageable),
+        PageUtils.getSortList(pageable));
   }
 }

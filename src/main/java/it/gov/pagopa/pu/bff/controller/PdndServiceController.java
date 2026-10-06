@@ -3,11 +3,9 @@ package it.gov.pagopa.pu.bff.controller;
 import it.gov.pagopa.pu.bff.controller.generated.PdndServiceApi;
 import it.gov.pagopa.pu.bff.security.SecurityUtils;
 import it.gov.pagopa.pu.bff.service.pdnd_service.PdndServiceRetrieverService;
-import it.gov.pagopa.pu.organization.dto.generated.PdndService;
-import it.gov.pagopa.pu.organization.dto.generated.PdndServiceRequestDTO;
-import it.gov.pagopa.pu.organization.dto.generated.PdndServiceType;
-import it.gov.pagopa.pu.organization.dto.generated.PdndServiceView;
+import it.gov.pagopa.pu.organization.dto.generated.*;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -46,6 +44,13 @@ public class PdndServiceController implements PdndServiceApi {
     log.info("User requested deletePdndService having organizationId {} and purposeId {}", organizationId, purposeId);
     pdndServiceRetrieverService.deletePdndService(organizationId, purposeId, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken());
     return ResponseEntity.ok().build();
+  }
+
+  @Override
+  public ResponseEntity<PagedPdndServiceView> getOrgSubUnitsPdndServices(Long organizationId, String subUnitCode, String subUnitName, Pageable pageable) {
+    log.info("User requested getOrgSubUnitsPdndServices having organizationId {}", organizationId);
+    return ResponseEntity.ok(pdndServiceRetrieverService.getOrgSubUnitsPdndServices(organizationId, subUnitCode, subUnitName, pageable,
+      SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken()));
   }
 
   @Override

@@ -457,7 +457,7 @@ class OrgSubUnitOperatorsRetrieverServiceImplTest {
     OperatorsPage operatorsPage = podamFactory.manufacturePojo(OperatorsPage.class);
     operatorsPage.setContent(Collections.emptyList());
 
-    when(authzServiceMock.getOrganizationOperators(ORGANIZATION_IPA_CODE, "fiscalCode", "firstName", "lastName", 0, 2000, ACCESS_TOKEN))
+    when(authzServiceMock.getOrganizationOperators(ORGANIZATION_IPA_CODE, "fiscalCode", "firstName", "lastName", Collections.emptyList(), PAGEABLE, ACCESS_TOKEN))
       .thenReturn(operatorsPage);
 
     PagedOrgSubUnitOperators result = service.getOrgSubUnitNotRelatedOperators(ORGANIZATION_ID, SUB_UNIT_CODE, filters, PAGEABLE, loggedUser, ACCESS_TOKEN);
@@ -470,7 +470,7 @@ class OrgSubUnitOperatorsRetrieverServiceImplTest {
   }
 
   @Test
-  void givenOrganizationOperatorsWhenGetOrgSubUnitNotRelatedOperatorsThenReturnFilteredAndMappedPage() {
+  void givenOrganizationOperatorsWhenGetOrgSubUnitNotRelatedOperatorsThenReturnFiltered() {
     OrgSubUnitNotRelatedOperatorsFilters filters = new OrgSubUnitNotRelatedOperatorsFilters("fiscalCode", "firstName", "lastName");
 
     Organization organization = podamFactory.manufacturePojo(Organization.class);
@@ -489,25 +489,23 @@ class OrgSubUnitOperatorsRetrieverServiceImplTest {
     when(orgSubUnitOperatorsServiceMock.findByOrganizationIdAndSubUnitCode(ORGANIZATION_ID, SUB_UNIT_CODE,  PageRequest.of(0, 2000), ACCESS_TOKEN))
       .thenReturn(pagedAssociated);
 
-    OperatorDTO op1 = podamFactory.manufacturePojo(OperatorDTO.class);
-    op1.setMappedExternalUserId(associatedId);
-
-    OperatorDTO op2 = podamFactory.manufacturePojo(OperatorDTO.class);
+    OperatorDTO op = podamFactory.manufacturePojo(OperatorDTO.class);
     String notAssociatedId = "notAssociatedId";
-    op2.setMappedExternalUserId(notAssociatedId);
+    op.setMappedExternalUserId(notAssociatedId);
 
     OperatorsPage operatorsPage = podamFactory.manufacturePojo(OperatorsPage.class);
-    operatorsPage.setContent(List.of(op1, op2));
+    operatorsPage.setContent(List.of(op));
+    operatorsPage.setTotalElements(1);
 
-    when(authzServiceMock.getOrganizationOperators(ORGANIZATION_IPA_CODE, "fiscalCode", "firstName", "lastName", 0, 2000, ACCESS_TOKEN))
+    when(authzServiceMock.getOrganizationOperators(ORGANIZATION_IPA_CODE, "fiscalCode", "firstName", "lastName", List.of(associatedId), PAGEABLE, ACCESS_TOKEN))
       .thenReturn(operatorsPage);
 
-    OrgSubUnitOperator mappedOp2 = podamFactory.manufacturePojo(OrgSubUnitOperator.class);
-    when(pagedOrgSubUnitOperatorsMapperMock.toOrgSubUnitOperator(op2))
-      .thenReturn(mappedOp2);
+    OrgSubUnitOperator mappedOp = podamFactory.manufacturePojo(OrgSubUnitOperator.class);
+    when(pagedOrgSubUnitOperatorsMapperMock.toOrgSubUnitOperator(op))
+      .thenReturn(mappedOp);
 
     PagedOrgSubUnitOperators expectedResult = podamFactory.manufacturePojo(PagedOrgSubUnitOperators.class);
-    PageImpl<OrgSubUnitOperator> expectedPage = new PageImpl<>(List.of(mappedOp2), PAGEABLE, 1);
+    PageImpl<OrgSubUnitOperator> expectedPage = new PageImpl<>(List.of(mappedOp), PAGEABLE, 1);
 
     when(pagedOrgSubUnitOperatorsMapperMock.map(expectedPage))
       .thenReturn(expectedResult);

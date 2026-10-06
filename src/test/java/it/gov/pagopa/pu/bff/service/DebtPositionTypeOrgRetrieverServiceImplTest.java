@@ -482,7 +482,7 @@ class DebtPositionTypeOrgRetrieverServiceImplTest {
 
       when(
           authzServiceMock.getOrganizationOperators(organizationIpaCode, null,
-            null, null, 0, 10, accessToken))
+            null, null, null, PageRequest.of(0, 10), accessToken))
         .thenReturn(operatorsPage);
       when(
           debtPositionTypeOrgOperatorsServiceMock.getDebtPositionTypeOrgOperators(
@@ -529,7 +529,7 @@ class DebtPositionTypeOrgRetrieverServiceImplTest {
 
       when(
           authzServiceMock.getOrganizationOperators(organizationIpaCode, null,
-            null, null, 0, 10, accessToken))
+            null, null, null, PageRequest.of(0, 10), accessToken))
         .thenReturn(operatorsPage);
       when(
           debtPositionTypeOrgOperatorsMapperMock.mapToPagedDebtPositionTypeOrgOperatorDTO(

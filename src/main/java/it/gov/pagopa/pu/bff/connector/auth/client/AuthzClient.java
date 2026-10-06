@@ -9,6 +9,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @Slf4j
 public class AuthzClient {
@@ -29,9 +31,9 @@ public class AuthzClient {
     }
   }
 
-  public OperatorsPage getOrganizationOperators(String organizationIpaCode, String fiscalCode, String firstName, String lastName, Integer page, Integer size, String accessToken) {
+  public OperatorsPage getOrganizationOperators(String organizationIpaCode, String fiscalCode, String firstName, String lastName, List<String> mappedExternalUserIdsToExclude, Pageable pageable, String accessToken) {
     return authApisHolder.getAuthzApi(accessToken)
-      .getOrganizationOperators(organizationIpaCode, fiscalCode, firstName, lastName, page, size);
+      .getOrganizationOperators(organizationIpaCode, fiscalCode, firstName, lastName, mappedExternalUserIdsToExclude, PageUtils.getPageNumber(pageable), PageUtils.getPageSize(pageable));
   }
 
   public ClientDTOPage getClients(String organizationIpaCode, String clientId, String clientName, Pageable pageable, String accessToken) {

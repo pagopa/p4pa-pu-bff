@@ -19,8 +19,7 @@ import uk.co.jemos.podam.api.PodamFactory;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -179,5 +178,25 @@ class OrgSubUnitServiceTest {
 
     // Then
     assertSame(expectedResult, result);
+  }
+
+  @Test
+  void findOperatorNotRelatedOrgSubUnits() {
+    // Given
+    Long organizationId = 1L;
+    String operatorExternalUserId = "operatorExternalUserId";
+    String subUnitCode = "subUnitCode";
+    String subUnitName = "subUnitName";
+    Pageable pageable = PageRequest.of(0, 10);
+    PagedModelOrgSubUnit expectedResult = podamFactory.manufacturePojo(PagedModelOrgSubUnit.class);
+
+    when(orgSubUnitSearchClientMock.findOperatorNotRelatedOrgSubUnits(organizationId, operatorExternalUserId, subUnitCode, subUnitName, pageable, accessToken))
+      .thenReturn(expectedResult);
+
+    // When
+    PagedModelOrgSubUnit actualResult = service.findOperatorNotRelatedOrgSubUnits(organizationId, operatorExternalUserId, subUnitCode, subUnitName, pageable, accessToken);
+
+    // Then
+    assertEquals(expectedResult, actualResult);
   }
 }

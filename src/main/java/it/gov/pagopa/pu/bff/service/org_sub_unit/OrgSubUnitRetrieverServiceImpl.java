@@ -112,6 +112,20 @@ public class OrgSubUnitRetrieverServiceImpl implements OrgSubUnitRetrieverServic
     return orgSubUnitService.getOrgSubUnitWithNoServiceType(organizationId, pdndServiceType, accessToken);
   }
 
+  @Override
+  public PagedOrgSubUnit getOperatorNotRelatedOrgSubUnits(Long organizationId, String mappedExternalUserId, String subUnitCode, String subUnitName, Pageable pageable, UserInfo loggedUser, String accessToken) {
+    authorizationService.validateAdminRole(organizationId, loggedUser);
+    PagedModelOrgSubUnit pagedModelOrgSubUnit = orgSubUnitService.findOperatorNotRelatedOrgSubUnits(
+      organizationId,
+      mappedExternalUserId,
+      subUnitCode,
+      subUnitName,
+      pageable,
+      accessToken
+    );
+    return pagedOrgSubUnitMapper.map(pagedModelOrgSubUnit);
+  }
+
   private void validateOrganizationForSubUnit(Long organizationId, Long orgIdFromSubUnit) {
     if(!organizationId.equals(orgIdFromSubUnit)){
       throw new InvalidOrgSubUnitException("INVALID_ORG_SUB_UNIT",

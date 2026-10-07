@@ -37,4 +37,24 @@ public class OrgSubUnitSearchClient {
         PageUtils.getSortList(pageable)
       );
   }
+
+  public PagedModelOrgSubUnit findOperatorNotRelatedOrgSubUnits(
+    Long organizationId,
+    String operatorExternalUserId,
+    String subUnitCode,
+    String subUnitName,
+    Pageable pageable,
+    String accessToken
+  ) {
+    return organizationApisHolder.getOrgSubUnitSearchControllerApi(accessToken)
+      .crudOrgSubUnitFindOrgSubUnitsAssignableToOperator(
+        organizationId,
+        operatorExternalUserId,
+        subUnitCode,
+        subUnitName,
+        PageUtils.getPageNumber(pageable),
+        PageUtils.getPageSize(pageable),
+        PageUtils.getSortList(pageable)
+      );
+  }
 }

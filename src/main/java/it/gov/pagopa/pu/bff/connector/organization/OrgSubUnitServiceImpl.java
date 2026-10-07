@@ -78,4 +78,9 @@ public class OrgSubUnitServiceImpl implements OrgSubUnitService {
   public List<OrgAndSubUnitDTO> getOrgSubUnitWithNoServiceType(Long organizationId, PdndServiceType pdndServiceType, String accessToken) {
     return orgSubUnitClient.getOrgSubUnitWithNoServiceType(organizationId, pdndServiceType, accessToken);
   }
+
+  @Override
+  public PagedModelOrgSubUnit findOperatorNotRelatedOrgSubUnits(Long organizationId, String operatorExternalUserId, String subUnitCode, String subUnitName, Pageable pageable, String accessToken) {
+    return orgSubUnitSearchClient.findOperatorNotRelatedOrgSubUnits(organizationId, operatorExternalUserId, subUnitCode, subUnitName, pageable, accessToken);
+  }
 }

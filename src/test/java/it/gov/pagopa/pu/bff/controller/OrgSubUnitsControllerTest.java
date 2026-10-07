@@ -188,4 +188,26 @@ class OrgSubUnitsControllerTest {
     assertNotNull(response.getBody());
     assertSame(expectedResult, response.getBody());
   }
+
+  @Test
+  void givenCorrectRequestWhenGetOperatorNotRelatedOrgSubUnitsThenOk() {
+    // Given
+    Long organizationId = 1L;
+    String operatorExternalUserId = "operatorExternalUserId";
+    String subUnitCode = "subUnitCode";
+    String subUnitName = "subUnitName";
+    Pageable pageable = PageRequest.of(0, 10);
+    PagedOrgSubUnit expectedResult = podamFactory.manufacturePojo(PagedOrgSubUnit.class);
+
+    when(subUnitRetrieverServiceMock.getOperatorNotRelatedOrgSubUnits(organizationId, operatorExternalUserId, subUnitCode, subUnitName, pageable, loggedUser, accessToken))
+      .thenReturn(expectedResult);
+
+    // When
+    ResponseEntity<PagedOrgSubUnit> actualResult = orgSubUnitsController.getOperatorNotRelatedOrgSubUnits(organizationId, operatorExternalUserId, subUnitCode, subUnitName, pageable);
+
+    // Then
+    assertEquals(HttpStatus.OK, actualResult.getStatusCode());
+    assertNotNull(actualResult.getBody());
+    assertEquals(expectedResult, actualResult.getBody());
+  }
 }

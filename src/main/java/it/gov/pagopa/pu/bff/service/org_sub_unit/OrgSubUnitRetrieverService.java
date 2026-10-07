@@ -16,4 +16,5 @@ public interface OrgSubUnitRetrieverService {
   void updateOrgSubUnitStatus(Long organizationId, String subUnitCode, OrgSubUnitStatus status, UserInfo loggedUser, String accessToken);
   PagedOrgSubUnit getPagedOrgSubUnits(PagedOrgSubUnitFiltersDTO filters, Pageable pageable, UserInfo loggedUser, String accessToken);
   List<OrgAndSubUnitDTO> getOrgSubUnitWithNoServiceType(Long organizationId, PdndServiceType pdndServiceType, UserInfo loggedUser, String accessToken);
+  PagedOrgSubUnit getOperatorNotRelatedOrgSubUnits(Long organizationId, String mappedExternalUserId, String subUnitCode, String subUnitName, Pageable pageable, UserInfo loggedUser, String accessToken);
 }

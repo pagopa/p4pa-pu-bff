@@ -80,7 +80,7 @@ public class OrgSubUnitServiceImpl implements OrgSubUnitService {
   }
 
   @Override
-  public PagedModelOrgSubUnit findOperatorNotRelatedOrgSubUnits(Long organizationId, String operatorExternalUserId, String subUnitCode, String subUnitName, Pageable pageable, String accessToken) {
-    return orgSubUnitSearchClient.findOperatorNotRelatedOrgSubUnits(organizationId, operatorExternalUserId, subUnitCode, subUnitName, pageable, accessToken);
+  public PagedModelOrgSubUnit findOperatorAssignableOrgSubUnits(Long organizationId, String operatorExternalUserId, String subUnitCode, String subUnitName, Pageable pageable, String accessToken) {
+    return orgSubUnitSearchClient.findOperatorAssignableOrgSubUnits(organizationId, operatorExternalUserId, subUnitCode, subUnitName, pageable, accessToken);
   }
 }

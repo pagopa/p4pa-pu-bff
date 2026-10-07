@@ -181,7 +181,7 @@ class OrgSubUnitServiceTest {
   }
 
   @Test
-  void findOperatorNotRelatedOrgSubUnits() {
+  void whenFindOperatorAssignableOrgSubUnitsThenInvokeClient() {
     // Given
     Long organizationId = 1L;
     String operatorExternalUserId = "operatorExternalUserId";
@@ -190,11 +190,11 @@ class OrgSubUnitServiceTest {
     Pageable pageable = PageRequest.of(0, 10);
     PagedModelOrgSubUnit expectedResult = podamFactory.manufacturePojo(PagedModelOrgSubUnit.class);
 
-    when(orgSubUnitSearchClientMock.findOperatorNotRelatedOrgSubUnits(organizationId, operatorExternalUserId, subUnitCode, subUnitName, pageable, accessToken))
+    when(orgSubUnitSearchClientMock.findOperatorAssignableOrgSubUnits(organizationId, operatorExternalUserId, subUnitCode, subUnitName, pageable, accessToken))
       .thenReturn(expectedResult);
 
     // When
-    PagedModelOrgSubUnit actualResult = service.findOperatorNotRelatedOrgSubUnits(organizationId, operatorExternalUserId, subUnitCode, subUnitName, pageable, accessToken);
+    PagedModelOrgSubUnit actualResult = service.findOperatorAssignableOrgSubUnits(organizationId, operatorExternalUserId, subUnitCode, subUnitName, pageable, accessToken);
 
     // Then
     assertEquals(expectedResult, actualResult);

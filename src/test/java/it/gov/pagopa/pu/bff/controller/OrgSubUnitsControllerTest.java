@@ -190,7 +190,7 @@ class OrgSubUnitsControllerTest {
   }
 
   @Test
-  void givenCorrectRequestWhenGetOperatorNotRelatedOrgSubUnitsThenOk() {
+  void givenCorrectRequestWhenGetOperatorAssignableOrgSubUnitsThenOk() {
     // Given
     Long organizationId = 1L;
     String operatorExternalUserId = "operatorExternalUserId";
@@ -199,11 +199,11 @@ class OrgSubUnitsControllerTest {
     Pageable pageable = PageRequest.of(0, 10);
     PagedOrgSubUnit expectedResult = podamFactory.manufacturePojo(PagedOrgSubUnit.class);
 
-    when(subUnitRetrieverServiceMock.getOperatorNotRelatedOrgSubUnits(organizationId, operatorExternalUserId, subUnitCode, subUnitName, pageable, loggedUser, accessToken))
+    when(subUnitRetrieverServiceMock.getOperatorAssignableOrgSubUnits(organizationId, operatorExternalUserId, subUnitCode, subUnitName, pageable, loggedUser, accessToken))
       .thenReturn(expectedResult);
 
     // When
-    ResponseEntity<PagedOrgSubUnit> actualResult = orgSubUnitsController.getOperatorNotRelatedOrgSubUnits(organizationId, operatorExternalUserId, subUnitCode, subUnitName, pageable);
+    ResponseEntity<PagedOrgSubUnit> actualResult = orgSubUnitsController.getOperatorAssignableOrgSubUnits(organizationId, operatorExternalUserId, subUnitCode, subUnitName, pageable);
 
     // Then
     assertEquals(HttpStatus.OK, actualResult.getStatusCode());

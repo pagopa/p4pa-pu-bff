@@ -6100,11 +6100,11 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorDTO'
-  /organization/{organizationId}/operators/{mappedExternalUserId}/not-related-org-sub-units:
+  /organization/{organizationId}/operators/{mappedExternalUserId}/assignable-org-sub-units:
     get:
       tags:
         - OrgSubUnits
-      operationId: getOperatorNotRelatedOrgSubUnits
+      operationId: getOperatorAssignableOrgSubUnits
       parameters:
         - name: organizationId
           in: path

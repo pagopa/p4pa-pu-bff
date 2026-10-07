@@ -78,7 +78,7 @@ class OrgSubUnitSearchClientTest {
   }
 
   @Test
-  void whenFindOperatorNotRelatedOrgSubUnits() {
+  void whenFindOperatorAssignableOrgSubUnitsInvokeWithAccessToken() {
     //GIVEN
     String accessToken = "accessToken";
     Long organizationId = 1L;
@@ -94,7 +94,7 @@ class OrgSubUnitSearchClientTest {
     when(orgSubUnitSearchControllerApiMock.crudOrgSubUnitFindOrgSubUnitsAssignableToOperator(organizationId, operatorExternalUserId, subUnitCode, subUnitName, 0, 10, Collections.emptyList()))
       .thenReturn(expectedResult);
     //WHEN
-    PagedModelOrgSubUnit actualResult = orgSubUnitSearchClient.findOperatorNotRelatedOrgSubUnits(
+    PagedModelOrgSubUnit actualResult = orgSubUnitSearchClient.findOperatorAssignableOrgSubUnits(
       organizationId,
       operatorExternalUserId,
       subUnitCode,

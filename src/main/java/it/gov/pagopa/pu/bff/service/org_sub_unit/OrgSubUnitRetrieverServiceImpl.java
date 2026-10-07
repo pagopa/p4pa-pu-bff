@@ -113,9 +113,9 @@ public class OrgSubUnitRetrieverServiceImpl implements OrgSubUnitRetrieverServic
   }
 
   @Override
-  public PagedOrgSubUnit getOperatorNotRelatedOrgSubUnits(Long organizationId, String mappedExternalUserId, String subUnitCode, String subUnitName, Pageable pageable, UserInfo loggedUser, String accessToken) {
+  public PagedOrgSubUnit getOperatorAssignableOrgSubUnits(Long organizationId, String mappedExternalUserId, String subUnitCode, String subUnitName, Pageable pageable, UserInfo loggedUser, String accessToken) {
     authorizationService.validateAdminRole(organizationId, loggedUser);
-    PagedModelOrgSubUnit pagedModelOrgSubUnit = orgSubUnitService.findOperatorNotRelatedOrgSubUnits(
+    PagedModelOrgSubUnit pagedModelOrgSubUnit = orgSubUnitService.findOperatorAssignableOrgSubUnits(
       organizationId,
       mappedExternalUserId,
       subUnitCode,

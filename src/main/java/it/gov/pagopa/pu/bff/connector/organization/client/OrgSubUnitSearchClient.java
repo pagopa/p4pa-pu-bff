@@ -38,7 +38,7 @@ public class OrgSubUnitSearchClient {
       );
   }
 
-  public PagedModelOrgSubUnit findOperatorNotRelatedOrgSubUnits(
+  public PagedModelOrgSubUnit findOperatorAssignableOrgSubUnits(
     Long organizationId,
     String operatorExternalUserId,
     String subUnitCode,

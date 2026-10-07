@@ -2,10 +2,8 @@ package it.gov.pagopa.pu.bff.connector.organization;
 
 import it.gov.pagopa.pu.bff.connector.organization.client.PdndServiceClient;
 import it.gov.pagopa.pu.bff.connector.organization.client.PdndServiceSearchClient;
-import it.gov.pagopa.pu.organization.dto.generated.PdndService;
-import it.gov.pagopa.pu.organization.dto.generated.PdndServiceRequestDTO;
-import it.gov.pagopa.pu.organization.dto.generated.PdndServiceType;
-import it.gov.pagopa.pu.organization.dto.generated.PdndServiceView;
+import it.gov.pagopa.pu.organization.dto.generated.*;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -44,5 +42,10 @@ public class PdndServiceServiceImpl implements PdndServiceService {
   @Override
   public List<PdndService> findByOrganizationIdAndClientId(Long organizationId, String clientId, PdndServiceType serviceType, String accessToken) {
     return pdndServiceSearchClient.findByOrganizationIdAndClientId(organizationId, clientId, serviceType, accessToken);
+  }
+
+  @Override
+  public PagedPdndServiceView getOrgSubUnitsPdndServices(Long organizationId, String subUnitCode, String subUnitName, Pageable pageable, String accessToken) {
+    return pdndServiceClient.getOrgSubUnitsPdndServices(organizationId, subUnitCode, subUnitName, pageable, accessToken);
   }
 }

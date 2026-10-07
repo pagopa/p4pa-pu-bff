@@ -3,10 +3,8 @@ package it.gov.pagopa.pu.bff.service.pdnd_service;
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.connector.organization.PdndServiceService;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
-import it.gov.pagopa.pu.organization.dto.generated.PdndService;
-import it.gov.pagopa.pu.organization.dto.generated.PdndServiceRequestDTO;
-import it.gov.pagopa.pu.organization.dto.generated.PdndServiceType;
-import it.gov.pagopa.pu.organization.dto.generated.PdndServiceView;
+import it.gov.pagopa.pu.organization.dto.generated.*;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -50,5 +48,11 @@ public class PdndServiceRetrieverServiceImpl implements PdndServiceRetrieverServ
   public List<PdndService> getPdndClientServices(Long organizationId, String clientId, PdndServiceType serviceType, UserInfo userInfo, String accessToken) {
     authorizationService.validateAdminRole(organizationId, userInfo);
     return pdndServiceService.findByOrganizationIdAndClientId(organizationId, clientId, serviceType, accessToken);
+  }
+
+  @Override
+  public PagedPdndServiceView getOrgSubUnitsPdndServices(Long organizationId, String subUnitCode, String subUnitName, Pageable pageable, UserInfo userInfo, String accessToken) {
+    authorizationService.validateAdminRole(organizationId, userInfo);
+    return pdndServiceService.getOrgSubUnitsPdndServices(organizationId, subUnitCode, subUnitName, pageable, accessToken);
   }
 }

@@ -34,9 +34,9 @@ public class PdndClientController implements PdndClientApi {
   }
 
   @Override
-  public ResponseEntity<PdndClientNoSecretDTO> createPdndClient(Long organizationId, PdndClientDTO body) {
-    log.info("User requested createPdndClient having organizationId {}", organizationId);
-    return ResponseEntity.ok(pdndClientRetrieverService.createPdndClient(organizationId, body, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken()));
+  public ResponseEntity<PdndClientNoSecretDTO> savePdndClient(Long organizationId, PdndClientDTO body) {
+    log.info("User requested savePdndClient having organizationId {}", organizationId);
+    return ResponseEntity.ok(pdndClientRetrieverService.savePdndClient(organizationId, body, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken()));
   }
 
   @Override

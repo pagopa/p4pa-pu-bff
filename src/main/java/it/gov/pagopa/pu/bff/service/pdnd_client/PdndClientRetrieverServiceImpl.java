@@ -41,7 +41,7 @@ public class PdndClientRetrieverServiceImpl implements PdndClientRetrieverServic
   }
 
   @Override
-  public PdndClientNoSecretDTO createPdndClient(Long organizationId, PdndClientDTO pdndClientDTO, UserInfo userInfo, String accessToken) {
+  public PdndClientNoSecretDTO savePdndClient(Long organizationId, PdndClientDTO pdndClientDTO, UserInfo userInfo, String accessToken) {
     authorizationService.validateAdminRole(pdndClientDTO.getOrganizationId(), userInfo);
 
     validateOrganizationForPdndClient(organizationId, pdndClientDTO.getOrganizationId());

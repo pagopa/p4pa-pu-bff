@@ -6104,6 +6104,7 @@ paths:
     get:
       tags:
         - OrgSubUnits
+      summary: get active organization sub-units not already assigned to the operator
       operationId: getOperatorAssignableOrgSubUnits
       parameters:
         - name: organizationId

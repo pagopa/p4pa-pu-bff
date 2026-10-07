@@ -6,6 +6,7 @@ import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.connector.auth.AuthzService;
 import it.gov.pagopa.pu.bff.connector.organization.OrgSubUnitOperatorsService;
 import it.gov.pagopa.pu.bff.connector.organization.OrganizationService;
+import it.gov.pagopa.pu.bff.dto.OrgSubUnitNotRelatedOperatorsFilters;
 import it.gov.pagopa.pu.bff.dto.OrgSubUnitOperatorsFilters;
 import it.gov.pagopa.pu.bff.dto.generated.OrgSubUnitOperator;
 import it.gov.pagopa.pu.bff.dto.generated.PagedOrgSubUnitOperators;
@@ -16,6 +17,8 @@ import it.gov.pagopa.pu.organization.dto.generated.Organization;
 import it.gov.pagopa.pu.organization.dto.generated.PagedModelOrgSubUnitOperators;
 import it.gov.pagopa.pu.organization.dto.generated.PagedModelOrgSubUnitOperatorsEmbedded;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -29,7 +32,7 @@ import java.util.stream.Collectors;
 @Slf4j
 public class OrgSubUnitOperatorsRetrieverServiceImpl implements OrgSubUnitOperatorsRetrieverService {
 
-  private static final int AUTH_OPERATORS_FETCH_SIZE = 2000;
+  private static final int OPERATORS_FETCH_SIZE = 2000;
 
   private final AuthorizationService authorizationService;
   private final OrgSubUnitOperatorsService orgSubUnitOperatorsService;
@@ -79,9 +82,9 @@ public class OrgSubUnitOperatorsRetrieverServiceImpl implements OrgSubUnitOperat
         pagedModelOrgSubUnitOperators =
           orgSubUnitOperatorsService.findByOrganizationIdAndSubUnitCodeAndOperatorExternalUserIdIn(organizationId, subUnitCode, Set.of(filters.getMappedExternalUserId()), pageable, accessToken);
 
-    }  else {
-      pagedModelOrgSubUnitOperators = orgSubUnitOperatorsService.findByOrganizationIdAndSubUnitCode(organizationId, subUnitCode, pageable, accessToken);
-    }
+      }  else {
+        pagedModelOrgSubUnitOperators = orgSubUnitOperatorsService.findByOrganizationIdAndSubUnitCode(organizationId, subUnitCode, pageable, accessToken);
+      }
 
       orgSubUnitOperators = extractOperators(pagedModelOrgSubUnitOperators);
       operatorsMap = retrieveOperatorsInfo(organizationIpaCode, orgSubUnitOperators, accessToken);
@@ -129,7 +132,7 @@ public class OrgSubUnitOperatorsRetrieverServiceImpl implements OrgSubUnitOperat
   }
 
   private Map<String, OperatorDTO> retrieveOperators(String organizationIpaCode, String fiscalCode, String firstName, String lastName, String accessToken) {
-    OperatorsPage operatorsPage = authzService.getOrganizationOperators(organizationIpaCode, fiscalCode, firstName, lastName, null, PageRequest.of(0, AUTH_OPERATORS_FETCH_SIZE), accessToken);
+    OperatorsPage operatorsPage = authzService.getOrganizationOperators(organizationIpaCode, fiscalCode, firstName, lastName, null, PageRequest.of(0, OPERATORS_FETCH_SIZE), accessToken);
 
     return operatorsPage.getContent().stream()
       .collect(Collectors.toMap(OperatorDTO::getMappedExternalUserId, Function.identity()));
@@ -165,6 +168,51 @@ public class OrgSubUnitOperatorsRetrieverServiceImpl implements OrgSubUnitOperat
   private OrgSubUnitOperator enrichWithOperatorInfo(OrgSubUnitOperators sourceOperator, Map<String, OperatorDTO> operatorsMap) {
     OperatorDTO operatorDTO = operatorsMap.get(sourceOperator.getOperatorExternalUserId());
     return pagedOrgSubUnitOperatorsMapper.toOrgSubUnitOperator(sourceOperator, operatorDTO);
+  }
+
+  @Override
+  public PagedOrgSubUnitOperators getOrgSubUnitNotRelatedOperators(Long organizationId, String subUnitCode, OrgSubUnitNotRelatedOperatorsFilters filters, Pageable pageable, UserInfo loggedUser, String accessToken) {
+    authorizationService.validateAdminRole(organizationId, loggedUser);
+
+    Organization organization = organizationService.getOrganizationByOrganizationId(organizationId, accessToken);
+    String organizationIpaCode = organization.getIpaCode();
+
+    List<String> alreadyAssociatedIds = getAllAssociatedOperatorIds(organizationId, subUnitCode, accessToken);
+
+    OperatorsPage notRelatedOperatorsPage = authzService.getOrganizationOperators(
+      organizationIpaCode, filters.getFiscalCode(), filters.getFirstName(), filters.getLastName(), alreadyAssociatedIds, pageable, accessToken
+    );
+
+    List<OperatorDTO> notRelatedOperators = notRelatedOperatorsPage.getContent();
+    if (notRelatedOperators.isEmpty()) {
+      return buildEmptyPage(pageable);
+    }
+
+    List<OrgSubUnitOperator> content = notRelatedOperators.stream()
+      .map(pagedOrgSubUnitOperatorsMapper::toOrgSubUnitOperator)
+      .toList();
+
+    Page<OrgSubUnitOperator> paginatedPage = new PageImpl<>(
+      content,
+      pageable,
+      notRelatedOperatorsPage.getTotalElements()
+    );
+
+    return pagedOrgSubUnitOperatorsMapper.map(paginatedPage);
+  }
+
+  private List<String> getAllAssociatedOperatorIds(Long organizationId, String subUnitCode, String accessToken) {
+    PagedModelOrgSubUnitOperators pagedAssociatedOperators = orgSubUnitOperatorsService
+      .findByOrganizationIdAndSubUnitCode(
+        organizationId,
+        subUnitCode,
+        PageRequest.of(0, OPERATORS_FETCH_SIZE),
+        accessToken
+      );
+
+    return extractOperators(pagedAssociatedOperators).stream()
+      .map(OrgSubUnitOperators::getOperatorExternalUserId)
+      .toList();
   }
 
   @Override

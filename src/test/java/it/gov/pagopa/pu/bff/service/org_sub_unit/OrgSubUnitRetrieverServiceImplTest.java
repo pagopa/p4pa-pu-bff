@@ -376,4 +376,30 @@ class OrgSubUnitRetrieverServiceImplTest {
     assertSame(expectedResult, result);
     verify(authorizationServiceMock).validateAdminRole(organizationId, loggedUser);
   }
+
+  @Test
+  void givenAdminUserWhenGetOperatorAssignableOrgSubUnitsThenOk() {
+    // Given
+    Long organizationId = 1L;
+    String operatorExternalUserId = "operatorExternalUserId";
+    String subUnitCode = "subUnitCode";
+    String subUnitName = "subUnitName";
+    Pageable pageable = PageRequest.of(0, 10);
+    UserInfo loggedUser = podamFactory.manufacturePojo(UserInfo.class);
+    PagedModelOrgSubUnit pagedModelOrgSubUnit = podamFactory.manufacturePojo(PagedModelOrgSubUnit.class);
+    PagedOrgSubUnit expectedResult = podamFactory.manufacturePojo(PagedOrgSubUnit.class);
+
+    when(orgSubUnitServiceMock.findOperatorAssignableOrgSubUnits(organizationId, operatorExternalUserId, subUnitCode, subUnitName, pageable, accessToken))
+      .thenReturn(pagedModelOrgSubUnit);
+    when(pagedOrgSubUnitMapperMock.map(pagedModelOrgSubUnit))
+      .thenReturn(expectedResult);
+
+    // When
+    PagedOrgSubUnit actualResult = orgSubUnitRetrieverService.getOperatorAssignableOrgSubUnits(organizationId, operatorExternalUserId, subUnitCode, subUnitName, pageable, loggedUser, accessToken);
+
+    // Then
+    verify(authorizationServiceMock).validateAdminRole(organizationId, loggedUser);
+    assertEquals(expectedResult, actualResult);
+  }
+
 }

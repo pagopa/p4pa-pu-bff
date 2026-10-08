@@ -76,4 +76,33 @@ class OrgSubUnitSearchClientTest {
 
     assertSame(expectedResult, result);
   }
+
+  @Test
+  void whenFindOperatorAssignableOrgSubUnitsInvokeWithAccessToken() {
+    //GIVEN
+    String accessToken = "accessToken";
+    Long organizationId = 1L;
+    String operatorExternalUserId = "operatorExternalUserId";
+    String subUnitCode = "subUnitCode";
+    String subUnitName = "subUnitName";
+    Pageable pageable = PageRequest.ofSize(10);
+
+    PagedModelOrgSubUnit expectedResult = podamFactory.manufacturePojo(PagedModelOrgSubUnit.class);
+
+    when(organizationApisHolderMock.getOrgSubUnitSearchControllerApi(accessToken))
+      .thenReturn(orgSubUnitSearchControllerApiMock);
+    when(orgSubUnitSearchControllerApiMock.crudOrgSubUnitFindOrgSubUnitsAssignableToOperator(organizationId, operatorExternalUserId, subUnitCode, subUnitName, 0, 10, Collections.emptyList()))
+      .thenReturn(expectedResult);
+    //WHEN
+    PagedModelOrgSubUnit actualResult = orgSubUnitSearchClient.findOperatorAssignableOrgSubUnits(
+      organizationId,
+      operatorExternalUserId,
+      subUnitCode,
+      subUnitName,
+      pageable,
+      accessToken
+    );
+    //THEN
+    assertSame(expectedResult, actualResult);
+  }
 }

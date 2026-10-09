@@ -67,6 +67,7 @@ public class OrgSubUnitsController implements OrgSubUnitsApi {
       organizationId,
       mappedExternalUserId,
       subUnitCode,
+      null,
       status,
       subUnitType
     );

@@ -135,6 +135,7 @@ class OrgSubUnitServiceTest {
     Long organizationId = 1L;
     String operatorExternalUserId = "operatorExternalUserId";
     String subUnitCode = "subUnitCode";
+    String subUnitName = "subUnitName";
     OrgSubUnitStatus status = OrgSubUnitStatus.ACTIVE;
     SubUnitType subUnitType = SubUnitType.AOO;
     Pageable pageable = PageRequest.ofSize(10);
@@ -145,6 +146,7 @@ class OrgSubUnitServiceTest {
       organizationId,
       operatorExternalUserId,
       subUnitCode,
+      subUnitName,
       status,
       subUnitType,
       pageable,
@@ -155,6 +157,7 @@ class OrgSubUnitServiceTest {
       organizationId,
       operatorExternalUserId,
       subUnitCode,
+      subUnitName,
       status,
       subUnitType,
       pageable,

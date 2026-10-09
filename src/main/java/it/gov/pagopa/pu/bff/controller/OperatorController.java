@@ -77,12 +77,13 @@ public class OperatorController implements OperatorsApi {
   }
 
   @Override
-  public ResponseEntity<PagedOrgSubUnit> getOperatorOrgSubUnits(Long organizationId, String mappedExternalUserId, String subUnitCode, OrgSubUnitStatus status, SubUnitType subUnitType, Pageable pageable) {
+  public ResponseEntity<PagedOrgSubUnit> getOperatorOrgSubUnits(Long organizationId, String mappedExternalUserId, String subUnitCode, String subUnitName, OrgSubUnitStatus status, SubUnitType subUnitType, Pageable pageable) {
     log.info("User requested getOperatorOrgSubUnits having organizationId {}", organizationId);
     PagedOrgSubUnitFiltersDTO filters = new PagedOrgSubUnitFiltersDTO(
       organizationId,
       mappedExternalUserId,
       subUnitCode,
+      subUnitName,
       status,
       subUnitType
     );

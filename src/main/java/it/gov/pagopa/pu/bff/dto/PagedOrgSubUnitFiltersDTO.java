@@ -13,6 +13,7 @@ public class PagedOrgSubUnitFiltersDTO {
   private Long organizationId;
   private String mappedExternalUserId;
   private String subUnitCode;
+  private String subUnitName;
   private OrgSubUnitStatus status;
   private SubUnitType subUnitType;
 }

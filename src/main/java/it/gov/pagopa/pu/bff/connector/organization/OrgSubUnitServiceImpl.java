@@ -58,15 +58,17 @@ public class OrgSubUnitServiceImpl implements OrgSubUnitService {
     Long organizationId,
     String operatorExternalUserId,
     String subUnitCode,
+    String subUnitName,
     OrgSubUnitStatus status,
     SubUnitType subUnitType,
     Pageable pageable,
     String accessToken
   ) {
-     return orgSubUnitSearchClient.findByOrganizationIdAndFilters(
+    return orgSubUnitSearchClient.findByOrganizationIdAndFilters(
       organizationId,
       operatorExternalUserId,
       subUnitCode,
+      subUnitName,
       status,
       subUnitType,
       pageable,

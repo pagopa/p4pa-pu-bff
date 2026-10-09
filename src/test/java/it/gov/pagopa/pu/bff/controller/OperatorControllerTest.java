@@ -167,6 +167,7 @@ class OperatorControllerTest {
     Long organizationId = 1L;
     String mappedExternalUserId = "mappedExternalUserId";
     String subUnitCode = "subUnitCode";
+    String subUnitName = "subUnitName";
     OrgSubUnitStatus status = OrgSubUnitStatus.ACTIVE;
     SubUnitType subUnitType = SubUnitType.UO;
 
@@ -187,6 +188,7 @@ class OperatorControllerTest {
       organizationId,
       mappedExternalUserId,
       subUnitCode,
+      subUnitName,
       status,
       subUnitType,
       pageable

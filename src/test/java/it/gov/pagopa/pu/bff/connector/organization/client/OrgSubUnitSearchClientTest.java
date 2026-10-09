@@ -51,6 +51,7 @@ class OrgSubUnitSearchClientTest {
     Long organizationId = 1L;
     String operatorExternalUserId = "operatorExternalUserId";
     String subUnitCode = "subUnitCode";
+    String subUnitName = "subUnitName";
     OrgSubUnitStatus status = OrgSubUnitStatus.ACTIVE;
     SubUnitType subUnitType = SubUnitType.UO;
     Pageable pageable = PageRequest.ofSize(10);
@@ -60,7 +61,7 @@ class OrgSubUnitSearchClientTest {
     when(organizationApisHolderMock.getOrgSubUnitSearchControllerApi(accessToken))
       .thenReturn(orgSubUnitSearchControllerApiMock);
     when(orgSubUnitSearchControllerApiMock
-      .crudOrgSubUnitFindByOrganizationIdAndFilters(organizationId, operatorExternalUserId, subUnitCode, status, subUnitType, 0, 10, Collections.emptyList())
+      .crudOrgSubUnitFindByOrganizationIdAndFilters(organizationId, operatorExternalUserId, subUnitCode, subUnitName, status, subUnitType, 0, 10, Collections.emptyList())
     )
       .thenReturn(expectedResult);
 
@@ -68,6 +69,7 @@ class OrgSubUnitSearchClientTest {
       organizationId,
       operatorExternalUserId,
       subUnitCode,
+      subUnitName,
       status,
       subUnitType,
       pageable,

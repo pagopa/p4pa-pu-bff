@@ -97,6 +97,7 @@ public class OrgSubUnitRetrieverServiceImpl implements OrgSubUnitRetrieverServic
       organizationId,
       operatorExternalUserId,
       filters.getSubUnitCode(),
+      filters.getSubUnitName(),
       filters.getStatus(),
       filters.getSubUnitType(),
       pageable,

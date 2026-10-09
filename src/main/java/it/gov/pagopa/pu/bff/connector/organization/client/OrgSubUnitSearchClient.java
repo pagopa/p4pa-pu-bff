@@ -1,10 +1,9 @@
 package it.gov.pagopa.pu.bff.connector.organization.client;
 
 import it.gov.pagopa.pu.bff.connector.organization.config.OrganizationApisHolder;
+import it.gov.pagopa.pu.bff.dto.PagedOrgSubUnitFiltersDTO;
 import it.gov.pagopa.pu.bff.util.PageUtils;
-import it.gov.pagopa.pu.organization.dto.generated.OrgSubUnitStatus;
 import it.gov.pagopa.pu.organization.dto.generated.PagedModelOrgSubUnit;
-import it.gov.pagopa.pu.organization.dto.generated.SubUnitType;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -19,9 +18,7 @@ public class OrgSubUnitSearchClient {
   public PagedModelOrgSubUnit findByOrganizationIdAndFilters(
     Long organizationId,
     String operatorExternalUserId,
-    String subUnitCode,
-    OrgSubUnitStatus status,
-    SubUnitType subUnitType,
+    PagedOrgSubUnitFiltersDTO filters,
     Pageable pageable,
     String accessToken
   ) {
@@ -29,9 +26,10 @@ public class OrgSubUnitSearchClient {
       .crudOrgSubUnitFindByOrganizationIdAndFilters(
         organizationId,
         operatorExternalUserId,
-        subUnitCode,
-        status,
-        subUnitType,
+        filters.getSubUnitCode(),
+        filters.getSubUnitName(),
+        filters.getStatus(),
+        filters.getSubUnitType(),
         PageUtils.getPageNumber(pageable),
         PageUtils.getPageSize(pageable),
         PageUtils.getSortList(pageable)

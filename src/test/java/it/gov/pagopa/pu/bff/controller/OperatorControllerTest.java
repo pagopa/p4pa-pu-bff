@@ -2,7 +2,6 @@ package it.gov.pagopa.pu.bff.controller;
 
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.dto.OperatorDetailsFiltersDTO;
-import it.gov.pagopa.pu.bff.dto.PagedOrgSubUnitFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.generated.OperatorsDetail;
 import it.gov.pagopa.pu.bff.dto.generated.PagedDebtPositionTypeOrgDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedOrgSubUnit;
@@ -167,6 +166,7 @@ class OperatorControllerTest {
     Long organizationId = 1L;
     String mappedExternalUserId = "mappedExternalUserId";
     String subUnitCode = "subUnitCode";
+    String subUnitName = "subUnitName";
     OrgSubUnitStatus status = OrgSubUnitStatus.ACTIVE;
     SubUnitType subUnitType = SubUnitType.UO;
 
@@ -176,7 +176,14 @@ class OperatorControllerTest {
 
     when(
       orgSubUnitRetrieverServiceMock.getPagedOrgSubUnits(
-        Mockito.any(PagedOrgSubUnitFiltersDTO.class),
+        Mockito.argThat(filters ->
+          filters.getOrganizationId().equals(organizationId)
+            && filters.getMappedExternalUserId().equals(mappedExternalUserId)
+            && filters.getSubUnitCode().equals(subUnitCode)
+            && filters.getSubUnitName().equals(subUnitName)
+            && filters.getStatus().equals(status)
+            && filters.getSubUnitType().equals(subUnitType)
+        ),
         Mockito.eq(pageable),
         Mockito.eq(loggedUser),
         Mockito.eq(accessToken)
@@ -187,6 +194,7 @@ class OperatorControllerTest {
       organizationId,
       mappedExternalUserId,
       subUnitCode,
+      subUnitName,
       status,
       subUnitType,
       pageable

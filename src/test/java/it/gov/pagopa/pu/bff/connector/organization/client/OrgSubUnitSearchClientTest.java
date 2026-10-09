@@ -1,6 +1,7 @@
 package it.gov.pagopa.pu.bff.connector.organization.client;
 
 import it.gov.pagopa.pu.bff.connector.organization.config.OrganizationApisHolder;
+import it.gov.pagopa.pu.bff.dto.PagedOrgSubUnitFiltersDTO;
 import it.gov.pagopa.pu.bff.util.TestUtils;
 import it.gov.pagopa.pu.organization.client.generated.OrgSubUnitSearchControllerApi;
 import it.gov.pagopa.pu.organization.dto.generated.OrgSubUnitStatus;
@@ -51,8 +52,10 @@ class OrgSubUnitSearchClientTest {
     Long organizationId = 1L;
     String operatorExternalUserId = "operatorExternalUserId";
     String subUnitCode = "subUnitCode";
+    String subUnitName = "subUnitName";
     OrgSubUnitStatus status = OrgSubUnitStatus.ACTIVE;
     SubUnitType subUnitType = SubUnitType.UO;
+    PagedOrgSubUnitFiltersDTO filters = new PagedOrgSubUnitFiltersDTO(organizationId, operatorExternalUserId, subUnitCode, subUnitName, status, subUnitType);
     Pageable pageable = PageRequest.ofSize(10);
 
     PagedModelOrgSubUnit expectedResult = podamFactory.manufacturePojo(PagedModelOrgSubUnit.class);
@@ -60,16 +63,14 @@ class OrgSubUnitSearchClientTest {
     when(organizationApisHolderMock.getOrgSubUnitSearchControllerApi(accessToken))
       .thenReturn(orgSubUnitSearchControllerApiMock);
     when(orgSubUnitSearchControllerApiMock
-      .crudOrgSubUnitFindByOrganizationIdAndFilters(organizationId, operatorExternalUserId, subUnitCode, status, subUnitType, 0, 10, Collections.emptyList())
+      .crudOrgSubUnitFindByOrganizationIdAndFilters(organizationId, operatorExternalUserId, subUnitCode, subUnitName, status, subUnitType, 0, 10, Collections.emptyList())
     )
       .thenReturn(expectedResult);
 
     PagedModelOrgSubUnit result = orgSubUnitSearchClient.findByOrganizationIdAndFilters(
       organizationId,
       operatorExternalUserId,
-      subUnitCode,
-      status,
-      subUnitType,
+      filters,
       pageable,
       accessToken
     );

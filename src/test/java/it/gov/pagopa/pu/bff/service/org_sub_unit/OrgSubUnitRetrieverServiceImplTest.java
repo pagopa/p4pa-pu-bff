@@ -246,10 +246,7 @@ class OrgSubUnitRetrieverServiceImplTest {
       when(orgSubUnitServiceMock.findByOrganizationIdAndFilters(
         organizationId,
         filters.getMappedExternalUserId(),
-        filters.getSubUnitCode(),
-        filters.getSubUnitName(),
-        filters.getStatus(),
-        filters.getSubUnitType(),
+        filters,
         pageable,
         accessToken
       )).thenReturn(pagedModel);
@@ -284,10 +281,7 @@ class OrgSubUnitRetrieverServiceImplTest {
       when(orgSubUnitServiceMock.findByOrganizationIdAndFilters(
         organizationId,
         loggedUser.getMappedExternalUserId(),
-        filters.getSubUnitCode(),
-        filters.getSubUnitName(),
-        filters.getStatus(),
-        filters.getSubUnitType(),
+        filters,
         pageable,
         accessToken
       )).thenReturn(pagedModel);
@@ -322,10 +316,7 @@ class OrgSubUnitRetrieverServiceImplTest {
       when(orgSubUnitServiceMock.findByOrganizationIdAndFilters(
         organizationId,
         loggedUser.getMappedExternalUserId(),
-        filters.getSubUnitCode(),
-        filters.getSubUnitName(),
-        filters.getStatus(),
-        filters.getSubUnitType(),
+        filters,
         pageable,
         accessToken
       )).thenReturn(pagedModel);

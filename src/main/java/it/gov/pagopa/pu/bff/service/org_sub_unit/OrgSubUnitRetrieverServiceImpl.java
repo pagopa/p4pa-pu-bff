@@ -96,10 +96,7 @@ public class OrgSubUnitRetrieverServiceImpl implements OrgSubUnitRetrieverServic
     PagedModelOrgSubUnit pagedModelOrgSubUnit = orgSubUnitService.findByOrganizationIdAndFilters(
       organizationId,
       operatorExternalUserId,
-      filters.getSubUnitCode(),
-      filters.getSubUnitName(),
-      filters.getStatus(),
-      filters.getSubUnitType(),
+      filters,
       pageable,
       accessToken
     );

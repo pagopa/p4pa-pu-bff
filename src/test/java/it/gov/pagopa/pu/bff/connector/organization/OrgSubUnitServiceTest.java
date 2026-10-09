@@ -4,6 +4,7 @@ import it.gov.pagopa.pu.bff.connector.organization.client.OrgSubUnitClient;
 import it.gov.pagopa.pu.bff.connector.organization.client.OrgSubUnitEntityClient;
 import it.gov.pagopa.pu.bff.connector.organization.client.OrgSubUnitEntityExtendedClient;
 import it.gov.pagopa.pu.bff.connector.organization.client.OrgSubUnitSearchClient;
+import it.gov.pagopa.pu.bff.dto.PagedOrgSubUnitFiltersDTO;
 import it.gov.pagopa.pu.bff.util.TestUtils;
 import it.gov.pagopa.pu.organization.dto.generated.*;
 import org.junit.jupiter.api.AfterEach;
@@ -138,6 +139,7 @@ class OrgSubUnitServiceTest {
     String subUnitName = "subUnitName";
     OrgSubUnitStatus status = OrgSubUnitStatus.ACTIVE;
     SubUnitType subUnitType = SubUnitType.AOO;
+    PagedOrgSubUnitFiltersDTO filters = new PagedOrgSubUnitFiltersDTO(organizationId, operatorExternalUserId, subUnitCode, subUnitName, status, subUnitType);
     Pageable pageable = PageRequest.ofSize(10);
 
     PagedModelOrgSubUnit expectedResult = podamFactory.manufacturePojo(PagedModelOrgSubUnit.class);
@@ -145,10 +147,7 @@ class OrgSubUnitServiceTest {
     when(orgSubUnitSearchClientMock.findByOrganizationIdAndFilters(
       organizationId,
       operatorExternalUserId,
-      subUnitCode,
-      subUnitName,
-      status,
-      subUnitType,
+      filters,
       pageable,
       accessToken
     )).thenReturn(expectedResult);
@@ -156,10 +155,7 @@ class OrgSubUnitServiceTest {
     PagedModelOrgSubUnit result = service.findByOrganizationIdAndFilters(
       organizationId,
       operatorExternalUserId,
-      subUnitCode,
-      subUnitName,
-      status,
-      subUnitType,
+      filters,
       pageable,
       accessToken
     );

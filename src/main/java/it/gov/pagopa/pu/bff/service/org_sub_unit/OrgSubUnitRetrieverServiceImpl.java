@@ -5,6 +5,7 @@ import it.gov.pagopa.pu.bff.connector.organization.OrgSubUnitService;
 import it.gov.pagopa.pu.bff.dto.PagedOrgSubUnitFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedOrgSubUnit;
 import it.gov.pagopa.pu.bff.exception.InvalidOrgSubUnitException;
+import it.gov.pagopa.pu.bff.exception.common.ConflictException;
 import it.gov.pagopa.pu.bff.exception.common.NotFoundException;
 import it.gov.pagopa.pu.bff.mapper.PagedOrgSubUnitMapper;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
@@ -42,7 +43,17 @@ public class OrgSubUnitRetrieverServiceImpl implements OrgSubUnitRetrieverServic
   @Override
   public OrgSubUnit createOrgSubUnit(Long organizationId, OrgSubUnitRequestBody orgSubUnit, UserInfo loggedUser, String accessToken) {
     authorizationService.validateAdminRole(organizationId, loggedUser);
-    validateOrganizationForSubUnit(organizationId, orgSubUnit.getOrganizationId());
+
+    Long subUnitOrgId = orgSubUnit.getOrganizationId();
+    String subUnitCode = orgSubUnit.getSubUnitCode();
+
+    validateOrganizationForSubUnit(organizationId, subUnitOrgId);
+
+    OrgSubUnit existingOrgSubUnit = orgSubUnitService.getOrgSubUnitById(calculateOrgSubUnitId(subUnitOrgId, subUnitCode), accessToken);
+    if (existingOrgSubUnit != null) {
+      throw new ConflictException("ORG_SUB_UNIT_ALREADY_EXISTS", "Org sub unit with code " + subUnitCode + " already exists");
+    }
+
     return orgSubUnitService.createOrgSubUnit(orgSubUnit, accessToken);
   }
 

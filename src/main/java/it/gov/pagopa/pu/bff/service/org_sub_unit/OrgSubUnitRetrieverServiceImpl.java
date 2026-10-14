@@ -53,7 +53,7 @@ public class OrgSubUnitRetrieverServiceImpl implements OrgSubUnitRetrieverServic
     if (existingOrgSubUnit != null) {
       throw new ConflictException(
         "ORG_SUB_UNIT_ALREADY_EXISTS",
-        "Org sub unit with code " + subUnitCode + " already exists for organization with id " + organizationId
+        "Org sub unit with code " + subUnitCode + " already exists for organization with id " + subUnitOrgId
       );
     }
 

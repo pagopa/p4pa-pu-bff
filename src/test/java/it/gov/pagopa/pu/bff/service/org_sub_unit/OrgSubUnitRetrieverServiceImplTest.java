@@ -5,6 +5,7 @@ import it.gov.pagopa.pu.bff.connector.organization.OrgSubUnitService;
 import it.gov.pagopa.pu.bff.dto.PagedOrgSubUnitFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedOrgSubUnit;
 import it.gov.pagopa.pu.bff.exception.InvalidOrgSubUnitException;
+import it.gov.pagopa.pu.bff.exception.common.ConflictException;
 import it.gov.pagopa.pu.bff.exception.common.NotFoundException;
 import it.gov.pagopa.pu.bff.mapper.PagedOrgSubUnitMapper;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
@@ -115,7 +116,9 @@ class OrgSubUnitRetrieverServiceImplTest {
     OrgSubUnitRequestBody requestBody = podamFactory.manufacturePojo(OrgSubUnitRequestBody.class);
     requestBody.setOrganizationId(organizationId);
     OrgSubUnit expectedResult = podamFactory.manufacturePojo(OrgSubUnit.class);
+    String orgSubUnitId = organizationId+"-"+requestBody.getSubUnitCode();
 
+    when(orgSubUnitServiceMock.getOrgSubUnitById(orgSubUnitId, accessToken)).thenReturn(null);
     when(orgSubUnitServiceMock.createOrgSubUnit(requestBody, accessToken))
       .thenReturn(expectedResult);
 
@@ -144,6 +147,27 @@ class OrgSubUnitRetrieverServiceImplTest {
 
     assertEquals("INVALID_ORG_SUB_UNIT", exception.getCode());
     assertTrue(exception.getMessage().contains("Mismatch organizationId"));
+    verify(authorizationServiceMock).validateAdminRole(organizationId, loggedUser);
+  }
+
+  @Test
+  void givenExistingOrgSubUnitWhenCreateOrgSubUnitThenThrowsConflictException() {
+    Long organizationId = 1L;
+    UserInfo loggedUser = podamFactory.manufacturePojo(UserInfo.class);
+    OrgSubUnitRequestBody requestBody = podamFactory.manufacturePojo(OrgSubUnitRequestBody.class);
+    requestBody.setOrganizationId(organizationId);
+    String orgSubUnitId = organizationId+"-"+requestBody.getSubUnitCode();
+
+    OrgSubUnit orgSubUnit = podamFactory.manufacturePojo(OrgSubUnit.class);
+
+    when(orgSubUnitServiceMock.getOrgSubUnitById(orgSubUnitId, accessToken)).thenReturn(orgSubUnit);
+
+    ConflictException exception = assertThrows(
+      ConflictException.class,
+      () -> orgSubUnitRetrieverService.createOrgSubUnit(organizationId, requestBody, loggedUser, accessToken)
+    );
+
+    assertEquals("ORG_SUB_UNIT_ALREADY_EXISTS", exception.getCode());
     verify(authorizationServiceMock).validateAdminRole(organizationId, loggedUser);
   }
 

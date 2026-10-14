@@ -51,7 +51,10 @@ public class OrgSubUnitRetrieverServiceImpl implements OrgSubUnitRetrieverServic
 
     OrgSubUnit existingOrgSubUnit = orgSubUnitService.getOrgSubUnitById(calculateOrgSubUnitId(subUnitOrgId, subUnitCode), accessToken);
     if (existingOrgSubUnit != null) {
-      throw new ConflictException("ORG_SUB_UNIT_ALREADY_EXISTS", "Org sub unit with code " + subUnitCode + " already exists");
+      throw new ConflictException(
+        "ORG_SUB_UNIT_ALREADY_EXISTS",
+        "Org sub unit with code " + subUnitCode + " already exists for organization with id " + organizationId
+      );
     }
 
     return orgSubUnitService.createOrgSubUnit(orgSubUnit, accessToken);

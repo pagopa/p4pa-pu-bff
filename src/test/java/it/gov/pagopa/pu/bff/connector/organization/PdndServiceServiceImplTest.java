@@ -3,16 +3,14 @@ package it.gov.pagopa.pu.bff.connector.organization;
 import it.gov.pagopa.pu.bff.connector.organization.client.PdndServiceClient;
 import it.gov.pagopa.pu.bff.connector.organization.client.PdndServiceSearchClient;
 import it.gov.pagopa.pu.bff.util.TestUtils;
-import it.gov.pagopa.pu.organization.dto.generated.PdndService;
-import it.gov.pagopa.pu.organization.dto.generated.PdndServiceRequestDTO;
-import it.gov.pagopa.pu.organization.dto.generated.PdndServiceType;
-import it.gov.pagopa.pu.organization.dto.generated.PdndServiceView;
+import it.gov.pagopa.pu.organization.dto.generated.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -27,6 +25,7 @@ class PdndServiceServiceImplTest {
 
   private static final Long ORGANIZATION_ID = 123L;
   private static final String SUB_UNIT_CODE = "SUB_UNIT_001";
+  private static final String SUB_UNIT_NAME = "SUB_UNIT_001_NAME";
   private static final String ACCESS_TOKEN = "fakeAccessToken";
 
   @Mock
@@ -101,5 +100,26 @@ class PdndServiceServiceImplTest {
 
 
     verify(clientMock).deletePdndService(ORGANIZATION_ID, purposeId, ACCESS_TOKEN);
+  }
+
+  @Test
+  void whenGetOrgSubUnitsPdndServicesThenReturnOk() {
+    Pageable pageable = Pageable.ofSize(5);
+    PagedPdndServiceView expectedResult = PagedPdndServiceView.builder()
+      .content(List.of(new PdndServiceView()))
+      .size(5L)
+      .number(0L)
+      .totalPages(1L)
+      .totalElements(1L)
+      .build();
+
+    when(clientMock.getOrgSubUnitsPdndServices(ORGANIZATION_ID, SUB_UNIT_CODE,
+      SUB_UNIT_NAME, pageable, ACCESS_TOKEN)).thenReturn(expectedResult);
+
+    PagedPdndServiceView result = service
+      .getOrgSubUnitsPdndServices(ORGANIZATION_ID, SUB_UNIT_CODE, SUB_UNIT_NAME, pageable, ACCESS_TOKEN);
+
+    assertNotNull(result);
+    assertSame(expectedResult, result);
   }
 }

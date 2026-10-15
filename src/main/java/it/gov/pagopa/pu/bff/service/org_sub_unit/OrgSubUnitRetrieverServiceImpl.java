@@ -5,6 +5,7 @@ import it.gov.pagopa.pu.bff.connector.organization.OrgSubUnitService;
 import it.gov.pagopa.pu.bff.dto.PagedOrgSubUnitFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedOrgSubUnit;
 import it.gov.pagopa.pu.bff.exception.InvalidOrgSubUnitException;
+import it.gov.pagopa.pu.bff.exception.common.ConflictException;
 import it.gov.pagopa.pu.bff.exception.common.NotFoundException;
 import it.gov.pagopa.pu.bff.mapper.PagedOrgSubUnitMapper;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
@@ -42,7 +43,20 @@ public class OrgSubUnitRetrieverServiceImpl implements OrgSubUnitRetrieverServic
   @Override
   public OrgSubUnit createOrgSubUnit(Long organizationId, OrgSubUnitRequestBody orgSubUnit, UserInfo loggedUser, String accessToken) {
     authorizationService.validateAdminRole(organizationId, loggedUser);
-    validateOrganizationForSubUnit(organizationId, orgSubUnit.getOrganizationId());
+
+    Long subUnitOrgId = orgSubUnit.getOrganizationId();
+    String subUnitCode = orgSubUnit.getSubUnitCode();
+
+    validateOrganizationForSubUnit(organizationId, subUnitOrgId);
+
+    OrgSubUnit existingOrgSubUnit = orgSubUnitService.getOrgSubUnitById(calculateOrgSubUnitId(subUnitOrgId, subUnitCode), accessToken);
+    if (existingOrgSubUnit != null) {
+      throw new ConflictException(
+        "ORG_SUB_UNIT_ALREADY_EXISTS",
+        "Org sub unit with code " + subUnitCode + " already exists for organization with id " + subUnitOrgId
+      );
+    }
+
     return orgSubUnitService.createOrgSubUnit(orgSubUnit, accessToken);
   }
 
@@ -96,9 +110,7 @@ public class OrgSubUnitRetrieverServiceImpl implements OrgSubUnitRetrieverServic
     PagedModelOrgSubUnit pagedModelOrgSubUnit = orgSubUnitService.findByOrganizationIdAndFilters(
       organizationId,
       operatorExternalUserId,
-      filters.getSubUnitCode(),
-      filters.getStatus(),
-      filters.getSubUnitType(),
+      filters,
       pageable,
       accessToken
     );
@@ -110,6 +122,20 @@ public class OrgSubUnitRetrieverServiceImpl implements OrgSubUnitRetrieverServic
   public List<OrgAndSubUnitDTO> getOrgSubUnitWithNoServiceType(Long organizationId, PdndServiceType pdndServiceType, UserInfo loggedUser, String accessToken) {
     authorizationService.validateAdminRole(organizationId, loggedUser);
     return orgSubUnitService.getOrgSubUnitWithNoServiceType(organizationId, pdndServiceType, accessToken);
+  }
+
+  @Override
+  public PagedOrgSubUnit getOperatorAssignableOrgSubUnits(Long organizationId, String mappedExternalUserId, String subUnitCode, String subUnitName, Pageable pageable, UserInfo loggedUser, String accessToken) {
+    authorizationService.validateAdminRole(organizationId, loggedUser);
+    PagedModelOrgSubUnit pagedModelOrgSubUnit = orgSubUnitService.findOperatorAssignableOrgSubUnits(
+      organizationId,
+      mappedExternalUserId,
+      subUnitCode,
+      subUnitName,
+      pageable,
+      accessToken
+    );
+    return pagedOrgSubUnitMapper.map(pagedModelOrgSubUnit);
   }
 
   private void validateOrganizationForSubUnit(Long organizationId, Long orgIdFromSubUnit) {

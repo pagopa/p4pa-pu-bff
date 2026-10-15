@@ -78,14 +78,14 @@ class PdndClientControllerTest {
   }
 
   @Test
-  void givenOrganizationIdAndPdndClientDTOWhenCreatePdndClientThenReturnCreatedClient() {
+  void givenOrganizationIdAndPdndClientDTOWhenSavePdndClientThenReturnCreatedClient() {
     PdndClientDTO body = TestUtils.getPodamFactory().manufacturePojo(PdndClientDTO.class);
     PdndClientNoSecretDTO expectedClient = TestUtils.getPodamFactory().manufacturePojo(PdndClientNoSecretDTO.class);
 
-    when(pdndClientRetrieverServiceMock.createPdndClient(ORGANIZATION_ID, body, loggedUser, ACCESS_TOKEN))
+    when(pdndClientRetrieverServiceMock.savePdndClient(ORGANIZATION_ID, body, loggedUser, ACCESS_TOKEN))
       .thenReturn(expectedClient);
 
-    ResponseEntity<PdndClientNoSecretDTO> result = controller.createPdndClient(ORGANIZATION_ID, body);
+    ResponseEntity<PdndClientNoSecretDTO> result = controller.savePdndClient(ORGANIZATION_ID, body);
 
     assertNotNull(result);
     assertEquals(HttpStatus.OK, result.getStatusCode());

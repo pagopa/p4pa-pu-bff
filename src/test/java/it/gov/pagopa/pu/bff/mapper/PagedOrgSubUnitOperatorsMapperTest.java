@@ -7,6 +7,9 @@ import it.gov.pagopa.pu.bff.util.TestUtils;
 import it.gov.pagopa.pu.organization.dto.generated.OrgSubUnitOperators;
 import it.gov.pagopa.pu.organization.dto.generated.PagedModelOrgSubUnitOperators;
 import org.junit.jupiter.api.Test;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import uk.co.jemos.podam.api.PodamFactory;
 
 import java.util.Collections;
@@ -20,7 +23,7 @@ class PagedOrgSubUnitOperatorsMapperTest {
   private final PagedOrgSubUnitOperatorsMapper mapper = new PagedOrgSubUnitOperatorsMapperImpl();
 
 
-  // ---------- toOrgSubUnitOperator ----------
+  // ---------- toOrgSubUnitOperator(OrgSubUnitOperators sourceOperator, OperatorDTO operator) ----------
   @Test
   void toOrgSubUnitOperator_shouldMapAllFields_whenSourceAndOperatorArePresent() {
     OrgSubUnitOperators sourceOperator = podamFactory.manufacturePojo(OrgSubUnitOperators.class);
@@ -69,7 +72,29 @@ class PagedOrgSubUnitOperatorsMapperTest {
     assertNull(result);
   }
 
-  // ---------- map ----------
+  // ---------- toOrgSubUnitOperator(OrgSubUnitOperators sourceOperator, OperatorDTO operator) ----------
+  @Test
+  void toOrgSubUnitOperator_shouldMapFields_whenOperatorIsPresent() {
+    OperatorDTO operator = podamFactory.manufacturePojo(OperatorDTO.class);
+
+    OrgSubUnitOperator result = mapper.toOrgSubUnitOperator(operator);
+
+    assertNotNull(result);
+    assertEquals(operator.getMappedExternalUserId(), result.getMappedExternalUserId());
+    assertEquals(operator.getFirstName(), result.getFirstName());
+    assertEquals(operator.getLastName(), result.getLastName());
+    assertEquals(operator.getFiscalCode(), result.getFiscalCode());
+    TestUtils.checkNotNullFields(result);
+  }
+
+  @Test
+  void toOrgSubUnitOperator_shouldReturnNull_whenOperatorIsNull() {
+    OrgSubUnitOperator result = mapper.toOrgSubUnitOperator(null);
+
+    assertNull(result);
+  }
+
+  // ---------- map(List<OrgSubUnitOperator> content,PagedModelOrgSubUnitOperators source) ----------
 
   @Test
   void map_shouldReturnEmptyContentAndNullMetadata_whenSourceIsNull() {
@@ -134,5 +159,37 @@ class PagedOrgSubUnitOperatorsMapperTest {
     assertEquals(source.getPage().getTotalElements(), result.getTotalElements());
     assertEquals(source.getPage().getTotalPages(), result.getTotalPages());
     assertEquals(source.getPage().getNumber(), result.getNumber());
+  }
+
+  // ---------- map(Page<OrgSubUnitOperator> page) ----------
+
+  @Test
+  void map_shouldSetContentAndMetadata_whenPageIsPresent() {
+    OrgSubUnitOperator op1 = podamFactory.manufacturePojo(OrgSubUnitOperator.class);
+    OrgSubUnitOperator op2 = podamFactory.manufacturePojo(OrgSubUnitOperator.class);
+    List<OrgSubUnitOperator> content = List.of(op1, op2);
+
+    Page<OrgSubUnitOperator> page = new PageImpl<>(content, PageRequest.of(1, 10), 20);
+
+    PagedOrgSubUnitOperators result = mapper.map(page);
+
+    assertEquals(content, result.getContent());
+    assertEquals(1L, result.getNumber());
+    assertEquals(10L, result.getSize());
+    assertEquals(20L, result.getTotalElements());
+    assertEquals(2L, result.getTotalPages());
+    TestUtils.checkNotNullFields(result);
+  }
+
+  @Test
+  void map_shouldSetEmptyContentAndZeros_whenPageIsNull() {
+    PagedOrgSubUnitOperators result = mapper.map(null);
+
+    assertTrue(result.getContent().isEmpty());
+    assertEquals(0L, result.getNumber());
+    assertEquals(0L, result.getSize());
+    assertEquals(0L, result.getTotalElements());
+    assertEquals(0L, result.getTotalPages());
+    TestUtils.checkNotNullFields(result);
   }
 }

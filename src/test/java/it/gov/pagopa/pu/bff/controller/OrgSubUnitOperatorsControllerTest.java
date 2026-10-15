@@ -1,6 +1,7 @@
 package it.gov.pagopa.pu.bff.controller;
 
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
+import it.gov.pagopa.pu.bff.dto.OrgSubUnitNotRelatedOperatorsFilters;
 import it.gov.pagopa.pu.bff.dto.OrgSubUnitOperatorsFilters;
 import it.gov.pagopa.pu.bff.dto.generated.PagedOrgSubUnitOperators;
 import it.gov.pagopa.pu.bff.security.SecurityUtilsTest;
@@ -129,5 +130,28 @@ class OrgSubUnitOperatorsControllerTest {
     assertNull(response.getBody());
     verify(orgSubUnitOperatorsRetrieverServiceMock)
       .deleteOperatorsFromOrgSubUnit(organizationId, subUnitCode, mappedExternalUserIds, loggedUser, ACCESS_TOKEN);
+  }
+
+  @Test
+  void givenCorrectRequestWhenGetOrgSubUnitNotRelatedOperatorsThenOk() {
+    Long organizationId = 1L;
+    String subUnitCode = "subUnitCode";
+    String fiscalCode = "fiscalCode";
+    String firstName = "firstName";
+    String lastName = "lastName";
+    Pageable pageable = PageRequest.ofSize(10);
+
+    OrgSubUnitNotRelatedOperatorsFilters filters = new OrgSubUnitNotRelatedOperatorsFilters(fiscalCode, firstName, lastName);
+
+    PagedOrgSubUnitOperators expectedResult = podamFactory.manufacturePojo(PagedOrgSubUnitOperators.class);
+
+    when(orgSubUnitOperatorsRetrieverServiceMock.getOrgSubUnitNotRelatedOperators(organizationId, subUnitCode, filters, pageable, loggedUser, ACCESS_TOKEN))
+      .thenReturn(expectedResult);
+
+    ResponseEntity<PagedOrgSubUnitOperators> response = orgSubUnitOperatorsController.getOrgSubUnitNotRelatedOperators(organizationId, subUnitCode, fiscalCode, firstName, lastName, pageable);
+
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertNotNull(response.getBody());
+    assertSame(expectedResult, response.getBody());
   }
 }

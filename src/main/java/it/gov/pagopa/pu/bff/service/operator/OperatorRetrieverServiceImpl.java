@@ -65,8 +65,8 @@ public class OperatorRetrieverServiceImpl implements OperatorRetrieverService {
     String orgIpaCode = getUserOrganizationIpaCode(organizationId, loggedUser);
 
     OperatorsPage operatorsPage = authzService.getOrganizationOperators(
-            orgIpaCode, fiscalCode, firstName, lastName,
-            pageable.getPageNumber(), pageable.getPageSize(), accessToken);
+            orgIpaCode, fiscalCode, firstName, lastName, null,
+            pageable, accessToken);
 
     if(operatorsPage == null || operatorsPage.getContent().isEmpty()){
       return pagedOrganizationOperatorMapper.mapToPagedOrganizationOperator(operatorsPage,Collections.emptyMap(), null);

@@ -82,10 +82,10 @@ class AuthzClientTest {
 
     when(authApisHolderMock.getAuthzApi(accessToken))
       .thenReturn(authzApiMock);
-    when(authzApiMock.getOrganizationOperators(organizationIpaCode, null, null, null, 0, 10))
+    when(authzApiMock.getOrganizationOperators(organizationIpaCode, null, null, null, null, 0, 10))
       .thenReturn(expectedResult);
 
-    OperatorsPage result = authzClient.getOrganizationOperators(organizationIpaCode, null, null, null, 0, 10, accessToken);
+    OperatorsPage result = authzClient.getOrganizationOperators(organizationIpaCode, null, null, null, null,PageRequest.of(0, 10), accessToken);
 
     assertSame(expectedResult, result);
   }

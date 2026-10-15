@@ -4,6 +4,7 @@ import it.gov.pagopa.pu.bff.connector.organization.client.OrgSubUnitClient;
 import it.gov.pagopa.pu.bff.connector.organization.client.OrgSubUnitEntityClient;
 import it.gov.pagopa.pu.bff.connector.organization.client.OrgSubUnitEntityExtendedClient;
 import it.gov.pagopa.pu.bff.connector.organization.client.OrgSubUnitSearchClient;
+import it.gov.pagopa.pu.bff.dto.PagedOrgSubUnitFiltersDTO;
 import it.gov.pagopa.pu.organization.dto.generated.*;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -57,18 +58,14 @@ public class OrgSubUnitServiceImpl implements OrgSubUnitService {
   public PagedModelOrgSubUnit findByOrganizationIdAndFilters(
     Long organizationId,
     String operatorExternalUserId,
-    String subUnitCode,
-    OrgSubUnitStatus status,
-    SubUnitType subUnitType,
+    PagedOrgSubUnitFiltersDTO filters,
     Pageable pageable,
     String accessToken
   ) {
-     return orgSubUnitSearchClient.findByOrganizationIdAndFilters(
+    return orgSubUnitSearchClient.findByOrganizationIdAndFilters(
       organizationId,
       operatorExternalUserId,
-      subUnitCode,
-      status,
-      subUnitType,
+      filters,
       pageable,
       accessToken
     );
@@ -77,5 +74,10 @@ public class OrgSubUnitServiceImpl implements OrgSubUnitService {
   @Override
   public List<OrgAndSubUnitDTO> getOrgSubUnitWithNoServiceType(Long organizationId, PdndServiceType pdndServiceType, String accessToken) {
     return orgSubUnitClient.getOrgSubUnitWithNoServiceType(organizationId, pdndServiceType, accessToken);
+  }
+
+  @Override
+  public PagedModelOrgSubUnit findOperatorAssignableOrgSubUnits(Long organizationId, String operatorExternalUserId, String subUnitCode, String subUnitName, Pageable pageable, String accessToken) {
+    return orgSubUnitSearchClient.findOperatorAssignableOrgSubUnits(organizationId, operatorExternalUserId, subUnitCode, subUnitName, pageable, accessToken);
   }
 }

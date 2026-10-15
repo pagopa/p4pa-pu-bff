@@ -22,6 +22,7 @@ import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrgCountByOr
 import it.gov.pagopa.pu.organization.dto.generated.*;
 import jakarta.validation.ValidationException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -160,8 +161,8 @@ public class OrganizationRetrieverServiceImpl implements OrganizationRetrieverSe
           null,
           null,
           null,
-          0,
-          1,
+          null,
+          PageRequest.of(0, 1),
           accessToken
         );
         allOperatorsPages.put(org.getOrganizationId(),organizationOperators);
@@ -200,7 +201,7 @@ public class OrganizationRetrieverServiceImpl implements OrganizationRetrieverSe
     Map<Long, Integer> dptoCountsByOrgId = getDptoCountsByOrgIdMap(accessToken, List.of(organizationId));
     Integer debtPositionTypeOrgCount = dptoCountsByOrgId.getOrDefault(organizationId, 0);
 
-    OperatorsPage operatorsPage = authzService.getOrganizationOperators(orgDetail.getIpaCode(), null, null, null, 0, 1, accessToken);
+    OperatorsPage operatorsPage = authzService.getOrganizationOperators(orgDetail.getIpaCode(), null, null, null, null, PageRequest.of(0, 1), accessToken);
 
     OrganizationDetail organizationDetail = organizationDetailMapper.mapToBffDTO(orgDetail);
     organizationDetail.setDebtPositionTypeOrgCount(debtPositionTypeOrgCount);

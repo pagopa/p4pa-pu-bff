@@ -1,7 +1,6 @@
 package it.gov.pagopa.pu.bff.controller;
 
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
-import it.gov.pagopa.pu.bff.dto.PagedOrgSubUnitFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedOrgSubUnit;
 import it.gov.pagopa.pu.bff.security.SecurityUtilsTest;
 import it.gov.pagopa.pu.bff.service.org_sub_unit.OrgSubUnitRetrieverService;
@@ -23,6 +22,7 @@ import org.springframework.http.ResponseEntity;
 import uk.co.jemos.podam.api.PodamFactory;
 
 import java.util.List;
+import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.verify;
@@ -153,7 +153,14 @@ class OrgSubUnitsControllerTest {
 
     when(
       subUnitRetrieverServiceMock.getPagedOrgSubUnits(
-        Mockito.any(PagedOrgSubUnitFiltersDTO.class),
+        Mockito.argThat(filters ->
+          filters.getOrganizationId().equals(organizationId)
+            && filters.getMappedExternalUserId().equals(mappedExternalUserId)
+            && filters.getSubUnitCode().equals(subUnitCode)
+            && Objects.isNull(filters.getSubUnitName())
+            && filters.getStatus().equals(status)
+            && filters.getSubUnitType().equals(subUnitType)
+        ),
         Mockito.eq(pageable),
         Mockito.eq(loggedUser),
         Mockito.eq(accessToken)
@@ -187,5 +194,27 @@ class OrgSubUnitsControllerTest {
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertNotNull(response.getBody());
     assertSame(expectedResult, response.getBody());
+  }
+
+  @Test
+  void givenCorrectRequestWhenGetOperatorAssignableOrgSubUnitsThenOk() {
+    // Given
+    Long organizationId = 1L;
+    String operatorExternalUserId = "operatorExternalUserId";
+    String subUnitCode = "subUnitCode";
+    String subUnitName = "subUnitName";
+    Pageable pageable = PageRequest.of(0, 10);
+    PagedOrgSubUnit expectedResult = podamFactory.manufacturePojo(PagedOrgSubUnit.class);
+
+    when(subUnitRetrieverServiceMock.getOperatorAssignableOrgSubUnits(organizationId, operatorExternalUserId, subUnitCode, subUnitName, pageable, loggedUser, accessToken))
+      .thenReturn(expectedResult);
+
+    // When
+    ResponseEntity<PagedOrgSubUnit> actualResult = orgSubUnitsController.getOperatorAssignableOrgSubUnits(organizationId, operatorExternalUserId, subUnitCode, subUnitName, pageable);
+
+    // Then
+    assertEquals(HttpStatus.OK, actualResult.getStatusCode());
+    assertNotNull(actualResult.getBody());
+    assertEquals(expectedResult, actualResult.getBody());
   }
 }

@@ -94,7 +94,7 @@ class PdndClientRetrieverServiceImplTest {
   }
 
   @Test
-  void givenAuthorizedAdminAndMatchingOrganizationWhenCreatePdndClientThenReturnClient() {
+  void givenAuthorizedAdminAndMatchingOrganizationWhenSavePdndClientThenReturnClient() {
     PdndClientDTO pdndClientDTO = TestUtils.getPodamFactory().manufacturePojo(PdndClientDTO.class);
     pdndClientDTO.setOrganizationId(ORGANIZATION_ID);
 
@@ -111,13 +111,13 @@ class PdndClientRetrieverServiceImplTest {
     when(pdndClientMapperMock.mapToPdndClientNoSecretDTO(pdndClient))
       .thenReturn(expectedResult);
 
-    PdndClientNoSecretDTO result = pdndClientRetrieverService.createPdndClient(ORGANIZATION_ID, pdndClientDTO, USER_INFO, ACCESS_TOKEN);
+    PdndClientNoSecretDTO result = pdndClientRetrieverService.savePdndClient(ORGANIZATION_ID, pdndClientDTO, USER_INFO, ACCESS_TOKEN);
 
     assertSame(expectedResult, result);
   }
 
   @Test
-  void givenMismatchingOrganizationWhenCreatePdndClientThenThrowInvalidPdndClientException() {
+  void givenMismatchingOrganizationWhenSavePdndClientThenThrowInvalidPdndClientException() {
     Long bodyOrganizationId = 456L;
 
     PdndClientDTO pdndClientDTO = TestUtils.getPodamFactory().manufacturePojo(PdndClientDTO.class);
@@ -127,7 +127,7 @@ class PdndClientRetrieverServiceImplTest {
       .validateAdminRole(bodyOrganizationId, USER_INFO);
 
     InvalidPdndClientException exception =
-      assertThrows(InvalidPdndClientException.class, () -> pdndClientRetrieverService.createPdndClient(ORGANIZATION_ID, pdndClientDTO, USER_INFO, ACCESS_TOKEN));
+      assertThrows(InvalidPdndClientException.class, () -> pdndClientRetrieverService.savePdndClient(ORGANIZATION_ID, pdndClientDTO, USER_INFO, ACCESS_TOKEN));
 
     assertEquals("INVALID_PDND_CLIENT", exception.getCode());
   }

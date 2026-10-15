@@ -12,7 +12,7 @@ public interface PdndClientRetrieverService {
 
   PdndClientNoSecretDTO getPdndClient(Long organizationId, String clientId, UserInfo userInfo, String accessToken);
 
-  PdndClientNoSecretDTO createPdndClient(Long organizationId, PdndClientDTO pdndClientDTO, UserInfo userInfo, String accessToken);
+  PdndClientNoSecretDTO savePdndClient(Long organizationId, PdndClientDTO pdndClientDTO, UserInfo userInfo, String accessToken);
 
   void deletePdndClient(Long organizationId, String clientId, UserInfo loggedUser, String accessToken);
 }

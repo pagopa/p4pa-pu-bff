@@ -4,6 +4,7 @@ import it.gov.pagopa.pu.bff.connector.organization.client.OrgSubUnitClient;
 import it.gov.pagopa.pu.bff.connector.organization.client.OrgSubUnitEntityClient;
 import it.gov.pagopa.pu.bff.connector.organization.client.OrgSubUnitEntityExtendedClient;
 import it.gov.pagopa.pu.bff.connector.organization.client.OrgSubUnitSearchClient;
+import it.gov.pagopa.pu.bff.dto.PagedOrgSubUnitFiltersDTO;
 import it.gov.pagopa.pu.bff.util.TestUtils;
 import it.gov.pagopa.pu.organization.dto.generated.*;
 import org.junit.jupiter.api.AfterEach;
@@ -19,8 +20,7 @@ import uk.co.jemos.podam.api.PodamFactory;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -136,8 +136,10 @@ class OrgSubUnitServiceTest {
     Long organizationId = 1L;
     String operatorExternalUserId = "operatorExternalUserId";
     String subUnitCode = "subUnitCode";
+    String subUnitName = "subUnitName";
     OrgSubUnitStatus status = OrgSubUnitStatus.ACTIVE;
     SubUnitType subUnitType = SubUnitType.AOO;
+    PagedOrgSubUnitFiltersDTO filters = new PagedOrgSubUnitFiltersDTO(organizationId, operatorExternalUserId, subUnitCode, subUnitName, status, subUnitType);
     Pageable pageable = PageRequest.ofSize(10);
 
     PagedModelOrgSubUnit expectedResult = podamFactory.manufacturePojo(PagedModelOrgSubUnit.class);
@@ -145,9 +147,7 @@ class OrgSubUnitServiceTest {
     when(orgSubUnitSearchClientMock.findByOrganizationIdAndFilters(
       organizationId,
       operatorExternalUserId,
-      subUnitCode,
-      status,
-      subUnitType,
+      filters,
       pageable,
       accessToken
     )).thenReturn(expectedResult);
@@ -155,9 +155,7 @@ class OrgSubUnitServiceTest {
     PagedModelOrgSubUnit result = service.findByOrganizationIdAndFilters(
       organizationId,
       operatorExternalUserId,
-      subUnitCode,
-      status,
-      subUnitType,
+      filters,
       pageable,
       accessToken
     );
@@ -179,5 +177,25 @@ class OrgSubUnitServiceTest {
 
     // Then
     assertSame(expectedResult, result);
+  }
+
+  @Test
+  void whenFindOperatorAssignableOrgSubUnitsThenInvokeClient() {
+    // Given
+    Long organizationId = 1L;
+    String operatorExternalUserId = "operatorExternalUserId";
+    String subUnitCode = "subUnitCode";
+    String subUnitName = "subUnitName";
+    Pageable pageable = PageRequest.of(0, 10);
+    PagedModelOrgSubUnit expectedResult = podamFactory.manufacturePojo(PagedModelOrgSubUnit.class);
+
+    when(orgSubUnitSearchClientMock.findOperatorAssignableOrgSubUnits(organizationId, operatorExternalUserId, subUnitCode, subUnitName, pageable, accessToken))
+      .thenReturn(expectedResult);
+
+    // When
+    PagedModelOrgSubUnit actualResult = service.findOperatorAssignableOrgSubUnits(organizationId, operatorExternalUserId, subUnitCode, subUnitName, pageable, accessToken);
+
+    // Then
+    assertEquals(expectedResult, actualResult);
   }
 }

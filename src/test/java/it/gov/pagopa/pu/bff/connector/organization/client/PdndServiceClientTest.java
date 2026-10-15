@@ -1,17 +1,16 @@
 package it.gov.pagopa.pu.bff.connector.organization.client;
 
 import it.gov.pagopa.pu.bff.connector.organization.config.OrganizationApisHolder;
+import it.gov.pagopa.pu.bff.util.PageUtils;
 import it.gov.pagopa.pu.organization.client.generated.PdndServiceApi;
-import it.gov.pagopa.pu.organization.dto.generated.PdndService;
-import it.gov.pagopa.pu.organization.dto.generated.PdndServiceRequestDTO;
-import it.gov.pagopa.pu.organization.dto.generated.PdndServiceType;
-import it.gov.pagopa.pu.organization.dto.generated.PdndServiceView;
+import it.gov.pagopa.pu.organization.dto.generated.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -23,6 +22,7 @@ class PdndServiceClientTest {
 
   private static final Long ORGANIZATION_ID = 123L;
   private static final String SUB_UNIT_CODE = "SUB_UNIT_001";
+  private static final String SUB_UNIT_NAME = "SUB_UNIT_001_NAME";
   private static final String ACCESS_TOKEN = "accessToken";
 
   @Mock
@@ -99,5 +99,31 @@ class PdndServiceClientTest {
     pdndServiceClient.deletePdndService(ORGANIZATION_ID, purposeId, ACCESS_TOKEN);
 
     verify(pdndServiceApiMock).deletePdndService(ORGANIZATION_ID, purposeId);
+  }
+
+
+  @Test
+  void givenOrganizationIdWhenGetOrgSubUnitsPdndServicesThenReturnPagedPdndServiceView() {
+    Pageable pageable = Pageable.ofSize(5);
+    PagedPdndServiceView expectedResult = PagedPdndServiceView.builder()
+      .content(List.of(new PdndServiceView()))
+      .size(5L)
+      .number(0L)
+      .totalPages(1L)
+      .totalElements(1L)
+      .build();
+
+    when(organizationApisHolderMock.getPdndServiceApi(ACCESS_TOKEN))
+      .thenReturn(pdndServiceApiMock);
+
+    when(pdndServiceApiMock.getOrgSubUnitsPdndServices(ORGANIZATION_ID, SUB_UNIT_CODE, SUB_UNIT_NAME,
+      PageUtils.getPageNumber(pageable),
+      PageUtils.getPageSize(pageable),
+      PageUtils.getSortList(pageable)))
+      .thenReturn(expectedResult);
+
+    PagedPdndServiceView result = pdndServiceClient.getOrgSubUnitsPdndServices(ORGANIZATION_ID, SUB_UNIT_CODE, SUB_UNIT_NAME, pageable, ACCESS_TOKEN);
+
+    assertSame(expectedResult, result);
   }
 }

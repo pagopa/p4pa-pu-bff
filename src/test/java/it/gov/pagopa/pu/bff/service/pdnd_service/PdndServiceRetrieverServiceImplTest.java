@@ -4,20 +4,18 @@ import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.connector.organization.PdndServiceService;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
 import it.gov.pagopa.pu.bff.util.TestUtils;
-import it.gov.pagopa.pu.organization.dto.generated.PdndService;
-import it.gov.pagopa.pu.organization.dto.generated.PdndServiceRequestDTO;
-import it.gov.pagopa.pu.organization.dto.generated.PdndServiceType;
-import it.gov.pagopa.pu.organization.dto.generated.PdndServiceView;
+import it.gov.pagopa.pu.organization.dto.generated.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -25,6 +23,7 @@ class PdndServiceRetrieverServiceImplTest {
 
   private static final Long ORGANIZATION_ID = 123L;
   private static final String SUB_UNIT_CODE = "SUB_UNIT_001";
+  private static final String SUB_UNIT_NAME = "SUB_UNIT_001_NAME";
   private static final String ACCESS_TOKEN = "fakeAccessToken";
 
   private static final UserInfo USER_INFO = TestUtils.getPodamFactory().manufacturePojo(UserInfo.class);
@@ -118,5 +117,29 @@ class PdndServiceRetrieverServiceImplTest {
       .deletePdndService(ORGANIZATION_ID, purposeId, ACCESS_TOKEN);
 
     pdndServiceRetriever.deletePdndService(ORGANIZATION_ID, purposeId, USER_INFO, ACCESS_TOKEN);
+  }
+
+  @Test
+  void whenGetOrgSubUnitsPdndServicesThenReturnOk() {
+    Pageable pageable = Pageable.ofSize(5);
+    PagedPdndServiceView expectedResult = PagedPdndServiceView.builder()
+      .content(List.of(new PdndServiceView()))
+      .size(5L)
+      .number(0L)
+      .totalPages(1L)
+      .totalElements(1L)
+      .build();
+
+    doNothing().when(authorizationServiceMock)
+      .validateAdminRole(ORGANIZATION_ID, USER_INFO);
+
+    when(pdndServiceServiceMock.getOrgSubUnitsPdndServices(ORGANIZATION_ID, SUB_UNIT_CODE,
+      SUB_UNIT_NAME, pageable, ACCESS_TOKEN)).thenReturn(expectedResult);
+
+    PagedPdndServiceView result = pdndServiceRetriever
+      .getOrgSubUnitsPdndServices(ORGANIZATION_ID, SUB_UNIT_CODE, SUB_UNIT_NAME, pageable, USER_INFO, ACCESS_TOKEN);
+
+    assertNotNull(result);
+    assertSame(expectedResult, result);
   }
 }

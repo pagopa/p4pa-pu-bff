@@ -4,10 +4,7 @@ import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.security.SecurityUtilsTest;
 import it.gov.pagopa.pu.bff.service.pdnd_service.PdndServiceRetrieverService;
 import it.gov.pagopa.pu.bff.util.TestUtils;
-import it.gov.pagopa.pu.organization.dto.generated.PdndService;
-import it.gov.pagopa.pu.organization.dto.generated.PdndServiceRequestDTO;
-import it.gov.pagopa.pu.organization.dto.generated.PdndServiceType;
-import it.gov.pagopa.pu.organization.dto.generated.PdndServiceView;
+import it.gov.pagopa.pu.organization.dto.generated.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,6 +12,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -34,6 +32,7 @@ class PdndServiceControllerTest {
 
   private static final Long ORGANIZATION_ID = 123L;
   private static final String ORG_SUB_UNIT_CODE = "SUB_UNIT_001";
+  private static final String SUB_UNIT_NAME = "SUB_UNIT_001_NAME";
   private static final String ACCESS_TOKEN = "fakeAccessToken";
   private final UserInfo loggedUser = TestUtils.getPodamFactory().manufacturePojo(UserInfo.class);
 
@@ -119,5 +118,28 @@ class PdndServiceControllerTest {
     assertNull(result.getBody());
     verify(pdndServiceRetrieverServiceMock)
       .deletePdndService(ORGANIZATION_ID, purposeId, loggedUser, ACCESS_TOKEN);
+  }
+
+  @Test
+  void whenGetOrgSubUnitsPdndServicesThenReturnOk() {
+    Pageable pageable = Pageable.ofSize(5);
+    PagedPdndServiceView expectedResult = PagedPdndServiceView.builder()
+      .content(List.of(new PdndServiceView()))
+      .size(5L)
+      .number(0L)
+      .totalPages(1L)
+      .totalElements(1L)
+      .build();
+
+    when(pdndServiceRetrieverServiceMock.getOrgSubUnitsPdndServices(ORGANIZATION_ID, ORG_SUB_UNIT_CODE,
+      SUB_UNIT_NAME, pageable, loggedUser, ACCESS_TOKEN))
+      .thenReturn(expectedResult);
+
+    ResponseEntity<PagedPdndServiceView> result = controller.getOrgSubUnitsPdndServices(ORGANIZATION_ID, ORG_SUB_UNIT_CODE,
+      SUB_UNIT_NAME, pageable);
+
+    assertNotNull(result);
+    assertEquals(HttpStatus.OK, result.getStatusCode());
+    assertSame(expectedResult, result.getBody());
   }
 }

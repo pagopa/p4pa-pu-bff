@@ -158,8 +158,8 @@ public class DebtPositionTypeOrgRetrieverServiceImpl implements DebtPositionType
     AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser);
 
     OperatorsPage operatorsPage = authzService.getOrganizationOperators(
-      getUserOrganizationIpaCode(organizationId, loggedUser), null, null, null,
-      pageable.getPageNumber(), pageable.getPageSize(), accessToken);
+      getUserOrganizationIpaCode(organizationId, loggedUser), null, null, null, null,
+      pageable, accessToken);
 
     CollectionModelDebtPositionTypeOrgOperators collectionModelDebtPositionTypeOrgOperators = null;
     if (debtPositionTypeOrgId != null) {

@@ -105,7 +105,7 @@ public class OperatorRetrieverServiceImplTest {
     PagedOrganizationOperator expectedResult = new PagedOrganizationOperator();
 
     doNothing().when(authorizationServiceMock).validateAdminRole(organizationId,loggedUser);
-    when(authzServiceMock.getOrganizationOperators(userOrgRole.getOrganizationIpaCode(),fiscalCode,firstName,lastName,pageable.getPageNumber(),pageable.getPageSize(),accessToken))
+    when(authzServiceMock.getOrganizationOperators(userOrgRole.getOrganizationIpaCode(),fiscalCode,firstName,lastName, null, pageable,accessToken))
             .thenReturn(operatorsPage);
     when(debtPositionTypeOrgOperatorsServiceMock.findByOrganizationIdAndOperatorExternalUserIds(organizationId,dptoViewMap.keySet(),accessToken))
             .thenReturn(new ArrayList<>(dptoViewMap.values()));
@@ -133,7 +133,7 @@ public class OperatorRetrieverServiceImplTest {
     Organization organization = Organization.builder().organizationId(1L).ipaCode("IPA").orgFiscalCode("FISCAL").orgName("TEST").status(OrganizationStatus.ACTIVE).orgTypeCode("orgType").flagNotifyIo(false).flagTreasury(false).flagNotifyOutcomePush(false).pdndEnabled(false).flagPaymentNotification(false).flagPaymentsReporting(true).flagClassification(true).build();
 
     doNothing().when(authorizationServiceMock).validateAdminRole(organizationId,loggedUser);
-    when(authzServiceMock.getOrganizationOperators(userOrgRole.getOrganizationIpaCode(),fiscalCode,firstName,lastName,pageable.getPageNumber(),pageable.getPageSize(),accessToken))
+    when(authzServiceMock.getOrganizationOperators(userOrgRole.getOrganizationIpaCode(),fiscalCode,firstName,lastName, null, pageable,accessToken))
             .thenReturn(operatorsPage);
     when(debtPositionTypeOrgOperatorsServiceMock.findByOrganizationIdAndOperatorExternalUserIds(organizationId,operatorsPage.getContent().stream().map(OperatorDTO::getMappedExternalUserId).collect(Collectors.toSet()),accessToken))
             .thenReturn(Collections.emptyList());
@@ -161,7 +161,7 @@ public class OperatorRetrieverServiceImplTest {
     PagedOrganizationOperator expectedResult = new PagedOrganizationOperator();
 
     doNothing().when(authorizationServiceMock).validateAdminRole(organizationId,loggedUser);
-    when(authzServiceMock.getOrganizationOperators(userOrgRole.getOrganizationIpaCode(),fiscalCode,firstName,lastName,pageable.getPageNumber(),pageable.getPageSize(),accessToken))
+    when(authzServiceMock.getOrganizationOperators(userOrgRole.getOrganizationIpaCode(),fiscalCode,firstName,lastName, null, pageable,accessToken))
             .thenReturn(operatorsPage);
     when(pagedOrganizationOperatorMapperMock.mapToPagedOrganizationOperator(operatorsPage,Collections.emptyMap(), null))
             .thenReturn(expectedResult);

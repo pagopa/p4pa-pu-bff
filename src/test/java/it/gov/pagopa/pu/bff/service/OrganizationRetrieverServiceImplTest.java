@@ -364,7 +364,7 @@ class OrganizationRetrieverServiceImplTest {
     mockOperatorsPage.setContent(Collections.singletonList(new OperatorDTO()));
     mockOperatorsPage.setTotalElements(5);
     when(authzServiceMock.getOrganizationOperators(
-        "testIpaCode", null, null, null, 0, 1, accessToken))
+        "testIpaCode", null, null, null, null, PageRequest.of(0, 1), accessToken))
       .thenReturn(mockOperatorsPage);
 
     Map<Long, Integer> expectedDptoMap = Map.of(123L, 10);
@@ -620,7 +620,7 @@ class OrganizationRetrieverServiceImplTest {
     mockOperatorsPage.setContent(Collections.singletonList(new OperatorDTO()));
     mockOperatorsPage.setTotalElements(5);
 
-    when(authzServiceMock.getOrganizationOperators(ipaCode, null, null, null, 0, 1, accessToken))
+    when(authzServiceMock.getOrganizationOperators(ipaCode, null, null, null, null, PageRequest.of(0, 1), accessToken))
       .thenReturn(mockOperatorsPage);
 
     OrganizationDetail result = organizationService.getOrganizationDetail(organizationId, userInfo, accessToken);

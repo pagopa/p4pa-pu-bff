@@ -3,9 +3,11 @@ package it.gov.pagopa.pu.bff.controller;
 import it.gov.pagopa.pu.bff.controller.generated.PdndClientApi;
 import it.gov.pagopa.pu.bff.security.SecurityUtils;
 import it.gov.pagopa.pu.bff.service.pdnd_client.PdndClientRetrieverService;
+import it.gov.pagopa.pu.organization.dto.generated.PagedPdndClientView;
 import it.gov.pagopa.pu.organization.dto.generated.PdndClientDTO;
 import it.gov.pagopa.pu.organization.dto.generated.PdndClientNoSecretDTO;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -44,5 +46,12 @@ public class PdndClientController implements PdndClientApi {
     log.info("User requested to delete PdndClient having organizationId {} and clientId {}", organizationId, clientId);
     pdndClientRetrieverService.deletePdndClient(organizationId, clientId, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken());
     return ResponseEntity.ok().build();
+  }
+
+  @Override
+  public ResponseEntity<PagedPdndClientView> getOrgSubUnitsPdndClients(Long organizationId, String subUnitCode, String subUnitName, Pageable pageable) {
+    log.info("User requested getOrgSubUnitsPdndClients having organizationId {}", organizationId);
+    return ResponseEntity.ok(pdndClientRetrieverService.getOrgSubUnitsPdndClients(organizationId, subUnitCode, subUnitName, pageable,
+      SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken()));
   }
 }

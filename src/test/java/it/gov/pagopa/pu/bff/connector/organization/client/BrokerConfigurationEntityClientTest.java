@@ -63,7 +63,7 @@ class BrokerConfigurationEntityClientTest {
     when(organizationApisHolderMock.getBrokerConfigurationEntityControllerApi(accessToken))
       .thenReturn(brokerConfigurationEntityControllerApiMock);
     when(brokerConfigurationEntityControllerApiMock.crudGetBrokerconfiguration(String.valueOf(brokerId)))
-      .thenThrow(new RestInvokeNotFoundException("APPNAME", HttpStatus.NOT_FOUND, "ERROR", "ERRORCODE", "ERRORMESSAGE"));
+      .thenThrow(new RestInvokeNotFoundException("APPNAME", HttpStatus.NOT_FOUND, "ERROR", "ERRORCODE", "ERRORMESSAGE", "BODY"));
 
     BrokerConfiguration result = client.getBrokerConfiguration(brokerId, accessToken);
 

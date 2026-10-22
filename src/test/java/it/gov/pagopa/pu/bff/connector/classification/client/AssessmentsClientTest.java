@@ -130,7 +130,7 @@ class AssessmentsClientTest {
     Long assessmentDetailId = 1L;
     when(classificationApisHolderMock.getAssessmentsDetailEntityControllerApi(accessToken)).thenReturn(assessmentsDetailEntityControllerApiMock);
     when(assessmentsDetailEntityControllerApiMock.crudGetAssessmentsdetail(String.valueOf(assessmentDetailId)))
-      .thenThrow(new RestInvokeNotFoundException("APPNAME", HttpStatus.NOT_FOUND, "ERROR", "ERRORCODE", "ERRORMESSAGE"));
+      .thenThrow(new RestInvokeNotFoundException("APPNAME", HttpStatus.NOT_FOUND, "ERROR", "ERRORCODE", "ERRORMESSAGE", "BODY"));
 
     //when
     AssessmentsDetail result = assessmentsClient.findAssessmentsDetail(assessmentDetailId, accessToken);
@@ -178,7 +178,7 @@ class AssessmentsClientTest {
     Long assessmentId = 1L;
     when(classificationApisHolderMock.getAssessmentsEntityControllerApi(accessToken)).thenReturn(assessmentsEntityControllerApiMock);
     when(assessmentsEntityControllerApiMock.crudGetAssessments(String.valueOf(assessmentId)))
-            .thenThrow(new RestInvokeNotFoundException("APPNAME", HttpStatus.NOT_FOUND, "ERROR", "ERRORCODE", "ERRORMESSAGE"));
+            .thenThrow(new RestInvokeNotFoundException("APPNAME", HttpStatus.NOT_FOUND, "ERROR", "ERRORCODE", "ERRORMESSAGE", "BODY"));
     //when
     Assessments result = assessmentsClient.getAssessmentsById(assessmentId, accessToken);
     //then

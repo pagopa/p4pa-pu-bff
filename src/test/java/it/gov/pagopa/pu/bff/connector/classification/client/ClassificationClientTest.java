@@ -129,7 +129,7 @@ class ClassificationClientTest {
       .thenReturn(classificationsApiMock);
 
     when(classificationsApiMock.getClassificationDetail(organizationId, classificationId))
-      .thenThrow(new RestInvokeNotFoundException("APPNAME", HttpStatus.NOT_FOUND, "ERROR", "ERRORCODE", "ERRORMESSAGE"));
+      .thenThrow(new RestInvokeNotFoundException("APPNAME", HttpStatus.NOT_FOUND, "ERROR", "ERRORCODE", "ERRORMESSAGE", "BODY"));
 
     ClassificationDetailViewDTO result = classificationClient.getClassificationDetail(organizationId, classificationId, accessToken);
 

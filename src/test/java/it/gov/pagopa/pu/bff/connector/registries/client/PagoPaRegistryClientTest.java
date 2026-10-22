@@ -66,7 +66,7 @@ class PagoPaRegistryClientTest {
     when(registriesApisHolderMock.getPagoPaRegistryApi(accessToken))
       .thenReturn(pagoPaRegistryApiMock);
     when(pagoPaRegistryApiMock.getPagoPaRegistry(pagoPaRegistryId))
-      .thenThrow(new RestInvokeNotFoundException("APPNAME", HttpStatus.NOT_FOUND, "ERROR", "ERRORCODE", "ERRORMESSAGE"));
+      .thenThrow(new RestInvokeNotFoundException("APPNAME", HttpStatus.NOT_FOUND, "ERROR", "ERRORCODE", "ERRORMESSAGE", "BODY"));
 
     PagoPaRegistryDTO response = pagoPaRegistryClient.getPagoPaRegistry(pagoPaRegistryId,accessToken);
 

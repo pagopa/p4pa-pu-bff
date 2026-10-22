@@ -96,7 +96,7 @@ class OrgSilServiceSearchClientTest {
     when(organizationApisHolderMock.getOrgSilServiceEntityControllerApi(accessToken))
       .thenReturn(orgSilServiceEntityControllerApiMock);
     when(orgSilServiceEntityControllerApiMock.crudGetOrgsilservice(String.valueOf(orgSilServiceId)))
-      .thenThrow(new RestInvokeNotFoundException("APPNAME", HttpStatus.NOT_FOUND, "ERROR", "ERRORCODE", "ERRORMESSAGE"));
+      .thenThrow(new RestInvokeNotFoundException("APPNAME", HttpStatus.NOT_FOUND, "ERROR", "ERRORCODE", "ERRORMESSAGE", "BODY"));
 
     OrgSilService response = orgSilServiceSearchClient.getOrgSilServiceById(orgSilServiceId, accessToken);
 
@@ -164,7 +164,7 @@ class OrgSilServiceSearchClientTest {
     when(organizationApisHolderMock.getOrganizationSilServiceApi(accessToken))
       .thenReturn(organizationSilServiceApiMock);
     when(organizationSilServiceApiMock.getOrgSilService(orgSilServiceId))
-      .thenThrow(new RestInvokeNotFoundException("APPNAME", HttpStatus.NOT_FOUND, "ERROR", "ERRORCODE", "ERRORMESSAGE"));
+      .thenThrow(new RestInvokeNotFoundException("APPNAME", HttpStatus.NOT_FOUND, "ERROR", "ERRORCODE", "ERRORMESSAGE", "BODY"));
 
     OrgSilServiceDTO result = orgSilServiceSearchClient.getOrgSilServiceByIdDecrypted(orgSilServiceId, accessToken);
 
@@ -213,7 +213,7 @@ class OrgSilServiceSearchClientTest {
     when(organizationApisHolderMock.getOrgSilServiceSearchControllerApi(accessToken))
       .thenReturn(orgSilServiceSearchControllerApiMock);
     when(orgSilServiceSearchControllerApiMock.crudOrgSilServicesFindByOrganizationIdAndApplicationName(organizationId, applicationName))
-      .thenThrow(new RestInvokeNotFoundException("APPNAME", HttpStatus.NOT_FOUND, "ERROR", "ERRORCODE", "ERRORMESSAGE"));
+      .thenThrow(new RestInvokeNotFoundException("APPNAME", HttpStatus.NOT_FOUND, "ERROR", "ERRORCODE", "ERRORMESSAGE", "BODY"));
 
     //when
     OrgSilService result = orgSilServiceSearchClient.getOrgSilServiceByOrganizationIdAndApplicationName(organizationId, applicationName, accessToken);

@@ -89,7 +89,7 @@ class DebtPositionTypeClientTest {
     when(debtPositionApisHolderMock.getDebtPositionTypeControllerApi(accessToken))
       .thenReturn(debtPositionTypeEntityControllerApiMock);
     when(debtPositionTypeEntityControllerApiMock.crudGetDebtpositiontype(String.valueOf(debtPositionTypeId)))
-      .thenThrow(new RestInvokeNotFoundException("APPNAME", HttpStatus.NOT_FOUND, "ERROR", "ERRORCODE", "ERRORMESSAGE"));
+      .thenThrow(new RestInvokeNotFoundException("APPNAME", HttpStatus.NOT_FOUND, "ERROR", "ERRORCODE", "ERRORMESSAGE", "BODY"));
 
     DebtPositionType result = debtPositionTypeClient.getDebtPositionTypeById(debtPositionTypeId, accessToken);
 
@@ -151,7 +151,7 @@ class DebtPositionTypeClientTest {
       .thenReturn(debtPositionTypeWithCountSearchControllerApiMock);
     when(debtPositionTypeWithCountSearchControllerApiMock.crudDebtPositionTypesWithCountFindByBrokerId(
       brokerId, code, description, 0, 10, sortList))
-      .thenThrow(new RestInvokeNotFoundException("APPNAME", HttpStatus.NOT_FOUND, "ERROR", "ERRORCODE", "ERRORMESSAGE"));
+      .thenThrow(new RestInvokeNotFoundException("APPNAME", HttpStatus.NOT_FOUND, "ERROR", "ERRORCODE", "ERRORMESSAGE", "BODY"));
 
     PagedModelDebtPositionTypeWithCount result = debtPositionTypeClient.getDebtPositionTypeWithCount(
       brokerId, code, description, PageRequest.of(0, 10,
@@ -207,7 +207,7 @@ class DebtPositionTypeClientTest {
       .thenReturn(debtPositionTypeEntityControllerApiMock);
     when(debtPositionTypeEntityControllerApiMock.crudPatchDebtpositiontype(
       debtPositionTypeId.toString(), debtPositionTypeRequestBody))
-      .thenThrow(new RestInvokeNotFoundException("APPNAME", HttpStatus.NOT_FOUND, "ERROR", "ERRORCODE", "ERRORMESSAGE"));
+      .thenThrow(new RestInvokeNotFoundException("APPNAME", HttpStatus.NOT_FOUND, "ERROR", "ERRORCODE", "ERRORMESSAGE", "BODY"));
 
     DebtPositionType result = debtPositionTypeClient.patchDebtPositionType(
       debtPositionTypeId, debtPositionTypeRequestBody, accessToken);
@@ -234,7 +234,7 @@ class DebtPositionTypeClientTest {
 
     when(debtPositionApisHolderMock.getDebtPositionTypeControllerApi(accessToken))
       .thenReturn(debtPositionTypeEntityControllerApiMock);
-    doThrow(new RestInvokeNotFoundException("APPNAME", HttpStatus.NOT_FOUND, "ERROR", "ERRORCODE", "ERRORMESSAGE"))
+    doThrow(new RestInvokeNotFoundException("APPNAME", HttpStatus.NOT_FOUND, "ERROR", "ERRORCODE", "ERRORMESSAGE", "BODY"))
       .when(debtPositionTypeEntityControllerApiMock).crudDeleteDebtpositiontype(String.valueOf(debtPositionTypeId));
 
     Assertions.assertThrows(NotFoundException.class, () ->

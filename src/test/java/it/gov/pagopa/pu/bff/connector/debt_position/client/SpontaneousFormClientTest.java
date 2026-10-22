@@ -84,7 +84,7 @@ class SpontaneousFormClientTest {
 
     when(debtPositionApisHolderMock.getSpontaneousFormApi(accessToken))
         .thenReturn(spontaneousFormApiMock);
-    doThrow(new RestInvokeNotFoundException("APPNAME", HttpStatus.NOT_FOUND, "ERROR", "ERRORCODE", "ERRORMESSAGE"))
+    doThrow(new RestInvokeNotFoundException("APPNAME", HttpStatus.NOT_FOUND, "ERROR", "ERRORCODE", "ERRORMESSAGE", "BODY"))
         .when(spontaneousFormApiMock).deleteSpontaneousForm(spontaneousFormId);
 
     assertThrows(NotFoundException.class, ()->spontaneousFormClient.deleteSpontaneousForm(spontaneousFormId, accessToken));
@@ -113,7 +113,7 @@ class SpontaneousFormClientTest {
 
     when(debtPositionApisHolderMock.getSpontaneousFormApi(accessToken))
         .thenReturn(spontaneousFormApiMock);
-    doThrow(new RestInvokeNotFoundException("APPNAME", HttpStatus.NOT_FOUND, "ERROR", "ERRORCODE", "ERRORMESSAGE"))
+    doThrow(new RestInvokeNotFoundException("APPNAME", HttpStatus.NOT_FOUND, "ERROR", "ERRORCODE", "ERRORMESSAGE", "BODY"))
         .when(spontaneousFormApiMock).updateSpontaneousForm(spontaneousForm);
 
     assertThrows(NotFoundException.class, ()->spontaneousFormClient.updateSpontaneousForm(spontaneousForm, accessToken));

@@ -67,7 +67,7 @@ class AuthzClientTest {
     when(authApisHolderMock.getAuthzApi(accessToken))
       .thenReturn(authzApiMock);
     when(authzApiMock.getUserInfoFromMappedExternaUserId(mappedExternalUserId))
-      .thenThrow(new RestInvokeNotFoundException("APPNAME", HttpStatus.NOT_FOUND, "ERROR", "ERRORCODE", "ERRORMESSAGE"));
+      .thenThrow(new RestInvokeNotFoundException("APPNAME", HttpStatus.NOT_FOUND, "ERROR", "ERRORCODE", "ERRORMESSAGE", "BODY"));
 
     UserInfo result = authzClient.getUserInfoFromMappedExternalUserId(mappedExternalUserId,accessToken);
 
@@ -191,7 +191,7 @@ class AuthzClientTest {
 
     when(authApisHolderMock.getAuthzApi(accessToken)).thenReturn(authzApiMock);
 
-    doThrow(new RestInvokeNotFoundException("APPNAME", HttpStatus.NOT_FOUND, "ERROR", "ERRORCODE", "ERRORMESSAGE"))
+    doThrow(new RestInvokeNotFoundException("APPNAME", HttpStatus.NOT_FOUND, "ERROR", "ERRORCODE", "ERRORMESSAGE", "BODY"))
       .when(authzApiMock).generateClientSecret(organizationIpaCode, clientId);
 
     NotFoundException thrown = assertThrows(NotFoundException.class, () -> authzClient.generateClientSecret(organizationIpaCode, clientId, accessToken));
@@ -224,7 +224,7 @@ class AuthzClientTest {
     String mappedExternalUserId = "mappedExternalUserId";
 
     when(authApisHolderMock.getAuthzApi(accessToken)).thenReturn(authzApiMock);
-    doThrow(new RestInvokeNotFoundException("APPNAME", HttpStatus.NOT_FOUND, "ERROR", "ERRORCODE", "ERRORMESSAGE"))
+    doThrow(new RestInvokeNotFoundException("APPNAME", HttpStatus.NOT_FOUND, "ERROR", "ERRORCODE", "ERRORMESSAGE", "BODY"))
       .when(authzApiMock).getOrganizationOperator(organizationIpaCode, mappedExternalUserId);
 
     //when

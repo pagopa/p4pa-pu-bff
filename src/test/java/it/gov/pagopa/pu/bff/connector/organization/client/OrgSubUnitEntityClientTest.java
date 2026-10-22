@@ -70,7 +70,7 @@ class OrgSubUnitEntityClientTest {
     when(organizationApisHolder.getOrgSubUnitEntityControllerApi(accessToken))
       .thenReturn(orgSubUnitEntityControllerApiMock);
     when(orgSubUnitEntityControllerApiMock.crudGetOrgsubunit(orgSubUnitId))
-      .thenThrow(new RestInvokeNotFoundException("APPNAME", HttpStatus.NOT_FOUND, "ERROR", "ERRORCODE", "ERRORMESSAGE"));
+      .thenThrow(new RestInvokeNotFoundException("APPNAME", HttpStatus.NOT_FOUND, "ERROR", "ERRORCODE", "ERRORMESSAGE", "BODY"));
 
     // When
     OrgSubUnit result = orgSubUnitEntityClient.getOrgSubUnitById(orgSubUnitId, accessToken);
@@ -121,7 +121,7 @@ class OrgSubUnitEntityClientTest {
     when(organizationApisHolder.getOrgSubUnitEntityControllerApi(accessToken))
       .thenReturn(orgSubUnitEntityControllerApiMock);
 
-    doThrow(new RestInvokeNotFoundException("APPNAME", HttpStatus.NOT_FOUND, "ERROR", "ERRORCODE", "ERRORMESSAGE"))
+    doThrow(new RestInvokeNotFoundException("APPNAME", HttpStatus.NOT_FOUND, "ERROR", "ERRORCODE", "ERRORMESSAGE", "BODY"))
       .when(orgSubUnitEntityControllerApiMock).crudDeleteOrgsubunit(orgSubUnitId);
 
     // When & Then
@@ -162,7 +162,7 @@ class OrgSubUnitEntityClientTest {
     when(organizationApisHolder.getOrgSubUnitEntityControllerApi(accessToken))
       .thenReturn(orgSubUnitEntityControllerApiMock);
     when(orgSubUnitEntityControllerApiMock.crudUpdateOrgsubunit(orgSubUnitId, requestBody))
-      .thenThrow(new RestInvokeNotFoundException("APPNAME", HttpStatus.NOT_FOUND, "ERROR", "ERRORCODE", "ERRORMESSAGE"));
+      .thenThrow(new RestInvokeNotFoundException("APPNAME", HttpStatus.NOT_FOUND, "ERROR", "ERRORCODE", "ERRORMESSAGE", "BODY"));
 
     // When & Then
     NotFoundException exception = Assertions.assertThrows(

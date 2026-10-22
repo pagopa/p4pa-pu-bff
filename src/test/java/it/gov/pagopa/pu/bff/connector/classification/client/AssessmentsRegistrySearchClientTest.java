@@ -102,7 +102,7 @@ class AssessmentsRegistrySearchClientTest {
       .thenReturn(assessmentsRegistryEntityControllerApiMock);
 
     when(assessmentsRegistryEntityControllerApiMock.crudGetAssessmentsregistry(String.valueOf(assessmentRegistryId)))
-      .thenThrow(new RestInvokeNotFoundException("APPNAME", HttpStatus.NOT_FOUND, "ERROR", "ERRORCODE", "ERRORMESSAGE"));
+      .thenThrow(new RestInvokeNotFoundException("APPNAME", HttpStatus.NOT_FOUND, "ERROR", "ERRORCODE", "ERRORMESSAGE", "BODY"));
 
     AssessmentsRegistry result = assessmentsRegistrySearchClient.getAssessmentsRegistry(assessmentRegistryId, accessToken);
 

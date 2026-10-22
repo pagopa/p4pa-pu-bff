@@ -84,7 +84,7 @@ class TreasurySearchClientTest {
       .thenReturn(treasurySearchControllerApiMock);
 
     when(treasurySearchControllerApiMock.crudTreasuryFindByOrganizationIdAndTreasuryId(organizationId, treasuryId))
-      .thenThrow(new RestInvokeNotFoundException("APPNAME", HttpStatus.NOT_FOUND, "ERROR", "ERRORCODE", "ERRORMESSAGE"));
+      .thenThrow(new RestInvokeNotFoundException("APPNAME", HttpStatus.NOT_FOUND, "ERROR", "ERRORCODE", "ERRORMESSAGE", "BODY"));
 
     Treasury result = treasurySearchClient.getTreasuryDetail(organizationId, treasuryId, accessToken);
 

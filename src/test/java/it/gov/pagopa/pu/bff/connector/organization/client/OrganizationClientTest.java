@@ -65,7 +65,7 @@ class OrganizationClientTest {
 
     when(organizationApisHolderMock.getOrganizationApi(accessToken))
       .thenReturn(organizationApiMock);
-    doThrow(new RestInvokeNotFoundException("APPNAME", HttpStatus.NOT_FOUND, "ERROR", "ERRORCODE", "ERRORMESSAGE"))
+    doThrow(new RestInvokeNotFoundException("APPNAME", HttpStatus.NOT_FOUND, "ERROR", "ERRORCODE", "ERRORMESSAGE", "BODY"))
             .when(organizationApiMock).updateOrganization(organizationUpdateDTO);
 
     Assertions.assertThrows(NotFoundException.class,() -> organizationClient.updateOrganization(organizationUpdateDTO, accessToken));

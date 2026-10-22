@@ -70,7 +70,7 @@ class PaymentsReportingSearchClientTest {
     when(classificationApisHolderMock.getPaymentsReportingSearchControllerApi(accessToken))
       .thenReturn(paymentsReportingSearchControllerApiMock);
     when(paymentsReportingSearchControllerApiMock.crudPaymentsReportingFindByOrganizationIdAndPaymentsReportingId(organizationId, paymentsReportingId))
-      .thenThrow(new RestInvokeNotFoundException("APPNAME", HttpStatus.NOT_FOUND, "ERROR", "ERRORCODE", "ERRORMESSAGE"));
+      .thenThrow(new RestInvokeNotFoundException("APPNAME", HttpStatus.NOT_FOUND, "ERROR", "ERRORCODE", "ERRORMESSAGE", "BODY"));
 
     PaymentsReporting result = paymentsReportingSearchClient.getPaymentsReportingDetail(organizationId, paymentsReportingId,accessToken);
 

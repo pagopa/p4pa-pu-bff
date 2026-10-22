@@ -84,7 +84,7 @@ class AssessmentsDetailClientTest {
 
     when(classificationApisHolderMock.getAssessmentsDetailEntityControllerApi(accessToken))
       .thenReturn(assessmentsDetailEntityControllerApiMock);
-    doThrow(new RestInvokeNotFoundException("APPNAME", HttpStatus.NOT_FOUND, "ERROR", "ERRORCODE", "ERRORMESSAGE"))
+    doThrow(new RestInvokeNotFoundException("APPNAME", HttpStatus.NOT_FOUND, "ERROR", "ERRORCODE", "ERRORMESSAGE", "BODY"))
       .when(assessmentsDetailEntityControllerApiMock)
       .crudDeleteAssessmentsdetail(String.valueOf(assessmentDetailId));
 

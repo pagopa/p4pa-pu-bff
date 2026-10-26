@@ -37,6 +37,7 @@ class AuthenticationControllerTest {
 
   private AccessToken accessTokenDTO;
   private final String accessToken = "fakeAccessToken";
+  private final String refreshToken = "fakeRefreshToken";
   private final UserInfo loggedUser = TestUtils.getPodamFactory().manufacturePojo(UserInfo.class);
 
   @BeforeEach
@@ -89,10 +90,19 @@ class AuthenticationControllerTest {
   }
 
   @Test
-  void testRevokeToken() {
+  void testRevokeAccessToken() {
     doNothing().when(authorizationServiceMock).logout(accessToken);
 
-    ResponseEntity<Void> response = authenticationController.logout();
+    ResponseEntity<Void> response = authenticationController.logout(null);
+
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+  }
+
+  @Test
+  void testRevokeAccessRefreshToken() {
+    doNothing().when(authorizationServiceMock).logout(refreshToken);
+
+    ResponseEntity<Void> response = authenticationController.logout(refreshToken);
 
     assertEquals(HttpStatus.OK, response.getStatusCode());
   }

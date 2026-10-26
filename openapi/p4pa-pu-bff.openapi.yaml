@@ -473,6 +473,13 @@ paths:
       tags:
         - Authentication
       operationId: logout
+      parameters:
+        - name: refreshToken
+          in: query
+          required: false
+          schema:
+            type: string
+          description: refresh token from the client
       responses:
         '200':
           description: OK

@@ -47,8 +47,8 @@ public class AuthnClient {
     return authApisHolder.getAuthnApi(accessToken).postLimitedToken(limitedTokenRequest);
   }
 
-  public void logout(String clientId, String token) {
-    authApisHolder.getAuthnApi(null)
+  public void logout(String clientId, String token, String accessToken) {
+    authApisHolder.getAuthnApi(accessToken)
       .logout(clientId, token);
   }
 }

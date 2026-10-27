@@ -4448,9 +4448,9 @@
         "tags" : [ "Authentication" ],
         "operationId" : "logout",
         "parameters" : [ {
-          "name" : "refreshToken",
+          "name" : "token",
           "in" : "query",
-          "description" : "refresh token from the client",
+          "description" : "access or refresh token from the client",
           "required" : false,
           "schema" : {
             "type" : "string",
@@ -4460,6 +4460,36 @@
         "responses" : {
           "200" : {
             "description" : "OK"
+          },
+          "401" : {
+            "description" : "Unauthorized - Missing or invalid token",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorDTO"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Forbidden - Access denied",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorDTO"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal Server Error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorDTO"
+                }
+              }
+            }
           }
         },
         "security" : [ {

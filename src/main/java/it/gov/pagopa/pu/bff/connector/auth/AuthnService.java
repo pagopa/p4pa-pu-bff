@@ -8,6 +8,6 @@ public interface AuthnService {
   UserInfo getUserInfo(String accessToken);
   AccessToken postToken(String subjectToken);
   AccessToken postLimitedToken(LimitedTokenRequest limitedTokenRequest, String accessToken);
-  void logout(String token);
+  void logout(String token, String accessToken);
   AccessToken refreshToken(String refreshToken);
 }

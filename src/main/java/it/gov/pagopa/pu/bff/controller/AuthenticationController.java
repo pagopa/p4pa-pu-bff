@@ -48,14 +48,9 @@ public class AuthenticationController implements AuthenticationApi {
   }
 
   @Override
-  public ResponseEntity<Void> logout(String refreshToken) {
-    if(refreshToken!=null) {
-      log.info("User requested logout with refresh token");
-      authorizationService.logout(refreshToken);
-    } else {
-      log.info("User requested logout with access token");
-      authorizationService.logout(SecurityUtils.getAccessToken());
-    }
+  public ResponseEntity<Void> logout(String token) {
+    log.info("User requested logout");
+    authorizationService.logout(token, SecurityUtils.getAccessToken());
     return ResponseEntity.ok().build();
   }
 

@@ -108,10 +108,10 @@ class AuthnClientTest {
     String clientId = "clientId";
     String accessToken = "accessToken";
 
-    when(authApisHolderMock.getAuthnApi(null)).thenReturn(authnApiMock);
+    when(authApisHolderMock.getAuthnApi(accessToken)).thenReturn(authnApiMock);
     doNothing().when(authnApiMock).logout(clientId, accessToken);
 
-    authnClient.logout(clientId, accessToken);
+    authnClient.logout(clientId, accessToken, accessToken);
 
     Mockito.verifyNoMoreInteractions(authnApiMock);
   }

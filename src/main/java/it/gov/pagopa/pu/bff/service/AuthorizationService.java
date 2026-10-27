@@ -114,8 +114,8 @@ public class AuthorizationService {
       .findFirst();
   }
 
-  public void logout(String token) {
-    authnService.logout(token);
+  public void logout(String token, String accessToken) {
+    authnService.logout(token, accessToken);
   }
 
   public void validateLimitedScopeUserForResource(Long organizationId, UserInfo loggedUser, String resource, String resourceId) {

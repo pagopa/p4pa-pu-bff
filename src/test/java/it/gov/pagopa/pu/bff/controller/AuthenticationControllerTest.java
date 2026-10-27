@@ -90,9 +90,9 @@ class AuthenticationControllerTest {
 
   @Test
   void testRevokeToken() {
-    doNothing().when(authorizationServiceMock).logout(accessToken);
+    doNothing().when(authorizationServiceMock).logout(accessToken, accessToken);
 
-    ResponseEntity<Void> response = authenticationController.logout();
+    ResponseEntity<Void> response = authenticationController.logout(accessToken);
 
     assertEquals(HttpStatus.OK, response.getStatusCode());
   }

@@ -232,9 +232,9 @@ class AuthorizationServiceTest {
   void whenLogoutThenOk(){
     String accessToken = "accessToken";
 
-    Mockito.doNothing().when(authnServiceMock).logout(accessToken);
+    Mockito.doNothing().when(authnServiceMock).logout(accessToken, accessToken);
 
-    Assertions.assertDoesNotThrow(() -> authorizationService.logout(accessToken));
+    Assertions.assertDoesNotThrow(() -> authorizationService.logout(accessToken, accessToken));
   }
 
   @Test

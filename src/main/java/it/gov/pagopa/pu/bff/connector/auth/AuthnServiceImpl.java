@@ -48,8 +48,8 @@ public class AuthnServiceImpl implements AuthnService {
   }
 
   @Override
-  public void logout(String accessToken) {
-    client.logout(CLIENT_ID, accessToken);
+  public void logout(String token, String accessToken) {
+    client.logout(CLIENT_ID, token, accessToken);
   }
 
   @Override

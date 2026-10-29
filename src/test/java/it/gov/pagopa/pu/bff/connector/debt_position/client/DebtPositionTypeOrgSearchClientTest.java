@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import it.gov.pagopa.pu.bff.connector.debt_position.config.DebtPositionApisHolder;
@@ -297,7 +298,7 @@ class DebtPositionTypeOrgSearchClientTest {
       .thenReturn(debtPositionTypeOrgSearchControllerApiMock);
 
     when(debtPositionTypeOrgSearchControllerApiMock.crudDebtPositionTypeOrgsFindByOrganizationIdAndCode(organizationId, code))
-      .thenThrow(Mockito.mock(RestInvokeNotFoundException.class));
+      .thenThrow(mock(RestInvokeNotFoundException.class));
 
     DebtPositionTypeOrg result = debtPositionTypeOrgSearchClient.getByOrganizationIdAndCode(organizationId, code, accessToken);
 

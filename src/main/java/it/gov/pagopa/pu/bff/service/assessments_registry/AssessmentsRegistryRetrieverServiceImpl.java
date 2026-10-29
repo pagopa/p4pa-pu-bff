@@ -101,7 +101,7 @@ public class AssessmentsRegistryRetrieverServiceImpl implements AssessmentsRegis
     validateAssessmentRegistry(organizationId, assessmentsRegistry, loggedUser.getMappedExternalUserId(), accessToken);
 
     if (debtPositionTypeOrgService.getByOrganizationIdAndCode(organizationId, assessmentsRegistry.getDebtPositionTypeOrgCode(), accessToken) == null) {
-      throw new InvalidAssessmentsRegistryException("DEBT_POSITION_TYPE_ORG_NOT_FOUND",
+      throw new NotFoundException("DEBT_POSITION_TYPE_ORG_NOT_FOUND",
         String.format("DebtPositionTypeOrg with code %s not found for organizationId %s", assessmentsRegistry.getDebtPositionTypeOrgCode(), organizationId));
     }
 

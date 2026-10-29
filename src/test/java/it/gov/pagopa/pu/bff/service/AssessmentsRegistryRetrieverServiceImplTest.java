@@ -238,7 +238,7 @@ class AssessmentsRegistryRetrieverServiceImplTest {
   }
 
   @Test
-  void givenDebtPositionTypeOrgNotFoundWhenCreateAssessmentsRegistryThenThrowException() {
+  void givenDebtPositionTypeOrgNotFoundWhenCreateAssessmentsRegistryThenThrowNotFoundException() {
     UserInfo loggedUser = new UserInfo();
     loggedUser.setUserId("user-123");
     loggedUser.setMappedExternalUserId("mappedExternalUserId");
@@ -255,9 +255,10 @@ class AssessmentsRegistryRetrieverServiceImplTest {
       when(debtPositionTypeOrgServiceMock.getByOrganizationIdAndCode(organizationId, assessmentsRegistry.getDebtPositionTypeOrgCode(), accessToken))
         .thenReturn(null);
 
-      InvalidAssessmentsRegistryException exception = assertThrows(
-        InvalidAssessmentsRegistryException.class,
-        () -> assessmentsRegistryRetrieverService.createAssessmentsRegistry(organizationId, assessmentsRegistry, loggedUser, accessToken));
+      NotFoundException exception = assertThrows(
+        NotFoundException.class, () -> assessmentsRegistryRetrieverService.createAssessmentsRegistry(organizationId, assessmentsRegistry, loggedUser, accessToken));
+
+      assertEquals("DEBT_POSITION_TYPE_ORG_NOT_FOUND", exception.getCode());
 
       assertEquals("DEBT_POSITION_TYPE_ORG_NOT_FOUND", exception.getCode());
 

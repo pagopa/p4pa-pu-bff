@@ -10,6 +10,7 @@ import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelDebtPositionTypeOr
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClientException;
 
 import java.util.Collections;
 import java.util.List;
@@ -91,5 +92,15 @@ public class DebtPositionTypeOrgSearchClient {
     return debtPositionApisHolder.getDebtPositionTypeOrgSearchControllerApi(accessToken)
         .crudDebtPositionTypeOrgsCountBySpontaneousFormId(
         spontaneousFormId);
+  }
+
+  public DebtPositionTypeOrg getByOrganizationIdAndCode(Long organizationId, String code, String accessToken) {
+    try {
+      return debtPositionApisHolder.getDebtPositionTypeOrgSearchControllerApi(accessToken)
+        .crudDebtPositionTypeOrgsFindByOrganizationIdAndCode(organizationId, code);
+    } catch (RestInvokeNotFoundException e) {
+      log.warn("No DebtPositionTypeOrg matching organizationId {} and code {}", organizationId, code);
+      return null;
+    }
   }
 }

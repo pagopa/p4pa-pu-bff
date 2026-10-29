@@ -286,5 +286,20 @@ class DebtPositionTypeOrgServiceTest {
         Arguments.of(2L, true)
     );
   }
+
+  @Test
+  void whenGetByOrganizationIdAndCodeThenInvokeClient() {
+    Long organizationId = 1L;
+    String code = "CODE";
+    String accessToken = "ACCESSTOKEN";
+    DebtPositionTypeOrg expectedResult = new DebtPositionTypeOrg();
+
+    when(debtPositionTypeOrgSearchClientMock.getByOrganizationIdAndCode(organizationId, code, accessToken))
+      .thenReturn(expectedResult);
+
+    DebtPositionTypeOrg result = service.getByOrganizationIdAndCode(organizationId, code, accessToken);
+
+    assertSame(expectedResult, result);
+  }
 }
 

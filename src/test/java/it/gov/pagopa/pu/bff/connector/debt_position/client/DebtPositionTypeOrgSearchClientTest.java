@@ -4,10 +4,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import it.gov.pagopa.pu.bff.connector.debt_position.config.DebtPositionApisHolder;
 import it.gov.pagopa.pu.bff.dto.OperatorDetailsFiltersDTO;
+import it.gov.pagopa.pu.bff.exception.common.RestInvokeNotFoundException;
 import it.gov.pagopa.pu.bff.util.TestUtils;
 import it.gov.pagopa.pu.debtpositions.client.generated.DebtPositionTypeOrgSearchControllerApi;
 import it.gov.pagopa.pu.debtpositions.dto.generated.CollectionModelDebtPositionTypeOrg;
@@ -268,4 +270,38 @@ class DebtPositionTypeOrgSearchClientTest {
     Assertions.assertSame(expectedResult, result);
   }
 
+  @Test
+  void givenExistingDebtPositionTypeOrgWhenGetByOrganizationIdAndCodeThenReturnDebtPositionTypeOrg() {
+    Long organizationId = 1L;
+    String code = "CODE";
+    String accessToken = "ACCESS_TOKEN";
+    DebtPositionTypeOrg expectedResult = new DebtPositionTypeOrg();
+
+    when(debtPositionApisHolderMock.getDebtPositionTypeOrgSearchControllerApi(accessToken))
+      .thenReturn(debtPositionTypeOrgSearchControllerApiMock);
+
+    when(debtPositionTypeOrgSearchControllerApiMock.crudDebtPositionTypeOrgsFindByOrganizationIdAndCode(organizationId, code))
+      .thenReturn(expectedResult);
+
+    DebtPositionTypeOrg result = debtPositionTypeOrgSearchClient.getByOrganizationIdAndCode(organizationId, code, accessToken);
+
+    assertSame(expectedResult, result);
+  }
+
+  @Test
+  void givenNoExistingDebtPositionTypeOrgWhenGetByOrganizationIdAndCodeThenReturnNull() {
+    Long organizationId = 1L;
+    String code = "INVALID_CODE";
+    String accessToken = "ACCESS_TOKEN";
+
+    when(debtPositionApisHolderMock.getDebtPositionTypeOrgSearchControllerApi(accessToken))
+      .thenReturn(debtPositionTypeOrgSearchControllerApiMock);
+
+    when(debtPositionTypeOrgSearchControllerApiMock.crudDebtPositionTypeOrgsFindByOrganizationIdAndCode(organizationId, code))
+      .thenThrow(mock(RestInvokeNotFoundException.class));
+
+    DebtPositionTypeOrg result = debtPositionTypeOrgSearchClient.getByOrganizationIdAndCode(organizationId, code, accessToken);
+
+    assertNull(result);
+  }
 }

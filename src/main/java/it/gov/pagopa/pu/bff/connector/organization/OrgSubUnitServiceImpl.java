@@ -40,11 +40,6 @@ public class OrgSubUnitServiceImpl implements OrgSubUnitService {
   }
 
   @Override
-  public void deleteOrgSubUnit(String orgSubUnitId, String accessToken) {
-    orgSubUnitEntityClient.deleteOrgSubUnit(orgSubUnitId, accessToken);
-  }
-
-  @Override
   public OrgSubUnit updateOrgSubUnit(String orgSubUnitId, OrgSubUnitRequestBody orgSubUnit, String accessToken) {
     return orgSubUnitEntityClient.updateOrgSubUnit(orgSubUnitId, orgSubUnit, accessToken);
   }

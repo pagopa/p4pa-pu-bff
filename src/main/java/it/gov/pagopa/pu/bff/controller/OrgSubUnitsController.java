@@ -29,13 +29,6 @@ public class OrgSubUnitsController implements OrgSubUnitsApi {
   }
 
   @Override
-  public ResponseEntity<Void> deleteOrgSubUnitById(Long organizationId, String subUnitCode) {
-    log.info("User requested deleteOrgSubUnitById having organizationId {} and subUnitCode {}", organizationId, subUnitCode);
-    subUnitRetrieverService.deleteOrgSubUnit(organizationId, subUnitCode, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken());
-    return ResponseEntity.ok().build();
-  }
-
-  @Override
   public ResponseEntity<OrgSubUnit> getOrgSubUnitById(Long organizationId, String subUnitCode) {
     log.info("User requested getOrgSubUnitById having subUnitCode {}", subUnitCode);
     return ResponseEntity.ok(subUnitRetrieverService.getOrgSubUnitById(organizationId, subUnitCode, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken()));

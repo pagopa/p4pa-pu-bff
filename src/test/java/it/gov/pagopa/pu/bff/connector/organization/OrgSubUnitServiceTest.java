@@ -94,16 +94,6 @@ class OrgSubUnitServiceTest {
   }
 
   @Test
-  void whenDeleteOrgSubUnitThenInvokeClient() {
-    // Given
-    String orgSubUnitId = "SUB_UNIT_ID";
-
-    // When & Then
-    assertDoesNotThrow(() -> service.deleteOrgSubUnit(orgSubUnitId, accessToken));
-    verify(orgSubUnitEntityClientMock).deleteOrgSubUnit(orgSubUnitId, accessToken);
-  }
-
-  @Test
   void whenUpdateOrgSubUnitThenInvokeClient() {
     // Given
     String orgSubUnitId = "SUB_UNIT_ID";

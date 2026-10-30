@@ -172,22 +172,6 @@ class OrgSubUnitRetrieverServiceImplTest {
   }
 
   @Test
-  void givenValidUserWhenDeleteOrgSubUnitThenOk() {
-    // Given
-    Long organizationId = 1L;
-    String subUnitCode = "CODE";
-    String orgSubUnitId = organizationId+"-"+subUnitCode;
-    UserInfo loggedUser = podamFactory.manufacturePojo(UserInfo.class);
-
-    // When & Then
-    assertDoesNotThrow(() -> orgSubUnitRetrieverService.deleteOrgSubUnit(organizationId, subUnitCode, loggedUser, accessToken));
-
-    verify(authorizationServiceMock).validateAdminRole(organizationId, loggedUser);
-    verify(orgSubUnitServiceMock).deleteOrgSubUnit(orgSubUnitId, accessToken);
-  }
-
-
-  @Test
   void givenValidUserWhenUpdateOrgSubUnitThenOk() {
     // Given
     Long organizationId = 1L;

@@ -68,7 +68,7 @@ class OrganizationApiClientTest {
     when(organizationApisHolderMock.getOrganizationApi(accessToken))
       .thenReturn(organizationApiMock);
     when(organizationApiMock.getOrganization(organizationId))
-      .thenThrow(new RestInvokeNotFoundException("APPNAME", HttpStatus.NOT_FOUND, "ERROR", "ERRORCODE", "ERRORMESSAGE"));
+      .thenThrow(new RestInvokeNotFoundException("APPNAME", HttpStatus.NOT_FOUND, "ERROR", "ERRORCODE", "ERRORMESSAGE", "BODY"));
 
     OrganizationDetailDTO result = organizationApiClient.getOrganizationDetail(organizationId, accessToken);
 

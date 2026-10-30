@@ -48,9 +48,9 @@ public class AuthenticationController implements AuthenticationApi {
   }
 
   @Override
-  public ResponseEntity<Void> logout() {
+  public ResponseEntity<Void> logout(String token) {
     log.info("User requested logout");
-    authorizationService.logout(SecurityUtils.getAccessToken());
+    authorizationService.logout(token, SecurityUtils.getAccessToken());
     return ResponseEntity.ok().build();
   }
 

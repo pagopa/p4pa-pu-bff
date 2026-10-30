@@ -102,7 +102,7 @@ class DebtPositionTypeOrgClientTest {
       .thenReturn(debtPositionTypeOrgEntityControllerApiMock);
     when(debtPositionTypeOrgEntityControllerApiMock.crudGetDebtpositiontypeorg(
       String.valueOf(debtPositionTypeOrgId)))
-      .thenThrow(new RestInvokeNotFoundException("APPNAME", HttpStatus.NOT_FOUND, "ERROR", "ERRORCODE", "ERRORMESSAGE"));
+      .thenThrow(new RestInvokeNotFoundException("APPNAME", HttpStatus.NOT_FOUND, "ERROR", "ERRORCODE", "ERRORMESSAGE", "BODY"));
 
     DebtPositionTypeOrg result = debtPositionTypeOrgClient.getDebtPositionTypeOrg(debtPositionTypeOrgId, accessToken);
 
@@ -147,7 +147,7 @@ class DebtPositionTypeOrgClientTest {
 
     when(debtPositionApisHolderMock.getDebtPositionTypeOrgApi(accessToken))
       .thenReturn(debtPositionTypeOrgApiMock);
-    doThrow(new RestInvokeNotFoundException("APPNAME", HttpStatus.NOT_FOUND, "ERROR", "ERRORCODE", "ERRORMESSAGE"))
+    doThrow(new RestInvokeNotFoundException("APPNAME", HttpStatus.NOT_FOUND, "ERROR", "ERRORCODE", "ERRORMESSAGE", "BODY"))
       .when(debtPositionTypeOrgApiMock).deleteDebtPositionTypeOrg(debtPositionTypeOrgId);
 
     Assertions.assertThrows(NotFoundException.class,()->
@@ -189,7 +189,7 @@ class DebtPositionTypeOrgClientTest {
     String accessToken = "ACCESSTOKEN";
     when(debtPositionApisHolderMock.getDebtPositionTypeOrgApi(accessToken))
       .thenReturn(debtPositionTypeOrgApiMock);
-    doThrow(new RestInvokeNotFoundException("APPNAME", HttpStatus.NOT_FOUND, "ERROR", "ERRORCODE", "ERRORMESSAGE"))
+    doThrow(new RestInvokeNotFoundException("APPNAME", HttpStatus.NOT_FOUND, "ERROR", "ERRORCODE", "ERRORMESSAGE", "BODY"))
       .when(debtPositionTypeOrgApiMock).updateFlagActiveDebtPositionTypeOrg(debtPositionTypeOrgId, false);
 
     Assertions.assertThrows(NotFoundException.class,()->

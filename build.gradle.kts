@@ -1,17 +1,17 @@
-import java.util.*
-import com.github.jk1.license.render.*
-import com.github.jk1.license.filter.*
+import com.github.jk1.license.filter.SpdxLicenseBundleNormalizer
+import com.github.jk1.license.render.XmlReportRenderer
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
+import java.util.*
 
 plugins {
   java
-  id("org.springframework.boot") version "4.1.1"
+  id("org.springframework.boot") version "4.1.2"
   id("io.spring.dependency-management") version "1.1.7"
   jacoco
-  id("org.sonarqube") version "7.4.0.8496"
-  id("org.openapi.generator") version "7.25.0"
-  id("org.ajoberstar.grgit") version "5.3.2"
+  id("org.sonarqube") version "7.5.0.8588"
+  id("org.openapi.generator") version "7.26.0"
+  id("org.ajoberstar.grgit") version "5.3.3"
   id("com.gorylenko.gradle-git-properties") version "4.0.1"
   id("com.github.jk1.dependency-license-report") version "3.1.4"
 }
@@ -50,24 +50,23 @@ repositories {
 }
 
 val springDocOpenApiVersion = "3.1.1"
-val openApiToolsVersion = "0.2.11"
-val micrometerVersion = "1.7.1"
-val caffeineVersion = "3.3.0"
-val httpClientVersion = "5.6.4"
+val openApiToolsVersion = "0.2.12"
+val micrometerOtelBridgeVersion = "1.7.2"
+val micrometerPrometheusVersion = "1.17.2"
+val caffeineVersion = "3.3.1"
+val httpClientVersion = "5.6.5"
 val httpCoreVersion = "5.4.4"
 val kafkaAppender = "0.2.0-RC2"
-val lz4JavaVersion = "1.12.0"
+val lz4JavaVersion = "1.12.1"
 val mapStructVersion = "1.6.3"
-val commonsLang3Version = "3.20.0"
+val commonsLang3Version = "3.21.0"
 
 val wiremockVersion = "3.13.2"
-val wiremockSpringBootVersion = "4.2.2"
+val wiremockSpringBootVersion = "4.4.3"
 val podamVersion = "8.0.2.RELEASE"
 
 // CVE Security dependencies
-val tomcatEmbedCoreVersion = "11.0.26"
 val jackson2DatabindVersion = "2.22.3"
-val jackson3DatabindVersion = "3.1.7"
 
 dependencies {
   implementation("org.springframework.boot:spring-boot-starter-webmvc")
@@ -77,8 +76,8 @@ dependencies {
   implementation("org.springframework.boot:spring-boot-starter-actuator")
   implementation("org.springframework.boot:spring-boot-starter-security")
   implementation("org.springframework.data:spring-data-commons")
-  implementation("io.micrometer:micrometer-tracing-bridge-otel:$micrometerVersion")
-  implementation("io.micrometer:micrometer-registry-prometheus")
+  implementation("io.micrometer:micrometer-tracing-bridge-otel:$micrometerOtelBridgeVersion")
+  implementation("io.micrometer:micrometer-registry-prometheus:$micrometerPrometheusVersion")
   implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:$springDocOpenApiVersion") {
     exclude(group = "org.apache.commons", module = "commons-lang3")
   }
@@ -97,9 +96,7 @@ dependencies {
   implementation("org.mapstruct:mapstruct:$mapStructVersion")
 
   // CVE Security dependencies
-  implementation("org.apache.tomcat.embed:tomcat-embed-core:$tomcatEmbedCoreVersion")
   implementation("com.fasterxml.jackson.core:jackson-databind:$jackson2DatabindVersion")
-  implementation("tools.jackson.core:jackson-databind:$jackson3DatabindVersion")
 
   compileOnly("org.projectlombok:lombok")
   annotationProcessor("org.projectlombok:lombok")
@@ -304,7 +301,8 @@ tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>("ope
       "OrganizationApiKey" to "it.gov.pagopa.pu.organization.dto.generated.OrganizationApiKey",
       "OrganizationApiKeys" to "it.gov.pagopa.pu.organization.dto.generated.OrganizationApiKeys",
       "OrganizationApiKeyType" to "it.gov.pagopa.pu.organization.dto.generated.OrganizationApiKeyType",
-      "PagedPdndServiceView" to "it.gov.pagopa.pu.organization.dto.generated.PagedPdndServiceView"
+      "PagedPdndServiceView" to "it.gov.pagopa.pu.organization.dto.generated.PagedPdndServiceView",
+      "PagedPdndClientView" to "it.gov.pagopa.pu.organization.dto.generated.PagedPdndClientView"
     )
   )
   configOptions.set(

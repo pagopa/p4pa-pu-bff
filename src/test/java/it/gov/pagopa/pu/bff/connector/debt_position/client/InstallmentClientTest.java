@@ -118,7 +118,7 @@ class InstallmentClientTest {
     when(debtPositionApisHolderMock.getInstallmentApi(accessToken))
       .thenReturn(installmentApiMock);
     when(installmentApiMock.getInstallmentDetail(installmentId, operatorExternalUserId))
-      .thenThrow(new RestInvokeNotFoundException("APPNAME", HttpStatus.NOT_FOUND, "ERROR", "ERRORCODE", "ERRORMESSAGE"));
+      .thenThrow(new RestInvokeNotFoundException("APPNAME", HttpStatus.NOT_FOUND, "ERROR", "ERRORCODE", "ERRORMESSAGE", "BODY"));
 
     InstallmentDetailDTO result = installmentClient.getInstallmentDetail(installmentId, operatorExternalUserId, accessToken);
 
@@ -157,7 +157,7 @@ class InstallmentClientTest {
     when(debtPositionApisHolderMock.getInstallmentNoPiiSearchControllerApi(accessToken))
       .thenReturn(installmentNoPiiSearchControllerApi);
     when(installmentNoPiiSearchControllerApi.crudInstallmentsFindAuthorizedByTransferSemanticKey(organizationId, iuv, iur, transferIndex, operatorExternalUserId, null))
-      .thenThrow(new RestInvokeNotFoundException("APPNAME", HttpStatus.NOT_FOUND, "ERROR", "ERRORCODE", "ERRORMESSAGE"));
+      .thenThrow(new RestInvokeNotFoundException("APPNAME", HttpStatus.NOT_FOUND, "ERROR", "ERRORCODE", "ERRORMESSAGE", "BODY"));
 
     InstallmentNoPII result = installmentClient.getInstallmentFromTransferSemanticKey(organizationId, iuv, iur, transferIndex, operatorExternalUserId, null, accessToken);
 

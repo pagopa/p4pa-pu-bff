@@ -1,6 +1,8 @@
 package it.gov.pagopa.pu.bff.connector.organization;
 
 import it.gov.pagopa.pu.bff.connector.organization.client.PdndClientClient;
+import it.gov.pagopa.pu.bff.util.TestUtils;
+import it.gov.pagopa.pu.organization.dto.generated.PagedPdndClientView;
 import it.gov.pagopa.pu.organization.dto.generated.PdndClient;
 import it.gov.pagopa.pu.organization.dto.generated.PdndClientDTO;
 import it.gov.pagopa.pu.organization.dto.generated.PdndClientNoSecretDTO;
@@ -10,19 +12,22 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Pageable;
+import uk.co.jemos.podam.api.PodamFactory;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class PdndClientServiceTest {
+  public static final PodamFactory podamFactory = TestUtils.getPodamFactory();
 
   private static final String CLIENT_ID = "CLIENT_001";
   private static final Long ORGANIZATION_ID = 123L;
   private static final String SUB_UNIT_CODE = "SUB_UNIT_001";
+  private static final String SUB_UNIT_NAME = "SUB_UNIT_001_NAME";
   private static final String ACCESS_TOKEN = "fakeAccessToken";
 
   @Mock
@@ -79,5 +84,20 @@ class PdndClientServiceTest {
       .deletePdndClient(ORGANIZATION_ID, CLIENT_ID, ACCESS_TOKEN);
 
    assertDoesNotThrow(() -> service.deletePdndClient(ORGANIZATION_ID, CLIENT_ID, ACCESS_TOKEN));
+  }
+
+  @Test
+  void whenGetOrgSubUnitsPdndClientsThenReturnOk() {
+    Pageable pageable = Pageable.ofSize(5);
+    PagedPdndClientView expectedResult = podamFactory.manufacturePojo(PagedPdndClientView.class);
+
+    when(clientMock.getOrgSubUnitsPdndClients(ORGANIZATION_ID, SUB_UNIT_CODE,
+      SUB_UNIT_NAME, pageable, ACCESS_TOKEN)).thenReturn(expectedResult);
+
+    PagedPdndClientView result = service
+      .getOrgSubUnitsPdndClients(ORGANIZATION_ID, SUB_UNIT_CODE, SUB_UNIT_NAME, pageable, ACCESS_TOKEN);
+
+    assertNotNull(result);
+    assertSame(expectedResult, result);
   }
 }

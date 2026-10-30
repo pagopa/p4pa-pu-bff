@@ -93,7 +93,7 @@ class TaxonomyClientTest {
     when(organizationApisHolderMock.getTaxonomy(accessToken))
       .thenReturn(taxonomyEntityControllerApiMock);
     when(taxonomyEntityControllerApiMock.crudGetTaxonomy(String.valueOf(taxonomyId)))
-      .thenThrow(new RestInvokeNotFoundException("APPNAME", HttpStatus.NOT_FOUND, "ERROR", "ERRORCODE", "ERRORMESSAGE"));
+      .thenThrow(new RestInvokeNotFoundException("APPNAME", HttpStatus.NOT_FOUND, "ERROR", "ERRORCODE", "ERRORMESSAGE", "BODY"));
 
     Taxonomy result = taxonomyClient.getTaxonomyDetail(taxonomyId, accessToken);
 

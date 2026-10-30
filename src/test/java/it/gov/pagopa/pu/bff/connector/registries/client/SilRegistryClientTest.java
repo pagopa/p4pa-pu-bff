@@ -63,7 +63,7 @@ class SilRegistryClientTest {
     when(registriesApisHolderMock.getSilRegistryApi(accessToken))
       .thenReturn(silRegistryApiMock);
     when(silRegistryApiMock.getSilRegistry(registryId))
-      .thenThrow(new RestInvokeNotFoundException("APPNAME", HttpStatus.NOT_FOUND, "ERROR", "ERRORCODE", "ERRORMESSAGE"));
+      .thenThrow(new RestInvokeNotFoundException("APPNAME", HttpStatus.NOT_FOUND, "ERROR", "ERRORCODE", "ERRORMESSAGE", "BODY"));
 
     SilRegistryDTO result = silRegistryClient.getSilRegistry(registryId, accessToken);
 

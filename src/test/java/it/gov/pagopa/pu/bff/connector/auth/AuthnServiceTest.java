@@ -90,9 +90,9 @@ class AuthnServiceTest {
   void whenLogoutThenInvokeClient() {
     String accessToken = "accessToken";
 
-    doNothing().when(clientMock).logout(CLIENT_ID,accessToken);
+    doNothing().when(clientMock).logout(CLIENT_ID, accessToken, accessToken);
 
-    Assertions.assertDoesNotThrow(() -> service.logout(accessToken));
+    Assertions.assertDoesNotThrow(() -> service.logout(accessToken, accessToken));
   }
 
   @Test

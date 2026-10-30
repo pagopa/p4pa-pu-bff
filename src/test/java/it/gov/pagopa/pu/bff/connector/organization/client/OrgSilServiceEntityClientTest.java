@@ -56,7 +56,7 @@ class OrgSilServiceEntityClientTest {
 
     when(organizationApisHolderMock.getOrgSilServiceEntityControllerApi(accessToken))
       .thenReturn(orgSilServiceEntityControllerApiMock);
-    doThrow(new RestInvokeNotFoundException("APPNAME", HttpStatus.NOT_FOUND, "ERROR", "ERRORCODE", "ERRORMESSAGE"))
+    doThrow(new RestInvokeNotFoundException("APPNAME", HttpStatus.NOT_FOUND, "ERROR", "ERRORCODE", "ERRORMESSAGE", "BODY"))
       .when(orgSilServiceEntityControllerApiMock)
       .crudDeleteOrgsilservice(String.valueOf(orgSilServiceId));
 

@@ -41,4 +41,6 @@ public interface DebtPositionTypeOrgService {
   PagedModelDebtPositionTypeOrg findDebtPositionTypeOrgNotEnabledForOperator(OperatorDetailsFiltersDTO operatorDetailsFiltersDTO, Pageable pageable, String accessToken);
 
   boolean isSpontaneousFormReferencedByDpto(Long spontaneousFormId, String accessToken);
+
+  DebtPositionTypeOrg getByOrganizationIdAndCode(Long organizationId, String code, String accessToken);
 }

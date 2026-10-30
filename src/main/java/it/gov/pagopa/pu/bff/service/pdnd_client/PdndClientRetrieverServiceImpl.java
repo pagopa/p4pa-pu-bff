@@ -5,9 +5,11 @@ import it.gov.pagopa.pu.bff.connector.organization.PdndClientService;
 import it.gov.pagopa.pu.bff.exception.InvalidPdndClientException;
 import it.gov.pagopa.pu.bff.mapper.PdndClientMapper;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
+import it.gov.pagopa.pu.organization.dto.generated.PagedPdndClientView;
 import it.gov.pagopa.pu.organization.dto.generated.PdndClient;
 import it.gov.pagopa.pu.organization.dto.generated.PdndClientDTO;
 import it.gov.pagopa.pu.organization.dto.generated.PdndClientNoSecretDTO;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -62,5 +64,11 @@ public class PdndClientRetrieverServiceImpl implements PdndClientRetrieverServic
   public void deletePdndClient(Long organizationId, String clientId, UserInfo userInfo, String accessToken) {
     authorizationService.validateAdminRole(organizationId, userInfo);
     pdndClientService.deletePdndClient(organizationId, clientId, accessToken);
+  }
+
+  @Override
+  public PagedPdndClientView getOrgSubUnitsPdndClients(Long organizationId, String subUnitCode, String subUnitName, Pageable pageable, UserInfo userInfo, String accessToken) {
+    authorizationService.validateAdminRole(organizationId, userInfo);
+    return pdndClientService.getOrgSubUnitsPdndClients(organizationId, subUnitCode, subUnitName, pageable, accessToken);
   }
 }

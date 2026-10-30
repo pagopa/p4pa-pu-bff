@@ -9,7 +9,6 @@ import java.util.List;
 public interface OrgSubUnitService {
   OrgSubUnit getOrgSubUnitById(String orgSubUnitId, String accessToken);
   OrgSubUnit createOrgSubUnit(OrgSubUnitRequestBody orgSubUnit, String accessToken);
-  void deleteOrgSubUnit(String orgSubUnitId, String accessToken);
   OrgSubUnit updateOrgSubUnit(String orgSubUnitId, OrgSubUnitRequestBody orgSubUnit, String accessToken);
   void updateOrgSubUnitStatus(Long organizationId, String subUnitCode, OrgSubUnitStatus status, String accessToken);
   PagedModelOrgSubUnit findByOrganizationIdAndFilters(Long organizationId, String operatorExternalUserId, PagedOrgSubUnitFiltersDTO filters, Pageable pageable, String accessToken);

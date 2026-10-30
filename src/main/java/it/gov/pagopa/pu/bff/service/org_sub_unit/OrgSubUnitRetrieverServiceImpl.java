@@ -61,12 +61,6 @@ public class OrgSubUnitRetrieverServiceImpl implements OrgSubUnitRetrieverServic
   }
 
   @Override
-  public void deleteOrgSubUnit(Long organizationId, String subUnitCode, UserInfo loggedUser, String accessToken) {
-    authorizationService.validateAdminRole(organizationId, loggedUser);
-    orgSubUnitService.deleteOrgSubUnit(calculateOrgSubUnitId(organizationId, subUnitCode), accessToken);
-  }
-
-  @Override
   public OrgSubUnit updateOrgSubUnit(Long organizationId, String subUnitCode, OrgSubUnitRequestBody orgSubUnit, UserInfo loggedUser, String accessToken) {
     authorizationService.validateAdminRole(organizationId, loggedUser);
     validateOrganizationForSubUnit(organizationId, orgSubUnit.getOrganizationId());

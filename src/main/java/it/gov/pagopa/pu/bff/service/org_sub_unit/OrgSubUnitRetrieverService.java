@@ -11,7 +11,6 @@ import java.util.List;
 public interface OrgSubUnitRetrieverService {
   OrgSubUnit getOrgSubUnitById(Long organizationId, String subUnitCode, UserInfo loggedUser, String accessToken);
   OrgSubUnit createOrgSubUnit(Long organizationId, OrgSubUnitRequestBody orgSubUnit, UserInfo loggedUser, String accessToken);
-  void deleteOrgSubUnit(Long organizationId, String subUnitCode, UserInfo loggedUser,String accessToken);
   OrgSubUnit updateOrgSubUnit(Long organizationId, String subUnitCode, OrgSubUnitRequestBody orgSubUnit, UserInfo loggedUser, String accessToken);
   void updateOrgSubUnitStatus(Long organizationId, String subUnitCode, OrgSubUnitStatus status, UserInfo loggedUser, String accessToken);
   PagedOrgSubUnit getPagedOrgSubUnits(PagedOrgSubUnitFiltersDTO filters, Pageable pageable, UserInfo loggedUser, String accessToken);

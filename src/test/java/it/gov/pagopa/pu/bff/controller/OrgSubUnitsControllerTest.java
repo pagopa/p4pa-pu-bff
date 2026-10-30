@@ -73,21 +73,6 @@ class OrgSubUnitsControllerTest {
   }
 
   @Test
-  void givenCorrectRequestWhenDeleteOrgSubUnitByIdThenOk() {
-    // Given
-    Long organizationId = 1L;
-    String orgSubUnitId = "SUB_UNIT_ID";
-
-    // When
-    ResponseEntity<Void> response = orgSubUnitsController.deleteOrgSubUnitById(organizationId, orgSubUnitId);
-
-    // Then
-    assertEquals(HttpStatus.OK, response.getStatusCode());
-    assertNull(response.getBody());
-    verify(subUnitRetrieverServiceMock).deleteOrgSubUnit(organizationId, orgSubUnitId, loggedUser, accessToken);
-  }
-
-  @Test
   void givenCorrectRequestWhenGetOrgSubUnitByIdThenOk() {
     // Given
     Long organizationId = 1L;

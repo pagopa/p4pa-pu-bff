@@ -11,14 +11,13 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Pageable;
+import uk.co.jemos.podam.api.PodamFactory;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class PdndServiceServiceImplTest {
@@ -27,6 +26,7 @@ class PdndServiceServiceImplTest {
   private static final String SUB_UNIT_CODE = "SUB_UNIT_001";
   private static final String SUB_UNIT_NAME = "SUB_UNIT_001_NAME";
   private static final String ACCESS_TOKEN = "fakeAccessToken";
+  public static final PodamFactory podamFactory = TestUtils.getPodamFactory();
 
   @Mock
   private PdndServiceClient clientMock;
@@ -82,7 +82,7 @@ class PdndServiceServiceImplTest {
   void whenFindByOrganizationIdAndClientIdThenOk() {
     String clientId = "clientId";
     PdndServiceType serviceType = PdndServiceType.SEND;
-    List<PdndService> expectedResult = List.of(TestUtils.getPodamFactory().manufacturePojo(PdndService.class));
+    List<PdndService> expectedResult = List.of(podamFactory.manufacturePojo(PdndService.class));
 
     when(pdndServiceSearchClientMock.findByOrganizationIdAndClientId(ORGANIZATION_ID, clientId, serviceType, ACCESS_TOKEN))
       .thenReturn(expectedResult);
@@ -120,6 +120,20 @@ class PdndServiceServiceImplTest {
       .getOrgSubUnitsPdndServices(ORGANIZATION_ID, SUB_UNIT_CODE, SUB_UNIT_NAME, pageable, ACCESS_TOKEN);
 
     assertNotNull(result);
+    assertSame(expectedResult, result);
+  }
+
+  @Test
+  void whenUpdatePdndServiceThenOk() {
+    String purposeId = "purposeId";
+    PdndServiceUpdateDTO pdndServiceUpdateDTO = podamFactory.manufacturePojo(PdndServiceUpdateDTO.class);
+    PdndService expectedResult = podamFactory.manufacturePojo(PdndService.class);
+
+    when(clientMock.updatePdndService(purposeId, pdndServiceUpdateDTO, ACCESS_TOKEN))
+      .thenReturn(expectedResult);
+
+    PdndService result = service.updatePdndService(purposeId, pdndServiceUpdateDTO, ACCESS_TOKEN);
+
     assertSame(expectedResult, result);
   }
 }

@@ -18,4 +18,6 @@ public interface PdndServiceService {
 
   PagedPdndServiceView getOrgSubUnitsPdndServices(Long organizationId, String subUnitCode, String subUnitName, Pageable pageable, String accessToken);
 
+  PdndService updatePdndService(String purposeId, PdndServiceUpdateDTO pdndServiceUpdateDTO, String accessToken);
+
 }

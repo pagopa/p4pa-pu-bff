@@ -12,10 +12,12 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Pageable;
+import uk.co.jemos.podam.api.PodamFactory;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -26,7 +28,8 @@ class PdndServiceRetrieverServiceImplTest {
   private static final String SUB_UNIT_NAME = "SUB_UNIT_001_NAME";
   private static final String ACCESS_TOKEN = "fakeAccessToken";
 
-  private static final UserInfo USER_INFO = TestUtils.getPodamFactory().manufacturePojo(UserInfo.class);
+  public static final PodamFactory podamFactory = TestUtils.getPodamFactory();
+  private static final UserInfo USER_INFO = podamFactory.manufacturePojo(UserInfo.class);
 
   @Mock
   private AuthorizationService authorizationServiceMock;
@@ -45,8 +48,8 @@ class PdndServiceRetrieverServiceImplTest {
 
   @Test
   void givenAuthorizedAdminWhenCreatePdndServiceThenReturnService() {
-    PdndServiceRequestDTO pdndServiceRequestDTO = TestUtils.getPodamFactory().manufacturePojo(PdndServiceRequestDTO.class);
-    PdndService expectedResult = TestUtils.getPodamFactory().manufacturePojo(PdndService.class);
+    PdndServiceRequestDTO pdndServiceRequestDTO = podamFactory.manufacturePojo(PdndServiceRequestDTO.class);
+    PdndService expectedResult = podamFactory.manufacturePojo(PdndService.class);
 
     doNothing().when(authorizationServiceMock)
       .validateAdminRole(ORGANIZATION_ID, USER_INFO);
@@ -62,7 +65,7 @@ class PdndServiceRetrieverServiceImplTest {
   @Test
   void givenAuthorizedAdminWhenGetPdndServiceThenReturnService() {
     String purposeId = "PURPOSE_001";
-    PdndServiceView expectedResult = TestUtils.getPodamFactory().manufacturePojo(PdndServiceView.class);
+    PdndServiceView expectedResult = podamFactory.manufacturePojo(PdndServiceView.class);
 
     doNothing().when(authorizationServiceMock)
       .validateAdminRole(ORGANIZATION_ID, USER_INFO);
@@ -77,7 +80,7 @@ class PdndServiceRetrieverServiceImplTest {
 
   @Test
   void givenAuthorizedAdminWhenGetPdndServicesThenReturnServices() {
-    List<PdndServiceView> expectedResult = List.of(TestUtils.getPodamFactory().manufacturePojo(PdndServiceView.class));
+    List<PdndServiceView> expectedResult = List.of(podamFactory.manufacturePojo(PdndServiceView.class));
 
     doNothing().when(authorizationServiceMock)
       .validateAdminRole(ORGANIZATION_ID, USER_INFO);
@@ -94,7 +97,7 @@ class PdndServiceRetrieverServiceImplTest {
   void givenAuthorizedAdminWhenGetPdndClientServicesThenOk() {
     String clientId = "clientId";
     PdndServiceType serviceType = PdndServiceType.SEND;
-    List<PdndService> expectedResult = List.of(TestUtils.getPodamFactory().manufacturePojo(PdndService.class));
+    List<PdndService> expectedResult = List.of(podamFactory.manufacturePojo(PdndService.class));
 
     doNothing().when(authorizationServiceMock)
       .validateAdminRole(ORGANIZATION_ID, USER_INFO);
@@ -140,6 +143,23 @@ class PdndServiceRetrieverServiceImplTest {
       .getOrgSubUnitsPdndServices(ORGANIZATION_ID, SUB_UNIT_CODE, SUB_UNIT_NAME, pageable, USER_INFO, ACCESS_TOKEN);
 
     assertNotNull(result);
+    assertSame(expectedResult, result);
+  }
+
+  @Test
+  void whenUpdatePdndServiceThenOk() {
+    String purposeId = "purposeId";
+    PdndServiceUpdateDTO pdndServiceUpdateDTO = podamFactory.manufacturePojo(PdndServiceUpdateDTO.class);
+    PdndService expectedResult = podamFactory.manufacturePojo(PdndService.class);
+
+    doNothing().when(authorizationServiceMock)
+      .validateAdminRole(ORGANIZATION_ID, USER_INFO);
+
+    when(pdndServiceServiceMock.updatePdndService(purposeId, pdndServiceUpdateDTO, ACCESS_TOKEN))
+      .thenReturn(expectedResult);
+
+    PdndService result = pdndServiceRetriever.updatePdndService(ORGANIZATION_ID, purposeId, pdndServiceUpdateDTO, USER_INFO, ACCESS_TOKEN);
+
     assertSame(expectedResult, result);
   }
 }

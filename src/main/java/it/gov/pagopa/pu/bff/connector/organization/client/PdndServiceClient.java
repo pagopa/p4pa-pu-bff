@@ -43,4 +43,9 @@ public class PdndServiceClient {
         PageUtils.getPageSize(pageable),
         PageUtils.getSortList(pageable));
   }
+
+  public PdndService updatePdndService(String purposeId, PdndServiceUpdateDTO pdndServiceUpdateDTO, String accessToken) {
+    return organizationApisHolder.getPdndServiceApi(accessToken)
+      .updatePdndService(purposeId, pdndServiceUpdateDTO);
+  }
 }

@@ -45,10 +45,11 @@ class OrgSubUnitRetrieverServiceImplTest {
   private OrgSubUnitRetrieverService orgSubUnitRetrieverService;
 
   private final String accessToken = "TOKEN";
+  private final Integer pageMaxSize = 10000;
 
   @BeforeEach
   void setUp() {
-    orgSubUnitRetrieverService = new OrgSubUnitRetrieverServiceImpl(orgSubUnitServiceMock, authorizationServiceMock, pagedOrgSubUnitMapperMock);
+    orgSubUnitRetrieverService = new OrgSubUnitRetrieverServiceImpl(orgSubUnitServiceMock, authorizationServiceMock, pagedOrgSubUnitMapperMock, pageMaxSize);
   }
 
   @AfterEach
@@ -404,4 +405,88 @@ class OrgSubUnitRetrieverServiceImplTest {
     assertEquals(expectedResult, actualResult);
   }
 
+  @Test
+  void givenAdminWhenGetOrgSubUnitsThenOk() {
+    Long organizationId = 1L;
+    UserInfo loggedUser = podamFactory.manufacturePojo(UserInfo.class);
+    PagedOrgSubUnitFiltersDTO expectedFilters = new PagedOrgSubUnitFiltersDTO();
+    expectedFilters.setOrganizationId(organizationId);
+    expectedFilters.setStatus(OrgSubUnitStatus.ACTIVE);
+    Pageable expectedPageable = PageRequest.of(0, pageMaxSize);
+    PagedModelOrgSubUnit pagedModel = podamFactory.manufacturePojo(PagedModelOrgSubUnit.class);
+    PagedOrgSubUnit mappedResult = podamFactory.manufacturePojo(PagedOrgSubUnit.class);
+
+    try (MockedStatic<AuthorizationService> authMock = Mockito.mockStatic(AuthorizationService.class)) {
+      authMock.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser))
+        .thenAnswer(a -> null);
+      authMock.when(() -> AuthorizationService.isAdminRole(organizationId, loggedUser))
+        .thenReturn(true);
+
+      when(orgSubUnitServiceMock.findByOrganizationIdAndFilters(organizationId, null, expectedFilters, expectedPageable, accessToken))
+        .thenReturn(pagedModel);
+      when(pagedOrgSubUnitMapperMock.map(pagedModel))
+        .thenReturn(mappedResult);
+
+      List<OrgSubUnit> result = orgSubUnitRetrieverService.getOrgSubUnits(organizationId, OrgSubUnitStatus.ACTIVE, loggedUser, accessToken);
+
+      assertSame(mappedResult.getContent(), result);
+    }
+  }
+
+  @Test
+  void givenNonAdminWhenGetOrgSubUnitsThenRestrictToLoggedUser() {
+    Long organizationId = 1L;
+    UserInfo loggedUser = podamFactory.manufacturePojo(UserInfo.class);
+    PagedOrgSubUnitFiltersDTO expectedFilters = new PagedOrgSubUnitFiltersDTO();
+    expectedFilters.setOrganizationId(organizationId);
+    expectedFilters.setStatus(OrgSubUnitStatus.ACTIVE);
+    Pageable expectedPageable = PageRequest.of(0, pageMaxSize);
+    PagedModelOrgSubUnit pagedModel = podamFactory.manufacturePojo(PagedModelOrgSubUnit.class);
+    PagedOrgSubUnit mappedResult = podamFactory.manufacturePojo(PagedOrgSubUnit.class);
+
+    try (MockedStatic<AuthorizationService> authMock = Mockito.mockStatic(AuthorizationService.class)) {
+      authMock.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser))
+        .thenAnswer(a -> null);
+      authMock.when(() -> AuthorizationService.isAdminRole(organizationId, loggedUser))
+        .thenReturn(false);
+
+      when(orgSubUnitServiceMock.findByOrganizationIdAndFilters(organizationId, loggedUser.getMappedExternalUserId(), expectedFilters, expectedPageable, accessToken))
+        .thenReturn(pagedModel);
+      when(pagedOrgSubUnitMapperMock.map(pagedModel))
+        .thenReturn(mappedResult);
+
+      List<OrgSubUnit> result = orgSubUnitRetrieverService.getOrgSubUnits(organizationId, OrgSubUnitStatus.ACTIVE, loggedUser, accessToken);
+
+      assertSame(mappedResult.getContent(), result);
+    }
+  }
+
+  @Test
+  void givenNoResultsWhenGetOrgSubUnitsThenReturnEmptyList() {
+    Long organizationId = 1L;
+    UserInfo loggedUser = podamFactory.manufacturePojo(UserInfo.class);
+    PagedOrgSubUnitFiltersDTO expectedFilters = new PagedOrgSubUnitFiltersDTO();
+    expectedFilters.setOrganizationId(organizationId);
+    expectedFilters.setStatus(OrgSubUnitStatus.ACTIVE);
+    Pageable expectedPageable = PageRequest.of(0, pageMaxSize);
+    PagedModelOrgSubUnit pagedModel = new PagedModelOrgSubUnit();
+    PagedOrgSubUnit mappedResult = new PagedOrgSubUnit();
+    mappedResult.setContent(List.of());
+
+    try (MockedStatic<AuthorizationService> authMock = Mockito.mockStatic(AuthorizationService.class)) {
+      authMock.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser))
+        .thenAnswer(a -> null);
+      authMock.when(() -> AuthorizationService.isAdminRole(organizationId, loggedUser))
+        .thenReturn(true);
+
+      when(orgSubUnitServiceMock.findByOrganizationIdAndFilters(organizationId, null, expectedFilters, expectedPageable, accessToken))
+        .thenReturn(pagedModel);
+      when(pagedOrgSubUnitMapperMock.map(pagedModel))
+        .thenReturn(mappedResult);
+
+      List<OrgSubUnit> result = orgSubUnitRetrieverService.getOrgSubUnits(organizationId, OrgSubUnitStatus.ACTIVE, loggedUser, accessToken);
+
+      assertTrue(result.isEmpty());
+    }
+  }
 }

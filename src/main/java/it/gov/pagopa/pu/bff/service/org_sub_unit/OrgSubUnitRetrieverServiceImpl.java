@@ -10,6 +10,8 @@ import it.gov.pagopa.pu.bff.exception.common.NotFoundException;
 import it.gov.pagopa.pu.bff.mapper.PagedOrgSubUnitMapper;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
 import it.gov.pagopa.pu.organization.dto.generated.*;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.stereotype.Service;
@@ -22,11 +24,14 @@ public class OrgSubUnitRetrieverServiceImpl implements OrgSubUnitRetrieverServic
   private final OrgSubUnitService orgSubUnitService;
   private final AuthorizationService authorizationService;
   private final PagedOrgSubUnitMapper pagedOrgSubUnitMapper;
+  private final Integer pageMaxSize;
 
-  public OrgSubUnitRetrieverServiceImpl(OrgSubUnitService orgSubUnitService, AuthorizationService authorizationService, PagedOrgSubUnitMapper pagedOrgSubUnitMapper) {
+  public OrgSubUnitRetrieverServiceImpl(OrgSubUnitService orgSubUnitService, AuthorizationService authorizationService, PagedOrgSubUnitMapper pagedOrgSubUnitMapper,
+    @Value("${rest.page.request-max-page-size}") Integer pageMaxSize) {
     this.orgSubUnitService = orgSubUnitService;
     this.authorizationService = authorizationService;
     this.pagedOrgSubUnitMapper = pagedOrgSubUnitMapper;
+    this.pageMaxSize = pageMaxSize;
   }
 
   @Override
@@ -130,6 +135,13 @@ public class OrgSubUnitRetrieverServiceImpl implements OrgSubUnitRetrieverServic
       accessToken
     );
     return pagedOrgSubUnitMapper.map(pagedModelOrgSubUnit);
+  }
+
+  @Override
+  public List<OrgSubUnit> getOrgSubUnits(Long organizationId, OrgSubUnitStatus status, UserInfo loggedUser, String accessToken) {
+    PagedOrgSubUnitFiltersDTO filters = new PagedOrgSubUnitFiltersDTO(organizationId, null, null, null, status, null);
+    Pageable pageable = PageRequest.of(0, pageMaxSize);
+    return getPagedOrgSubUnits(filters, pageable, loggedUser, accessToken).getContent();
   }
 
   private void validateOrganizationForSubUnit(Long organizationId, Long orgIdFromSubUnit) {

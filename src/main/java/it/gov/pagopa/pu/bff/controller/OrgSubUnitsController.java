@@ -72,4 +72,10 @@ public class OrgSubUnitsController implements OrgSubUnitsApi {
     log.info("User requested getOperatorAssignableOrgSubUnits having organizationId {} and mappedExternalUserId {}", organizationId, mappedExternalUserId);
     return ResponseEntity.ok(subUnitRetrieverService.getOperatorAssignableOrgSubUnits(organizationId, mappedExternalUserId, subUnitCode, subUnitName, pageable, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken()));
   }
+
+  @Override
+  public ResponseEntity<List<OrgSubUnit>> getOrgSubUnits(Long organizationId, OrgSubUnitStatus status) {
+    log.info("User requested getOrgSubUnits having organizationId {} and status {}", organizationId, status);
+    return ResponseEntity.ok(subUnitRetrieverService.getOrgSubUnits(organizationId, status, SecurityUtils.getLoggedUser(), SecurityUtils.getAccessToken()));
+  }
 }

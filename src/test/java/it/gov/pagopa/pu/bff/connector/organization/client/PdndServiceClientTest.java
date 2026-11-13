@@ -2,6 +2,7 @@ package it.gov.pagopa.pu.bff.connector.organization.client;
 
 import it.gov.pagopa.pu.bff.connector.organization.config.OrganizationApisHolder;
 import it.gov.pagopa.pu.bff.util.PageUtils;
+import it.gov.pagopa.pu.bff.util.TestUtils;
 import it.gov.pagopa.pu.organization.client.generated.PdndServiceApi;
 import it.gov.pagopa.pu.organization.dto.generated.*;
 import org.junit.jupiter.api.AfterEach;
@@ -11,10 +12,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Pageable;
+import uk.co.jemos.podam.api.PodamFactory;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -24,6 +26,7 @@ class PdndServiceClientTest {
   private static final String SUB_UNIT_CODE = "SUB_UNIT_001";
   private static final String SUB_UNIT_NAME = "SUB_UNIT_001_NAME";
   private static final String ACCESS_TOKEN = "accessToken";
+  public static final PodamFactory podamFactory = TestUtils.getPodamFactory();
 
   @Mock
   private OrganizationApisHolder organizationApisHolderMock;
@@ -123,6 +126,22 @@ class PdndServiceClientTest {
       .thenReturn(expectedResult);
 
     PagedPdndServiceView result = pdndServiceClient.getOrgSubUnitsPdndServices(ORGANIZATION_ID, SUB_UNIT_CODE, SUB_UNIT_NAME, pageable, ACCESS_TOKEN);
+
+    assertSame(expectedResult, result);
+  }
+
+  @Test
+  void whenUpdatePdndServiceThenOk() {
+    String purposeId = "purposeId";
+    PdndServiceUpdateDTO pdndServiceUpdateDTO = podamFactory.manufacturePojo(PdndServiceUpdateDTO.class);
+    PdndService expectedResult = podamFactory.manufacturePojo(PdndService.class);
+
+    when(organizationApisHolderMock.getPdndServiceApi(ACCESS_TOKEN))
+      .thenReturn(pdndServiceApiMock);
+    when(pdndServiceApiMock.updatePdndService(purposeId, pdndServiceUpdateDTO))
+      .thenReturn(expectedResult);
+
+    PdndService result = pdndServiceClient.updatePdndService(purposeId, pdndServiceUpdateDTO, ACCESS_TOKEN);
 
     assertSame(expectedResult, result);
   }

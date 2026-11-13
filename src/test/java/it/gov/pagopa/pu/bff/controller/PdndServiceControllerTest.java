@@ -15,6 +15,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import uk.co.jemos.podam.api.PodamFactory;
 
 import java.util.List;
 
@@ -24,6 +25,7 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class PdndServiceControllerTest {
 
+  public static final PodamFactory podamFactory = TestUtils.getPodamFactory();
   @Mock
   private PdndServiceRetrieverService pdndServiceRetrieverServiceMock;
 
@@ -34,7 +36,7 @@ class PdndServiceControllerTest {
   private static final String ORG_SUB_UNIT_CODE = "SUB_UNIT_001";
   private static final String SUB_UNIT_NAME = "SUB_UNIT_001_NAME";
   private static final String ACCESS_TOKEN = "fakeAccessToken";
-  private final UserInfo loggedUser = TestUtils.getPodamFactory().manufacturePojo(UserInfo.class);
+  private final UserInfo loggedUser = podamFactory.manufacturePojo(UserInfo.class);
 
   @BeforeEach
   void setUp() {
@@ -49,8 +51,8 @@ class PdndServiceControllerTest {
 
   @Test
   void givenOrganizationIdAndPdndServiceRequestDTOWhenCreatePdndServiceThenReturnCreatedPdndService() {
-    PdndServiceRequestDTO body = TestUtils.getPodamFactory().manufacturePojo(PdndServiceRequestDTO.class);
-    PdndService expectedClient = TestUtils.getPodamFactory().manufacturePojo(PdndService.class);
+    PdndServiceRequestDTO body = podamFactory.manufacturePojo(PdndServiceRequestDTO.class);
+    PdndService expectedClient = podamFactory.manufacturePojo(PdndService.class);
 
     when(pdndServiceRetrieverServiceMock.createPdndService(ORGANIZATION_ID, body, ORG_SUB_UNIT_CODE, loggedUser, ACCESS_TOKEN))
       .thenReturn(expectedClient);
@@ -65,7 +67,7 @@ class PdndServiceControllerTest {
   @Test
   void givenOrganizationIdPurposeIdAndSubUnitCodeWhenGetPdndServiceThenReturnPdndService() {
     String purposeId = "PURPOSE_001";
-    PdndServiceView expectedService = TestUtils.getPodamFactory().manufacturePojo(PdndServiceView.class);
+    PdndServiceView expectedService = podamFactory.manufacturePojo(PdndServiceView.class);
 
     when(pdndServiceRetrieverServiceMock.getPdndService(ORGANIZATION_ID, purposeId, loggedUser, ACCESS_TOKEN))
       .thenReturn(expectedService);
@@ -79,7 +81,7 @@ class PdndServiceControllerTest {
 
   @Test
   void givenOrganizationIdAndServiceTypeAndSubUnitCodeWhenGetPdndServicesThenReturnPdndServices() {
-    List<PdndServiceView> expectedResult = List.of(TestUtils.getPodamFactory().manufacturePojo(PdndServiceView.class));
+    List<PdndServiceView> expectedResult = List.of(podamFactory.manufacturePojo(PdndServiceView.class));
 
     when(pdndServiceRetrieverServiceMock.getPdndServices(ORGANIZATION_ID, ORG_SUB_UNIT_CODE, PdndServiceType.SEND, loggedUser, ACCESS_TOKEN))
       .thenReturn(expectedResult);
@@ -95,7 +97,7 @@ class PdndServiceControllerTest {
   void whenGetPdndClientServicesThenReturnOk() {
     String clientId = "clientId";
     PdndServiceType serviceType = PdndServiceType.SEND;
-    List<PdndService> expectedResult = List.of(TestUtils.getPodamFactory().manufacturePojo(PdndService.class));
+    List<PdndService> expectedResult = List.of(podamFactory.manufacturePojo(PdndService.class));
 
     when(pdndServiceRetrieverServiceMock.getPdndClientServices(ORGANIZATION_ID, clientId, serviceType, loggedUser, ACCESS_TOKEN))
       .thenReturn(expectedResult);
@@ -141,5 +143,21 @@ class PdndServiceControllerTest {
     assertNotNull(result);
     assertEquals(HttpStatus.OK, result.getStatusCode());
     assertSame(expectedResult, result.getBody());
+  }
+
+  @Test
+  void whenUpdatePdndServiceThenOk() {
+    String purposeId = "purposeId";
+    PdndServiceUpdateDTO body = podamFactory.manufacturePojo(PdndServiceUpdateDTO.class);
+    PdndService expectedService = podamFactory.manufacturePojo(PdndService.class);
+
+    when(pdndServiceRetrieverServiceMock.updatePdndService(ORGANIZATION_ID, purposeId, body, loggedUser, ACCESS_TOKEN))
+      .thenReturn(expectedService);
+
+    ResponseEntity<PdndService> result = controller.updatePdndService(ORGANIZATION_ID, purposeId, body);
+
+    assertNotNull(result);
+    assertEquals(HttpStatus.OK, result.getStatusCode());
+    assertSame(expectedService, result.getBody());
   }
 }

@@ -202,4 +202,18 @@ class OrgSubUnitsControllerTest {
     assertNotNull(actualResult.getBody());
     assertEquals(expectedResult, actualResult.getBody());
   }
+
+  @Test
+  void whenGetOrgSubUnitsThenOk() {
+    Long organizationId = 1L;
+    List<OrgSubUnit> expectedResult = List.of(podamFactory.manufacturePojo(OrgSubUnit.class));
+
+    when(subUnitRetrieverServiceMock.getOrgSubUnits(organizationId, OrgSubUnitStatus.ACTIVE, loggedUser, accessToken))
+      .thenReturn(expectedResult);
+
+    ResponseEntity<List<OrgSubUnit>> response = orgSubUnitsController.getOrgSubUnits(organizationId, OrgSubUnitStatus.ACTIVE);
+
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertSame(expectedResult, response.getBody());
+  }
 }

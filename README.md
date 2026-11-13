@@ -151,11 +151,6 @@ See [application.yml](src/main/resources/application.yml) for each configurable 
 | FILESHARE_BASE_URL                       | Fileshare microservice URL                          |         |
 | CITIZEN_BASE_URL                         | Citizen microservice URL                            |         |
 
-#### 💼 Business logic
-| ENV                                            | DESCRIPTION                                    | DEFAULT |
-|------------------------------------------------|------------------------------------------------|---------|
-| DEBT_POSITION_TYPE_ORG_OPERATORS_MAX_PAGE_SIZE | Maximum DebtPositionTypeOrgOperators page size | 10000   |
-
 ## 🛠️ Getting Started
 
 ### 📝 Prerequisites

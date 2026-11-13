@@ -55,4 +55,10 @@ public class PdndServiceRetrieverServiceImpl implements PdndServiceRetrieverServ
     authorizationService.validateAdminRole(organizationId, userInfo);
     return pdndServiceService.getOrgSubUnitsPdndServices(organizationId, subUnitCode, subUnitName, pageable, accessToken);
   }
+
+  @Override
+  public PdndService updatePdndService(Long organizationId, String purposeId, PdndServiceUpdateDTO pdndServiceUpdateDTO, UserInfo userInfo, String accessToken) {
+    authorizationService.validateAdminRole(organizationId, userInfo);
+    return pdndServiceService.updatePdndService(purposeId, pdndServiceUpdateDTO, accessToken);
+  }
 }

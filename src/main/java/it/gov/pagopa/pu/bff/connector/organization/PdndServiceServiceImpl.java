@@ -48,4 +48,9 @@ public class PdndServiceServiceImpl implements PdndServiceService {
   public PagedPdndServiceView getOrgSubUnitsPdndServices(Long organizationId, String subUnitCode, String subUnitName, Pageable pageable, String accessToken) {
     return pdndServiceClient.getOrgSubUnitsPdndServices(organizationId, subUnitCode, subUnitName, pageable, accessToken);
   }
+
+  @Override
+  public PdndService updatePdndService(String purposeId, PdndServiceUpdateDTO pdndServiceUpdateDTO, String accessToken) {
+    return pdndServiceClient.updatePdndService(purposeId, pdndServiceUpdateDTO, accessToken);
+  }
 }

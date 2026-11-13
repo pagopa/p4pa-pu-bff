@@ -19,4 +19,6 @@ public interface PdndServiceRetrieverService {
   List<PdndService> getPdndClientServices(Long organizationId, String clientId, PdndServiceType serviceType, UserInfo userInfo, String accessToken);
 
   PagedPdndServiceView getOrgSubUnitsPdndServices(Long organizationId, String subUnitCode, String subUnitName, Pageable pageable, UserInfo userInfo, String accessToken);
+
+  PdndService updatePdndService(Long organizationId, String purposeId, PdndServiceUpdateDTO pdndServiceUpdateDTO, UserInfo userInfo, String accessToken);
 }

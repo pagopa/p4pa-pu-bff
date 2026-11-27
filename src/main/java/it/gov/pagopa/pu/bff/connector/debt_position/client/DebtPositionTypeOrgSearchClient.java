@@ -2,17 +2,19 @@ package it.gov.pagopa.pu.bff.connector.debt_position.client;
 
 import it.gov.pagopa.pu.bff.connector.debt_position.config.DebtPositionApisHolder;
 import it.gov.pagopa.pu.bff.dto.OperatorDetailsFiltersDTO;
+import it.gov.pagopa.pu.bff.exception.common.RestInvokeNotFoundException;
 import it.gov.pagopa.pu.bff.util.PageUtils;
 import it.gov.pagopa.pu.debtpositions.dto.generated.CollectionModelDebtPositionTypeOrg;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionTypeOrg;
 import it.gov.pagopa.pu.debtpositions.dto.generated.PagedModelDebtPositionTypeOrg;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.RestClientException;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
 
 @Slf4j
 @Service
@@ -40,7 +42,7 @@ public class DebtPositionTypeOrgSearchClient {
             .crudDebtPositionTypeOrgsFindDebtPositionTypeOrg(
               organizationId,debtPositionTypeOrgCode,mappedExternalUserId
             );
-      } catch (HttpClientErrorException.NotFound e) {
+      } catch (RestInvokeNotFoundException e) {
         log.warn("DebtPositionTypeOrg with organizationId {} and code {} not found", organizationId, debtPositionTypeOrgCode);
         return null;
     }
@@ -90,5 +92,15 @@ public class DebtPositionTypeOrgSearchClient {
     return debtPositionApisHolder.getDebtPositionTypeOrgSearchControllerApi(accessToken)
         .crudDebtPositionTypeOrgsCountBySpontaneousFormId(
         spontaneousFormId);
+  }
+
+  public DebtPositionTypeOrg getByOrganizationIdAndCode(Long organizationId, String code, String accessToken) {
+    try {
+      return debtPositionApisHolder.getDebtPositionTypeOrgSearchControllerApi(accessToken)
+        .crudDebtPositionTypeOrgsFindByOrganizationIdAndCode(organizationId, code);
+    } catch (RestInvokeNotFoundException e) {
+      log.warn("No DebtPositionTypeOrg matching organizationId {} and code {}", organizationId, code);
+      return null;
+    }
   }
 }

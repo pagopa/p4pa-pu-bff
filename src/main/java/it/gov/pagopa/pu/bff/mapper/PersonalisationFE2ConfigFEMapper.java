@@ -17,14 +17,15 @@ public class PersonalisationFE2ConfigFEMapper {
       .logoFooterImg(personalisationFe.getLogoFooterImg())
       .footerDescText(personalisationFe.getFooterDescText())
       .footerGDPRUrl(personalisationFe.getFooterGDPRUrl())
-      .footerPrivacyInfoUrl(personalisationFe.getFooterPrivacyInfoUrl())
-      .footerTermsCondUrl(personalisationFe.getFooterTermsCondUrl())
       .headerAssistanceUrl(personalisationFe.getHeaderAssistanceUrl())
       .footerAccessibilityUrl(personalisationFe.getFooterAccessibilityUrl())
       .build();
     if(broker!=null){
       out.setBrokerId(String.valueOf(broker.getBrokerId()));
       out.setBrokerFiscalCode(broker.getBrokerFiscalCode());
+      out.setExternalId(broker.getExternalId());
+    } else {
+      out.setExternalId("default");
     }
     out.setCanManageUsers(userInfo!=null && Boolean.TRUE.equals(userInfo.getCanManageUsers()));
     return out;

@@ -21,6 +21,44 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class UtilitiesTest {
 
+  public static void setTraceId(String traceId) {
+    setTraceId(traceId, null);
+  }
+  public static void setTraceId(String traceId, String spanId) {
+    MDC.put("traceId", traceId);
+    MDC.put("spanId", spanId);
+  }
+  public static void clearTraceIdContext(){
+    MDC.clear();
+  }
+
+  @Test
+  void testGetTraceId(){
+    // Given
+    String expectedResult = "TRACEID";
+    setTraceId(expectedResult);
+
+    // When
+    String result = Utilities.getTraceId();
+
+    // Then
+    Assertions.assertSame(expectedResult, result);
+    clearTraceIdContext();
+  }
+
+  @Test
+  void testGetSpanId(){
+    // Given
+    String expectedResult = "SPANID";
+    setTraceId("TRACEID", expectedResult);
+
+    // When
+    String result = Utilities.getSpanId();
+
+    // Then
+    Assertions.assertSame(expectedResult, result);
+    clearTraceIdContext();
+  }
   @Test
   void testIbanInvalid(){
     String iban = "test";
@@ -121,20 +159,6 @@ public class UtilitiesTest {
   }
 
   @Test
-  void testGetTraceId(){
-    // Given
-    String expectedResult = "TRACEID";
-    setTraceId(expectedResult);
-
-    // When
-    String result = Utilities.getTraceId();
-
-    // Then
-    Assertions.assertSame(expectedResult, result);
-    clearTraceIdContext();
-  }
-
-  @Test
   void givenInvalidEmailWhenIsValidEmailThenFalse(){
     Assertions.assertFalse(Utilities.isValidEmail("test"));
   }
@@ -142,13 +166,6 @@ public class UtilitiesTest {
   @Test
   void givenValidEmailWhenIsValidEmailThenFalse(){
     Assertions.assertTrue(Utilities.isValidEmail("test@test.test"));
-  }
-
-  public static void setTraceId(String traceId) {
-    MDC.put("traceId", traceId);
-  }
-  public static void clearTraceIdContext(){
-    MDC.clear();
   }
 
   @ParameterizedTest

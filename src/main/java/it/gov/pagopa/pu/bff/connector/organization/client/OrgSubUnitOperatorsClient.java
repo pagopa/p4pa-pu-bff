@@ -1,0 +1,36 @@
+package it.gov.pagopa.pu.bff.connector.organization.client;
+
+import it.gov.pagopa.pu.bff.connector.organization.config.OrganizationApisHolder;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Service
+public class OrgSubUnitOperatorsClient {
+
+  private final OrganizationApisHolder organizationApisHolder;
+
+  public OrgSubUnitOperatorsClient(OrganizationApisHolder organizationApisHolder) {
+    this.organizationApisHolder = organizationApisHolder;
+  }
+
+  public void addOrgSubUnitsToOperator(Long organizationId, String mappedExternalUserId, List<String> orgSubUnitCodes, String accessToken) {
+    organizationApisHolder.getOrgSubUnitOperatorsApi(accessToken)
+      .addOrgSubUnitsToOperator(organizationId, mappedExternalUserId, orgSubUnitCodes);
+  }
+
+  public void deleteOrgSubUnitFromOperator(Long organizationId, String mappedExternalUserId, String subUnitCode, String accessToken) {
+    organizationApisHolder.getOrgSubUnitOperatorsApi(accessToken)
+      .deleteOrgSubUnitFromOperator(organizationId, mappedExternalUserId, subUnitCode);
+  }
+
+  public void addOperatorsToOrgSubUnit(Long organizationId, String subUnitCode, List<String> mappedExternalUserIds, String accessToken) {
+    organizationApisHolder.getOrgSubUnitOperatorsApi(accessToken)
+      .addOperatorsToOrgSubUnit(organizationId, subUnitCode, mappedExternalUserIds);
+  }
+
+  public void deleteOperatorsFromOrgSubUnit(Long organizationId, String subUnitCode, List<String> mappedExternalUserIds, String accessToken) {
+    organizationApisHolder.getOrgSubUnitOperatorsApi(accessToken)
+      .deleteOperatorsFromOrgSubUnit(organizationId, subUnitCode, mappedExternalUserIds);
+  }
+}

@@ -4,10 +4,14 @@ import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.dto.OperatorDetailsFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.generated.OperatorsDetail;
 import it.gov.pagopa.pu.bff.dto.generated.PagedDebtPositionTypeOrgDTO;
+import it.gov.pagopa.pu.bff.dto.generated.PagedOrgSubUnit;
 import it.gov.pagopa.pu.bff.dto.generated.PagedOrganizationOperator;
 import it.gov.pagopa.pu.bff.security.SecurityUtilsTest;
 import it.gov.pagopa.pu.bff.service.operator.OperatorRetrieverService;
+import it.gov.pagopa.pu.bff.service.org_sub_unit.OrgSubUnitRetrieverService;
 import it.gov.pagopa.pu.bff.util.TestUtils;
+import it.gov.pagopa.pu.organization.dto.generated.OrgSubUnitStatus;
+import it.gov.pagopa.pu.organization.dto.generated.SubUnitType;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -25,11 +29,15 @@ import uk.co.jemos.podam.api.PodamFactory;
 
 import java.util.Set;
 
+import static org.mockito.Mockito.when;
+
 @ExtendWith(MockitoExtension.class)
 class OperatorControllerTest {
 
   @Mock
   private OperatorRetrieverService operatorRetrieverServiceMock;
+  @Mock
+  private OrgSubUnitRetrieverService orgSubUnitRetrieverServiceMock;
 
   @InjectMocks
   private OperatorController operatorController;
@@ -46,7 +54,8 @@ class OperatorControllerTest {
   @AfterEach
   void verifyNoMoreInteractions() {
     Mockito.verifyNoMoreInteractions(
-      operatorRetrieverServiceMock
+      operatorRetrieverServiceMock,
+      orgSubUnitRetrieverServiceMock
     );
   }
 
@@ -150,5 +159,49 @@ class OperatorControllerTest {
       debtPositionTypeOrgIds,
       loggedUser,
       accessToken);
+  }
+
+  @Test
+  void whenGetOperatorOrgSubUnitsThenOk() {
+    Long organizationId = 1L;
+    String mappedExternalUserId = "mappedExternalUserId";
+    String subUnitCode = "subUnitCode";
+    String subUnitName = "subUnitName";
+    OrgSubUnitStatus status = OrgSubUnitStatus.ACTIVE;
+    SubUnitType subUnitType = SubUnitType.UO;
+
+    Pageable pageable = PageRequest.ofSize(10);
+
+    PagedOrgSubUnit expectedResult = podamFactory.manufacturePojo(PagedOrgSubUnit.class);
+
+    when(
+      orgSubUnitRetrieverServiceMock.getPagedOrgSubUnits(
+        Mockito.argThat(filters ->
+          filters.getOrganizationId().equals(organizationId)
+            && filters.getMappedExternalUserId().equals(mappedExternalUserId)
+            && filters.getSubUnitCode().equals(subUnitCode)
+            && filters.getSubUnitName().equals(subUnitName)
+            && filters.getStatus().equals(status)
+            && filters.getSubUnitType().equals(subUnitType)
+        ),
+        Mockito.eq(pageable),
+        Mockito.eq(loggedUser),
+        Mockito.eq(accessToken)
+      )
+    ).thenReturn(expectedResult);
+
+    ResponseEntity<PagedOrgSubUnit> response = operatorController.getOperatorOrgSubUnits(
+      organizationId,
+      mappedExternalUserId,
+      subUnitCode,
+      subUnitName,
+      status,
+      subUnitType,
+      pageable
+    );
+
+    Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
+    Assertions.assertNotNull(response.getBody());
+    Assertions.assertSame(expectedResult, response.getBody());
   }
 }

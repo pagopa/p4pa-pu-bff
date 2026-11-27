@@ -7,18 +7,17 @@ import it.gov.pagopa.pu.bff.connector.debt_position.DebtPositionService;
 import it.gov.pagopa.pu.bff.connector.debt_position.DebtPositionTypeOrgOperatorsService;
 import it.gov.pagopa.pu.bff.connector.debt_position.DebtPositionTypeOrgService;
 import it.gov.pagopa.pu.bff.connector.debt_position.DebtPositionTypeService;
-import it.gov.pagopa.pu.bff.dto.generated.DebtPositionTypeOrgDTO;
-import it.gov.pagopa.pu.bff.dto.generated.PagedDebtPositionTypeOrgOperatorDTO;
-import it.gov.pagopa.pu.bff.dto.generated.PagedDebtPositionTypeOrgWithCount;
+import it.gov.pagopa.pu.bff.dto.generated.*;
 import it.gov.pagopa.pu.bff.dto.generated.SaveDebtPositionTypeOrgDTO;
-import it.gov.pagopa.pu.bff.exception.ConflictException;
+import it.gov.pagopa.pu.bff.exception.common.ConflictException;
 import it.gov.pagopa.pu.bff.exception.InvalidDebtPositionTypeOrgException;
-import it.gov.pagopa.pu.bff.exception.ResourceNotFoundException;
+import it.gov.pagopa.pu.bff.exception.common.NotFoundException;
 import it.gov.pagopa.pu.bff.mapper.DebtPositionTypeOrgDTOMapper;
 import it.gov.pagopa.pu.bff.mapper.DebtPositionTypeOrgMapper;
 import it.gov.pagopa.pu.bff.mapper.DebtPositionTypeOrgOperatorsMapper;
 import it.gov.pagopa.pu.bff.mapper.DebtPositionTypeOrgWithCountMapper;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
+import it.gov.pagopa.pu.bff.service.debt_position_type_org_balance_cost.DebtPositionTypeOrgBalanceCostRetrieverService;
 import it.gov.pagopa.pu.bff.service.org_sil_service.OrgSilServiceRetrieverService;
 import it.gov.pagopa.pu.bff.service.spontaneous_form.SpontaneousFormRetrieverService;
 import it.gov.pagopa.pu.debtpositions.dto.generated.*;
@@ -28,12 +27,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static it.gov.pagopa.pu.bff.util.Constants.ZONEID;
 import static it.gov.pagopa.pu.bff.util.Utilities.checkImmutableField;
 
 @Service
@@ -51,6 +52,7 @@ public class DebtPositionTypeOrgRetrieverServiceImpl implements DebtPositionType
   private final DebtPositionTypeOrgDTOMapper debtPositionTypeOrgDTOMapper;
   private final OrgSilServiceRetrieverService orgSilServiceRetrieverService;
   private final SpontaneousFormRetrieverService spontaneousFormRetrieverService;
+  private final DebtPositionTypeOrgBalanceCostRetrieverService debtPositionTypeOrgBalanceCostRetrieverService;
 
   public DebtPositionTypeOrgRetrieverServiceImpl(
     DebtPositionTypeOrgService debtPositionTypeOrgService,
@@ -63,7 +65,9 @@ public class DebtPositionTypeOrgRetrieverServiceImpl implements DebtPositionType
     DebtPositionTypeOrgMapper debtPositionTypeOrgMapper,
     DebtPositionTypeOrgDTOMapper debtPositionTypeOrgDTOMapper,
     OrgSilServiceRetrieverService orgSilServiceRetrieverService,
-    SpontaneousFormRetrieverService spontaneousFormRetrieverService) {
+    SpontaneousFormRetrieverService spontaneousFormRetrieverService,
+    DebtPositionTypeOrgBalanceCostRetrieverService debtPositionTypeOrgBalanceCostRetrieverService
+  ) {
     this.debtPositionTypeOrgService = debtPositionTypeOrgService;
     this.debtPositionTypeOrgOperatorsService = debtPositionTypeOrgOperatorsService;
     this.debtPositionService = debtPositionService;
@@ -76,6 +80,7 @@ public class DebtPositionTypeOrgRetrieverServiceImpl implements DebtPositionType
     this.debtPositionTypeOrgDTOMapper = debtPositionTypeOrgDTOMapper;
     this.orgSilServiceRetrieverService = orgSilServiceRetrieverService;
     this.spontaneousFormRetrieverService = spontaneousFormRetrieverService;
+    this.debtPositionTypeOrgBalanceCostRetrieverService = debtPositionTypeOrgBalanceCostRetrieverService;
   }
 
   @Override
@@ -84,7 +89,7 @@ public class DebtPositionTypeOrgRetrieverServiceImpl implements DebtPositionType
 
     DebtPositionTypeOrg debtPositionTypeOrg = debtPositionTypeOrgService.getDebtPositionTypeOrg(debtPositionTypeOrgId, accessToken);
     if (debtPositionTypeOrg == null) {
-      throw new ResourceNotFoundException("DEBT_POSITION_TYPE_ORG_NOT_FOUND", "DebtPositionTypeOrg not found for ID: " + debtPositionTypeOrgId);
+      throw new NotFoundException("DEBT_POSITION_TYPE_ORG_NOT_FOUND", "DebtPositionTypeOrg not found for ID: " + debtPositionTypeOrgId);
     }
 
     DebtPositionType debtPositionType = debtPositionTypeService.getDebtPositionTypeById(debtPositionTypeOrg.getDebtPositionTypeId(), accessToken);
@@ -99,10 +104,17 @@ public class DebtPositionTypeOrgRetrieverServiceImpl implements DebtPositionType
       spontaneousFormCode = spontaneousForm.getCode();
     }
 
-    return debtPositionTypeOrgDTOMapper.map(debtPositionTypeOrg, debtPositionType, notifyOutcomePushOrgSilServiceApplicationName, amountActualizationOrgSilServiceApplicationName, spontaneousFormCode);
+    int currentYear = LocalDate.now(ZONEID).getYear();
+
+    List<DebtPositionTypeOrgBalanceCostDTO> debtPositionTypeOrgBalanceCosts = debtPositionTypeOrgBalanceCostRetrieverService
+      .getDebtPositionTypeOrgBalanceCostsByDptoIdAndOpYears(
+        debtPositionTypeOrgId,
+        List.of(String.valueOf(currentYear - 1), String.valueOf(currentYear), String.valueOf(currentYear + 1)),
+        accessToken
+      );
+
+    return debtPositionTypeOrgDTOMapper.map(debtPositionTypeOrg, debtPositionType, notifyOutcomePushOrgSilServiceApplicationName, amountActualizationOrgSilServiceApplicationName, spontaneousFormCode, debtPositionTypeOrgBalanceCosts);
   }
-
-
 
   @Override
   public List<DebtPositionTypeOrg> getDebtPositionTypeOrgs(Long organizationId, Boolean flagActive, UserInfo loggedUser, String accessToken) {
@@ -146,8 +158,8 @@ public class DebtPositionTypeOrgRetrieverServiceImpl implements DebtPositionType
     AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser);
 
     OperatorsPage operatorsPage = authzService.getOrganizationOperators(
-      getUserOrganizationIpaCode(organizationId, loggedUser), null, null, null,
-      pageable.getPageNumber(), pageable.getPageSize(), accessToken);
+      getUserOrganizationIpaCode(organizationId, loggedUser), null, null, null, null,
+      pageable, accessToken);
 
     CollectionModelDebtPositionTypeOrgOperators collectionModelDebtPositionTypeOrgOperators = null;
     if (debtPositionTypeOrgId != null) {
@@ -207,7 +219,7 @@ public class DebtPositionTypeOrgRetrieverServiceImpl implements DebtPositionType
     authorizationService.validateAdminRole(organizationId, loggedUser);
     DebtPositionTypeOrg existingDebtPositionTypeOrg = debtPositionTypeOrgService.getDebtPositionTypeOrg(debtPositionTypeOrgId, accessToken);
     if (existingDebtPositionTypeOrg == null) {
-      throw new ResourceNotFoundException("DEBT_POSITION_TYPE_ORG_NOT_FOUND", "DebtPositionTypeOrg having ID %d not found".formatted(debtPositionTypeOrgId));
+      throw new NotFoundException("DEBT_POSITION_TYPE_ORG_NOT_FOUND", "DebtPositionTypeOrg having ID %d not found".formatted(debtPositionTypeOrgId));
     }
     verifyDebtPositionTypeOrg(saveDebtPositionTypeOrgDTO.getDebtPositionTypeOrg(),existingDebtPositionTypeOrg);
     return debtPositionTypeOrgService.saveDebtPositionTypeOrg(
@@ -266,7 +278,7 @@ public class DebtPositionTypeOrgRetrieverServiceImpl implements DebtPositionType
   public DebtPositionTypeOrg getDebtPositionTypeOrgByCode(Long organizationId, String debtPositionTypeOrgCode, String mappedExternalUserId, String accessToken) {
     DebtPositionTypeOrg debtPositionTypeOrg = debtPositionTypeOrgService.findDebtPositionTypeOrg(organizationId, debtPositionTypeOrgCode, mappedExternalUserId, accessToken);
     if(debtPositionTypeOrg==null){
-      throw new ResourceNotFoundException("DEBT_POSITION_TYPE_ORG_NOT_FOUND", "DebtPositionTypeOrg with organizationId "+organizationId+" and code "+debtPositionTypeOrgCode+" not found");
+      throw new NotFoundException("DEBT_POSITION_TYPE_ORG_NOT_FOUND", "DebtPositionTypeOrg with organizationId "+organizationId+" and code "+debtPositionTypeOrgCode+" not found");
     }
     return debtPositionTypeOrg;
   }

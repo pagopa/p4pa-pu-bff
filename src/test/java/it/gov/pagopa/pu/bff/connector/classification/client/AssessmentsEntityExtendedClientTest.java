@@ -1,7 +1,7 @@
 package it.gov.pagopa.pu.bff.connector.classification.client;
 
 import it.gov.pagopa.pu.bff.connector.classification.config.ClassificationApisHolder;
-import it.gov.pagopa.pu.classification.controller.generated.AssessmentsEntityExtendedControllerApi;
+import it.gov.pagopa.pu.classification.client.generated.AssessmentsEntityExtendedControllerApi;
 import it.gov.pagopa.pu.classification.dto.generated.AssessmentStatus;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -10,6 +10,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class AssessmentsEntityExtendedClientTest {
@@ -38,7 +40,7 @@ class AssessmentsEntityExtendedClientTest {
     Long assessmentId = 2L;
     AssessmentStatus status = AssessmentStatus.ACTIVE;
 
-    Mockito.when(classificationApisHolderMock.getAssessmentsEntityExtendedControllerApi(accessToken)).thenReturn(assessmentsEntityExtendedControllerApiMock);
+    when(classificationApisHolderMock.getAssessmentsEntityExtendedControllerApi(accessToken)).thenReturn(assessmentsEntityExtendedControllerApiMock);
     Mockito.doNothing().when(assessmentsEntityExtendedControllerApiMock).updateStatus(assessmentId,organizationId,status);
 
     assessmentsEntityExtendedClient.updateStatus(organizationId,assessmentId,status,accessToken);

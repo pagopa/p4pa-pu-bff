@@ -4,7 +4,7 @@ import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.connector.registries.SilRegistryService;
 import it.gov.pagopa.pu.bff.dto.SilRegistryFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedSilRegistry;
-import it.gov.pagopa.pu.bff.exception.ResourceNotFoundException;
+import it.gov.pagopa.pu.bff.exception.common.NotFoundException;
 import it.gov.pagopa.pu.bff.mapper.SilRegistryMapper;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
 import it.gov.pagopa.pu.bff.service.organization.OrganizationRetrieverService;
@@ -41,7 +41,7 @@ public class SilRegistryRetrieverServiceImpl implements SilRegistryRetrieverServ
   private void validateSilRegistry(Long organizationId, SilRegistryDTO silRegistryDTO, UserInfo loggedUser, String accessToken) {
     String orgFiscalCode = organizationRetrieverService.getOrgFiscalCode(organizationId, loggedUser, accessToken);
     if (StringUtils.isBlank(orgFiscalCode) || !orgFiscalCode.equals(silRegistryDTO.getOrgFiscalCode())) {
-      throw new ResourceNotFoundException("SIL_REGISTRY_NOT_FOUND", "SilRegistry having id " + silRegistryDTO.getRegistryId() + " not found");
+      throw new NotFoundException("SIL_REGISTRY_NOT_FOUND", "SilRegistry having id " + silRegistryDTO.getRegistryId() + " not found");
     }
   }
 

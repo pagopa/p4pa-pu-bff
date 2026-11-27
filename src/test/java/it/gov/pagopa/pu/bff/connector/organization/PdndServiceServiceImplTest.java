@@ -1,0 +1,139 @@
+package it.gov.pagopa.pu.bff.connector.organization;
+
+import it.gov.pagopa.pu.bff.connector.organization.client.PdndServiceClient;
+import it.gov.pagopa.pu.bff.connector.organization.client.PdndServiceSearchClient;
+import it.gov.pagopa.pu.bff.util.TestUtils;
+import it.gov.pagopa.pu.organization.dto.generated.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Pageable;
+import uk.co.jemos.podam.api.PodamFactory;
+
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.mockito.Mockito.*;
+
+@ExtendWith(MockitoExtension.class)
+class PdndServiceServiceImplTest {
+
+  private static final Long ORGANIZATION_ID = 123L;
+  private static final String SUB_UNIT_CODE = "SUB_UNIT_001";
+  private static final String SUB_UNIT_NAME = "SUB_UNIT_001_NAME";
+  private static final String ACCESS_TOKEN = "fakeAccessToken";
+  public static final PodamFactory podamFactory = TestUtils.getPodamFactory();
+
+  @Mock
+  private PdndServiceClient clientMock;
+  @Mock
+  private PdndServiceSearchClient pdndServiceSearchClientMock;
+
+  @InjectMocks
+  private PdndServiceServiceImpl service;
+
+  @AfterEach
+  void tearDown() {
+    verifyNoMoreInteractions(clientMock);
+  }
+
+  @Test
+  void givenPdndServiceRequestDTOWhenSavePdndServiceThenReturnSavedPdndService() {
+    PdndServiceRequestDTO pdndServiceRequestDTO = new PdndServiceRequestDTO();
+    PdndService expectedResult = new PdndService();
+
+    when(clientMock.savePdndService(ORGANIZATION_ID, pdndServiceRequestDTO, SUB_UNIT_CODE, ACCESS_TOKEN))
+      .thenReturn(expectedResult);
+
+    PdndService result = service.savePdndService(ORGANIZATION_ID, pdndServiceRequestDTO, SUB_UNIT_CODE, ACCESS_TOKEN);
+
+    assertSame(expectedResult, result);
+  }
+
+  @Test
+  void givenOrganizationIdAndPurposeIdWhenGetPdndServiceThenReturnPdndService() {
+    String purposeId = "PURPOSE_001";
+    PdndServiceView expectedResult = new PdndServiceView();
+
+    when(clientMock.getPdndService(ORGANIZATION_ID, purposeId, ACCESS_TOKEN))
+      .thenReturn(expectedResult);
+
+    PdndServiceView result = service.getPdndService(ORGANIZATION_ID, purposeId, ACCESS_TOKEN);
+
+    assertSame(expectedResult, result);
+  }
+
+  @Test
+  void givenOrganizationIdAndServiceTypeWhenGetPdndServicesThenReturnPdndServices() {
+    List<PdndServiceView> expectedResult = List.of(new PdndServiceView());
+
+    when(clientMock.getPdndServices(ORGANIZATION_ID, SUB_UNIT_CODE, PdndServiceType.SEND, ACCESS_TOKEN))
+      .thenReturn(expectedResult);
+
+    List<PdndServiceView> result = service.getPdndServices(ORGANIZATION_ID, SUB_UNIT_CODE, PdndServiceType.SEND, ACCESS_TOKEN);
+
+    assertSame(expectedResult, result);
+  }
+  @Test
+  void whenFindByOrganizationIdAndClientIdThenOk() {
+    String clientId = "clientId";
+    PdndServiceType serviceType = PdndServiceType.SEND;
+    List<PdndService> expectedResult = List.of(podamFactory.manufacturePojo(PdndService.class));
+
+    when(pdndServiceSearchClientMock.findByOrganizationIdAndClientId(ORGANIZATION_ID, clientId, serviceType, ACCESS_TOKEN))
+      .thenReturn(expectedResult);
+
+    List<PdndService> result = service.findByOrganizationIdAndClientId(ORGANIZATION_ID, clientId, serviceType, ACCESS_TOKEN);
+
+    assertSame(expectedResult, result);
+  }
+
+  @Test
+  void givenOrganizationIdAndPurposeIdWhenDeletePdndServiceThenDeletePdndService() {
+    String purposeId = "PURPOSE_001";
+
+    service.deletePdndService(ORGANIZATION_ID, purposeId, ACCESS_TOKEN);
+
+
+    verify(clientMock).deletePdndService(ORGANIZATION_ID, purposeId, ACCESS_TOKEN);
+  }
+
+  @Test
+  void whenGetOrgSubUnitsPdndServicesThenReturnOk() {
+    Pageable pageable = Pageable.ofSize(5);
+    PagedPdndServiceView expectedResult = PagedPdndServiceView.builder()
+      .content(List.of(new PdndServiceView()))
+      .size(5L)
+      .number(0L)
+      .totalPages(1L)
+      .totalElements(1L)
+      .build();
+
+    when(clientMock.getOrgSubUnitsPdndServices(ORGANIZATION_ID, SUB_UNIT_CODE,
+      SUB_UNIT_NAME, pageable, ACCESS_TOKEN)).thenReturn(expectedResult);
+
+    PagedPdndServiceView result = service
+      .getOrgSubUnitsPdndServices(ORGANIZATION_ID, SUB_UNIT_CODE, SUB_UNIT_NAME, pageable, ACCESS_TOKEN);
+
+    assertNotNull(result);
+    assertSame(expectedResult, result);
+  }
+
+  @Test
+  void whenUpdatePdndServiceThenOk() {
+    String purposeId = "purposeId";
+    PdndServiceUpdateDTO pdndServiceUpdateDTO = podamFactory.manufacturePojo(PdndServiceUpdateDTO.class);
+    PdndService expectedResult = podamFactory.manufacturePojo(PdndService.class);
+
+    when(clientMock.updatePdndService(purposeId, pdndServiceUpdateDTO, ACCESS_TOKEN))
+      .thenReturn(expectedResult);
+
+    PdndService result = service.updatePdndService(purposeId, pdndServiceUpdateDTO, ACCESS_TOKEN);
+
+    assertSame(expectedResult, result);
+  }
+}

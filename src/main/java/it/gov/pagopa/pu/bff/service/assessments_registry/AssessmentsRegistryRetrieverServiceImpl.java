@@ -2,11 +2,12 @@ package it.gov.pagopa.pu.bff.service.assessments_registry;
 
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.connector.classification.AssessmentsRegistryService;
+import it.gov.pagopa.pu.bff.connector.debt_position.DebtPositionTypeOrgService;
 import it.gov.pagopa.pu.bff.dto.AssessmentsRegistryFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.generated.AssessmentsRegistryDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedAssessmentsRegistry;
 import it.gov.pagopa.pu.bff.exception.InvalidAssessmentsRegistryException;
-import it.gov.pagopa.pu.bff.exception.ResourceNotFoundException;
+import it.gov.pagopa.pu.bff.exception.common.NotFoundException;
 import it.gov.pagopa.pu.bff.mapper.AssessmentsRegistryDTOMapper;
 import it.gov.pagopa.pu.bff.mapper.AssessmentsRegistryExtendedDTOMapper;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
@@ -33,15 +34,18 @@ import java.util.stream.Collectors;
 @Slf4j
 public class AssessmentsRegistryRetrieverServiceImpl implements AssessmentsRegistryRetrieverService {
   private final DebtPositionTypeOrgRetrieverService debtPositionTypeOrgRetrieverService;
+  private final DebtPositionTypeOrgService debtPositionTypeOrgService;
   private final AssessmentsRegistryService assessmentsRegistryService;
   private final AssessmentsRegistryExtendedDTOMapper assessmentsRegistryExtendedDTOMapper;
   private final AssessmentsRegistryDTOMapper assessmentsRegistryDTOMapper;
 
   public AssessmentsRegistryRetrieverServiceImpl(DebtPositionTypeOrgRetrieverService debtPositionTypeOrgRetrieverService,
+                                                 DebtPositionTypeOrgService debtPositionTypeOrgService,
                                                  AssessmentsRegistryService assessmentsRegistryService,
                                                  AssessmentsRegistryExtendedDTOMapper assessmentsRegistryExtendedDTOMapper,
                                                  AssessmentsRegistryDTOMapper assessmentsRegistryDTOMapper) {
     this.debtPositionTypeOrgRetrieverService = debtPositionTypeOrgRetrieverService;
+    this.debtPositionTypeOrgService = debtPositionTypeOrgService;
     this.assessmentsRegistryService = assessmentsRegistryService;
     this.assessmentsRegistryExtendedDTOMapper = assessmentsRegistryExtendedDTOMapper;
     this.assessmentsRegistryDTOMapper = assessmentsRegistryDTOMapper;
@@ -72,7 +76,7 @@ public class AssessmentsRegistryRetrieverServiceImpl implements AssessmentsRegis
   private List<DebtPositionTypeOrg> getDebtPositionTypeOrgs(Long organizationId, String mappedExternalUserId, String accessToken) {
     List<DebtPositionTypeOrg> debtPositionTypeOrgs = debtPositionTypeOrgRetrieverService.getDebtPositionTypeOrgs(organizationId, null, mappedExternalUserId, accessToken);
     if(CollectionUtils.isEmpty(debtPositionTypeOrgs)){
-      throw new ResourceNotFoundException("ASSESSMENT_REGISTRY_NOT_FOUND", "AssessmentsRegistries not found for organizationId " + organizationId);
+      throw new NotFoundException("ASSESSMENT_REGISTRY_NOT_FOUND", "AssessmentsRegistries not found for organizationId " + organizationId);
     }
     return debtPositionTypeOrgs;
   }
@@ -89,10 +93,18 @@ public class AssessmentsRegistryRetrieverServiceImpl implements AssessmentsRegis
   @Override
   public AssessmentsRegistry createAssessmentsRegistry(Long organizationId, AssessmentsRegistry assessmentsRegistry, UserInfo loggedUser, String accessToken) {
     AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser);
+
     if (assessmentsRegistry.getAssessmentRegistryId() != null) {
       throw new InvalidAssessmentsRegistryException("ASSESSMENT_REGISTRY_ID_NOT_ALLOWED", "assessmentRegistryId should not be provided");
     }
+
     validateAssessmentRegistry(organizationId, assessmentsRegistry, loggedUser.getMappedExternalUserId(), accessToken);
+
+    if (debtPositionTypeOrgService.getByOrganizationIdAndCode(organizationId, assessmentsRegistry.getDebtPositionTypeOrgCode(), accessToken) == null) {
+      throw new NotFoundException("DEBT_POSITION_TYPE_ORG_NOT_FOUND",
+        String.format("DebtPositionTypeOrg with code %s not found for organizationId %s", assessmentsRegistry.getDebtPositionTypeOrgCode(), organizationId));
+    }
+
     assessmentsRegistry.setStatus(AssessmentsRegistryStatus.ACTIVE);
     return assessmentsRegistryService.createAssessmentsRegistry(assessmentsRegistry, accessToken);
   }

@@ -1,35 +1,16 @@
 package it.gov.pagopa.pu.bff.connector.debt_position.config;
 
-import it.gov.pagopa.pu.bff.config.rest.RestTemplateConfig;
-import it.gov.pagopa.pu.debtpositions.controller.ApiClient;
-import it.gov.pagopa.pu.debtpositions.controller.BaseApi;
-import it.gov.pagopa.pu.debtpositions.controller.generated.DebtPositionApi;
-import it.gov.pagopa.pu.debtpositions.controller.generated.DebtPositionSearchControllerApi;
-import it.gov.pagopa.pu.debtpositions.controller.generated.DebtPositionTypeEntityControllerApi;
-import it.gov.pagopa.pu.debtpositions.controller.generated.DebtPositionTypeOrgApi;
-import it.gov.pagopa.pu.debtpositions.controller.generated.DebtPositionTypeOrgCountByOrganizationIdSearchControllerApi;
-import it.gov.pagopa.pu.debtpositions.controller.generated.DebtPositionTypeOrgEntityControllerApi;
-import it.gov.pagopa.pu.debtpositions.controller.generated.DebtPositionTypeOrgOperatorsApi;
-import it.gov.pagopa.pu.debtpositions.controller.generated.DebtPositionTypeOrgOperatorsDptoCountViewSearchControllerApi;
-import it.gov.pagopa.pu.debtpositions.controller.generated.DebtPositionTypeOrgOperatorsSearchControllerApi;
-import it.gov.pagopa.pu.debtpositions.controller.generated.DebtPositionTypeOrgSearchControllerApi;
-import it.gov.pagopa.pu.debtpositions.controller.generated.DebtPositionTypeOrgWithCountSearchControllerApi;
-import it.gov.pagopa.pu.debtpositions.controller.generated.DebtPositionTypeSearchControllerApi;
-import it.gov.pagopa.pu.debtpositions.controller.generated.DebtPositionTypeWithCountSearchControllerApi;
-import it.gov.pagopa.pu.debtpositions.controller.generated.DebtPositionViewSearchControllerApi;
-import it.gov.pagopa.pu.debtpositions.controller.generated.InstallmentApi;
-import it.gov.pagopa.pu.debtpositions.controller.generated.InstallmentNoPiiSearchControllerApi;
-import it.gov.pagopa.pu.debtpositions.controller.generated.ReceiptApi;
-import it.gov.pagopa.pu.debtpositions.controller.generated.ReceiptViewSearchControllerApi;
-import it.gov.pagopa.pu.debtpositions.controller.generated.SpontaneousFormApi;
-import it.gov.pagopa.pu.debtpositions.controller.generated.SpontaneousFormEntityControllerApi;
-import it.gov.pagopa.pu.debtpositions.controller.generated.SpontaneousFormSearchControllerApi;
-import it.gov.pagopa.pu.debtpositions.controller.generated.TransferApi;
-import it.gov.pagopa.pu.debtpositions.controller.generated.TransferSearchControllerApi;
+import it.gov.pagopa.pu.bff.config.rest.HttpClientErrorJsonBodyHandler;
+import it.gov.pagopa.pu.bff.connector.debt_position.mapper.DebtPositionErrorDTOMapper;
+import it.gov.pagopa.pu.debtpositions.generated.ApiClient;
+import it.gov.pagopa.pu.debtpositions.generated.BaseApi;
+import it.gov.pagopa.pu.debtpositions.client.generated.*;
+import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionErrorDTO;
 import jakarta.annotation.PreDestroy;
 import org.springframework.boot.restclient.RestTemplateBuilder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import tools.jackson.databind.json.JsonMapper;
 
 @Service
 public class DebtPositionApisHolder {
@@ -57,11 +38,14 @@ public class DebtPositionApisHolder {
   private final SpontaneousFormSearchControllerApi spontaneousFormSearchControllerApi;
   private final SpontaneousFormEntityControllerApi spontaneousFormEntityControllerApi;
   private final SpontaneousFormApi spontaneousFormApi;
+  private final DebtPositionTypeOrgBalanceCostSearchControllerApi debtPositionTypeOrgBalanceCostSearchControllerApi;
+
   private final ThreadLocal<String> bearerTokenHolder = new ThreadLocal<>();
 
   public DebtPositionApisHolder(
     DebtPositionApiClientConfig clientConfig,
-    RestTemplateBuilder restTemplateBuilder
+    RestTemplateBuilder restTemplateBuilder,
+    JsonMapper jsonMapper
   ) {
     RestTemplate restTemplate = restTemplateBuilder.build();
     ApiClient apiClient = new ApiClient(restTemplate);
@@ -69,9 +53,9 @@ public class DebtPositionApisHolder {
     apiClient.setBearerToken(bearerTokenHolder::get);
     apiClient.setMaxAttemptsForRetry(Math.max(1, clientConfig.getMaxAttempts()));
     apiClient.setWaitTimeMillis(clientConfig.getWaitTimeMillis());
-    if (clientConfig.isPrintBodyWhenError()) {
-      restTemplate.setErrorHandler(RestTemplateConfig.bodyPrinterWhenError("DEBT-POSITIONS"));
-    }
+    restTemplate.setErrorHandler(new HttpClientErrorJsonBodyHandler<>(jsonMapper, "DEBT-POSITIONS", clientConfig.isPrintBodyWhenError(),
+      DebtPositionErrorDTO.class, DebtPositionErrorDTOMapper::map)
+    );
 
     this.debtPositionTypeEntityControllerApi = new DebtPositionTypeEntityControllerApi(apiClient);
     this.debtPositionTypeWithCountSearchControllerApi = new DebtPositionTypeWithCountSearchControllerApi(apiClient);
@@ -96,6 +80,7 @@ public class DebtPositionApisHolder {
     this.spontaneousFormSearchControllerApi = new SpontaneousFormSearchControllerApi(apiClient);
     this.spontaneousFormEntityControllerApi = new SpontaneousFormEntityControllerApi(apiClient);
     this.spontaneousFormApi = new SpontaneousFormApi(apiClient);
+    this.debtPositionTypeOrgBalanceCostSearchControllerApi = new DebtPositionTypeOrgBalanceCostSearchControllerApi(apiClient);
   }
 
   @PreDestroy
@@ -238,6 +223,13 @@ public class DebtPositionApisHolder {
    */
   public SpontaneousFormApi getSpontaneousFormApi(String accessToken) {
     return getApi(accessToken, spontaneousFormApi);
+  }
+
+  /**
+   * It will return a {@link DebtPositionTypeOrgBalanceCostSearchControllerApi} instrumented with the provided accessToken. Use null if auth is not required
+   */
+  public DebtPositionTypeOrgBalanceCostSearchControllerApi getDebtPositionTypeOrgBalanceCostSearchControllerApi(String accessToken) {
+    return getApi(accessToken, debtPositionTypeOrgBalanceCostSearchControllerApi);
   }
 
   private <T extends BaseApi> T getApi(String accessToken, T api) {

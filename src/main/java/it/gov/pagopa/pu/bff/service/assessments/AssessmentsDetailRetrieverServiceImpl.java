@@ -3,7 +3,7 @@ package it.gov.pagopa.pu.bff.service.assessments;
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.connector.classification.AssessmentsDetailService;
 import it.gov.pagopa.pu.bff.connector.classification.AssessmentsService;
-import it.gov.pagopa.pu.bff.exception.ResourceNotFoundException;
+import it.gov.pagopa.pu.bff.exception.common.NotFoundException;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
 import it.gov.pagopa.pu.bff.service.debt_position_type_org.DebtPositionTypeOrgRetrieverService;
 import it.gov.pagopa.pu.classification.dto.generated.Assessments;
@@ -44,7 +44,7 @@ public class AssessmentsDetailRetrieverServiceImpl implements AssessmentsDetailR
 
   private void validateAssessments(Long organizationId, Long assessmentId, Assessments assessments, UserInfo loggedUser, String accessToken) {
     if (assessments == null || !organizationId.equals(assessments.getOrganizationId())) {
-      throw new ResourceNotFoundException("ASSESSMENT_NOT_FOUND", "Assessments having assessmentId " + assessmentId + " and organizationId " + organizationId + " not found");
+      throw new NotFoundException("ASSESSMENT_NOT_FOUND", "Assessments having assessmentId " + assessmentId + " and organizationId " + organizationId + " not found");
     }
     debtPositionTypeOrgRetrieverService.validateOperator(organizationId, assessments.getDebtPositionTypeOrgCode(), loggedUser.getMappedExternalUserId(), accessToken);
   }
@@ -65,7 +65,7 @@ public class AssessmentsDetailRetrieverServiceImpl implements AssessmentsDetailR
       AssessmentsDetail detail = assessmentsService.findAssessmentsDetail(id, accessToken);
 
       if (detail == null || !organizationId.equals(detail.getOrganizationId())) {
-        throw new ResourceNotFoundException("ASSESSMENT_DETAIL_NOT_FOUND", "AssessmentDetailId " + id + " was not found or does not belong to organization.");
+        throw new NotFoundException("ASSESSMENT_DETAIL_NOT_FOUND", "AssessmentDetailId " + id + " was not found or does not belong to organization.");
       }
 
       debtPositionTypeOrgRetrieverService.validateOperator(organizationId, detail.getDebtPositionTypeOrgCode(), mappedExternalUserId, accessToken);

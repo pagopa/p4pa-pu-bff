@@ -3,6 +3,7 @@ package it.gov.pagopa.pu.bff.connector.debt_position.client;
 import it.gov.pagopa.pu.bff.connector.debt_position.config.DebtPositionApisHolder;
 import it.gov.pagopa.pu.bff.dto.InstallmentViewFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.LocalDateIntervalFilter;
+import it.gov.pagopa.pu.bff.exception.common.RestInvokeNotFoundException;
 import it.gov.pagopa.pu.bff.util.PageUtils;
 import it.gov.pagopa.pu.debtpositions.dto.generated.DebtPositionOrigin;
 import it.gov.pagopa.pu.debtpositions.dto.generated.InstallmentDetailDTO;
@@ -11,7 +12,6 @@ import it.gov.pagopa.pu.debtpositions.dto.generated.PagedInstallmentsView;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.List;
 
@@ -49,7 +49,7 @@ public class InstallmentClient {
     try {
       return debtPositionApisHolder.getInstallmentApi(accessToken)
         .getInstallmentDetail(installmentId, operatorExternalUserId);
-    } catch (HttpClientErrorException.NotFound e) {
+    } catch (RestInvokeNotFoundException e) {
       log.warn("InstallmentDetail with installmentId {} and operatorExternalUserId {} not found", installmentId, operatorExternalUserId);
       return null;
     }
@@ -61,7 +61,7 @@ public class InstallmentClient {
           accessToken)
         .crudInstallmentsFindAuthorizedByTransferSemanticKey(organizationId,
           iuv, iur, transferIndex, operatorExternalUserId, debtPositionOrigins);
-    } catch (HttpClientErrorException.NotFound e) {
+    } catch (RestInvokeNotFoundException e) {
       log.warn("Installment with this semantic key and operatorExternalUserId {} not found", operatorExternalUserId);
       return null;
     }

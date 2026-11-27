@@ -10,6 +10,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -39,6 +40,8 @@ public class DebtPositionTypeOrgMapper {
       .enabledOperators(getEnabledOperators(saveDebtPositionTypeOrgDTO.getEnabledOperators(),operatorExternalUserId,saveDebtPositionTypeOrgDTO.getOperatorsSelection(), organizationIpaCode, accessToken))
       .disabledOperators(OperatorsSelection.SELECTED.equals(saveDebtPositionTypeOrgDTO.getOperatorsSelection())?saveDebtPositionTypeOrgDTO.getDisabledOperators():null)
       .removeEnabledOperators(OperatorsSelection.NONE.equals(saveDebtPositionTypeOrgDTO.getOperatorsSelection()))
+      .debtPositionTypeOrgBalanceCostRequestList(saveDebtPositionTypeOrgDTO.getDebtPositionTypeOrgBalanceCostRequestList())
+      .deleteDebtPositionTypeOrgBalanceCostList(saveDebtPositionTypeOrgDTO.getDeleteDebtPositionTypeOrgBalanceCostList())
       .build();
   }
 
@@ -55,8 +58,8 @@ public class DebtPositionTypeOrgMapper {
 
   private Set<String> retrieveOperatorsSet(String organizationIpaCode, String accessToken) {
     OperatorsPage operatorsPage = authzService.getOrganizationOperators(
-      organizationIpaCode, null, null, null,
-      0, pageMaxSize, accessToken);
+      organizationIpaCode, null, null, null, null,
+      PageRequest.of(0, pageMaxSize), accessToken);
     return operatorsPage.getContent().stream().map(OperatorDTO::getMappedExternalUserId).collect(
       Collectors.toCollection(HashSet::new));
   }

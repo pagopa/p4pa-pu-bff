@@ -9,9 +9,9 @@ import it.gov.pagopa.pu.bff.dto.DebtPositionViewFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.FileResourceDTO;
 import it.gov.pagopa.pu.bff.dto.generated.DebtPositionDetailDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedDebtPositionView;
-import it.gov.pagopa.pu.bff.exception.ConflictException;
 import it.gov.pagopa.pu.bff.exception.InvalidDebtPositionException;
-import it.gov.pagopa.pu.bff.exception.ResourceNotFoundException;
+import it.gov.pagopa.pu.bff.exception.common.ConflictException;
+import it.gov.pagopa.pu.bff.exception.common.NotFoundException;
 import it.gov.pagopa.pu.bff.mapper.DebtPositionMapper;
 import it.gov.pagopa.pu.bff.mapper.DebtPositionViewMapper;
 import it.gov.pagopa.pu.bff.service.debt_position.DebtPositionRetrieverService;
@@ -41,8 +41,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class DebtPositionRetrieverServiceImplTest {
@@ -104,7 +103,7 @@ class DebtPositionRetrieverServiceImplTest {
     try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
       authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(debtPositionDTO.getOrganizationId(), loggedUser)).thenAnswer(a -> null);
 
-      Mockito.when(debtPositionServiceMock.createDebtPosition(any(), eq(false), eq(accessToken)))
+      when(debtPositionServiceMock.createDebtPosition(any(), eq(false), eq(accessToken)))
         .thenReturn(expectedResult);
 
       DebtPositionDTO result = debtPositionRetrieverService.createDebtPosition(debtPositionDTO, loggedUser, accessToken);
@@ -178,10 +177,10 @@ class DebtPositionRetrieverServiceImplTest {
     try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
       authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(debtPositionViewFiltersDTO.getOrganizationId(), loggedUser)).thenAnswer(a -> null);
 
-      Mockito.when(debtPositionServiceMock.getDebtPositionViews(debtPositionViewFiltersDTO, Constants.ORDINARY_DEBT_POSITION_ORIGINS, loggedUser.getMappedExternalUserId(), pageRequest,
+      when(debtPositionServiceMock.getDebtPositionViews(debtPositionViewFiltersDTO, Constants.ORDINARY_DEBT_POSITION_ORIGINS, loggedUser.getMappedExternalUserId(), pageRequest,
           accessToken))
         .thenReturn(pagedModelDebtPositionView);
-      Mockito.when(debtPositionViewMapperMock.mapToPagedDebtPositionView(pagedModelDebtPositionView))
+      when(debtPositionViewMapperMock.mapToPagedDebtPositionView(pagedModelDebtPositionView))
         .thenReturn(expectedResult);
 
       PagedDebtPositionView result = debtPositionRetrieverService.getDebtPositionViews(debtPositionViewFiltersDTO, pageRequest, loggedUser,
@@ -319,10 +318,10 @@ class DebtPositionRetrieverServiceImplTest {
     try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
       authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(filtersDTO.getOrganizationId(), loggedUser)).thenAnswer(a -> null);
 
-      Mockito.when(debtPositionServiceMock.getDebtPositionViews(filtersDTO, Constants.ORDINARY_DEBT_POSITION_ORIGINS, loggedUser.getMappedExternalUserId(), pageRequest, accessToken))
+      when(debtPositionServiceMock.getDebtPositionViews(filtersDTO, Constants.ORDINARY_DEBT_POSITION_ORIGINS, loggedUser.getMappedExternalUserId(), pageRequest, accessToken))
         .thenReturn(pagedModel);
 
-      Mockito.when(debtPositionViewMapperMock.mapToPagedDebtPositionView(pagedModel))
+      when(debtPositionViewMapperMock.mapToPagedDebtPositionView(pagedModel))
         .thenReturn(expected);
 
       PagedDebtPositionView result = debtPositionRetrieverService.getDebtPositionViews(filtersDTO, pageRequest, loggedUser, accessToken);
@@ -367,13 +366,13 @@ class DebtPositionRetrieverServiceImplTest {
     try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
       authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)).thenAnswer(a -> null);
 
-      Mockito.when(debtPositionServiceMock.getDebtPosition(debtPositionId, accessToken))
+      when(debtPositionServiceMock.getDebtPosition(debtPositionId, accessToken))
         .thenReturn(debtPositionDTO);
-      Mockito.when(debtPositionTypeOrgOperatorsServiceMock.findByDebtPositionTypeOrgIdAndOperatorExternalUserId(debtPositionDTO.getDebtPositionTypeOrgId(), loggedUser.getMappedExternalUserId(), accessToken))
+      when(debtPositionTypeOrgOperatorsServiceMock.findByDebtPositionTypeOrgIdAndOperatorExternalUserId(debtPositionDTO.getDebtPositionTypeOrgId(), loggedUser.getMappedExternalUserId(), accessToken))
         .thenReturn(auth);
-      Mockito.when(debtPositionTypeOrgServiceMock.getDebtPositionTypeOrg(debtPositionDTO.getDebtPositionTypeOrgId(), accessToken))
+      when(debtPositionTypeOrgServiceMock.getDebtPositionTypeOrg(debtPositionDTO.getDebtPositionTypeOrgId(), accessToken))
         .thenReturn(debtPositionTypeOrg);
-      Mockito.when(debtPositionMapperMock.mapToDebtPositionDetailDTO(debtPositionDTO, debtPositionTypeOrg))
+      when(debtPositionMapperMock.mapToDebtPositionDetailDTO(debtPositionDTO, debtPositionTypeOrg))
         .thenReturn(expectedResult);
 
       DebtPositionDetailDTO result = debtPositionRetrieverService.getDebtPositionDetail(debtPositionId, organizationId, loggedUser, accessToken);
@@ -396,7 +395,7 @@ class DebtPositionRetrieverServiceImplTest {
     try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
       authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)).thenAnswer(a -> null);
 
-      Mockito.when(debtPositionServiceMock.getDebtPosition(debtPositionId, accessToken))
+      when(debtPositionServiceMock.getDebtPosition(debtPositionId, accessToken))
         .thenReturn(null);
 
       DebtPositionDetailDTO result = debtPositionRetrieverService.getDebtPositionDetail(debtPositionId, organizationId, loggedUser, accessToken);
@@ -423,10 +422,10 @@ class DebtPositionRetrieverServiceImplTest {
         .when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser))
         .thenAnswer(a -> null);
 
-      Mockito.when(debtPositionServiceMock.getDebtPosition(debtPositionId, accessToken))
+      when(debtPositionServiceMock.getDebtPosition(debtPositionId, accessToken))
         .thenReturn(debtPositionDTO);
 
-      Mockito.when(debtPositionTypeOrgOperatorsServiceMock.findByDebtPositionTypeOrgIdAndOperatorExternalUserId(debtPositionDTO.getDebtPositionTypeOrgId(), loggedUser.getMappedExternalUserId(), accessToken))
+      when(debtPositionTypeOrgOperatorsServiceMock.findByDebtPositionTypeOrgIdAndOperatorExternalUserId(debtPositionDTO.getDebtPositionTypeOrgId(), loggedUser.getMappedExternalUserId(), accessToken))
         .thenReturn(null);
 
       DebtPositionDetailDTO result = debtPositionRetrieverService
@@ -466,7 +465,7 @@ class DebtPositionRetrieverServiceImplTest {
     try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
       authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)).thenAnswer(a -> null);
 
-      Mockito.when(debtPositionServiceMock.deleteDebtPosition(debtPositionId, accessToken)).thenReturn(false);
+      when(debtPositionServiceMock.deleteDebtPosition(debtPositionId, accessToken)).thenReturn(false);
 
       boolean deletedDebtPositionPhysically = debtPositionRetrieverService.deleteDebtPosition(organizationId, debtPositionId, loggedUser, accessToken);
 
@@ -526,16 +525,16 @@ class DebtPositionRetrieverServiceImplTest {
 
     try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
       authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)).thenAnswer(a -> null);
-      Mockito.when(debtPositionServiceMock.hasOperatorGrantOnDebtPosition(debtPositionId, organizationId, loggedUser.getMappedExternalUserId(), accessToken)).thenReturn(true);
-      Mockito.when(debtPositionServiceMock.getDebtPosition(debtPositionId, accessToken)).thenReturn(debtPositionDTO);
-      Mockito.when(printPaymentNoticeServiceMock.generateNotice(nav, debtPositionDTO, accessToken)).thenReturn(fileResourceDTO);
+      when(debtPositionServiceMock.hasOperatorGrantOnDebtPosition(debtPositionId, organizationId, loggedUser.getMappedExternalUserId(), accessToken)).thenReturn(true);
+      when(debtPositionServiceMock.getDebtPosition(debtPositionId, accessToken)).thenReturn(debtPositionDTO);
+      when(printPaymentNoticeServiceMock.generateNotice(nav, debtPositionDTO, accessToken)).thenReturn(fileResourceDTO);
 
-      Mockito.when(zipFileServiceMock.zipper(List.of(fileResourceDTO, fileResourceDTO))).thenReturn(expectedResult);
+      when(zipFileServiceMock.zipper(List.of(fileResourceDTO, fileResourceDTO))).thenReturn(expectedResult);
       Resource result = debtPositionRetrieverService.getDebtPositionNoticesZip(organizationId, debtPositionId, loggedUser, accessToken);
 
       assertNotNull(result);
       assertEquals(expectedResult, result);
-      Mockito.verify(printPaymentNoticeServiceMock, Mockito.times(2)).generateNotice(nav, debtPositionDTO, accessToken);
+      verify(printPaymentNoticeServiceMock, times(2)).generateNotice(nav, debtPositionDTO, accessToken);
       authorizationServiceMockedStatic.verify(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser));
     }
   }
@@ -551,8 +550,8 @@ class DebtPositionRetrieverServiceImplTest {
 
     try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
       authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)).thenAnswer(a -> null);
-      Mockito.when(debtPositionServiceMock.hasOperatorGrantOnDebtPosition(debtPositionId, organizationId, loggedUser.getMappedExternalUserId(), accessToken)).thenReturn(true);
-      Mockito.when(debtPositionServiceMock.getDebtPosition(debtPositionId, accessToken)).thenReturn(debtPositionDTO);
+      when(debtPositionServiceMock.hasOperatorGrantOnDebtPosition(debtPositionId, organizationId, loggedUser.getMappedExternalUserId(), accessToken)).thenReturn(true);
+      when(debtPositionServiceMock.getDebtPosition(debtPositionId, accessToken)).thenReturn(debtPositionDTO);
 
       Resource result = debtPositionRetrieverService.getDebtPositionNoticesZip(organizationId, debtPositionId, loggedUser, accessToken);
 
@@ -571,8 +570,8 @@ class DebtPositionRetrieverServiceImplTest {
 
     try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
       authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)).thenAnswer(a -> null);
-      Mockito.when(debtPositionServiceMock.hasOperatorGrantOnDebtPosition(debtPositionId, organizationId, loggedUser.getMappedExternalUserId(), accessToken)).thenReturn(true);
-      Mockito.when(debtPositionServiceMock.getDebtPosition(debtPositionId, accessToken)).thenReturn(null);
+      when(debtPositionServiceMock.hasOperatorGrantOnDebtPosition(debtPositionId, organizationId, loggedUser.getMappedExternalUserId(), accessToken)).thenReturn(true);
+      when(debtPositionServiceMock.getDebtPosition(debtPositionId, accessToken)).thenReturn(null);
 
       Resource result = debtPositionRetrieverService.getDebtPositionNoticesZip(organizationId, debtPositionId, loggedUser, accessToken);
 
@@ -591,9 +590,9 @@ class DebtPositionRetrieverServiceImplTest {
     try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
       authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)).thenAnswer(a -> null);
 
-      Mockito.when(debtPositionServiceMock.hasOperatorGrantOnDebtPosition(debtPositionId, organizationId, loggedUser.getMappedExternalUserId(), accessToken)).thenReturn(false);
+      when(debtPositionServiceMock.hasOperatorGrantOnDebtPosition(debtPositionId, organizationId, loggedUser.getMappedExternalUserId(), accessToken)).thenReturn(false);
 
-      ResourceNotFoundException ex = assertThrows(ResourceNotFoundException.class, () ->
+      NotFoundException ex = assertThrows(NotFoundException.class, () ->
         debtPositionRetrieverService.getDebtPositionNoticesZip(organizationId, debtPositionId, loggedUser, accessToken));
 
       assertEquals("DebtPosition with debtPositionId "+debtPositionId+" and organizationId "+organizationId+" not found", ex.getMessage());
@@ -629,7 +628,7 @@ class DebtPositionRetrieverServiceImplTest {
 
     Long organizationId=1L;
     Long debtPositionId=2L;
-    Mockito.when(debtPositionServiceMock.hasOperatorGrantOnDebtPosition(debtPositionId,organizationId,loggedUser.getMappedExternalUserId(), accessToken)).thenReturn(true);
+    when(debtPositionServiceMock.hasOperatorGrantOnDebtPosition(debtPositionId,organizationId,loggedUser.getMappedExternalUserId(), accessToken)).thenReturn(true);
 
     debtPositionRetrieverService.validateOperator(debtPositionId, organizationId, loggedUser, accessToken);
 
@@ -646,9 +645,9 @@ class DebtPositionRetrieverServiceImplTest {
     Long organizationId=1L;
     Long debtPositionId=2L;
 
-    Mockito.when(debtPositionServiceMock.hasOperatorGrantOnDebtPosition(debtPositionId,organizationId, loggedUser.getMappedExternalUserId(), accessToken)).thenReturn(false);
+    when(debtPositionServiceMock.hasOperatorGrantOnDebtPosition(debtPositionId,organizationId, loggedUser.getMappedExternalUserId(), accessToken)).thenReturn(false);
 
-    ResourceNotFoundException ex = assertThrows(ResourceNotFoundException.class, () -> debtPositionRetrieverService.validateOperator(debtPositionId, organizationId, loggedUser, accessToken));
+    NotFoundException ex = assertThrows(NotFoundException.class, () -> debtPositionRetrieverService.validateOperator(debtPositionId, organizationId, loggedUser, accessToken));
     assertEquals("DebtPosition with debtPositionId "+debtPositionId+" and organizationId "+organizationId+" not found", ex.getMessage());
   }
   @Test
@@ -664,11 +663,11 @@ class DebtPositionRetrieverServiceImplTest {
 
     try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
       authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)).thenAnswer(a -> null);
-      Mockito.when(debtPositionServiceMock.hasOperatorGrantOnDebtPosition(debtPositionId, organizationId, loggedUser.getMappedExternalUserId(), accessToken)).thenReturn(true);
+      when(debtPositionServiceMock.hasOperatorGrantOnDebtPosition(debtPositionId, organizationId, loggedUser.getMappedExternalUserId(), accessToken)).thenReturn(true);
 
-      Mockito.when(debtPositionServiceMock.manageDebtPositionInstallments(debtPositionId, manageDebtPositionDTO, accessToken))
+      when(debtPositionServiceMock.manageDebtPositionInstallments(debtPositionId, manageDebtPositionDTO, accessToken))
               .thenReturn(updatedDebtPosition);
-      Mockito.when(debtPositionServiceMock.publishDebtPosition(debtPositionId, accessToken))
+      when(debtPositionServiceMock.publishDebtPosition(debtPositionId, accessToken))
               .thenReturn(expectedResult);
 
       DebtPositionDTO result = debtPositionRetrieverService.manageDebtPositionInstallments(organizationId,debtPositionId,manageDebtPositionDTO,true,loggedUser, accessToken);
@@ -692,9 +691,9 @@ class DebtPositionRetrieverServiceImplTest {
 
     try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
       authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)).thenAnswer(a -> null);
-      Mockito.when(debtPositionServiceMock.hasOperatorGrantOnDebtPosition(debtPositionId, organizationId, loggedUser.getMappedExternalUserId(), accessToken)).thenReturn(true);
+      when(debtPositionServiceMock.hasOperatorGrantOnDebtPosition(debtPositionId, organizationId, loggedUser.getMappedExternalUserId(), accessToken)).thenReturn(true);
 
-      Mockito.when(debtPositionServiceMock.manageDebtPositionInstallments(debtPositionId, manageDebtPositionDTO, accessToken))
+      when(debtPositionServiceMock.manageDebtPositionInstallments(debtPositionId, manageDebtPositionDTO, accessToken))
               .thenReturn(expectedResult);
 
       DebtPositionDTO result = debtPositionRetrieverService.manageDebtPositionInstallments(organizationId,debtPositionId,manageDebtPositionDTO,false,loggedUser, accessToken);
@@ -718,9 +717,9 @@ class DebtPositionRetrieverServiceImplTest {
 
     try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
       authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)).thenAnswer(a -> null);
-      Mockito.when(debtPositionServiceMock.hasOperatorGrantOnDebtPosition(debtPositionId, organizationId, loggedUser.getMappedExternalUserId(), accessToken)).thenReturn(true);
+      when(debtPositionServiceMock.hasOperatorGrantOnDebtPosition(debtPositionId, organizationId, loggedUser.getMappedExternalUserId(), accessToken)).thenReturn(true);
 
-      Mockito.when(debtPositionServiceMock.manageDebtPositionInstallments(debtPositionId, manageDebtPositionDTO, accessToken))
+      when(debtPositionServiceMock.manageDebtPositionInstallments(debtPositionId, manageDebtPositionDTO, accessToken))
               .thenReturn(expectedResult);
 
       DebtPositionDTO result = debtPositionRetrieverService.manageDebtPositionInstallments(organizationId,debtPositionId,manageDebtPositionDTO,true,loggedUser, accessToken);
@@ -744,12 +743,12 @@ class DebtPositionRetrieverServiceImplTest {
 
     try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
       authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)).thenAnswer(a -> null);
-      Mockito.when(debtPositionServiceMock.hasOperatorGrantOnDebtPosition(debtPositionId, organizationId, loggedUser.getMappedExternalUserId(), accessToken)).thenReturn(true);
+      when(debtPositionServiceMock.hasOperatorGrantOnDebtPosition(debtPositionId, organizationId, loggedUser.getMappedExternalUserId(), accessToken)).thenReturn(true);
 
-      Mockito.when(debtPositionServiceMock.manageDebtPositionInstallments(debtPositionId, manageDebtPositionDTO, accessToken))
+      when(debtPositionServiceMock.manageDebtPositionInstallments(debtPositionId, manageDebtPositionDTO, accessToken))
               .thenReturn(expectedResult);
-      Mockito.when(debtPositionServiceMock.publishDebtPosition(debtPositionId, accessToken))
-              .thenThrow(new ResourceNotFoundException("DEBT_POSITION_NOT_FOUND", "DebtPosition not found"));
+      when(debtPositionServiceMock.publishDebtPosition(debtPositionId, accessToken))
+              .thenThrow(new NotFoundException("DEBT_POSITION_NOT_FOUND", "DebtPosition not found"));
 
       DebtPositionDTO result = debtPositionRetrieverService.manageDebtPositionInstallments(organizationId,debtPositionId,manageDebtPositionDTO,true,loggedUser, accessToken);
 
@@ -772,11 +771,11 @@ class DebtPositionRetrieverServiceImplTest {
 
     try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
       authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)).thenAnswer(a -> null);
-      Mockito.when(debtPositionServiceMock.hasOperatorGrantOnDebtPosition(debtPositionId, organizationId, loggedUser.getMappedExternalUserId(), accessToken)).thenReturn(true);
+      when(debtPositionServiceMock.hasOperatorGrantOnDebtPosition(debtPositionId, organizationId, loggedUser.getMappedExternalUserId(), accessToken)).thenReturn(true);
 
-      Mockito.when(debtPositionServiceMock.manageDebtPositionInstallments(debtPositionId, manageDebtPositionDTO, accessToken))
+      when(debtPositionServiceMock.manageDebtPositionInstallments(debtPositionId, manageDebtPositionDTO, accessToken))
         .thenReturn(expectedResult);
-      Mockito.when(debtPositionServiceMock.publishDebtPosition(debtPositionId, accessToken))
+      when(debtPositionServiceMock.publishDebtPosition(debtPositionId, accessToken))
         .thenThrow(new ConflictException("DEBT_POSITION_PUBLISH_CONFLICT", "conflict"));
 
       DebtPositionDTO result = debtPositionRetrieverService.manageDebtPositionInstallments(organizationId,debtPositionId,manageDebtPositionDTO,true,loggedUser, accessToken);
@@ -798,9 +797,9 @@ class DebtPositionRetrieverServiceImplTest {
 
     try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
       authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)).thenAnswer(a -> null);
-      Mockito.when(debtPositionServiceMock.hasOperatorGrantOnDebtPosition(debtPositionId, organizationId, loggedUser.getMappedExternalUserId(), accessToken)).thenReturn(true);
+      when(debtPositionServiceMock.hasOperatorGrantOnDebtPosition(debtPositionId, organizationId, loggedUser.getMappedExternalUserId(), accessToken)).thenReturn(true);
 
-      Mockito.when(debtPositionServiceMock.manageDebtPositionInstallments(debtPositionId, manageDebtPositionDTO, accessToken))
+      when(debtPositionServiceMock.manageDebtPositionInstallments(debtPositionId, manageDebtPositionDTO, accessToken))
               .thenReturn(null);
 
       DebtPositionDTO result = debtPositionRetrieverService.manageDebtPositionInstallments(organizationId,debtPositionId,manageDebtPositionDTO,true,loggedUser, accessToken);
@@ -839,9 +838,9 @@ class DebtPositionRetrieverServiceImplTest {
 
     try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
       authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)).thenAnswer(a -> null);
-      Mockito.when(debtPositionServiceMock.hasOperatorGrantOnDebtPosition(debtPositionId, organizationId, loggedUser.getMappedExternalUserId(), accessToken)).thenReturn(false);
+      when(debtPositionServiceMock.hasOperatorGrantOnDebtPosition(debtPositionId, organizationId, loggedUser.getMappedExternalUserId(), accessToken)).thenReturn(false);
 
-      assertThrows(ResourceNotFoundException.class, () ->
+      assertThrows(NotFoundException.class, () ->
               debtPositionRetrieverService.manageDebtPositionInstallments(organizationId, debtPositionId, manageDebtPositionDTO, true, loggedUser, accessToken));
     }
   }
@@ -856,8 +855,8 @@ class DebtPositionRetrieverServiceImplTest {
 
     try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
       authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)).thenAnswer(a -> null);
-      Mockito.when(debtPositionServiceMock.hasOperatorGrantOnDebtPosition(debtPositionId, organizationId, loggedUser.getMappedExternalUserId(), accessToken)).thenReturn(true);
-      Mockito.when(debtPositionServiceMock.publishDebtPosition(debtPositionId, accessToken)).thenReturn(expectedResult);
+      when(debtPositionServiceMock.hasOperatorGrantOnDebtPosition(debtPositionId, organizationId, loggedUser.getMappedExternalUserId(), accessToken)).thenReturn(true);
+      when(debtPositionServiceMock.publishDebtPosition(debtPositionId, accessToken)).thenReturn(expectedResult);
 
       DebtPositionDTO result = debtPositionRetrieverService.publishDebtPosition(organizationId, debtPositionId, loggedUser, accessToken);
 
@@ -894,9 +893,9 @@ class DebtPositionRetrieverServiceImplTest {
     try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
       authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)).thenAnswer(a -> null);
 
-      Mockito.when(debtPositionServiceMock.hasOperatorGrantOnDebtPosition(debtPositionId, organizationId, loggedUser.getMappedExternalUserId(), accessToken)).thenReturn(false);
+      when(debtPositionServiceMock.hasOperatorGrantOnDebtPosition(debtPositionId, organizationId, loggedUser.getMappedExternalUserId(), accessToken)).thenReturn(false);
 
-      assertThrows(ResourceNotFoundException.class, () ->
+      assertThrows(NotFoundException.class, () ->
         debtPositionRetrieverService.publishDebtPosition(organizationId, debtPositionId, loggedUser, accessToken));
     }
   }

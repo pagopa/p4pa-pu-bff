@@ -4,7 +4,7 @@ import it.gov.pagopa.pu.bff.connector.classification.config.ClassificationApisHo
 import it.gov.pagopa.pu.bff.dto.LocalDateIntervalFilter;
 import it.gov.pagopa.pu.bff.dto.TreasuryViewFiltersDTO;
 import it.gov.pagopa.pu.bff.util.PageUtils;
-import it.gov.pagopa.pu.classification.controller.generated.TreasuryViewSearchControllerApi;
+import it.gov.pagopa.pu.classification.client.generated.TreasuryViewSearchControllerApi;
 import it.gov.pagopa.pu.classification.dto.generated.PagedModelTreasuryView;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;

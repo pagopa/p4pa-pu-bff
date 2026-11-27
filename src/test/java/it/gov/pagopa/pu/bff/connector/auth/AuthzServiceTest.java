@@ -13,6 +13,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageRequest;
 
 @ExtendWith(MockitoExtension.class)
 class AuthzServiceTest {
@@ -33,7 +34,7 @@ class AuthzServiceTest {
     String accessToken = "ACCESSTOKEN";
     UserInfo expectedResult = new UserInfo();
 
-    when(client.getUserInfoFromMappedExternaUserId(Mockito.same(mappedExternalUserId), Mockito.same(accessToken)))
+    when(client.getUserInfoFromMappedExternalUserId(Mockito.same(mappedExternalUserId), Mockito.same(accessToken)))
       .thenReturn(expectedResult);
 
     UserInfo result = service.getUserInfoFromMappedExternaUserId(mappedExternalUserId, accessToken);
@@ -47,10 +48,10 @@ class AuthzServiceTest {
     String accessToken = "ACCESSTOKEN";
     OperatorsPage expectedResult = new OperatorsPage();
 
-    when(client.getOrganizationOperators(organizationIpaCode, null, null, null, 0, 10, accessToken))
+    when(client.getOrganizationOperators(organizationIpaCode, null, null, null, null, PageRequest.of(0, 10), accessToken))
       .thenReturn(expectedResult);
 
-    OperatorsPage result = service.getOrganizationOperators(organizationIpaCode, null, null, null, 0, 10, accessToken);
+    OperatorsPage result = service.getOrganizationOperators(organizationIpaCode, null, null, null, null, PageRequest.of(0, 10), accessToken);
 
     assertSame(expectedResult, result);
   }

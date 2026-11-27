@@ -2,7 +2,7 @@ package it.gov.pagopa.pu.bff.connector.registries.client;
 
 import it.gov.pagopa.pu.bff.connector.registries.config.RegistriesApisHolder;
 import it.gov.pagopa.pu.bff.util.TestUtils;
-import it.gov.pagopa.pu.registries.controller.generated.InstallmentRegistrySearchControllerApi;
+import it.gov.pagopa.pu.registries.client.generated.InstallmentRegistrySearchControllerApi;
 import it.gov.pagopa.pu.registries.dto.generated.CollectionModelInstallmentRegistry;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;

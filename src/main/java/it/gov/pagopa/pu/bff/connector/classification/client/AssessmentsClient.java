@@ -3,6 +3,7 @@ package it.gov.pagopa.pu.bff.connector.classification.client;
 import it.gov.pagopa.pu.bff.connector.classification.config.ClassificationApisHolder;
 import it.gov.pagopa.pu.bff.dto.AssessmentsFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.AssessmentsRowsDetailFiltersDTO;
+import it.gov.pagopa.pu.bff.exception.common.RestInvokeNotFoundException;
 import it.gov.pagopa.pu.bff.util.PageUtils;
 import it.gov.pagopa.pu.classification.dto.generated.Assessments;
 import it.gov.pagopa.pu.classification.dto.generated.AssessmentsDetail;
@@ -11,7 +12,6 @@ import it.gov.pagopa.pu.classification.dto.generated.PagedModelAssessmentsDetail
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.ArrayList;
 
@@ -59,7 +59,7 @@ public class AssessmentsClient {
   public AssessmentsDetail findAssessmentsDetail(Long assessmentDetailId, String accessToken){
     try{
       return classificationApisHolder.getAssessmentsDetailEntityControllerApi(accessToken).crudGetAssessmentsdetail(assessmentDetailId.toString());
-    } catch (HttpClientErrorException.NotFound e) {
+    } catch (RestInvokeNotFoundException e) {
       log.warn("Assessment detail with id %s not found".formatted(assessmentDetailId));
       return null;
     }
@@ -74,7 +74,7 @@ public class AssessmentsClient {
     try{
       return classificationApisHolder.getAssessmentsEntityControllerApi(accessToken)
               .crudGetAssessments(assessmentId.toString());
-    } catch (HttpClientErrorException.NotFound e) {
+    } catch (RestInvokeNotFoundException e) {
       log.warn("Assessment with id %s not found".formatted(assessmentId));
       return null;
     }

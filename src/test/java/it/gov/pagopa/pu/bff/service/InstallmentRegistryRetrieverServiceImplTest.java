@@ -2,7 +2,7 @@ package it.gov.pagopa.pu.bff.service;
 
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.connector.registries.InstallmentRegistryService;
-import it.gov.pagopa.pu.bff.exception.ResourceNotFoundException;
+import it.gov.pagopa.pu.bff.exception.common.NotFoundException;
 import it.gov.pagopa.pu.bff.service.debt_position.DebtPositionRetrieverService;
 import it.gov.pagopa.pu.bff.service.installment_registry.InstallmentRegistryRetrieverService;
 import it.gov.pagopa.pu.bff.service.installment_registry.InstallmentRegistryRetrieverServiceImpl;
@@ -25,6 +25,8 @@ import uk.co.jemos.podam.api.PodamFactory;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class InstallmentRegistryRetrieverServiceImplTest {
@@ -70,7 +72,7 @@ class InstallmentRegistryRetrieverServiceImplTest {
     try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
       authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)).thenAnswer(a -> null);
       Mockito.doNothing().when(debtPositionRetrieverServiceMock).validateOperator(debtPositionId, organizationId, loggedUser, accessToken);
-      Mockito.when(installmentRegistryServiceMock.getInstallmentRegistries(debtPositionId, nav, accessToken))
+      when(installmentRegistryServiceMock.getInstallmentRegistries(debtPositionId, nav, accessToken))
         .thenReturn(collectionModelInstallmentRegistry);
 
       List<InstallmentRegistry> result = installmentRegistryRetrieverService.getInstallmentRegistries(organizationId, debtPositionId, nav, loggedUser, accessToken);
@@ -98,7 +100,7 @@ class InstallmentRegistryRetrieverServiceImplTest {
       authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)).thenAnswer(a -> null);
 
       Mockito.doNothing().when(debtPositionRetrieverServiceMock).validateOperator(debtPositionId, organizationId, loggedUser, accessToken);
-      Mockito.when(installmentRegistryServiceMock.getInstallmentRegistries(debtPositionId, nav, accessToken))
+      when(installmentRegistryServiceMock.getInstallmentRegistries(debtPositionId, nav, accessToken))
         .thenReturn(collectionModelInstallmentRegistry);
 
       List<InstallmentRegistry> result = installmentRegistryRetrieverService.getInstallmentRegistries(organizationId, debtPositionId, nav, loggedUser, accessToken);
@@ -123,7 +125,7 @@ class InstallmentRegistryRetrieverServiceImplTest {
       authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)).thenAnswer(a -> null);
 
       Mockito.doNothing().when(debtPositionRetrieverServiceMock).validateOperator(debtPositionId, organizationId, loggedUser, accessToken);
-      Mockito.when(installmentRegistryServiceMock.getInstallmentRegistries(debtPositionId, nav, accessToken))
+      when(installmentRegistryServiceMock.getInstallmentRegistries(debtPositionId, nav, accessToken))
         .thenReturn(null);
 
       List<InstallmentRegistry> result = installmentRegistryRetrieverService.getInstallmentRegistries(organizationId, debtPositionId, nav, loggedUser, accessToken);
@@ -146,10 +148,10 @@ class InstallmentRegistryRetrieverServiceImplTest {
     String nav = "nav";
     try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
       authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)).thenAnswer(a -> null);
-      Mockito.doThrow(new ResourceNotFoundException("DEBT_POSITION_NOT_FOUND", "DebtPosition not found"))
+      doThrow(new NotFoundException("DEBT_POSITION_NOT_FOUND", "DebtPosition not found"))
         .when(debtPositionRetrieverServiceMock).validateOperator(debtPositionId, organizationId, loggedUser, accessToken);
 
-      Assertions.assertThrows(ResourceNotFoundException.class, () ->
+      Assertions.assertThrows(NotFoundException.class, () ->
         installmentRegistryRetrieverService.getInstallmentRegistries(organizationId, debtPositionId, nav, loggedUser, accessToken));
 
       Mockito.verifyNoInteractions(installmentRegistryServiceMock);

@@ -1,11 +1,10 @@
 package it.gov.pagopa.pu.bff.connector.organization.client;
 
 import it.gov.pagopa.pu.bff.connector.organization.config.OrganizationApisHolder;
-import it.gov.pagopa.pu.bff.exception.InvalidOrganizationException;
-import it.gov.pagopa.pu.bff.exception.ResourceNotFoundException;
-import it.gov.pagopa.pu.bff.mapper.UpstreamErrorMapper;
-import it.gov.pagopa.pu.organization.controller.generated.OrganizationApi;
-import it.gov.pagopa.pu.organization.dto.generated.OrganizationDetailDTO;
+import it.gov.pagopa.pu.bff.exception.common.NotFoundException;
+import it.gov.pagopa.pu.bff.exception.common.RestInvokeNotFoundException;
+import it.gov.pagopa.pu.organization.client.generated.OrganizationApi;
+import it.gov.pagopa.pu.organization.dto.generated.OrganizationUpdateDTO;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,11 +13,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.client.HttpClientErrorException;
 
-import java.nio.charset.StandardCharsets;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class OrganizationClientTest {
@@ -28,14 +27,12 @@ class OrganizationClientTest {
   private OrganizationApi organizationApiMock;
   @Mock
   private HttpClientErrorException.BadRequest badRequestMock;
-  @Mock
-  private UpstreamErrorMapper upstreamErrorMapperMock;
 
   private OrganizationClient organizationClient;
 
   @BeforeEach
   void setUp() {
-    organizationClient = new OrganizationClient(organizationApisHolderMock, upstreamErrorMapperMock);
+    organizationClient = new OrganizationClient(organizationApisHolderMock);
   }
 
   @AfterEach
@@ -50,64 +47,28 @@ class OrganizationClientTest {
   @Test
   void givenExistingOrganizationWhenUpdateOrganizationThenInvokeWithAccessToken() {
     String accessToken = "ACCESSTOKEN";
-    OrganizationDetailDTO organizationDetailDTO = new OrganizationDetailDTO();
+    OrganizationUpdateDTO organizationUpdateDTO = new OrganizationUpdateDTO();
 
-    Mockito.when(organizationApisHolderMock.getOrganizationApi(accessToken))
+    when(organizationApisHolderMock.getOrganizationApi(accessToken))
       .thenReturn(organizationApiMock);
-    Mockito.doNothing().when(organizationApiMock).updateOrganization(organizationDetailDTO);
+    Mockito.doNothing().when(organizationApiMock).updateOrganization(organizationUpdateDTO);
 
-    organizationClient.updateOrganization(organizationDetailDTO, accessToken);
+    organizationClient.updateOrganization(organizationUpdateDTO, accessToken);
 
     Mockito.verifyNoMoreInteractions(organizationApisHolderMock,organizationApiMock);
   }
 
   @Test
   void givenNoExistentOrganizationWhenUpdateOrganizationThenResourceNotFoundException() {
-    OrganizationDetailDTO organizationDetailDTO = new OrganizationDetailDTO();
+    OrganizationUpdateDTO organizationUpdateDTO = new OrganizationUpdateDTO();
     String accessToken = "ACCESSTOKEN";
 
-    Mockito.when(organizationApisHolderMock.getOrganizationApi(accessToken))
+    when(organizationApisHolderMock.getOrganizationApi(accessToken))
       .thenReturn(organizationApiMock);
-    Mockito.doThrow(HttpClientErrorException.create(HttpStatus.NOT_FOUND, "NotFound", null, null, null))
-            .when(organizationApiMock).updateOrganization(organizationDetailDTO);
+    doThrow(new RestInvokeNotFoundException("APPNAME", HttpStatus.NOT_FOUND, "ERROR", "ERRORCODE", "ERRORMESSAGE", "BODY"))
+            .when(organizationApiMock).updateOrganization(organizationUpdateDTO);
 
-    Assertions.assertThrows(ResourceNotFoundException.class,() -> organizationClient.updateOrganization(organizationDetailDTO, accessToken));
+    Assertions.assertThrows(NotFoundException.class,() -> organizationClient.updateOrganization(organizationUpdateDTO, accessToken));
   }
 
-  @Test
-  void givenBadRequestWhenUpdateOrganizationThenInvalidOrganizationException() {
-    OrganizationDetailDTO organizationDetailDTO = new OrganizationDetailDTO();
-    String accessToken = "ACCESSTOKEN";
-
-    String upstreamMessage = "[INVALID_ORGANIZATION] Error from upstream";
-    String body = """
-    {"code":"UPSTREAM_CODE","message":"%s","traceId":"t1"}
-    """.formatted(upstreamMessage);
-
-    HttpClientErrorException badRequest = HttpClientErrorException.create(
-      HttpStatus.BAD_REQUEST,
-      "Bad Request",
-      HttpHeaders.EMPTY,
-      body.getBytes(StandardCharsets.UTF_8),
-      StandardCharsets.UTF_8
-    );
-
-    Mockito.when(organizationApisHolderMock.getOrganizationApi(accessToken))
-      .thenReturn(organizationApiMock);
-    Mockito.doThrow(badRequest)
-      .when(organizationApiMock)
-      .updateOrganization(organizationDetailDTO);
-
-    // ✅ Stub del mapper (fondamentale!)
-    Mockito.when(upstreamErrorMapperMock.from(Mockito.any(HttpClientErrorException.class)))
-      .thenReturn(new UpstreamErrorMapper.MappedUpstreamError("INVALID_ORGANIZATION", "Error from upstream"));
-
-    InvalidOrganizationException ex = Assertions.assertThrows(
-      InvalidOrganizationException.class,
-      () -> organizationClient.updateOrganization(organizationDetailDTO, accessToken)
-    );
-
-    Assertions.assertEquals("INVALID_ORGANIZATION", ex.getCode());
-    Assertions.assertEquals("Error from upstream", ex.getMessage());
-  }
 }

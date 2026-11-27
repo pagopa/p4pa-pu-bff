@@ -17,6 +17,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageRequest;
 import uk.co.jemos.podam.api.PodamFactory;
 
 @ExtendWith(MockitoExtension.class)
@@ -57,7 +58,7 @@ class DebtPositionTypeOrgMapperTest {
       OperatorDTO::getMappedExternalUserId).collect(Collectors.toSet());
     operatorsSet.add(operatorExternalUserId);
 
-    Mockito.when(authzServiceMock.getOrganizationOperators(organizationIpaCode,null,null,null,0,PAGE_MAX_SIZE,accessToken))
+    Mockito.when(authzServiceMock.getOrganizationOperators(organizationIpaCode,null,null,null,null, PageRequest.of(0, PAGE_MAX_SIZE), accessToken))
       .thenReturn(operatorsPage);
 
     SaveDebtPositionTypeOrgDTO result = mapper.mapToSaveDebtPositionTypeOrgDTO(saveDebtPositionTypeOrgDTO,operatorExternalUserId,organizationIpaCode,accessToken);
@@ -71,7 +72,9 @@ class DebtPositionTypeOrgMapperTest {
       operatorsSet.remove(operator);
     }
     Assertions.assertNull(result.getDisabledOperators());
-    Assertions.assertFalse(result.getRemoveEnabledOperators());
+    Assertions.assertNotEquals(Boolean.TRUE, result.getRemoveEnabledOperators());
+    Assertions.assertEquals(saveDebtPositionTypeOrgDTO.getDebtPositionTypeOrgBalanceCostRequestList(), result.getDebtPositionTypeOrgBalanceCostRequestList());
+    Assertions.assertEquals(saveDebtPositionTypeOrgDTO.getDeleteDebtPositionTypeOrgBalanceCostList(), result.getDeleteDebtPositionTypeOrgBalanceCostList());
   }
 
   @Test
@@ -90,7 +93,7 @@ class DebtPositionTypeOrgMapperTest {
     expectedDebtPositionTypeOrg.setFlagActive(null);
     saveDebtPositionTypeOrgDTO.setDebtPositionTypeOrg(expectedDebtPositionTypeOrg);
 
-    Mockito.when(authzServiceMock.getOrganizationOperators(organizationIpaCode,null,null,null,0,PAGE_MAX_SIZE,accessToken))
+    Mockito.when(authzServiceMock.getOrganizationOperators(organizationIpaCode,null,null,null, null, PageRequest.of(0, PAGE_MAX_SIZE), accessToken))
       .thenReturn(operatorsPage);
 
     SaveDebtPositionTypeOrgDTO result = mapper.mapToSaveDebtPositionTypeOrgDTO(saveDebtPositionTypeOrgDTO,operatorExternalUserId,organizationIpaCode,accessToken);
@@ -107,7 +110,8 @@ class DebtPositionTypeOrgMapperTest {
       operatorsSet.remove(operator);
     }
     Assertions.assertNull(result.getDisabledOperators());
-    Assertions.assertFalse(result.getRemoveEnabledOperators());
+    Assertions.assertNotEquals(Boolean.TRUE, result.getRemoveEnabledOperators());
+    Assertions.assertEquals(saveDebtPositionTypeOrgDTO.getDebtPositionTypeOrgBalanceCostRequestList(), result.getDebtPositionTypeOrgBalanceCostRequestList());
   }
 
   @Test
@@ -125,7 +129,8 @@ class DebtPositionTypeOrgMapperTest {
     Assertions.assertEquals(saveDebtPositionTypeOrgDTO.getDebtPositionTypeOrg(),result.getDebtPositionTypeOrg());
     Assertions.assertEquals(saveDebtPositionTypeOrgDTO.getEnabledOperators(),result.getEnabledOperators());
     Assertions.assertEquals(saveDebtPositionTypeOrgDTO.getDisabledOperators(),result.getDisabledOperators());
-    Assertions.assertFalse(result.getRemoveEnabledOperators());
+    Assertions.assertNotEquals(Boolean.TRUE, result.getRemoveEnabledOperators());
+    Assertions.assertEquals(saveDebtPositionTypeOrgDTO.getDebtPositionTypeOrgBalanceCostRequestList(), result.getDebtPositionTypeOrgBalanceCostRequestList());
     Mockito.verifyNoInteractions(authzServiceMock);
   }
 
@@ -145,7 +150,8 @@ class DebtPositionTypeOrgMapperTest {
     Assertions.assertEquals(1,result.getEnabledOperators().size());
     Assertions.assertTrue(result.getEnabledOperators().contains(operatorExternalUserId));
     Assertions.assertNull(result.getDisabledOperators());
-    Assertions.assertTrue(result.getRemoveEnabledOperators());
+    Assertions.assertEquals(Boolean.TRUE, result.getRemoveEnabledOperators());
+    Assertions.assertEquals(saveDebtPositionTypeOrgDTO.getDebtPositionTypeOrgBalanceCostRequestList(), result.getDebtPositionTypeOrgBalanceCostRequestList());
     Mockito.verifyNoInteractions(authzServiceMock);
   }
 

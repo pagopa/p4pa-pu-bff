@@ -1,0 +1,64 @@
+package it.gov.pagopa.pu.bff.service.pdnd_service;
+
+import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
+import it.gov.pagopa.pu.bff.connector.organization.PdndServiceService;
+import it.gov.pagopa.pu.bff.service.AuthorizationService;
+import it.gov.pagopa.pu.organization.dto.generated.*;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Service
+public class PdndServiceRetrieverServiceImpl implements PdndServiceRetrieverService {
+
+  private final AuthorizationService authorizationService;
+  private final PdndServiceService pdndServiceService;
+
+  public PdndServiceRetrieverServiceImpl(AuthorizationService authorizationService, PdndServiceService pdndServiceService) {
+    this.authorizationService = authorizationService;
+    this.pdndServiceService = pdndServiceService;
+  }
+
+  @Override
+  public PdndService createPdndService(Long organizationId, PdndServiceRequestDTO pdndServiceRequestDTO, String subUnitCode, UserInfo userInfo, String accessToken) {
+    authorizationService.validateAdminRole(organizationId, userInfo);
+    return pdndServiceService.savePdndService(organizationId, pdndServiceRequestDTO, subUnitCode, accessToken);
+  }
+
+  @Override
+  public PdndServiceView getPdndService(Long organizationId, String purposeId, UserInfo userInfo, String accessToken) {
+    authorizationService.validateAdminRole(organizationId, userInfo);
+    return pdndServiceService.getPdndService(organizationId, purposeId, accessToken);
+  }
+
+  @Override
+  public List<PdndServiceView> getPdndServices(Long organizationId, String subUnitCode, PdndServiceType pdndServiceType, UserInfo userInfo, String accessToken) {
+    authorizationService.validateAdminRole(organizationId, userInfo);
+    return pdndServiceService.getPdndServices(organizationId, subUnitCode, pdndServiceType, accessToken);
+  }
+
+  @Override
+  public void deletePdndService(Long organizationId, String purposeId, UserInfo userInfo, String accessToken) {
+    authorizationService.validateAdminRole(organizationId, userInfo);
+    pdndServiceService.deletePdndService(organizationId, purposeId, accessToken);
+  }
+
+  @Override
+  public List<PdndService> getPdndClientServices(Long organizationId, String clientId, PdndServiceType serviceType, UserInfo userInfo, String accessToken) {
+    authorizationService.validateAdminRole(organizationId, userInfo);
+    return pdndServiceService.findByOrganizationIdAndClientId(organizationId, clientId, serviceType, accessToken);
+  }
+
+  @Override
+  public PagedPdndServiceView getOrgSubUnitsPdndServices(Long organizationId, String subUnitCode, String subUnitName, Pageable pageable, UserInfo userInfo, String accessToken) {
+    authorizationService.validateAdminRole(organizationId, userInfo);
+    return pdndServiceService.getOrgSubUnitsPdndServices(organizationId, subUnitCode, subUnitName, pageable, accessToken);
+  }
+
+  @Override
+  public PdndService updatePdndService(Long organizationId, String purposeId, PdndServiceUpdateDTO pdndServiceUpdateDTO, UserInfo userInfo, String accessToken) {
+    authorizationService.validateAdminRole(organizationId, userInfo);
+    return pdndServiceService.updatePdndService(purposeId, pdndServiceUpdateDTO, accessToken);
+  }
+}

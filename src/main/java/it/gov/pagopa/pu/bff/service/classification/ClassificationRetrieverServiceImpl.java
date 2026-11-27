@@ -6,7 +6,7 @@ import it.gov.pagopa.pu.bff.connector.classification.ClassificationService;
 import it.gov.pagopa.pu.bff.connector.organization.OrganizationService;
 import it.gov.pagopa.pu.bff.dto.*;
 import it.gov.pagopa.pu.bff.dto.generated.PagedTreasuredClassificationExtendedDTO;
-import it.gov.pagopa.pu.bff.exception.ResourceNotFoundException;
+import it.gov.pagopa.pu.bff.exception.common.NotFoundException;
 import it.gov.pagopa.pu.bff.mapper.ClassificationDetailDTOMapper;
 import it.gov.pagopa.pu.bff.mapper.TreasuredClassificationExtendedDTOMapper;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
@@ -71,7 +71,7 @@ public class ClassificationRetrieverServiceImpl implements ClassificationRetriev
 
     Organization organization = organizationService.getOrganizationByOrganizationId(organizationId, accessToken);
     if(organization == null) {
-      throw new ResourceNotFoundException("ORGANIZATION_NOT_FOUND", "Organization having ID " + organizationId + " not found");
+      throw new NotFoundException("ORGANIZATION_NOT_FOUND", "Organization having ID " + organizationId + " not found");
     }
     treasuredClassificationFiltersDTO.setExcludedLabels(getExcludedLabels(organization));
 
@@ -141,7 +141,7 @@ public class ClassificationRetrieverServiceImpl implements ClassificationRetriev
 
     Organization organization = organizationService.getOrganizationByOrganizationId(organizationId, accessToken);
     if (organization == null) {
-      throw new ResourceNotFoundException("ORGANIZATION_NOT_FOUND", "Organization having ID " + organizationId + " not found");
+      throw new NotFoundException("ORGANIZATION_NOT_FOUND", "Organization having ID " + organizationId + " not found");
     }
 
     return classificationDetailDTOMapper.map(classificationDetail, organization);
@@ -164,7 +164,7 @@ public class ClassificationRetrieverServiceImpl implements ClassificationRetriev
   private Set<String> getIudsFilter(Long organizationId, Long assessmentId, String accessToken) {
     Assessments assessment = assessmentsService.getAssessmentsById(assessmentId, accessToken);
     if (assessment == null || !assessment.getOrganizationId().equals(organizationId)) {
-      throw new ResourceNotFoundException("ASSESSMENT_NOT_FOUND", "Assessment with id " + assessmentId + " not found");
+      throw new NotFoundException("ASSESSMENT_NOT_FOUND", "Assessment with id " + assessmentId + " not found");
     }
     AssessmentsRowsDetailFiltersDTO assessmentsRowsDetailFiltersDTO = getAssessmentsRowsDetailFiltersDTO(assessmentId);
     Pageable maxPageable = PageRequest.of(0, pageMaxSize);
@@ -210,7 +210,7 @@ public class ClassificationRetrieverServiceImpl implements ClassificationRetriev
     Organization organization = organizationService.getOrganizationByOrganizationId(organizationId, accessToken);
 
     if(organization == null) {
-      throw new ResourceNotFoundException("ORGANIZATION_NOT_FOUND", "Organization having ID " + organizationId + " not found");
+      throw new NotFoundException("ORGANIZATION_NOT_FOUND", "Organization having ID " + organizationId + " not found");
     }
 
     filters.setLabels(getLabels(organization));

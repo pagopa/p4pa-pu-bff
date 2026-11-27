@@ -4,7 +4,10 @@ import it.gov.pagopa.pu.auth.dto.generated.OperatorDTO;
 import it.gov.pagopa.pu.auth.dto.generated.OperatorsPage;
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.connector.auth.client.AuthzClient;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class AuthzServiceImpl implements AuthzService {
@@ -17,15 +20,16 @@ public class AuthzServiceImpl implements AuthzService {
 
   @Override
   public UserInfo getUserInfoFromMappedExternaUserId(String mappedExternalUserId, String accessToken) {
-    return client.getUserInfoFromMappedExternaUserId(mappedExternalUserId, accessToken);
+    return client.getUserInfoFromMappedExternalUserId(mappedExternalUserId, accessToken);
   }
 
   @Override
-  public OperatorsPage getOrganizationOperators(String organizationIpaCode,
-    String fiscalCode, String firstName, String lastName, Integer page,
-    Integer size, String accessToken) {
+  public OperatorsPage getOrganizationOperators(
+    String organizationIpaCode, String fiscalCode, String firstName,
+    String lastName, List<String> mappedExternalUserIdsToExclude,
+    Pageable pageable, String accessToken) {
     return client.getOrganizationOperators(organizationIpaCode, fiscalCode,
-      firstName, lastName, page, size, accessToken);
+      firstName, lastName, mappedExternalUserIdsToExclude, pageable, accessToken);
   }
 
   @Override

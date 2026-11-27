@@ -4,7 +4,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import it.gov.pagopa.pu.bff.connector.process_executions.config.ProcessExecutionsApisHolder;
-import it.gov.pagopa.pu.processexecutions.controller.generated.ExportFileControllerApi;
+import it.gov.pagopa.pu.processexecutions.client.generated.ExportFileControllerApi;
 import it.gov.pagopa.pu.processexecutions.dto.generated.ClassificationsExportFileFilter;
 import it.gov.pagopa.pu.processexecutions.dto.generated.ClassificationsExportFileRequestDTO;
 import it.gov.pagopa.pu.processexecutions.dto.generated.OffsetDateTimeIntervalFilter;

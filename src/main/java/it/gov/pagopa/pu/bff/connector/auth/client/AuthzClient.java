@@ -2,12 +2,14 @@ package it.gov.pagopa.pu.bff.connector.auth.client;
 
 import it.gov.pagopa.pu.auth.dto.generated.*;
 import it.gov.pagopa.pu.bff.connector.auth.config.AuthApisHolder;
-import it.gov.pagopa.pu.bff.exception.ResourceNotFoundException;
+import it.gov.pagopa.pu.bff.exception.common.NotFoundException;
+import it.gov.pagopa.pu.bff.exception.common.RestInvokeNotFoundException;
 import it.gov.pagopa.pu.bff.util.PageUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
+
+import java.util.List;
 
 @Service
 @Slf4j
@@ -19,19 +21,19 @@ public class AuthzClient {
     this.authApisHolder = authApisHolder;
   }
 
-  public UserInfo getUserInfoFromMappedExternaUserId(String mappedExternalUserId, String accessToken) {
+  public UserInfo getUserInfoFromMappedExternalUserId(String mappedExternalUserId, String accessToken) {
     try {
       return authApisHolder.getAuthzApi(accessToken)
         .getUserInfoFromMappedExternaUserId(mappedExternalUserId);
-    } catch (HttpClientErrorException.NotFound e) {
+    } catch (RestInvokeNotFoundException e) {
       log.warn("UserInfo with mappedExternalUserId {} not found", mappedExternalUserId);
       return null;
     }
   }
 
-  public OperatorsPage getOrganizationOperators(String organizationIpaCode, String fiscalCode, String firstName, String lastName, Integer page, Integer size, String accessToken) {
+  public OperatorsPage getOrganizationOperators(String organizationIpaCode, String fiscalCode, String firstName, String lastName, List<String> mappedExternalUserIdsToExclude, Pageable pageable, String accessToken) {
     return authApisHolder.getAuthzApi(accessToken)
-      .getOrganizationOperators(organizationIpaCode, fiscalCode, firstName, lastName, page, size);
+      .getOrganizationOperators(organizationIpaCode, fiscalCode, firstName, lastName, mappedExternalUserIdsToExclude, PageUtils.getPageNumber(pageable), PageUtils.getPageSize(pageable));
   }
 
   public ClientDTOPage getClients(String organizationIpaCode, String clientId, String clientName, Pageable pageable, String accessToken) {
@@ -57,15 +59,15 @@ public class AuthzClient {
     try {
       return authApisHolder.getAuthzApi(accessToken)
         .generateClientSecret(organizationIpaCode, clientId);
-    } catch (HttpClientErrorException.NotFound e) {
-      throw new ResourceNotFoundException("CLIENT_NOT_FOUND", "Client with ID not found: " + clientId);
+    } catch (RestInvokeNotFoundException e) {
+      throw new NotFoundException("CLIENT_NOT_FOUND", "Client with ID not found: " + clientId);
     }
   }
 
   public OperatorDTO getOrganizationOperator(String organizationIpaCode, String mappedExternalUserId, String accessToken) {
     try {
       return authApisHolder.getAuthzApi(accessToken).getOrganizationOperator(organizationIpaCode, mappedExternalUserId);
-    } catch (HttpClientErrorException.NotFound e) {
+    } catch (RestInvokeNotFoundException e) {
       log.warn("Operator with mappedExternalUserId {} not found", mappedExternalUserId);
       return null;
     }

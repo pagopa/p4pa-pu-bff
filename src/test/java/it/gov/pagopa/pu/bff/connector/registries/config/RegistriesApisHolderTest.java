@@ -1,5 +1,6 @@
 package it.gov.pagopa.pu.bff.connector.registries.config;
 
+import it.gov.pagopa.pu.bff.config.json.JsonConfig;
 import it.gov.pagopa.pu.bff.connector.BaseApiHolderTest;
 import it.gov.pagopa.pu.registries.dto.generated.RegistryOutcome;
 import it.gov.pagopa.pu.registries.dto.generated.RegistryPagoPaEventType;
@@ -18,82 +19,104 @@ import org.springframework.web.util.DefaultUriBuilderFactory;
 import java.time.OffsetDateTime;
 import java.util.Collections;
 
+import static org.mockito.Mockito.when;
+
 @ExtendWith(MockitoExtension.class)
-class RegistriesApisHolderTest  extends BaseApiHolderTest {
-    @Mock
-    private RestTemplateBuilder restTemplateBuilderMock;
+class RegistriesApisHolderTest extends BaseApiHolderTest {
+  @Mock
+  private RestTemplateBuilder restTemplateBuilderMock;
 
-    private RegistriesApisHolder registriesApisHolder;
+  private RegistriesApisHolder apisHolder;
+  private RegistriesApiClientConfig apiClientConfig;
 
-    @BeforeEach
-    void setUp() {
-        Mockito.when(restTemplateBuilderMock.build()).thenReturn(restTemplateMock);
-        Mockito.when(restTemplateMock.getUriTemplateHandler()).thenReturn(new DefaultUriBuilderFactory());
-        RegistriesApiClientConfig clientConfig = RegistriesApiClientConfig.builder()
-                .baseUrl("http://example.com")
-                .build();
-        registriesApisHolder = new RegistriesApisHolder(clientConfig, restTemplateBuilderMock);
-    }
+  @BeforeEach
+  void setUp() {
+    when(restTemplateBuilderMock.build()).thenReturn(restTemplateMock);
+    when(restTemplateMock.getUriTemplateHandler()).thenReturn(new DefaultUriBuilderFactory());
 
-    @AfterEach
-    void verifyNoMoreInteractions() {
-        Mockito.verifyNoMoreInteractions(
-            restTemplateBuilderMock,
-            restTemplateMock
-        );
-    }
+    apiClientConfig = RegistriesApiClientConfig.builder()
+      .baseUrl("http://example.com")
+      .maxAttempts(3)
+      .build();
+    apisHolder = new RegistriesApisHolder(apiClientConfig, restTemplateBuilderMock, new JsonConfig().objectMapperJackson3());
 
-    @Test
-    void whenGetDebtPositionRegistrySearchControllerApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
-        assertAuthenticationShouldBeSetInThreadSafeMode(
-            accessToken -> registriesApisHolder.getDebtPositionRegistrySearchControllerApi(accessToken)
-                .crudDebtPositionRegistriesFindAllByDebtPositionId(null),
-            new ParameterizedTypeReference<>() {},
-            registriesApisHolder::unload);
-    }
+    verifyHttpClientErrorJsonBodyHandlerConfiguration(apisHolder.getDebtPositionRegistrySearchControllerApi(null));
+  }
+
+  @AfterEach
+  void verifyNoMoreInteractions() {
+    Mockito.verifyNoMoreInteractions(
+      restTemplateBuilderMock,
+      restTemplateMock
+    );
+  }
+
+  @Test
+  void testRetryConfiguration() {
+    assertRetry(apiClientConfig,
+      accessToken -> apisHolder.getDebtPositionRegistrySearchControllerApi(accessToken)
+        .crudDebtPositionRegistriesFindAllByDebtPositionId(null),
+      new ParameterizedTypeReference<>() {}
+    );
+  }
+
+  @Test
+  void whenGetDebtPositionRegistrySearchControllerApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
+    assertAuthenticationShouldBeSetInThreadSafeMode(
+      accessToken -> apisHolder.getDebtPositionRegistrySearchControllerApi(accessToken)
+        .crudDebtPositionRegistriesFindAllByDebtPositionId(null),
+      new ParameterizedTypeReference<>() {
+      },
+      apisHolder::unload);
+  }
 
   @Test
   void whenGetInstallmentRegistrySearchControllerApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
     assertAuthenticationShouldBeSetInThreadSafeMode(
-      accessToken -> registriesApisHolder.getInstallmentRegistrySearchControllerApi(accessToken)
+      accessToken -> apisHolder.getInstallmentRegistrySearchControllerApi(accessToken)
         .crudInstallmentRegistriesFindAllByDebtPositionId(null),
-      new ParameterizedTypeReference<>() {},
-      registriesApisHolder::unload);
+      new ParameterizedTypeReference<>() {
+      },
+      apisHolder::unload);
   }
 
   @Test
   void whenGetPagoPaRegistrySearchControllerApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
     assertAuthenticationShouldBeSetInThreadSafeMode(
-      accessToken -> registriesApisHolder.getPagoPaRegistrySearchControllerApi(accessToken)
-        .crudPagopaRegistriesSearchByFilters(RegistryPagoPaEventType.GPD_createPosition, OffsetDateTime.now(),OffsetDateTime.now(),"orgFiscalCode","iuv", RegistryOutcome.OK,0,10, Collections.emptyList()),
-      new ParameterizedTypeReference<>() {},
-      registriesApisHolder::unload);
+      accessToken -> apisHolder.getPagoPaRegistrySearchControllerApi(accessToken)
+        .crudPagopaRegistriesSearchByFilters(RegistryPagoPaEventType.GPD_createPosition, OffsetDateTime.now(), OffsetDateTime.now(), "orgFiscalCode", "iuv", RegistryOutcome.OK, 0, 10, Collections.emptyList()),
+      new ParameterizedTypeReference<>() {
+      },
+      apisHolder::unload);
   }
 
   @Test
   void whenGetSilRegistryApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
     assertAuthenticationShouldBeSetInThreadSafeMode(
-      accessToken -> registriesApisHolder.getSilRegistryApi(accessToken)
+      accessToken -> apisHolder.getSilRegistryApi(accessToken)
         .getSilRegistry("666"),
-      new ParameterizedTypeReference<>() {},
-      registriesApisHolder::unload);
+      new ParameterizedTypeReference<>() {
+      },
+      apisHolder::unload);
   }
 
   @Test
   void whenGetPagoPaRegistryApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
     assertAuthenticationShouldBeSetInThreadSafeMode(
-      accessToken -> registriesApisHolder.getPagoPaRegistryApi(accessToken)
+      accessToken -> apisHolder.getPagoPaRegistryApi(accessToken)
         .getPagoPaRegistry("pagoPaRegistryId"),
-      new ParameterizedTypeReference<>() {},
-      registriesApisHolder::unload);
+      new ParameterizedTypeReference<>() {
+      },
+      apisHolder::unload);
   }
 
   @Test
   void whenGetSilRegistrySearchControllerApiThenAuthenticationShouldBeSetInThreadSafeMode() throws InterruptedException {
     assertAuthenticationShouldBeSetInThreadSafeMode(
-      accessToken -> registriesApisHolder.getSilRegistrySearchControllerApi(accessToken)
-        .crudSilRegistriesSearchByFilters(RegistrySilEventType.PTPR_pivotSILAutorizzaImportFlusso, OffsetDateTime.now(),OffsetDateTime.now(),"orgFiscalCode","iuv",RegistryOutcome.OK, 0,10, Collections.emptyList()),
-      new ParameterizedTypeReference<>() {},
-      registriesApisHolder::unload);
+      accessToken -> apisHolder.getSilRegistrySearchControllerApi(accessToken)
+        .crudSilRegistriesSearchByFilters(RegistrySilEventType.PTPR_pivotSILAutorizzaImportFlusso, OffsetDateTime.now(), OffsetDateTime.now(), "orgFiscalCode", "iuv", RegistryOutcome.OK, 0, 10, Collections.emptyList()),
+      new ParameterizedTypeReference<>() {
+      },
+      apisHolder::unload);
   }
 }

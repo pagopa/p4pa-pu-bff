@@ -5,7 +5,7 @@ import it.gov.pagopa.pu.bff.connector.registries.SilRegistryService;
 import it.gov.pagopa.pu.bff.dto.OffsetDateTimeIntervalFilter;
 import it.gov.pagopa.pu.bff.dto.SilRegistryFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedSilRegistry;
-import it.gov.pagopa.pu.bff.exception.ResourceNotFoundException;
+import it.gov.pagopa.pu.bff.exception.common.NotFoundException;
 import it.gov.pagopa.pu.bff.mapper.SilRegistryMapper;
 import it.gov.pagopa.pu.bff.service.organization.OrganizationRetrieverService;
 import it.gov.pagopa.pu.bff.service.sil_registry.SilRegistryRetrieverService;
@@ -124,7 +124,7 @@ class SilRegistryRetrieverServiceImplTest {
     when(silRegistryServiceMock.getSilRegistry(registryId, accessToken)).thenReturn(expectedResult);
     when(organizationRetrieverServiceMock.getOrgFiscalCode(organizationId, loggedUser, accessToken)).thenReturn(orgFiscalCode);
 
-    assertThrows(ResourceNotFoundException.class, () ->
+    assertThrows(NotFoundException.class, () ->
       silRegistryRetrieverService.getSilRegistry(organizationId, registryId, loggedUser, accessToken));
   }
 
@@ -144,7 +144,7 @@ class SilRegistryRetrieverServiceImplTest {
     when(silRegistryServiceMock.getSilRegistry(registryId, accessToken)).thenReturn(expectedResult);
     when(organizationRetrieverServiceMock.getOrgFiscalCode(organizationId, loggedUser, accessToken)).thenReturn(null);
 
-    assertThrows(ResourceNotFoundException.class, () ->
+    assertThrows(NotFoundException.class, () ->
       silRegistryRetrieverService.getSilRegistry(organizationId, registryId, loggedUser, accessToken));
   }
 

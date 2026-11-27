@@ -3,7 +3,7 @@ package it.gov.pagopa.pu.bff.connector.classification.client;
 import it.gov.pagopa.pu.bff.connector.classification.config.ClassificationApisHolder;
 import it.gov.pagopa.pu.bff.dto.LocalDateIntervalFilter;
 import it.gov.pagopa.pu.bff.util.PageUtils;
-import it.gov.pagopa.pu.classification.controller.generated.PaymentsReportingViewSearchControllerApi;
+import it.gov.pagopa.pu.classification.client.generated.PaymentsReportingViewSearchControllerApi;
 import it.gov.pagopa.pu.classification.dto.generated.PagedModelPaymentsReportingView;
 import java.time.LocalDate;
 import org.junit.jupiter.api.AfterEach;

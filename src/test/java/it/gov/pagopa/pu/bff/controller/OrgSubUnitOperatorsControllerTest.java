@@ -1,0 +1,157 @@
+package it.gov.pagopa.pu.bff.controller;
+
+import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
+import it.gov.pagopa.pu.bff.dto.OrgSubUnitNotRelatedOperatorsFilters;
+import it.gov.pagopa.pu.bff.dto.OrgSubUnitOperatorsFilters;
+import it.gov.pagopa.pu.bff.dto.generated.PagedOrgSubUnitOperators;
+import it.gov.pagopa.pu.bff.security.SecurityUtilsTest;
+import it.gov.pagopa.pu.bff.service.org_sub_unit_operators.OrgSubUnitOperatorsRetrieverService;
+import it.gov.pagopa.pu.bff.util.TestUtils;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import uk.co.jemos.podam.api.PodamFactory;
+
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+@ExtendWith(MockitoExtension.class)
+class OrgSubUnitOperatorsControllerTest {
+
+  public static final PodamFactory podamFactory = TestUtils.getPodamFactory();
+  @Mock
+  private OrgSubUnitOperatorsRetrieverService orgSubUnitOperatorsRetrieverServiceMock;
+
+  private static final String ACCESS_TOKEN = "accessToken";
+  private final UserInfo loggedUser = podamFactory.manufacturePojo(UserInfo.class);
+
+  @InjectMocks
+  private OrgSubUnitOperatorsController orgSubUnitOperatorsController;
+
+  @BeforeEach
+  void setUp() {
+    SecurityUtilsTest.configureSecurityContext(ACCESS_TOKEN, loggedUser);
+  }
+  @AfterEach
+  void verifyNoMoreInteractions() {
+    Mockito.verifyNoMoreInteractions(orgSubUnitOperatorsRetrieverServiceMock);
+    SecurityUtilsTest.clearSecurityContext();
+  }
+
+  @Test
+  void givenCorrectRequestWhenGetOrgSubUnitOperatorsThenOk() {
+    Long organizationId = 1L;
+    String subUnitCode = "subUnitCode";
+    String mappedExternalUserId = "mappedExternalUserId";
+    String fiscalCode = "fiscalCode";
+    String firstName = "firstName";
+    String lastName = "lastName";
+    Pageable pageable = PageRequest.ofSize(10);
+
+    OrgSubUnitOperatorsFilters filters = new OrgSubUnitOperatorsFilters(mappedExternalUserId, fiscalCode, firstName, lastName);
+
+    PagedOrgSubUnitOperators expectedResult = podamFactory.manufacturePojo(PagedOrgSubUnitOperators.class);
+
+    when(orgSubUnitOperatorsRetrieverServiceMock.getOrgSubUnitOperators(organizationId, subUnitCode, filters, pageable, loggedUser, ACCESS_TOKEN))
+      .thenReturn(expectedResult);
+
+    ResponseEntity<PagedOrgSubUnitOperators> response =
+      orgSubUnitOperatorsController.getOrgSubUnitOperators(organizationId, subUnitCode, mappedExternalUserId, fiscalCode, firstName, lastName, pageable);
+
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertNotNull(response.getBody());
+    assertSame(expectedResult, response.getBody());
+  }
+  @Test
+  void givenCorrectRequestWhenAddOrgSubUnitsToOperatorThenOk() {
+    Long organizationId = 1L;
+    String mappedExternalUserId = "mappedExternalUserId";
+    List<String> orgSubUnitCodes = List.of("SUB_UNIT_1", "SUB_UNIT_2");
+
+    ResponseEntity<Void> response = orgSubUnitOperatorsController.addOrgSubUnitsToOperator(organizationId, mappedExternalUserId, orgSubUnitCodes);
+
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertNull(response.getBody());
+
+    verify(orgSubUnitOperatorsRetrieverServiceMock)
+      .addOrgSubUnitsToOperator(organizationId, mappedExternalUserId, orgSubUnitCodes, loggedUser, ACCESS_TOKEN);
+  }
+
+  @Test
+  void givenCorrectRequestWhenDeleteOrgSubUnitFromOperatorThenOk() {
+    Long organizationId = 1L;
+    String mappedExternalUserId = "mappedExternalUserId";
+    String subUnitCode = "SUB_UNIT_1";
+
+    ResponseEntity<Void> response = orgSubUnitOperatorsController.deleteOrgSubUnitFromOperator(organizationId, mappedExternalUserId, subUnitCode);
+
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertNull(response.getBody());
+
+    verify(orgSubUnitOperatorsRetrieverServiceMock)
+      .deleteOrgSubUnitFromOperator(organizationId, mappedExternalUserId, subUnitCode, loggedUser, ACCESS_TOKEN);
+  }
+
+  @Test
+  void givenCorrectRequestWhenAddOperatorsToOrgSubUnitThenOk() {
+    Long organizationId = 1L;
+    String subUnitCode = "SUB_UNIT_1";
+    List<String> mappedExternalUserIds = List.of("mappedExternalUserId1", "mappedExternalUserId2");
+
+    ResponseEntity<Void> response = orgSubUnitOperatorsController.addOperatorsToOrgSubUnit(organizationId, subUnitCode, mappedExternalUserIds);
+
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertNull(response.getBody());
+    verify(orgSubUnitOperatorsRetrieverServiceMock).
+      addOperatorsToOrgSubUnit(organizationId, subUnitCode, mappedExternalUserIds, loggedUser, ACCESS_TOKEN);
+  }
+
+  @Test
+  void givenCorrectRequestWhenDeleteOperatorsFromOrgSubUnitThenOk() {
+    Long organizationId = 1L;
+    String subUnitCode = "SUB_UNIT_1";
+    List<String> mappedExternalUserIds = List.of("mappedExternalUserId1", "mappedExternalUserId2");
+
+    ResponseEntity<Void> response = orgSubUnitOperatorsController.deleteOperatorsFromOrgSubUnit(organizationId, subUnitCode, mappedExternalUserIds);
+
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertNull(response.getBody());
+    verify(orgSubUnitOperatorsRetrieverServiceMock)
+      .deleteOperatorsFromOrgSubUnit(organizationId, subUnitCode, mappedExternalUserIds, loggedUser, ACCESS_TOKEN);
+  }
+
+  @Test
+  void givenCorrectRequestWhenGetOrgSubUnitNotRelatedOperatorsThenOk() {
+    Long organizationId = 1L;
+    String subUnitCode = "subUnitCode";
+    String fiscalCode = "fiscalCode";
+    String firstName = "firstName";
+    String lastName = "lastName";
+    Pageable pageable = PageRequest.ofSize(10);
+
+    OrgSubUnitNotRelatedOperatorsFilters filters = new OrgSubUnitNotRelatedOperatorsFilters(fiscalCode, firstName, lastName);
+
+    PagedOrgSubUnitOperators expectedResult = podamFactory.manufacturePojo(PagedOrgSubUnitOperators.class);
+
+    when(orgSubUnitOperatorsRetrieverServiceMock.getOrgSubUnitNotRelatedOperators(organizationId, subUnitCode, filters, pageable, loggedUser, ACCESS_TOKEN))
+      .thenReturn(expectedResult);
+
+    ResponseEntity<PagedOrgSubUnitOperators> response = orgSubUnitOperatorsController.getOrgSubUnitNotRelatedOperators(organizationId, subUnitCode, fiscalCode, firstName, lastName, pageable);
+
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertNotNull(response.getBody());
+    assertSame(expectedResult, response.getBody());
+  }
+}

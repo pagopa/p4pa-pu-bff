@@ -11,7 +11,7 @@ import it.gov.pagopa.pu.bff.dto.AssessmentsRowsDetailFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.generated.AssessmentsRowsDetail;
 import it.gov.pagopa.pu.bff.dto.generated.PagedAssessmentsExtendedDTO;
 import it.gov.pagopa.pu.bff.exception.InvalidAssessmentsDetailException;
-import it.gov.pagopa.pu.bff.exception.ResourceNotFoundException;
+import it.gov.pagopa.pu.bff.exception.common.NotFoundException;
 import it.gov.pagopa.pu.bff.mapper.AssessmentExtendedDTOMapper;
 import it.gov.pagopa.pu.bff.mapper.AssessmentsRowsDetailMapper;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
@@ -137,7 +137,7 @@ public class AssessmentsRetrieverServiceImpl implements AssessmentsRetrieverServ
       return debtPositionTypeOrgs.getEmbedded().getDebtPositionTypeOrgs().stream()
               .collect(Collectors.toMap(DebtPositionTypeOrg::getCode, DebtPositionTypeOrg::getDescription));
     } else {
-      throw new ResourceNotFoundException("ASSESSMENT_NOT_FOUND", "Assessments not found for organizationId " + organizationId);
+      throw new NotFoundException("ASSESSMENT_NOT_FOUND", "Assessments not found for organizationId " + organizationId);
     }
   }
 
@@ -145,7 +145,7 @@ public class AssessmentsRetrieverServiceImpl implements AssessmentsRetrieverServ
     DebtPositionTypeOrg debtPositionTypeOrg = debtPositionTypeOrgService.findDebtPositionTypeOrg(organizationId, debtPositionTypeOrgCode, mappedExternalUserId, accessToken);
 
     if (debtPositionTypeOrg == null){
-      throw new ResourceNotFoundException("DEBT_POSITION_TYPE_ORG_NOT_FOUND", "DebtPositionTypeOrg " + debtPositionTypeOrgCode + " not found for user " + mappedExternalUserId);
+      throw new NotFoundException("DEBT_POSITION_TYPE_ORG_NOT_FOUND", "DebtPositionTypeOrg " + debtPositionTypeOrgCode + " not found for user " + mappedExternalUserId);
     }
 
     return debtPositionTypeOrg.getDescription();
@@ -160,7 +160,7 @@ public class AssessmentsRetrieverServiceImpl implements AssessmentsRetrieverServ
 
     Assessments assessments = assessmentsService.getAssessmentsById(assessmentsRowsDetailFiltersDTO.getAssessmentId(), accessToken);
     if(assessments==null){
-      throw new ResourceNotFoundException("ASSESSMENT_NOT_FOUND", "Assessment with id %s not found".formatted(assessmentsRowsDetailFiltersDTO.getAssessmentId()));
+      throw new NotFoundException("ASSESSMENT_NOT_FOUND", "Assessment with id %s not found".formatted(assessmentsRowsDetailFiltersDTO.getAssessmentId()));
     }
 
     String debtPositionTypeOrgDescription = getDebtPositionTypeOrgDescription(assessmentsRowsDetailFiltersDTO.getOrganizationId(),
@@ -228,7 +228,7 @@ public class AssessmentsRetrieverServiceImpl implements AssessmentsRetrieverServ
   private Assessments getManuallyGeneratedAssessment(Long organizationId, Long assessmentId, String accessToken) {
     Assessments assessments = assessmentsService.getAssessmentsById(assessmentId, accessToken);
     if(assessments == null || !organizationId.equals(assessments.getOrganizationId())){
-      throw new ResourceNotFoundException("ASSESSMENT_NOT_FOUND", "Assessments having assessmentsId "+ assessmentId +" and organizationId "+ organizationId +" not found");
+      throw new NotFoundException("ASSESSMENT_NOT_FOUND", "Assessments having assessmentsId "+ assessmentId +" and organizationId "+ organizationId +" not found");
     } else if(!assessments.getFlagManualGeneration()){
       throw new IllegalArgumentException("Assessments having id "+ assessmentId +" has not been manually generated");
     }

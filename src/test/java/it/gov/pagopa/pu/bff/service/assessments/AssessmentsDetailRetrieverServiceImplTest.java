@@ -3,7 +3,7 @@ package it.gov.pagopa.pu.bff.service.assessments;
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.connector.classification.AssessmentsDetailService;
 import it.gov.pagopa.pu.bff.connector.classification.AssessmentsService;
-import it.gov.pagopa.pu.bff.exception.ResourceNotFoundException;
+import it.gov.pagopa.pu.bff.exception.common.NotFoundException;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
 import it.gov.pagopa.pu.bff.service.debt_position_type_org.DebtPositionTypeOrgRetrieverService;
 import it.gov.pagopa.pu.bff.util.TestUtils;
@@ -101,7 +101,7 @@ class AssessmentsDetailRetrieverServiceImplTest {
 
       when(assessmentsServiceMock.getAssessmentsById(assessmentsId, accessToken)).thenReturn(assessments);
 
-      assertThrows(ResourceNotFoundException.class, () -> assessmentsRetrieverService.createAssessmentsDetail(
+      assertThrows(NotFoundException.class, () -> assessmentsRetrieverService.createAssessmentsDetail(
         organizationId, assessmentsId, createAssessmentsDetail, loggedUser, accessToken));
 
       verifyNoInteractions(assessmentsDetailServiceMock, debtPositionTypeOrgRetrieverServiceMock);
@@ -128,7 +128,7 @@ class AssessmentsDetailRetrieverServiceImplTest {
 
       when(assessmentsServiceMock.getAssessmentsById(assessmentsId, accessToken)).thenReturn(null);
 
-      assertThrows(ResourceNotFoundException.class, () -> assessmentsRetrieverService.createAssessmentsDetail(
+      assertThrows(NotFoundException.class, () -> assessmentsRetrieverService.createAssessmentsDetail(
         organizationId, assessmentsId, createAssessmentsDetail, loggedUser, accessToken));
 
       verifyNoInteractions(assessmentsDetailServiceMock, debtPositionTypeOrgRetrieverServiceMock);
@@ -222,7 +222,7 @@ class AssessmentsDetailRetrieverServiceImplTest {
 
       when(assessmentsServiceMock.findAssessmentsDetail(10L, accessToken)).thenReturn(null);
 
-      assertThrows(ResourceNotFoundException.class, () ->
+      assertThrows(NotFoundException.class, () ->
         assessmentsRetrieverService.deleteAssessmentsDetails(organizationId, ids, loggedUser, accessToken));
 
       authorizationServiceMockedStatic.verify(() ->
@@ -246,7 +246,7 @@ class AssessmentsDetailRetrieverServiceImplTest {
       detail.setOrganizationId(organizationId + 1);
       when(assessmentsServiceMock.findAssessmentsDetail(10L, accessToken)).thenReturn(detail);
 
-      assertThrows(ResourceNotFoundException.class, () ->
+      assertThrows(NotFoundException.class, () ->
         assessmentsRetrieverService.deleteAssessmentsDetails(organizationId, ids, loggedUser, accessToken));
 
       authorizationServiceMockedStatic.verify(() ->

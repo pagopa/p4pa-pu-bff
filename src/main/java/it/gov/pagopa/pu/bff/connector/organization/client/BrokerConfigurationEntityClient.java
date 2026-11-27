@@ -1,10 +1,10 @@
 package it.gov.pagopa.pu.bff.connector.organization.client;
 
 import it.gov.pagopa.pu.bff.connector.organization.config.OrganizationApisHolder;
+import it.gov.pagopa.pu.bff.exception.common.RestInvokeNotFoundException;
 import it.gov.pagopa.pu.organization.dto.generated.BrokerConfiguration;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
 
 @Slf4j
 @Service
@@ -20,7 +20,7 @@ public class BrokerConfigurationEntityClient {
     try{
       return this.organizationApisHolder.getBrokerConfigurationEntityControllerApi(accessToken)
         .crudGetBrokerconfiguration(String.valueOf(brokerId));
-    } catch (HttpClientErrorException.NotFound e) {
+    } catch (RestInvokeNotFoundException e) {
         log.warn("Broker configuration with brokerId {} not found", brokerId);
         return null;
     }

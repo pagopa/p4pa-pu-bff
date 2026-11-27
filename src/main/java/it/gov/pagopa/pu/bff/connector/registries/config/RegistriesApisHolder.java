@@ -1,13 +1,16 @@
 package it.gov.pagopa.pu.bff.connector.registries.config;
 
-import it.gov.pagopa.pu.bff.config.rest.RestTemplateConfig;
-import it.gov.pagopa.pu.registries.controller.ApiClient;
-import it.gov.pagopa.pu.registries.controller.BaseApi;
-import it.gov.pagopa.pu.registries.controller.generated.*;
+import it.gov.pagopa.pu.bff.config.rest.HttpClientErrorJsonBodyHandler;
+import it.gov.pagopa.pu.bff.connector.registries.mapper.RegistriesErrorDTOMapper;
+import it.gov.pagopa.pu.registries.generated.ApiClient;
+import it.gov.pagopa.pu.registries.generated.BaseApi;
+import it.gov.pagopa.pu.registries.client.generated.*;
+import it.gov.pagopa.pu.registries.dto.generated.ErrorDTO;
 import jakarta.annotation.PreDestroy;
 import org.springframework.boot.restclient.RestTemplateBuilder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import tools.jackson.databind.json.JsonMapper;
 
 @Service
 public class RegistriesApisHolder {
@@ -22,7 +25,8 @@ public class RegistriesApisHolder {
 
   public RegistriesApisHolder(
     RegistriesApiClientConfig clientConfig,
-    RestTemplateBuilder restTemplateBuilder
+    RestTemplateBuilder restTemplateBuilder,
+    JsonMapper jsonMapper
   ) {
     RestTemplate restTemplate = restTemplateBuilder.build();
     ApiClient apiClient = new ApiClient(restTemplate);
@@ -30,9 +34,9 @@ public class RegistriesApisHolder {
     apiClient.setBearerToken(bearerTokenHolder::get);
     apiClient.setMaxAttemptsForRetry(Math.max(1, clientConfig.getMaxAttempts()));
     apiClient.setWaitTimeMillis(clientConfig.getWaitTimeMillis());
-    if (clientConfig.isPrintBodyWhenError()) {
-      restTemplate.setErrorHandler(RestTemplateConfig.bodyPrinterWhenError("REGISTRIES"));
-    }
+    restTemplate.setErrorHandler(new HttpClientErrorJsonBodyHandler<>(jsonMapper, "REGISTRIES", clientConfig.isPrintBodyWhenError(),
+      ErrorDTO.class, RegistriesErrorDTOMapper::map)
+    );
 
     this.debtPositionRegistrySearchControllerApi = new DebtPositionRegistrySearchControllerApi(apiClient);
     this.installmentRegistrySearchControllerApi = new InstallmentRegistrySearchControllerApi(apiClient);

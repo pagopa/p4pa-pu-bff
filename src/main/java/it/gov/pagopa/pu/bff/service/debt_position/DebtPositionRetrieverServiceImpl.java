@@ -9,9 +9,9 @@ import it.gov.pagopa.pu.bff.dto.DebtPositionViewFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.FileResourceDTO;
 import it.gov.pagopa.pu.bff.dto.generated.DebtPositionDetailDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedDebtPositionView;
-import it.gov.pagopa.pu.bff.exception.ConflictException;
+import it.gov.pagopa.pu.bff.exception.common.ConflictException;
 import it.gov.pagopa.pu.bff.exception.InvalidDebtPositionException;
-import it.gov.pagopa.pu.bff.exception.ResourceNotFoundException;
+import it.gov.pagopa.pu.bff.exception.common.NotFoundException;
 import it.gov.pagopa.pu.bff.mapper.DebtPositionMapper;
 import it.gov.pagopa.pu.bff.mapper.DebtPositionViewMapper;
 import it.gov.pagopa.pu.bff.service.AuthorizationService;
@@ -165,7 +165,7 @@ public class DebtPositionRetrieverServiceImpl implements DebtPositionRetrieverSe
     );
 
     if (!hasOperatorGrantOnDebtPosition) {
-      throw new ResourceNotFoundException("DEBT_POSITION_NOT_FOUND", "DebtPosition with debtPositionId "+debtPositionId+" and organizationId "+organizationId+" not found");
+      throw new NotFoundException("DEBT_POSITION_NOT_FOUND", "DebtPosition with debtPositionId "+debtPositionId+" and organizationId "+organizationId+" not found");
     }
   }
 
@@ -178,7 +178,7 @@ public class DebtPositionRetrieverServiceImpl implements DebtPositionRetrieverSe
     if (checkDebtPositionPublishCondition(publish, updatedDebtPosition)) {
       try {
         return debtPositionService.publishDebtPosition(debtPositionId, accessToken);
-      } catch (ResourceNotFoundException | ConflictException e) {
+      } catch (it.gov.pagopa.pu.bff.exception.common.NotFoundException | ConflictException e) {
         log.warn(e.getMessage());
       }
     }

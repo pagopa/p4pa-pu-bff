@@ -28,10 +28,11 @@ public interface PagedDebtPositionTypeOrgDTOMapper {
   default DebtPositionTypeOrgDTO map(DebtPositionTypeOrg dpto, @Context Map<Long, DebtPositionType> debtPositionTypes) {
     return Mappers.getMapper(DebtPositionTypeOrgDTOMapper.class).map(
             dpto,
-            debtPositionTypes!=null?debtPositionTypes.get(dpto.getDebtPositionTypeId()):null,
+            debtPositionTypes != null ? debtPositionTypes.get(dpto.getDebtPositionTypeId()) : null,
             null,
             null,
-      null
+            null,
+            null
     );
   }
 }

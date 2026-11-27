@@ -2,7 +2,7 @@ package it.gov.pagopa.pu.bff.service;
 
 import it.gov.pagopa.pu.auth.dto.generated.UserInfo;
 import it.gov.pagopa.pu.bff.connector.registries.DebtPositionRegistryService;
-import it.gov.pagopa.pu.bff.exception.ResourceNotFoundException;
+import it.gov.pagopa.pu.bff.exception.common.NotFoundException;
 import it.gov.pagopa.pu.bff.service.debt_position.DebtPositionRetrieverService;
 import it.gov.pagopa.pu.bff.service.debt_position_registry.DebtPositionRegistryRetrieverService;
 import it.gov.pagopa.pu.bff.service.debt_position_registry.DebtPositionRegistryRetrieverServiceImpl;
@@ -23,8 +23,11 @@ import org.springframework.util.CollectionUtils;
 import uk.co.jemos.podam.api.PodamFactory;
 
 import java.util.List;
+import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class DebtPositionRegistryRetrieverServiceImplTest {
@@ -61,12 +64,12 @@ public class DebtPositionRegistryRetrieverServiceImplTest {
         Long organizationId=1L;
         Long debtPositionId=2L;
         CollectionModelDebtPositionRegistry collectionModelDebtPositionRegistry = podamFactory.manufacturePojo(CollectionModelDebtPositionRegistry.class);
-        List<DebtPositionRegistry> expectedResult = collectionModelDebtPositionRegistry.getEmbedded().getDebtPositionRegistries();
+        List<DebtPositionRegistry> expectedResult = Objects.requireNonNull(collectionModelDebtPositionRegistry.getEmbedded()).getDebtPositionRegistries();
 
       try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
         authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)).thenAnswer(a -> null);
         Mockito.doNothing().when(debtPositionRetrieverServiceMock).validateOperator(debtPositionId, organizationId, loggedUser, accessToken);
-        Mockito.when(debtPositionRegistryServiceMock.findDebtPositionRegistries(debtPositionId, accessToken))
+        when(debtPositionRegistryServiceMock.findDebtPositionRegistries(debtPositionId, accessToken))
           .thenReturn(collectionModelDebtPositionRegistry);
 
         List<DebtPositionRegistry> result = debtPositionRegistryRetrieverService.getDebtPositionRegistry(organizationId, debtPositionId, loggedUser, accessToken);
@@ -94,7 +97,7 @@ public class DebtPositionRegistryRetrieverServiceImplTest {
         authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)).thenAnswer(a -> null);
 
         Mockito.doNothing().when(debtPositionRetrieverServiceMock).validateOperator(debtPositionId, organizationId, loggedUser, accessToken);
-        Mockito.when(debtPositionRegistryServiceMock.findDebtPositionRegistries(debtPositionId, accessToken))
+        when(debtPositionRegistryServiceMock.findDebtPositionRegistries(debtPositionId, accessToken))
           .thenReturn(collectionModelDebtPositionRegistry);
 
         List<DebtPositionRegistry> result = debtPositionRegistryRetrieverService.getDebtPositionRegistry(organizationId, debtPositionId, loggedUser, accessToken);
@@ -120,7 +123,7 @@ public class DebtPositionRegistryRetrieverServiceImplTest {
         authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)).thenAnswer(a -> null);
 
         Mockito.doNothing().when(debtPositionRetrieverServiceMock).validateOperator(debtPositionId, organizationId, loggedUser, accessToken);
-        Mockito.when(debtPositionRegistryServiceMock.findDebtPositionRegistries(debtPositionId,accessToken))
+        when(debtPositionRegistryServiceMock.findDebtPositionRegistries(debtPositionId,accessToken))
                 .thenReturn(null);
 
         List<DebtPositionRegistry> result = debtPositionRegistryRetrieverService.getDebtPositionRegistry(organizationId, debtPositionId, loggedUser, accessToken);
@@ -144,10 +147,10 @@ public class DebtPositionRegistryRetrieverServiceImplTest {
         Long debtPositionId=2L;
       try (MockedStatic<AuthorizationService> authorizationServiceMockedStatic = Mockito.mockStatic(AuthorizationService.class)) {
         authorizationServiceMockedStatic.when(() -> AuthorizationService.validateUserForOrganizationId(organizationId, loggedUser)).thenAnswer(a -> null);
-        Mockito.doThrow(new ResourceNotFoundException("DEBT_POSITION_NOT_FOUND", "DebtPosition not found"))
+        doThrow(new NotFoundException("DEBT_POSITION_NOT_FOUND", "DebtPosition not found"))
           .when(debtPositionRetrieverServiceMock).validateOperator(debtPositionId, organizationId, loggedUser, accessToken);
 
-        Assertions.assertThrows(ResourceNotFoundException.class, () ->
+        Assertions.assertThrows(NotFoundException.class, () ->
           debtPositionRegistryRetrieverService.getDebtPositionRegistry(organizationId, debtPositionId, loggedUser, accessToken));
 
         Mockito.verifyNoInteractions(debtPositionRegistryServiceMock);

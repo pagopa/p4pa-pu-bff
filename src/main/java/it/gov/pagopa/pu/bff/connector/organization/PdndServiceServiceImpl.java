@@ -1,0 +1,56 @@
+package it.gov.pagopa.pu.bff.connector.organization;
+
+import it.gov.pagopa.pu.bff.connector.organization.client.PdndServiceClient;
+import it.gov.pagopa.pu.bff.connector.organization.client.PdndServiceSearchClient;
+import it.gov.pagopa.pu.organization.dto.generated.*;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Service
+public class PdndServiceServiceImpl implements PdndServiceService {
+
+  private final PdndServiceClient pdndServiceClient;
+  private final PdndServiceSearchClient pdndServiceSearchClient;
+
+  public PdndServiceServiceImpl(PdndServiceClient pdndServiceClient, PdndServiceSearchClient pdndServiceSearchClient) {
+    this.pdndServiceClient = pdndServiceClient;
+    this.pdndServiceSearchClient = pdndServiceSearchClient;
+  }
+
+  @Override
+  public PdndService savePdndService(Long organizationId, PdndServiceRequestDTO pdndServiceRequestDTO, String subUnitCode, String accessToken) {
+    return pdndServiceClient.savePdndService(organizationId, pdndServiceRequestDTO, subUnitCode, accessToken);
+  }
+
+  @Override
+  public PdndServiceView getPdndService(Long organizationId, String purposeId, String accessToken) {
+    return pdndServiceClient.getPdndService(organizationId, purposeId, accessToken);
+  }
+
+  @Override
+  public List<PdndServiceView> getPdndServices(Long organizationId, String subUnitCode, PdndServiceType pdndServiceType, String accessToken) {
+    return pdndServiceClient.getPdndServices(organizationId, subUnitCode, pdndServiceType, accessToken);
+  }
+
+  @Override
+  public void deletePdndService(Long organizationId, String purposeId, String accessToken) {
+    pdndServiceClient.deletePdndService(organizationId, purposeId, accessToken);
+  }
+
+  @Override
+  public List<PdndService> findByOrganizationIdAndClientId(Long organizationId, String clientId, PdndServiceType serviceType, String accessToken) {
+    return pdndServiceSearchClient.findByOrganizationIdAndClientId(organizationId, clientId, serviceType, accessToken);
+  }
+
+  @Override
+  public PagedPdndServiceView getOrgSubUnitsPdndServices(Long organizationId, String subUnitCode, String subUnitName, Pageable pageable, String accessToken) {
+    return pdndServiceClient.getOrgSubUnitsPdndServices(organizationId, subUnitCode, subUnitName, pageable, accessToken);
+  }
+
+  @Override
+  public PdndService updatePdndService(String purposeId, PdndServiceUpdateDTO pdndServiceUpdateDTO, String accessToken) {
+    return pdndServiceClient.updatePdndService(purposeId, pdndServiceUpdateDTO, accessToken);
+  }
+}

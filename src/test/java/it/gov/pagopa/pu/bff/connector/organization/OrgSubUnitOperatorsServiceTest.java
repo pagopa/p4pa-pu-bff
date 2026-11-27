@@ -1,0 +1,113 @@
+package it.gov.pagopa.pu.bff.connector.organization;
+
+import it.gov.pagopa.pu.bff.connector.organization.client.OrgSubUnitOperatorsClient;
+import it.gov.pagopa.pu.bff.connector.organization.client.OrgSubUnitOperatorsSearchClient;
+import it.gov.pagopa.pu.bff.util.TestUtils;
+import it.gov.pagopa.pu.organization.dto.generated.PagedModelOrgSubUnitOperators;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import uk.co.jemos.podam.api.PodamFactory;
+import java.util.List;
+import java.util.Set;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+@ExtendWith(MockitoExtension.class)
+class OrgSubUnitOperatorsServiceTest {
+
+  public static final PodamFactory podamFactory = TestUtils.getPodamFactory();
+  @Mock
+  private OrgSubUnitOperatorsSearchClient orgSubUnitOperatorsSearchClientMock;
+  @Mock
+  private OrgSubUnitOperatorsClient orgSubUnitOperatorsClientMock;
+
+  private OrgSubUnitOperatorsService service;
+
+  @BeforeEach
+  void setUp() {
+    service = new OrgSubUnitOperatorsServiceImpl(orgSubUnitOperatorsSearchClientMock, orgSubUnitOperatorsClientMock);
+  }
+
+  @AfterEach
+  void verifyNoMoreInteractions() {
+    Mockito.verifyNoMoreInteractions(orgSubUnitOperatorsSearchClientMock, orgSubUnitOperatorsClientMock);
+  }
+
+  @Test
+  void whenFindByOrganizationIdAndSubUnitCodeAndOperatorExternalUserIdInThenInvokeSearchClient() {
+    Long organizationId = 1L;
+    String subUnitCode = "SUB_UNIT_1";
+    Set<String> mappedExternalUserIds = Set.of("mappedExternalUserId1", "mappedExternalUserId2");
+    Pageable pageable = PageRequest.of(0, 10);
+    String accessToken = "accessToken";
+
+    PagedModelOrgSubUnitOperators expectedResult = podamFactory.manufacturePojo(PagedModelOrgSubUnitOperators.class);
+
+    when(orgSubUnitOperatorsSearchClientMock.findByOrganizationIdAndSubUnitCodeAndOperatorExternalUserIdIn(organizationId, subUnitCode, mappedExternalUserIds, pageable, accessToken))
+      .thenReturn(expectedResult);
+
+    PagedModelOrgSubUnitOperators result =
+      service.findByOrganizationIdAndSubUnitCodeAndOperatorExternalUserIdIn(organizationId, subUnitCode, mappedExternalUserIds, pageable, accessToken);
+
+    assertEquals(expectedResult, result);
+
+    verify(orgSubUnitOperatorsSearchClientMock).findByOrganizationIdAndSubUnitCodeAndOperatorExternalUserIdIn(organizationId, subUnitCode, mappedExternalUserIds, pageable, accessToken);
+  }
+
+  @Test
+  void whenAddOrgSubUnitsToOperatorThenInvokeClient() {
+    Long organizationId = 1L;
+    String mappedExternalUserId = "mappedExternalUserId";
+    List<String> orgSubUnitCodes = List.of("SUB_UNIT_1", "SUB_UNIT_2");
+    String accessToken = "accessToken";
+
+    service.addOrgSubUnitsToOperator(organizationId, mappedExternalUserId, orgSubUnitCodes, accessToken);
+
+    verify(orgSubUnitOperatorsClientMock).addOrgSubUnitsToOperator(organizationId, mappedExternalUserId, orgSubUnitCodes, accessToken);
+  }
+
+  @Test
+  void whenDeleteOrgSubUnitFromOperatorThenInvokeClient() {
+    Long organizationId = 1L;
+    String mappedExternalUserId = "mappedExternalUserId";
+    String subUnitCode = "SUB_UNIT_1";
+    String accessToken = "accessToken";
+
+    service.deleteOrgSubUnitFromOperator(organizationId, mappedExternalUserId, subUnitCode, accessToken);
+
+    verify(orgSubUnitOperatorsClientMock).deleteOrgSubUnitFromOperator(organizationId, mappedExternalUserId, subUnitCode, accessToken);
+  }
+
+  @Test
+  void whenAddOperatorsToOrgSubUnitThenInvokeClient() {
+    Long organizationId = 1L;
+    String subUnitCode = "SUB_UNIT_1";
+    List<String> mappedExternalUserIds = List.of("mappedExternalUserId1", "mappedExternalUserId2");
+    String accessToken = "accessToken";
+
+    service.addOperatorsToOrgSubUnit(organizationId, subUnitCode, mappedExternalUserIds, accessToken);
+
+    verify(orgSubUnitOperatorsClientMock).addOperatorsToOrgSubUnit(organizationId, subUnitCode, mappedExternalUserIds, accessToken);
+  }
+
+  @Test
+  void whenDeleteOperatorsFromOrgSubUnitThenInvokeClient() {
+    Long organizationId = 1L;
+    String subUnitCode = "SUB_UNIT_1";
+    List<String> mappedExternalUserIds = List.of("mappedExternalUserId1", "mappedExternalUserId2");
+    String accessToken = "accessToken";
+
+    service.deleteOperatorsFromOrgSubUnit(organizationId, subUnitCode, mappedExternalUserIds, accessToken);
+
+    verify(orgSubUnitOperatorsClientMock).deleteOperatorsFromOrgSubUnit(organizationId, subUnitCode, mappedExternalUserIds, accessToken);
+  }
+}

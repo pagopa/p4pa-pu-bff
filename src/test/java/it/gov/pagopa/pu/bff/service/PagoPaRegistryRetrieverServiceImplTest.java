@@ -5,7 +5,7 @@ import it.gov.pagopa.pu.bff.connector.registries.PagoPaRegistryService;
 import it.gov.pagopa.pu.bff.dto.OffsetDateTimeIntervalFilter;
 import it.gov.pagopa.pu.bff.dto.PagoPaRegistryFiltersDTO;
 import it.gov.pagopa.pu.bff.dto.generated.PagedPagoPaRegistry;
-import it.gov.pagopa.pu.bff.exception.ResourceNotFoundException;
+import it.gov.pagopa.pu.bff.exception.common.NotFoundException;
 import it.gov.pagopa.pu.bff.mapper.PagoPaRegistryMapper;
 import it.gov.pagopa.pu.bff.service.organization.OrganizationRetrieverService;
 import it.gov.pagopa.pu.bff.service.pagopa_registry.PagoPaRegistryRetrieverService;
@@ -190,7 +190,7 @@ class PagoPaRegistryRetrieverServiceImplTest {
     when(organizationRetrieverServiceMock.getOrgFiscalCode(organizationId, loggedUser,accessToken))
             .thenReturn(orgFiscalCode);
 
-    assertThrows(ResourceNotFoundException.class,()->pagoPaRegistryRetrieverService.getPagoPaRegistry(organizationId,pagoPaRegistryId,loggedUser,accessToken));
+    assertThrows(NotFoundException.class,()->pagoPaRegistryRetrieverService.getPagoPaRegistry(organizationId,pagoPaRegistryId,loggedUser,accessToken));
   }
 
   @Test
@@ -209,7 +209,7 @@ class PagoPaRegistryRetrieverServiceImplTest {
     when(organizationRetrieverServiceMock.getOrgFiscalCode(organizationId, loggedUser,accessToken))
             .thenReturn(null);
 
-    assertThrows(ResourceNotFoundException.class,()->pagoPaRegistryRetrieverService.getPagoPaRegistry(organizationId,pagoPaRegistryId,loggedUser,accessToken));
+    assertThrows(NotFoundException.class,()->pagoPaRegistryRetrieverService.getPagoPaRegistry(organizationId,pagoPaRegistryId,loggedUser,accessToken));
   }
 }
 

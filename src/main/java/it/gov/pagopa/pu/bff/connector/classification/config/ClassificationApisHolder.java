@@ -1,13 +1,16 @@
 package it.gov.pagopa.pu.bff.connector.classification.config;
 
-import it.gov.pagopa.pu.bff.config.rest.RestTemplateConfig;
-import it.gov.pagopa.pu.classification.controller.ApiClient;
-import it.gov.pagopa.pu.classification.controller.BaseApi;
-import it.gov.pagopa.pu.classification.controller.generated.*;
+import it.gov.pagopa.pu.bff.config.rest.HttpClientErrorJsonBodyHandler;
+import it.gov.pagopa.pu.bff.connector.classification.mapper.ClassificationErrorDTOMapper;
+import it.gov.pagopa.pu.classification.generated.ApiClient;
+import it.gov.pagopa.pu.classification.generated.BaseApi;
+import it.gov.pagopa.pu.classification.client.generated.*;
+import it.gov.pagopa.pu.classification.dto.generated.ClassificationErrorDTO;
 import jakarta.annotation.PreDestroy;
 import org.springframework.boot.restclient.RestTemplateBuilder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import tools.jackson.databind.json.JsonMapper;
 
 @Service
 public class ClassificationApisHolder {
@@ -30,17 +33,20 @@ public class ClassificationApisHolder {
   private final AssessmentsEntityExtendedControllerApi assessmentsEntityExtendedControllerApi;
   private final ThreadLocal<String> bearerTokenHolder = new ThreadLocal<>();
 
-  public ClassificationApisHolder(ClassificationApiClientConfig clientConfig,
-                                  RestTemplateBuilder restTemplateBuilder) {
+  public ClassificationApisHolder(
+    ClassificationApiClientConfig clientConfig,
+    RestTemplateBuilder restTemplateBuilder,
+    JsonMapper jsonMapper
+  ) {
     RestTemplate restTemplate = restTemplateBuilder.build();
     ApiClient apiClient = new ApiClient(restTemplate);
     apiClient.setBasePath(clientConfig.getBaseUrl());
     apiClient.setBearerToken(bearerTokenHolder::get);
     apiClient.setMaxAttemptsForRetry(Math.max(1, clientConfig.getMaxAttempts()));
     apiClient.setWaitTimeMillis(clientConfig.getWaitTimeMillis());
-    if (clientConfig.isPrintBodyWhenError()) {
-      restTemplate.setErrorHandler(RestTemplateConfig.bodyPrinterWhenError("CLASSIFICATION"));
-    }
+    restTemplate.setErrorHandler(new HttpClientErrorJsonBodyHandler<>(jsonMapper, "CLASSIFICATION", clientConfig.isPrintBodyWhenError(),
+      ClassificationErrorDTO.class, ClassificationErrorDTOMapper::map)
+    );
 
     this.paymentsReportingViewSearchControllerApi = new PaymentsReportingViewSearchControllerApi(apiClient);
     this.paymentsReportingSearchControllerApi = new PaymentsReportingSearchControllerApi(apiClient);
